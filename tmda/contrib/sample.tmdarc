@@ -1,57 +1,62 @@
 # -*- python -*-
 
 # sample.tmdarc - Sample configuration file for TMDA.
-# Copy to ~/.tmdarc and modify to taste.
+# Copy to ~/.tmdarc, uncomment, and modify to taste.
 #
 # See the "User configurable settings" section of TMDA/Defaults.py for
 # explanations of the possible settings and their default values.
 #
-# Only CRYPT_KEY is REQUIRED in the .tmsrc.
+# Only CRYPT_KEY is REQUIRED in the .tmdarc.
 #
 # NOTE: This file must be mode 600 or 400.
 
 import os                                      # don't remove
 
-BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
+# BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
 
-BOUNCE_BLACKLIST_CC = "jdoe-bounces-blacklist@domain.dom"
+# BOUNCE_BLACKLIST_CC = "jdoe-bounces-blacklist@domain.dom"
 
-BOUNCE_DATED_CC = "jdoe-bounces-dated@domain.dom"
+# BOUNCE_DATED_CC = "jdoe-bounces-dated@domain.dom"
 
-BOUNCE_SENDER_CC = "jdoe-bounces-sender@domain.dom"
+# BOUNCE_SENDER_CC = "jdoe-bounces-sender@domain.dom"
 
-COOKIE_TYPE = "dated"
+# COOKIE_TYPE = "dated"
 
-CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key
-                                                   # with tmda-keygen!
+# CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key
+#                                                    # with tmda-keygen!
  
-HOSTNAME = "domain.dom" 
+# HOSTNAME = "domain.dom" 
 
-INJECT = "/var/qmail/bin/qmail-inject"
+# INJECT = "/var/qmail/bin/qmail-inject"
 
-INJECT_FLAGS = "f"
+# INJECT_FLAGS = "f"
 
+# Optional delivery logging
+# If you uncomment this section, you need to create ~/tmda/log/
+# Logging will be done a file in the form:
+#
 # /home/jason/tmda/log/tmdalog.2001-04
-import time
-localtime = time.localtime(time.time())
-YYYYmm = time.strftime('%Y-%m',localtime) 
-LOGFILE = os.path.expanduser("~/tmda/log/tmdalog." + YYYYmm)
+#
+# import time
+# localtime = time.localtime(time.time())
+# YYYYmm = time.strftime('%Y-%m',localtime) 
+# LOGFILE = os.path.expanduser("~/tmda/log/tmdalog." + YYYYmm)
 
-TIMEOUT = "5d"
+# TIMEOUT = "5d"
 
-USERNAME = "jdoe" 
+# USERNAME = "jdoe" 
 
-BARE_FILE = os.path.expanduser("~/.tmda-bare")
+# BARE_FILE = os.path.expanduser("~/.tmda-bare")
 
-DATED_FILE = os.path.expanduser("~/.tmda-dated")
+# DATED_FILE = os.path.expanduser("~/.tmda-dated")
 
-EXP_FILE = os.path.expanduser("~/.tmda-exp")
+# EXP_FILE = os.path.expanduser("~/.tmda-exp")
 
-EXT_FILE = os.path.expanduser("~/.tmda-ext")
+# EXT_FILE = os.path.expanduser("~/.tmda-ext")
 
-SENDER_FILE = os.path.expanduser("~/.tmda-sender")
+# SENDER_FILE = os.path.expanduser("~/.tmda-sender")
 
-WHITELIST = os.path.expanduser("~/.tmda-whitelist")
+# WHITELIST = os.path.expanduser("~/.tmda-whitelist")
 
-WHITELIST_TO_BARE = 0
+# WHITELIST_TO_BARE = 0
 

@@ -1,3 +1,8 @@
+2001-04-30  Jason R. Mastaler  <jasonrm@nightshade.acl.lanl.gov>
+
+	* sample.tmdarc: Commented out all sections so people won't trip
+	over the sample values.  Suggested by John White.
+
 2001-04-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc (BLOCK_CIPHER): Obsolete.
