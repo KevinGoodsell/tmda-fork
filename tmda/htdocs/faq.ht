@@ -13,6 +13,7 @@ Links: overview-links.h usage-links.h support-links.h
 <li><a href="#8">Why don't my user+detail addresses work with Sendmail virtualdomains?</a><br>
 <li><a href="#9">Why don't my user+detail addresses work with Sendmail /etc/aliases?</a><br>
 <li><a href="#10">Is TMDA planning to support Microsoft Exchange Server?</a><br>
+<li><a href="#11">Can't spammers just setup an auto-responder to defeat TMDA?</a><br>
 </ol>
 
 <hr>
@@ -211,7 +212,6 @@ question).
 <hr>
 
 <li><b>
-
 <a name="10">Is TMDA planning to support Microsoft Exchange Server?  I
 see a real business opportunity here for someone who wanted to take
 TMDA and make it an enterprise solution.</a>
@@ -228,4 +228,28 @@ consider this.<br><br>
 However, due to TMDA's liberal BSD-style license, there is nothing
 stopping an enterprising individual or organization from doing either
 of the above.
+<hr>
+
+<li><b>
+<a name="11">Can't spammers just setup an auto-responder to defeat TMDA?</a>
+</b>
+<br><br>
+In theory yes, but in practice this is not likely to happen.  Most
+SPAM is unrepliable, so TMDA's confirmation requests are never
+delivered to them.  They use non-valid return addresses as to not
+incur the cost of the tremendous number of bounces they generate.
+Using a valid return address to process all the bounces looking for
+confirmation messages to auto-reply to would defeat their economies of
+scale.  It would also make them easy to block, track down and report,
+sue, etc.<br><br>
+
+In short, trying to thwart TMDA in this manner would defeat the
+cost-effectiveness of the bulk-mailing process.<br><br>
+
+But should this fact change, TMDA could modify its (currently very
+simple) challenge response to make it more difficult for a computer to
+auto-reply to.  The level of difficulty could increase as much as is
+necessary for the sender to prove their humanity and legitimacy.
+Until someone teaches a computer program to read and understand the
+English language, I think we will have plenty of options here.
 <hr>
