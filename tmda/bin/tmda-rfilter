@@ -326,7 +326,11 @@ def autorespond_to_sender(sender):
             # If file is more than one day old, delete it and continue.
             now = int(time.time())
             if now > (int(timestamp) + Util.seconds('1d')):
-                os.unlink(file)
+                try:
+                    os.unlink(file)
+                except OSError:
+                    # ignore errors on unlink
+                    pass
                 continue
             else:
                 sndrlist.append(address)
