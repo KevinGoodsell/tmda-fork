@@ -48,14 +48,26 @@ the relevant snippets from this logfile when posting your question to the mailin
 <br><br>
 
 <li>Browse and/or search the 
-<a href="http://mla.libertine.org/" TARGET="Resource Window">mailing list archive</a> 
+<a href="http://wiki.tmda.net/index.cgi/TmdaMailingListArchives">mailing list archives</a>
 for similar questions which have been asked in the past.<br>
 
 </ol>
 
 If after all of this your problem is still not resolved, you should
-inquire on <a href="http://tmda.net/lists/listinfo/tmda-workers"
-TARGET="Resource Window">tmda-workers</a> mailing list.
-Make sure to include all the information mentioned in
-<a href="bugs.html">"Reporting Bugs"</a> even if you aren't reporting a bug.
-<br><br>
+inquire on 
+<a href="http://wiki.tmda.net/index.cgi/TmdaMailingListsAndNewsgroups">tmda-workers</a> mailing list.
+Make sure to include at least the following information in your post:
+
+<ul>
+
+<li>Your TMDA version, your Python version, and your operating system 
+(i.e, <code><b>tmda-keygen -V</b></code>).<br>
+<li>Your type of TMDA installation (tarball, Linux RPM, FreeBSD port, etc.).<br>
+<li>Which MTA you are running (qmail, Postfix, etc.)<br>
+<li>If you are running TMDA from procmail or maildrop.<br>
+<li>Any other information you think might be relevant.<br>
+</ul>
+
+If you are interested in submitting a patch, please see the
+<a href="http://wiki.tmda.net/index.cgi/TmdaPatchSubmissions">patch submission</a>
+guidelines.

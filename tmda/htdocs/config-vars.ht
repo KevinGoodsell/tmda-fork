@@ -129,99 +129,101 @@ Each variable definition below contains one or more examples.
 <td><a href="#LOGFILE_OUTGOING">LOGFILE_OUTGOING</a></td>
 </tr>
 <tr>
+<td><a href="#MAIL_FOLLOWUP_TO">MAIL_FOLLOWUP_TO</a></td>
 <td><a href="#MAIL_TRANSFER_AGENT">MAIL_TRANSFER_AGENT</a></td>
+</tr>
+<tr>
 <td><a href="#MAIL_TRANSPORT">MAIL_TRANSPORT</a></td>
-</tr>
-<tr>
 <td><a href="#MAX_AUTORESPONSES_PER_DAY">MAX_AUTORESPONSES_PER_DAY</a></td>
+</tr>
+<tr>
 <td><a href="#MESSAGE_FROM_STYLE">MESSAGE_FROM_STYLE</a></td>
-</tr>
-<tr>
 <td><a href="#MESSAGE_TAG_HEADER_STYLE">MESSAGE_TAG_HEADER_STYLE</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_BLACKLIST_APPEND">PENDING_BLACKLIST_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_CACHE">PENDING_CACHE</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_CACHE_LEN">PENDING_CACHE_LEN</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_CLEANUP_ODDS">PENDING_CLEANUP_ODDS</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_DELETE_APPEND">PENDING_DELETE_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_DIR">PENDING_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_LIFETIME">PENDING_LIFETIME</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_RELEASE_APPEND">PENDING_RELEASE_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_WHITELIST_APPEND">PENDING_WHITELIST_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_WHITELIST_RELEASE">PENDING_WHITELIST_RELEASE</a></td>
+</tr>
+<tr>
 <td><a href="#PRIMARY_ADDRESS_MATCH">PRIMARY_ADDRESS_MATCH</a></td>
-</tr>
-<tr>
 <td><a href="#PURGED_HEADERS_CLIENT">PURGED_HEADERS_CLIENT</a></td>
+</tr>
+<tr>
 <td><a href="#PURGED_HEADERS_DELIVERY">PURGED_HEADERS_DELIVERY</a></td>
-</tr>
-<tr>
 <td><a href="#PURGED_HEADERS_SERVER">PURGED_HEADERS_SERVER</a></td>
+</tr>
+<tr>
 <td><a href="#RECIPIENT_DELIMITER">RECIPIENT_DELIMITER</a></td>
-</tr>
-<tr>
 <td><a href="#RECIPIENT_HEADER">RECIPIENT_HEADER</a></td>
+</tr>
+<tr>
 <td><a href="#RESPONSE_DIR">RESPONSE_DIR</a></td>
-</tr>
-<tr>
 <td><a href="#SENDER_TEMPLATE_VARS">SENDER_TEMPLATE_VARS</a></td>
+</tr>
+<tr>
 <td><a href="#SENDMAIL_PROGRAM">SENDMAIL_PROGRAM</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPAUTH_PASSWORD">SMTPAUTH_PASSWORD</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPAUTH_USERNAME">SMTPAUTH_USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPHOST">SMTPHOST</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPSSL">SMTPSSL</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL_CERTFILE">SMTPSSL_CERTFILE</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPSSL_KEYFILE">SMTPSSL_KEYFILE</a></td>
-</tr>
-<tr>
 <td><a href="#SMTP_MAX_SESSIONS_PER_CONNECTION">SMTP_MAX_SESSIONS_PER_CONNECTION</a></td>
+</tr>
+<tr>
 <td><a href="#SUMMARY_HEADERS">SUMMARY_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_CONFIRM">TAGS_CONFIRM</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_DATED">TAGS_DATED</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_KEYWORD">TAGS_KEYWORD</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_SENDER">TAGS_SENDER</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_DIR_MATCH_RECIPIENT">TEMPLATE_DIR_MATCH_RECIPIENT</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_EMAIL_HEADERS">TEMPLATE_EMAIL_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_ENCODED_HEADERS">TEMPLATE_ENCODED_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TMDAINJECT">TMDAINJECT</a></td>
+</tr>
+<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
-<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 <td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
+</tr>
 </table>
 
 <dl>
@@ -987,6 +989,30 @@ Example:
 <br><br>
 No default.
 <dt><hr>
+<a name="MAIL_FOLLOWUP_TO"><h4>MAIL_FOLLOWUP_TO</h4></a>
+<dd>
+Inspired by qmail-inject's QMAILMFTFILE feature, MAIL_FOLLOWUP_TO
+automatically adds a Mail-Followup-To field for messages sent to
+mailing lists.  It works for both tmda-sendmail and tmda-ofmipd.
+<br><br>
+MAIL_FOLLOWUP_TO can either be a list of mailing list addresses, or
+a string pointing to a file containing mailing list addresses, one
+per line.  If To or Cc in the message includes one of those
+addresses (without regard to case), tmda-inject adds a
+Mail-Followup-To field with all the To+Cc addresses.  tmda-inject
+does not add Mail-Followup-To to a message that already has one, or
+if the address file does not exist.
+<br><br>
+See http://cr.yp.to/proto/replyto.html for more on Mail-Followup-To.
+<br><br>
+Examples:
+<br><br>
+<code>MAIL_FOLLOWUP_TO = "/path/to/lists.txt"</code><br>
+<code>MAIL_FOLLOWUP_TO = os.path.expanduser("~/.lists")</code><br>
+<code>MAIL_FOLLOWUP_TO = ["tmda-users@tmda.net", "postfix-users@postfix.org"]</code>
+<br><br>
+No default.
+<dt><hr>
 <a name="MAIL_TRANSFER_AGENT"><h4>MAIL_TRANSFER_AGENT</h4></a>
 <dd>
 Defines which mail transfer agent (MTA) software you are running.
@@ -1602,8 +1628,6 @@ tmda-sendmail and tmda-ofmipd):
       Message-ID field if the incoming message lacks one.
 </blockquote>
 <br>
-TMDAINJECT is looked for in the environment first.
-<br><br>
 Examples:
 <br><br>
 <code>TMDAINJECT = "i"</code><br>

@@ -34,16 +34,29 @@ from LinkFixer import LinkFixer
 
 
 sitelinks = [
-    ('%(rootdir)s/index.html', 'TMDA Homepage', '<br>[\
-    <a href="http://www.au.tmda.net/">AU</a> |\
-    <a href="http://www.de.tmda.net/">DE</a> |\
-    <a href="http://www.it.tmda.net/">IT</a> |\
-    <a href="http://www.pl.tmda.net/">PL</a> |\
-    <a href="http://www.us.tmda.net/">US</a> \
+
+    ('%(rootdir)s/index.html', 'Home'),
+
+    ('%(rootdir)s/trouble.html', 'Help'),
+   
+    ('../tmda-cgi', 'TMDA-CGI'),
+
+    ('http://sourceforge.net/projects/tmda', 'SourceForge'),
+ 
+    (None, '[\
+    <a href="http://www.au.tmda.net/" title="Australia Mirror">AU</a> |\
+    <a href="http://www.de.tmda.net/" title="Germany Mirror">DE</a> |\
+    <a href="http://www.it.tmda.net/" title="Italy Mirror">IT</a> |\
+    <a href="http://www.pl.tmda.net/" title="Poland Mirror">PL</a> |\
+    <a href="http://www.us.tmda.net/" title="USA Mirror">US</a> \
     mirror ]'),
-    ('%(rootdir)s/tmda-cgi', 'tmda-cgi'),
-    ('http://sourceforge.net/projects/tmda', 'TMDA @ SourceForge'),
-    ('http://www.cafeshops.com/TMDA/', 'TMDA Store'),
+
+    ('http://tmda.net/faq.cgi', 'FAQ'),
+
+    ('http://wiki.tmda.net/', 'Wiki'),
+ 
+    ('http://www.cafeshops.com/TMDA/', 'Store'),
+
     ]
 
 
