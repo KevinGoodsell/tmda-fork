@@ -1,3 +1,7 @@
+2001-11-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-pre.ht (suffix): Clarify `suffix =' Exim syntax.
+
 2001-11-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-server.ht: Move success reporting info from INSTALL to

@@ -76,7 +76,7 @@ the <b>localuser</b> directors if they are not there already:
 <br><br>
 
 <blockquote><pre>
-suffix = +* or suffix = -*
+suffix = -*     # or "+*" if you prefer "user+suffix" addresses
 suffix_optional
 </blockquote></pre>
 
