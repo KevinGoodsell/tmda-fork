@@ -31,6 +31,10 @@ Contributions:
 
     * Bill Duncan -- SquirrelMail plugin.
 
+    * Jonathan Ellis -- substantial patch to clean up the address
+      matching code in FilterParser.py.  Much of the code was re-
+      factored into a new FilterStore.py module as classes.
+
     * Michael S. Fischer -- tmda-pending patch which allows messages
       to be specified on standard input.
 
