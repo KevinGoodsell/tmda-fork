@@ -1,3 +1,8 @@
+2002-01-03  Matt Armstrong  <matt@lickey.com>
+
+	* tmda-address: now prints a newline after the address.  New
+	options -n and --no-newline prevent the new behavior.
+
 2002-01-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: Replace tmda-filter with a wrapper script, and

@@ -6,6 +6,9 @@ If you are upgrading from a release of TMDA < 0.44:
   and tmda-sender-address.  Run `tmda-address -h' to get a list of
   available options.
 
+* tmda-address now prints a newline after the tagged address by
+  default.  Use the `-n' option to prevent this behavior.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.43:

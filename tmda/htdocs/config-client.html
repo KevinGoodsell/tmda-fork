@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Jan  3 13:38:14 2002 -->
+<!-- Thu Jan  3 13:59:36 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -481,7 +481,7 @@ sendmail: /path/to/tmda/bin/tmda-sendmail
 If you still read <a href="http://www.usenet.org/" TARGET="Resource Window">USENET</a> 
 (a notorious source of SPAM), you might find it useful to post using a
 dated address.  Simply have your newsreader call
-<strong>tmda-address -d</strong> and use the result as your
+<strong>tmda-address -dn</strong> and use the result as your
 posting address.
 <br><br>
 
@@ -493,7 +493,7 @@ be accomplished with the following addition to your .gnus file:
 <blockquote><pre>
 
 (defun tmda-dated-address () 
-  (shell-command-to-string "/path/to/tmda/bin/tmda-address -d"))
+  (shell-command-to-string "/path/to/tmda/bin/tmda-address -dn"))
  
 (setq gnus-posting-styles 
       (message-this-is-news           
@@ -521,7 +521,7 @@ alias for tcsh.
 
 <blockquote><pre>
 
-alias slrn-dated 'm4 -DTMDADATED=`tmda-address -d` ~/.slrnrc.m4 > ~/.slrnrc && slrn -h newshost'
+alias slrn-dated 'm4 -DTMDADATED=`tmda-address -dn` ~/.slrnrc.m4 > ~/.slrnrc && slrn -h newshost'
 
 </pre></blockquote>
 </ul>

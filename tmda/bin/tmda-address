@@ -31,6 +31,10 @@ OPTIONS:
 	--sender <address>
 	   Generate a sender-style tagged address.  address is
 	   a required sender e-mail address.
+           
+	-n
+        --no-newline
+           Do not print a newline after the address.
 """
 
 import getopt
@@ -39,6 +43,7 @@ import sys
 
 
 program = sys.argv[0]
+print_newline = 1
 tag = None
 
 def usage(code, msg=''):
@@ -49,16 +54,18 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                                   'c:a:dk:s:h', ['config-file=',
-                                                  'address=',
-                                                  'dated',
-                                                  'keyword=',
-                                                  'sender=',
-                                                  'help'])
+                                   'c:a:dk:s:hn', ['config-file=',
+                                                   'address=',
+                                                   'dated',
+                                                   'keyword=',
+                                                   'sender=',
+                                                   'help',
+                                                   'no-newline'])
 except getopt.error, msg:
     usage(1, msg)
 
 address = None
+
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
@@ -78,7 +85,8 @@ for opt, arg in opts:
     elif opt in ('-s', '--sender'):
         tag = 'sender'
         sender = arg
-        
+    elif opt in ('-n', '--no-newline'):
+        print_newline = 0
 
 try:
     import paths
@@ -102,7 +110,8 @@ def main():
     else:
         usage(0)
     sys.stdout.write(tagged_address)
-
+    if print_newline:
+        sys.stdout.write("\n")
 
 # This is the end my friend.
 if __name__ == '__main__':
