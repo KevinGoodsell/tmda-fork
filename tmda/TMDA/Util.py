@@ -808,11 +808,14 @@ def maketext(templatefile, vardict):
     if Defaults.TEMPLATE_DIR_MATCH_SENDER and Defaults.TEMPLATE_DIR:
         sender = os.environ.get('SENDER').lower()
         searchdirs.append(os.path.join(Defaults.TEMPLATE_DIR, sender))
-        domainparts = sender.split('@', 1)[1].split('.')
-        for i in range(len(domainparts)):
-            searchdirs.append(os.path.join
-                              (Defaults.TEMPLATE_DIR, '.'.join(domainparts)))
-            del domainparts[0]
+        try:
+            domainparts = sender.split('@', 1)[1].split('.')
+            for i in range(len(domainparts)):
+                searchdirs.append(os.path.join
+                                  (Defaults.TEMPLATE_DIR, '.'.join(domainparts)))
+                del domainparts[0]
+        except IndexError:
+            pass
     searchdirs.append(Defaults.TEMPLATE_DIR)
     searchdirs.append(os.path.join(Defaults.PARENTDIR, 'templates'))
     searchdirs.append(os.path.join(sys.prefix, 'share/tmda'))
