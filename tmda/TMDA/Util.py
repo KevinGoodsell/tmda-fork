@@ -9,9 +9,7 @@ import os
 import random
 import re
 import string
-import sys
 import time
-import types
 
 
 def gethostname():
@@ -51,9 +49,7 @@ def seconds(timeout):
     """Translate the defined timeout interval into seconds."""
     match = re.match("^([0-9]+)([YMwdhms])$", timeout)
     if not match:
-        print "Invalid timeout value:", timeout
-        import Defaults
-        sys.exit(Defaults.EX_TEMPFAIL)
+        raise ValueError, 'Invalid timeout value: ' + timeout
     (num, unit) = match.groups()
     if unit == 'Y':                     # years --> seconds
         seconds = int(num) * 60 * 60 * 24 * 365
@@ -228,6 +224,33 @@ def file_to_list(file,list):
     return list
 
 
+def writefile(contents, fullpathname):
+    """Simple function to write contents to a file."""
+    if os.path.exists(fullpathname):
+        raise IOError, fullpathname + ' already exists'
+    else:
+        file = open(fullpathname, 'w')
+        file.write(contents)
+        file.close()
+        
+
+def append_to_file(str,fullpathname):
+    """Append a string to a text file if it isn't already in there."""
+    if os.path.exists(fullpathname):
+        for line in fileinput.input(fullpathname):
+            line = string.lower(string.strip(line))
+            # Comment or blank line?
+            if line == '' or line[0] in '#':
+                continue
+            else:
+                if string.lower(string.strip(str)) == line:
+                    fileinput.close()
+                    return 0
+    file = open(fullpathname, 'a+')
+    file.write(string.strip(str) + '\n')
+    file.close()
+
+
 def build_cdb(filename):
     """Build a cdb file from a text file."""
     import cdb
@@ -285,41 +308,33 @@ def substring_match(substrings, *addrs):
     """Determine whether any of the passed e-mail addresses match a
     substring contained in substrings which might be a list or a file.
     Currently unused."""
-    try:
-        regex = None
-        sublist = []
-
-        if type(substrings) is types.ListType:
-            for sub in substrings:
-                sublist.append(re.escape(sub))
-        # We assume a file if substrings is not a list.
-        else:                          
-            for line in fileinput.input(substrings):
+    import types
+    regex = None
+    sublist = []
+    if type(substrings) is types.ListType:
+        for sub in substrings:
+            sublist.append(re.escape(sub))
+    # We assume a file if substrings is not a list.
+    else:                          
+        for line in fileinput.input(substrings):
+            line = string.strip(line)
+            # Comment or blank line?
+            if line == '' or line[0] in '#':
+                continue
+            else:
+                line = string.expandtabs(line)
+                line = string.split(line, ' #')[0]
                 line = string.strip(line)
-                # Comment or blank line?
-                if line == '' or line[0] in '#':
-                    continue
-                else:
-                    line = string.expandtabs(line)
-                    line = string.split(line, ' #')[0]
-                    line = string.strip(line)
-                    sublist.append(re.escape(line))
-                    
-        # "address1|address2|address3|addressN"
-        regex = string.join(sublist,'|')
-        if regex:
-            reo = re.compile(regex, re.I)
-        else:
-            return 0
-        
-        for address in addrs:
-            if address and reo.search(address):
-                return 1
-  
-    except IOError, error_msg:
-        import Defaults
-        print error_msg
-        sys.exit(Defaults.EX_TEMPFAIL)
+                sublist.append(re.escape(line))
+    # "address1|address2|address3|addressN"
+    regex = string.join(sublist,'|')
+    if regex:
+        reo = re.compile(regex, re.I)
+    else:
+        return 0
+    for address in addrs:
+        if address and reo.search(address):
+            return 1
 
 
 def maketext(templatefile, vardict):
@@ -333,53 +348,10 @@ def maketext(templatefile, vardict):
     template = fp.read()
     fp.close()
     import Defaults
-    try:
-        localdict = Defaults.__dict__.copy()
-        localdict.update(vardict)
-        text = template % localdict
-        return text
-    except KeyError, error_msg:
-        print error_msg,'is not a valid template variable'
-        sys.exit(Defaults.EX_TEMPFAIL)
-
-
-def writefile(contents,fullpathname):
-    """Simple function to write contents to a file."""
-    if os.path.exists(fullpathname):
-        import Defaults
-        print fullpathname,"already exists"
-        sys.exit(Defaults.EX_TEMPFAIL)
-    else:
-        try:
-            file = open(fullpathname,'w')
-            file.write(contents)
-            file.close()
-        except IOError, error_msg:
-            import Defaults
-            print error_msg
-            sys.exit(Defaults.EX_TEMPFAIL)
-
-
-def append_to_file(str,fullpathname):
-    """Append a string to a text file if it isn't already in there."""
-    try:
-        if os.path.exists(fullpathname):
-            for line in fileinput.input(fullpathname):
-                line = string.lower(string.strip(line))
-                # Comment or blank line?
-                if line == '' or line[0] in '#':
-                    continue
-                else:
-                    if string.lower(string.strip(str)) == line:
-                        fileinput.close()
-                        return 0
-        file = open(fullpathname,'a+')
-        file.write(string.strip(str) + '\n')
-        file.close()
-    except IOError, error_msg:
-        import Defaults
-        print error_msg
-        sys.exit(Defaults.EX_TEMPFAIL)
+    localdict = Defaults.__dict__.copy()
+    localdict.update(vardict)
+    text = template % localdict
+    return text
 
 
 def filter_match(filename, recip, sender=None):
