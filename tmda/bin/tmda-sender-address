@@ -3,9 +3,9 @@
 """Generate a tagged (sender) e-mail address.
 
 This generates a sender-style tagged e-mail address which only the
-named recipient can use.
+named sender can use.
 
-Usage: %(program)s recipient-email-address
+Usage: %(program)s sender-address
 """
 
 import sys
