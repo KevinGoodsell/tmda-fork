@@ -1,5 +1,8 @@
 2002-04-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-pending (main): Support PENDING_DELETE_APPEND and
+	PENDING_RELEASE_APPEND.
+	
 	* tmda-rfilter (verify_confirm_cookie): Catch messages sent
 	directly to a 'confirm-done' address.
 

@@ -438,9 +438,19 @@ def main():
                 cprint(verbose, '\n', message)
             if not pretend:
                 if dispose == 'release':
+                    # Optionally append the envelope sender to a file.
+                    if Defaults.PENDING_RELEASE_APPEND:
+                        return_path = headers.getaddr('return-path')[1]
+                        Util.append_to_file(return_path,
+                                            Defaults.PENDING_RELEASE_APPEND)
                     release(headers, body,
                             confirm_done_address(recipient_address, msg))
                 elif dispose == 'delete':
+                    # Optionally append the envelope sender to a file.
+                    if Defaults.PENDING_DELETE_APPEND:
+                        return_path = headers.getaddr('return-path')[1]
+                        Util.append_to_file(return_path,
+                                            Defaults.PENDING_DELETE_APPEND)
                     os.unlink(msg)
                 elif dispose == 'pass':
                     continue

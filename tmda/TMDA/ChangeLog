@@ -1,3 +1,8 @@
+2002-04-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (PENDING_DELETE_APPEND, PENDING_RELEASE_APPEND): New
+	variables.
+	
 2002-04-28  Jason R. Mastaler  <jason@mastaler.com>
 
 	* HMAC.py: XOR optimizations.

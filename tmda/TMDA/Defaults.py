@@ -535,6 +535,20 @@ if not vars().has_key('PENDING_CACHE'):
 if not vars().has_key('PENDING_CACHE_LEN'):
     PENDING_CACHE_LEN = 5000
 
+# PENDING_DELETE_APPEND
+# Filename to which a sender's e-mail address should be automatically
+# appended when a message is "deleted" by tmda-pending.
+# No default
+if not vars().has_key('PENDING_DELETE_APPEND'):
+    PENDING_DELETE_APPEND = None
+
+# PENDING_RELEASE_APPEND
+# Filename to which a sender's e-mail address should be automatically
+# appended when a message is "released" by tmda-pending.
+# No default
+if not vars().has_key('PENDING_RELEASE_APPEND'):
+    PENDING_RELEASE_APPEND = None
+
 # PURGED_HEADERS
 # A list containing one or more message headers that should be removed
 # from outgoing client-side messages (i.e, messages sent with
