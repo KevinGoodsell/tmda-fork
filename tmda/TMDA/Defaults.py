@@ -15,7 +15,7 @@ import Util
 # General system-wide defaults
 ##############################
 
-TMDA_VERSION = "0.38"
+TMDA_VERSION = "0.39"
 TMDA_HOMEPAGE = "<http://tmda.sf.net/>"
 
 PYTHON_VERSION = string.split(sys.version)[0]

@@ -1,3 +1,7 @@
+2001-10-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.39.
+
 2001-10-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda.spec: FAQ is now in HTML within htdocs.
