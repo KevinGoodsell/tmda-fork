@@ -458,14 +458,14 @@ This is useful for whitelisting someone who is using a dated address."
 			 "Blacklist sender wildcard in summary buffer.")
 
 (defun tmda-add-to-list (addr file)
-  (message (concat "Adding to " file " ..."))
+  (message "Adding to %s ..." file)
   (let ((require-final-newline t))
     (with-temp-buffer
       (insert-file-contents-literally file)
       (goto-char (point-min))
       (if (re-search-forward
 	   (concat "^" (regexp-quote addr) "$") nil t)
-	  (message (concat addr " already in " file))
+	  (message "%s already in %s" addr file)
 	(goto-char (point-max))
 	(insert addr)
 	(write-file file)))))
@@ -571,7 +571,7 @@ to the kill ring for easy pasting wherever it is needed."
 		 nil))))
     (if string
 	(progn
-	  (message string)
+	  (message "%s" string)
 	  (kill-new string))
       (message "Invalid syntax, please try again."))))
 
@@ -580,13 +580,11 @@ to the kill ring for easy pasting wherever it is needed."
 (defun tmda-pending-buffer-kill ()
   (interactive)
   (let* ((changes (tmda-pending-changelist))
-         (dcount (length (cdr (assoc ?d changes))))
-         (rcount (length (cdr (assoc ?r changes))))
-	 (quit
-	  (if (not (= 0 dcount rcount))
-              (y-or-n-p
-               "Quit tmda-pending buffer without applying changes? ")
-	    t)))
+	 (quit (if (or (cdr (assoc ?d changes))
+		       (cdr (assoc ?r changes)))
+		   (y-or-n-p
+		    "Quit tmda-pending buffer without applying changes? ")
+		   t)))
     (when quit
       (kill-buffer tmda-pending-buffer))))
 
@@ -646,7 +644,7 @@ current window size.")
 
 (defmacro tmda-pending-command (&rest forms)
   "Make the tmda-pending commands a little easier to read."
-  `(let ((msg ,(tmda-pending-msg)))
+  `(let ((msg (tmda-pending-msg)))
      (if msg
 	 (progn
 	   ,@forms)
@@ -670,7 +668,7 @@ current window size.")
      (beginning-of-line)
      (forward-char)
      (toggle-read-only 0)
-     (delete-char)
+     (delete-char 1)
      (insert char)
      (toggle-read-only 1))
    (when tmda-pending-tag-auto-advance
@@ -688,18 +686,26 @@ current window size.")
   (interactive)
   (tmda-pending-tag-command " "))
 
+(defun tmda-pending-backward-clear ()
+  "Clear any tagged operation on the previous line."
+  (interactive)
+  (let ((tmda-pending-tag-auto-advance nil))
+    (if (tmda-pending-prev-msg)
+	(tmda-pending-tag-command " ")
+	(error "No previous message."))))
+
 (defun tmda-pending-changelist ()
   (save-excursion
     (goto-char (point-min))
     (let (msg
           (first t)
-          (changelist (copy-tree '((?d) (?r)))))
+          (changelist (mapcar (function list) '(?d ?r))))
       (while (or first (tmda-pending-next-msg))
 	(when (setq msg (tmda-pending-msg))
-	  (let ((tag (save-excursion (forward-char 1)
-				     (char-after))))
-	    (when (not (eq tag ? ))
-              (push msg (cdr (assoc tag changelist))))))
+	  (let* ((tag (char-after (1+ (point))))
+		 (cell (assoc tag changelist)))
+	    (if cell
+		(setcdr cell (cons msg (cdr cell))))))
 	(setq first nil))
       changelist)))
 
@@ -711,14 +717,14 @@ current window size.")
     (message "Processing...")
     (when (< 0 (length dels))
       (message "Processing...deletes")
-      (message (shell-command-to-string
-                (format "tmda-pending -b -d %s"
-                        (mapconcat 'identity dels " ")))))
+      (message "%s" (shell-command-to-string
+		     (format "tmda-pending -b -d %s"
+			     (mapconcat 'identity dels " ")))))
     (when (< 0 (length rels))
       (message "Processing...releases")
-      (message (shell-command-to-string
-                (format "tmda-pending -b -r %s"
-                        (mapconcat 'identity rels " "))))))
+      (message "%s" (shell-command-to-string
+		     (format "tmda-pending -b -r %s"
+			     (mapconcat 'identity rels " "))))))
   (sleep-for 0.5)
   (message "Processing...refreshing pending list")
   (tmda-pending-refresh-buffer)
@@ -748,6 +754,7 @@ current window size.")
   (local-set-key "d" 'tmda-pending-delete)
   (local-set-key "c" 'tmda-pending-clear-mark)
   (local-set-key " " 'tmda-pending-clear-mark)
+  (local-set-key "\C-?" 'tmda-pending-backward-clear)
   (local-set-key "x" 'tmda-pending-apply-changes)
   (local-set-key "n" 'tmda-pending-next-msg)
   (local-set-key "p" 'tmda-pending-prev-msg)
@@ -774,9 +781,12 @@ This is useful for viewing the number of pending messages in the modeline."
 
 (defun tmda-check-version ()
   (let ((ver (shell-command-to-string "tmda-keygen --version")))
-    (string-match "\\([0-9]+\\)\\.\\([0-9]+\\)" ver)
-    (and (>= (string-to-int (match-string 1 ver)) tmda-major-ver-req)
-	 (>= (string-to-int (match-string 2 ver)) tmda-minor-ver-req))))
+    (and (string-match "\\([0-9]+\\)\\.\\([0-9]+\\)" ver)
+	 (let ((major (string-to-int (match-string 1 ver))))
+	   (or (> major tmda-major-ver-req)
+	       (and (= major tmda-major-ver-req)
+		    (>= (string-to-int (match-string 2 ver))
+			tmda-minor-ver-req)))))))
 
 ;; utility function to setup keybindings
 

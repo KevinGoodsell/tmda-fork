@@ -1,3 +1,17 @@
+2004-04-03  Bob Rogers  <rogers@rgrjr.dyndns.org>
+
+        * tmda.el (tmda-pending-buffer-kill):  FSF emacs `=' expects 2 args.
+        (tmda-pending-command): Remove comma that prevented compilation.
+        (tmda-pending-tag-command): FSF emacs delete-char needs an arg.
+        (tmda-pending-changelist): FSF emacs has no copy-tree defaultly.
+        (tmda-check-version): Fix logic error in versions >= 1.*.
+        (tmda-add-to-list, tmda-generate-address, tmda-pending-apply-changes):
+        supply missing format string (fixes a bug in processing of
+        output that contains '%').
+
+        * tmda.el (tmda-pending-backward-clear):  New command, bound to
+        DEL.
+
 2003-10-01  Jason R. Mastaler  <jason@mastaler.com>
 
 	* smtp-check-sender (data): Change the default probe address to
