@@ -20,8 +20,9 @@ Contributions:
     * Ron Bickers -- countless suggestions, bugfixes, documentation
       additions, and code patches (too many to list).
 
+    * Adam McKenna -- creator/maintainer of the Debian package.
+
     * Ted Rathkopf -- support for "pre-extension" definitions in
       /var/qmail/users/assign (now depreciated).
 
-    * Reuben Sumner -- the HMAC.py module and for suggesting the
-      "blacklist" functionality.
+    * Reuben Sumner -- the HMAC.py module.
