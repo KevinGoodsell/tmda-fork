@@ -83,7 +83,8 @@ message = sys.stdin
 message_headers = rfc822.Message(message)
 
 
-def inject_message(to_address,
+def inject_message(resending,
+                   to_address,
                    from_address,
                    message_headers,
                    message_body,
@@ -121,17 +122,21 @@ def inject_message(to_address,
     else:
         # If cookie_type is invalid, punt and use an untagged address.
         envelope_sender_address.append(from_address)
-        
-    # Set From: to match the envelope sender address.
+    
     final_sender_address = envelope_sender_address[-1:][0]
     final_full_name = sender_full_name[0]
-    if Defaults.MESSAGE_FROM_STYLE == 'angles':
-        message_from_format = '"%s" <%s>' % (final_full_name,final_sender_address)
-    elif Defaults.MESSAGE_FROM_STYLE == 'parens':
+    # "angles" is the default MESSAGE_FROM_STYLE
+    if Defaults.MESSAGE_FROM_STYLE == 'parens':
         message_from_format = '%s (%s)' % (final_sender_address,final_full_name)
     elif Defaults.MESSAGE_FROM_STYLE == 'address':
-         message_from_format = '%s' % (final_sender_address)
-    message_headers['From'] = message_from_format
+        message_from_format = '%s' % (final_sender_address)
+    else:
+        message_from_format = '"%s" <%s>' % (final_full_name,final_sender_address)
+    # Set From: or Resent-From: to match the envelope sender address.
+    if resending:
+        message_headers['Resent-From'] = message_from_format
+    else:
+        message_headers['From'] = message_from_format
     # Inject the message.
     inject = []
     inject.append(Defaults.SENDMAIL)
@@ -155,8 +160,14 @@ def main():
     action = None
     action_option = None
 
-    # Use the existing From: header if possible.
-    (fullname, from_address) = message_headers.getaddr("from")
+    if message_headers.has_key('resent-from'):
+        # We must be resending (bouncing) the message.
+        (fullname, from_address) = message_headers.getaddr('resent-from')
+        resending = 1
+    else:
+        # Use the existing From: header if possible.
+        (fullname, from_address) = message_headers.getaddr("from")
+        resending = None
     if fullname:
         sender_full_name.append(fullname)
     else:
@@ -221,7 +232,8 @@ def main():
         # everyone gets the correct tag.  Make sure your MUA
         # generates its own Message-ID: and Date: headers so they
         # match on multiple recipient messages.
-        inject_message(address,
+        inject_message(resending,
+                       address,
                        from_address,
                        message_headers,
                        message_body,

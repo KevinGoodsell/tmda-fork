@@ -1,3 +1,12 @@
+2001-11-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject: Bugfix.  "Bouncing" a message from the MUA caused
+	the exiting From: header to be modified which was incorrect.  Now
+	we differentiate between sending a message for the first time, and
+	resending a message.  If the message has a Resent-From: header,
+	it's a bounce and we tag only the envelope sender and
+	Resent-From:.  Otherwise, we tag the envelope sender and From:.
+
 2001-11-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (inject_message): When checking for bare=append,
