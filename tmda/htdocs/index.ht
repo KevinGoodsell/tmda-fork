@@ -8,11 +8,12 @@ TMDA is an
 OSI certified</a> software application designed to significantly
 reduce the amount of 
 <a href="http://spam.abuse.net/" TARGET="Resource Window">SPAM/UCE</a>
-(junk-mail) you receive.  
-TMDA combines a "whitelist" (for known/trusted senders), a "blacklist"
-(for undesired senders), and a cryptographically enhanced confirmation
-system (for unknown, but legitimate senders).  TMDA strives to be more
-effectual, yet less time-consuming than traditional filters.
+(junk-mail) you receive.  As a SPAM filter, TMDA combines a "whitelist"
+(for known/trusted senders), a "blacklist" (for undesired senders),
+and a cryptographically enhanced confirmation system (for unknown, but
+legitimate senders).  TMDA strives to be more effectual, yet less
+time-consuming than traditional filters.
+
 <br><br>
 
 TMDA also acts as a local mail delivery agent, with a flexible 
@@ -36,15 +37,17 @@ message is deemed legitimate and is delivered to you.  Updating your
 whitelist insures they won't have to confirm future messages.  TMDA
 can even be configured to automatically whitelist confirmed senders.
 To see what the confirmation process looks like, 
-<a href="mailto:jason-tmdatest@mastaler.com">try sending me a test message</a>.
-(<strong>NOTE:</strong> Confirmed test messages are automatically discarded)
+<a href="mailto:jason-tmdatest@mastaler.com">send me a test message</a>,
+and then reply to the confirmation request.
 <br><br>
 
 This methodology has the advantage of being very selective about what
 it allows in, while at the same time permitting legitimate, but
 previously unknown senders to reach you.  TMDA also has several
-techniques (See the <a href="config-client.html">Client Configuration</a> section)
-that allow senders to circumvent the whitelist.  
+techniques (See the <a href="config-client.html">Client
+Configuration</a> section) that allow senders to circumvent the
+whitelist, which greatly reduces the number of legitimate senders who are
+burdened with a confirmation request (only ~6% in my case).
 <br><br>
 </ul>
 
@@ -60,10 +63,10 @@ what a piece of SPAM looks like.<br><br>
 
 The problem with this approach is that spammer's intrusion techniques
 are evolving as fast as your prevention techniques are, so the battle
-is never ending.  Maintaining the blacklist is often just as
-time-consuming as pressing the "Delete" key on the easily recognized
+is never ending.  Maintaining the blacklist or spam "corpus" is often just as
+time-consuming as pressing the `Delete' key on the easily recognized
 junk messages.  If wasted time is your biggest complaint with junk
-e-mail, you can see why this traditional methodology is flawed.  
+e-mail, you can see why these traditional methodologies are flawed.  
 <br><br>
 
 The chance of accidental "false positives" is also significantly
