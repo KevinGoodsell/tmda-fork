@@ -3,7 +3,7 @@ Links: overview-links.h usage-links.h config-links.h support-links.h
 
 <h3>TMDA Client Configuration</h3>
 In addition to filtering your incoming e-mail, TMDA can also work with
-your mail client to modify your outgoing address with unique,
+your mail client to send your outgoing messages with unique,
 cryptographically enhanced (tagged) e-mail addresses.  This is done to complement
 the filter's "whitelist" functionality.<br><br>
 
@@ -388,7 +388,8 @@ alias for tcsh.
 
 <blockquote><pre>
 
-alias slrn-dated 'm4 -DTMDADATED=`tmda-address -dn` ~/.slrnrc.m4 > ~/.slrnrc && slrn -h newshost'
+alias slrn-dated 'm4 -DTMDADATED=`tmda-address -dn` \
+~/.slrnrc.m4 > ~/.slrnrc && slrn -h newshost'
 
 </pre></blockquote>
 </ol>

@@ -13,10 +13,15 @@ reduce the amount of
 and a cryptographically enhanced confirmation system (for unknown, but
 legitimate senders).  TMDA strives to be more effective, yet less
 time-consuming than traditional filters.
-
 <br><br>
 
-TMDA also acts as a local mail delivery agent, with a flexible 
+TMDA also supports special-purpose addresses called 
+<a href="config-client.html">"tagged addresses"</a> which increases 
+the transparency of the process for unknown senders by
+allowing them to safely circumvent the whitelist.
+<br><br>
+
+TMDA is also a local mail delivery agent, with a flexible 
 <a href="config-filter.html">filtering language</a> that allows fine-grained
 control over how incoming and outgoing mail is delivered and sent.
 <br><br>
@@ -31,11 +36,10 @@ assumed, a premise which spammers rely heavily upon.<br><br>
 The way TMDA thwarts incoming junk-mail is simple yet extremely
 effective.  You maintain a "whitelist" of trusted contacts which are
 allowed directly into your mailbox.  Messages from unknown senders are
-held in a pending queue until they respond to a confirmation request
+held in a pending queue until they respond to a one-time confirmation request
 sent by TMDA.  Once they respond to the confirmation, their original
-message is deemed legitimate and is delivered to you.  Updating your
-whitelist insures they won't have to confirm future messages.  TMDA
-can even be configured to automatically whitelist confirmed senders.
+message is deemed legitimate and is delivered to you.  TMDA then adds
+their address to your whitelist so they won't have to confirm future messages.
 To see what the confirmation process looks like, 
 <a href="mailto:jason-tmdatest@mastaler.com">send me a test message</a>,
 and then reply to the confirmation request.
@@ -43,11 +47,12 @@ and then reply to the confirmation request.
 
 This methodology has the advantage of being very selective about what
 it allows in, while at the same time permitting legitimate, but
-previously unknown senders to reach you.  TMDA also has several
-techniques (See the <a href="config-client.html">Client
-Configuration</a> section) that allow senders to circumvent the
-whitelist, which greatly reduces the number of legitimate senders who are
-burdened with a confirmation request (only ~6% in my case).
+previously unknown senders to reach you.  
+<br><br>
+
+Optional use of TMDA's <a href="config-client.html">tagged addresses</a> 
+will greatly reduce the number of unknown senders who are actually sent a 
+confirmation request (only ~6% in my case).
 <br><br>
 </ul>
 
