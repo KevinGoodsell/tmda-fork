@@ -153,10 +153,8 @@ Where:
 """
 
 import getopt
-import glob
 import os
 import sys
-import time
 
 try:
     import paths
@@ -270,11 +268,7 @@ for opt, arg in opts:
         verbose = 1
 
 
-from TMDA import Cookie
-from TMDA import Defaults
-from TMDA import Errors
-from TMDA import Util
-
+from TMDA import Pending
 
 def cprint(verbose=1, *strings):
     """Conditionally print one or more strings."""
@@ -285,249 +279,31 @@ def cprint(verbose=1, *strings):
     else:
         return
 
-
-def confirm_accept_address(recipient, msg):
-    (timestamp, pid, suffix) = msg.split('.')
-    return Cookie.make_confirm_address(recipient, timestamp, pid, 'accept')
-
-
-def release(msgobj, msg):
-    """Release a message from the pending queue."""
-    timestamp, pid, suffix = msg.split('.')
-    # Remove Return-Path: to avoid duplicates.
-    return_path = email.Utils.parseaddr(msgobj.get('return-path'))[1]
-    del msgobj['return-path']
-    # Remove X-TMDA-Recipient:
-    recipient = msgobj.get('x-tmda-recipient')
-    del msgobj['x-tmda-recipient']
-    # To avoid a mail loop on re-injection, prepend an ``Old-'' prefix
-    # to all existing Delivered-To lines.
-    Util.rename_headers(msgobj, 'Delivered-To', 'Old-Delivered-To')
-    # Add an X-TMDA-Confirm-Done: field to the top of the header for
-    # later verification.  This includes a timestamp, pid, and HMAC.
-    del msgobj['X-TMDA-Confirm-Done']
-    msgobj['X-TMDA-Confirm-Done'] = Cookie.make_confirm_cookie(timestamp,
-                                                               pid, 'done')
-    # Add the date when confirmed in a header.
-    del msgobj['X-TMDA-Released']
-    msgobj['X-TMDA-Released'] = Util.unixdate()
-    # Reinject the message to the original envelope recipient.
-    Util.sendmail(msgobj.as_string(), recipient, return_path)
-
-
 def main():
-    global cache
-    global command_recipient
-    global descending
-    global dispose
-    global interactive
-    global older
-    global summary
-    global terse
-    global threshold
-    global verbose
-    global younger
-    
 
-    pendingdir = os.path.join(Defaults.DATADIR, 'pending')
-    if os.path.exists(pendingdir):
-        os.chdir(pendingdir)
+    if interactive:
+        QueueObject = Pending.InteractiveQueue
     else:
-        print '%s does not exist, exiting.' % pendingdir
-
-    msgs = args
-
-    # Replace any `-' in the message list with those messages provided
-    # via standard input.  (Since it's pointless to call it twice,
-    # it's safe to remove any subsequent occurrences in the list after
-    # processing.)
-    wantedstdin = 0
-    for msg in msgs:
-        if msg == '-':
-            wantedstdin = 1
-            for line in sys.stdin.readlines():
-                msgs.append(line.strip())
-            msgs.remove('-')
-
-    if not msgs and not wantedstdin:
-        msgs = glob.glob('*.*.msg*')
-
-    msgs.sort()
-    if descending:
-        msgs.reverse()
-    total = len(msgs)
-    count = 0
-    
-    if dispose is None:
-        dispose_def = 'pass'
-    else:
-        dispose_def = dispose
-
-    if cache:
-        if os.path.exists(Defaults.PENDING_CACHE):
-            msgcache = Util.unpickle(Defaults.PENDING_CACHE)
-        else:
-            msgcache = []
-        
-    for msg in msgs:
-        count = count + 1
-        if not os.path.exists(msg):
-            cprint(verbose, msg, 'not found!')
-        else:
-            if msg.endswith(',R') or msg.endswith(',C'):
-                delivered = 1
-            else:
-                delivered = None
-            if delivered:
-                if dispose == 'delete' and not interactive:
-                    # continue if we are running in batch/delete mode,
-                    # else delivered messages will never be removed
-                    # from disk
-                    pass
-                else:
-                    # skip delivered messages
-                    continue
-            if threshold:
-                threshold_secs = Util.seconds(threshold)
-                now = '%d' % time.time()
-                min_time = int(now) - int(threshold_secs)
-                msg_time = int(msg.split('.')[0])
-                if (younger and msg_time < min_time) or \
-                   (older and msg_time > min_time):
-                    # skip this message
-                    continue
-            if cache:
-                if msg in msgcache:
-                    # skip this message
-                    continue
-                else:
-                    msgcache.insert(0, msg)
-            msgobj = email.message_from_file(open(msg, 'r'))
-            msg_size = len(msgobj.as_string())
-            bytes = 'bytes'
-            if msg_size == 1:
-                bytes = bytes[:-1]
-            recipient_address = command_recipient
-            if not recipient_address:
-                recipient_address = msgobj.get('x-tmda-recipient')
-            # Pass over the message if it lacks X-TMDA-Recipient and we
-            # aren't using `-R'.
-            if not recipient_address:
-                cprint(verbose,
-                       "can't determine recipient address, skipping", msg)
-                continue
-            if summary or interactive and not terse:
-                print
-                print msg, "(%s of %s / %s %s)" % (count,
-                                                   total,
-                                                   msg_size,
-                                                   bytes)
-                for hdr in Defaults.SUMMARY_HEADERS:
-                    print "%s %s: %s" % ('  >>',
-                                         hdr.capitalize()[:4].rjust(4),
-                                         Util.decode_header(msgobj.get(hdr)))
-                if summary:
-                    print '<mailto:%s>' % (confirm_accept_address
-                                           (recipient_address, msg))
-            if terse:
-                if interactive:
-                    print
-                terse_hdrs = []
-                for hdr in Defaults.TERSE_SUMMARY_HEADERS:
-                    if hdr in ('from_name', 'from_address'):
-                        from_name, from_address = email.Utils.parseaddr(msgobj.get
-                                                                        ('from'))
-                        if hdr == 'from_name':
-                            terse_hdrs.append(from_name
-                                              or from_address or 'None')
-                        elif hdr == 'from_address':
-                            terse_hdrs.append(from_address or 'None')
-                    else:
-                        terse_hdrs.append(msgobj.get(hdr))
-                terse_hdrs.insert(0, msg)
-                print '\t'.join([Util.decode_header(hdr) for hdr in terse_hdrs])
-            if interactive:
-                try:
-		    message = '([p]ass / [s]how / [r]el / [d]el'
-                    if Defaults.PENDING_WHITELIST_APPEND:
-			message = message + ' / [w]hite'
-                    if Defaults.PENDING_BLACKLIST_APPEND:
-			message = message + ' / [b]lack'
-		    message = message + ' / [q]uit) [%s]: '
-                    inp = raw_input(message % dispose_def)
-                    ans = inp[0:1].lower()
-                    if ans == "":
-                        dispose = dispose_def
-                    elif ans == "p":
-                        dispose = 'pass'
-                    elif ans == "s":
-                        dispose = 'show'
-                    elif ans == "r":
-                        dispose = 'release'
-                    elif ans == 'd':
-                        dispose = 'delete'
-                    elif ans == 'w':
-                        dispose = 'whitelist'
-                    elif ans == 'b':
-                        dispose = 'blacklist'
-                    elif ans == "q":
-                        break
-                    else:
-                        print '\n', "I don't understand %s" % (`inp`)
-                        dispose = 'pass'
-                except KeyboardInterrupt:
-                    print
-                    break
-            # Optionally dispose of the message
-            message = '%s %s' % (dispose, msg)
-            if pretend:
-                message = message + ' (not)'
-            if dispose:
-                cprint(verbose, '\n', message)
-            if not pretend:
-                if dispose in ('release', 'delete', 'whitelist', 'blacklist'):
-                    return_path = email.Utils.parseaddr(msgobj.get('return-path'))[1]
-                if dispose == 'release':
-                    if Defaults.PENDING_RELEASE_APPEND:
-                        Util.append_to_file(return_path,
-                                            Defaults.PENDING_RELEASE_APPEND)
-                    release(msgobj, msg)
-                elif dispose == 'delete':
-                    if Defaults.PENDING_DELETE_APPEND:
-                        Util.append_to_file(return_path,
-                                            Defaults.PENDING_DELETE_APPEND)
-                    os.unlink(msg)
-		elif dispose == 'whitelist':
-                    if Defaults.PENDING_WHITELIST_APPEND:
-                        Util.append_to_file(return_path,
-                                            Defaults.PENDING_WHITELIST_APPEND)
-                    else:
-                        raise Errors.ConfigError, \
-                              'PENDING_WHITELIST_APPEND not defined!'
-		elif dispose == 'blacklist':
-                    if Defaults.PENDING_BLACKLIST_APPEND:
-                        Util.append_to_file(return_path,
-                                            Defaults.PENDING_BLACKLIST_APPEND)
-                    else:
-                        raise Errors.ConfigError, \
-                              'PENDING_BLACKLIST_APPEND not defined!'
-                elif dispose == 'pass':
-                    continue
-                elif dispose == 'show':
-                    Util.pager(msg)
-                if interactive and dispose in ('show', 'whitelist', 'blacklist'):
-                    count = count - 1
-                    msgs.insert(msgs.index(msg), msg)
-                    if cache:
-                        # remove message from cache, or else we
-                        # won't be prompted for it again
-                        msgcache.remove(msg)
-                        
-    if cache:
-        # Trim tail entries off if necessary, and then save the cache.
-        msgcache = msgcache[:Defaults.PENDING_CACHE_LEN]
-        Util.pickleit(msgcache, Defaults.PENDING_CACHE)
-
+        QueueObject = Pending.Queue
+    try:
+        q = QueueObject(
+            msgs = args,
+            cache = cache,
+            command_recipient = command_recipient,
+            descending = descending,
+            dispose = dispose,
+            older = older,
+            summary = summary,
+            terse = terse,
+            threshold = threshold,
+            verbose = verbose,
+            younger = younger,
+            pretend = pretend
+            ).initQueue()
+        q.mainLoop()
+    except Pending.QueueError, obj:
+        print obj
+        sys.exit(1)
 
 # This is the end my friend.
 if __name__ == '__main__':
