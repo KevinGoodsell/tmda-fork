@@ -1,3 +1,11 @@
+2003-12-10  Tim Legant  <tim@catseye.net>
+
+	* Pending.py (Message.show): Change implementation to catch
+	failure to Generate and re-parse the message using HeaderParser.
+
+	(Message.release): Call self.show() instead of Util.msg_as_string().
+	(Message.summary): Ditto.
+
 2003-12-09  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Pending.py (Message.initMessage): Remove unnecessary method, and
