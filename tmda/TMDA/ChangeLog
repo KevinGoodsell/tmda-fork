@@ -1,3 +1,9 @@
+2004-01-09  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Util.py (confirm_append_address): Return the envelope sender
+	address immediately if either the Return-Path address or
+	X-Primary-Address is not in user@hostname format.
+
 2003-12-10  Tim Legant  <tim@catseye.net>
 
 	* Pending.py (Message.show): Change implementation to catch

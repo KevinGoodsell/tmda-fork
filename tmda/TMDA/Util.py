@@ -461,9 +461,11 @@ def confirm_append_address(xp, rp):
     rp is the envelope sender address.
 
     Compare the two addresses, and return the address appropriate for
-    CONFIRM_APPEND use based on the PRIMARY_ADDRESS_MATCH setting.
+    CONFIRM_APPEND based on the PRIMARY_ADDRESS_MATCH setting.
     """
     if not xp:
+        return rp
+    if '@' not in rp or '@' not in xp:
         return rp
     import Defaults
     rpl = rp.lower()
