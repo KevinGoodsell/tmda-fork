@@ -276,6 +276,26 @@ add the following line to your .gnus file:<br>
 
 </pre></blockquote>
 
+<li>For <a href="http://www.mhost.com/nmh/" TARGET="Resource Window">nmh</a>,
+<ul>
+<li>Make sure nmh was compiled to use Sendmail as its delivery agent
+    (i.e, "--with-mts=sendmail")<br>
+
+<li>Add the following line to your ~/.mh_profile:<br>
+<blockquote>
+<pre>
+postproc: /path/to/nmh/lib/spost
+
+</pre></blockquote>
+
+<li>Add the following line to your /path/to/nmh/etc/mts.conf:<br>
+<blockquote>
+<pre>
+sendmail: /path/to/tmda/bin/tmda-sendmail
+
+</pre></blockquote>
+</ul>
+
 <li>For <a href="http://sylpheed.good-day.net/" TARGET="Resource Window">Sylpheed</a>,
  Configuration --> Common Preferences --> Send --> External Program<br>
 <ul>
