@@ -574,6 +574,22 @@ if not vars().has_key('PURGED_HEADERS'):
 if not vars().has_key('RECIPIENT_HEADER'):
     RECIPIENT_HEADER = None
 
+# TERSE_SUMMARY_HEADERS
+# A list containing one or more message headers that should be
+# displayed by tmda-pending's `--terse option'.  Listed headers are
+# case-insensitive.  'from_name' and 'from_address' can be used to
+# specify the Fullname and e-mail address from the message's "From:"
+# header.
+#
+# Examples:
+#
+# TERSE_SUMMARY_HEADERS = ["return-path"]
+# TERSE_SUMMARY_HEADERS = ["from_name", "from_address", "subject"]
+#
+# Default is the Fullname followed by Subject.
+if not vars().has_key('TERSE_SUMMARY_HEADERS'):
+    TERSE_SUMMARY_HEADERS = ['from_name', 'subject']
+
 # TIMEOUT
 # The timeout interval for 'dated' addresses.  The available units are
 # (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).

@@ -56,6 +56,12 @@ Where:
        Print a summary of pending messages along with a release address link.
        Implies --verbose.
 
+    -T
+    --terse
+       Print a terse (one-line per message) summary of pending messages.
+       Customize display with TERSE_SUMMARY_HEADERS in the tmdarc.
+       Implies --verbose.
+       
     -S
     --show
        Display the full contents of the given message with $PAGER (usually
@@ -161,6 +167,7 @@ interactive = 1
 older = None
 pretend = None
 summary = None
+terse = None
 threshold = None
 verbose = 1
 younger = None
@@ -174,24 +181,25 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:ipbrdsSCADR:Y:O:vqVh', ['config-file=',
-                                                          'interactive',
-                                                          'pretend',
-                                                          'batch',
-                                                          'release',
-                                                          'delete',
-                                                          'summary',
-                                                          'show',
-                                                          'cache',
-                                                          'ascending',
-                                                          'descending',
-                                                          'recipient=',
-                                                          'younger=',
-                                                          'older=',
-                                                          'verbose',
-                                                          'quiet',
-                                                          'version',
-                                                          'help'])
+                               'c:ipbrdsTSCADR:Y:O:vqVh', ['config-file=',
+                                                           'interactive',
+                                                           'pretend',
+                                                           'batch',
+                                                           'release',
+                                                           'delete',
+                                                           'summary',
+                                                           'terse',
+                                                           'show',
+                                                           'cache',
+                                                           'ascending',
+                                                           'descending',
+                                                           'recipient=',
+                                                           'younger=',
+                                                           'older=',
+                                                           'verbose',
+                                                           'quiet',
+                                                           'version',
+                                                           'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -218,6 +226,8 @@ for opt, arg in opts:
         dispose = 'delete'
     elif opt in ('-s', '--summary'):
         summary = 1
+    elif opt in ('-T', '--terse'):
+        terse = 1
     elif opt in ('-S', '--show'):
         dispose = 'show'
     elif opt in ('-C', '--cache'):
@@ -284,6 +294,7 @@ def main():
     global interactive
     global older
     global summary
+    global terse
     global threshold
     global verbose
     global younger
@@ -366,13 +377,12 @@ def main():
                 cprint(verbose,
                        "can't determine recipient address, skipping", msg)
                 continue
-            if summary or interactive:
+            if summary or interactive and not terse:
                 print
                 print msg, "(%s of %s / %s %s)" % (count,
                                                    total,
                                                    msg_size,
                                                    bytes)
-                #print '  >> Sent:', Util.unixdate(int(msg.split('.')[0]))
                 for hdr in ('date', 'from', 'to', 'subject'):
                     print "%s %s: %s" % ('  >>',
                                          hdr.capitalize()[:4].rjust(4),
@@ -380,6 +390,19 @@ def main():
                 if summary:
                     print '<mailto:%s>' % (confirm_accept_address
                                            (recipient_address, msg))
+            if terse:
+                if interactive:
+                    print
+                terse_hdrs = []
+                for hdr in Defaults.TERSE_SUMMARY_HEADERS:
+                    if hdr == 'from_name':
+                        terse_hdrs.append(headers.getaddr('from')[0])
+                    elif hdr == 'from_address':
+                        terse_hdrs.append(headers.getaddr('from')[1])
+                    else:
+                        terse_hdrs.append(headers.getheader(hdr, 'None'))
+                terse_hdrs.insert(0, msg)
+                print '\t'.join(terse_hdrs)
             if interactive:
                 try:
                     inp = raw_input(

@@ -1,5 +1,7 @@
 2002-04-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (TERSE_SUMMARY_HEADERS): New variable.
+
 	* Util.py (make_date): Support LOCALDATE.
 
 	* Defaults.py (LOCALDATE): New variable.
