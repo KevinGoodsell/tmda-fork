@@ -171,6 +171,7 @@ if not vars().has_key('RECIPIENT_DELIMITER'):
 
 # ALLOW_MODE_640
 # Set this variable to 1 if you want to allow a mode 640 CRYPT_KEY_FILE.
+#
 # Default is 0 (turned off)
 if not vars().has_key('ALLOW_MODE_640'):
     ALLOW_MODE_640 = 0
@@ -414,6 +415,8 @@ if not vars().has_key('BARE_APPEND'):
 # configuration of TMDA accounts.  To use tmda-cgi, you must define
 # CGI_ACTIVE to enable default values for the CGI_* variables.
 #
+# Set this in /etc/tmdarc if you set up tmda-cgi in system-wide mode.
+#
 # Example:
 # CGI_ACTIVE = 1
 #
@@ -426,6 +429,8 @@ if not vars().has_key('CGI_ACTIVE'):
 # instantiated.  Keeping this value small will minimize overhead on
 # each page fetch.  Larger values will tidy up the temporary files
 # more often.
+#
+# You probably won't need to adjust this parameter.
 #
 # Example:
 # CGI_CLEANUP_ODDS = 0.1
@@ -484,7 +489,7 @@ if CGI_ACTIVE and not vars().has_key('CGI_USE_JS_CONFIRM'):
 # CGI_USER
 # Defines the user name to use at non-critical times (such as reading
 # and writing session files.  CGI_USER is only signifigant when running
-# in system-wide mode.  See contrib/cgi/INSTALL for more about modes.
+# in system-wide mode.  See tmda-cgi.html for more about modes.
 #
 # Example:
 # CGI_USER = "apache"
@@ -1372,11 +1377,12 @@ if os.path.exists(CRYPT_KEY_FILE):
         if ALLOW_MODE_640 and crypt_key_filemode == 640:
             pass
         else:
-            if not CGI_ACTIVE:
-                raise Errors.ConfigError, \
-                      CRYPT_KEY_FILE + " must be chmod 400 or 600!"
+            raise Errors.ConfigError, \
+                  CRYPT_KEY_FILE + " must be chmod 400 or 600!"
 else:
-    if not CGI_ACTIVE:
+    if not os.environ.has_key("TMDA_CGI_MODE"):
+        raise Errors.ConfigError, "Can't find key file: " + CRYPT_KEY_FILE
+    if os.environ["TMDA_CGI_MODE"] != "no-su":
         raise Errors.ConfigError, "Can't find key file: " + CRYPT_KEY_FILE
 
 # Read key from CRYPT_KEY_FILE, and then convert it from hex back into
@@ -1384,7 +1390,8 @@ else:
 try:
     CRYPT_KEY = binascii.unhexlify(open(CRYPT_KEY_FILE).read().strip())
 except IOError:
-    if not CGI_ACTIVE: raise
+    if not os.environ.has_key("TMDA_CGI_MODE"): raise
+    if os.environ["TMDA_CGI_MODE"] != "no-su": raise
 
 ###################################
 # END of user configurable settings
