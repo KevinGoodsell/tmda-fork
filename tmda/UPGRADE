@@ -1,5 +1,12 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.69:
+
+* tmda-ofmipd now disables CRAM-MD5 negotiation when the -R or -A
+  options are specified. See TMDA FAQ 5.8 for why.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.68:
 
 * tmda-ofmipd now forks into the background by default. Use the
