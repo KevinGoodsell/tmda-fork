@@ -15,7 +15,11 @@ If you are upgrading from a release of TMDA < 0.55:
 
   However, you should also read about DELIVERY in Defaults.py, as it
   contains some significant enhancements that may simplify your
-  overall configuration.
+  overall configuration.  e.g, if the only purpose of the above
+  ~/.procmailrc-tmda is to deliver to your mailbox, you can use the
+  following instead for example:
+
+  DELIVERY = "/var/mail/jasonrm"
 
 ======================================================================
 
