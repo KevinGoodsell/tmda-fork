@@ -3,6 +3,8 @@
 	* Defaults.py (GLOBAL_TMDARC): Add a global configuration file
 	(/etc/tmdarc) that is read first before ~/.tmdarc.  
 
+	(TMDA_VERSION): Begin 0.38 development.
+
 2001-09-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Cookie.py (make_sender_cookie): Support variable length HMACs
