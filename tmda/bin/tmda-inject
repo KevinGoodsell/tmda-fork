@@ -154,6 +154,9 @@ def make_field(cookie_type, cookie_option, from_address, to_address):
     elif cookie_type in ('kw','keyword') and cookie_option:
 	# Send a message with a tagged (keyword) address.
 	field = Cookie.make_keyword_address(from_address, cookie_option)
+    elif not cookie_type:
+        # cookie_type == None means field is a text string
+        field = cookie_option
     else:
 	# If cookie_type is invalid, punt and use an untagged address.
 	field = from_address
@@ -198,8 +201,11 @@ def inject_message(resending,
 	field = make_field(cookie_type, cookie_option, from_address, to_address)
 	nice_header = string.replace(string.capwords(
             string.replace(header, '-', ' ')), ' ', '-')
-        message_headers[nice_header] = message_format(field, full_name,
-                                                      Defaults.MESSAGE_FROM_STYLE)
+        if cookie_type:
+            message_headers[nice_header] = message_format(field, full_name,
+                                               Defaults.MESSAGE_FROM_STYLE)
+        else:
+            message_headers[nice_header] = field
     # If the MUA has added a `Mail-Followup-To' header that contains
     # the untagged address, we need to tag that as well.
     if message_headers.has_key('mail-followup-to'):

@@ -1,3 +1,13 @@
+2002-02-01  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py: Modified 'tag_action' regular expression to
+	allow arbitrary quoted strings.
+	
+	(FilterParser.__buildactions): Allow arbitrary headers with quoted
+	string values.
+
+	(_actionstr): Handle arbitrary headers/values appropriately.
+
 2002-01-31  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* FilterParser.py (FilterParser.__buildactions): Lowercase the

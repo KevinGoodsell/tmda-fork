@@ -1,3 +1,12 @@
+2002-02-01  Tim Legant  <tim@catseye.net>
+
+	* tmda-inject (make_field): Add special case for cookie_type of
+	None.  This means cookie_value is a text string to be inserted as
+	the value of the associated header.
+
+	(inject_message): Add arbitrary headers/values in custom header
+	loop.
+
 2002-01-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-keygen (keygen): Use binascii.hexlify instead of

@@ -55,7 +55,12 @@ class FilterParser:
     | ( \S+ ) )
     """, re.VERBOSE)
         
-    tag_action = re.compile(r'([A-Za-z][-\w]+)\s+(\S+)')
+    tag_action = re.compile(r"""
+    ( [A-Za-z][-\w]+ )
+    \s+
+    (?: ([\'\"]) ( (?: \\\2 | [^\2] )+ ) \2
+    | ( \S+ ) )
+    """, re.VERBOSE)
 
     in_action = re.compile(r'(bounce|reject|drop|exit|stop|ok|accept|deliver|confirm)',
                            re.IGNORECASE)
@@ -239,11 +244,14 @@ class FilterParser:
                     self.__adderror(self.__rule_lineno, rule_line)
 		    break
 		header = string.lower(mo.group(1))
-		action = mo.group(2)
-		if self.out_action.match(action):
+		action = mo.group(3) or mo.group(4)
+                if action:
                     if not actions:
                         actions = {}
-		    actions[header] = splitaction(action)
+                    if self.out_action.match(action):
+                        actions[header] = splitaction(action)
+                    else:
+                        actions[header] = (None, action)
 		else:
 		    # malformed action
 		    self.__adderror(self.__rule_lineno, action)
@@ -513,12 +521,13 @@ def _actionstr(actions):
 	    if mo:
 		line = line + header
 	    else:
-		action_line = _cookiestr(action)
-		mo = FilterParser.out_action.match(action_line)
-		if mo:
-		    if len(line) == 0:
-			line = line + 'tag'
-		    line = line + ' ' + header + ' ' + action_line
+                if len(line) == 0:
+                    line = line + 'tag'
+		line = line + ' '+ header
+                if action[0]:
+                    line = line + ' ' + _cookiestr(action)
+		else:
+		    line = line + ' "' + str(action[1]) + '"'
     return line
 
 
