@@ -7,6 +7,9 @@ bouncing the message, it will be stored in a pending-queue until the
 sender responds to a confirmation request.  This replaces the old
 behavior.  Some configuration changes are necessary:
 
+* If you don't have a catch-all `.qmail-default', you will need to
+  make a link from `.qmail-confirm-default' to `.qmail'.
+
 * confirm_request.txt is the template used when generating
   confirmation requests.  This obsoletes bounce_dated.txt and
   bounce_sender.txt.  confirm_accept.txt is the template used to
