@@ -178,7 +178,8 @@ def logit(action_msg,date):
             wsbuf = 78 - len(actionstr) - len(sizestr)
             # Write the log entry and then close the log.
             logfile.write('Date: ' + Date + '\n')
-            if message_headers.getaddr('from')[1] != EnvelopeSender:
+            if (EnvelopeSender
+                and message_headers.getaddr('from')[1] != EnvelopeSender):
                 logfile.write('Sndr: ' + EnvelopeSender + '\n')
             if From:
                 logfile.write('From: ' + From + '\n')

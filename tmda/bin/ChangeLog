@@ -11,6 +11,9 @@
 	(logit): Only write a `From' line to the logfile if such a header
 	exists.
 
+	(logit): Only write a `Sndr' line to the logfile if such a header
+	exists.
+
 	(locate_pending): Add a LOGFILE entry before bounce.
 
 	(verify_confirm_cookie): Clarify the LOGFILE entries before
