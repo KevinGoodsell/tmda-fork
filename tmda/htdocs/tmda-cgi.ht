@@ -93,11 +93,11 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   </li>
   <li>no-su mode, which is in testing, runs the program with no special privileges 
     of any sort. The downside of such an installation is that to allow the program 
-    access to your personal files (pending e-mails) you will have to make them 
-    group or world readable and writable. no-su mode is a good solution for an 
-    odd breed of user: someone who doesn't trust software, but trusts the other 
-    users on the server (since they could get read/write access to his/er pending 
-    e-mail)</li>
+    access to your personal files (such as pending e-mails) you will have to make 
+    some of your files and directories group or world readable and writable. no-su 
+    mode is a good solution for an unusual breed of user: someone who doesn't 
+    trust the software, but trusts the other users on the server (since they could 
+    get read/write access to his/er pending e-mail)</li>
 </ul>
 <p><b><i>Note:</i></b> tmda-cgi assumes it will run from within the source tree. 
   No testing has been done to date to see if it will work in other locations.</p>
@@ -106,22 +106,15 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 <blockquote> 
   <pre># cd contrib/cgi</pre>
 </blockquote>
-<p>Compile tmda-cgi</p>
+<p>Compile tmda-cgi to a web directory that is configured to execute CGI. The 
+  filename you use is completely up to you. For example:</p>
 <blockquote> 
-  <pre># ./compile</pre>
-</blockquote>
-<p>Move the binary file to a web directory that is configured to execute CGI. 
-  The filename you use is completely up to you. For example:</p>
-<blockquote> 
-  <pre># mv tmda-cgi /path/to/cgi-bin/directory</pre>
+  <pre># ./compile -t /path/to/cgi-bin/directory</pre>
 </blockquote>
 <p> or</p>
 <blockquote> 
-  <pre># mv tmda-cgi /path/to/webpage/directory/index.cgi</pre>
+  <pre># ./compile -t /path/to/webpage/directory/index.cgi</pre>
 </blockquote>
-<p>I recommend you use <tt>mv</tt> instead of <tt>cp</tt>. If you prefer to copy 
-  the file instead of moving it, be sure you use the <tt>-p</tt> option to copy 
-  the permissions as well.</p>
 <p>Finally, tmda-cgi expects to find a variety of visual elements in a subdirectory 
   called &quot;display&quot;. This directory should be located directly below 
   the CGI itself. Sample files are provided in <tt>contrib/cgi/display</tt>. Feel 
@@ -136,22 +129,15 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 <blockquote> 
   <pre>$ cd contrib/cgi</pre>
 </blockquote>
-<p>Compile tmda-cgi</p>
+<p>Compile tmda-cgi to a web directory that is configured to execute CGI. The 
+  filename you use is completely up to you. For example:</p>
 <blockquote> 
-  <pre>$ ./compile</pre>
+  <pre>$ ./compile -t /path/to/cgi-bin/directory</pre>
 </blockquote>
-<p>Move the binary file to a web directory that is configured to execute CGI. 
-  The filename you use is completely up to you. For example:</p>
+<p>or</p>
 <blockquote> 
-  <pre>$ mv tmda-cgi /path/to/cgi-bin/directory</pre>
+  <pre>$ ./compile -t /path/to/webpage/directory/index.cgi</pre>
 </blockquote>
-<p> or</p>
-<blockquote> 
-  <pre>$ mv tmda-cgi /path/to/webpage/directory/index.cgi</pre>
-</blockquote>
-<p>I recommend you use <tt>mv</tt> instead of <tt>cp</tt>. If you prefer to copy 
-  the file instead of moving it, be sure you use the <tt>-p</tt> option to copy 
-  the permissions as well.</p>
 <p>Finally, tmda-cgi expects to find a variety of visual elements in a subdirectory 
   called &quot;display&quot;. This directory should be located directly below 
   the CGI itself. Sample files are provided in <tt>contrib/cgi/display</tt>. Feel 
@@ -166,18 +152,14 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 <blockquote> 
   <pre>$ cd contrib/cgi</pre>
 </blockquote>
-<p>Compile tmda-cgi</p>
+<p>Compile tmda-cgi to a web directory that is configured to execute CGI. The 
+  filename you use is completely up to you. For example:</p>
 <blockquote> 
-  <pre>$ ./compile no-su</pre>
-</blockquote>
-<p>Copy or move the binary file to a web directory that is configured to execute 
-  CGI. The filename you use is completely up to you. For example:</p>
-<blockquote> 
-  <pre>$ cp tmda-cgi /path/to/cgi-bin/directory</pre>
+  <pre>$ ./compile -nt /path/to/cgi-bin/directory</pre>
 </blockquote>
 <p> or</p>
 <blockquote> 
-  <pre>$ cp tmda-cgi /path/to/webpage/directory/index.cgi</pre>
+  <pre>$ ./compile -nt /path/to/webpage/directory/index.cgi</pre>
 </blockquote>
 <p>tmda-cgi expects to find a variety of visual elements in a subdirectory called 
   &quot;display&quot;. This directory should be located directly below the CGI 
@@ -205,15 +187,16 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 drwxr-s--x    3 root     nobody         72 Nov 27 11:24 tmda
 
 /var/tmda:
-drwxr-s---    6 cgitest  nobody        200 Nov 27 11:39 cgitest
+drwx--s---    6 cgitest  nobody        200 Nov 27 11:39 cgitest
 
 /var/tmda/cgitest:
 -rw-r-----    1 cgitest  nobody          0 Nov 27 11:39 config
 -rw-r-----    1 cgitest  nobody         41 Nov 27 11:39 crypt_key
-drwxr-s---    2 cgitest  nobody         96 Nov 27 12:55 filters
-drwxr-s---    2 cgitest  nobody        144 Nov 27 12:59 lists
-drwxr-s---    2 cgitest  nobody        120 Nov 27 12:57 logs
-drwxr-s---    2 cgitest  nobody         48 Nov 27 11:37 pending
+drwx--s---    2 cgitest  nobody         96 Nov 27 12:55 filters
+drwx--s---    2 cgitest  nobody        144 Nov 27 12:59 lists
+drwx--s---    2 cgitest  nobody        120 Nov 27 12:57 logs
+drwxrws---    2 cgitest  nobody         48 Nov 27 11:37 pending
+drwx--s---    2 cgitest  nobody        768 Nov 29 09:54 responses
 
 /var/tmda/cgitest/filters:
 -rw-rw----    1 cgitest  nobody        153 Nov 27 12:54 incoming
@@ -255,7 +238,15 @@ PENDING_BLACKLIST_APPEND = DATADIR + &quot;lists/blacklist&quot;
 PENDING_WHITELIST_APPEND = DATADIR + &quot;lists/whitelist&quot;
 PENDING_FILE_PERM = 0660
 ADDED_HEADERS_CLIENT = { &quot;X-Primary-Address&quot;: &quot;%s@%s&quot; % \
-  (Util.getusername(), Util.gethostname()) }</pre>
+  (Util.getusername(), Util.gethostname()) }
+
+~cgitest/.qmail:
+|preline /usr/src/tmda/bin/tmda-filter -c /var/tmda/cgitest/config
+./Maildir/</pre>
+</blockquote>
+<p>tmda-cgi was compiled with the following:</p>
+<blockquote>
+  <pre>./compile -nc /var/tmda/~/config -t /www/tmda.cgi</pre>
 </blockquote>
 <h3>Moving your configuration files</h3>
 <p>Compiling tmda-cgi tests to see if you have relocated your configuration file 
