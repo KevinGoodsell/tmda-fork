@@ -1,3 +1,10 @@
+2001-11-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py (FilterParser.firstmatch): Bugfix.  The DBM
+	support was broken for DBM backends that store information in
+	multiple external files instead of just one.  The
+	os.path.exists(match) check was removed to fix this.
+
 2001-11-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (TMDA_VERSION): Begin 0.42 development.

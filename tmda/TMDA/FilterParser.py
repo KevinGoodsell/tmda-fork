@@ -137,28 +137,27 @@ class FilterParser:
                         break
             if source in ('from-dbm', 'to-dbm'):
                 match = os.path.expanduser(match)
-                if os.path.exists(match):
-                    if source == 'from-dbm':
-                        keys = senders
-                    elif source == 'to-dbm':
-                        keys = [recipient]
-                    try:
-                        dbm = anydbm.open(match,'c')
-                        for key in keys:
-                            if key and dbm.has_key(string.lower(key)):
-                                dbm_value = dbm[string.lower(key)]
-                                # If there is an entry for this key,
-                                # we consider it an overriding action
-                                # specification.
-                                if dbm_value:
-                                    self.action = dbm_value
-                                else:
-                                    self.action = action
-                                dbm.close()
-                                break
-                        if self.action: break
-                    except anydbm.error:
-                        pass
+                if source == 'from-dbm':
+                    keys = senders
+                elif source == 'to-dbm':
+                    keys = [recipient]
+                try:
+                    dbm = anydbm.open(match,'r')
+                    for key in keys:
+                        if key and dbm.has_key(string.lower(key)):
+                            dbm_value = dbm[string.lower(key)]
+                            # If there is an entry for this key,
+                            # we consider it an overriding action
+                            # specification.
+                            if dbm_value:
+                                self.action = dbm_value
+                            else:
+                                self.action = action
+                            dbm.close()
+                            break
+                    if self.action: break
+                except anydbm.error:
+                    pass
             if source in ('body', 'headers'):
                 if source == 'body' and msg_body:
                     content = msg_body
