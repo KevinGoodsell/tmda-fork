@@ -370,12 +370,11 @@ def main():
         else:
             (actions, matching_line) = outfilter.firstmatch(address,
                                                             [from_address])
+            log_msg = matching_line
         if not actions:
 	    actions = {
                 'from' : FilterParser.splitaction(Defaults.ACTION_OUTGOING) }
             log_msg = '%s (%s)' % ('action_outgoing', Defaults.ACTION_OUTGOING)
-        elif log_msg is None:
-            log_msg = matching_line
         # The message is sent to each recipient separately so that
         # everyone gets the correct tag.  Make sure your MUA
         # generates its own Message-ID: and Date: headers so they
