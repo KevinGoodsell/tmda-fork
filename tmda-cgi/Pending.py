@@ -70,7 +70,7 @@ def Show():
           except IOError: pass
 
   # Locate messages in pending dir
-  Queue = Pending.Queue(cache = 1)
+  Queue = Pending.Queue(descending = 1, cache = 1)
   Queue.initQueue()
   Queue._loadCache()
   Msgs = Queue.listPendingIds()
@@ -99,6 +99,36 @@ def Show():
   if LastMsg > len(Msgs): LastMsg = len(Msgs)
   if len(Msgs):
     T["DispRange"] = "%d-%d of %d" % (FirstMsg + 1, LastMsg, len(Msgs))
+
+    # Grey out the first & prev buttons?
+    if FirstMsg == 0:
+      T["FirstButt1"]
+      T["FirstButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c10.gif"
+width="18" height="18" alt="First">"""
+      T["PrevButt1"]
+      T["PrevButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c11.gif"
+width="11" height="18" alt="Prev">"""
+      T["FirstButt2"]
+      T["FirstButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c10.gif"
+width="18" height="18" alt="First">"""
+      T["PrevButt2"]
+      T["PrevButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c11.gif"
+width="11" height="18" alt="Prev">"""
+
+    # Grey out the next & last buttons?
+    if LastMsg == len(Msgs):
+      T["NextButt1"]
+      T["NextButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c12.gif"
+width="11" height="18" alt="Next">"""
+      T["LastButt1"]
+      T["LastButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c13.gif"
+width="18" height="18" alt="Last">"""
+      T["NextButt2"]
+      T["NextButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c12.gif"
+width="11" height="18" alt="Next">"""
+      T["LastButt2"]
+      T["LastButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c13.gif"
+width="18" height="18" alt="Last">"""
   else:
     T["DispRange"] = ""
   
