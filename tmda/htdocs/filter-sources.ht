@@ -145,6 +145,159 @@ TARGET="Resource Window">MYSQL_*</a> variable. The MySQL table format and expect
     (i.e. <code>.+@my\.host\.name</code> would match all users in the <code>my.host.name</code> 
     domain).<br>
     <br>
+  <dt> <code> from-sql [ <a href="#domains">-domains</a> ] -wildcards | &lt;-addr_column=&lt;column_name&gt; [ -action_column=&lt;column_name&gt;]&gt; &lt;SQL_query&gt;<br>
+  to-sql [ <a href="#domains">-domains</a> ] -wildcards | &lt;-addr_column=&lt;column_name&gt; [ -action_column=&lt;column_name&gt; ]&gt; &lt;SQL_query&gt; </code>
+  <dd> The <code>from-sql</code> and <code>to-sql</code> sources match
+    against addresses stored in a SQL database. The &lt;SQL_query&gt;
+    is a SQL SELECT statement that should retrieve the appropriate
+    data. Just what that data needs to be will vary, depending on how
+    you choose to use the <code>from-sql</code> and
+    <code>to-sql</code> rules. Remember to enclose the
+    &lt;SQL_query&gt; in quotes, since it will contain spaces. Double
+    quotes are recommended, to avoid clashing with the single quotes
+    used by SQL. <br>
+    <br>
+    For a simple SELECT statement, you can put it directly in your
+    <code>from-sql</code> or <code>to-sql</code> rule. For more
+    complex statements, you can define a macro in the filter
+    file or you can define a variable in either /etc/tmdarc or
+    ~/.tmda/config and use the macro or variable name in the filter
+    rule. Defining a variable can be more flexible, especially for
+    multiple users at a single site who need the same SELECT statement
+    with minor modifications. For example, you could define this
+    SELECT statement in your /etc/tmdarc: <br>
+    <pre>
+    <code>SQL_WHITELIST = """
+      SELECT wl.address
+        FROM whitelist AS wl, users AS u
+       WHERE u.uid = wl.uid
+         AND u.address = %(recipient)s
+         AND %(criteria)s
+       LIMIT 1"""</code></pre>
+    This assumes a 'users' table with a unique ID (<code>uid</code>)
+    and the user's email address (<code>address</code>). It joins the
+    'users' and 'whitelist' tables based on the
+    <code>uid</code>. Details on '%(recipient)s' and '%(criteria)s'
+    can be found below. <br>
+    <br>
+    A rule in your incoming filter using this variable would look like
+    this: <br>
+    <pre>
+    <code>from-sql -addr_column=wl.address "${SQL_WHITELIST}" accept</code></pre>
+    Note that the variable is quoted because it is a string that
+    contains spaces. <br>
+    <br>
+    <i>Pre-requisite</i>: In either /etc/tmdarc or ~/.tmda/config you
+    must set the <a
+    href="config-vars.html#DB_CONNECTION">DB_CONNECTION</a> variable
+    so that TMDA can talk to the database. How this is done depends on
+    the database module used. Examples: <br>
+    <br>
+    <dl>
+      <dt>MySQLdb</dt>
+      <dd><pre><code>DB_CONNECTION = MySQLdb.connect(db='&lt;dbname&gt;',
+                                host='&lt;dbhost&gt;',
+                                user='&lt;username&gt;',
+                                passwd='&lt;password&gt;')</code></pre></dd>
+      <dt>PyGreSQL</dt>
+      <dd><pre><code>DB_CONNECTION = pgdb.connect('&lt;dbhost&gt;:&lt;dbname&gt;:&lt;username&gt;:&lt;password&gt;')</code></pre>
+      </dd>
+    </dl>
+    <h4>Wildcard Searches</h4>
+    The <code>*-sql</code> rules can be used in two scenarios. If the
+    <code>-wildcards</code> argument is given, the &lt;SQL_query&gt;
+    is run and the resulting data set is read, in its entirety, from
+    the database. The first column should be the addresses to match
+    against. The second column is optional, but if it is present, it
+    should be the overriding action or NULL. The returned data is
+    searched in exactly the same way as text files containing
+    wildcards. See <a href="#email_address">Email Addresses</a>
+    below. <br>
+    <br>
+    Any columns beyond the second will be ignored. This can come in
+    handy if you need a column in the SELECT list for an ORDER BY
+    clause. Because the search code stops at the first match, unsorted
+    data could cause an incorrect match and the overriding action
+    might not be what you want. If you use wildcards in the address
+    column and you allow an overriding action, you should sort the
+    returned values using an ORDER BY clause.
+    <h4>Exact Match Searches</h4>
+    If an exact match of the sender or recipient is all you need,
+    e.g. you don't need wildcards, then you can use the *-sql rules to
+    have the database perform the search for you, returning only the
+    rows that exactly matched. You should specify the
+    <code>-addr_column</code> argument and provide the name of the
+    column that contains the addresses to search. You do <b>not</b>
+    need to include this column in the SELECT list. <br>
+    <br>
+    If you have an overriding action column, you should give its name
+    using the <code>-action_column</code> argument. If you use the
+    <code>-action_column</code> argument, you <b>must</b> include that
+    column in the SELECT list. <br>
+    <br>
+    <i>Caveat</i>: When the exact-match form of the
+    <code>from-sql</code> rule is used, TMDA can search for more than
+    one sender at once.  If the SELECT statement returns more than one
+    row, TMDA will use the overriding action from the first row, since
+    it has no way of knowing which sender (the From:, the Reply-To: or
+    the envelope sender address) you care most about.  Instead of
+    using overriding actions, consider using separate blacklists and
+    whitelists. <br>
+    <br>
+    Your SELECT statement can be as complex as you care to make it,
+    including joins, an ORDER BY clause, a LIMIT clause, etc. TMDA
+    must know where to place the search conditions ("&lt;sender1&gt; =
+    &lt;addr_column&gt; OR &lt;sender2&gt; = &lt;addr_column&gt;",
+    etc.). You should include the string "%(criteria)s" in your SELECT
+    statement at the appropriate location. TMDA will build the list of
+    conditions based on the addresses to be matched and will replace
+    "%(criteria)s" with that list. Here's an example to make this
+    clearer. <br>
+    <br>
+    Assume you have the following rule in your incoming filter.<br>
+    <pre>
+    <code>from-sql -addr_column=address &lt;SQL_query&gt; ok</code></pre>
+    An email arrives with a From: header of "friend@example.com" and
+    a Reply-To: header of "friend@another.com". TMDA will generate the
+    following criteria string: <br>
+    <pre>
+    <code>(address = 'friend@example.com' OR address = 'friend@another.com')</code></pre>
+    Your SELECT statement (&lt;SQL_query&gt;) might look something like this:<br>
+    <pre>
+    <code>SELECT address FROM addr_list WHERE %(criteria)s</code></pre>
+    The SQL code that TMDA actually sends to the database will look
+    like this (reformatted for easier readability):<br>
+    <pre>
+    <code>SELECT address
+      FROM addr_list
+     WHERE (address = 'friend@example.com' OR
+            address = 'friend@another.com')</code></pre>
+    If you store all of your users' whitelists in a single table (a
+    good schema design), you will need some way to restrict your
+    search to a single user's list; the user whose copy of TMDA is
+    querying the database. In order to facilitate that, the
+    <code>from-sql</code> and <code>to-sql</code> rules provide three
+    strings that can be used anywhere in your SELECT statement.<br>
+    <br>
+    <ul>
+    <li>username -- the value of the USERNAME variable from ~/.tmda/config
+    <li>hostname -- the value of the HOSTNAME variable from ~/.tmda/config
+    <li>recipient -- username@hostname
+    </ul>
+    <br>
+    You can place these in your SELECT statement by using
+    "%(username)s", "(%hostname)s" and/or "%(recipient)s", as needed.
+    TMDA will substitute the appropriate values into the SELECT at the
+    time of the search. Do not put quotes around the above
+    variables. The Python DB API takes care of that for you in a
+    manner appropriate for the database you are using. <br>
+    <br>
+    <code>-domains</code> tells the parser that the database column
+    containing addresses to match might also contain <a
+    href="#domains">domains</a>. This is the <code>-addr_column</code>
+    in the case of exact matches or the first column (the name is
+    irrelevant) in the case of <code>-wildcards</code>. <br>
+    <br>
 </dl>
 The following group of sources may be used only in incoming filter files. <br>
 <br>

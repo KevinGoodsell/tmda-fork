@@ -1,3 +1,8 @@
+2003-07-09  Tim Legant  <tim@catseye.net>
+
+	* filter-sources.ht: Added section on new sources 'from-sql' and
+	'to-sql'.
+
 2003-07-04  Tim Legant  <tim@catseye.net>
 
 	* tmda-vdomains.ht (Title): Added information on tmda-filter's
