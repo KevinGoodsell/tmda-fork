@@ -1,14 +1,8 @@
 ======================================================================
 
-If you are upgrading from a release of tmda-cgi < 0.01:
+If you are upgrading from a release of tmda-cgi < 0.02:
 
-* tmda-cgi has been split off from TMDA.  compile now runs in a handy
-  interactive mode if you supply no options.  You will need to re-
-  compile and specify the path to your TMDA install.
-
-* CGI_USER has been abandoned.  This is now compiled in.
-
-* New authentication mechanisms (some of which may work).  To
+* New authentication mechanisms (which appear to work).  To
   facilitate this there are new parameters in the ./compile script.
   These are:
     -f <authfile>
@@ -53,5 +47,18 @@ If you are upgrading from a release of tmda-cgi < 0.01:
   
 * Please remember to delete ./compile.ini if it exists before you
   recompile
+
+* Added virtual user support.  If you have virtual users on your system,
+  you will want to configure -l and -v options when you compile.
+
+======================================================================
+
+If you are upgrading from a release of tmda-cgi < 0.01:
+
+* tmda-cgi has been split off from TMDA.  compile now runs in a handy
+  interactive mode if you supply no options.  You will need to re-
+  compile and specify the path to your TMDA install.
+
+* CGI_USER has been abandoned.  This is now compiled in.
 
 ======================================================================

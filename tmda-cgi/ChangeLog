@@ -1,3 +1,10 @@
+2003-04-09  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added support for virtual users.
+
+	* Jim Ramsay changed the authentication so it would use almost any
+	  kind of authentication one could want.
+
 2003-03-28  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* tmda-cgi 0.01 is released.
