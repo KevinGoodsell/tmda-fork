@@ -193,13 +193,14 @@ def send_bounce(bounce_message, **vars):
         # Add some headers.
         if not vars.has_key('already_confirmed'):
             message_headers['Reply-To'] = vars['confirm_accept_address']
-        message_headers['Return-Path'] = '<' + Defaults.BOUNCE_ENV_SENDER + '>'
         message_headers['To'] = envelope_sender
         message_headers['Precedence'] = 'bulk'
         message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
         message_body = bounce_message.read()
         inject = []
-        inject.append(Defaults.INJECT)
+        inject.append(Defaults.SENDMAIL)
+        inject.append('-f')
+        inject.append(Defaults.BOUNCE_ENV_SENDER)
         inject.append(envelope_sender)
         pipeline = popen2.popen2(inject)[1]
         pipeline.write(str(message_headers))
@@ -210,11 +211,13 @@ def send_bounce(bounce_message, **vars):
 
 def bounce_cc(address):
     """Send a 'carbon copy' of the bounced message to address."""
-    inject = Defaults.INJECT + ' ' + address # "qmail-inject recipient"
-    pipeline = os.popen(inject, 'w')
+    inject = []
+    inject.append(Defaults.SENDMAIL)
+    inject.append(address)
+    pipeline = popen2.popen2(inject)[1]
     pipeline.write(message)
     pipeline.close()
-    logit(inject,time.time())
+    logit(string.join(inject),time.time())
 
 
 def inject_pending(pathname,timestamp,pid):
@@ -236,8 +239,12 @@ def inject_pending(pathname,timestamp,pid):
         # Add the date when confirmed in a header.
         message_headers['X-TMDA-Confirmed'] = (
             time.asctime(time.gmtime(time.time())) + ' UTC')
+        # Collect the envelope sender to pass to sendmail.
+        return_path = message_headers.getaddr('return-path')[1]
         inject = []
-        inject.append(Defaults.INJECT)
+        inject.append(Defaults.SENDMAIL)
+        inject.append('-f')
+        inject.append(return_path)
         inject.append(confirm_done_address)
         pipeline = popen2.popen2(inject)[1]
         pipeline.write(str(message_headers))

@@ -1,3 +1,17 @@
+2001-10-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (bounce_cc): Use popen2 for uniformity.
+
+	(send_bounce): Use the more general SENDMAIL interface to send
+	confirmation messages rather than INJECT.  We pass
+	BOUNCE_ENV_SENDER as the argument to `sendmail -f' to set the
+	envelope sender.
+
+	(inject_pending): Use the more general SENDMAIL interface to send
+	confirmation messages rather than INJECT.  We parse the
+	Return-Path header from the message and pass that as the argument
+	to `sendmail -f' to set the envelope sender.
+	
 2001-09-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (inject_pending): Change `X-Confirmed' header to

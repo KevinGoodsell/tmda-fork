@@ -86,6 +86,23 @@ else:
 if not vars().has_key('DATADIR'):
     DATADIR = os.path.expanduser("~/.tmda/")
 
+# SENDMAIL
+# The path to the sendmail program, or sendmail compatibility
+# interface.  Defaults to one of the two standard locations, but you
+# can override it in case it is installed elsewhere.
+if not vars().has_key('SENDMAIL'):
+    if os.path.exists("/usr/sbin/sendmail"):
+        SENDMAIL = "/usr/sbin/sendmail"
+    elif os.path.exists("/usr/lib/sendmail"):
+        SENDMAIL = "/usr/lib/sendmail"
+    else:
+        print "Can't find your sendmail program!"
+        sys.exit(ERR_CONFIG)
+else:
+    if not os.path.exists(SENDMAIL):
+        print "invalid sendmail program path:",SENDMAIL
+        sys.exit(ERR_CONFIG)
+
 # USEVIRTUALDOMAINS
 # Set this variable to 0 if want to turn off TMDA's virtualdomains
 # support.  This should obviously only be done if you are not running

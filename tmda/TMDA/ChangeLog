@@ -1,3 +1,8 @@
+2001-10-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (SENDMAIL): New variable defining the path to the
+	sendmail program or sendmail compatibility interface.
+
 2001-09-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (GLOBAL_TMDARC): Add a global configuration file
