@@ -1,3 +1,11 @@
+2003-04-19  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Removed virtual user processing from Util.
+	* Added RunTask to Util to help process virtual users.
+	* Removed tons of CGI_ variables from Defaults
+	  (these are now handled directly by tmda-cgi).
+	* Added a bunch of debugging statements to Auth.
+
 2003-04-07  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Util.py (headers_as_string): Return the raw (undecoded) headers
