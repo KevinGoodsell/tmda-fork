@@ -93,7 +93,7 @@ Title: Auto-installation & Auto-uninstallation
 <p><tt>skel</tt> directories may optionally have a file called
   <tt>anomalies</tt>. This file contains <a href="http://python.org">Python</a>
   code which tells the installer/uninstaller what it should do beyond simply
-  copying the files to the users directory.</p>
+  copying the files to the user's directory.</p>
 
 <p><tt>anomalies</tt> supports the following variables:</p>
 
