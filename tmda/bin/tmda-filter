@@ -39,6 +39,7 @@ import rfc822
 import string
 import sys
 import time
+import re
 
 
 discard = None
@@ -409,6 +410,19 @@ def main():
             whitelist_list = Util.file_to_list(Defaults.WHITELIST,whitelist_list)
             if Util.findmatch(whitelist_list, EnvelopeSender,From,ReplyTo):
                 logit("OK whitelist_match", time.time())
+                sys.exit(Defaults.ERR_OK)
+                pass
+
+        # Is the message sacred?
+        if os.path.exists(Defaults.SACRED_FILE):
+            sacred_list = []
+            sacred_list = Util.file_to_list(Defaults.SACRED_FILE,sacred_list)
+            matches = 0
+            for single_expression in sacred_list:
+                if None != re.search(single_expression,message,(re.M|re.I)):
+                    matches = matches+1
+            if matches > 0:
+                logit("OK sacred_text_match", time.time())
                 sys.exit(Defaults.ERR_OK)
                 pass
             

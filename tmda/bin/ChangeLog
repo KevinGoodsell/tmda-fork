@@ -1,3 +1,11 @@
+2001-08-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (main): Allow ANY mail that has a certain regular
+	expression to go through. So, let's say you wanted any mail about
+	car.*accident to come through, you can do so.
+	Defaults.SACRED_FILE contains the regular expressions.
+	Patch contributed by Binesh Bannerjee.
+
 2001-08-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (main): Silently drop messages that match the

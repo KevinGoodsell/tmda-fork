@@ -1,3 +1,10 @@
+2001-08-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (SACRED_FILE): New variable pointing to a filename
+	which contains a list of sacred keywords, the prescence of which
+	automatically zaps the mail into your mailbox.
+	Patch contributed by Binesh Bannerjee.
+
 2001-08-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (format_timeout): Added `Y' for years, and `M' for

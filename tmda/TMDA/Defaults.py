@@ -250,6 +250,13 @@ if not vars().has_key('EXP_FILE'):
 if not vars().has_key('EXT_FILE'):
     EXT_FILE = DATADIR + "lists/" + "ext"
 
+# SACRED_FILE
+# Filename which contains a list of sacred keywords, the prescence
+# of which automatically zaps the mail into your mailbox.
+# Default is ~/.tmda/lists/sacred
+if not vars().has_key('SACRED_FILE'):
+    SACRED_FILE = DATADIR + "lists/" + "sacred"
+
 # SENDER_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive messages with a sender cookie added to your
