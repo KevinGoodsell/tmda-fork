@@ -13,6 +13,9 @@ Python</a>: an interpreted, interactive, object-oriented programming language.
 <li>MTA independent (supports qmail, Postfix, Exim, Courier, and Sendmail).
 <br><br>
 
+<li>Aggressively standards compliant.
+<br><br>
+
 <li>Integrated "blacklist" and "whitelist" functionality.
 <br><br>
 
