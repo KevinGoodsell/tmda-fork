@@ -1380,9 +1380,10 @@ if os.path.exists(CRYPT_KEY_FILE):
             raise Errors.ConfigError, \
                   CRYPT_KEY_FILE + " must be chmod 400 or 600!"
 else:
-    if not os.environ.has_key("TMDA_CGI_MODE"):
-        raise Errors.ConfigError, "Can't find key file: " + CRYPT_KEY_FILE
-    if os.environ["TMDA_CGI_MODE"] != "no-su":
+    if os.environ.has_key('TMDA_CGI_MODE') and \
+           os.environ['TMDA_CGI_MODE'] == 'no-su':
+        pass
+    else:
         raise Errors.ConfigError, "Can't find key file: " + CRYPT_KEY_FILE
 
 # Read key from CRYPT_KEY_FILE, and then convert it from hex back into
@@ -1390,8 +1391,11 @@ else:
 try:
     CRYPT_KEY = binascii.unhexlify(open(CRYPT_KEY_FILE).read().strip())
 except IOError:
-    if not os.environ.has_key("TMDA_CGI_MODE"): raise
-    if os.environ["TMDA_CGI_MODE"] != "no-su": raise
+    if os.environ.has_key('TMDA_CGI_MODE') and \
+           os.environ['TMDA_CGI_MODE'] == 'no-su':
+        pass
+    else:
+        raise
 
 ###################################
 # END of user configurable settings
