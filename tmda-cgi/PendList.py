@@ -277,33 +277,28 @@ def Show():
 
     # Grey out the first & prev buttons?
     if FirstMsg == 0:
-      T["FirstButt1"]
-      T["FirstButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c10.gif"
-width="18" height="18" alt="First">"""
-      T["PrevButt1"]
-      T["PrevButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c11.gif"
-width="11" height="18" alt="Prev">"""
-      T["FirstButt2"]
-      T["FirstButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c10.gif"
-width="18" height="18" alt="First">"""
-      T["PrevButt2"]
-      T["PrevButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c11.gif"
-width="11" height="18" alt="Prev">"""
+      T["FirstButton1Active"]
+      T["PrevButton1Active"]
+      T["FirstButton2Active"]
+      T["PrevButton2Active"]
+    else:
+      T["FirstButton1Inactive"]
+      T["PrevButton1Inactive"]
+      T["FirstButton2Inactive"]
+      T["PrevButton2Inactive"]
 
     # Grey out the next & last buttons?
     if LastMsg == len(Msgs):
-      T["NextButt1"]
-      T["NextButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c12.gif"
-width="11" height="18" alt="Next">"""
-      T["LastButt1"]
-      T["LastButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c13.gif"
-width="18" height="18" alt="Last">"""
-      T["NextButt2"]
-      T["NextButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c12.gif"
-width="11" height="18" alt="Next">"""
-      T["LastButt2"]
-      T["LastButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c13.gif"
-width="18" height="18" alt="Last">"""
+      T["NextButton1Active"]
+      T["LastButton1Active"]
+      T["NextButton2Active"]
+      T["LastButton2Active"]
+    else:
+      T["NextButton1Inactive"]
+      T["LastButton1Inactive"]
+      T["NextButton2Inactive"]
+      T["LastButton2Inactive"]
+
   else:
     T["DispRange"] = "0"
     T["PageRange"] = "1 of 1"
