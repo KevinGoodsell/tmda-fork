@@ -25,7 +25,7 @@ import sys
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.09+"
+tmda_cgi = "0.09B+"
 
 # tmda-cgi version codename
 Codename = "Fluorine"
@@ -44,8 +44,9 @@ except ImportError:
     Platform = sys.platform
 
 # Summary of all the version identifiers
-# e.g, tmda-cgi/0.02 (Python 2.2.2 on linux-i686)
-All = "tmda-cgi/%s (Python %s on %s)" % (tmda_cgi, Python, Platform)
+# e.g, tmda-cgi/0.02 "Helium" (Python 2.2.2 on linux-i686)
+All = 'tmda-cgi/%s "%s" (Python %s on %s)' % \
+  (tmda_cgi, Codename, Python, Platform)
 
 def Test():
   "Validate TMDAReqVer."
