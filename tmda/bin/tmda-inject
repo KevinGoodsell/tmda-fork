@@ -263,7 +263,6 @@ def inject_message(resending,
             field = message_format(field, full_name, Defaults.MESSAGE_FROM_STYLE)
 	nice_header = string.capwords(
                           header.replace('-', ' ')).replace(' ', '-')
-        print '%s: %s' % (nice_header, field)
         pipeline.write('%s: %s\n' % (nice_header, field))
     pipeline.write('\n')
     pipeline.write(message_body)
