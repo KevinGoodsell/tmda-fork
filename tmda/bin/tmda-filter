@@ -326,6 +326,9 @@ def locate_pending(timestamp,pid):
         # Optionally generate the confirmation acceptance notice.
         if Defaults.CONFIRM_ACCEPT_NOTIFY:
             bouncegen('accept')
+        # Optionally send the confirmation to a special address.
+        if Defaults.CONFIRM_ACCEPT_CC:
+            send_cc(Defaults.CONFIRM_ACCEPT_CC)
         # Reinject the original (now confirmed) message.
         inject_pending(pending_message_pathname,timestamp,pid)
     else:

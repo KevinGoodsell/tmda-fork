@@ -190,6 +190,12 @@ if not vars().has_key('CONFIRM_CC'):
 if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
     CONFIRM_ACCEPT_NOTIFY = 1
 
+# CONFIRM_ACCEPT_CC
+# An optional e-mail address which will be sent a copy of the
+# confirmation acceptance messages people send you.
+if not vars().has_key('CONFIRM_ACCEPT_CC'):
+    CONFIRM_ACCEPT_CC = None
+
 # CONFIRM_MAX_MESSAGE_SIZE
 # This is the largest size (in bytes) that a message can be before the
 # its body is excluded from the confirmation request/acceptance

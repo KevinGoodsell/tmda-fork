@@ -53,6 +53,8 @@ import os                                      # don't remove
 
 # BOUNCE_ENV_SENDER = ""
 
+# CONFIRM_ACCEPT_CC = "jdoe-confirmations@domain.dom"
+
 # CONFIRM_ACCEPT_NOTIFY = 1
 
 # CONFIRM_ACCEPT_TEMPLATE = "/full/path/to/confirm_accept.txt"

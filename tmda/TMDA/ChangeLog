@@ -2,6 +2,10 @@
 
 	* Defaults.py (TMDA_VERSION): Begin 0.43 development.
 
+	(CONFIRM_ACCEPT_CC): New variable specifying an e-mail address to
+	send the confirmation replies.
+	Patch contributed by Matt Armstrong.
+
 2001-11-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (make_msgid): New function to create and return an
