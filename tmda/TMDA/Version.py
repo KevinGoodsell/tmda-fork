@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.87+"
+TMDA = "0.88"
 
 # TMDA version codename
 CODENAME = "Decidedly"
