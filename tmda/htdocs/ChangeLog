@@ -1,3 +1,8 @@
+2001-11-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht (Links): Add links to each of the FAQ items for easier
+	navigation.  Patch contributed by Lou Hevly.
+
 2001-11-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-filter.ht (Links): Point the list2dbm link at an updated

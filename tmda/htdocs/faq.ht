@@ -2,19 +2,19 @@ Title: TMDA FAQ
 Links: overview-links.h usage-links.h support-links.h
 
 <h3>TMDA FREQUENTLY ASKED QUESTIONS</h3>
-
-<li>How do I setup a whitelist? <br>
-<li>Will TMDA run on non-unix clients such as Microsoft Windows? <br>
-<li>Does TMDA have a web interface? <br>
-<li>How do I setup TMDA with vpopmail? <br>
-<li>How can I delete old, unconfirmed messages from TMDA's pending queue? <br>
-<li>How do I allow my ezmlm mailing lists to pass through TMDA? <br>
-<li>How can I prevent BBDB from asking about 'dated' addresses?<br>
-<br>
+<ol>
+<li><a href="#1">How do I setup a whitelist?</a> <br>
+<li><a href="#2">Will TMDA run on non-unix clients such as Microsoft Windows?</a> <br>
+<li><a href="#3">Does TMDA have a web interface?</a> <br>
+<li><a href="#4">How do I setup TMDA with vpopmail?</a> <br>
+<li><a href="#5">How can I delete old, unconfirmed messages from TMDA's pending queue?</a> <br>
+<li><a href="#6">How do I allow my ezmlm mailing lists to pass through TMDA?</a> <br>
+<li><a href="#7">How can I prevent BBDB from asking about 'dated' addresses?</a><br>
+</ol>
 
 <hr>
 <li><b>
-How do I setup a whitelist?  I'd like any address in
+<a name="1">How do I setup a whitelist?</a>  I'd like any address in
 my domain (domain.dom) to be able to send me mail without
 worrying about confirmations.
 </b>
@@ -61,7 +61,7 @@ when looking for a match.
 
 <hr>
 <li><b>
-Will TMDA run on non-unix clients such as Microsoft Windows?
+<a name="2">Will TMDA run on non-unix clients such as Microsoft Windows?</a>
 </b>
 <br><br>
 
@@ -79,7 +79,7 @@ for a site-wide TMDA install using smtpd-auth, vpopmail and qmailadmin.
 
 <hr>
 <li><b>
-Does TMDA have a web interface?
+<a name="3">Does TMDA have a web interface?</a>
 </b>
 <br><br>
 Yes.  <a href="http://devel.samstech.net/" TARGET="Resource Window">QAdmin-TMDA</a> is
@@ -91,7 +91,7 @@ original announcement</a>.
 
 <hr>
 <li><b>
-How do I setup TMDA with <a href="http://inter7.com/vpopmail/" TARGET="Resource Window">vpopmail</a>?
+<a name="4">How do I setup TMDA</a> with <a href="http://inter7.com/vpopmail/" TARGET="Resource Window">vpopmail</a>?
 </b>
 <br><br>
 See Lou Hevly's <a href="http://www.visca.com/tmda/tmda_vpop.html" TARGET="Resource Window">
@@ -99,7 +99,7 @@ TMDA/vpopmail tutorial</a>
 
 <hr>
 <li><b>
-How can I delete old, unconfirmed messages from TMDA's pending queue?
+<a name="5">How can I delete old</a>, unconfirmed messages from TMDA's pending queue?
 </b>
 <br><br>
 
@@ -119,7 +119,7 @@ morning at 2AM, add the following crontab entry:
 <hr>
 
 <li><b>
-How do I allow my <a href="http://cr.yp.to/ezmlm.html" TARGET="Resource Window">ezmlm</a>
+<a name="6">How do I allow my</a> <a href="http://cr.yp.to/ezmlm.html" TARGET="Resource Window">ezmlm</a>
 mailing lists to pass through TMDA?  Each list message is sent out 
 with a different envelope sender address.
 </b>
@@ -138,7 +138,7 @@ delivered.
 <hr>
 
 <li><b>
-I use <a href="http://bbdb.sourceforge.net/" TARGET="Resource Window">BBDB</a>, 
+<a name="7">I use</a> <a href="http://bbdb.sourceforge.net/" TARGET="Resource Window">BBDB</a>, 
 and every time it sees a new 'dated' address it asks me whether I want
 it added to so-and-so's BBDB record.  How can I prevent this?
 </b>
