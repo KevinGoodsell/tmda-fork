@@ -55,10 +55,11 @@ class Address:
     def base(self):
         return Defaults.USERNAME + '@' + Defaults.HOSTNAME
                         
-    def create(self, base):
+    def create(self, base, dummy=None):
         self.address = base or self.base()
+        return self
 
-    def verify(self):
+    def verify(self, dummy=''):
         raise BadCryptoError, "No cryptographic information in address."
 
     def split(self):
@@ -92,7 +93,7 @@ class ConfirmAddress(TaggedAddress):
             base = self.base()
         (dummy, local, domain) = _split(str(base))
         cookie = Cookie.make_confirm_cookie(int(timestamp), pid, keyword)
-        self.local_parts = [ local, 'confirm', keyword + '.' + cookie ]
+        self.local_parts = [ local, Defaults.TAGS_CONFIRM[0].lower(), keyword + '.' + cookie ]
         tagged_local = Defaults.RECIPIENT_DELIMITER.join(self.local_parts)
         self.address = tagged_local + '@' + domain
         return self
@@ -128,7 +129,7 @@ class DatedAddress(TaggedAddress):
             base = self.base()
         (dummy, local, domain) = _split(str(base))
         cookie = Cookie.make_dated_cookie(int(time.time()), timeout)
-        self.local_parts = [ local, 'dated', cookie ]
+        self.local_parts = [ local, Defaults.TAGS_DATED[0].lower(), cookie ]
         tagged_local = Defaults.RECIPIENT_DELIMITER.join(self.local_parts)
         self.address = tagged_local + '@' + domain
         return self
@@ -171,7 +172,7 @@ class KeywordAddress(TaggedAddress):
             base = self.base()
         (dummy, local, domain) = _split(str(base))
         cookie = Cookie.make_keyword_cookie(keyword)
-        self.local_parts = [ local, 'keyword', cookie ]
+        self.local_parts = [ local, Defaults.TAGS_KEYWORD[0].lower(), cookie ]
         tagged_local = Defaults.RECIPIENT_DELIMITER.join(self.local_parts)
         self.address = tagged_local + '@' + domain
         return self
@@ -185,9 +186,6 @@ class KeywordAddress(TaggedAddress):
         try_hmac = Cookie.make_keywordmac(keyword)
         if try_hmac != hmac:
             raise BadCryptoError, "Invalid cryptographic tag."
-
-    def tag(self):
-        return 'keyword'
 
     def keyword(self):
         return '.'.join(self.local_parts[-1].split('.')[:-1])
@@ -205,7 +203,7 @@ class SenderAddress(TaggedAddress):
             base = self.base()
         (dummy, local, domain) = _split(str(base))
         cookie = Cookie.make_sender_cookie(str(sender))
-        self.local_parts = [ local, 'sender', cookie ]
+        self.local_parts = [ local, Defaults.TAGS_SENDER[0].lower(), cookie ]
         tagged_local = Defaults.RECIPIENT_DELIMITER.join(self.local_parts)
         self.address = tagged_local + '@' + domain
         return self
@@ -232,14 +230,20 @@ def Factory(address = None, tag = None):
         return Address(address)
     try:
         cookie_type = tag or local_parts[-2]
-        if cookie_type == 'confirm':
+        if cookie_type in \
+                ['confirm'] + map(lambda s: s.lower(), Defaults.TAGS_CONFIRM):
             addr_obj = ConfirmAddress(address)
-        elif cookie_type == 'dated':
+        elif cookie_type in \
+                ['dated'] + map(lambda s: s.lower(), Defaults.TAGS_DATED):
             addr_obj = DatedAddress(address)
-        elif cookie_type == 'sender':
+        elif cookie_type in \
+                ['sender'] + map(lambda s: s.lower(), Defaults.TAGS_SENDER):
             addr_obj = SenderAddress(address)
-        else:
+        elif cookie_type in \
+                ['keyword'] + map(lambda s: s.lower(), Defaults.TAGS_KEYWORD):
             addr_obj = KeywordAddress(address)
+        else:
+            addr_obj = Address(address)
     except (AddressError, IndexError):
         addr_obj = Address(address)
     return addr_obj

@@ -101,6 +101,8 @@ tag = 'dated'
 option = None
 print_newline = 1
 
+from TMDA import Defaults
+
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
@@ -115,16 +117,16 @@ for opt, arg in opts:
     elif opt in ('-a', '--address'):
         address = arg
     elif opt in ('-d', '--dated'):
-        tag = 'dated'
+        tag = Defaults.TAGS_DATED[0].lower()
         try:                            # check for timeout override
             os.environ['TMDA_TIMEOUT'] = args[0]
         except IndexError:
             pass
     elif opt in ('-k', '--keyword'):
-        tag = 'keyword'
+        tag = Defaults.TAGS_KEYWORD[0].lower()
         option = arg
     elif opt in ('-s', '--sender'):
-        tag = 'sender'
+        tag = Defaults.TAGS_SENDER[0].lower()
         option = arg
     elif opt in ('-n', '--no-newline'):
         print_newline = 0
