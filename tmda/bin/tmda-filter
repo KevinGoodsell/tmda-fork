@@ -391,8 +391,7 @@ def main():
                 logit("BOUNCE blacklist_match", time.time())
                 if Defaults.BOUNCE_BLACKLIST_CC:
                     bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
-                print "Sorry, your address matches my blacklist."
-                sys.exit(Defaults.ERR_HARD)
+                sys.exit(Defaults.ERR_STOP)
                 pass
 
         # Confirm tag?
