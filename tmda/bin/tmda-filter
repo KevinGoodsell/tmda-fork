@@ -42,16 +42,9 @@ OPTIONS:
            check for parsing errors in the filter file.
 """
 
-import cStringIO
 import getopt
-import fileinput
 import os
-import popen2
-import rfc822
-import string
 import sys
-import time
-
 
 filter_match = None
 discard = None
@@ -97,11 +90,19 @@ try:
 except ImportError:
     pass
 
-from TMDA import Cookie
 from TMDA import Defaults
+from TMDA import Cookie
 from TMDA import FilterParser
 from TMDA import MTA
 from TMDA import Util
+
+import cStringIO
+import fileinput
+import popen2
+import rfc822
+import string
+import time
+
 
 # Just check Defaults.FILTER_INCOMING for syntax errors and possible
 # matches, and then exit.
