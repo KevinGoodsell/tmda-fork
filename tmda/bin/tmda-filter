@@ -100,7 +100,9 @@ message_size = str(len(stdin.read()))
 envelope_sender = os.environ.get('SENDER')
 
 # $RECIPIENT is the envelope recipient address.
-envelope_recipient = os.environ.get('RECIPIENT')
+# Use the X-Originally-To header if it exists.
+envelope_recipient = (message_headers.getheader('x-originally-to') or
+                      os.environ.get('RECIPIENT'))
 
 def logit(action_msg,date):
     """Write delivery statistics to the LOGFILE if enabled."""
@@ -214,7 +216,7 @@ def bounce_dated():
     expire_utc_tuple = time.gmtime(expire_date)
     utc_expire_date = time.asctime(expire_utc_tuple)
     dated_cookie = Cookie.make_dated_cookie('%d' % now)
-    envelope_recipient = os.environ.get('RECIPIENT')
+    envelope_recipient = globals().get('envelope_recipient')
     
     logit("BOUNCE dated",now)
 
@@ -239,7 +241,7 @@ def bounce_dated():
 
 def bounce_sender(sender_address,sender_address_cookie):
     """Bounce the message back to sender with their sender cookie."""
-    envelope_recipient = os.environ.get('RECIPIENT')
+    envelope_recipient = globals().get('envelope_recipient')
     
     logit("BOUNCE sender",time.time())
 
