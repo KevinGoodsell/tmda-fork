@@ -24,6 +24,7 @@
 
 from cStringIO import StringIO
 from email.Generator import Generator
+from string import whitespace as WHITESPACE
 import cPickle
 import email
 import email.Utils
@@ -43,10 +44,12 @@ import time
 import Errors
 
 
-EMPTYSTRING = ''
-NL = '\n'
 DOT = '.'
-from string import whitespace as WHITESPACE
+EMPTYSTRING = ''
+MODE_EXEC = 01
+MODE_READ = 04
+MODE_WRITE = 02
+NL = '\n'
 
 
 def gethostname():
@@ -840,6 +843,7 @@ def filter_match(filename, recip, sender=None):
     else:
         print 'Sorry, no matching lines.'
 
+
 def CanRead( file, uid = None, gid = None, raiseError = 1 ):
     try:
         return CanMode( file, MODE_READ, uid, gid )
@@ -848,6 +852,7 @@ def CanRead( file, uid = None, gid = None, raiseError = 1 ):
             return 0
         else:
             pass
+
 
 def CanWrite( file, uid = None, gid = None, raiseError = 1 ):
     try:
@@ -858,6 +863,7 @@ def CanWrite( file, uid = None, gid = None, raiseError = 1 ):
         else:
             pass
 
+
 def CanExec( file, uid = None, gid = None, raiseError = 1 ):
     try:
         return CanMode( file, MODE_EXEC, uid, gid )
@@ -867,9 +873,6 @@ def CanExec( file, uid = None, gid = None, raiseError = 1 ):
         else:
             pass
 
-MODE_EXEC = 01
-MODE_WRITE = 02
-MODE_READ = 04
 
 def CanMode( file, mode = MODE_READ, uid = None, gid = None ):
     try:
@@ -895,11 +898,13 @@ def CanMode( file, mode = MODE_READ, uid = None, gid = None ):
     else:
         return 0
 
+
 class DevnullOutput:
     def write(self, msg): pass
     def flush(self): pass
     def __repr__(self):
         return ""
+
 
 class StringOutput:
     def __init__(self):
@@ -911,6 +916,7 @@ class StringOutput:
         self.__content = ""
     def __repr__(self):
         return self.__content
+
 
 class Debugable:
     def __init__(self, outputObject = DevnullOutput() ):
