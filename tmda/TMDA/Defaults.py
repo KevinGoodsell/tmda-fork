@@ -1090,18 +1090,6 @@ if not vars().has_key('PENDING_BLACKLIST_APPEND'):
 if not vars().has_key('PENDING_DELETE_APPEND'):
     PENDING_DELETE_APPEND = None
 
-# PENDING_FILE_PERM
-# Numeric file permissions on e-mail in the pending directory.  The default
-# is typically correct, but there are times when you might want group read
-# permissions on your pending mail.
-#
-# Example:
-# PENDING_FILE_PERM = 0660
-#
-# Default is 0600
-if not vars().has_key('PENDING_FILE_PERM'):
-    PENDING_FILE_PERM = 0600
-
 # PENDING_RELEASE_APPEND
 # Filename to which a sender's e-mail address should be automatically
 # appended when a message is "released" by tmda-pending.

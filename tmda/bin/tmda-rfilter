@@ -584,7 +584,6 @@ def create_pending_msg(timestamp, pid):
     pending_contents = msgin.as_string()
     fn = os.path.join(pendingdir, pending_message)
     Util.writefile(pending_contents, fn)
-    os.chmod(fn, Defaults.PENDING_FILE_PERM)
     del msgin['X-TMDA-Recipient']
     return pending_message
 
