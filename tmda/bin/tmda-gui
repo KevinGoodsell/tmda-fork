@@ -26,8 +26,8 @@
 Usage: %(program)s [OPTIONS]
 
 Where:
-   -a
-   --address
+   <none>
+   <none>
        Gives a (yet) non functional Address generator interface.
 
    -p
@@ -44,8 +44,7 @@ Where:
           change it in Edit/Settings... (not memorized between runs yet)
 
 NOTE: This is early alpha software, so please try it, and send your
-comments on the tmda-gui or tmda-workers list.  Please don't use it
-yet in a production environment.
+comments to the tmda-workers@tmda.net mailing list.
 """
 
 import getopt
