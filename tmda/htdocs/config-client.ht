@@ -267,7 +267,14 @@ add the following line to your .gnus file:<br>
 <li>Check <em>Use external program for sending</em>
 <li>In the <em>Program path</em> box, enter <em>/path/to/tmda/bin/tmda-sendmail</em>
 </ul>
+<br>
 
+<li>For <a href="http://www.xfmail.org/" TARGET="Resource Window">XFMail</a>,
+ Misc --> Config Accounts+Misc --> Send<br>
+<ul>
+<li>Check <em>Sendmail</em> under <em>Send method</em>
+<li>In the <em>Sendmail Path</em> box, enter <em>/path/to/tmda/bin/tmda-sendmail</em>
+</ul>
 <br>
 
 <li>For <a href="http://kmail.kde.org/" TARGET="Resource Window">KMail (KDE Mail)</a>,
@@ -275,8 +282,8 @@ add the following line to your .gnus file:<br>
 <ul>
 <li>Check <em>Sendmail</em>
 <li>In the <em>Location</em> box, enter <em>/path/to/tmda/bin/tmda-sendmail</em>
-
 </ul>
+
 </ul>
 </ul>
 
