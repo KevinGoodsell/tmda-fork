@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.82+"
+TMDA = "0.83"
 
 # TMDA version codename
 CODENAME = "Iron Liege"
