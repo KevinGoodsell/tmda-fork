@@ -339,6 +339,18 @@ if not vars().has_key('EXP_FILE'):
 if not vars().has_key('EXT_FILE'):
     EXT_FILE = DATADIR + "lists/" + "ext"
 
+# KEYWORD_FILE
+# Filename which contains a list of e-mail address/keyword pairs, one
+# per line, which will receive messages with a keyword cookie added to
+# your address.  For example,
+#
+#  broker@schwab.com schwab
+#  tmda-*@libertine.org lists-tmda
+#
+# Default is ~/.tmda/lists/keyword
+if not vars().has_key('KEYWORD_FILE'):
+    KEYWORD_FILE = DATADIR + "lists/" + "keyword"
+
 # REVOKED_FILE
 # Filename which contains a list of recipient e-mail addresses, one
 # per line, which have been "revoked" and will therefore bounce.

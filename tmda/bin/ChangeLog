@@ -1,7 +1,19 @@
 2001-10-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (inject_message): Support MESSAGE_FROM_STYLE.
-	
+
+	(main): Add support for tagging messages with keyword addresses 
+	that match KEYWORD_FILE.
+
+	(main): Fixed a bug where if the recipient list was being passed
+	to tmda-inject, the recipient addresses were not being lowercased.
+	This resulted in a negative match with the listfiles if their
+	cases differed.  (i.e, mail sent to Jason@mastaler.com wouldn't
+	match jason@mastaler.com in lists/sender).
+
+	(main): For X-TMDA:, add `extension' as an alias for `ext', and
+	`explicit' as an alias for `exp'.
+
 2001-10-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (verify_confirm_cookie): Make sure the cookie

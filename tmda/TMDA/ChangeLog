@@ -3,6 +3,9 @@
 	* Defaults.py (MESSAGE_FROM_STYLE): New variable that specifies
 	how `From' headers should look on outgoing tagged messages.
 
+	(KEYWORD_FILE): New variable pointing to the list file containing
+	destinations that should receive keyword tagged messages.
+
 2001-10-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Cookie.py (make_keyword_address): Lowercase keyword before

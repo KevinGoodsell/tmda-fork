@@ -1,6 +1,6 @@
 2001-10-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* sample.tmdarc: Add MESSAGE_FROM_STYLE.
+	* sample.tmdarc: Add MESSAGE_FROM_STYLE and KEYWORD_FILE.
 
 2001-10-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
