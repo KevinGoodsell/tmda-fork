@@ -1,3 +1,8 @@
+2003-06-25  Tim Legant  <tim@catseye.net>
+
+	* Address.py: Fixed ConfirmAddress, removed formatting code from
+	DatedAddress.timestamp().
+
 2003-06-20  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Fixed a bug in the LDAP code found by Chet McNeill.

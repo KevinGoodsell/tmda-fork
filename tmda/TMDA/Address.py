@@ -85,30 +85,32 @@ class TaggedAddress(Address):
 class ConfirmAddress(TaggedAddress):
     def __init__(self, address=''):
         TaggedAddress.__init__(self, address)
+        self.keyword = 'accept'
 
-    def create(self, base, timestamp, pid, keyword):
+    def create(self, base, timestamp, pid, keyword='accept'):
         if Defaults.CONFIRM_ADDRESS:
             base = Defaults.CONFIRM_ADDRESS
         elif not base:
             base = self.base()
+        self.keyword = keyword
         (dummy, local, domain) = _split(str(base))
         cookie = Cookie.make_confirm_cookie(int(timestamp), pid, keyword)
-        self.local_parts = [ local, Defaults.TAGS_CONFIRM[0].lower(), keyword + '.' + cookie ]
+        self.local_parts = [ local, Defaults.TAGS_CONFIRM[0].lower(), cookie ]
         tagged_local = Defaults.RECIPIENT_DELIMITER.join(self.local_parts)
         self.address = tagged_local + '@' + domain
         return self
 
     def verify(self, dummy=''):
         try:
-            (keyword, timestamp, pid, hmac) = self.local_parts[-1].split('.')
-            try_hmac = Cookie.confirmationmac(timestamp, pid, keyword)
+            (timestamp, pid, hmac) = self.local_parts[-1].split('.')
+            try_hmac = Cookie.confirmationmac(timestamp, pid, self.keyword)
             if try_hmac != hmac:
                 raise BadCryptoError, "Invalid cryptographic tag."
         except ValueError:
             raise BadCryptoError, "Invalid cryptographic tag format."
 
     def keyword(self):
-        return self.local_parts[-1].split('.')[0]
+        return self.keyword
 
     def timestamp(self):
         return self.local_parts[-1].split('.')[1]
@@ -145,19 +147,8 @@ class DatedAddress(TaggedAddress):
         except ValueError:
             raise BadCryptoError, "Invalid cryptographic tag format."
 
-    def timestamp(self, prettyprint = 0, localtime = 0):
-        expires = self.local_parts[-1].split('.')[0]
-
-        if not prettyprint:
-            return expires
-
-        expires = int(expires)
-        if localtime:
-            local_tz = time.strftime("%Z", time.localtime(expires))
-            expires_str = time.asctime(time.localtime(expires)) + ' ' + local_tz
-        else:
-            expires_str = time.asctime(time.gmtime(expires)) + ' UTC'
-        return expires_str
+    def timestamp(self):
+        return self.local_parts[-1].split('.')[0]
 
     def hmac(self):
         return self.local_parts[-1].split('.')[1]
@@ -179,6 +170,8 @@ class KeywordAddress(TaggedAddress):
 
     def verify(self, dummy=''):
         parts = self.local_parts[-1].split('.')
+        # Not necessary anymore, since '.', among other chars, is
+        # replaced by '?' in Cookie.make_keywordmac().
         keyword = '.'.join(parts[:-1])
         if not keyword:
             raise BadCryptoError, "Invalid cryptographic tag format."

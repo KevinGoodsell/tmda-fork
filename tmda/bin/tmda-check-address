@@ -94,13 +94,24 @@ for opt, arg in opts:
     elif opt in ('-l', '--localtime'):
         localtime = 1
 
+from TMDA import Defaults
 from TMDA import Address
+
+def formattime(timestamp):
+    if localtime:
+        timetuple = time.localtime(int(timestamp))
+        tzstr = ' %Z'
+    else:
+        timetuple = time.gmtime(int(timestamp))
+        tzstr = ' UTC'
+    return time.strftime('%c' + tzstr, timetuple)
 
 def main():
     # Address to check is required
     try:
         address = args[0]
-    except IndexError:
+        addr = Address.Factory(address)
+    except (IndexError, ValueError):
         usage(0)
 
     try:
@@ -109,20 +120,17 @@ def main():
         sender_address = None
 
     try:
-        addr = Address.Factory(address)
         addr.verify(sender_address)
         print "STATUS: VALID"
-        try:
-            print "EXPIRES: %s" % addr.timestamp(1, localtime)
-        except AttributeError:
-            pass
+        if addr.tag() in Defaults.TAGS_DATED:
+            print "EXPIRES: %s" % formattime(addr.timestamp())
+    except Address.ExpiredAddressError, msg:
+        print "STATUS:", msg
+        print "EXPIRED: %s" % formattime(addr.timestamp())
     except Address.AddressError, msg:
         print "STATUS:", msg
-        try:
-            print "EXPIRED: %s" % addr.timestamp(1, localtime)
-        except AttributeError:
-            pass
-        
+
+
 if __name__ == '__main__':
     main()
 

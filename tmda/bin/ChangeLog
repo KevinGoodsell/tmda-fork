@@ -1,3 +1,11 @@
+2003-06-25  Tim Legant  <tim@catseye.net>
+
+	* tmda-check-address (main): Imported Defaults.py.  Fixed some
+	unusual code that apparently doesn't work in later versions of
+	Python (different exceptions are raised than were caught).
+
+	* (formattime): New function.
+
 2003-06-17  Tim Legant  <tim@catseye.net>
 
 	* tmda-rfilter (setvuserhomedir): New function.  Called during
