@@ -55,7 +55,7 @@ class Queue:
         self.cache = cache
         self.command_recipient = command_recipient
         self.descending = descending
-        self.dispose_def = dispose
+        self.dispose = dispose
         self.older = older
         self.summary = summary
         self.terse = terse
@@ -94,9 +94,6 @@ class Queue:
         self.msgs.sort()
         if self.descending:
             self.msgs.reverse()
-
-        if self.dispose_def is None:
-            self.dispose_def = 'pass'
 
         return self
     
@@ -189,7 +186,7 @@ class Queue:
     def checkDelivered(self, M):
         """Check if the message has already been delivered."""
         if M.wasDelivered():
-            if self.dispose_def == 'delete':
+            if self.dispose == 'delete':
                 # pretend it isn't delivered if we want to delete
                 # old message, else delivered messages will never
                 # be removed from disk
@@ -199,6 +196,8 @@ class Queue:
 
     def disposeMessage(self, M):
         """Dispose the message."""
+        if self.dispose is None or self.dispose == 'pass':
+            return 0
         if not self.pretend:
             if self.dispose == 'release':
                 M.release()
@@ -208,8 +207,6 @@ class Queue:
                 M.whitelist()
             elif self.dispose == 'blacklist':
                 M.blacklist()
-            elif self.dispose == 'pass':
-                return 0
             elif self.dispose == 'show':
                 self.Print(M.pager())
         return 1
@@ -221,10 +218,10 @@ class Queue:
             
     def showMessage(self, M):
         """Display a message."""
-        if self.summary or not self.terse:
+        if self.summary and not self.terse:
             self.Print()
             self.Print(M.summary(self.count, self.total, self.summary))
-        if self.terse:
+        elif self.terse:
             self.Print(M.terse(tsv=1))
 
     ## Pure virtual method (to be used by InteractiveQueue)
@@ -239,8 +236,6 @@ class Queue:
         self.total = len(self.msgs)
         self.count = 0
         
-        self.dispose = self.dispose_def
-    
         self._loadCache()
             
         for msgid in self.msgs:
@@ -311,12 +306,22 @@ class InteractiveQueue(Queue):
                        pretend)
 
 
+    def initQueue(self):
+        """Additionally initialize the interactive queue."""
+        Queue.initQueue(self)
+        if self.dispose is None:
+            self.dispose_def = 'pass'
+        else:
+            self.dispose_def = self.dispose
+
     def checkDelivered(self, M):
         if M.wasDelivered():
             return 1
         return 0
 
     def processMessage(self, M):
+        if self.terse:
+            self.Print()
         self.showMessage(M)
         if not self.userInput(M):
             return 0

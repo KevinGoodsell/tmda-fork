@@ -1,3 +1,32 @@
+2002-12-09  Tim Legant  <tim@catseye.net>
+
+	* Pending.py (Queue.__init__): Saved value of dispose as
+	self.dispose and not self.dispose_def.  self.dispose_def is only
+	used interactively and so belongs in InteractiveQueue.
+
+	(Queue.initQueue): Removed re-initialization of self.dispose_def.
+
+	(Queue.checkDelivered): Changed 'delete' compare from
+	self.dispose_def to self.dispose.
+
+	(Queue.disposeMessage): Return 0 now on both self.dispose is None
+	and self.dispose == 'pass'.  self.pretend is not relevant for
+	either of these tests.
+
+	(Queue.showMessage): Summary was getting printed when both
+	self.summary and self.terse were false.  Changed 'or not
+	self.terse' to 'and not self.terse'.
+
+	(Queue.mainLoop): Removed setting of self.dispose from
+	self.dispose_def.  This should only happen interactively and does
+	in InteractiveQueue.userInput.
+
+	(InteractiveQueue.initQueue): New method.  Initialize
+	self.dispose_def here.
+
+	(InteractiveQueue.processMessage): Print blank line if interactive
+	and self.terse is true.
+
 2002-12-06  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Defaults.py (CGI_URL): New variable.
