@@ -245,12 +245,16 @@ rights.""")
     try:
       from TMDA import Defaults
     except Errors.ConfigError, (ErrStr):
-      CgiUtil.TermError("ConfigError", ErrStr, "import Defaults",
-        "", """Recheck the CGI's permissions and owner.  The file permissions
-should be 4755 (-rwsr-xr-x) and the owner should be root for system-wide
-install or a non-privileged user for single-user mode.<br>Also check in which
-partition you placed the CGI.  You cannot run the CGI in system-wide or single-
-user modes if its partition is marked "nosuid" in /etc/fstab.""")
+      if self[("NoOverride", "MayInstall")][0].lower() == "y":
+        if (os.environ["TMDA_CGI_MODE"] == "no-su"):
+          CgiUtil.TermError("Install failed",
+            "Install not allowed in no-su mode", "install", "",
+            "Either recompile in another mode or install TMDA manually.")
+        raise CgiUtil.NotInstalled, (ErrStr, self)
+      T = Template.Template("no-install.html")
+      T["ErrMsg"] = ErrStr
+      print T
+      sys.exit()
 
     # Read in our PVars
     try:

@@ -29,12 +29,19 @@ import time
 
 import Template
 
+from TMDA import Errors
+
 # Handy values
 DispDir        = os.environ["TMDA_CGI_DISP_DIR"]
-ErrTemplate    = "error.html"
+ErrTemplate    = "error2.html"
 QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*")
 UnquotedString = re.compile(r"^(\S+)\s*")
 HomeDirSearch  = re.compile("^~/")
+
+# CGI error classes
+class NotInstalled(Errors.TMDAError):
+  "TMDA won't run because the user has not installed it."
+  pass
 
 def Size(MsgObj):
   MsgSize = os.stat(MsgObj.msgfile).st_size
