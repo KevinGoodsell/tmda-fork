@@ -45,7 +45,7 @@ class MissingEnvironmentVariable(TMDAError):
 class AddressError(TMDAError):
     """Address errors."""
     def __init__(self, errmsg = ''):
-        TMDAError.__init__(errmsg)
+        TMDAError.__init__(self, errmsg)
 
 class BadCryptoError(AddressError):
     """Bad (or no) cryptographic information in address."""
@@ -57,7 +57,7 @@ class ExpiredAddressError(AddressError):
 
 class QueueError(TMDAError):
     def __init__(self, errmsg = 'Unknown error'):
-        TMDAError.__init__(errmsg)
+        TMDAError.__init__(self, errmsg)
 
 class MessageError(QueueError):
     pass

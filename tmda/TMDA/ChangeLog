@@ -1,3 +1,9 @@
+2003-11-19  Tim Legant  <tim@catseye.net>
+
+	* Errors.py (AddressError, QueueError): In the last change I
+	forgot to pass 'self' to the ancestor's __init__ method.  D'oh!
+	Pointy-hat to me.
+
 2003-11-16  Tim Legant  <tim@catseye.net>
 
 	* AutoResponse.py (AutoResponse.__init__): Changed to re-parse the
