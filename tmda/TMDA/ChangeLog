@@ -3,6 +3,8 @@
 	* Util.py (hexlify): New function to convert binary data strings to
 	their hexidecimal notation.
 	(unhexlify): New function to convert hex back to binary.
+	(gethostname): Replaced socket.getfqdn() with socket.gethostname()
+	since the former is only available in Python >= 2.0.
 
 	* Cookie.py (datemac): Replace binascii.hexlify with my own binary
 	to hex function to support Python < 2.0.
