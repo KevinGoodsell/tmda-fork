@@ -119,17 +119,16 @@ TMDA/vpopmail tutorial</a>
 </b>
 <br><br>
 
-TMDA comes with a utility called `tmda-clean' which does this for you.
-You can run it by hand, or periodically from cron.  Run `tmda-clean'
-without any arguments to get a listing of possible options.
-tmda-clean should be run from the user account that owns the pending
-queue, not from root (unless root is running TMDA).
-<br><br>
+TMDA comes with a utility called `tmda-pending' which can do this for
+you.  You can run it by hand, or periodically from cron.  Run
+``tmda-pending -h'' to get a listing of available options.
+tmda-pending should be run by the user account that owns the pending
+queue, not by root (unless root is running TMDA).  <br><br>
 
 For example, to purge unconfirmed messages older than 14 days each
 morning at 2AM, add the following crontab entry:
 <blockquote><code>
-0 02 * * * /path/to/tmda/bin/tmda-clean 14d
+0 02 * * * /path/to/tmda/bin/tmda-pending -qbd -O 14d
 </blockquote></code>
 
 <hr>

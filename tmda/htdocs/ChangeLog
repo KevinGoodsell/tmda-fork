@@ -1,3 +1,8 @@
+2002-02-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht: Update pending queue question to use tmda-pending rather
+	than the deprecated tmda-clean.
+
 2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* install.ht: Version information for post-installation success

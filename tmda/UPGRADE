@@ -1,5 +1,14 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.47:
+
+* tmda-clean has been removed from the distribution.  The new
+  tmda-pending script can be used to provide identical functionality
+  by combining its `-q', `-b', `-d', and `-O' options.  See the FAQ
+  has an example of this.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.46:
 
 * Python version 2.0 or greater is now required.
