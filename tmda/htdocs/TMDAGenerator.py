@@ -32,7 +32,7 @@ from HTParser import HTParser
 from LinkFixer import LinkFixer
 
 
-
+
 sitelinks = [
     ('%(rootdir)s/index.html', 'TMDA Homepage', '<br>[\
     <a href="http://www.au.tmda.net/">AU</a> |\
@@ -45,10 +45,10 @@ sitelinks = [
     ('http://www.cafeshops.com/TMDA/', 'TMDA Store'),
     ]
 
-
+
 class TMDAGenerator(Skeleton, Sidebar, Banner):
-    AUTHOR = 'TMDA Users List'
-    EMAIL = 'tmda-users@tmda.net'
+    AUTHOR = 'TMDA Workers List'
+    EMAIL = 'tmda-workers@tmda.net'
 
     def __init__(self, file, rootdir, relthis):
         root, ext = os.path.splitext(file)
@@ -99,8 +99,14 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
     def get_corner(self):
         # It is important not to have newlines between the img tag and the end
         # anchor and end center tags, otherwise layout gets messed up
-        return '''<center><font size="+2"
-        >&gt;&gt;&gt;&nbsp;TMDA&nbsp</font></center>'''
+        #return '''<center><font size="+2"
+        #>&gt;&gt;&gt;&nbsp;TMDA&nbsp</font></center>'''
+        rootdir = self.__linkfixer.rootdir()
+        return '''
+<center>
+    <a href="%(rootdir)s/index.html">
+    <img border=0 src="%(rootdir)s/img/blocksmall.png"></a></center>''' \
+    % self.__d
 
     def get_body(self):
         self.__grokbody()
@@ -121,19 +127,32 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
                 # there is no wide body
                 self.__body = text
 
-
-    # python.org color scheme overrides
     def get_lightshade(self):
-        return '#cccccc'
-        
+        #return '#fffedc'
+        #return '#ffccff'
+        return '#e5e5e5'
+    
     def get_mediumshade(self):
         return '#9862cb'
 
     def get_darkshade(self):
-        return '#191970'
+        return '#000000'
 
     def get_corner_bgcolor(self):
-        return '#afeeee'
+        return '#e5e5e5'
+
+    # TMDA 1.0.x color scheme
+    #def get_lightshade(self):
+    #    return '#cccccc'
+    #    
+    #def get_mediumshade(self):
+    #    return '#9862cb'
+    #
+    #def get_darkshade(self):
+    #    return '#191970'
+    #
+    #def get_corner_bgcolor(self):
+    #    return '#afeeee'
     
 # jython.org color scheme
 #     def get_lightshade(self):
