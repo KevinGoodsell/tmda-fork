@@ -188,10 +188,8 @@ precedence = message_headers.getheader('precedence', None)
 # If its value is "bulk", "junk", or "list" we should not generate any
 # auto-replies.
 auto_reply = 1
-if precedence:
-    precedence = string.lower(precedence)
-    if precedence in ('bulk','junk','list'):
-        auto_reply = 0
+if precedence and string.lower(precedence) in ('bulk','junk','list'):
+    auto_reply = 0
 
 
 def logit(action_msg,date):
