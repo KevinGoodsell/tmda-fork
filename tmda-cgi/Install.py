@@ -111,8 +111,8 @@ Return 0 on success, error code on error."""
     "-czf", Archive] + Files
   try:
     Util.RunTask(TarCmd)
-  except OSError:
-    CgiUtil.TermError("CreateTgz failed.", "Errcode: %d" % RetVal,
+  except OSError, ( eno, estr ):
+    CgiUtil.TermError("CreateTgz failed.", "Error: %s (%d)" % (estr, eno),
       "create backup", " ".join(TarCmd),
       "Check file permissions in home directory.")
   for (DstFn, SrcFn) in Parents:
