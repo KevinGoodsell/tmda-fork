@@ -1,3 +1,9 @@
+2001-11-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-pre.ht (Links): Mention `untrusted_set_sender = true' as
+	an alternative to `trusted_users' for allowing use of `-f' under
+	Exim.
+	
 2001-11-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* results.ht (Links): Add testimonial from Matt Armstrong

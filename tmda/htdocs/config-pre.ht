@@ -40,21 +40,14 @@ Edit your Exim run time configuration file as follows:
 <li>
 TMDA uses sendmail's `-f' option to set the envelope sender
 address on outgoing messages.  By default this option is only
-available to Exim's "trusted users".  
+available to Exim's "trusted users".  You can also add
+<b>untrusted_set_sender = true</b> to your Exim configuration
+which allows untrusted users use of the -f command line option.
 <br><br>
 
-From the Exim Specification:<br><br>
-
-<blockquote>
-"A trusted user is root or the Exim user or any user listed in the
-trusted_users configuration option, or any user for whom the
-currently set group is the Exim group (if defined) or whose current
-group or any supplementary group is one of those listed in the
-trusted_groups configuration option."
-</blockquote>
-
-It is recommended that you become a trusted-user, or else the
-client side of TMDA becomes much less functional.
+It is recommended that you enable this option or become a
+trusted-user, or else the client side of TMDA becomes much less
+functional.
 <br><br>
 </ol>
 
