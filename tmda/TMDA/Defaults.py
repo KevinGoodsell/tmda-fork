@@ -517,19 +517,6 @@ if CGI_ACTIVE and not vars().has_key('CGI_SESSION_EXP'):
 if CGI_ACTIVE and not vars().has_key('CGI_USE_JS_CONFIRM'):
     CGI_USE_JS_CONFIRM = 1
 
-# CGI_USER
-# Defines the user name to use at non-critical times (such as reading
-# and writing session files.  CGI_USER is only signifigant when
-# running in system-wide mode.  See http://tmda.net/tmda-cgi/ for more
-# about modes.
-#
-# Example:
-# CGI_USER = "apache"
-#
-# Default is "nobody".
-if CGI_ACTIVE and not vars().has_key('CGI_USER'):
-    CGI_USER = "nobody"
-
 # CONFIRM_ADDRESS
 # An optional e-mail address to use for creating confirmation
 # addresses.  Normally, the recipient address is used, but in some
