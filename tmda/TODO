@@ -1,7 +1,5 @@
 General
 	
-	- FAQ
-
 	- Investigate whether to distribute TMDA using the Python
 	Distribution Utilities (``Distutils'') system.
 	
