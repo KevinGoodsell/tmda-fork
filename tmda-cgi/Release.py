@@ -85,17 +85,16 @@ and validate the pending email in question.
   if QueryStringError:
     CgiUtil.TermError("Unable to parse query string.",
       "Program error / corrupted link.",
-      "locate pending e-mail", "",
-      "retrieve pending e-mail", "",
-      "Please check the link you followed and make sure that it is typed in exactly as it was sent to you.")
+      "locate pending e-mail", "", """Please check the link you followed and
+make sure that it is typed in exactly as it was sent to you.""")
 
   MsgID = "%s.%s.msg" % (Timestamp, PID)
   # Check to make sure they're not trying to access anything other than email
   if not re.compile("^\d+\.\d+\.msg$").search(MsgID):
     CgiUtil.TermError("<tt>%s.%s.%s</tt> is not a valid message ID." % \
       (Timestamp, PID, HMAC), "Program error / corrupted link.",
-      "retrieve pending e-mail", "",
-      "Please check the link you followed and make sure that it is typed in exactly as it was sent to you.")
+      "retrieve pending e-mail", "", """Please check the link you followed and
+make sure that it is typed in exactly as it was sent to you.""")
 
   # Set up the user's home directory.
   try:
@@ -110,8 +109,9 @@ and validate the pending email in question.
         # Old style URLs are not allowed with virtual user setups.
         CgiUtil.TermError("Confirm Failed",
           "Old-style URL is not compatible with virtual users",
-          "use incompatible URL",
-          "Contact this message's sender by an alternate means and inform them of this error, or try confirming your message using an alternate method.")
+          "use incompatible URL", """Contact this message's sender by an
+alternate means and inform them of this error, or try confirming your message
+using an alternate method.""")
       User = Recipient
       VLookup = \
         CgiUtil.ParseString(os.environ["TMDA_VLOOKUP"], User )
@@ -124,14 +124,16 @@ and validate the pending email in question.
         CgiUtil.TermError("Can't load virtual user stub.",
           "Cannot execute %s" % Filename, "execute stub",
           "TMDA_VLOOKUP = %s" % os.environ["TMDA_VLOOKUP"],
-          "Contact this message's sender by an alternate means and inform them of this error, or try confirming your message using an alternate method.")
+          """Contact this message's sender by an alternate means and inform them
+of this error, or try confirming your message using an alternate method.""")
       Home, Uid, Gid = Sandbox["getuserparams"](List)
     else:
       Home, Uid, Gid = Util.getuserparams( User )
   except KeyError:
     CgiUtil.TermError("No such user", "User %s not found" % User, 
-        "tried to find user %s" % User,
-        "Contact this message's sender by an alternate means and inform them of this error, or try confirming your message using an alternate method.")
+        "find user %s" % User, "", 
+        """Contact this message's sender by an alternate means and inform them
+of this error, or try confirming your message using an alternate method.""")
   if Uid < 2:
     PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
     Uid = PasswordRecord[2]
@@ -140,7 +142,8 @@ and validate the pending email in question.
       CgiUtil.TermError("TMDA_VUSER is UID 0.", "It is not safe to run "
         "tmda-cgi as root.", "set euid",
         "TMDA_VUSER = %s" % os.environ["TMDA_VUSER"],
-        "Contact this message's sender by an alternate means and inform them of this error, or try confirming your message using an alternate method.")
+        """Contact this message's sender by an alternate means and inform them
+of this error, or try confirming your message using an alternate method.""")
 
   # We now have the home directory and the User.  Set this in the environment.
   os.environ["USER"] = User
@@ -155,8 +158,8 @@ and validate the pending email in question.
   try:
     os.seteuid(0)
     os.setegid(0)
-    os.setgid(Gid)
-    os.setuid(Uid)
+    os.setgid(int(Gid))
+    os.setuid(int(Uid))
   except OSError:
     pass
 
