@@ -1,3 +1,8 @@
+2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* install.ht: Version information for post-installation success
+	reports now comes from tmda-keygen -V.
+
 2002-02-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* download.ht (Links): Link to Arcady Genkin's Gentoo Linux
