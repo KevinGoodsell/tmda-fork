@@ -31,6 +31,7 @@ import CgiUtil
 import Template
 
 from TMDA import Defaults
+from TMDA import Version
 
 # Regular expression searches
 EscapeSearch  = re.compile('(\\")')
@@ -138,7 +139,7 @@ def Show():
     FileContents = []
 
   # Which view does the user want?  Form or text?
-  if PVars["LocalConfig"] == "Form":
+  if PVars["LocalConfig"] == "Form" and Version.TMDA < 1.1:
     # User wants to view the config in form mode.  First we need to dismantle
     # the current config file in a way that we can rebuild it, then we need to
     # verify that it is safe to proceed.
@@ -255,7 +256,7 @@ Not safe to proceed in form mode.
   else:
     FileContents = "".join(FileContents)
 
-  if PVars["LocalConfig"] == "Text":
+  if PVars["LocalConfig"] == "Text" or Version.TMDA >= 1.1:
     # We're in text view, hide form view
     T["FormView"]
     T["FileContents"] = FileContents
