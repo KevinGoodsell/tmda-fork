@@ -1,3 +1,7 @@
+2002-11-25  David Guerizec  <david@guerizec.net>
+
+    * tmda-pending: Use the new module Pending.py
+
 2002-11-22  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-pending: Add --whitelist and --blacklist command-line
