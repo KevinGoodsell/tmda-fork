@@ -217,9 +217,37 @@ def file_to_list(file,list):
             line = string.expandtabs(line)
             line = string.split(line, ' #')[0]
             line = string.strip(line)
-            line = string.lower(line)
-            list.append(line)
+            fields = string.split(line, None, 1)
+            # preserve the case of second field
+            f1 = string.lower(fields[0])
+            try:
+                f1 = string.join([f1] + [fields[1]])
+            except IndexError:
+                pass
+            list.append(f1)
     return list
+
+
+def build_cdb(filename):
+    """Build a cdb file from a text file."""
+    import cdb
+    try:
+        cdbname = filename + '.cdb'
+        cdb = cdb.cdbmake(cdbname, cdbname + '.tmp')
+        match_list = []
+        for line in file_to_list(filename, match_list):
+            linef = line.split()
+            key = linef[0]
+            try:
+                value = linef[1]
+            except IndexError:
+                value = ''
+            cdb.add(key, value)
+        cdb.finish()
+    except:
+        return 0
+    else:
+        return 1
 
 
 def findmatch(list, addrs):

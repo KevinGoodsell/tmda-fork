@@ -40,7 +40,7 @@ class FilterParser:
     bol_comment = re.compile(r'\s*#')
 
     most_sources = re.compile(r"""
-    ( (?:(?:to|from)(?:-(?:file|cdb|dbm|ezmlm|mailman\.\S+))?)
+    ( (?:(?:to|from)(?:-(?:file|cdb|dbm|autocdb|autodbm|ezmlm|mailman\.\S+))?)
     | size )
     \ (?# NOTE: preceding character must be an actual space)
     """, re.VERBOSE | re.IGNORECASE)
@@ -267,6 +267,43 @@ class FilterParser:
 	return actions
 	
 
+    def __search_file(self, pathname, keys, actions):
+        found_match = 0
+        match_list = []
+        match_list = Util.file_to_list(pathname, match_list)
+        found_match = Util.findmatch(match_list, keys)
+        if found_match:
+            # The second column of the line may contain an
+            # overriding action specification.
+            if found_match != 1:
+                actions.clear()
+                actions.update(self.__buildactions(found_match))
+                # it's already true, but everywhere else it's 1
+                found_match = 1
+        return found_match
+
+
+    def __search_cdb(self, pathname, keys, actions):
+        """
+        Search DJB's constant databases; see <http:/cr.yp.to/cdb.html>.
+        """
+        import cdb
+        cdb = cdb.init(pathname)
+        found_match = 0
+        for key in keys:
+            if key and cdb.has_key(string.lower(key)):
+                found_match = 1
+                cdb_value = cdb[string.lower(key)]
+                # If there is an entry for this key,
+                # we consider it an overriding action
+                # specification.
+                if cdb_value:
+                    actions.clear()
+                    actions.update(self.__buildactions(cdb_value))
+                break
+        return found_match
+
+
     def firstmatch(self, recipient, senders=None,
                    msg_body=None, msg_headers=None, msg_size=None):
         """Iterate over each rule in the list looking for a match.  As
@@ -287,20 +324,13 @@ class FilterParser:
 		if found_match:
 		    break
             if source in ('from-file', 'to-file'):
-                match_list = []
                 match = os.path.expanduser(match)
-                match_list = Util.file_to_list(match,match_list)
                 if source == 'from-file' and senders:
-                    found_match = Util.findmatch(match_list,senders)
+                    keys = senders
                 elif source == 'to-file' and recipient:
-                    found_match = Util.findmatch(match_list,[recipient])
+                    keys = [recipient]
+                found_match = self.__search_file(match, keys, actions)
                 if found_match:
-                    # The second column of the line may contain an
-                    # overriding action specification.
-                    if found_match != 1:
-			actions = self.__buildactions(found_match)
-                        # it's already true, but everywhere else it's 1
-			found_match = 1
                     break
             # DBM-style databases.
             if source in ('from-dbm', 'to-dbm'):
@@ -327,24 +357,38 @@ class FilterParser:
             # DJB's constant databases; see <http://cr.yp.to/cdb.html>.
             if source in ('from-cdb', 'to-cdb'):
                 match = os.path.expanduser(match)
-                if source == 'from-cdb':
+                if source == 'from-cdb' and senders:
                     keys = senders
-                elif source == 'to-cdb':
+                elif source == 'to-cdb' and recipient:
                     keys = [recipient]
-                import cdb
-                cdb = cdb.init(match)
-                for key in keys:
-                    if key and cdb.has_key(string.lower(key)):
-			found_match = 1
-                        cdb_value = cdb[string.lower(key)]
-                        # If there is an entry for this key,
-                        # we consider it an overriding action
-                        # specification.
-                        if cdb_value:
-                            actions = self.__buildactions(cdb_value)
-                        break
+                found_match = self.__search_cdb(match, keys, actions)
                 if found_match:
-		    break
+                    break
+            # auto-build DJB's constant databases
+            if source in ('from-autocdb', 'to-autocdb'):
+                match = os.path.expanduser(match)
+                if source == 'from-autocdb':
+                    keys = senders
+                elif source == 'to-autocdb':
+                    keys = [recipient]
+                # If the text file doesn't exist, let the exception
+                #  happen and get passed back to tmda-filter.
+                txtmtime = os.path.getmtime(match)
+                # If the cdb file doesn't exist, that's not an error.
+                try:
+                    cdbmtime = os.path.getmtime(match + '.cdb')
+                except OSError:
+                    cdbmtime = 0
+                valid_cdb = 1
+                if cdbmtime <= txtmtime:
+                    valid_cdb = Util.build_cdb(match)
+                if valid_cdb:
+                    found_match = self.__search_cdb(match + '.cdb',
+                                                    keys, actions)
+                else:
+                    found_match = self.__search_file(match, keys, actions)
+                if found_match:
+                    break
             # ezmlm `subscribers' directories.
             if source in ('from-ezmlm', 'to-ezmlm'):
                 match = os.path.expanduser(match)
@@ -456,6 +500,7 @@ def _rulestr(source, match, actions):
         match = '(' + str(match) + ')'
     line = str(source) + ' ' + match + ' ' + _actionstr(actions)
     return line
+
 
 def _actionstr(actions):
     """

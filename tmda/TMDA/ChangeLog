@@ -1,3 +1,26 @@
+2002-01-31  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (file_to_list): Only lowercase the first field of a
+	whitespace split line.
+
+2002-01-31  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py: Add 'to/from-autocdb' and 'to/from-autodbm' to
+	the 'most_sources' regular expression.
+
+	(FilterParser.__search_file): New function to search a text file
+	of email addresses with optional second field (action).
+
+	(FilterParser.__search_cdb): New function to search a CDB database
+	of email addresses with optional value (action).
+
+	(FilterParser.firstmatch): Added support for 'to/from-autocdb'.
+	Moved the guts of 'to/from-file' and 'to/from-cdb' to the two
+	functions listed just above.
+
+	* Util.py (build_cdb): New function to build a CDB file from a
+	text file.
+
 2002-01-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* HMAC.py (_strxor): Python2ism - string method ok to use now.
