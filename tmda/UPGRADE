@@ -1,9 +1,24 @@
+======================================================================
+If you are upgrading from a release of TMDA < 0.21:
+
+Starting with version 0.21, the syntax for .tmda-* files changed from
+simple substring matching to supporting matching patterns based on
+Unix shell-style wildcards.  The benefits are more matching
+flexibility and better matching precision.  
+
+As a result, your global patterns will need to be modified to support
+the new syntax.  For example, `@domain.dom' will no longer match
+anyone@domain.dom.  See `FAQ' for further explanation and examples
+using the new syntax.
+
+======================================================================
+
+If you are upgrading from a release of TMDA < 0.10:
+
 Starting with version 0.10, TMDA's crypto-cookie generation and
 verification scheme switched to using HMACs instead of block cipher
 encryption, which invalidated all previous tagged addresses.  For the
 motivations behind this, see `CRYPTO'.
-
-If you are upgrading from a release of TMDA < 0.10:
 
 * The amkCrypto package is no longer necessary as HMAC uses Python's
   built-in `sha' module for hashing.
@@ -18,3 +33,4 @@ If you are upgrading from a release of TMDA < 0.10:
   with those generated prior to v0.10, so re-issue addresses as
   necessary with bin/tmda-dated-address and bin/tmda-sender-address.
 
+======================================================================
