@@ -1478,6 +1478,31 @@ if env_TMDAINJECT:
 elif not vars().has_key('TMDAINJECT'):
     TMDAINJECT = ''
 
+# MAIL_FOLLOWUP_TO
+# Inspired by qmail-inject's QMAILMFTFILE feature, MAIL_FOLLOWUP_TO
+# automatically adds a Mail-Followup-To field for messages sent to
+# mailing lists.  It works for both tmda-sendmail and tmda-ofmipd.
+#
+# MAIL_FOLLOWUP_TO can either be a list of mailing list addresses, or
+# a string pointing to a file containing mailing list addresses, one
+# per line.  If To or Cc in the message includes one of those
+# addresses (without regard to case), tmda-inject adds a
+# Mail-Followup-To field with all the To+Cc addresses.  tmda-inject
+# does not add Mail-Followup-To to a message that already has one, or
+# if the address file does not exist.
+#
+# See http://cr.yp.to/proto/replyto.html for more on Mail-Followup-To.
+#
+# Examples:
+#
+# MAIL_FOLLOWUP_TO = "/path/to/lists.txt"
+# MAIL_FOLLOWUP_TO = os.path.expanduser("~/.lists")
+# MAIL_FOLLOWUP_TO = ["tmda-users@tmda.net", "postfix-users@postfix.org"]
+#
+# No default.
+if not vars().has_key('MAIL_FOLLOWUP_TO'):
+    MAIL_FOLLOWUP_TO = None
+    
 # SUMMARY_HEADERS
 # A list containing one or more message headers that should be
 # displayed by tmda-pending's interactive mode. Listed headers are

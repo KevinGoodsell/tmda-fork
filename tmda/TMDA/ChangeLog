@@ -1,3 +1,7 @@
+2004-02-05  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Defaults.py (MAIL_FOLLOWUP_TO): New variable.
+
 2004-01-30  Jason R. Mastaler  <jason@mastaler.com>
 
 	* FilterParser.py (_FilterFile.__init__): Add 'pipe-headers'.

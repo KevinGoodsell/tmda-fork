@@ -1,3 +1,7 @@
+2004-02-05  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-inject (inject_message): Support Defaults.MAIL_FOLLOWUP_TO.
+	
 2004-01-11  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-rfilter (verify_dated_cookie): Use Util.Make_date().

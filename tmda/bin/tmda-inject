@@ -246,8 +246,28 @@ def inject_message(resending,
         del msg['From']
 	msg['From'] = message_format(magic_from, full_name,
                                      Defaults.MESSAGE_FROM_STYLE)
-    # If the MUA has added a `Mail-Followup-To' header that contains
-    # the untagged address, we need to tag that as well.
+    # Add a Mail-Followup-To field if one doesn't exist
+    if Defaults.MAIL_FOLLOWUP_TO and not msg.has_key('mail-followup-to'):
+        if isinstance(Defaults.MAIL_FOLLOWUP_TO, str):
+            if os.path.isfile(Defaults.MAIL_FOLLOWUP_TO):
+                mft_addrs = file(Defaults.MAIL_FOLLOWUP_TO, 'r').readlines()
+            else:
+                mft_addrs = None
+        else:
+            # assume a list
+            mft_addrs = Defaults.MAIL_FOLLOWUP_TO
+        if mft_addrs:
+            mft_addrs_lower = [a.lower().strip() for a in mft_addrs]
+            toccs = getaddresses(msg.get_all('to', [])
+                                 + msg.get_all('cc', []))
+            tocc_addrs = [a[1].strip() for a in toccs]
+            tocc_addrs_lower = [a.lower() for a in tocc_addrs]
+            for a in tocc_addrs_lower:
+                if a in mft_addrs_lower:
+                    msg['Mail-Followup-To'] = ', '.join(tocc_addrs)
+                    break
+    # If the Mail-Followup-To header contains an untagged address, we
+    # need to tag that as well.
     if msg.has_key('mail-followup-to'):
 	mft_list = getaddresses(msg.get_all('mail-followup-to'))
 	new_mft_list = []
@@ -258,7 +278,7 @@ def inject_message(resending,
 	    else:
 		new_mft_list.append(emaddy)
         del msg['Mail-Followup-To']
-	msg['Mail-Followup-To'] = string.join(new_mft_list, ',\n\t')
+	msg['Mail-Followup-To'] = ', '.join(new_mft_list)
     # Possibly add a `Date' field.
     if 'd' in Defaults.TMDAINJECT or not msg.has_key('date'):
         del msg['Date']
