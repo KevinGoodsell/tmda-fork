@@ -35,4 +35,4 @@ def getuserparams(List):
       Dict[Match.group(1)] = Match.group(2)
 
   # Return the home directory, UID, and GID
-  return Dict["dir"], Dict["uid"], 0, Dict["gecos"]
+  return Dict["dir"], 0, 0, Dict["gecos"]
