@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Oct 28 17:36:49 2002 -->
+<!-- Fri Nov  1 16:06:14 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -236,16 +236,23 @@ users, but many will want to customize them.  TMDA makes this easy to do.
 <br><br>
 
 If you want to use customized templates, you define <a
-href="http://tmda.net/config-vars.html#TEMPLATE_DIR">TEMPLATE_DIR</a>
+href="config-vars.html#TEMPLATE_DIR">TEMPLATE_DIR</a>
 in your ~/.tmda/config, and copy the default templates that you want
 to customize to that directory. Another option is to invoke
 tmda-filter with the <code>-t</code> option. Then edit the template(s)
 to suit your needs.
 <br><br>
 
-If a template is not found in your custom directory, the default template
-will be used. This allows you for example to only customize confirm_request.txt,
-taking the defaults for the other templates.
+If a template is not found in your custom directory, the default
+template will be used. This allows you for example to only customize
+confirm_request.txt, taking the defaults for the other templates.
+<br><br>
+
+If you want to use particular custom templates for a specific sender
+address, or sender addresses in a specific domain or top-level domain, 
+see the 
+<a href="config-vars.html#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a> 
+feature.
 
 <hr>
 
