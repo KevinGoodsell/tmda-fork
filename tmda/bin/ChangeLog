@@ -1,3 +1,8 @@
+2002-12-09  Tim Legant  <tim@catseye.net>
+
+	* tmda-rfilter (bouncegen): Test Defaults.CGI_ACTIVE before
+	Defaults.CGI_URL, in case CGI_URL has not been set.
+
 2002-12-06  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (bouncegen): confirm_accept_url holds the release
