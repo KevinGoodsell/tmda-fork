@@ -396,9 +396,17 @@ def main():
                 terse_hdrs = []
                 for hdr in Defaults.TERSE_SUMMARY_HEADERS:
                     if hdr == 'from_name':
-                        terse_hdrs.append(headers.getaddr('from')[0])
+                        from_name = headers.getaddr('from')[0]
+                        if from_name:
+                            terse_hdrs.append(from_name)
+                        else:
+                            terse_hdrs.append('None')
                     elif hdr == 'from_address':
-                        terse_hdrs.append(headers.getaddr('from')[1])
+                        from_address = headers.getaddr('from')[1]
+                        if from_address:
+                            terse_hdrs.append(from_address)
+                        else:
+                            terse_hdrs.append('None')
                     else:
                         terse_hdrs.append(headers.getheader(hdr, 'None'))
                 terse_hdrs.insert(0, msg)
