@@ -466,10 +466,11 @@ class FilterParser:
             text = ''
             while rhs:
                 try:
-                    (text, rhs) = macro.findname(rhs)
+                    (lhs, rhs) = macro.findname(rhs)
                 except ValueError:
                     text += rhs
                     break
+                text += lhs
                 (args, rhs) = macro.getargs(rhs)
                 definition = macro.expandargs(args)
                 # Create a copy of the list of macros and remove

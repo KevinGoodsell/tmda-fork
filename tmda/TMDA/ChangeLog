@@ -1,3 +1,9 @@
+2002-09-26  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py (FilterParser.__expandmacros): Fixed bug where
+	more than one instance of the same macro in a rule failed
+	miserably.
+
 2002-09-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Util.py (decode_header): New function.
