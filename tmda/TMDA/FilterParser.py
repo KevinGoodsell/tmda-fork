@@ -2,6 +2,9 @@
 #
 # Copyright (C) 2001,2002 Jason R. Mastaler <jason@mastaler.com>
 #
+# Authors: Tim Legant <tim@catseye.net> and
+#          Jason R. Mastaler <jason@mastaler.com>
+#
 # This file is part of TMDA.
 #
 # TMDA is free software; you can redistribute it and/or modify it
@@ -69,7 +72,6 @@ class MatchError(Error):
 
 
 class Macro:
-
     """Macro definition as parsed by the filter parser."""
 
     macro_words = re.compile(r'([_a-zA-Z][_\w]*)')
@@ -206,7 +208,6 @@ class Macro:
 
 
 class _FilterFile:
-    
     """Storage for per-file data.  Used internally by FilterParser."""
 
     def __init__(self, filename):
@@ -261,12 +262,12 @@ class FilterParser:
     arguments = {
         'from'         : None,
         'to'           : None,
-        'from-file'    : ('autocdb', 'autodbm', 'optional'),
-        'to-file'      : ('autocdb', 'autodbm', 'optional'),
-        'from-cdb'     : ('optional',),
-        'to-cdb'       : ('optional',),
-        'from-dbm'     : ('optional',),
-        'to-dbm'       : ('optional',),
+        'from-file'    : ('autocdb', 'autodbm', 'domains', 'optional'),
+        'to-file'      : ('autocdb', 'autodbm', 'domains', 'optional'),
+        'from-cdb'     : ('domains', 'optional',),
+        'to-cdb'       : ('domains', 'optional',),
+        'from-dbm'     : ('domains', 'optional',),
+        'to-dbm'       : ('domains', 'optional',),
         'from-ezmlm'   : ('optional',),
         'to-ezmlm'     : ('optional',),
         'from-mailman' : ('attr', 'optional' ),
@@ -785,6 +786,20 @@ class FilterParser:
         return (dbname, search_func)
 
 
+    def __add_domains(self, keys):
+        """
+        Attempt to extract the domain names from each address in keys.
+        Add these to keys and return the combined list.
+        """
+        domains = []
+        for k in keys:
+            try:
+                domains.append(k.split('@', 1)[1])
+            except IndexError:
+                pass
+        return keys + domains
+     
+
     def firstmatch(self, recipient, senders=None,
                    msg_body=None, msg_headers=None, msg_size=None):
         """Iterate over each rule in the list looking for a match.  As
@@ -800,7 +815,6 @@ class FilterParser:
                 keys = senders
             elif source.startswith('to') and recipient:
                 keys = [recipient]
-            #
             # Here starts the matching against the various rules
             #
             # regular 'from' or 'to' addresses
@@ -812,6 +826,8 @@ class FilterParser:
             if source in ('from-file', 'to-file'):
                 dbname = os.path.expanduser(match)
                 search_func = self.__search_file
+                if args.has_key('domains'):
+                    keys = self.__add_domains(keys)
                 # If we have an 'auto*' argument, ensure that the database
                 # is up-to-date.  If the 'optional' argument is also given,
                 # don't die if the file doesn't exist.
@@ -839,6 +855,8 @@ class FilterParser:
             if source in ('from-dbm', 'to-dbm'):
                 import anydbm
                 match = os.path.expanduser(match)
+                if args.has_key('domains'):
+                    keys = self.__add_domains(keys)
                 try:
                     found_match = self.__search_dbm(match, keys,
                                                     actions, source)
@@ -851,6 +869,8 @@ class FilterParser:
             if source in ('from-cdb', 'to-cdb'):
                 import cdb
                 match = os.path.expanduser(match)
+                if args.has_key('domains'):
+                    keys = self.__add_domains(keys)
                 try:
                     found_match = self.__search_cdb(match, keys,
                                                     actions, source)
