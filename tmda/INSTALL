@@ -1,10 +1,10 @@
-Installation instructions and usage information can be found under the
-"Installation & Setup" section of the TMDA homepage:
+The latest installation instructions and usage information can be
+found on the TMDA homepage:
 
     <URL:http://tmda.sourceforge.net/>
 
-A local copy of the HTML documentation is included in the "doc"
-directory.
+A local copy of the HTML documentation matching this release is
+included in the "htdocs" directory.
 
 If you are upgrading from an earlier release of TMDA, make sure to
 consult the `UPGRADE' file.

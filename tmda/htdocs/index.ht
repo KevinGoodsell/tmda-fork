@@ -1,0 +1,80 @@
+Title: Tagged Message Delivery Agent (TMDA) Homepage
+Links: overview-links.h usage-links.h support-links.h
+
+<h2>Tagged Message Delivery Agent (TMDA)</h2>
+
+TMDA is an 
+<a href="http://www.opensource.org/docs/certification_mark.html" TARGET="Resource Window">
+OSI certified</a> software application designed to significantly
+reduce the amount of 
+<a href="http://spam.abuse.net/" TARGET="Resource Window">SPAM/UCE</a>
+(junk-mail) you receive.  
+TMDA combines a "whitelist" (for known/trusted senders), a "blacklist"
+(for undesired senders), and a cryptographically enhanced confirmation
+system (for unknown, but legitimate senders).  TMDA strives to be more
+effectual, yet less time-consuming than traditional filters.
+<br><br>
+
+TMDA was originally based upon a Perl script written by Thomas Erskine called
+<a href="http://www.DeepEddy.Com/tms.html" TARGET="Resource Window">
+Tagged Message Sender</a> (TMS), but has since evolved into a significantly larger and more 
+featureful application.<br><br>
+
+TMDA (and its author) holds the following assumptions about the current Internet infrastructure:<br>
+<ol>
+<li>You cannot keep your email address secret from spammers.<br>
+<li>Content-based filters can't distinguish spam from legitimate mail with sufficient accuracy.<br>
+<li>Spam will not cease until it becomes prohibitively expensive for spammers to operate.<br><br>
+</ol>
+
+<u>TMDA's Whitelist-based Strategy</u>&nbsp;&nbsp;
+<strong>``Deny everything that is not <em>explicitly allowed</em>''</strong><br>
+<br>
+<ul>
+With TMDA, unrestricted access to your mailbox can no longer be
+assumed, a premise which spammers rely heavily upon.<br><br>
+
+The way TMDA thwarts incoming junk-mail is simple yet extremely effective.
+You maintain a "whitelist" of trusted contacts which are allowed
+directly into your mailbox.  Messages from unknown senders are held in
+a pending queue until they respond to a confirmation request sent by
+TMDA.  Once they respond to the confirmation, their original message
+is deemed legitimate and is delivered to you.  Updating your whitelist
+insures they won't have to confirm future messages.  To see what the
+confirmation process looks like, try sending 
+<a href="mailto:jason-tmdatest@mastaler.com">me</a> a test message.
+(<strong>NOTE:</strong> Confirmed test messages are automatically discarded)
+<br><br>
+
+This methodology has the advantage of being very selective about what
+it allows in, while at the same time permitting legitimate, but
+previously unknown senders to reach you.  TMDA also has several
+techniques (See 'Dated' and 'Sender' Addresses below) that make it easier
+for contacts that aren't on your whitelist to reach you.
+<br><br>
+</ul>
+
+<u>Traditional Blacklist-based Strategy</u>&nbsp;&nbsp;
+<strong>``Allow everything that is not <em>explicitly denied</em>''</strong><br>
+<br>
+<ul>
+Traditional anti-spam technical countermeasures are based upon
+maintaining a "blacklist" containing e-mail addresses, domains,
+and/or network subnets of known junk-mailers.  Or worse, a "profile" of
+message headers and message body text that fits the software's idea of
+what a piece of SPAM looks like.<br><br>
+
+The problem with this approach is that spammer's intrusion techniques
+are evolving as fast as your prevention techniques are, so the battle
+is never ending.  Maintaining the blacklist is often just as
+time-consuming as pressing the "Delete" key on the easily recognized
+junk messages.  If wasted time is your biggest complaint with junk
+e-mail, you can see why this traditional methodology is flawed.  
+<br><br>
+
+The chance of accidental "false positives" is also significantly
+higher with this more complex approach.  If you really want effective
+and reliable UCE control, you need something like TMDA that doesn't rely on
+heuristics that spammers can work around.  <br><br>
+</ul>
+

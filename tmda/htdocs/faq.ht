@@ -1,0 +1,82 @@
+Title: TMDA FAQ
+Links: overview-links.h usage-links.h support-links.h
+
+<h3>TMDA FREQUENTLY ASKED QUESTIONS</h3>
+
+<hr>
+<li><b>
+Will TMDA run on non-unix clients such as Microsoft Windows?
+</b>
+<p>
+
+Not directly since qmail and Postfix are only available for UNIX.
+However, you can configure a qmail relay to re-write the address of
+outgoing messages with tmda-inject, so that those running Microsoft
+Windows clients can take full advantage of TMDA.  See `README.RELAY'
+in the contrib/ directory for the full details.
+<p>
+
+Also, here is one user's 
+<a href="http://mla.libertine.org/tmda-users/200108/msg00002.html" TARGET="Resource Window">
+configuration details</a> 
+for a site-wide TMDA install using smtpd-auth, vpopmail and qmailadmin.
+
+<hr>
+<li><b>
+Can you clarify the syntax for the whitelist?  I'd like any address in
+my domain (domain.dom) to be able to send me mail directly without
+worrying about confirmations.
+</b>
+<p>
+
+In addition to explicit e-mail addresses, TMDA supports matching
+patterns in the list files which use Unix shell-style wildcard
+characters.  The special characters are:
+<blockquote><pre>
+Characters(s)    Description
+-------------    -----------
+*                Matches everything.
+?                Matches any single character.
+[seq]            Matches any character in seq.
+[!seq]           Matches any character not in seq.
+</blockquote></pre>
+
+In addition, <code>`@='</code> (a custom rule) will expand to match
+both <code>@</code> and <code>@*.</code> in one shot.
+<p>
+
+Here are some common examples:
+<blockquote><pre>   
+# match only jdoe@domain.dom
+jdoe@domain.dom
+# match anyone@domain.dom, but not anyone@sub.domain.dom
+*@domain.dom 
+# match anyone@sub.domain.dom, but not anyone@domain.dom
+*@*.domain.dom
+# match both anyone@domain.dom, and anyone@sub.domain.dom
+*@=domain.dom   
+</blockquote></pre>
+
+<b>NOTE</b>: For incoming mail, tmda-filter compares the address in
+the Envelope-Sender, the "From:" header and the "Reply-To:" header
+when looking for a match.
+
+<hr>
+<li><b>
+How can I delete old, unconfirmed messages from TMDA's pending queue?
+</b>
+<p>
+
+TMDA comes with a utility called `tmda-clean' which does this for you.
+You can run it by hand, or periodically from cron.  Run `tmda-clean'
+without any arguments to get a listing of possible options.
+<p>
+
+For example, to purge unconfirmed messages older than 14 days each
+morning at 2AM, add the following crontab entry:
+<blockquote><code>
+0 02 * * * /path/to/tmda/bin/tmda-clean 14d
+</blockquote></code>
+
+<hr>
+

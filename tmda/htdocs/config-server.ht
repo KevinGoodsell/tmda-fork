@@ -1,0 +1,194 @@
+Title: TMDA Server Configuration
+Links: overview-links.h usage-links.h config-links.h support-links.h
+
+<h3>TMDA Server Configuration</h3>
+
+TMDA processes incoming messages on the SMTP server though a mail
+filter program called tmda-filter.
+<br><br>
+
+Server configuration instructions differ slightly based on what MTA software
+you are running.  First follow the <A HREF="#general">general</a> 
+set of instructions, and then read the set of instructions 
+corresponding to your local configuration [ <A HREF="#qmail">qmail</a> | 
+<A HREF="#postfix">Postfix</a> ]
+<br>
+<hr>
+
+<a name="general"><h4>TMDA Server Configuration (general)</h4></a>
+
+<ol>
+
+<li>A unique, private key is required for every TMDA user.  This key
+is stored in your TMDA configuration file (<b>~/.tmdarc</b>).  A
+key-generation utility is included with the distribution.  Simply run
+<b>tmda-keygen</b> and follow its instructions.
+<br><br>
+
+<li>Populate your "whitelist" with e-mail addresses and/or wildcard patterns,
+one per line, which are considered trusted contacts and
+therefore allowed directly into your mailbox if the sender of an
+incoming message matches the list.  By default your whitelist is
+<b>~/.tmda/lists/whitelist</b>.  See <strong>FAQ</strong> for details on matching syntax.
+<br><br>
+
+<li>If necessary, create a <b>~/.tmda/lists/blacklist</b> containing e-mail
+addresses and/or wildcard patterns of senders you want to refuse mail from.
+The blacklist syntax rules are the same as for the whitelist.<br><br>
+
+</ol>
+<hr>
+
+<a name="qmail"><h4>TMDA Server Configuration (qmail-only)</h4></a>
+
+<ol>
+
+<li>Finish setting up your (<b>~/.tmdarc</b>) by reading
+through the included <b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b> is
+the only entry required for qmail users, but there may be other 
+settings you want to enable or change.
+<br><br>
+
+<li>Setup dot-qmail files appropriately in your home directory.<br><br>
+
+First setup <b>.qmail</b> as shown below, and then decide what symbolic links
+you want to make.  The idea here is that you edit only the
+(<b>.qmail</b>), and then make links there from other dot-qmail files.
+See
+<a href="http://www.qmail.org/man/man5/dot-qmail.html" TARGET="Resource Window">dot-qmail(5)</a> 
+
+if you are unfamiliar with how to use dot-qmail files to control the
+delivery of mail messages.  The simplest method involves only one link
+(<b>.qmail-default</b>).  In the absence of <b>.qmail-default</b>, you will
+need to make three links
+<b>(.qmail-dated-default,.qmail-sender-default,.qmail-confirm-default)</b> as shown below.
+
+<br><br>
+
+<table border cellpadding=4 cellspacing=2>
+
+<tr>
+<th>dot-qmail file:</th>
+<th>file contents:</th>
+<th>action:</th>
+</td>
+
+<tr>
+<td>.qmail</td>
+<td><code>
+| /path/to/tmda/bin/tmda-filter<br>
+./Mailbox
+</code>
+</td>
+<td>
+
+If the message is legitimate, it
+will pass-through to the second line and get saved to "~/Mailbox",
+otherwise it goes through the confirmation process.
+
+</td>
+</tr>
+
+
+<tr>
+<td>.qmail-default</td>
+<td><code>symbolic link<br> ($ ln -s ~/.qmail ~/.qmail-default)</code></td>
+<td>Catches jason-* as long as another dot-qmail file does not take priority.</td>
+</tr>
+
+<tr>
+<td>.qmail-dated-default</td>
+<td>
+<code>symbolic link<br> ($ ln -s ~/.qmail ~/.qmail-dated-default)</code></td>
+<td>Catches jason-dated-* and then forwards to TMDA for dated cookie processing</td>
+</tr>
+
+<tr>
+<td>.qmail-sender-default</td>
+<td>
+<code>symbolic link<br> ($ ln -s ~/.qmail ~/.qmail-sender-default)</code></td>
+<td>Catches jason-sender-* and then forwards to TMDA for sender cookie processing</td>
+</tr>
+
+<tr>
+<td>.qmail-confirm-default</td>
+<td>
+<code>symbolic link<br> ($ ln -s ~/.qmail ~/.qmail-confirm-default)</code></td>
+<td>Catches jason-confirm-* and then forwards to TMDA for confirmation cookie processing</td>
+</tr>
+</table>
+</ol>
+<br>
+
+<hr>
+
+<a name="postfix"><h4>TMDA Server Configuration (Postfix-only)</h4></a>
+
+<ol>
+
+<li>Finish setting up your (<b>~/.tmdarc</b>) by reading through the
+included <b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b>,
+<b>MAIL_TRANSFER_AGENT</b>, <b>LOCAL_DELIVERY_AGENT</b>, and
+<b>RECIPIENT_DELIMITER</b> are required entries for Postfix users.
+<br><br>
+
+<li>Enable the <strong>recipient_delimiter</strong> parameter in
+Postfix's <em>main.cf</em> if it isn't already.
+<br><br>
+
+<li>Modify <b>~/.forward</b> to send your mail to tmda-filter.
+
+<blockquote><pre>
+
+"| /path/to/tmda/bin/tmda-filter"
+
+</blockquote></pre>
+
+If Postfix fails with an <em>env: python: No such file or
+directory</em> error, you will need to specify the path to your Python
+program as well, e.g,:
+
+<blockquote><pre>
+
+"|/usr/local/bin/python /path/to/tmda/bin/tmda-filter"
+
+</blockquote></pre>
+
+<li>If you already filter your mail with procmail and wish to continue
+doing so, you can invoke tmda-filter from your <b>.procmailrc</b> instead.<br><br>
+
+First, make sure your <b>~/.forward</b> calls procmail with the <b>-p</b> option:
+
+<blockquote><pre>
+
+"|/path/to/bin/procmail -p"
+
+</blockquote></pre>
+
+Next, add the following snippet to the end of your existing <b>.procmailrc</b>
+to do final delivery:
+
+<blockquote><pre>
+
+# Run the message through tmda-filter.
+:0 w
+| /path/to/tmda/bin/tmda-filter
+
+# Take the exit code from TMDA.
+EXITCODE=$?
+
+# TMDA takes care of final delivery
+DEFAULT=/dev/null
+
+</blockquote></pre>
+				      
+Finally, modify <b>LOCAL_DELIVERY_AGENT</b> in your <b>~/.tmdarc</b> so that it
+runs procmail with an separate rcfile (to avoid an infinite loop):
+
+<blockquote><pre>
+
+LOCAL_DELIVERY_AGENT = "/path/to/bin/procmail ~/.procmailrc-tmda"
+
+</blockquote></pre>
+
+</ol>

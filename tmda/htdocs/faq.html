@@ -1,0 +1,209 @@
+<HTML>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Mon Oct 15 17:47:30 2001 -->
+<!-- USING HT2HTML 1.2 -->
+<!-- SEE http://barry.wooz.org/software/ht2html -->
+<!-- User-specified headers:
+Title: TMDA FAQ
+
+-->
+
+<HEAD>
+<TITLE>TMDA FAQ</TITLE>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff" TEXT="#000000"
+      TOPMARGIN="0" LEFTMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0"
+      LINK="#0000bb"  VLINK="#551a8b"
+      ALINK="#ff0000">
+<!-- start of page table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=0>
+<!-- start of banner row -->
+<TR>
+<!-- start of corner cells -->
+<TD WIDTH=150 VALIGN=CENTER BGCOLOR="#191970">
+
+        <font color="#191970">
+        <h3> T M D A </h3>
+        </font> </TD>
+<TD WIDTH=15 BGCOLOR="#cccccc">&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of corner cells -->
+<!-- start of banner -->
+<TD WIDTH="90%" BGCOLOR="#cccccc">
+<!-- start of site links table -->
+<TABLE WIDTH="100%" BORDER=0
+CELLSPACING=0 CELLPADDING=0
+       COLS=4 ROWS=1 BGCOLOR="#ffffff">
+<TR>
+    <TD BGCOLOR="#cccccc">
+<a href="./index.html">TMDA Homepage</a>
+    </TD>
+    <TD BGCOLOR="#cccccc">
+<a href="http://sourceforge.net/projects/tmda">TMDA @ SourceForge</a>
+    </TD>
+    <TD BGCOLOR="#cccccc">
+&nbsp;&nbsp;</TD>
+    <TD BGCOLOR="#cccccc">
+&nbsp;&nbsp;</TD>
+</TR>
+</TABLE><!-- end of site links table -->
+
+</TD><!-- end of banner -->
+</TR><!-- end of banner row -->
+<TR><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<TD WIDTH=150 VALIGN=TOP BGCOLOR="#cccccc">
+<!-- start of sidebar table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=3
+       BGCOLOR="#ffffff">
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Overview
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="index.html">Introduction</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="features.html">Features</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="results.html">Results &amp; Testimonials</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="inuse.html">TMDA In Use</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="resources.html">Other Resources</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Usage
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="requirements.html">Requirements</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="download.html">Download</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="install.html">Installation</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="config.html">Configuration</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Support
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<b>FAQ</b>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="lists.html">Mailing Lists</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="bugs.html">Bugs &amp; Patches</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Author
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="mailto:jason@mastaler.com">Jason R. Mastaler</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+&nbsp;
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+&copy; 2001
+</TD></TR>
+</TABLE><!-- end of sidebar table -->
+
+</TD>
+<TD WIDTH=15>&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<TD VALIGN=TOP WIDTH="90%"><BR>
+<h3>TMDA FREQUENTLY ASKED QUESTIONS</h3>
+
+<hr>
+<li><b>
+Will TMDA run on non-unix clients such as Microsoft Windows?
+</b>
+<p>
+
+Not directly since qmail and Postfix are only available for UNIX.
+However, you can configure a qmail relay to re-write the address of
+outgoing messages with tmda-inject, so that those running Microsoft
+Windows clients can take full advantage of TMDA.  See `README.RELAY'
+in the contrib/ directory for the full details.
+<p>
+
+Also, here is one user's 
+<a href="http://mla.libertine.org/tmda-users/200108/msg00002.html" TARGET="Resource Window">
+configuration details</a> 
+for a site-wide TMDA install using smtpd-auth, vpopmail and qmailadmin.
+
+<hr>
+<li><b>
+Can you clarify the syntax for the whitelist?  I'd like any address in
+my domain (domain.dom) to be able to send me mail directly without
+worrying about confirmations.
+</b>
+<p>
+
+In addition to explicit e-mail addresses, TMDA supports matching
+patterns in the list files which use Unix shell-style wildcard
+characters.  The special characters are:
+<blockquote><pre>
+Characters(s)    Description
+-------------    -----------
+*                Matches everything.
+?                Matches any single character.
+[seq]            Matches any character in seq.
+[!seq]           Matches any character not in seq.
+</blockquote></pre>
+
+In addition, <code>`@='</code> (a custom rule) will expand to match
+both <code>@</code> and <code>@*.</code> in one shot.
+<p>
+
+Here are some common examples:
+<blockquote><pre>   
+# match only jdoe@domain.dom
+jdoe@domain.dom
+# match anyone@domain.dom, but not anyone@sub.domain.dom
+*@domain.dom 
+# match anyone@sub.domain.dom, but not anyone@domain.dom
+*@*.domain.dom
+# match both anyone@domain.dom, and anyone@sub.domain.dom
+*@=domain.dom   
+</blockquote></pre>
+
+<b>NOTE</b>: For incoming mail, tmda-filter compares the address in
+the Envelope-Sender, the "From:" header and the "Reply-To:" header
+when looking for a match.
+
+<hr>
+<li><b>
+How can I delete old, unconfirmed messages from TMDA's pending queue?
+</b>
+<p>
+
+TMDA comes with a utility called `tmda-clean' which does this for you.
+You can run it by hand, or periodically from cron.  Run `tmda-clean'
+without any arguments to get a listing of possible options.
+<p>
+
+For example, to purge unconfirmed messages older than 14 days each
+morning at 2AM, add the following crontab entry:
+<blockquote><code>
+0 02 * * * /path/to/tmda/bin/tmda-clean 14d
+</blockquote></code>
+
+<hr>
+
+
+</TD><!-- end of body cell -->
+</TR><!-- end of sidebar/body row -->
+</TABLE><!-- end of page table -->
+</BODY></HTML>

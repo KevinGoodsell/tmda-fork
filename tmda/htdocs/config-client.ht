@@ -1,0 +1,257 @@
+Title: TMDA Client Configuration
+Links: overview-links.h usage-links.h config-links.h support-links.h
+
+<h3>TMDA Client Configuration</h3>
+In addition to filtering your incoming e-mail, TMDA can also work with
+your mail client to modify your outgoing address with unique,
+cryptographically enhanced (tagged) e-mail addresses.  This is done to compliment
+the filter's "whitelist" functionality.<br><br>
+
+<u>Dated Addresses</u><br><br>
+<ul>
+TMDA can automatically tag your messages with a temporary e-mail
+address which only works for a defined time interval (e.g, 5 days).
+During this period, even those not on your whitelist will be able to
+contact you using the dated address.  This also allows you to participate
+freely in open discussion forums such as Internet mailing lists
+without fear that your address will be "harvested" by spammers for
+later use against you, and without opening up your whitelist more than
+necessary.
+
+Here is an example dated address:
+<blockquote><pre>
+jason-dated-989108708.a17f80@mastaler.com
+</pre></blockquote>
+
+This particular address expires on Sun, May 6 00:25:08 2001 UTC,
+which is exactly 5 days after it was generated.
+TMDA time intervals can be set in years, months, weeks, days, hours, minutes, and
+seconds.  Once a dated address expires, messages sent there must
+go through the confirmation process.  Use of strong cryptography insures
+that the timestamp can't be modified.
+</ul><br>
+
+<u>Sender Addresses</u><br><br>
+<ul>
+TMDA can also tag your messages with a sender address which is an e-mail
+address that only a certain sender can use.
+
+Here is an example sender address:
+
+<blockquote><pre>
+jason-sender-a751af@mastaler.com
+</pre></blockquote>
+
+This particular sender address will only accept messages from
+<em>president@whitehouse.gov</em>.  Other messages must go through
+the confirmation process.
+</ul><br>
+</ul>
+
+The <b>tmda-sendmail</b> command is invoked from your client to
+automatically add the proper tag to your e-mail address and
+then send your message.
+<br><br>
+
+<li>.tmdarc configuration:<br><br>
+
+Make sure that you use the same .tmdarc on your mail server as you do
+on your client, so that requires settings such as CRYPT_KEY
+match.<br><br>
+
+The tag that gets added to your address in your outgoing mail depends
+on how you have configured your .tmdarc.  Unless you tell it
+differently, TMDA will by default tag your outgoing address with a dated cookie.
+For other options, see the "User configurable
+settings" section in <strong>Defaults.py</strong>.<br><br>
+
+<strong>NOTE:</strong>
+
+The <em>bare</em> <strong>COOKIE_TYPE</strong> is especially useful
+when maintaining a "whitelist" of trusted contacts to filter your
+incoming mail against as described in the above sections.  By default,
+addresses matching your <strong>WHITELIST</strong> will receive
+untagged (no cookie added) messages.  This way your trusted contacts
+will not even be aware of TMDA.  Set <strong>WHITELIST_TO_BARE = 0</strong>
+in your <b>.tmdarc</b> to reverse this behavior.
+
+<br><br>
+
+<li>Mail User Agent (MUA) configuration:<br><br>
+
+To have TMDA read your .tmdarc each time it sends outgoing mail and
+modify your sender address accordingly, you must arrange for your MUA
+to call the included sendmail compatibility wrapper.  Here is how to
+accomplish this for a few popular MUAs.  Let me know if you are using
+TMDA with a MUA not listed here.<br><br>
+
+<ul>
+<li>For BSD Mail/mailx, add the following line to your .mailrc file:<br>
+<blockquote>
+<pre>
+set sendmail="/path/to/tmda/bin/tmda-sendmail"
+
+</pre></blockquote>
+
+<li>For <a href="http://www.washington.edu/pine/" TARGET="Resource Window">Pine</a>,
+ add the following line to your .pinerc file:<br>
+<blockquote>
+<pre>
+sendmail-path="/path/to/tmda/bin/tmda-sendmail"
+
+</pre></blockquote>
+
+<li>For <a href="http://www.mutt.org/" TARGET="Resource Window">Mutt</a>,
+ add the following line to your .muttrc file:<br>
+<blockquote>
+<pre>
+set sendmail="/path/to/tmda/bin/tmda-sendmail"
+
+</pre></blockquote>
+
+<li>For <a href="http://www.wonderworks.com/vm/" TARGET="Resource Window">VM</a>,
+add the following line to your .vm file:<br>
+<blockquote>
+<pre>
+(setq sendmail-program "/path/to/tmda/bin/tmda-sendmail")
+
+</pre></blockquote>
+
+<li>For <a href="http://www.gnus.org/" TARGET="Resource Window">Gnus</a>,
+add the following line to your .gnus file:<br>
+<blockquote>
+<pre>
+(setq sendmail-program "/path/to/tmda/bin/tmda-sendmail")
+
+</pre></blockquote>
+
+<li>For <a href="http://sylpheed.good-day.net/" TARGET="Resource Window">Sylpheed</a>,
+ Configuration --> Common Preferences --> Send --> External Program<br>
+<ul>
+<li>Check <em>Use external program for sending</em>
+<li>In the <em>Program path</em> box, enter <em>/path/to/tmda/bin/tmda-sendmail</em>
+</ul>
+
+<br>
+
+<li>For <a href="http://kmail.kde.org/" TARGET="Resource Window">KMail (KDE Mail)</a>,
+ Settings --> Configure KMail --> Network --> Sending Mail<br>
+<ul>
+<li>Check <em>Sendmail</em>
+<li>In the <em>Location</em> box, enter <em>/path/to/tmda/bin/tmda-sendmail</em>
+
+</ul>
+</ul>
+</ul>
+
+<li>X-TMDA header:<br><br>
+You can override any declarations you might have in your list files by
+adding this header when composing a message.
+TMDA will look for it when determining how to
+tag the message.  The header will be removed before the message is
+sent.  Here is how it can be used:
+<br>
+<ul>
+<table cellpadding=8 cellspacing=2>
+
+<tr>
+<td><code>
+X-TMDA: bare
+</td></code>
+<td>
+Sends the message to all recipients with your address untagged (no cookie added)
+</td>
+</tr>
+
+<tr>
+<td><code>
+X-TMDA: dated
+</td></code>
+<td>
+Send the message to all recipients with a dated address (default timeout interval)
+</td>
+</tr>
+
+<tr>
+<td><code>
+X-TMDA: dated 3M
+</td></code>
+<td>
+Send the message to all recipients with a dated address that expires in 3 months
+</td>
+</tr>
+
+<tr>
+<td><code>
+X-TMDA: sender
+</td></code>
+<td>
+Send the message to all recipients with a sender cookie added to your address
+</td>
+</tr>
+
+<tr>
+<td><code>
+X-TMDA: exp postmaster@xemacs.org
+</td></code>
+<td>
+Send the message to all recipients from postmaster@xemacs.org
+</td>
+</tr>
+<tr>
+<td><code>
+X-TMDA: ext mlist-xemacs-beta
+</td></code>
+<td>
+Send the message to all recipients from jason-mlist-xemacs-beta@mastaler.com
+</td>
+</tr>
+</table>
+</ul>
+</ul>
+
+
+
+<li>Miscellaneous:<br><br>
+Two utilities <b>tmda-dated-address</b> and
+<b>tmda-sender-address</b> are included to generate <em>dated</em>
+and <em>sender</em> style addresses from the command line.
+<br><br> 
+
+If you still read <a href="http://www.usenet.org/" TARGET="Resource Window">USENET</a> 
+(a notorious source of SPAM), you might find it useful to post using a dated address.  
+Simply have your newsreader call <strong>tmda-dated-address</strong> and use the result as your
+posting address.<br><br>
+
+For <a href="http://www.gnus.org/" TARGET="Resource Window">Gnus</a>, this could
+be accomplished with the following addition to your .gnus file:
+
+<blockquote>
+<pre>
+
+(defun tmda-dated-address () 
+  (shell-command-to-string "/path/to/tmda/bin/tmda-dated-address"))
+ 
+(setq gnus-posting-styles 
+      (message-this-is-news           
+       (address tmda-dated-address))) 
+
+</pre></blockquote>
+
+<strong>tmda-sender-address</strong> can be used to generate
+subscription addresses for mailing lists without worry that the
+subscription list might get harvested by spammers.  For example:
+  
+<blockquote>
+<pre>
+
+$ tmda-sender-address python-list-admin@python.org | more
+
+  jason-sender-2cd688@mastaler.com
+
+</pre></blockquote>
+
+(now subscribe to python-list using this sender-address, and only
+python-list-admin@python.org will be able to send mail there)<br><br>
+
+</ul>

@@ -1,0 +1,31 @@
+Title: TMDA Installation
+Links: overview-links.h usage-links.h support-links.h
+
+<h3>TMDA Installation</h3>
+
+<u>Installation from gzipped tarball</u><br><br>
+Choose an installation location which can either be an individual area 
+(such as within your home directory), or a shared area (such as /usr/local) 
+for system-wide use, and change to that directory.<br><br>
+<ol>
+<li>Unpack the TMDA distribution.<br>
+<blockquote><pre>
+
+# gunzip -c tmda-0.01.tgz | tar xvf -
+
+</pre></blockquote>
+
+<li>If this is a system-wide install, run the <strong>compileall</strong>
+script to byte-compile all the .py files.  Byte-compilation is
+optional, but will speed TMDA's start-up time.  This will be done
+automatically by Python if you have write permissions in the
+installation directory, which is why it's not necessary for individual
+installs.
+<blockquote><pre>
+
+# cd tmda-0.01
+# ./compileall
+
+</pre></blockquote>
+</ol>
+
