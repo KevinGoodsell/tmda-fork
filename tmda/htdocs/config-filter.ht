@@ -140,6 +140,12 @@ jdoe@domain.dom
 
 </blockquote></pre>
 
+The body* and headers* sources on the other hand take regular expressions as defined
+in Python's
+<a href="http://www.python.org/doc/current/lib/module-re.html" TARGET="Resource Window">
+re module</a>.
+<br><br>
+
 <li><b>action</b>: 
 action specifies what action to take on the message.  An optional
 <code><b>=</b></code> separates the action from the action's option.
