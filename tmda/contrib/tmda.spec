@@ -6,7 +6,7 @@ Summary: Tagged Message Delivery Agent
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source0: http://tmda.net/releases/unstable/%{name}-%{version}.tgz
+Source0: http://www.tmda.net/releases/unstable/%{name}-%{version}.tgz
 License: GPL
 Group: Utilities/System
 BuildRoot: %{_tmppath}/%{name}-buildroot
@@ -73,7 +73,7 @@ rm -rf %{buildroot}
 Summary: Tagged Message Delivery Agent - ofmipd server
 Group: System/Daemons
 Requires: tmda >= %{version}
-Url: http://tmda.net/tmda-ofmipd.html
+Url: http://www.tmda.net/tmda-ofmipd.html
 %description ofmipd
 tmda-ofmipd is an async I/O based authenticated ofmip proxy for TMDA.
 This allows users of any mail client capable of SMTP Authentication
