@@ -1,3 +1,7 @@
+2002-02-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec (Source0): Update download link.
+
 2002-02-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Remove list2cdb and list2bm.

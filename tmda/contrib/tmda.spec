@@ -6,7 +6,7 @@ Summary: Tagged Message Delivery Agent
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source0: http://prdownloads.sourceforge.net/tmda/%{name}-%{version}.tgz
+Source0: http://software.libertine.org/tmda/releases/%{name}-%{version}.tgz
 License: GPL
 Group: Utilities/System
 BuildRoot: /var/tmp/%{name}-buildroot
