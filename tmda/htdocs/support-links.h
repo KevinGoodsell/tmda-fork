@@ -5,4 +5,5 @@
 <li><a href="bugs.html">Bugs &amp; Patches</a>
 <li><a href="http://tmda.net/lists/listinfo/" TARGET="Resource Window">Mailing Lists</a>
 <li><a href="http://mla.libertine.org/" TARGET="Resource Window">List Archive</a> 
+<li><a href="support-commercial.html">Commercial Support</a>
 <li><a href="resources.html">External Resources</a>
