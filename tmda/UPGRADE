@@ -2,9 +2,6 @@
 
 If you are upgrading from a release of TMDA < 0.48:
 
-* Several of the sources now take arguments.  See the filter file
-  documentation for more details.
-
 * The 'to-autocdb' and 'from-autocdb' sources have been removed.  If
   you use the autocdb functionality, you will need to change these
   sources to 'to-file' or 'from-file', respectively, and add the
