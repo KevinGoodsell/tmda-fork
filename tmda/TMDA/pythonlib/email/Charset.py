@@ -89,20 +89,14 @@ ALIASES = {
     }
 
 # Map charsets to their Unicode codec strings.  Note that Python
-# doesn't come with any Asian codecs by default.  Here's where to get
-# them:
-#
-# Chinese/Korean - CJKCodecs (http://cjkpython.i18n.org/)
-# Japanese - JapaneseCodecs (http://www.asahi-net.or.jp/~rd6t-kjym/python)
+# doesn't come with any Asian codecs by default.  The CJKCodecs
+# package available at http://cjkpython.i18n.org/ provides a unified
+# unicode codec set for Chinese, Japanese and Korean encodings.
 
 CODEC_MAP = {
-    # cjkcodecs isn't ready to replace JapaneseCodecs yet
-    #'euc-jp':      'cjkcodecs.euc-jp',
-    #'iso-2022-jp': 'cjkcodecs.iso-2022-jp',
-    #'shift_jis':   'cjkcodecs.shift_jis',
-    'euc-jp':      'japanese.euc-jp',
-    'iso-2022-jp': 'japanese.iso-2022-jp',
-    'shift_jis':   'japanese.shift_jis',
+    'euc-jp':      'cjkcodecs.euc-jp',
+    'iso-2022-jp': 'cjkcodecs.iso-2022-jp',
+    'shift_jis':   'cjkcodecs.shift_jis',
     'euc-kr':      'cjkcodecs.euc-kr',
     'ks_c_5601-1987': 'cjkcodecs.cp949',
     'iso-2022-kr': 'cjkcodecs.iso-2022-kr',

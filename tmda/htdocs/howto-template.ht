@@ -205,32 +205,27 @@ that header.
 
 Multi-byte character sets such as those used in CJK can be used in a
 TMDA template, but requires that the proper Unicode codec be
-installed into your Python first (single-byte 8-bit charsets don't need
+installed into your Python (single-byte 8-bit charsets don't need
 a Unicode codec).
+<br><br>
 
-<h4>Chinese/Korean</h4>
-
-First install the 
+You must first install the 
 <a href="http://cjkpython.i18n.org/" TARGET="Resource Window">CJKCodecs</a> 
-Python package.  MacOS X, Debian Linux, and FreeBSD packages are also available.
-The latest version of the package at this writing is 1.0.1. 
-<br><br>
+Python package.  The latest version of the package at this writing is 1.0.1. 
 
-Simplified Chinese: Templates must be in the <strong>GB2312</strong> charset.<br>
-Traditional Chinese: Templates must be in the <strong>BIG5</strong> charset.<br>
-Korean: Templates must be in the <strong>EUC-KR</strong> charset.
+<ul>
 
-<h4>Japanese</h4>
+<li>Simplified Chinese: Your templates must be saved in the <strong>GB2312</strong> charset.<br><br>
 
-First install the <a href="http://www.asahi-net.or.jp/~rd6t-kjym/python/" 
-TARGET="Resource Window">JapaneseCodecs</a>
-Python package. Debian Linux and FreeBSD packages are also available. 
-The latest version of the package at this writing is 1.4.9.
-<br><br>
+<li>Traditional Chinese: Your templates must be saved in the <strong>BIG5</strong> charset.<br><br>
 
-Templates must be in the <strong>EUC-JP</strong> charset, not
+<li>Japanese: Your templates must be saved in the <strong>EUC-JP</strong> charset, not
 ISO-2022-JP or Shift_JIS.  When the e-mail message is sent, the text
-will be automatically be convered into ISO-2022-JP for 7-bit transmission.
+will be automatically be convered into ISO-2022-JP for reliable 7-bit transmission.<br><br>
+
+<li>Korean: Your templates must be saved in the <strong>EUC-KR</strong> charset.
+
+</ul>
 
 <h3>Choosing the right character set</h3>
 
