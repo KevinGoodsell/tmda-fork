@@ -1,3 +1,7 @@
+2003-05-25  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (pendingdir): Use Defaults.PENDING_DIR.
+
 2003-05-24  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (bouncegen): Consult Defaults.CGI_VIRTUALUSER when

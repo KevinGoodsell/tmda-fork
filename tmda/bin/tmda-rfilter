@@ -259,8 +259,7 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
 subject = msgin.get('subject')
 x_primary_address = parseaddr(msgin.get('x-primary-address'))[1]
 
-# The directory of pending messages.
-pendingdir = os.path.join(Defaults.DATADIR, 'pending')
+pendingdir = Defaults.PENDING_DIR
 
 # Catchall variable to enable/disable auto-responses.
 auto_reply = 1

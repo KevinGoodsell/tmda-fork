@@ -1054,6 +1054,19 @@ if MYSQL_ENABLED and not vars().has_key('MYSQL_USER'):
 if MYSQL_ENABLED and not vars().has_key('MYSQL_PASSWORD'):
     MYSQL_PASSWORD = ""
 
+# PENDING_DIR
+# Full path to the directory containing messages pending confirmation
+# (aka, the "pending queue").  If this directory doesn't exist, it
+# will automatically be created by TMDA with 0700 permissions when the
+# first message arrives.
+#
+# Example:
+# PENDING_DIR = "/full/path/to/pending/"
+#
+# Default is ~/.tmda/pending/
+if not vars().has_key('PENDING_DIR'):
+    PENDING_DIR = os.path.join(DATADIR, 'pending')
+
 # PENDING_LIFETIME
 # A time interval describing how long a message can live in the
 # pending queue before it's subject to automated deletion by
@@ -1103,7 +1116,7 @@ if not vars().has_key('PENDING_CLEANUP_ODDS'):
 #
 # Default is ~/.tmda/pending/.msgcache
 if not vars().has_key('PENDING_CACHE'):
-    PENDING_CACHE = os.path.join(DATADIR, 'pending', '.msgcache')
+    PENDING_CACHE = os.path.join(PENDING_DIR, '.msgcache')
     
 # PENDING_CACHE_LEN
 # An integer which specifies the maximum number of entries held by

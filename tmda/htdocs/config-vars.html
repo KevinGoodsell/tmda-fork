@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat May 24 23:10:23 2003 -->
+<!-- Sun May 25 18:40:43 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -335,76 +335,78 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#PENDING_DELETE_APPEND">PENDING_DELETE_APPEND</a></td>
+<td><a href="#PENDING_DIR">PENDING_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_LIFETIME">PENDING_LIFETIME</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_RELEASE_APPEND">PENDING_RELEASE_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_WHITELIST_APPEND">PENDING_WHITELIST_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PRIMARY_ADDRESS_MATCH">PRIMARY_ADDRESS_MATCH</a></td>
+</tr>
+<tr>
 <td><a href="#PURGED_HEADERS_CLIENT">PURGED_HEADERS_CLIENT</a></td>
-</tr>
-<tr>
 <td><a href="#PURGED_HEADERS_DELIVERY">PURGED_HEADERS_DELIVERY</a></td>
+</tr>
+<tr>
 <td><a href="#PURGED_HEADERS_SERVER">PURGED_HEADERS_SERVER</a></td>
-</tr>
-<tr>
 <td><a href="#RECIPIENT_DELIMITER">RECIPIENT_DELIMITER</a></td>
+</tr>
+<tr>
 <td><a href="#RECIPIENT_HEADER">RECIPIENT_HEADER</a></td>
-</tr>
-<tr>
 <td><a href="#RESPONSE_DIR">RESPONSE_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#SENDER_TEMPLATE_VARS">SENDER_TEMPLATE_VARS</a></td>
-</tr>
-<tr>
 <td><a href="#SENDMAIL_PROGRAM">SENDMAIL_PROGRAM</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPAUTH_PASSWORD">SMTPAUTH_PASSWORD</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPAUTH_USERNAME">SMTPAUTH_USERNAME</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPHOST">SMTPHOST</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL">SMTPSSL</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPSSL_CERTFILE">SMTPSSL_CERTFILE</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL_KEYFILE">SMTPSSL_KEYFILE</a></td>
+</tr>
+<tr>
 <td><a href="#SMTP_MAX_SESSIONS_PER_CONNECTION">SMTP_MAX_SESSIONS_PER_CONNECTION</a></td>
-</tr>
-<tr>
 <td><a href="#SUMMARY_HEADERS">SUMMARY_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_CONFIRM">TAGS_CONFIRM</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_DATED">TAGS_DATED</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_KEYWORD">TAGS_KEYWORD</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_SENDER">TAGS_SENDER</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_EMAIL_HEADERS">TEMPLATE_EMAIL_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_ENCODED_HEADERS">TEMPLATE_ENCODED_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TIMEOUT">TIMEOUT</a></td>
+</tr>
+<tr>
 <td><a href="#TMDAINJECT">TMDAINJECT</a></td>
-</tr>
-<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-<td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
 <td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
-<td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
 </tr>
+<tr>
+<td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
 </table>
 
 <dl>
@@ -1289,6 +1291,19 @@ Example:
 <code>PENDING_DELETE_APPEND = "/full/path/to/blacklist"</code>
 <br><br>
 No default
+<dt><hr>
+<a name="PENDING_DIR"><h4>PENDING_DIR</h4></a>
+<dd>
+Full path to the directory containing messages pending confirmation
+(aka, the "pending queue").  If this directory doesn't exist, it
+will automatically be created by TMDA with 0700 permissions when the
+first message arrives.
+<br><br>
+Example:
+<br><br>
+<code>PENDING_DIR = "/full/path/to/pending/"</code>
+<br><br>
+Default is ~/.tmda/pending/
 <dt><hr>
 <a name="PENDING_LIFETIME"><h4>PENDING_LIFETIME</h4></a>
 <dd>

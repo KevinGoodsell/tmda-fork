@@ -71,7 +71,7 @@ class Queue:
 
     def initQueue(self):
         """Initialize the queue with the given parameters (see __init__)."""
-        self.pendingdir = os.path.join(Defaults.DATADIR, 'pending')
+        self.pendingdir = Defaults.PENDING_DIR
         if not os.path.exists(self.pendingdir):
             raise Errors.QueueError, 'Pending directory %s does not exist, exiting.' % self.pendingdir
     
@@ -415,7 +415,7 @@ class Message:
     confirm_accept_address = None
     def __init__(self, msgid, recipient = None):
         self.msgid = msgid
-        self.msgfile = os.path.join(Defaults.DATADIR, 'pending', self.msgid)
+        self.msgfile = os.path.join(Defaults.PENDING_DIR, self.msgid)
         if not os.path.exists(self.msgfile):
             raise Errors.MessageError, '%s not found!' % self.msgid
         try:

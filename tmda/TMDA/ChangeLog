@@ -1,3 +1,10 @@
+2003-05-25  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Defaults.py (PENDING_DIR): New variable.
+
+	* Pending.py (Queue.initQueue): Use Defaults.PENDING_DIR.
+	(Message.__init__): Ditto.
+
 2003-05-24  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Defaults.py (CGI_VIRTUALUSER): New variable.
