@@ -117,6 +117,15 @@ def getfileuid(path):
     return statinfo[stat.ST_UID]
 
 
+def getvuserhomedir(user, domain, script):
+    """Return the home directory of a qmail virtual domain user."""
+    cmd = "%s %s %s" % (script, user, domain)
+    fpin = os.popen(cmd)
+    vuserhomedir = fpin.read()
+    fpin.close()
+    return vuserhomedir.strip()
+
+
 def seconds(timeout):
     """Translate the defined timeout interval into seconds."""
     match = re.match("^([0-9]+)([YMwdhms])$", timeout)

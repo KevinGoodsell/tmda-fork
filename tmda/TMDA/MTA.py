@@ -25,7 +25,6 @@
 import os
 import sys
 
-import Defaults
 import Deliver
 import Errors
 import Util
@@ -33,12 +32,13 @@ import Util
 
 class MTA:
     """Non-qmail methods and instance variables. """
-    def __init__(self):
+    def __init__(self, default_delivery):
         # Exit status codes; see /usr/include/sysexits.h
         self.EX_HARD = 77               # permission denied; bounce message
         self.EX_OK = 0                  # successful termination; exit
         self.EX_STOP = None             # Non-qmail MTAs don't have such an exit code
         self.EX_TEMPFAIL = 75           # temporary failure; defer delivery
+        self.default_delivery = default_delivery
         
     # Define the four states of a message.
     def bounce(self):
@@ -52,28 +52,31 @@ class MTA:
 
     def deliver(self, msg, instruction=None):
         if instruction is None:
-            instruction = Defaults.DELIVERY
+            instruction = self.default_delivery
         msg = Deliver.Deliver(msg, instruction)
         msg.deliver()
         self.stop()
-            
+
+    def getvdomainprepend(self, address, vdomainsfile):
+        raise NotImplementedError
+
 
 class Exim(MTA):
     """Exim-specific methods and instance variables."""
-    def __init__(self):
-        MTA.__init__(self)
+    def __init__(self, default_delivery):
+        MTA.__init__(self, default_delivery)
 
 
 class Postfix(MTA):
     """Postfix-specific methods and instance variables."""
-    def __init__(self):
-        MTA.__init__(self)
+    def __init__(self, default_delivery):
+        MTA.__init__(self, default_delivery)
 
 
 class Qmail(MTA):
     """qmail-specific methods and instance variables."""
-    def __init__(self):
-        MTA.__init__(self)
+    def __init__(self, default_delivery):
+        MTA.__init__(self, default_delivery)
         # qmail exit status codes; see qmail-command(8)
         self.EX_HARD = 100              # hard error; bounce message
         self.EX_OK = 0                  # success; process next instruction
@@ -92,7 +95,7 @@ class Qmail(MTA):
 
     def deliver(self, msg, instruction=None):
         if instruction is None:
-            instruction = Defaults.DELIVERY
+            instruction = self.default_delivery
         if instruction == '_qok_':
             sys.exit(self.EX_OK)
         else:
@@ -100,24 +103,58 @@ class Qmail(MTA):
             msg.deliver()
             self.stop()
 
+    def getvdomainprepend(self, address, vdomainsfile):
+        ret_prepend = ''
+        if os.path.exists(vdomainsfile):
+            fp = open(vdomainsfile, 'r')
+            # Parse the virtualdomains control file; see qmail-send(8) for
+            # syntax rules.  All this because qmail doesn't store the original
+            # envelope recipient in the environment.
+            u, d = address.split('@', 1)
+            ousername = u.lower()
+            odomain = d.lower()
+            for line in fp.readlines():
+                vdomain_match = 0
+                line = line.strip().lower()
+                # Comment or blank line?
+                if line == '' or line[0] in '#':
+                    continue
+                vdomain, prepend = line.split(':', 1)
+                # domain:prepend
+                if vdomain == odomain:
+                    vdomain_match = 1
+                # .domain:prepend (wildcard)
+                elif vdomain[:1] == '.' and odomain.find(vdomain) != -1:
+                    vdomain_match = 1
+                # user@domain:prepend
+                else:
+                    try:
+                        if vdomain.split('@', 1)[1] == odomain:
+                            vdomain_match = 1
+                    except IndexError:
+                        pass
+                if vdomain_match:
+                    ret_prepend = prepend
+                    break
+            fp.close()
+        return ret_prepend
+
 
 class Sendmail(MTA):
     """Sendmail-specific methods and instance variables."""
-    def __init__(self):
-        MTA.__init__(self)
+    def __init__(self, default_delivery):
+        MTA.__init__(self, default_delivery)
 
 
-def init():
-    """Factory function which determine what MTA we are running and
-    instantiates the corresponding MTA subclass."""
-    mta = Defaults.MAIL_TRANSFER_AGENT
+def init(mta, default_delivery):
+    """Factory function which instantiates the corresponding MTA subclass."""
     if mta == 'exim':
-        return Exim()
+        return Exim(default_delivery)
     elif mta == 'postfix':
-        return Postfix()
+        return Postfix(default_delivery)
     elif mta == 'qmail':
-        return Qmail()
+        return Qmail(default_delivery)
     elif mta == 'sendmail':
-        return Sendmail()
+        return Sendmail(default_delivery)
     else:
         raise Errors.ConfigError, "Unsupported MAIL_TRANSFER_AGENT: " + mta

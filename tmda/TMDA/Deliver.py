@@ -30,7 +30,6 @@ import socket
 import stat
 import time
 
-import Defaults
 import Errors
 import Util
 
@@ -220,7 +219,7 @@ class Deliver:
         General Public License version 2.
         """
         # e.g, 1014754642.51195.aguirre.la.mastaler.com
-        filename = '%s.%s.%s' % (int(time.time()), Defaults.PID,
+        filename = '%s.%s.%s' % (int(time.time()), str(os.getpid()),
                                  socket.gethostname())
         # Set a 24-hour alarm for this delivery.
         signal.signal(signal.SIGALRM, alarm_handler)

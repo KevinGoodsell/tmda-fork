@@ -1,3 +1,27 @@
+2003-01-20  Tim Legant  <tim@catseye.net>
+
+	* MTA.py (MTA.getvdomainprepend): Added this method to abstract
+	ancestor.  It raises NotImplementedError if called.
+
+	(Qmail.getvdomainprepend): Added method to return the prepend from
+	qmail's virtualdomains file if the passed address matches one of
+	the lines in virtualdomains.
+
+	(__init__): All classes now take a default delivery action in
+	their __init__ methods.
+
+	(init): The init() function now takes a the name of an MTA and the
+	default delivery action as parameters.  This removes MTA.py's
+	dependence on Defaults.py
+
+	* Deliver.py (Deliver.__deliver_maildir): Changed Defaults.PID to
+	str(os.getpid()) in order to remove Deliver.py's dependency on
+	Defaults.py.
+
+	* Util.py (getvuserhomedir): Added function to run a script that
+	is expected to print the passed in virtual user's home directory.
+	That string is captured and returned.
+
 2003-01-06  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* AutoResponse.py (AutoResponse.create): Replace input characters
