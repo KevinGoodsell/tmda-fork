@@ -110,9 +110,10 @@ def main():
       PVars["InProcess"] = {}
       PVars.Save()
       
+    import GlobalConfig
     import PendList
-    import View
     import Theme
+    import View
     
     # Share "globals"
     PendList.PVars = PVars
@@ -133,6 +134,8 @@ def main():
         PendList.Show()
     elif Form["cmd"].value == "theme":
       Theme.Show()
+    elif Form["cmd"].value == "globalconfig":
+      GlobalConfig.Show()
     else:
       CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
         Form["cmd"].value, "interpret command", "", "Please be patient while "

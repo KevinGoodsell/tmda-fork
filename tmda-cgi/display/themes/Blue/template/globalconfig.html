@@ -2,16 +2,16 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Apr 19 21:22:38 2003 -->
+<!-- Sat Apr 19 23:15:10 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
-Title: Local Configuration File
+Title: Global Configuration File
 
 -->
 
 <head>
-<title>Local Configuration File</title>
+<title>Global Configuration File</title>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="HT2HTML/2.1">
 <link rel="STYLESHEET" href="%(ThemeDir)s/styles.css" type="text/css">
@@ -80,13 +80,14 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x733" height="35" width="
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <td valign="top" class="body"><table align="center">
-  <form method="post" action="%(Script)s">
+  <form>
     <tr>
       <td height="30" align="center" valign="top"><b>%(FilePath)s:</b></td>
     </tr>
     <tr>
-      <td><textarea name="textarea" cols="64"
-        rows="15">%(FileContents)s</textarea>
+      <td align="center"><!-- var: NoFile --><textarea name="textarea" 
+        cols="64" rows="15">%(FileContents)s</textarea><!-- /var -->
+        <!-- var: NoneLook="<i>None.</i>" -->
       </td>
     </tr>
   </form>
