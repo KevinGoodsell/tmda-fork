@@ -20,9 +20,7 @@ class Error(Exception):
     def __init__(self, msg=''):
         self._msg = msg
         Exception.__init__(self, msg)
-    def __repr__(self):
-        return self._msg
-    __str__ = __repr__
+
 
 class ParsingError(Error):
     """Exception raised on parsing errors in the filter file."""
@@ -31,23 +29,35 @@ class ParsingError(Error):
         self.filename = filename
         self.errors = []
 
-    def append(self, lineno, line):
-        self.errors.append((lineno, line))
-        self._msg = self._msg + '\n\t[line %2d]: %s' % (lineno, line)
+    def append(self, lineno, errmsg):
+        self.errors.append((lineno, errmsg))
+
+    def __repr__(self):
+        msg = self._msg
+        for err in self.errors:
+            msg += '\n\t[line %2d]: %s' % err
+        return msg
+    __str__ = __repr__
+
+
+class MatchError(Error):
+    """Exception raised in firstmatch when attempting to match rule."""
+    def __init__(self, lineno, errmsg):
+        Error.__init__(self, '[line %2d]: %s' % (lineno, errmsg))
 
 
 class FilterParser:
     bol_comment = re.compile(r'\s*#')
 
     most_sources = re.compile(r"""
-    ( (?:(?:to|from)(?:-(?:file|cdb|dbm|autocdb|autodbm|ezmlm|mailman\.\S+))?)
-    | size )
-    \ (?# NOTE: preceding character must be an actual space)
+    ( (?:to|from)-(?:file|cdb|dbm|ezmlm|mailman)
+    | size
+    | (?:to|from) (?!-) )
     """, re.VERBOSE | re.IGNORECASE)
 
     hdrbody_sources = re.compile(r"""
-    ( (?:body|headers)(?:-file)?)
-    \ (?# NOTE: preceding character must be an actual space)
+    ( (?:body|headers)-file
+    | (?:body|headers) (?!-) )
     """, re.VERBOSE | re.IGNORECASE)
 
     matches = re.compile(r"""
@@ -72,10 +82,32 @@ class FilterParser:
     
     action_option = re.compile(r'(\w+)(?:=(\S+))?')
 
+    arg_option = re.compile(r'(\w+)(=?)')
 
-    def __init__(self, checking=None):
-        self.checking = checking
-        
+    arguments = {
+        'from'         : None,
+        'to'           : None,
+        'from-file'    : ('autocdb',),
+        'to-file'      : ('autocdb',),
+        'from-cdb'     : None,
+        'to-cdb'       : None,
+        'from-dbm'     : None,
+        'to-dbm'       : None,
+        'from-ezmlm'   : None,
+        'to-ezmlm'     : None,
+        'from-mailman' : ('attr',),
+        'to-mailman'   : ('attr',),
+        'body'         : ('case',),
+        'headers'      : ('case',),
+        'body-file'    : ('case',),
+        'headers-file' : ('case',),
+        'size'         : None
+        }
+
+
+    def __init__(self):
+        pass
+
 
     def read(self, filename):
         """Open and read the named filter file.  Files that cannot be opened
@@ -87,38 +119,34 @@ class FilterParser:
 	self.__pushback = None
         self.__exception = None
 
-        if os.path.exists(filename):
-            try:
-                fp = open(filename)
-                self.__parse(fp)
-                fp.close()
-            except IOError:
-                pass
+        fp = open(filename)
+        self.__parse(fp)
+        fp.close()
 
 
     def __parse(self, fp):
         """
-        Parse the filter file.  Comment lines, blank lines, and lines
-        with invalid syntax are ignored.  Each rule is parsed and, if
-	successful, a tuple describing the rule is added to a list
-	(self.filterlist) which is where the actual matching will
-        take place.  [See __parserule()]
+        Parse the filter file.  Comment lines, and blank lines are
+        ignored.  Each rule is parsed and, if successful, a tuple
+        describing the rule is added to a list (self.filterlist).
+        Client code then calls firstmatch, which is where the actual
+        matching will take place.
 
-	Errors are silently ignored unless self.checking is true.  If
-	self.checking is true, a ParsingError exception is built up,
-	with detailed error messages and, after parsing is completed,
-	the exception is raised.
+	A ParsingError exception is built up, with detailed error
+	messages and, after parsing is completed, the exception is
+	raised.
         """
 	while 1:
 	    rule_line = self.__readrule(fp)
 	    if not rule_line:
 		break
-	    rule = self.__parserule(rule_line)
-	    if rule:
+            try:
+                rule = self.__parserule(rule_line)
 		self.filterlist.append(rule)
+            except Error, e:
+                self.__adderror(self.rule_lineno, e._msg)
 
-        # If any parsing errors occurred and we are running in check
-        # mode, raise an exception.
+        # If any parsing errors occurred raise an exception.
         if self.__exception:
             raise self.__exception
 
@@ -168,12 +196,49 @@ class FilterParser:
 	return rule
 
 
+    def __parseargs(self, argtuple, rule_line):
+        """
+        Parse any arguments to the rule.  Arguments begin with a dash
+        and must match one of the values in the 'arguments' dictionary.
+        """
+        match_line = rule_line
+        args = {}
+        while match_line[:1] == '-':
+            # strip off the dash
+            match_line = match_line[1:]
+            # grab the first word and the optional '='
+            mo = self.arg_option.match(match_line)
+            if mo:
+                # arg is the first word, opt is '=' or None
+                (arg, opt) = mo.groups()
+                match_line = match_line[mo.end():]
+                #if it's not a valid argument, raise an exception
+                if not argtuple or arg not in argtuple:
+                    raise Error, '"%s": unrecognized argument' % arg
+                # grab the option, if there was one
+                if opt == '=':
+                    mo = self.matches.match(match_line)
+                    if mo:
+                        opt = mo.group(2) or mo.group(3)
+                        match_line = match_line[mo.end():].lstrip()
+                    else:
+                        raise Error, '"%s" followed by "=" but no option' % arg
+                else:
+                    match_line = match_line.lstrip()
+                args[arg] = opt
+            else:
+                # whatever followed the '-' wasn't a word!
+                raise Error, 'argument contains garbage characters'
+        return args, match_line
+
+
     def __parserule(self, rule_line):
 	"""
 	Parse a single rule from a filter file.  If successful, return a tuple
-	with three fields.  The three fields are:
+	with five fields.  The five fields are:
 	
-	  source    - string: to*, from*, body, headers, size, default
+	  source    - string: to*, from*, body*, headers*, size
+          args      - any arguments that might be specified
 	  match     - string: the email address to be matched against, a
                       filename or a regular expression enclosed within
                       parentheses
@@ -187,6 +252,7 @@ class FilterParser:
                       dictionary. The rather silly looking incoming entry is a
                       usable, but unfortunate consequence of providing a useful
                       data structure for tmda-inject.
+          lineno    - integer: The line number the rule began on.
 	"""
 	rule = None
 	# first, get the source and the match
@@ -194,42 +260,39 @@ class FilterParser:
         if not mo:
             mo = self.hdrbody_sources.match(rule_line)
 	if not mo:
-	    self.__adderror(self.__rule_lineno, rule_line)
+	    raise Error, '"%s": unrecognized filter rule' % rule_line.split()[0]
 	else:
 	    source = mo.group(1)
             match_line = string.lstrip(rule_line[mo.end():])
+            args, match_line = self.__parseargs(self.arguments[source.lower()],
+                                                match_line)
             mo = self.matches.match(match_line)
             if not mo:
                 # missing match
-                self.__adderror(self.__rule_lineno, match_line)
+                raise Error, '"%s": missing <match> field' % source
             else:
                 match = mo.group(2) or mo.group(3)
                 action_line = string.lstrip(match_line[mo.end():])
-                actions = self.__buildactions(action_line, rule_line)
-                if actions:
-                    rule = (source, match, actions)
-                else:
-                    # missing action!
-                    self.__adderror(self.__rule_lineno, action_line)
+                actions = self.__buildactions(action_line, source)
+                rule = (source, args, match, actions, self.__rule_lineno)
 	return rule
 
 
-    def __adderror(self, lineno, line, error=''):
+    def __adderror(self, lineno, errstr):
         """
         Create a new exception object if necessary and append the latest
-        error to it. This only takes place if self.checking is true.
+        error to it.
         """
 	# A non-fatal parsing error occurred.  Set up the
 	# exception but keep going. The exception will be
 	# raised at the end of the file and will contain a
 	# list of all bogus lines.
-	if self.checking:
-	    if not self.__exception:
-		self.__exception = ParsingError(self.filename)
-	    self.__exception.append(lineno, `line`)
+        if not self.__exception:
+            self.__exception = ParsingError(self.filename)
+        self.__exception.append(lineno, errstr)
 
 
-    def __buildactions(self, action_line, rule_line=None):
+    def __buildactions(self, action_line, source):
 	"""
 	Build and return a dictionary of actions. The dictionary structure is
         described in the documentation for the __parserule function.
@@ -241,8 +304,9 @@ class FilterParser:
 		mo = self.tag_action.match(action_line)
                 if not mo:
                     # must not be two fields
-                    self.__adderror(self.__rule_lineno, rule_line)
-		    break
+                    errstr = '"%s": ' % source
+                    errstr += 'malformed header field or missing <action>'
+                    raise Error, errstr
 		header = string.lower(mo.group(1))
 		action = mo.group(3) or mo.group(4)
                 if action:
@@ -253,8 +317,8 @@ class FilterParser:
                     else:
                         actions[header] = (None, action)
 		else:
-		    # malformed action
-		    self.__adderror(self.__rule_lineno, action)
+		    # don't know how we could get here
+		    raise Error, 'unexpected error'
 		action_line = string.lstrip(action_line[mo.end()+1:])
 	else:
 	    mo = self.in_action.match(action_line)
@@ -263,29 +327,44 @@ class FilterParser:
                     actions = { action_line.lower() : (None, None) }
 		else:
 		    # invalid incoming action (extra stuff on line)
-		    self.__adderror(self.__rule_lineno, rule_line)
+		    raise Error, '"%s": garbage at end of line' % source
 	    else:
 		mo = self.out_action.match(action_line)
 		if mo:
 		    if len(action_line) == len(mo.group(1)):
                         actions = { 'from' : splitaction(action_line) }
 		    else:
-			# invalid outgoing action
-			self.__adderror(self.__rule_lineno, rule_line)
+			# invalid outgoing action (extra stuff on line)
+                        raise Error, '"%s": garbage at end of line' % source
+                else:
+                    # missing action!
+                    errstr = '"%s": missing or bogus <action> field' % source
+                    raise Error, errstr
 	return actions
 	
 
-    def __search_file(self, pathname, keys, actions):
+    def __search_file(self, pathname, keys, actions, source):
+        """
+        Search a text file for match in first column.
+        """
         found_match = 0
-        match_list = []
-        match_list = Util.file_to_list(pathname, match_list)
+        match_list = Util.file_to_list(pathname)
+        # This list comprehension splits each line in the list into
+        # two columns, lowercases the first column and stuffs the
+        # columns back together.  The result is the original list of
+        # lines from the file with the first field in each line
+        # lowercased.
+        match_list = [' '.join(
+            apply(lambda f1, f2=None: f2 and [f1.lower(), f2]
+                                          or [f1.lower()],
+                  line.split(None, 1))) for line in match_list]
         found_match = Util.findmatch(match_list, keys)
         if found_match:
             # The second column of the line may contain an
             # overriding action specification.
             if found_match != 1:
                 actions.clear()
-                actions.update(self.__buildactions(found_match))
+                actions.update(self.__buildactions(found_match, source))
                 # it's already true, but everywhere else it's 1
                 found_match = 1
         return found_match
@@ -307,7 +386,7 @@ class FilterParser:
                 # specification.
                 if cdb_value:
                     actions.clear()
-                    actions.update(self.__buildactions(cdb_value))
+                    actions.update(self.__buildactions(cdb_value, source))
                 break
         return found_match
 
@@ -320,33 +399,56 @@ class FilterParser:
         """
         line = None
 	found_match = None
-        for (source, match, actions) in self.filterlist:
+        for (source, args, match, actions, lineno) in self.filterlist:
             source = string.lower(source)
+            # set up the keys for searching
+            if source.startswith('from') and senders:
+                keys = senders
+            elif source.startswith('to') and recipient:
+                keys = [recipient]
+            #
+            # Here starts the matching against the various rules
+            #
+            # regular 'from' or 'to' addresses
             if source in ('from', 'to'):
-                if source == 'from' and senders:
-		    found_match = Util.findmatch([string.lower(match)],
-                                                 senders)
-                elif source == 'to' and recipient:
-		    found_match = Util.findmatch([string.lower(match)],
-                                                 [recipient])
+                found_match = Util.findmatch([string.lower(match)], keys)
 		if found_match:
 		    break
+            # 'from-file' or 'to-file', including autocdb functionality
             if source in ('from-file', 'to-file'):
                 match = os.path.expanduser(match)
-                if source == 'from-file' and senders:
-                    keys = senders
-                elif source == 'to-file' and recipient:
-                    keys = [recipient]
-                found_match = self.__search_file(match, keys, actions)
+                valid_cdb = 0
+                if 'autocdb' in args:
+                    cdbname = match + '.cdb'
+                    # If the text file doesn't exist, let the exception
+                    #  happen and get passed back to tmda-filter.
+                    txtmtime = os.path.getmtime(match)
+                    # If the cdb file doesn't exist, that's not an error.
+                    try:
+                        cdbmtime = os.path.getmtime(cdbname)
+                    except OSError:
+                        cdbmtime = 0
+                    valid_cdb = 1
+                    if cdbmtime <= txtmtime:
+                        valid_cdb = Util.build_cdb(match)
+                # At this point, valid_cdb will be 1 (true) if there
+                # is an -autocdb flag and the .cdb is now up-to-date.
+                # If there was no -autocdb flag or if there was an
+                # error rebuilding an autocdb, valid_cdb be 0 (false).
+                try:
+                    if valid_cdb:
+                        found_match = self.__search_cdb(cdbname, keys,
+                                                        actions, source)
+                    else:
+                        found_match = self.__search_file(match, keys,
+                                                         actions, source)
+                except Error, e:
+                    raise MatchError(lineno, e._msg)
                 if found_match:
                     break
             # DBM-style databases.
             if source in ('from-dbm', 'to-dbm'):
                 match = os.path.expanduser(match)
-                if source == 'from-dbm':
-                    keys = senders
-                elif source == 'to-dbm':
-                    keys = [recipient]
                 import anydbm
                 dbm = anydbm.open(match,'r')
                 for key in keys:
@@ -357,7 +459,7 @@ class FilterParser:
                         # we consider it an overriding action
                         # specification.
                         if dbm_value:
-                            actions = self.__buildactions(dbm_value)
+                            actions = self.__buildactions(dbm_value, source)
                         dbm.close()
                         break
                 if found_match:
@@ -365,45 +467,16 @@ class FilterParser:
             # DJB's constant databases; see <http://cr.yp.to/cdb.html>.
             if source in ('from-cdb', 'to-cdb'):
                 match = os.path.expanduser(match)
-                if source == 'from-cdb' and senders:
-                    keys = senders
-                elif source == 'to-cdb' and recipient:
-                    keys = [recipient]
-                found_match = self.__search_cdb(match, keys, actions)
-                if found_match:
-                    break
-            # auto-build DJB's constant databases
-            if source in ('from-autocdb', 'to-autocdb'):
-                match = os.path.expanduser(match)
-                if source == 'from-autocdb':
-                    keys = senders
-                elif source == 'to-autocdb':
-                    keys = [recipient]
-                # If the text file doesn't exist, let the exception
-                #  happen and get passed back to tmda-filter.
-                txtmtime = os.path.getmtime(match)
-                # If the cdb file doesn't exist, that's not an error.
                 try:
-                    cdbmtime = os.path.getmtime(match + '.cdb')
-                except OSError:
-                    cdbmtime = 0
-                valid_cdb = 1
-                if cdbmtime <= txtmtime:
-                    valid_cdb = Util.build_cdb(match)
-                if valid_cdb:
-                    found_match = self.__search_cdb(match + '.cdb',
-                                                    keys, actions)
-                else:
-                    found_match = self.__search_file(match, keys, actions)
+                    found_match = self.__search_cdb(match, keys,
+                                                    actions, source)
+                except Error, e:
+                    raise MatchError(lineno, e._msg)
                 if found_match:
                     break
             # ezmlm `subscribers' directories.
             if source in ('from-ezmlm', 'to-ezmlm'):
                 match = os.path.expanduser(match)
-                if source == 'from-ezmlm':
-                    keys = senders
-                elif source == 'to-ezmlm':
-                    keys = [recipient]
                 ezmlm_list = []
                 # See ezmlm(5) for dir/subscribers format.
                 for file in os.listdir(match):
@@ -419,14 +492,13 @@ class FilterParser:
                 if found_match:
                     break
             # Mailman list-configuration databases.
-            if (source[:len('from-mailman')] == 'from-mailman' or
-                source[:len('to-mailman')] == 'to-mailman'):
+            if source in ('from-mailman', 'to-mailman'):
                 match = os.path.expanduser(match)
-                (mm_source, mmdb_key) = string.split(source, '.')
-                if mm_source == 'from-mailman':
-                    keys = senders
-                elif mm_source == 'to-mailman':
-                    keys = [recipient]
+                try:
+                    mmdb_key = args['attr']
+                except KeyError:
+                    raise MatchError(lineno,
+                                     '"%s" missing -attr argument' % source)
                 # The filename is expected to be in the format of
                 # either 'filename.db', or 'filename.pck'.
                 dbsuffix = string.split(match, '.')[-1]
@@ -460,24 +532,29 @@ class FilterParser:
                     content = msg_headers
                 else:
                     content = None
-                if content and re.search(match,content,(re.M|re.I)):
+                re_flags = re.MULTILINE
+                if 'case' not in args:
+                    re_flags = re_flags | re.IGNORECASE
+                if content and re.search(match,content,re_flags):
 		    found_match = 1
                     break
             if source in ('body-file','headers-file'):
-                match_list = []
                 match = os.path.expanduser(match)
-                match_list = Util.file_to_list(match,match_list)
+                match_list = Util.file_to_list(match)
                 if source == 'body-file' and msg_body:
                     content = msg_body
                 elif source == 'headers-file' and msg_headers:
                     content = msg_headers
                 else:
                     content = None
+                re_flags = re.MULTILINE
+                if 'case' not in args:
+                    re_flags = re_flags | re.IGNORECASE
                 for line in match_list:
                     mo = self.matches.match(line)
                     if mo:
                         expr = mo.group(2) or mo.group(3)
-                        if content and re.search(expr,content,(re.M|re.I)):
+                        if content and re.search(expr,content,re_flags):
                             found_match = 1
                             break
                 if found_match:
@@ -494,20 +571,31 @@ class FilterParser:
                 if found_match:
                     break
 	if found_match:
-	    line = _rulestr(source, match, actions)
+	    line = _rulestr(source, args, match, actions)
 	else:
 	    actions = None
 	return actions, line
 
 
-def _rulestr(source, match, actions):
+def _rulestr(source, args, match, actions):
     """
-    Build string from source, match and actions.
+    Build string from source, args, match and actions.
     """
     if source in ('headers', 'body'):
-        match = '(' + str(match) + ')'
-    line = str(source) + ' ' + match + ' ' + _actionstr(actions)
+        match = '"' + str(match) + '"'
+    argstr = _argstr(args)
+    line = str(source) + ' '
+    if argstr:
+        line += argstr + ' '
+    line += match + ' ' + _actionstr(actions)
     return line
+
+
+def _argstr(args):
+    """
+    Build argument string from args dictionary
+    """
+    return ' '.join([ '-' + _cookiestr(item) for item in args.items() ])
 
 
 def _actionstr(actions):
@@ -532,10 +620,13 @@ def _actionstr(actions):
 
 
 def _cookiestr(action):
-    line = str(action[0])
-    if action[1]:
-	line = line + '=' + str(action[1])
-    return line
+    argstr = str(action[0])
+    argvalue = action[1]
+    if argvalue:
+        if ' ' in argvalue:
+            argvalue = '"%s"' % argvalue
+	argstr += '=' + str(argvalue)
+    return argstr
 
 
 def splitaction(action):

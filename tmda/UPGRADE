@@ -1,5 +1,47 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.48:
+
+* Several of the sources now take arguments.  See the filter file
+  documentation for more details.
+
+* The 'to-autocdb' and 'from-autocdb' sources have been removed.  If
+  you use the autocdb functionality, you will need to change these
+  sources to 'to-file' or 'from-file', respectively, and add the
+  '-autocdb' flag.  The match field is the name of the textfile
+  without the '.cdb' extension, as before.
+
+  # old rule
+  from-autocdb ~/lists/whitelist_confirmed accept
+
+  # new rule
+  from-file -autocdb ~/lists/whitelist_confirmed accept
+
+* The 'to-mailman' and 'from-mailman' sources have changed.  You no
+  longer specify the attribute to search with '.<attr_name>'.  Instead
+  these sources now take the '-attr' argument with the attribute as
+  the option.
+
+  # old rule
+  from-mailman.members ~mailman/lists/mylist/config.db accept
+
+  # new rule
+  from-mailman -attr=members ~mailman/lists/mylist/config.db accept
+
+* The filter file parser used to ignore all syntax errors in filter
+  files.  This means that your file might not be working as you want
+  but you wouldn't know it.  This behavior has been changed.  Every
+  error that the filter parser encounters is saved and, after the
+  entire file has been processed, an exception is thrown and written
+  to the debug log.
+
+  If you want to check your filter files, make sure you have
+  LOGFILE_DEBUG defined in your ~/.tmdarc and run tmda-filter with the
+  '-M' switch.  Run 'tmda-filter -h' for more information about '-M'.
+  Then examine the contents of your debug log.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.47:
 
 * tmda-clean has been removed from the distribution.  The new

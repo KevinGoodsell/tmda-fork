@@ -1,3 +1,68 @@
+2002-02-20  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py (Error): Moved __repr__ and __str__ to
+	descendent ParsingError.
+
+	(ParsingError): Added __repr__ and __str__ functions.
+
+	(MatchError): New exception class.  Descendent of Error.
+
+	(FilterParser): Modified 'most_sources' and 'hdrbody_sources'
+	regexps to better support detailed error checking.  Added
+	'arg_option' regexp and 'arguments' dictionary.
+
+	(FilterParser.__init__): Removed 'checking' parameter.
+
+	(FilterParser.read): Removed exception handling around file
+	opening.  Now, if the file is missing or can't be opened, the
+	exception will propagate up to tmda-filter and cause the mail to
+	be deferred.
+
+	(FilterParser.__parse): Catch parsing exceptions here and add to
+	singleton ParsingException object.
+
+	(FilterParser.__parseargs): New function.
+
+	(FilterParser.__parserule): Rules now have five fields.  Raise
+	exceptions directly rather than calling __adderror.  Call
+	__parseargs to get the arguments.
+
+	(FilterParser.__adderror): Removed test for 'checking'.
+
+	(FilterParser.__buildactions): Change second parameter from
+	'rule_line' to 'source'.  Raise exceptions instead of calling
+	__adderror.  Use 'source' in exception error messages.
+
+	(FilterParser.__search_file): Lowercase the first field on each
+	line before attempting to match.  Add 'source' parameter to pass
+	along to __buildactions.
+
+	(FilterParser.__search_cdb): Add 'source' parameter to pass along
+	to __buildactions.
+
+	(FilterParser.firstmatch): Hoist invariant 'keys' initialization
+	to beginning of loop.  Add autocdb functionality (-autocdb
+	argument) to 'from-/to-file' code.  Remove 'from-/to-autocdb'
+	code.  'from-/to-mailman' now use '-attr' arguments to specify
+	which list attribute to search.  'body/headers/body-/headers-file'
+	now all take a '-case' argument to turn on case-sensitivity.
+	Catch exceptions where appropriate and translate to MatchError
+	exceptions.
+
+	(_rulestr): Updated to include arguments in the string.
+
+	(_argstr): New function to build argument string.
+
+	(_cookiestr): Now adds quotes to the second field, if necessary.
+
+	* Util.py (file_to_list): Removed second parameter (list).
+	Removed lowercasing of first field.
+
+	(build_cdb): Lowercase first field.
+
+	(filter_match): Removed 'checking' argument in call to
+	FilterParser.FilterParser.
+
 2002-02-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (pager): New function to display a file using a UNIX

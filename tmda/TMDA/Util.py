@@ -209,8 +209,9 @@ def file_to_dict(file, dict):
     return dict
 
 
-def file_to_list(file, list):
+def file_to_list(file):
     """Process and then append each line of file to list."""
+    list = []
     for line in fileinput.input(file):
         line = string.strip(line)
         # Comment or blank line?
@@ -220,14 +221,7 @@ def file_to_list(file, list):
             line = string.expandtabs(line)
             line = string.split(line, ' #')[0]
             line = string.strip(line)
-            fields = string.split(line, None, 1)
-            # preserve the case of second field
-            f1 = string.lower(fields[0])
-            try:
-                f1 = string.join([f1] + [fields[1]])
-            except IndexError:
-                pass
-            list.append(f1)
+            list.append(line)
     return list
 
 
@@ -281,10 +275,9 @@ def build_cdb(filename):
     try:
         cdbname = filename + '.cdb'
         cdb = cdb.cdbmake(cdbname, cdbname + '.tmp')
-        match_list = []
-        for line in file_to_list(filename, match_list):
+        for line in file_to_list(filename):
             linef = line.split()
-            key = linef[0]
+            key = linef[0].lower()
             try:
                 value = linef[1]
             except IndexError:
@@ -440,7 +433,7 @@ def maketext(templatefile, vardict):
 def filter_match(filename, recip, sender=None):
     """Check if the give e-mail addresses match lines in filename."""
     import FilterParser 
-    filter = FilterParser.FilterParser(checking=1)
+    filter = FilterParser.FilterParser()
     filter.read(filename)
     (actions, matchline) = filter.firstmatch(recip, [sender])
     # print the results

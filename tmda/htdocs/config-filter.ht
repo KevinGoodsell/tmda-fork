@@ -37,7 +37,9 @@ may intersperse comment lines within your filters (see the examples).
 <li>Everything after <code><b>#</b></code> on a line is considered a
 comment and ignored.
 
-<li>Filters with invalid syntax are also ignored.
+<li>Filters with invalid syntax are logged with a specific error
+message into the debug log and the mail is deferred.  This is to allow
+you the chance to fix your filter before processing the mail.
 </ul>
 
 The filter file is read sequentially from top to bottom, and the first match
@@ -48,33 +50,53 @@ source match action
 
 </blockquote></pre></b>
 
-<li><b>source</b>: specifices the source of the match and can be one of:
+<li><b>source</b>: specifices the source of the match.<p>
+
+Some sources take optional arguments.  An argument begins with a dash
+(<b>-</b>).  Some arguments take options.  If an argument takes an
+option, the argument is followed immediately by an equals sign
+(<b>=</b>) and the option.  No whitespace is allowed on either side of
+the equals sign.<p>
+
+Single arguments look like this:
+<pre>
+    -argument
+</pre>
+and arguments with options look like this:
+<pre>
+    -argument=option
+</pre>
+
+Arguments are listed below.  Square brackets (<b>[]</b>) indicate the
+the argument is optional.  Words in chevrons (<b>&lt;&gt;</b>)
+should be replaced by the appropriate option, without the chevrons.<p>
+
+Sources can be one of:
+
 <br><br>
 
 (for both incoming and outgoing):
 <blockquote><pre>
 to (recipient address)
-to-file
+to-file [-autocdb]
 to-cdb
-to-autocdb
 to-dbm
 to-ezmlm
-to-mailman.attribute
+to-mailman -attr=&lt;attribute&gt;
 </blockquote></pre>
 
 (for incoming only):
 <blockquote><pre>
 from (sender address)
-from-file
+from-file [-autocdb]
 from-cdb
-from-autocdb
 from-dbm
 from-ezmlm
-from-mailman.attribute
-body (message body)
-body-file
-headers (message headers)
-headers-file
+from-mailman -attr=&lt;attribute&gt;
+body [-case] (message body)
+body-file [-case]
+headers [-case] (message headers)
+headers-file [-case]
 size (message size)
 
 </blockquote></pre>
@@ -109,36 +131,36 @@ currently requires that you first install the
 extension module.
 <br><br>
 
-The '-autocdb' sources are intended to ease the use of CDB lists in TMDA
+The '-autocdb' arguments are intended to ease the use of CDB lists in TMDA
 by automatically rebuilding the CDB file as necessary.  This gives you the
 performance advantages of CDBs without the hassle of having to manually
-maintain them.  The match field of an -autocdb line should be
-the full path to the name of the source listfile in text, not the CDB.
-The code will automatically append '.cdb' to the filename.  With an
--autocdb source, TMDA will rebuild the CDB if it either doesn't exist,
-or or its timestamp is older than its source file.  If the rebuild
-fails for some reason, TMDA will fall back to matching from the
-sourcefile instead.  Before you try this feature, make sure you have
-the <a href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource Window">python-cdb</a>
-extension module installed.
+maintain them.  Both 'from-file' and 'to-file' take the -autocdb flag.
+The match field of 'from-file' and 'to-file' is always the name of the
+textfile.  You do not need to add '.cdb' if you use the -autocdb flag. It
+will be automatically appended to the filename.  With the -autocdb
+argument, TMDA will rebuild the CDB if it either doesn't exist, or its
+timestamp is older than its source file.  If the rebuild fails for some reason,
+TMDA will fall back to matching from the sourcefile instead.  Before you try
+this feature, make sure you have the <a href="http://pilcrow.madison.wi.us/#pycdb"
+TARGET="Resource Window">python-cdb</a> extension module installed.
 <br><br>
 
-The '-ezmlm' and '-mailman.attribute' sources can be used to match the
+The '-ezmlm' and '-mailman' sources can be used to match the
 subscribers of an <a href="http://cr.yp.to/ezmlm.html" TARGET="Resource Window">ezmlm</a> 
 or <a href="http://list.org/" TARGET="Resource Window">Mailman</a> mailing list.
 <br><br>
 
 '-ezmlm' sources match addresses contained in ezmlm `subscribers' directories.
-The match field of an -ezmlm line should be the full path to the
-directory.
+The match field of an -ezmlm line should be the full path to the directory.
 <br><br>
 
-'-mailman.attribute' sources match addresses contained in a Mailman
+'-mailman' sources match addresses contained in a Mailman
 configuration database.  The match field should be the full path to
 the configuration database for your list which will be either
 "config.db" or "config.pck" depending on which version of Mailman you
-are running.  Both styles are supported.  The `attribute' portion of
-the source should be the name of an attribute contained in the database.
+are running.  Both styles are supported.  The '-mailman' sources
+require you to specify an `attribute' to search.  Use the '-attr=<attribute>'
+flag to specify the name of an attribute contained in the database.
 For example, `members' (subscriber addresses), `digest_members'
 (digest subscriber addresses), or `owner' (list owner's address).
 <br><br>
@@ -205,6 +227,9 @@ must surround the regular expressions with quotation marks.  You may
 use either single quotes (<code><b>'</b></code>) or double quotes
 (<code><b>"</b></code>) as long as you use the the same one at both
 the beginning and the end.<p>
+
+The regular expression sources use case-insensitive matching by
+default.  If you want a case-sensitive match, use the '-case' flag.<p>
 
 If you need to match a quote in your regular expression, simply use
 the other style of quotes to surround the expression or escape the
@@ -343,12 +368,12 @@ from *@=mycorp.dom ok
 # Include my blacklist and whitelist
 from-dbm ~/.tmda/lists/blacklist.db drop
 from-cdb ~/.tmda/lists/whitelist.cdb accept
-from-autocdb ~/.tmda/lists/confirmed ok
+from-file -autocdb ~/.tmda/lists/confirmed ok
 from-file ~/.tmda/lists/whitelist_wildcards accept
 
 # Mailman mailing list subscribers and digest subscribers
-from-mailman.members ~mailman/lists/viewnet-news/config.db ok
-from-mailman.digest_members ~mailman/lists/viewnet-news/config.db ok
+from-mailman -attr=members ~mailman/lists/viewnet-news/config.db ok
+from-mailman -attr=digest_members ~mailman/lists/viewnet-news/config.db ok
 
 # ezmlm mailing list subscribers and digest subscribers
 from-ezmlm ~alias/all-acl-users/subscribers ok
@@ -361,6 +386,7 @@ to jason-jcrew.832234@mastaler.com confirm
 # Examine the message content
 body "viagra|ginseng" confirm
 headers 'Precedence:.*junk' reject
+headers -case 'MAKE MONEY FAST' drop
 
 # Accept all messages smaller than 10KB, but drop messages larger than 1MB
 size <10000 deliver

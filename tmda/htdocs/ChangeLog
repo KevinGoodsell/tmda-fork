@@ -1,3 +1,8 @@
+2002-02-20  Tim Legant  <tim@catseye.net>
+
+	* config-filter.ht: Documented the new argument syntax for certain
+	sources.
+
 2002-02-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* faq.ht: Generalize the pending queue purge question to include
