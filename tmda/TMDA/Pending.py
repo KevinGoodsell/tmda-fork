@@ -220,7 +220,7 @@ class Queue:
         """Display a message."""
         if self.terse:
             self.Print(M.terse(tsv=1))
-        else:
+        elif self.verbose:
             self.Print()
             self.Print(M.summary(self.count, self.total, self.summary))
 
