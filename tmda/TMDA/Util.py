@@ -30,7 +30,6 @@ import fileinput
 import fnmatch
 import os
 import popen2
-import pwd
 import re
 import socket
 import stat
@@ -65,6 +64,7 @@ def getfullname():
                os.environ.get('NAME') or \
                os.environ.get('MAILNAME')
     if not fullname:
+        import pwd
         fullname = pwd.getpwuid(os.getuid())[4]
         if fullname:
             fullname = fullname.split(',')[0]
@@ -78,6 +78,7 @@ def getusername():
                os.environ.get('USER') or \
                os.environ.get('LOGNAME')
     if not username:
+        import pwd
         username = pwd.getpwuid(os.getuid())[0]
     if not username:
         username = '<unknown>'
@@ -86,16 +87,19 @@ def getusername():
 
 def getuid(username):
     """Return username's numerical user ID."""
+    import pwd
     return pwd.getpwnam(username)[2]
 
 
 def getgid(username):
     """Return username's numerical group ID."""
+    import pwd
     return pwd.getpwnam(username)[3]
 
 
 def gethomedir(username):
     """Return the home directory of username."""
+    import pwd
     return pwd.getpwnam(username)[5]
 
 
@@ -180,7 +184,7 @@ def getvuserhomedir(user, domain, script):
 
 def getuserparams(login):
     "Return a user's home directory, UID, & GID."
-
+    import pwd
     stats = pwd.getpwnam(login)
     return (stats[5], stats[2], stats[3])
 

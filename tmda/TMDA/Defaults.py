@@ -54,6 +54,8 @@ PID = str(os.getpid())
 EX_OK = 0                               
 EX_TEMPFAIL = 75
 
+HOMEDIR = os.path.expanduser('~')
+
 # TMDA parent directory.
 progpath = os.path.abspath(sys.argv[0])
 if os.path.islink(progpath):
@@ -81,7 +83,7 @@ _tmdarc = os.environ.get('TMDARC')
 if _tmdarc:
     TMDARC = _tmdarc
 elif not vars().has_key('TMDARC'):
-    TMDARC = os.path.expanduser('~/.tmda/config')
+    TMDARC = os.path.join(HOMEDIR, '.tmda', 'config')
 
 # CONFIG_EXEC
 # If set to False in GLOBAL_TMDARC, the user's TMDARC file will be parsed
@@ -126,16 +128,16 @@ TMDA_VERSION = Version.TMDA
 # DATADIR
 # Top-level directory which TMDA uses to store its files and
 # directories.  TMDA should be free to create files and directories
-# under DATADIR if need be.  Make sure to include a trailing "/".
+# under DATADIR if need be.
 #
 # Examples:
 #
-# DATADIR = "/full/path/to/.tmda/"
-# DATADIR = "~/.tmda/"
+# DATADIR = "/full/path/to/.tmda"
+# DATADIR = "~/.tmda"
 #
-# Default is ~/.tmda/
+# Default is ~/.tmda
 if not vars().has_key('DATADIR'):
-    DATADIR = "~/.tmda/"
+    DATADIR = os.path.join(HOMEDIR, '.tmda')
 
 # MAIL_TRANSFER_AGENT
 # Defines which mail transfer agent (MTA) software you are running.
@@ -1548,16 +1550,16 @@ for var in _path_vars:
     if _defaults.has_key(var) and isinstance(_defaults[var], str):
         _defaults[var] = os.path.expanduser(_defaults[var])
 
-
 # Finish processing CRYPT_KEY_FILE/CRYPT_KEY
 if os.path.exists(CRYPT_KEY_FILE):
-    crypt_key_filemode = Util.getfilemode(CRYPT_KEY_FILE)
-    if crypt_key_filemode not in (400, 600):
-        if ALLOW_MODE_640 and crypt_key_filemode == 640:
-            pass
-        else:
-            raise Errors.ConfigError, \
-                  CRYPT_KEY_FILE + " must be chmod 400 or 600!"
+    if os.name == 'posix':
+        crypt_key_filemode = Util.getfilemode(CRYPT_KEY_FILE)
+        if crypt_key_filemode not in (400, 600):
+            if ALLOW_MODE_640 and crypt_key_filemode == 640:
+                pass
+            else:
+                raise Errors.ConfigError, \
+                      CRYPT_KEY_FILE + " must be chmod 400 or 600!"
 else:
     if os.environ.has_key('TMDA_CGI_MODE') and \
            os.environ['TMDA_CGI_MODE'] == 'no-su':
