@@ -5,6 +5,8 @@ this file.
 
 If you are upgrading from a release of TMDA < 1.1.4:
 
+* contrib/sample.config has been removed in favor of dot-tmda.
+
 * tmda-keygen now requires that a random number device such as
   /dev/urandom be installed on the system to generate keys.  Modern
   systems should not be affected.  If you lack a random number device,
