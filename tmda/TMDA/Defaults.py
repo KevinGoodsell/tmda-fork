@@ -128,11 +128,12 @@ if not vars().has_key('RECIPIENT_DELIMITER'):
 # interface.  Defaults to one of the two standard locations, but you
 # can override it in case it is installed elsewhere.
 if not vars().has_key('SENDMAIL'):
-    if os.path.exists("/usr/sbin/sendmail"):
-        SENDMAIL = "/usr/sbin/sendmail"
-    elif os.path.exists("/usr/lib/sendmail"):
-        SENDMAIL = "/usr/lib/sendmail"
-    else:
+    SENDMAIL = None
+    for sendmail in ('/usr/sbin/sendmail', '/usr/lib/sendmail'):
+        if os.path.exists(sendmail):
+            SENDMAIL = sendmail
+            break
+    if not SENDMAIL:
         print "Can't find your sendmail program!"
         sys.exit(EX_TEMPFAIL)
 elif not os.path.exists(SENDMAIL):

@@ -345,7 +345,7 @@ def main():
                                                    total,
                                                    msg_size,
                                                    bytes)
-                #print 'Sent:', Util.unixdate(int(msg.split('.')[0]))
+                #print '  >> Sent:', Util.unixdate(int(msg.split('.')[0]))
                 for hdr in ('date', 'from', 'to', 'subject'):
                     print "%s %s: %s" % ('  >>',
                                          hdr.capitalize()[:4].rjust(4),
