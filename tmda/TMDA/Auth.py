@@ -22,14 +22,16 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 # System imports
-import os
-import sys
-import socket
 import base64
-import md5
-import popen2
-import time
+import hmac
 import imaplib
+import md5
+import os
+import popen2
+import poplib
+import socket
+import sys
+import time
 
 # TMDA imports
 import Version
@@ -251,55 +253,6 @@ class Auth(Util.Debugable):
             if authport:
                 self.__authremote['port'] = authport
 
-        if self.__authremote['proto'] == 'imaps':
-            try:
-                self.IMAP4_SSL = imaplib.IMAP4_SSL
-            except AttributeError:
-                class IMAP4_SSL(imaplib.IMAP4):
-                    # Extends IMAP4 to use SSL
-                    def open(self, host, port):
-                        """Setup connection to remote server on "host:port".
-                        This connection will be used by the routines:
-                        read, readline, send, shutdown.
-                        """
-                        self.host = host
-                        self.port = port
-                        self.sock = socket.socket(socket.AF_INET,
-                                                  socket.SOCK_STREAM)
-                        self.sock.connect((host, port))
-                        self.sslobj = socket.ssl(self.sock, None, None)
-
-                    def read(self, size):
-                        """Read 'size' bytes from remote."""
-                        # sslobj.read() sometimes returns < size bytes
-                        data = self.sslobj.read(size)
-                        while len(data) < size:
-                            data += self.sslobj.read(size-len(data))
-                        return data
-
-                    def readline(self):
-                        """Read line from remote."""
-                        line = ""
-                        while 1:
-                            char = self.sslobj.read(1)
-                            line += char
-                            if char == "\n": return line
-
-                    def send(self, data):
-                        """Send data to remote."""
-                        bytes = len(data)
-                        while bytes > 0:
-                            sent = self.sslobj.write(data)
-                            if sent == bytes:
-                                break    # avoid copy
-                            data = data[sent:]
-                            bytes = bytes - sent
-
-                    def shutdown(self):
-                        """Close I/O established in "open"."""
-                        self.sock.close()
-
-                self.IMAP4_SSL = locals()['IMAP4_SSL']
         elif self.__authremote['proto'] == 'ldap':
             try:
                 import ldap
@@ -344,13 +297,6 @@ class Auth(Util.Debugable):
                               digestmod = md5):
         """Authenticates a cram_md5 response based on a ticket.
            Expects a base-64 encoded "response" unless otherwise specified."""
-        try:
-            import hmac
-        except ImportError:
-            raise Errors.AuthError, \
-              ( "Cram MD5 authentication not supported.",\
-                "This authentication requires the \"hmac\" module, which is" + \
-                "only included with python version 2.2 and later" )
         if not self.supports_cram_md5():
             raise Errors.AuthError, \
               ( "Cram MD5 authentication not supported.",\
@@ -494,7 +440,7 @@ class Auth(Util.Debugable):
         elif self.__authremote['proto'] == 'imaps':
             if self.__authremote['port']:
                 port = int(self.__authremote['port'])
-            M = self.IMAP4_SSL(self.__authremote['host'], port)
+            M = imaplib.IMAP4_SSL(self.__authremote['host'], port)
             try:
                 (type, data) = M.login(username, password)
                 self.debug( "Login response: %s %s" % (type, data) )
@@ -506,7 +452,6 @@ class Auth(Util.Debugable):
                       (username, self.__authremote['host']) )
                 return 0
         elif self.__authremote['proto'] in ('pop3', 'apop'):
-            import poplib
             if self.__authremote['port']:
                 port = int(self.__authremote['port'])
             M = poplib.POP3(self.__authremote['host'], port)

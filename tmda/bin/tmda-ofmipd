@@ -239,11 +239,6 @@ def warning(msg='', exit=1):
     if exit:
         sys.exit()
 
-# check whether we are running a recent enough Python
-if not Version.PYTHON >= '2.2':
-    msg = 'Python 2.2 or greater is required to run ' + program + \
-          ' -- Visit http://python.org/download/ to upgrade.'
-    warning(msg)
 
 # provide disclaimer if running as root
 if running_as_root:
@@ -359,8 +354,10 @@ import asyncore
 import base64
 import email.Utils
 import hmac
+import imaplib
 import md5
 import popen2
+import poplib
 import random
 import time
 
@@ -370,53 +367,6 @@ NEWLINE = '\n'
 EMPTYSTRING = ''
 COMMASPACE = ', '
 
-
-if remoteauth['proto'] == 'imaps':
-    vmaj, vmin = sys.version_info[:2]
-    # Python version 2.2 and before don't have IMAP4_SSL
-    import imaplib
-    if vmaj < 2 or (vmaj == 2 and vmin <= 2):
-        class IMAP4_SSL(imaplib.IMAP4):
-            # extends IMAP4 class to talk SSL cause it's not yet
-            # implemented in python 2.2
-            def open(self, host, port):
-                """Setup connection to remote server on "host:port".
-                This connection will be used by the routines:
-                read, readline, send, shutdown.
-                """
-                self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.sock.connect((host, port))
-                self.sslsock = socket.ssl(self.sock)
-                self.file = self.sock.makefile('rb')
-        
-            def read(self, size):
-                """Read 'size' bytes from remote."""
-                buf = self.sslsock.read(size)
-                return buf
-        
-            def readline(self):
-                """Read line from remote."""
-                line = [ ]
-                c = self.sslsock.read(1)
-                while c:
-                    line.append(c)
-                    if c == '\n':
-                        break
-                    c = self.sslsock.read(1)
-                buf = ''.join(line)
-                return buf
-        
-            def send(self, data):
-                """Send data to remote."""
-                bytes = len(data)
-                while bytes > 0:
-                    sent = self.sslsock.write(data)
-                    if sent == bytes:
-                        break   # avoid copy
-                    data = data[sent:]
-                    bytes = bytes - sent
-    else:
-        IMAP4_SSL = imaplib.IMAP4_SSL
 
 if remoteauth['proto'] == 'ldap':
     try:
@@ -483,7 +433,6 @@ def run_remoteauth(username, password, localip):
     print >> DEBUGSTREAM, "trying %s authentication for %s@%s:%s" % \
           (remoteauth['proto'], username, authhost, authport)
     if remoteauth['proto'] == 'imap':
-        import imaplib
         M = imaplib.IMAP4(authhost, int(authport))
         try:
             M.login(username, password)
@@ -494,8 +443,7 @@ def run_remoteauth(username, password, localip):
                   (username, authhost)
             return 0
     elif remoteauth['proto'] == 'imaps':
-        import imaplib
-        M = IMAP4_SSL(authhost, int(authport))
+        M = imaplib.IMAP4_SSL(authhost, int(authport))
         try:
             M.login(username, password)
             M.logout()
@@ -505,7 +453,6 @@ def run_remoteauth(username, password, localip):
                   (username, authhost)
             return 0
     elif remoteauth['proto'] in ('pop3', 'apop'):
-        import poplib
         M = poplib.POP3(authhost, int(authport))
         try:
             if remoteauth['proto'] == 'pop3':
