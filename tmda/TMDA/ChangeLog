@@ -1,5 +1,8 @@
 2002-01-31  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* FilterParser.py (FilterParser.__buildactions): Lowercase the
+	incoming action as file_to_list no longer does.
+
 	* Util.py (file_to_list): Only lowercase the first field of a
 	whitespace split line.
 

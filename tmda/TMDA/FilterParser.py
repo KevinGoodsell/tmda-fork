@@ -252,7 +252,7 @@ class FilterParser:
 	    mo = self.in_action.match(action_line)
 	    if mo:
 		if len(action_line) == len(mo.group(1)):
-                    actions = { action_line : (None, None) }
+                    actions = { action_line.lower() : (None, None) }
 		else:
 		    # invalid incoming action (extra stuff on line)
 		    self.__adderror(self.__rule_lineno, rule_line)
