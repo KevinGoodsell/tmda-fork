@@ -3,6 +3,13 @@
 	* What hasn't changed?  Tons of bug fixes.  New display templates.
 	  You won't even recognize tmda-cgi now!
 
+	* We no longer support ?debug=1 mode.  If you are having problems
+	  logging in, do a "View/Source" on the login page and look for a
+	  rather large block of comments at the top of the page.  If the
+	  program found any hints as to why the login failed, they will be
+	  detailed there.  You can edit the login.html template if you don't
+	  wish for this information to be available.
+
 2003-04-12  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* tmda-cgi 0.02 is released.
