@@ -76,9 +76,32 @@ if not TMDARC:
     if not os.path.exists(TMDARC):
         TMDARC = os.path.expanduser('~/.tmda/config')
 
+# CONFIG_EXEC
+# If set to 0 in GLOBAL_TMDARC, the user's TMDARC file will be parsed
+# using ConfigParser, otherwise it will evaluated as a sequence of
+# Python statements using execfile().
+# Default is 1 (execfile())
+if not vars().has_key('CONFIG_EXEC'):
+    CONFIG_EXEC = 1
+
 # Read-in the user's configuration file.
 if os.path.exists(TMDARC):
-    execfile(TMDARC)
+    if CONFIG_EXEC:
+        execfile(TMDARC)
+    else:
+        import ConfigParser
+        cf = ConfigParser.ConfigParser()
+        cf.read(TMDARC)
+        cf_section = 'TMDA_CONFIG'
+        for option in cf.options(cf_section):
+            value = cf.get(cf_section, option)
+            option = option.upper()
+            # Translate options into variables.
+            if value in list(string.digits):
+                # make sure integer values don't get turned into strings
+                exec('%s = %s' % (option, value))
+            else:
+                exec('%s = "%s"' % (option, value))
 
 
 import Util

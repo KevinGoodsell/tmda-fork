@@ -1,3 +1,7 @@
+2002-06-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (CONFIG_EXEC): New variable.
+
 2002-06-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Add PENDING_WHITELIST_APPEND &
