@@ -180,14 +180,14 @@ def inject_pending(pathname,timestamp,pid):
     confirm_done_cookie = Cookie.make_confirm_cookie(timestamp,pid,'done')
     confirm_done_address = Defaults.USERNAME + '-confirm-done.' + \
                            confirm_done_cookie + '@' + Defaults.HOSTNAME
-    curdate = time.asctime(time.gmtime(time.time())) + ' UTC'
+    curdate = time.strftime('%a, %d %b %Y %X -0000', time.gmtime(time.time()))
     try:
         fileobj = open(pathname,'r')
         message_headers = rfc822.Message(fileobj)
         message_body = fileobj.read()
         fileobj.close()
         # Add header.
-        message_headers['X-Confirmed'] = curdate + ' (by tmda-filter)'
+        message_headers['X-Confirmed'] = curdate + ' ; by TMDA'
         inject = []
         inject.append(Defaults.INJECT)
         inject.append(confirm_done_address)
