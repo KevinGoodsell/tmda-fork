@@ -583,6 +583,10 @@ def Show():
         ReadArrayText += ", "
     T["ReadArray"] = ReadArrayText
 
+    # Disallow searching if defaults.ini prohibits
+    if not Searching and PVars[("NoOverride", "MaySearchPendList")][0].lower() == "n":
+      T['searchForm']
+
   # No messages to display
   else:
     if Searching:
