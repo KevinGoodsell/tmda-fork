@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.80+"
+TMDA = "0.81"
 
 # TMDA version codename
 CODENAME = "Swaps"
