@@ -6,8 +6,8 @@ Title: Configuration
   For technical reasons, no one place could hold them all.</p>
 <ul>
   <li>Parameters needed before authentication are compiled into the binary
-    itself. These parameters are set with the <a
-    href="compile.html#Running"><tt>compile</tt></a> program.<p></li>
+    itself. These parameters are set during <a
+    href="compile.html#Running">compilation</a>.<p></li>
   <li>Parameters that are needed by TMDA are stored in <a
     href="tmdaconfig.html">TMDA configuration files</a>.<p></li>
   <li>tmda-cgi defaults are stored in <a

@@ -12,7 +12,7 @@ Title: Password Authentication
 
 <p>This method authenticates logins against user name &amp; password pairs 
   stored in a password file (or files). tmda-cgi will look either in the 
-  file specified by the compile script, or in the default locations for the 
+  file specified during compilation, or in the default locations for the 
   password file, but the file(s) must be readable by the CGI.</p>
 <p>If you are running in system-wide mode, the password file can be owned 
   by root. If you are running in single-user mode, the password file can be 
@@ -140,7 +140,7 @@ Title: Password Authentication
   <tt>vchkpw</tt>.</p>
 <p>When specifying this method of authentication, you may need to supply
   additional parameters to your checkpassword program. By default,
-  <tt>compile</tt> will append <tt>/bin/true</tt> or
+  <tt>configure</tt> will append <tt>/bin/true</tt> or
   <tt>/usr/bin/true</tt>, but any program that eventually returns
   &quot;0&quot; will do.</p>
 

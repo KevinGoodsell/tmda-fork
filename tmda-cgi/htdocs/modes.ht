@@ -45,11 +45,11 @@ Title: Modes
   who compiled it and therefore cannot access anyone else's personal data.</p>
 
 <p>If multiple users wish to install tmda-cgi in single-user mode (strange, but 
-  not absurd) then each user can use <tt>compile</tt> to create a different 14k 
-  shell that launches the Python code. This method is less convenient than the 
-  system-wide installation (since each user must compile their own copy of 
-  tmda-cgi and then surf a different URL to access the system), but it is the 
-  best solution for:</p>
+  not absurd) then each user can use <tt>configure/make</tt> to create a 
+  different 14k shell that launches the Python code. This method is less 
+  convenient than the system-wide installation (since each user must compile 
+  their own copy of tmda-cgi and then surf a different URL to access the 
+  system), but it is the best solution for:</p>
 
 <ul>
   <li>users without root access to their server<p></li>
