@@ -134,7 +134,10 @@ included <b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b>,
 <br><br>
 
 <li>Enable the <strong>recipient_delimiter</strong> parameter in
-Postfix's <em>main.cf</em> if it isn't already.
+Postfix's <em>main.cf</em> if it isn't already.  The Postfix default is
+<code><b>+</b></code> but <code><b>-</b></code> is an acceptable value as
+well.  Just make sure it matches <b>RECIPIENT_DELIMITER</b> in your
+<b>~/.tmdarc</b>.
 <br><br>
 
 <li>Modify <b>~/.forward</b> to send your mail to tmda-filter.
