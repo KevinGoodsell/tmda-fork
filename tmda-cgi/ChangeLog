@@ -1,3 +1,7 @@
+2003-06-19  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added support for the iso-2022-jp (Japanese) codec.
+
 2003-06-16  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Added readline module to configure program.  We now have tab-

@@ -91,6 +91,10 @@ def TranslateToUTF8(CharSet, Str, Errors):
         elif CharSet == "big5":
           import chinese.big5
           Lib = chinese.big5
+        # Is it iso-2022-jp?
+        elif CharSet == "iso-2022-jp":
+          import japanese.iso_2022_jp_ext
+          Lib = japanese.iso_2022_jp_ext
         # Don't recognize it.  Was it our fallback?
         elif CharSet == PVars[("General", "CSEncoding")]:
           # It was our fallback!  Give up now!
