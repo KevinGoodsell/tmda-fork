@@ -341,6 +341,15 @@ The compiler will save the correct version of the Python interpreter and use it
 when tmda-cgi is run."""
   sys.exit()
 
+# Check for a compatible version of TMDA
+sys.path.insert(0, OptD["Base"])
+try:
+  import Version
+  Version.Test()
+except ImportError, ErrStr:
+  print ErrStr
+  sys.exit()
+
 # Check that User is valid and unprivileged (system-wide mode only).
 if OptD["Mode"] == "system-wide":
   try:

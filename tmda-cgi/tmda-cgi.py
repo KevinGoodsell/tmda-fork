@@ -51,6 +51,15 @@ import sys
 
 sys.path.insert(0, os.environ["TMDA_BASE_DIR"])
 import Session
+import CgiUtil
+
+# Check version information
+try:
+  import Version
+  Version.Test()
+except ImportError, ErrStr:
+  CgiUtil.TermError("Failed to import TMDA module.", ErrStr, "import TMDA", "",
+    "Upgrade to the most recent release of TMDA.")
 
 # Process any CGI fields
 Form = cgi.FieldStorage()
@@ -93,7 +102,6 @@ def main():
       PVars["InProcess"] = {}
       PVars.Save()
       
-    import CgiUtil
     import Pending
     import View
     
