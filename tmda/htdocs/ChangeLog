@@ -1,3 +1,8 @@
+2002-04-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* resources.ht (TARGET): Add commercial support link for Mike
+	Meyer.  Remove link to tmda_confirm.pl.
+	
 2002-04-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* faq.ht: Mention collectaddys in the whitelist FAQ.

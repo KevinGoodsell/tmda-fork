@@ -30,9 +30,8 @@ TARGET="Resource Window">TMDA plugin</a> for the
 <a href="http://www.squirrelmail.org/" TARGET="Resource Window">SquirrelMail</a>
 webmail package.<br><br>
 
-<li><a href="http://www.visca.com/tmda/tmda_confirm.html" TARGET="Resource Window">tmda_confirm.pl</a> 
-is a Perl script that checks all the CONFIRM messages in the TMDA log
-file entries for the last $hours hours and pulls out the corresponding
-Reply-To header for that message from the TMDA pending directory. It
-then sends a summary to the admin.
-
+<li><a href="http://www.mired.org/consulting.html" TARGET="Resource Window">Mike Meyer</a>
+ commercially supports TMDA, qmail, and many other software packages.  Remote
+ admin work, as well as e-mail and phone support is available.  He
+ accepts purchase orders.</li>
+<br><br>
