@@ -45,7 +45,7 @@ tarball:
 
 <blockquote><pre>
 
-# rpm -tb tmda-0.01.tgz 
+# rpmbuild -tb tmda-0.01.tgz 
 # rpm -Uvh /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
 
 </pre></blockquote>
@@ -57,7 +57,7 @@ dependency check using the <em>--nodeps</em> option to RPM:
 
 <blockquote><pre>
 
-# rpm -tb --nodeps tmda-0.01.tgz
+# rpmbuild -tb --nodeps tmda-0.01.tgz
 # rpm -Uvh --nodeps /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
 
 </pre></blockquote>
