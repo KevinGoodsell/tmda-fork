@@ -36,6 +36,8 @@ Contributions:
 
     * Arcady Genkin -- Gentoo Linux Package.
 
+    * Jim Geovedi -- OpenBSD port (formerly by David Lebel).
+
     * David Guerizec -- Pending.py module, lots of tmda-ofmipd
       improvements, miscellaneous bugfixes, and tmda-gui (TKinter
       interface).
@@ -48,8 +50,6 @@ Contributions:
     * Josh Huber -- tmda.el.
 
     * Brian Lalor -- testing the initial Sendmail support; bugfixes.
-
-    * David Lebel -- OpenBSD port.
 
     * Tim "FilterParser" Legant -- By far the most prolific
       contributor.  Rewrite of FilterParser.py plus many improvements
