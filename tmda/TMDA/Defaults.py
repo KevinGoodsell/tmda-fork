@@ -1396,12 +1396,10 @@ else:
 
 # Read key from CRYPT_KEY_FILE, and then convert it from hex back into
 # raw binary.  Hex has only 4 bits of entropy per byte as opposed to 8.
-if PENDING_FILE_PERM == 0600:
+try:
     CRYPT_KEY = binascii.unhexlify(open(CRYPT_KEY_FILE).read().strip())
-else:
-    try:
-        CRYPT_KEY = binascii.unhexlify(open(CRYPT_KEY_FILE).read().strip())
-    except: pass
+except IOError:
+    if PENDING_FILE_PERM == 0600: raise
 
 ###################################
 # END of user configurable settings
