@@ -1,0 +1,26 @@
+Title: Virtual Users
+
+<h2><a name="Virtual" id="Virtual"></a>Virtual users</h2>
+<p><b>Warning:  This is not heavily tested yet.</b></p>
+<p>Virtual users are now mostly* supported. To use tmda-cgi with a virtual 
+  user account, you will need Jesse Guardiani's
+  <tt>getuserinfo-vpopmail.sh</tt>, which you can find in TMDA's contrib 
+  directory. This script calls <tt>/home/vpopmail/bin/vuserinfo</tt> and 
+  extracts:
+  <ul>
+    <li>home directory
+    <li>UID
+    <li>GID
+  </ul>
+  for any given user. To allow logins for real <b><i>and</i></b> virtual 
+  users simultaneously, you must make sure that there are entries in your 
+  virtual user database for each real user. Be sure the UID and GID 
+  information in your database is correct.<p>
+<p>If you put your vpopmail directory in an atypical location, you may need to 
+  edit <tt>getuserinfo-vpopmail.sh</tt> to make it work.</p>
+<p>If you use vmailmgr or some other virtual user system, you will probably
+  need to make a new version of the <tt>getuserinfo</tt> stub to match your 
+  system. Please contact the
+  <a href="http://tmda.net/lists/listinfo/">tmda-workers</a> mailing list to 
+  contribute any new stubs for systems not yet supported.</p>
+<p>* URL confirmation does not currently work for virtual users.</p>

@@ -1,0 +1,37 @@
+Title: Surprises & gotcha's
+
+<h2>Surprises &amp; gotcha's</h2>
+<p>This section of the documentation is reserved for functionality and quirks
+  that, although not erroneous, may not be what you expect. Check this list for
+  help if you experience problems with tmda-cgi.</p>
+<ol>
+  <li>tmda-cgi's whitelist feature does not update the list pointed to by
+    configuration variable
+    <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a></tt><tt>.</tt>
+    <p>tmda-cgi uses configuration variable
+      <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
+      instead of
+      <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a>.</tt>
+      To use the whitelist feature, you must set
+      <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
+      to a list that is handled by your incoming filter.<p></li>
+  <li>TMDA requires Python version 2.1 but some flavors of Linux (such as <a
+    href="http://redhat.com">RedHat</a>) come with two different versions of
+    Python installed, one older and one newer.
+    <p>If tmda-cgi tries to run using the wrong version of Python, then you
+      must specify the correct version at compile time. Instead of typing:
+    <blockquote>
+	  <pre>$ ./compile &lt;options&gt;</pre>
+	</blockquote>
+    <p>Type:</p>
+	<blockquote>
+	  <pre>$ /usr/bin/python2 compile &lt;options&gt;</pre>
+	</blockquote>
+    <p>(Assuming that your Python 2.1+ can be found at
+      <tt>/usr/bin/python2</tt>.) The compiler will save the correct version of
+      the Python interpreter and use it when tmda-cgi is run.</p>
+	</li>
+  <li>
+    <p>URL confirmation does not work for virtual users.</p>
+    <p>We hope to add support for this soon.</p>
+</ol>
