@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.91+"
+TMDA = "0.92"
 
 # TMDA version codename
 CODENAME = "Kauai King"
