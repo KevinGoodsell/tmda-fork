@@ -562,6 +562,26 @@ def sendmail(msgstr, envrecip, envsender):
     envsender is the envelope sender address.
     """
     import Defaults
+    # Sending mail with a null envelope sender address <> is not done
+    # the same way across the different supported MTAs, nor across the
+    # two mail transports (SMTP and /usr/sbin/sendmail).
+    #
+    # The most common method is to use the string '<>'.  There are two
+    # exceptions where an empty string must be used instead.
+    #
+    # 1) When running qmail/courier and using the sendmail transport.
+    # qmail munges the envelope sender address into <"<>"@domain.dom
+    # if "sendmail -f <>" is used.
+    #
+    # 2) When running Postfix and using the sendmail transport.
+    # Old versions of Postfix apparently also have trouble with
+    # "sendmail -f <>", though Postfix 2.0.x does not.
+    if envsender == '':
+        envsender = '<>'
+    if envsender == '<>' and \
+           Defaults.MAIL_TRANSFER_AGENT in ('postfix', 'qmail') and \
+           Defaults.MAIL_TRANSPORT == 'sendmail':
+        envsender = ''
     if Defaults.MAIL_TRANSPORT == 'sendmail':
         # You can avoid the shell by passing a tuple of arguments as
         # the command instead of a string.  This will cause the

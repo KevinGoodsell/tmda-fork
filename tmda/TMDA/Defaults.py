@@ -325,14 +325,9 @@ if not vars().has_key('VIRTUALDOMAINS'):
 # Example:
 # BOUNCE_ENV_SENDER = "devnull@domain.dom"
 #
-# Default is an empty envelope sender <>.
+# Default is "<>", a null envelope sender.
 if not vars().has_key('BOUNCE_ENV_SENDER'):
-    if MAIL_TRANSPORT == 'sendmail' and \
-           MAIL_TRANSFER_AGENT in ('qmail', 'postfix'):
-        # qmail/Postfix's /usr/sbin/sendmail doesn't like -f '<>'
-        BOUNCE_ENV_SENDER = ''
-    else:
-        BOUNCE_ENV_SENDER = '<>'
+    BOUNCE_ENV_SENDER = '<>'
 
 # BOUNCE_TEXT_FILTER_INCOMING
 # Text for the failure notice returned to the sender when a 'bounce'
