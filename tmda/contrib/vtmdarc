@@ -1,2 +1,3 @@
 CRYPT_KEY_FILE = "$VUSERDIR/.tmda/crypt_key"
+CONFIRM_APPEND = "$VUSERDIR/.tmda/lists/whitelist"
 DATADIR = "$VUSERDIR/.tmda/"

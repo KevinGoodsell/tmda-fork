@@ -86,19 +86,26 @@ VUSERDIR=`vuserinfo -d $EMAILADDR`
 VUSERNAME=`echo $EMAILADDR | cut -d@ -f1`
 VDOMAIN=`echo $EMAILADDR | cut -d@ -f2`
 VDOMDIR=`vdominfo -d $VDOMAIN`
+python -c 'import cdb' 2> /dev/null
+CDB=""
+cdbcheckret=$?
+if [ $cdbcheckret = "0" ]; then
+    CDB="-autocdb"
+fi
 
 # Create all the necessary directories and files.
 mkdir -p $VUSERDIR/.tmda/filters $VUSERDIR/.tmda/lists
 mkdir -p $VUSERDIR/.tmda/pending $VUSERDIR/.tmda/responses
 touch $VUSERDIR/.tmda/filters/incoming $VUSERDIR/.tmda/filters/outgoing
 touch $VUSERDIR/.tmda/lists/whitelist $VUSERDIR/.tmda/config
+echo "from-file $CDB $VUSERDIR/.tmda/lists/whitelist ok" >> $VUSERDIR/.tmda/filters/incoming
 cp -R $TMDAROOT/templates $VUSERDIR/.tmda/
 tmda-keygen -b > $VUSERDIR/.tmda/crypt_key
 chmod 600 $VUSERDIR/.tmda/crypt_key
 
 # Create the .qmail files.
 cat <<VEOF > $VDOMDIR/.qmail-${VUSERNAME}
-|preline -f $TMDAROOT/bin/tmda-rfilter -c $VUSERDIR/.tmda/config
+|preline -f $TMDAROOT/bin/tmda-filter -c $VUSERDIR/.tmda/config -t $VUSERDIR/.tmda/templates/
 |$VPOPROOT/bin/vdelivermail '' $VUSERDIR
 VEOF
 ln -s $VDOMDIR/.qmail-${VUSERNAME} $VDOMDIR/.qmail-${VUSERNAME}-default
