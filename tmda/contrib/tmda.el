@@ -54,6 +54,27 @@
 ;;    tmda-pending-tag-auto-advance
 ;;
 ;;    See the help text for each variable for more information.
+;;
+;; 5. Display the number of pending messages in your modeline
+;;
+;;    Optionally, you can make use of the tmda-pending-update-count
+;;    function to display the current number of pending messages in
+;;    your modeline.  You will need to customize a couple things
+;;    to get this to work.
+;;
+;;    a. You must add (list "" 'tmda-pending-count) to the
+;;       default-modeline-format.  This format ensures the value
+;;       can be updated dynamically.
+;;
+;;    b. You must arrange to have tmda-pending-update-count called
+;;       every so often.  I recommend using the gnus-demon:
+;;
+;;       (gnus-demon-add-handler 'tmda-pending-update-count 2 t)
+;;
+;;    After these changes, my modeline looks like:
+;;
+;; ISO8-P23---**- L74 C2 XEmacs: tmda.el 11:40am 0.01 (Emacs-Lisp Font)-8%
+;;      ^^^ pending count here
 
 ;; Usage Instructions
 
@@ -99,7 +120,9 @@
 ;;    The usage should be fairly straightforward.  If you would like a
 ;;    different output method for tmda-pending, please customize
 ;;    tmda-pending-summary-args. (For example, to get a more terse
-;;    output set said variable to "-bT")
+;;    output set said variable to "-bT")  If you customize your
+;;    tmda-pending output, you *must* include the msg filename, as this
+;;    is what the tmda-pending buffer uses to distinguish messages.
 
 ;;    Message mode keybindings
 ;;    These bindings are in addition to the existing global bindings
@@ -121,6 +144,11 @@
 ;;    Enjoy!
 
 ;; Version history:
+
+;; 7/26/2002 - v0.9
+;;  * Made the address at point matching a little better.
+;;  * Fixed a regexp in the tmda-pending mode for removing a blank line.
+;;  * added tmda-pending-count for display in modeline (see installation #5)
 
 ;; 7/24/2002 - v0.8
 ;;  * Added keybindings to add addresses to wildcard lists
@@ -166,7 +194,7 @@
 ;;; Variables
 
 (defvar tmda-version
-  "tmda.el v0.8")
+  "tmda.el v0.9")
 
 (defvar tmda-bbdb-whitelist-file
   "~/.tmda/lists/bbdb-whitelist"
@@ -182,11 +210,11 @@
 
 (defvar tmda-list-append-confirm
   t
-  "*When set to nil, don't ask for confirmation before updating a list.")
+  "*When set to t, ask for confirmation before updating a list.")
 
 (defvar tmda-wildcard-list-append-confirm
   t
-  "*When set to nil, don't ask for confirmation before updating a list.")
+  "*When set to t, ask for confirmation before updating a wildcard list.")
 
 (defvar tmda-output-buffer
   " *tmda-output*"
@@ -331,7 +359,7 @@ This can be useful in posting-styles:
       (re-search-backward not-match-regexp nil t)
       (if (re-search-forward addr-regexp nil t)
 	  (match-string 1)
-	nil))))
+	""))))
 
 (defun tmda-summary-sender ()
   (save-excursion
@@ -364,49 +392,57 @@ This is useful for whitelisting someone who is using a dated address."
 
 ;; whitelists
 (tmda-make-list-function tmda-whitelist-at-point
-			 "Whitelist" (tmda-addr-at-point)
+			 "whitelist" (tmda-addr-at-point)
 			 tmda-default-whitelist
-			 tmda-list-append-confirm)
+			 tmda-list-append-confirm
+			 "Whitelist address at point.")
 
 (tmda-make-list-function tmda-summary-whitelist-sender
-			 "Whitelist" (tmda-summary-sender)
+			 "whitelist" (tmda-summary-sender)
 			 tmda-default-whitelist
-			 tmda-list-append-confirm)
+			 tmda-list-append-confirm
+			 "Whitelist sender in summary mode.")
 
 (tmda-make-list-function tmda-whitelist-wildcard-at-point
-			 "Whitelist" (tmda-wildcard
-				      (tmda-addr-at-point))
+			 "wildcard whitelist" (tmda-wildcard
+					       (tmda-addr-at-point))
 			 tmda-default-wildcard-whitelist
-			 tmda-wildcard-list-append-confirm)
+			 tmda-wildcard-list-append-confirm
+			 "Whitelist address wildcard at point.")
 
 (tmda-make-list-function tmda-summary-whitelist-wildcard-sender
-			 "Whitelist" (tmda-wildcard
-				      (tmda-summary-sender))
+			 "wildcard whitelist" (tmda-wildcard
+					       (tmda-summary-sender))
 			 tmda-default-wildcard-whitelist
-			 tmda-wildcard-list-append-confirm)
+			 tmda-wildcard-list-append-confirm
+			 "Whitelist sender wildcard in summary buffer.")
 
 ;; blacklists
 (tmda-make-list-function tmda-blacklist-at-point
-			 "Blacklist" (tmda-addr-at-point)
+			 "blacklist" (tmda-addr-at-point)
 			 tmda-default-blacklist
-			 tmda-list-append-confirm)
+			 tmda-list-append-confirm
+			 "Blacklist address at point.")
 
 (tmda-make-list-function tmda-summary-blacklist-sender
-			 "Blacklist" (tmda-summary-sender)
+			 "blacklist" (tmda-summary-sender)
 			 tmda-default-blacklist
-			 tmda-list-append-confirm)
+			 tmda-list-append-confirm
+			 "Blacklist sender in summary mode.")
 
 (tmda-make-list-function tmda-blacklist-wildcard-at-point
-			 "Blacklist" (tmda-wildcard
-				      (tmda-addr-at-point))
+			 "wildcard blacklist" (tmda-wildcard
+					       (tmda-addr-at-point))
 			 tmda-default-wildcard-blacklist
-			 tmda-wildcard-list-append-confirm)
+			 tmda-wildcard-list-append-confirm
+			 "Blacklist address wildcard at point.")
 
 (tmda-make-list-function tmda-summary-blacklist-wildcard-sender
-			 "Blacklist" (tmda-wildcard
-				      (tmda-summary-sender))
+			 "wildcard blacklist" (tmda-wildcard
+					       (tmda-summary-sender))
 			 tmda-default-wildcard-blacklist
-			 tmda-wildcard-list-append-confirm)
+			 tmda-wildcard-list-append-confirm
+			 "Blacklist sender wildcard in summary buffer.")
 
 (defun tmda-add-to-list (addr file)
   (message (concat "Adding to " file " ..."))
@@ -525,6 +561,8 @@ to the kill ring for easy pasting wherever it is needed."
 	  (message string)
 	  (kill-new string))
       (message "Invalid syntax, please try again."))))
+
+;;; tmda-pending buffer support code
 
 (defun tmda-pending-buffer-kill ()
   (interactive)
@@ -647,7 +685,8 @@ to the kill ring for easy pasting wherever it is needed."
 
   (sleep-for 0.5)
   (message "Processing...done")
-  (tmda-pending-refresh-buffer))
+  (tmda-pending-refresh-buffer)
+  (tmda-pending-update-count))
 
 (defun tmda-pending-next-msg ()
   (interactive)
@@ -682,6 +721,15 @@ to the kill ring for easy pasting wherever it is needed."
   (tmda-pending-refresh-buffer)
   (tmda-pending-setup-keys))
 
+(defvar tmda-pending-count "*")
+
+(defun tmda-pending-update-count ()
+  "Function which updates the tmda-pending-count variable.
+This is useful for viewing the number of pending messages in the modeline."
+  (let ((count (string-to-number (shell-command-to-string
+				  "tmda-pending -bT | wc -l"))))
+    (setq tmda-pending-count (format "%d" count))))
+
 ;; What version of TMDA do we need?
 (defvar tmda-major-ver-req 0)
 (defvar tmda-minor-ver-req 58)
@@ -691,6 +739,8 @@ to the kill ring for easy pasting wherever it is needed."
     (string-match "\\([0-9]+\\)\\.\\([0-9]+\\)" ver)
     (and (>= (string-to-int (match-string 1 ver)) tmda-major-ver-req)
 	 (>= (string-to-int (match-string 2 ver)) tmda-minor-ver-req))))
+
+;; utility function to setup keybindings
 
 (defun tmda-install-hooks ()
   "Install hooks, change settings to use all the functions contained

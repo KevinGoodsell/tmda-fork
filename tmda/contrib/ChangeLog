@@ -1,3 +1,11 @@
+2002-07-26  Josh  <huber@alum.wpi.edu>
+
+	* tmda.el: Misc Fixes, also add tmda-pending-count
+	* tmda.el (tmda-addr-at-point):
+	* tmda.el (tmda-pending-apply-changes): Update pending count
+	* tmda.el (tmda-pending-count): New.
+	* tmda.el (tmda-pending-update-count): New.
+
 2002-07-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* qmail-smtpd_auth.patch: Removed.
