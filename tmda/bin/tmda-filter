@@ -249,7 +249,7 @@ def send_bounce(bounce_message, **vars):
         if not vars.has_key('already_confirmed'):
             message_headers['Reply-To'] = vars['confirm_accept_address']
         message_headers['Precedence'] = 'bulk'
-        message_headers['X-Delivery-Agent'] = Version.SUMMARY
+        message_headers['X-Delivery-Agent'] = Version.ALL
         message_body = bounce_message.read()
         inject = []
         inject.append(Defaults.SENDMAIL)

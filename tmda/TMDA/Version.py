@@ -23,4 +23,4 @@ except ImportError:
 # A summary of all the version identifiers; used primarily for the
 # `X-Delivery-Agent' headers.  e.g,
 # "TMDA/0.43 (Python 2.1.1; freebsd-4.4-RELEASE-i386)"
-SUMMARY ="TMDA/%s (Python %s; %s)" % (TMDA, PYTHON, PLATFORM)
+ALL = "TMDA/%s (Python %s; %s)" % (TMDA, PYTHON, PLATFORM)

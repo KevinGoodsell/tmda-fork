@@ -1,3 +1,7 @@
+2001-12-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Version.py (ALL): Change SUMMARY to ALL.
+
 2001-12-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* MTA.py (Sendmail.__init__): New class to support Sendmail.  We

@@ -144,6 +144,7 @@ FEATURE(`local_procmail', `/usr/bin/procmail')
 LOCAL_CONFIG
 HX-Envelope-To: $u 
 HX-Envelope-From: $g 
+
 </blockquote></pre>
 
 Sendmail will now use procmail to delivery local mail, and will

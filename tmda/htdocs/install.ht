@@ -58,7 +58,7 @@ RPM are available.
 Report your installation (used only to satisfy my curiosity):
 
 <blockquote><pre>
-# ( python -c 'from TMDA.Version import *; print SUMMARY' ) \
+# ( python -c 'from TMDA.Version import *; print ALL' ) \
   | mail jason-tmdausage@mastaler.com
 </blockquote></pre>
 
