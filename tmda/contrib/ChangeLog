@@ -1,7 +1,11 @@
+2001-10-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add RECIPIENT_DELIMITER.
+
 2001-10-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* sample.tmdarc: Add LOCAL_DELIVERY_AGENT & MAIL_TRANSFER_AGENT
-	
+	* sample.tmdarc: Add LOCAL_DELIVERY_AGENT & MAIL_TRANSFER_AGENT.
+		
 2001-09-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda.spec: Updated %description to better reflect the current
