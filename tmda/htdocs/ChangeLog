@@ -1,3 +1,8 @@
+2002-05-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* resources.ht (Links): Link to Robin Socha's Using Gnus with TMDA
+	to reduce UCE HOWTO.
+	
 2002-05-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* faq.ht: Update cygwin entry -- SENDMAIL is not required.
