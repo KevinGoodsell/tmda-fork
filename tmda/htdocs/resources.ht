@@ -9,15 +9,20 @@ Project Management Site at Sourceforge</a><br><br>
 <li><a href="http://www.apress.com/catalog/book/1893115402/" TARGET="Resource Window">
 The qmail Handbook</a> contains a section describing TMDA<br><br>
 
+<li>Vincent Danen has added a TMDA installation and configuration tutorial
+to
+<a href="http://www.mandrakesecure.net/en/docs/spam2.php" TARGET="Resource Window">
+Controlling SPAM under Mandrake Linux, Part 2</a><br><br>
+
+<li>Lou Hevly has written a 
+<a href="http://www.visca.com/tmda/tmda_vpop.html" TARGET="Resource Window">
+tutorial for installing TMDA with vpopmail</a><br><br>
+
 <li>Francisco Sam Castillo's 
 <a href="http://devel.samstech.net/" TARGET="Resource Window">QAdmin-TMDA</a> is
 a TMDA configuration and administration tool which integrates into the 
 <a href="http://inter7.com/qmailadmin/" TARGET="Resource Window">QmailAdmin</a>
  web managment system.<br><br>
-
-<li>Lou Hevly has written a 
-<a href="http://www.visca.com/tmda/tmda_vpop.html" TARGET="Resource Window">
-tutorial for installing TMDA with vpopmail</a><br><br>
 
 <li><a href="http://www.visca.com/tmda/tmda_confirm.html" TARGET="Resource Window">tmda_confirm.pl</a> 
 is a Perl script that checks all the CONFIRM messages in the TMDA log
