@@ -7,7 +7,7 @@ Title: Global Configuration File
     </tr>
     <tr>
       <td align="center"><!-- var: NoFile --><textarea name="textarea" 
-        cols="64" rows="15">%(FileContents)s</textarea><!-- /var -->
+        cols="64" rows="15" wrap="off">%(FileContents)s</textarea><!-- /var -->
         <!-- var: NoneLook="<i>None.</i>" -->
       </td>
     </tr>

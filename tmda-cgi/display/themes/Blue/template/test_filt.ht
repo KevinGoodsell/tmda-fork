@@ -53,7 +53,8 @@ Title: Test Filters
     </tr>
     <tr>
       <td>&nbsp;</td>
-      <td colspan="2"><textarea name="body" cols="48" rows="5">%(Body)s</textarea></td>
+      <td colspan="2"><textarea name="body" cols="48" rows="5"
+        wrap="off">%(Body)s</textarea></td>
     </tr>
     <tr>
       <td>&nbsp;</td>

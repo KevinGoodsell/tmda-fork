@@ -6,7 +6,7 @@ Title: Outgoing Filter
       <td height="30" align="center" valign="top"><b>%(FilePath)s:</b></td>
     </tr>
     <tr>
-      <td><textarea name="filter" cols="64"
+      <td><textarea name="filter" cols="64" wrap="off"
         rows="15">%(FileContents)s</textarea>
         <input type="hidden" name="subcmd" value="save">
         <input type="hidden" name="cmd" value="outgoing">

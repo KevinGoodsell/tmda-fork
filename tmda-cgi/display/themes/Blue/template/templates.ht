@@ -7,7 +7,7 @@ Title: Autoresponse Templates
       <td height="30" align="center"><b>%(FilePath)s:</b></td>
     </tr>
     <tr>
-      <td>&nbsp;<textarea name="%(Var)s" cols="72" 
+      <td>&nbsp;<textarea name="%(Var)s" cols="72" wrap="off"
         rows="10">%(FileContents)s</textarea>&nbsp;</td>
     </tr>
     <tr>

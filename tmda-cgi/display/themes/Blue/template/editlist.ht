@@ -7,7 +7,7 @@ Title: List Editor
       <td height="30" colspan="3"><b>%(FilePath)s:</b></td>
     </tr>
     <tr>
-      <td colspan="3" align="center"><textarea name="list" cols="55"
+      <td colspan="3" align="center"><textarea name="list" wrap="off" cols="55"
         rows="15">%(FileContents)s</textarea></td>
     </tr>
     <tr align="center">
