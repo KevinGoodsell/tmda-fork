@@ -5,17 +5,17 @@
 <li><a href="requirements.html">Requirements</a>
 <li><a href="credit.html">Credit</a>
 <h3>Virtual Users</h3>
-<li><a href="virtual.html">#</a>
+<li><a href="virtual.html"></a>
 <h3>Install</h3>
 <li><a href="download.html">Download</a>
 <li><a href="modes.html">Modes</a>
 <li><a href="compile.html">Compilation</a>
 <li><a href="nosu.html">Centralized no-su</a>
 <h3>Passwords</h3>
-<li><a href="auth.html">#</a>
+<li><a href="auth.html"></a>
 <h3>Config.</h3>
 <li><a href="config.html">Configuration</a>
 <li><a href="confirm.html">URL Confirmation</a>
 <h3>Support</h3>
-<li><a href="surprise.html">Surprises & Gotcha</a>
+<li><a href="surprise.html">Surprises & Gotchas</a>
 <li><a href="contact.html">Contact</a>

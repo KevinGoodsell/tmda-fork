@@ -96,19 +96,6 @@ name="%s"''' % (alt, height, name)
     subtopic = 1
     self.buttons = {'topics': [], 'subtopics': []}
 
-    # Collapse E-mail
-    try:
-      i = 0
-      while 1:
-        if (type(sidebar[i]) != StringType) and (sidebar[i][1] == "E-mail"):
-          sidebar[i] = (sidebar[i][0], "   E-mail")
-          subtopic = self.do_button(sidebar, i, subtopic)
-          if self.html != "view.html":
-            sidebar[i:i+1] = []
-        i += 1
-    except IndexError:
-      pass
-
     for i in range(len(sidebar)):
       if type(sidebar[i]) == StringType:
         self.buttons['topics'].append(sidebar[i])
@@ -160,11 +147,13 @@ name="%s"''' % (alt, height, name)
 
   def collapse_links(self, sidebar, html):
     search_topic = 0
+    self.expanded =  sidebar[0]
     try:
       while 1: # check sub links to see if we're one of them
         i = search_topic + 1
         while 1:
           if type(sidebar[i]) == StringType:
+            self.expanded =  sidebar[i]
             # found next subject, so let's collapse this one
             search_topic += 1
             while type(sidebar[search_topic]) != StringType:
@@ -173,8 +162,12 @@ name="%s"''' % (alt, height, name)
           else:
             if sidebar[i][0]:
               if sidebar[i][0] == html:
-                # deactivate us
-                sidebar[i] = (None, sidebar[i][1], sidebar[i][2])
+                # are we blank?
+                if sidebar[i][1] == "":
+                  sidebar[i:i+1] = []
+                else:
+                  # deactivate us
+                  sidebar[i] = (None, sidebar[i][1], sidebar[i][2])
                 # found us, collapse others
                 while type(sidebar[i]) != StringType: i += 1
                 while 1:
@@ -243,19 +236,29 @@ alt="TMDA (http://tmda.net) CGI Interface">'''
   def get_category(self, item, itemnum):
     # Add some scripting for rollovers
     temp = len(self.rollover)
-    self.rollover += '''  var x%d = new Image();
+    if item == self.expanded:
+      temp = '''<td><img src="display/dyn_buttons/layout1_r%d_c1_h.png"
+height="''' % itemnum
+      if itemnum == 1:
+        temp += "50"
+      else:
+        temp += "35"
+      temp += '" width="194" border="0" alt="%s"></td>' % item
+    else:
+      self.rollover += '''  var x%d = new Image();
 x%d.src = "display/dyn_buttons/layout1_r%d_c1_h.png";
 ''' % (temp, temp, itemnum)
-    temp = '''<td><a href="%s"
+      temp = '''<td><a href="%s"
 onmouseover="document.images.x%d.src='display/dyn_buttons/layout1_r%d_c1_h.png'"
 onmouseout="document.images.x%d.src='display/dyn_buttons/layout1_r%d_c1.png'"><img
 src="display/dyn_buttons/layout1_r%d_c1.png" name="x%d" height="''' % (
 self.assoc[item], temp, itemnum, temp, itemnum, itemnum, temp)
-    if itemnum == 1:
-      temp += "50"
-    else:
-      temp += "35"
-    return temp + ('" width="194" border="0" alt="%s"></a></td>' % item)
+      if itemnum == 1:
+        temp += "50"
+      else:
+        temp += "35"
+      temp += '" width="194" border="0" alt="%s"></a></td>' % item
+    return temp
 
   def get_item(self, url, text, extra):
     if url is None:
