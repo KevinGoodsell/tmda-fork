@@ -36,3 +36,4 @@
 <h3>Miscellaneous</h3>
 <li><a href="resources.html">External Resources</a>
 <li><a href="mirrors.html">Mirrors</a>
+<li><a href="logos.html">Logos</a>
