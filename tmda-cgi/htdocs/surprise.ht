@@ -9,8 +9,9 @@ Title: Surprises & Gotcha's
 <a href="#Python">Python Problems</a><br>
 <a href="#Confirm">URL Confirmation Catastrophes</a><br>
 <a href="#Authentication">Authentication Ailments</a><br>
-<a href="#Attach">Attachment Anxiety</a></p>
-<a href="#WhiteBlack">Whitelist, Blacklist... where are the options?</a></p>
+<a href="#Attach">Attachment Anxiety</a><br>
+<a href="#WhiteBlack">Whitelist, Blacklist... where are the options?</a><br>
+<a href="#RPM">Where, oh where, did the RPM install?</a></p>
 
 <h3><a name="Whitelist"></a>Whitelist Woes</h3>
 <p>tmda-cgi's whitelist feature does not update the list pointed to by
@@ -104,3 +105,13 @@ Authentication returned: 0<br>
   href="/config-vars.html#PENDING_BLACKLIST_APPEND"><tt>PENDING_BLACKLIST_APPEND</tt></a>. 
   The radio buttons and option buttons should appear on the pending list and 
   pending e-mail viewer once you do.</p>
+
+<h3><a name="RPM"></a>Where, oh where, did the RPM install?</h3>
+<p><tt>./compile</tt> wants to know where I installed TMDA, but I used the RPM,
+  and have no idea where it put the files!</p>
+<p>The RPM puts TMDA files all over the place, so when <tt>./compile</tt> asks,
+  "Path to TMDA root directory", try:</p>
+<blockquote>
+  <code>/usr/lib/python2.2/site-packages</code>
+</blockquote>
+and see if that makes it happy.

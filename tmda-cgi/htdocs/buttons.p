@@ -35,10 +35,20 @@ aS'Centralized no-su'
 p18
 aS'Configuration'
 p19
-aS'URL Confirmation'
+aS'   TMDA config'
 p20
-aS'Surprises & Gotchas'
+aS'   defaults.ini'
 p21
-aS'Contact'
+aS'   theme.ini'
 p22
+aS'   User prefs.'
+p23
+aS'Auto-installation'
+p24
+aS'URL Confirmation'
+p25
+aS'Surprises & Gotchas'
+p26
+aS'Contact'
+p27
 as.

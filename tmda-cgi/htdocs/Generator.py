@@ -141,6 +141,9 @@ name="%s"''' % (alt, height, name)
       if type(sidebar[i]) == StringType:
         topic = sidebar[i]
       else:
+        sidebar[i] = list(sidebar[i])
+        if sidebar[i][1] and sidebar[i][1][0] == "+":
+          sidebar[i][1] = "   " + sidebar[i][1][1:]
         if topic != "":
           self.assoc[topic] = sidebar[i][0]
           topic = ""

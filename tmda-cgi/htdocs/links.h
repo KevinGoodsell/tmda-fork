@@ -15,6 +15,11 @@
 <li><a href="auth.html"></a>
 <h3>Config.</h3>
 <li><a href="config.html">Configuration</a>
+<li><a href="tmdaconfig.html">+TMDA config</a>
+<li><a href="defaults.html">+defaults.ini</a>
+<li><a href="themeini.html">+theme.ini</a>
+<li><a href="userpref.html">+User prefs.</a>
+<li><a href="autoinstall.html">Auto-installation</a>
 <li><a href="confirm.html">URL Confirmation</a>
 <h3>Support</h3>
 <li><a href="surprise.html">Surprises & Gotchas</a>

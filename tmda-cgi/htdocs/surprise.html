@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Apr 21 23:25:00 2003 -->
+<!-- Mon Apr 28 22:23:28 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -61,11 +61,11 @@ onmouseout="document.images.x355.src='display/dyn_buttons/layout1_r5_c1.png'"><i
 src="display/dyn_buttons/layout1_r5_c1.png" name="x355" height="35" width="194" border="0" alt="Config."></a></td></tr>
 <tr><td><img src="display/dyn_buttons/layout1_r6_c1_h.png"
 height="35" width="194" border="0" alt="Support"></td></tr>
-<tr><td><img src="display/dyn_buttons/h-subtopic11.png" border="0" alt=" - Surprises & Gotchas" width="194" height="14"
-name="subtopic11"></td></tr>
-<tr><td><a href="contact.html" onmouseover="document.images.subtopic12.src='display/dyn_buttons/h-subtopic12.png'"
-onmouseout="document.images.subtopic12.src='display/dyn_buttons/subtopic12.png'"><img src="display/dyn_buttons/subtopic12.png" border="0" alt=" - Contact" width="194" height="14"
-name="subtopic12"></a></td></tr>
+<tr><td><img src="display/dyn_buttons/h-subtopic16.png" border="0" alt=" - Surprises & Gotchas" width="194" height="14"
+name="subtopic16"></td></tr>
+<tr><td><a href="contact.html" onmouseover="document.images.subtopic17.src='display/dyn_buttons/h-subtopic17.png'"
+onmouseout="document.images.subtopic17.src='display/dyn_buttons/subtopic17.png'"><img src="display/dyn_buttons/subtopic17.png" border="0" alt=" - Contact" width="194" height="14"
+name="subtopic17"></a></td></tr>
 </table><!-- end of sidebar table -->
 
 </td>
@@ -80,8 +80,9 @@ name="subtopic12"></a></td></tr>
 <a href="#Python">Python Problems</a><br>
 <a href="#Confirm">URL Confirmation Catastrophes</a><br>
 <a href="#Authentication">Authentication Ailments</a><br>
-<a href="#Attach">Attachment Anxiety</a></p>
-<a href="#WhiteBlack">Whitelist, Blacklist... where are the options?</a></p>
+<a href="#Attach">Attachment Anxiety</a><br>
+<a href="#WhiteBlack">Whitelist, Blacklist... where are the options?</a><br>
+<a href="#RPM">Where, oh where, did the RPM install?</a></p>
 
 <h3><a name="Whitelist"></a>Whitelist Woes</h3>
 <p>tmda-cgi's whitelist feature does not update the list pointed to by
@@ -175,6 +176,16 @@ Authentication returned: 0<br>
   href="/config-vars.html#PENDING_BLACKLIST_APPEND"><tt>PENDING_BLACKLIST_APPEND</tt></a>. 
   The radio buttons and option buttons should appear on the pending list and 
   pending e-mail viewer once you do.</p>
+
+<h3><a name="RPM"></a>Where, oh where, did the RPM install?</h3>
+<p><tt>./compile</tt> wants to know where I installed TMDA, but I used the RPM,
+  and have no idea where it put the files!</p>
+<p>The RPM puts TMDA files all over the place, so when <tt>./compile</tt> asks,
+  "Path to TMDA root directory", try:</p>
+<blockquote>
+  <code>/usr/lib/python2.2/site-packages</code>
+</blockquote>
+and see if that makes it happy.
 </td>
 <!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
@@ -193,8 +204,8 @@ x195.src = "display/dyn_buttons/layout1_r3_c1_h.png";
 x275.src = "display/dyn_buttons/layout1_r4_c1_h.png";
   var x355 = new Image();
 x355.src = "display/dyn_buttons/layout1_r5_c1_h.png";
-var subtopic12 = new Image();
-subtopic12.src = "display/dyn_buttons/h-subtopic12.png";
+var subtopic17 = new Image();
+subtopic17.src = "display/dyn_buttons/h-subtopic17.png";
 }
 //-->
 </script>
