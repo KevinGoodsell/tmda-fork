@@ -579,9 +579,10 @@ def main():
     elif action in ('accept','deliver','ok'):
         if option:
             msg = Deliver.Deliver(message_headers, message_body, option)
+            msg.deliver()
             logit('%s %s (%s)' % ('DELIVER', msg.get_instructions()[1],
                                   matching_line), disposal_time)
-            msg.deliver()
+            mta.stop()
         else:
             logit('%s (%s)' % ('OK', matching_line), disposal_time)
             mta.deliver(message)

@@ -1,5 +1,8 @@
 2002-02-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Deliver.py: Run mta.stop() from tmda-rfilter instead of from
+	every delivery method.
+
 	* Util.py (sendmail): Add quotes around both the sender and
 	recipient when calling sendmail from the shell.
 

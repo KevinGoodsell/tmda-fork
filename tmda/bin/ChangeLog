@@ -1,3 +1,8 @@
+2002-02-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (main): Run logit() after msg.deliver() has
+	returned, and then mta.stop().
+
 2002-02-25  Tim Legant  <tim@catseye.net>
 
 	* tmda-inject (main): Allow the default ACTION_OUTGOING to specify

@@ -7,7 +7,6 @@ import os
 
 import Defaults
 import Errors
-import MTA
 import Util
 
 
@@ -72,32 +71,29 @@ class Deliver:
     def deliver(self):
         """Deliver the message appropriately."""
         (type, dest) = self.get_instructions()
-        mta = MTA.init()
         if type == 'program':
-            self.__deliver_program(self.message, dest, mta)
+            self.__deliver_program(self.message, dest)
         elif type == 'forward':
-            self.__deliver_forward(self.headers, self.body, dest, mta)
+            self.__deliver_forward(self.headers, self.body, dest)
         elif type == 'mbox':
-            self.__deliver_mbox(self.message, dest, mta)
+            self.__deliver_mbox(self.message, dest)
         elif type == 'maildir':
-            self.__deliver_maildir(self.message, dest, mta)
+            self.__deliver_maildir(self.message, dest)
 
-    def __deliver_program(self, message, program, mta):
+    def __deliver_program(self, message, program):
         """Deliver message to /bin/sh -c program."""
         Util.pipecmd(program, message)
-        mta.stop()
 
-    def __deliver_forward(self, headers, body, address, mta):
+    def __deliver_forward(self, headers, body, address):
         """Forward message to address, preserving the existing Return-Path."""
         Util.sendmail(headers, body, address, self.env_sender)
-        mta.stop()
         
-    def __deliver_mbox(self, message, mbox, mta):
+    def __deliver_mbox(self, message, mbox):
         """ """
         raise Errors.DeliveryError, \
               'mbox delivery not yet implemented!'
 
-    def __deliver_maildir(self, message, maildir, mta):
+    def __deliver_maildir(self, message, maildir):
         """ """
         raise Errors.DeliveryError, \
               'Maildir delivery not yet implemented!'
