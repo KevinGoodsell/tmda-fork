@@ -2,7 +2,7 @@
 
 """Generate a tagged (dated-style) e-mail address.
 
-Usage:  %(program)s [-c <file>] [-h]
+Usage:  %(program)s [-c <file>] [-h] timeout
 
 Where:
 	-c <file>
@@ -12,6 +12,8 @@ Where:
 	--help
 	-h
 	   Print this help message and exit.
+
+	timeout is an optional timeout interval to override your default.
 """
 
 import getopt
@@ -46,6 +48,10 @@ from TMDA import Cookie
 
 def main():
 
+    try:                                # check for timeout override
+        os.environ['TMDA_TIMEOUT'] =  sys.argv[1]
+    except IndexError:
+        pass
     dated_address = Cookie.make_dated_address()
     sys.stdout.write(dated_address)
 

@@ -1,3 +1,8 @@
+2001-05-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-dated-address (main): Support an optional timeout argument
+	to override Defaults.TIMEOUT.
+
 2001-05-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (main): Fixed virtualdomain detection to work under
