@@ -47,8 +47,8 @@ sitelinks = [
 
 
 class TMDAGenerator(Skeleton, Sidebar, Banner):
-    AUTHOR = 'Jason R. Mastaler'
-    EMAIL = 'jason@mastaler.com'
+    AUTHOR = 'TMDA Users List'
+    EMAIL = 'tmda-users@tmda.net'
 
     def __init__(self, file, rootdir, relthis):
         root, ext = os.path.splitext(file)
@@ -78,7 +78,7 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
         # kludge!
         for i in range(len(p.sidebar)-1, -1, -1):
             if p.sidebar[i] == 'Email Us':
-                p.sidebar[i] = 'Author'
+                p.sidebar[i] = 'Contact'
                 break
 
                 
