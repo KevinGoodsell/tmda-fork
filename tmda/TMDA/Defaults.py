@@ -1232,23 +1232,48 @@ if not vars().has_key('ADDED_HEADERS_SERVER'):
 if not vars().has_key('PRIMARY_ADDRESS_MATCH'):
     PRIMARY_ADDRESS_MATCH = 5
 
-# PURGED_HEADERS
+# PURGED_HEADERS_CLIENT
 # A list containing one or more message headers that should be removed
 # from outgoing client-side messages (i.e, messages sent with
 # tmda-sendmail) prior to injection.  Listed headers are
 # case-insensitive, and the purging will only be attempted if the
 # header actually exists.
 #
-# NOTE: PURGED_HEADERS is run _after_ ADDED_HEADERS (see above).
+# NOTE: PURGED_HEADERS_CLIENT is run _after_ ADDED_HEADERS (see above).
 #
 # Examples:
 #
-# PURGED_HEADERS = ["bcc", "resent-bcc", "x-mailer"]
-# PURGED_HEADERS = ["bcc", "resent-bcc", "x-mailer", "user-agent"]
+# PURGED_HEADERS_CLIENT = ["bcc", "resent-bcc", "x-mailer"]
+# PURGED_HEADERS_CLIENT = ["bcc", "resent-bcc", "x-mailer", "user-agent"]
 #
 # Default is "Bcc:" and "Resent-Bcc"
-if not vars().has_key('PURGED_HEADERS'):
-    PURGED_HEADERS = ["bcc", "resent-bcc"]
+if not vars().has_key('PURGED_HEADERS_CLIENT'):
+    PURGED_HEADERS_CLIENT = ["bcc", "resent-bcc"]
+
+# PURGED_HEADERS_SERVER
+# A list containing one or more message headers that should be removed
+# from _all_ outgoing server-side messages (i.e, messages sent with
+# tmda-filter) prior to injection.  Listed headers are case-insensitive
+# and the purging will only be attempted if the header actually exists.
+#
+# See PURGED_HEADERS_CLIENT (above) for some examples.
+#
+# No default
+if not vars().has_key('PURGED_HEADERS_SERVER'):
+    PURGED_HEADERS_SERVER = None
+
+# PURGED_HEADERS_DELIVERY
+# A list containing one or more message headers that should be removed
+# from _all_ delivered messages (i.e, messages stored in an mbox or a
+# maildir, forwarded or passed to a program by TMDA).  Listed headers
+# are case-insensitive and the purging will only be attempted if the
+# header actually exists.
+#
+# See PURGED_HEADERS_CLIENT (above) for some examples.
+#
+# No default
+if not vars().has_key('PURGED_HEADERS_DELIVERY'):
+    PURGED_HEADERS_DELIVERY = None
 
 # RECIPIENT_HEADER
 # A string containing the name of a header (case-insensitive) whose

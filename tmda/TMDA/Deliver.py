@@ -29,6 +29,7 @@ import socket
 import stat
 import time
 
+import Defaults
 import Errors
 import Util
 
@@ -105,6 +106,8 @@ class Deliver:
 
     def deliver(self):
         """Deliver the message appropriately."""
+        # Optionally, remove some headers.
+        Util.purge_headers(self.msg, Defaults.PURGED_HEADERS_DELIVERY)
         (type, dest) = self.get_instructions()
         if type == 'program':
             # don't wrap headers, don't escape From, add From_ line
