@@ -31,7 +31,6 @@ import time
 import Version
 import Util
 import Errors
-import CheckPassword
 
 ## FIXME: debug stuff should be in it's own module
 class Devnull:
@@ -208,13 +207,41 @@ def init_auth_method():
             raise ValueError
 
 
+# Utility functions
+def pipecmd(command, *strings):
+    popen2._cleanup()
+    cmd = popen2.Popen3(command, 1, bufsize=-1)
+    cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
+    if strings:
+        # Write to the tochild file object.
+        for s in strings:
+            cmdin.write(s)
+        cmdin.flush()
+        cmdin.close()
+    # Read from the childerr object; command will block until exit.
+    err = cmderr.read().strip()
+    cmderr.close()
+    # Read from the fromchild object.
+    out = cmdout.read().strip()
+    cmdout.close()
+    # Get exit status from the wait() member function.
+    return cmd.wait()
+
+
 def run_authprog(username, password):
     """authprog should return 0 for auth ok, and a positive integer in
     case of a problem.  Return 1 upon successful authentication, and 0
     otherwise."""
     print >> DEBUGSTREAM, "Trying authprog method"
-    cmd = "/bin/sh -c 'exec %s 3<&0'" % authprog
-    authResult = CheckPassword.CheckPassword(username, password, '/bin/checkpassword', '/bin/true')
+    # Do we have the optional CheckPassord module available?  If so, let's use
+    # that.
+    try:
+        import CheckPassword
+        prog, true = authprog.split()
+        authResult = CheckPassword.CheckPassword(username, password, prog, true)
+    except ImportError:
+        cmd = "/bin/sh -c 'exec %s 3<&0'" % authprog
+        authResult = not pipecmd(cmd, '%s\0%s\0' % (username, password))
     print >> DEBUGSTREAM, "'%s' returned %d" % (authprog, authResult)
     return authResult
 
