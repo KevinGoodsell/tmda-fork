@@ -289,6 +289,38 @@ if not vars().has_key('BOUNCE_TEXT_INVALID_CONFIRMATION'):
 # located.  Set to None to disable notification.
 if not vars().has_key('BOUNCE_TEXT_NONEXISTENT_PENDING'):
     BOUNCE_TEXT_NONEXISTENT_PENDING = """Your original message could not be located."""
+
+# BOUNCE_TEXT_FAIL_DATED
+# Text for the failure notice returned to the sender when a
+# dated address does not verify with a correct HMAC.  Set to None 
+# to disable notification.  Setting to None will cause the same behavior
+# as setting ACTION_FAIL_DATED to drop
+if not vars().has_key('BOUNCE_TEXT_FAIL_DATED'):
+    BOUNCE_TEXT_FAIL_DATED = """You have sent email to an invalid address."""
+
+# BOUNCE_TEXT_EXPIRED_DATED
+# Text for the failure notice returned to the sender when a
+# dated address is expired.  Set to None to disable notification.  Setting
+# to None will cause the same behavior as setting ACTION_EXPIRED_DATED to
+# drop
+if not vars().has_key('BOUNCE_TEXT_EXPIRED_DATED'):
+    BOUNCE_TEXT_EXPIRED_DATED = """You have sent email to an expired address."""
+
+# BOUNCE_TEXT_FAIL_SENDER
+# Text for the failure notice returned to the sender when a
+# sender address does not verify with a correct HMAC.  Set to None
+# to disable notification.  Setting to None will cause the same behavior
+# as setting ACTION_FAIL_SENDER to drop
+if not vars().has_key('BOUNCE_TEXT_FAIL_SENDER'):
+    BOUNCE_TEXT_FAIL_SENDER = """You have sent email to an address you are not authorized to use."""
+
+# BOUNCE_TEXT_FAIL_KEYWORD
+# Text for the failure notice returned to the sender when a
+# keyword address does not verify with a correct HMAC. Set to None
+# to disable notification.  Setting to None will cause the same behavior
+# as setting ACTION_FAIL_KEYWORD to drop.
+if not vars().has_key('BOUNCE_TEXT_FAIL_KEYWORD'):
+    BOUNCE_TEXT_FAIL_KEYWORD = """You have sent email to an invalid address."""
         
 # BARE_APPEND
 # Filename to which a recipient's e-mail address should be
@@ -481,6 +513,91 @@ if not vars().has_key('FILTER_DROP_CC'):
 # Default is confirm
 if not vars().has_key('ACTION_INCOMING'):
     ACTION_INCOMING = "confirm"
+
+# ACTION_FAIL_DATED
+# Specifies how incoming messages should be disposed of if they are sent
+# to a dated address that does not properly verify.  
+# Possible values include:
+#
+# "bounce"
+#    bounce the message - uses BOUNCE_TEXT_FAIL_DATED
+#
+# "drop"
+#    silently drop the message
+#
+# "ok"
+#    deliver the message
+#
+# "confirm"
+#    request confirmation for the message
+#
+# Default is confirm
+if not vars().has_key('ACTION_FAIL_DATED'):
+    ACTION_FAIL_DATED = "confirm"
+
+# ACTION_EXPIRED_DATED
+# Specifies how incoming messages should be disposed of if they are sent
+# to a dated address that does not properly verify.  
+# Possible values include:
+#
+# "bounce"
+#    bounce the message - uses BOUNCE_TEXT_EXPIRED_DATED
+#
+# "drop"
+#    silently drop the message
+#
+# "ok"
+#    deliver the message
+#
+# "confirm"
+#    request confirmation for the message
+#
+# Default is confirm
+if not vars().has_key('ACTION_EXPIRED_DATED'):
+    ACTION_EXPIRED_DATED = "confirm"
+
+# ACTION_FAIL_SENDER
+# Specifies how incoming messages should be disposed of if they are sent 
+# to a sender address, but were not sent from the correct sender, and 
+# fail to verify.
+# Possible values include:
+#
+# "bounce"
+#    bounce the message - uses BOUNCE_TEXT_FAIL_SENDER
+#
+# "drop"
+#    silently drop the message
+#
+# "ok"
+#    deliver the message
+#
+# "confirm"
+#    request confirmation for the message
+#
+# Default is confirm
+if not vars().has_key('ACTION_FAIL_SENDER'):
+    ACTION_FAIL_SENDER = "confirm"
+
+# ACTION_FAIL_KEYWORD
+# Specifies how incoming messages should be disposed of if they are
+# sent to a keyword address that fails to verify.
+# Possible values include:
+#
+# "bounce"
+#    bounce the message - uses BOUNCE_TEXT_FAIL_KEYWORD
+#
+# "drop"
+#    silently drop the message
+#
+# "ok"
+#    deliver the message
+#
+# "confirm"
+#    request confirmation for the message
+#
+# Default is confirm
+if not vars().has_key('ACTION_FAIL_KEYWORD'):
+    ACTION_FAIL_KEYWORD = "confirm"
 
 # ACTION_OUTGOING
 # Specifies how outgoing messages should be tagged by default if there

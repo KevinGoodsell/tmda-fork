@@ -335,6 +335,23 @@ def send_cc(address):
     logit('CC ' + address)
 
 
+def do_default_action(action, logname, bouncetext):
+    """Handle ACTION_* actions"""
+    disposal_time = time.time()
+    if action in ('bounce', 'reject'):
+        logit('%s %s' % ('BOUNCE', logname))
+        bouncegen('bounce', bouncetext)
+    elif action in ('drop', 'exit', 'stop'):
+        logit('%s %s' % ('DROP', logname))
+        mta.stop()
+    elif action in ('accept', 'deliver', 'ok'):
+        logit('%s %s' % ('OK', logname))
+        mta.deliver(message_headers, message_body)
+    else:
+        logit('%s %s' % ('CONFIRM', logname))
+        bouncegen('request')
+
+
 def release_pending(timestamp, pid, headers, body):
     """Release a confirmed message from the pending queue."""
     return_path = headers.getaddr('return-path')[1]
@@ -479,26 +496,32 @@ def verify_dated_cookie(dated_cookie):
     try:
         cookie_date, datemac = dated_cookie.split('.')
     except ValueError:
-        logit("CONFIRM bad_dated_cookie")
-        bouncegen('request')
+        defact = Defaults.ACTION_FAIL_DATED.lower()
+        bouncetext = Defaults.BOUNCE_TEXT_FAIL_DATED
+        do_default_action(defact, 'action_fail_dated', bouncetext)
     now = time.time()
     newdatemac = Cookie.datemac(cookie_date)
     # Accept the message only if the address has not expired, and the
     # HMAC is valid.
     if int(cookie_date) >= int('%d' % now):
         if datemac != newdatemac:
-            logit("CONFIRM bad_dated_cookie")
-            bouncegen('request')
+            defact = Defaults.ACTION_FAIL_DATED.lower()
+            bouncetext = Defaults.BOUNCE_TEXT_FAIL_DATED
+            do_default_action(defact, 'action_fail_dated', bouncetext)
         else:
             logit("OK good_dated_cookie", now)
             mta.deliver(message_headers, message_body)
     else:
         if datemac != newdatemac:
-            logit("CONFIRM bad_dated_cookie")
+            defact = Defaults.ACTION_FAIL_DATED.lower()
+            bouncetext = Defaults.BOUNCE_TEXT_FAIL_DATED
+            do_default_action(defact, 'action_fail_dated', bouncetext)
         else:
-            logit("CONFIRM expired_dated_cookie (%s)" % \
-                  Util.unixdate(int(cookie_date)))
-        bouncegen('request')
+            defact = Defaults.ACTION_EXPIRED_DATED.lower()
+            bouncetext = Defaults.BOUNCE_TEXT_EXPIRED_DATED
+            logmsg = "action_expired_dated (%s)" % \
+                     Util.unixdate(int(cookie_date))
+            do_default_action(defact, logmsg, bouncetext)
 
 
 def verify_sender_cookie(sender_address,sender_cookie):
@@ -509,8 +532,9 @@ def verify_sender_cookie(sender_address,sender_cookie):
         logit("OK good_sender_cookie")
         mta.deliver(message_headers, message_body)
     else:
-        logit("CONFIRM bad_sender_cookie")
-        bouncegen('request')
+        defact = Defaults.ACTION_FAIL_SENDER.lower()
+        bouncetext = Defaults.BOUNCE_TEXT_FAIL_SENDER
+        do_default_action(defact, 'action_fail_sender', bouncetext)
 
 
 def verify_keyword_cookie(keyword_cookie):
@@ -524,8 +548,9 @@ def verify_keyword_cookie(keyword_cookie):
         logit("OK good_keyword_cookie \"" + keyword + "\"")
         mta.deliver(message_headers, message_body)
     else:
-        logit("CONFIRM bad_keyword_cookie")
-        bouncegen('request')
+        defact = Defaults.ACTION_FAIL_KEYWORD.lower()
+        bouncetext = Defaults.BOUNCE_TEXT_FAIL_KEYWORD
+        do_default_action(defact, 'action_fail_keyword', bouncetext)
 
 
 def bouncegen(mode, text=None):
@@ -690,19 +715,9 @@ def main():
     # If the message gets this far (i.e, was not sent to a tagged
     # address and it didn't match the filter file), then we consult
     # Defaults.ACTION_INCOMING.
-    default_action = string.lower(Defaults.ACTION_INCOMING)
-    if default_action in ('bounce','reject'):
-        logit('%s %s' % ('BOUNCE', 'action_incoming'))
-        bouncegen('bounce', Defaults.BOUNCE_TEXT_FILTER_INCOMING)
-    elif default_action in ('drop','exit','stop'):
-        logit('%s %s' % ('DROP', 'action_incoming'))
-        mta.stop()
-    elif default_action in ('accept','deliver','ok'):
-        logit('%s %s' % ('OK', 'action_incoming'))
-        mta.deliver(message_headers, message_body)
-    else:
-        logit('%s %s' % ('CONFIRM', 'action_incoming'))
-        bouncegen('request')
+    default_action = Defaults.ACTION_INCOMING.lower()
+    bouncetext = Defaults.BOUNCE_TEXT_FILTER_INCOMING
+    do_default_action(default_action, 'action_incoming', bouncetext)
 
 
 # This is the end my friend.

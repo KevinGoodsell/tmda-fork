@@ -4,6 +4,11 @@
 	cases except where OUTGOINGMAIL = "sendmail" *and*
 	MAIL_TRANSFER_AGENT is qmail or postfix.
 
+2002-06-10  Mark Horn  <mark@hornclan.com>
+
+	* Defaults.py: Added ACTION_FAIL* variables and BOUNCE_TEXT_FAIL*
+	variables
+
 2002-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Cookie.py: Refer to the first element of TAGS_* lists for the

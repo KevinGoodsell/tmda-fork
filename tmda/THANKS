@@ -35,6 +35,9 @@ Contributions:
 
     * Lou Hevly -- documentation (vpopmail tutorial).
 
+    * Mark Horn -- Configurable actions for tagged address
+      verification failures.
+
     * Brian Lalor -- testing the initial Sendmail support; bugfixes.
 
     * David Lebel -- OpenBSD port.

@@ -1,3 +1,11 @@
+2002-06-06  Mark Horn  <mark@hornclan.com>
+
+	* tmda-rfilter: added ACTION_FAIL_* variables and BOUNCE_TEXT_FAIL*
+	varibales.
+
+	* tmda-rfilter: added do_default_action function to handle all
+	ACTION* variables
+
 2002-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (main): Identify tagged address types using each
