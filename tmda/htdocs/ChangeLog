@@ -1,3 +1,7 @@
+2002-08-19  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* config-links.h: Add sidebar link to TMDA Filter Sources.
+	
 2002-08-18  Tim Legant  <tim@catseye.net>
 
 	* config-filter.ht: Significantly shortened file.  Added
