@@ -27,50 +27,48 @@ aS'Test Dynamic Address'
 p14
 aS'Pending E-mails'
 p15
-aS'Auto-cleanup'
-p16
 aS'Incoming Filter'
-p17
+p16
 aS'Outgoing Filter'
-p18
+p17
 aS'Test Filters'
-p19
+p18
 aS'Local Config'
-p20
+p19
 aS'Global Config'
-p21
+p20
 aS'Theme'
-p22
+p21
 aS'Change Password'
-p23
+p22
 aS'Uninstall'
-p24
+p23
 aS'whitelist'
-p25
+p24
 aS'white'
-p26
+p25
 aS'blacklist'
-p27
+p26
 aS'black'
-p28
+p27
 aS'confirmed'
-p29
+p28
 aS'confirm'
-p30
+p29
 aS'revoked'
-p31
+p30
 aS'work'
-p32
+p31
 aS'family'
-p33
+p32
 aS'friends'
-p34
+p33
 aS'accept'
-p35
+p34
 aS'deny'
-p36
+p35
 aS'whitelist_confirmed'
-p37
+p36
 aS'other'
-p38
+p37
 as.

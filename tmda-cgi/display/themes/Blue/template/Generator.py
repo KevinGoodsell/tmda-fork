@@ -164,6 +164,7 @@ name="%s"''' % (alt, alt, height, name)
       }
       button += 1
     pickle.dump(Subtopics, open('subtopics.p', 'w'))
+    os.chdir('..')
 
   def make_assoc(self, sidebar):
     self.assoc = {}
@@ -273,6 +274,8 @@ src="%%(ThemeDir)s/dyn_buttons/layout1_r%d_c1.png" name="x%d" height="''' % (
 self.assoc[item], temp, itemnum, temp, itemnum, itemnum, temp)
     if itemnum == 1:
       temp += "50"
+    elif itemnum > 6:
+      temp += "39"
     else:
       temp += "35"
     return temp + ('" width="194" border="0" alt="%s" title="%s"></a></td>' % (item,item))

@@ -5,7 +5,6 @@
 <h3>Pending</h3>
 <li><a href="%(Script)s?cmd=pending&SID=%(SID)s">Pending E-mails</a>
 <li><a href="%(Script)s?cmd=view&SID=%(SID)s">E-mail</a>
-<li><a href="%(Script)s?cmd=autocleanup&SID=%(SID)s">Auto-cleanup</a>
 <h3>Filters</h3>
 <li><a href="%(Script)s?cmd=incoming&SID=%(SID)s">Incoming Filter</a>
 <li><a href="%(Script)s?cmd=outgoing&SID=%(SID)s">Outgoing Filter</a>
