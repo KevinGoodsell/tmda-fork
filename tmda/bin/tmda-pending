@@ -356,7 +356,7 @@ def main():
             if interactive:
                 try:
                     inp = raw_input(
-                        '(p[ass] / s[how] / r[elease] / d[elete] / q[uit]) [%s]: '
+                        '([p]ass / [s]how / [r]elease / [d]elete / [q]uit) [%s]: '
                         % dispose_def)
                     ans = inp[0:1].lower()
                     if ans == "":

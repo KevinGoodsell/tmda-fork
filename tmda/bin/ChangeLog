@@ -1,3 +1,8 @@
+2002-02-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-pending (main): Make interactive command summary more
+	intuitive.
+	
 2002-02-21  Tim Legant  <tim@catseye.net>
 
 	* tmda-inject: Added <sender> parameter to -M switch.  Made
