@@ -1,3 +1,8 @@
+2002-06-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py: New helper functions: getuid, getgid, gethomedir, and
+	getgrouplist.
+
 2002-06-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (CONFIG_EXEC): New variable.

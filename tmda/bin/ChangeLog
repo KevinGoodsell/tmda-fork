@@ -1,3 +1,7 @@
+2002-06-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-ofmipd (TMDAProxy.process_message): fork() tmda-inject.
+	
 2002-06-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-pending (main): Add PENDING_WHITELIST_APPEND and

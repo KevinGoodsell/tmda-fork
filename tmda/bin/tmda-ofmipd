@@ -156,7 +156,6 @@ import fileinput
 import hmac
 import md5
 import os
-import pwd
 import random
 import time
 
@@ -661,12 +660,32 @@ class TMDAProxy(PureProxy):
         execdir = os.path.dirname(os.path.abspath(program))
         inject_path = os.path.join(execdir, 'tmda-inject')
         inject_cmd = '%s --config-file %s' % (inject_path, tmda_configfile)
-        Util.pipecmd('%s %s' % (inject_cmd, ' '.join(rcpttos)), data)
+        # fork the tmda-inject process, and change UID and GIDs to the
+        # authenticated user in the process.
+        pid = os.fork()
+        if pid == 0:
+            if os.getuid() == 0:
+                os.seteuid(0)
+                os.setgid(Util.getgid(auth_username))
+                os.setgroups(Util.getgrouplist(auth_username))
+                os.setuid(Util.getuid(auth_username))
+                # This is so "~" will work in the .tmda/* files.
+                os.environ['HOME'] = Util.gethomedir(auth_username)
+            try:
+                Util.pipecmd('%s %s' % (inject_cmd, ' '.join(rcpttos)), data)
+            except Exception, err:
+                print >> DEBUGSTREAM, 'Error:', err
+                os._exit(-1)
+            os._exit(0)
+        else:
+            rpid, status = os.wait()
+            # Did tmda-inject succeed?
+            if status != 0:
+                raise IOError, 'tmda-inject failed!'
 
 
 def main():
-    pw_uid = pwd.getpwnam(username)[2]
-    pw_gid = pwd.getpwnam(username)[3]
+    pw_uid = Util.getuid(username)
     # check ownership of authfile
     if Util.getfileuid(authfile) != pw_uid:
         raise IOError, \
@@ -676,10 +695,13 @@ def main():
     if authfile_mode not in (400, 600):
         raise IOError, \
               authfile + ' must be chmod 400 or 600!'
-    # try setgid()
-    os.setgid(pw_gid)
-    # try setuid()
-    os.setuid(pw_uid)
+    if os.getuid() == 0:
+        # try setegid()
+        os.setegid(Util.getgid(username))
+        # try setting the supplemental group ids
+        os.setgroups(Util.getgrouplist(username))
+        # try seteuid()
+        os.seteuid(pw_uid)
     # try binding to the specified host:port
     host, port = proxyport.split(':', 1)
     proxy = TMDAProxy((host, int(port)),

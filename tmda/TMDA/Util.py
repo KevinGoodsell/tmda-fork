@@ -27,7 +27,9 @@ import fileinput
 import fnmatch
 import os
 import popen2
+import pwd
 import re
+import socket
 import stat
 import string
 import sys
@@ -47,7 +49,6 @@ def gethostname():
     hostname = os.environ.get('QMAILHOST') or \
                os.environ.get('MAILHOST')
     if not hostname:
-        import socket
         hostname = socket.getfqdn()
     return hostname
 
@@ -57,7 +58,6 @@ def getfullname():
                os.environ.get('NAME') or \
                os.environ.get('MAILNAME')
     if not fullname:
-        import pwd
         fullname = pwd.getpwuid(os.getuid())[4]
     if not fullname:
         fullname = ''
@@ -69,14 +69,41 @@ def getusername():
                os.environ.get('USER') or \
                os.environ.get('LOGNAME')
     if not username:
-        import pwd
         username = pwd.getpwuid(os.getuid())[0]
     if not username:
         username = '<unknown>'
     return username
 
 
+def getuid(username):
+    """Return username's numerical user ID."""
+    return pwd.getpwnam(username)[2]
+
+
+def getgid(username):
+    """Return username's numerical group ID."""
+    return pwd.getpwnam(username)[3]
+
+
+def gethomedir(username):
+    """Return the home directory of username."""
+    return pwd.getpwnam(username)[5]
+
+
+def getgrouplist(username):
+    """Read through the group file and calculate the group access
+    list for the specified user.  Return a list of group ids."""
+    import grp
+    # calculate the group access list
+    gids = [i[2] for i in grp.getgrall() if username in i[-1]]
+    # include the base gid
+    gids.insert(0, getgid(username))
+    return gids
+
+
 def getfilemode(path):
+    """Return the octal number of the bit pattern for the file
+    permissions on path."""
     statinfo = os.stat(path)
     permbits = stat.S_IMODE(statinfo[stat.ST_MODE])
     mode = int(oct(permbits))
@@ -84,6 +111,7 @@ def getfilemode(path):
 
 
 def getfileuid(path):
+    """Return the numerical UID of the user owning the file in path."""
     statinfo = os.stat(path)
     return statinfo[stat.ST_UID]
 
