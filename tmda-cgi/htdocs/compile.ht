@@ -1,0 +1,118 @@
+Title: Compiling tmda-cgi
+
+<h2>Compilation</h2>
+
+<p>Once you have selected your mode, you will need to compile tmda-cgi. 
+  Compiling creates a binary executable which gives the program the rights to 
+  access the files it will need. This also saves certain pieces of information 
+  which it will need accessible before authentication.<p>
+
+<p>You will need to recompile if:</p>
+<ul>
+  <li>you move your configuration files</li>
+  <li>you move your supplimental display files (icons, images, and style 
+    sheet)</li>
+  <li>you move your tmda-cgi or TMDA source trees</li>
+  <li>you change the tmda-cgi mode</li>
+  <li>you upgrade tmda-cgi to a more recent version (see UPGRADE file)</li>
+</ul>
+
+<p>Compiling is done with a Python program located in the root of the tmda-cgi 
+  release called <tt>compile</tt>. Although <tt>compile</tt> may be run with a 
+  large variety of command line switches (see 
+  <tt>./compile&nbsp-h&nbsp;|&nbsp;more</tt>), we find it easiest to run in 
+  interactive mode. Interactive mode will ask you a series of questions and 
+  provide "best guess" answers as the defaults. Once you have answered all the 
+  questions, <tt>compile</tt> will generate an executable and byte-compile the 
+  Python code.</p>
+
+<p>If you do not know the answer to one of the interactive questions, don't 
+  panic. Simply hit control-C and the program will save the responses you have 
+  given. These will be used as the defaults when you re-run <tt>compile</tt>.
+
+<h3>Running <tt>compile</tt></h3>
+
+<p>Depending on the mode you have chosen, you may need to be logged in as a 
+  specific user when you compile tmda-cgi. Consult the following chart:<p>
+
+<table>
+  <tr>
+    <td width="20">&nbsp;</td>
+    <th>Mode</th>
+    <td width="10">&nbsp;</td>
+    <th><tt>compile</tt> as user</th>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>system-wide</td>
+    <td>&nbsp;</td>
+    <td>root</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>single-user</td>
+    <td>&nbsp;</td>
+    <td>the user who will be able to log in</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>no-su</td>
+    <td>&nbsp;</td>
+    <td>any user</td>
+  </tr>
+</table>
+
+<p>Compile in interactive mode:</p>
+<blockquote>
+  <pre>$ ./compile</pre>
+</blockquote>
+
+<p>Information requested in the interactive mode:</p>
+<ol>
+  <li>The location of your Python interpreter</li>
+  <li>Where to save the CGI</li>
+  <li>The path to TMDA's root directory</li> 
+  <li>The path to tmda-cgi's root directory</li>
+  <li>An optional path or &quot;formula&quot; to find the user <tt>config</tt> 
+    files</li>
+  <li>The <a href="auth.html">authentication mechanism</a> (file / program /
+    remote)
+  <li>The web path from the CGI to the <a href="#Display"><tt>display</tt>
+    directory</a></li> 
+  <li>Mode</li>
+  <li>Real user to use when someone logs in with a virtual e-mail account</li> 
+  <li>Virtual user lookup script</a>
+</ol>
+
+<h3><a name="Display"></a><tt>display</tt> Directory</h3>
+
+<p>Finally, tmda-cgi requires a variety of visual elements saved in a
+  <tt>display</tt> directory (see #7, above). This directory comes with the 
+  tmda-cgi source and will need to be manually copied or symbolically linked 
+  (make sure your web server is configured to follow links!) into the 
+  appropriate web directory. Please note that #7 specifies the relative <i>web 
+  path</i> from the CGI to the <tt>display</tt> directory, which may be 
+  different than the actual path. For example:</p>
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="35">&nbsp;</td>
+    <th>Web path</th>
+    <td width="15">&nbsp;</td>
+    <th>Actual path</th>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td>http://your.domain/cgi-bin/tmda.cgi</td>
+    <td>&nbsp;</td>
+    <td>/www/tmda/cgi-bin/tmda.cgi</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>http://your.domain/display/</td>
+    <td>&nbsp;</td>
+    <td>/www/tmda/htdocs/display</td>
+  </tr>
+</table>
+<p>In the above example, the actual path from the CGI to the display directory 
+  is <tt>../htdocs/display/</tt> but the web path is <tt>../display/</tt>. The 
+  web path is the path that should be entered in question #7.</p>
