@@ -28,6 +28,13 @@ int main(int argc, char *argv[])
 #ifdef TMDARC
   putenv(TMDARC);
 #endif
+#ifdef AUTH_ARG
+  putenv(AUTH_TYPE);
+  putenv(AUTH_ARG);
+  #ifdef AUTH_TRUE
+  putenv(AUTH_TRUE);
+  #endif
+#endif
   putenv(MODE);
   putenv(USER);
   putenv(DISP_DIR);

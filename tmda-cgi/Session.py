@@ -31,7 +31,6 @@ import string
 import sys
 import time
 import CgiUtil
-import Authenticate
 
 Rands = random.Random()
 
@@ -155,8 +154,40 @@ its partition is marked "nosuid" in /etc/fstab.""")
       os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/",
         "/%s/" % Form["user"].value)
 
+    # Initialize the auth mechanism
+    import Authenticate
+    try:
+      if os.environ.has_key( "TMDA_AUTH_TYPE" ):
+        if os.environ["TMDA_AUTH_TYPE"] == "program":
+          Authenticate.InitProgramAuth( os.environ["TMDA_AUTH_ARG"],
+            os.environ["TMDA_AUTH_TRUE"] )
+        elif os.environ["TMDA_AUTH_TYPE"] == "remote":
+          Authenticate.InitRemoteAuth( os.environ["TMDA_AUTH_ARG"] )
+        elif os.environ["TMDA_AUTH_TYPE"] == "file":
+          Authenticate.InitFileAuth( os.environ["TMDA_AUTH_ARG"] )
+      else:
+        # Default to regular flat file.
+        # Order of preference:
+        #   1) $TMDARC/tmda-cgi
+        #   2) $HOME/tmda-cgi
+        #   3) /etc/tmda-cgi
+        if os.environ.has_key("TMDARC"):
+          File = os.path.join(os.path.split(os.environ["TMDARC"])[0],
+                              "tmda-cgi")
+        else:
+          # FIXME: "getpwnam" will not work for virtual users!
+          os.environ["HOME"] = pwd.getpwnam(Form["user"].value)[5]
+          File = os.path.expanduser("~/.tmda/tmda-cgi")
+        if not os.access( File, os.F_OK ):
+          File = "/etc/tmda-cgi"
+
+        Authenticate.InitFileAuth( File )
+    except ValueError, err:
+      CgiUtil.TermError( "Auth Initialization Failed", "ValueError caught", 
+        "init auth type %s" % os.environ["TMDA_AUTH_TYPE"], err, "Fix the code." )
+
     # Validate the new session
-    if Authenticate.CheckPassword(Form) > 0:
+    if Authenticate.CheckPassword(Form):
       self.Vars["User"]  = Form["user"].value
       PasswordRecord     = pwd.getpwnam(self.Vars["User"])
       self.Vars["UID"]   = PasswordRecord[2]

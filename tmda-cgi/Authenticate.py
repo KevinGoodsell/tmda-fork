@@ -27,106 +27,139 @@ import os
 import os.path
 import pwd
 import random
+import sys
 
-def ComparePassword(Filename, User, Password):
-  """Checks password against a given filename.
+from TMDA import Auth
+from TMDA import Errors
 
-Returns:
-   1: File read, user found, password authenticated
-   0: File read, user found, login deactivated
-  -1: File read, user found, password wrong
-  -2: File read, user not found
-  -3: File couldn't be read"""
+# For now, output all Auth.py errors to http error log
+Auth.DEBUGSTREAM = sys.stderr
+
+authinit = False
+
+def InitProgramAuth( Program, trueProg = "/usr/bin/true" ):
+  """Initializes the authentication scheme with a checkpw-style program.
+(Implemented by Auth.py)"""
+  global authinit
+  Auth.authtype = 'prog'
+  if not os.access( Program, os.F_OK ):
+    authinit = False
+    raise ValueError, "'%s' does not exist" % Program
+  if not os.access( trueProg, os.F_OK ):
+    authinit = False
+    raise ValueError, "'%s' does not exist", trueProg
+  if not os.access( Program, os.X_OK ):
+    authinit = False
+    raise ValueError, "'%s' is not executable" % Program
+  if not os.access( trueProg, os.X_OK ):
+    authinit = False
+    raise ValueError, "'%s' is not executable", trueProg
+  # Now initialize the authprog with the checkpasswd program and "true"
+  Auth.authprog = "%s %s" % ( Program, trueProg )
+  authinit = True
+
+def InitFileAuth( Filename="/etc/tmda-cgi" ):
+  """Initializes the authentication scheme with a flat file
+(Not implemented by Auth.py yet)"""
+  global authinit
+  Auth.authtype = 'file'
+  if not os.access( Filename, os.F_OK ):
+    authinit = False
+    raise ValueError, "File '%s' does not exist" % Filename
+  Auth.authfile = Filename
+  authinit = True
+
+def InitRemoteAuth( URI ):
+  """Initialaze the authentication scheme with a remote URL
+(Implemented by Auth.py)"""
+  global authinit
+  Auth.authtype = 'remote'
   try:
-    F = open(Filename) 
-  except IOError:
-    return -3
+    Auth.parse_auth_uri( URI )
+    Auth.init_auth_method()
+    authinit = True
+  except ValueError, err:
+    authinit = False
+    raise Errors.AuthError, "Bad URI: %s" % err.value
+  except ImportError, err:
+    authinit = False
+    raise Errors.AuthError, "URI scheme not supported: %s" % err.value
 
-  RetVal = -2
-  while (1):
-    PasswordRecord = F.readline()
+def Authenticate(User, Password):
+  """Checks password against initialized authentication scheme filename.
 
-    # End of file?
-    if PasswordRecord == "":
-      break
-    Temp = PasswordRecord.strip().split(":")
+ - Returns True or False, depending on authentication.
 
-    # Have we found the correct user record?
-    if Temp[0] == User:
-      if Temp[1] == "":
-        RetVal = 0
-        break
-      
-      Perm = os.stat(Filename)[0] & 07777
+ - May raise Errors.AuthError if something "funny" happens."""
+  global authinit
+  RetVal = False
+  if authinit:
+    if Auth.authtype == 'prog' or Auth.authtype == 'remote':
+      try:
+        if Auth.authenticate_plain( User, Password ):
+          RetVal = True
+      except Errors.AuthError:
+        pass
+    elif Auth.authtype == 'file':
+      Filename = Auth.authfile
+      # Revert to original code since Auth.py doesn't implement files yet.
+      try:
+        F = open(Filename) 
+      except IOError:
+        raise Errors.AuthError, \
+          "Cannot open file '%s' for reading." % Filename, \
+          "Check file permissions"
 
-      # Is the password in the file encrypted?
-      if (Perm != 0400) and (Perm != 0600):
-        if crypt.crypt(Password, Temp[1][:2]) == Temp[1]:
-          RetVal = 1
-        else:
-          RetVal = -1
-        break
-      else:
-        if Temp[1] == Password:
-          RetVal = 1
-        else:
-          RetVal = -1
-        break
-  F.close()
+      PasswordRecord = F.readline()
+      while PasswordRecord != "":
+
+        # Split about the :
+        Temp = PasswordRecord.strip().split(":")
+
+        # Have we found the correct user record?
+        if Temp[0] == User:
+          if Temp[1] == "":
+            raise Errors.AuthError, \
+              "User %s is denied login (blank password in file)" % Temp[0], \
+              "Blank password in file"
+
+          Perm = os.stat(Filename)[0] & 07777
+
+          # Any file may have encrypted passwords in it.
+          # Even though this is a Bad Idea.
+          if crypt.crypt(Password, Temp[1][:2]) == Temp[1]:
+            RetVal = True
+            break
+          # Only <secret> files may have cleartext passwords in it.
+          if Perm == 0400 or Perm == 0600:
+            if Temp[1] == Password:
+              RetVal = True
+              break
+        PasswordRecord = F.readline()
+      F.close()
+    else:
+      raise Errors.AuthError, \
+        "Authentication mechanism '%s' unknown." % Auth.authtype
+  else:
+    raise Errors.AuthError, "No authentication mechanism initialized."
+  # If we made it this far, we're either returning True or False.
   return RetVal
 
 def CheckPassword(Form):
-  "Checks a password against password files."
+  "Checks a password from a form."
 
+  errMsg = "Password incorrect for user %s" % Form["user"].value
+  errHelp = "Reset password or correct file permissions"
   try:
-    # Find the requested home directory
-    os.environ["HOME"] = pwd.getpwnam(Form["user"].value)[5]
+    if Authenticate( Form["user"].value, Form["password"].value ):
+      return True
+  except Errors.AuthError, error:
+    errMsg = error.msg
+    if error.help != "":
+      errHelp = error.help
 
-    # Look in same directory as TMDARC file
-    if os.environ.has_key("TMDARC"):
-      # Given location?
-      FN = os.path.join(os.path.split(os.environ["TMDARC"])[0], "tmda-cgi")
-    else:
-      # No given location, try ~/.tmda/tmda-cgi
-      FN = os.path.expanduser("~/.tmda/tmda-cgi")
-  
-    # Login succeed?
-    RetVal = ComparePassword(FN, Form["user"].value, Form["password"].value)
-    if RetVal > 0:
-      return RetVal
-  except KeyError:
-    RetVal = -4
-    FN = "<i>n/a</i>"
-  
-  # Login help?
   if int(Form["debug"].value):
-    Errors = ["Logins for user %(user)s have been deactivated in file <tt>%(file)s</tt>",
-      "Password incorrect for user %(user)s in file <tt>%(file)s</tt>",
-      "User %(user)s was not found in file <tt>%(file)s</tt>",
-      "Could not read file <tt>%(file)s</tt>",
-      "User %(user)s does not exist"]
-    Err = Errors[-RetVal] % {"user": Form["user"].value, "file": FN}
-    Err += "<br>" + CgiUtil.FileDetails("Local password", FN)
-    if RetVal > -2:
-      CgiUtil.TermError("Login failed", "Bad pass / login disabled.", "validate password",
-        Err, "Correct entry for %s in file <tt>%s</tt>" % (Form["user"].value, FN))
-  if RetVal > -2:
-    return RetVal
-
-  # Login succeed?
-  FN = "/etc/tmda-cgi"
-  try:
-    RetVal = ComparePassword(FN, Form["user"].value, Form["password"].value)
-  except KeyError:
-    RetVal = -4
-  if RetVal > 0:
-    return RetVal
-
-  # Login help?
-  if int(Form["debug"].value):
-    Err += "<br>" + Errors[-RetVal] % {"user": Form["user"].value, "file": FN}
-    Err += "<br>" + CgiUtil.FileDetails("Global password", FN)
-    CgiUtil.TermError("Login failed", "Password / password file error.",
-      "validate password", Err, "Reset password or correct file permissions")
-  return RetVal
-  
+    CgiUtil.TermError("Login failed", "Authentication error",
+      "validate password", errMsg, errHelp)
+  else:
+    return False
