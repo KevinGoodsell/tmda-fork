@@ -68,8 +68,8 @@ Template.Template.Dict["ErrMsg"]   = "No error message returned.  Sorry!"
 
 # Check version information
 try:
-  import Version
-  Version.Test()
+  import CgiVersion
+  CgiVersion.Test()
 except ImportError, ErrStr:
   CgiUtil.TermError("Failed to import TMDA module.", ErrStr, "import TMDA", "",
     "Upgrade to the most recent release of TMDA.")

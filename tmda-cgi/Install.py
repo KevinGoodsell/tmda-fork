@@ -32,6 +32,7 @@ import CgiUtil
 import Template
 
 from TMDA import Errors
+from TMDA import Util
 
 PermSearch = re.compile("^([^#\s]\S*)\s+(\d+)")
 
@@ -101,12 +102,13 @@ Return 0 on success, error code on error."""
         Files.append(NewFilename)
       else:
         Files.append(Filename)
-  TarCmd = "%s -C %s -czf %s %s" % (PVars[("NoOverride", "WhichTar")],
-    os.environ["HOME"], Archive, " ".join(Files))
-  RetVal = os.system(re.sub("([\(\)])", r"\\\1", TarCmd))
-  if RetVal:
-    CgiUtil.TermError("CreateTgz failed.", "Errcode: %D" % RetVal,
-      "create backup", re.sub("([\(\)])", r"\\\1", TarCmd),
+  TarCmd = [PVars[("NoOverride", "WhichTar")], "-C", os.environ["HOME"],
+    "-czf", Archive] + Files
+  try:
+    Util.RunTask(TarCmd)
+  except OSError:
+    CgiUtil.TermError("CreateTgz failed.", "Errcode: %d" % RetVal,
+      "create backup", " ".join(TarCmd),
       "Check file permissions in home directory.")
   for (DstFn, SrcFn) in Parents:
     os.rename(SrcFn, DstFn)
@@ -117,8 +119,9 @@ Return 0 on success, error code on error."""
 
 def ReadTgz(Archive):
   "Return the files listed in an archive."
-  Files = os.popen("%s -C %s -tzf %s" % (PVars[("NoOverride", "WhichTar")],
-    os.environ["HOME"], Archive)).readlines()
+  TarCmd = [PVars[("NoOverride", "WhichTar")], "-C", os.environ["HOME"],
+    "-tzf", Archive]
+  Files = Util.RunTask(TarCmd)
   for i in range(len(Files)):
     Files[i] = Files[i].strip()
   return Files
@@ -128,8 +131,11 @@ def ExtractTgz(Archive):
 
 Return file list on success, None on error."""
 
-  if os.system("%s -C %s -xzf %s" % (PVars[("NoOverride", "WhichTar")],
-    os.environ["HOME"], Archive)):
+  TarCmd = [PVars[("NoOverride", "WhichTar")], "-C", os.environ["HOME"],
+    "-xzf", Archive]
+  try:
+    Util.RunTask(TarCmd)
+  except OSError:
     return None
   Files = ReadTgz(Archive)
   for i in range(len(Files)):
@@ -315,7 +321,8 @@ def Uninstall():
 
   # What files do we need to uninstall?
   InstallDir = os.path.join(os.getcwd(), "skel", "install")
-  RemoveFiles = FindFiles("", InstallDir)
+  Files = FindFiles("", InstallDir)
+  RemoveFiles = FindExisting(Files, os.environ["HOME"])
   for i in range(len(RemoveFiles)):
     RemoveFiles[i] = RemoveFiles[i] % Dict
 
@@ -410,32 +417,25 @@ def Uninstall():
   print T
   sys.exit()
 
-def ReleaseAndDelete(Days):
-  """Release all messages younger than given days old.  Delete rest.
-
-Don't release anything if Days=0, release them all if Days=-1."""
+def ReleaseAndDelete(Threshold):
+  "Release all messages younger than given amount.  Delete rest."
 
   from TMDA import Defaults
   from TMDA import Pending
 
   # Release
-  if Days:
-    if Days == -1:
-      Threshold = None
-      Younger   = None
-    else:
-      Threshold = "%dd" % Days
-      Younger   = 1
-    Pending.Queue(dispose = "release", threshold = Threshold, younger =
-      Younger, verbose = 0).initQueue().mainLoop()
+  Pending.Queue(dispose = "release", threshold = Threshold, younger = 1,
+    verbose = 0).initQueue().mainLoop()
 
   # Wait for messages to release...
   while 1:
     time.sleep(1)
-    Queue = Pending.Queue(threshold = Threshold, younger = Younger)
+    Queue = Pending.Queue(threshold = Threshold, younger = 1)
     Queue.initQueue()
-    if len(Queue.listPendingIds()) == 0:
-      break
+    Msgs = 0
+    for MsgID in Queue.listPendingIds():
+      Msgs += Queue.checkTreshold(MsgID)
+    if not Msgs: break
 
   # Delete
   Pending.Queue(dispose = "delete", verbose = 0).initQueue().mainLoop()
@@ -558,7 +558,7 @@ def Show():
         "", "Contact system administrator.")
     if Form.has_key("subcmd"):
       try:
-        ReleaseAndDelete(int(Form["release"].value))
+        ReleaseAndDelete(Form["release"].value)
       except Errors.QueueError:
         pass
       Uninstall()  # Does not return.
@@ -568,8 +568,9 @@ def Show():
     TemplateFN = "welcome.html"
   else:
     # Have they installed before?
-    if os.access(os.path.join(os.environ["HOME"],
-      PVars[("NoOverride", "UninstallBackupTGZ")]), os.R_OK):
+    if Util.CanRead(os.path.join(os.environ["HOME"],
+      PVars[("NoOverride", "UninstallBackupTGZ")]),
+      os.geteuid(), os.getegid()):
       TemplateFN = "re-enroll.html"
     else:
       TemplateFN = "welcome.html"

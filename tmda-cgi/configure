@@ -381,8 +381,8 @@ when tmda-cgi is run.""" % globals()
 # Check for a compatible version of TMDA
 sys.path.insert(0, OptD["Base"])
 try:
-  import Version
-  Version.Test()
+  import CgiVersion
+  CgiVersion.Test()
 except ImportError, ErrStr:
   print ErrStr
   sys.exit()

@@ -24,7 +24,7 @@
 import os
 import re
 import Template
-from Version import All
+from CgiVersion import All
 from TMDA import Version
 
 # Search stuff
