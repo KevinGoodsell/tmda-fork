@@ -1,3 +1,11 @@
+2001-11-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (make_msgid): New function to create and return an
+	rfc2822 compliant Message-ID string.
+
+	* Defaults.py (PID): Store the process id here so all areas of the
+	code can access it without having to re-fetch it.
+
 2001-11-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* FilterParser.py (FilterParser.firstmatch): Add support for DJB's

@@ -231,6 +231,7 @@ def send_bounce(bounce_message, **vars):
         bounce_message = cStringIO.StringIO(bounce_message)
         message_headers = rfc822.Message(bounce_message)
         # Add some headers.
+        message_headers['Message-ID'] = Util.make_msgid()
         if not vars.has_key('already_confirmed'):
             message_headers['Reply-To'] = vars['confirm_accept_address']
         message_headers['To'] = envelope_sender
@@ -457,7 +458,7 @@ def bouncegen(mode):
         def_template = Defaults.CONFIRM_REQUEST_TEMPLATE
         pkg_template = pkg_template_dir + 'confirm_request.txt'
         timestamp = str('%d' %now)
-        pid = str(os.getpid())
+        pid = Defaults.PID
         confirm_accept_address = Cookie.make_confirm_address(recipient_address,
                                                              timestamp,
                                                              pid,

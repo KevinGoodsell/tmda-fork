@@ -9,6 +9,7 @@ import os
 import re
 import string
 import sys
+import time
 import types
 
 
@@ -111,6 +112,28 @@ def format_timeout(timeout):
     if int(num) == 1:
         timeout = timeout[:-1]
     return timeout
+
+
+def make_msgid(timesecs=None, pid=None):
+    """Return an rfc2822 compliant Message-ID string.  e.g,
+    
+    <20011130190055.12345.tmda@nightshade.la.mastaler.com>
+
+    timesecs is optional, and if not given, the current time is used.
+
+    pid is optional, and if not given, the current process id is used.
+    """
+    if not timesecs:
+        timesecs = time.time()
+    if not pid:
+        import Defaults
+        pid = Defaults.PID
+    idhost = os.environ.get('QMAILIDHOST')
+    if not idhost:
+        idhost = gethostname()
+    date = time.strftime("%Y%m%d%H%M%S", time.gmtime(timesecs))
+    message_id = "<%s.%s.tmda@%s>" % (date, pid, idhost)
+    return message_id
 
 
 def file_to_dict(file,dict):

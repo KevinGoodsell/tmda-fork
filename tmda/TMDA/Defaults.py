@@ -23,6 +23,9 @@ PYTHON_VERSION = string.split(sys.version)[0]
 DELIVERY_AGENT = 'TMDA ' + 'v' + TMDA_VERSION + '/Python ' + PYTHON_VERSION \
                  + ' (' + sys.platform + ')'
 
+# The current process id of the Python interpreter as a string.
+PID = str(os.getpid())
+
 # General exit status codes which should be understood by all MTAs.
 # Defined so we can raise exit codes within TMDA modules without
 # having to create an MTA instance.
