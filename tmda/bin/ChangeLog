@@ -1,3 +1,10 @@
+2003-06-15  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* tmda-ofmipd: Added a new -t parameter which lets you set a "throttle"
+	  script.  The script is called whenever a user tries to send mail
+	  (it is passed the sender's authentication user name) and may return
+	  0 to permit or non-0 to prevent tofmipd from sending mail.
+
 2003-06-08  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (bouncegen): Add a 'template' function parameter,

@@ -157,7 +157,14 @@ OPTIONS:
 
         NOTE: This is only used when you have a qmail installation with virtual
         domains using the VMailMgr add-on.  It implies that you will also set
-        the --vhome-script parameter above."""
+        the --vhome-script parameter above.
+
+    -t <script>
+    --throttle-script <script>
+        Full pathname of a script which can meter how much mail any user sends.
+        The script is passed a login name whenever a user tries to send mail.
+        If the script returns a 0, the message is allowed.  For any other
+        value, the message is rejected."""
 
 import getopt
 import os
@@ -205,6 +212,7 @@ defaultauthports = { 'imap':  143,
 connections = 20
 vhomescript = None
 vdomainspath = '/var/qmail/control/virtualdomains'
+throttlescript = None
 
 if os.getuid() == 0:
     running_as_root = 1
@@ -253,7 +261,7 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                        'p:u:a:R:A:Fc:C:dVhfbS:v:', ['proxyport=',
+                      'p:u:a:R:A:Fc:C:dVhfbS:v:t:', ['proxyport=',
                                                      'username=',
                                                      'authfile=',
                                                      'remoteauth=',
@@ -267,7 +275,8 @@ try:
                                                      'foreground',
                                                      'background',
                                                      'vhome-script=',
-                                                     'vdomains-path='])
+                                                     'vdomains-path=',
+                                                     'throttle-script='])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -334,6 +343,8 @@ for opt, arg in opts:
         vhomescript = arg
     elif opt in ('-v', '--vdomains-path'):
         vdomainspath = arg
+    elif opt in ('-t', '--throttle-script'):
+        throttlescript = arg
 
 if vhomescript and configdir:
     msg = "WARNING: --vhome-script and --config-dir are incompatible." + \
@@ -826,11 +837,17 @@ class SMTPChannel(asynchat.async_chat):
                 else:
                     data.append(text)
             self.__data = NEWLINE.join(data)
-            status = self.__server.process_message(self.__peer,
-                                                   self.__mailfrom,
-                                                   self.__rcpttos,
-                                                   self.__data,
-                                                   self.__auth_username)
+
+            if not throttlescript or not os.system("%s %s" % (throttlescript,
+                self.__auth_username)):
+                status = self.__server.process_message(self.__peer,
+                                                       self.__mailfrom,
+                                                       self.__rcpttos,
+                                                       self.__data,
+                                                       self.__auth_username)
+            else:
+                status = self.push('450 Outgoing mail quota exceeded')
+
             self.__rcpttos = []
             self.__mailfrom = None
             self.__state = self.COMMAND
