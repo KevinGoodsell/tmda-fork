@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.76+"
+TMDA = "0.77"
 
 # TMDA version codename
 CODENAME = "Count Turf"
