@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.70+"
+TMDA = "0.71"
 
 # TMDA version codename
 CODENAME = "Hoop, Jr."
