@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Jul 16 16:49:54 2002 -->
+<!-- Fri Jul 19 14:41:33 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -245,6 +245,15 @@ These defaults can be overridden using tmda-ofmipd's `-a' flag.
 
 <li>The authentication file must be chmod 600 or 400, and be owned by the
 user running the daemon.  tmda-ofmipd will fail to start otherwise.
+<br><br>
+
+Instead of using an authentication file, you can also authenticate against
+checkpassword compatible programs such as 
+<a href="http://checkpasswd-pam.sourceforge.net/" TARGET="Resource Window">checkpassword-pam</a>.
+This would allow you to utilize your existing password database.
+Use tmda-ofmipd's `-A' flag to specify the program and arguments.  The help output
+contains such an example.
+<br><br>
 
 <hr>
 
