@@ -2,16 +2,16 @@
 
 """Generate a unique 160-bit hex key.
 
-Usage: %(program)s [-b] [-h]
+Usage: %(program)s [-d <device>] [-b] [-h]
 
 Where:
-    -b
-    --batch
-       Output only the CRYPT_KEY.
-
     -d <device>
     --device <device>
        Draw random numbers from a random data source device other than /dev/urandom
+
+    -b
+    --batch
+       Output only the CRYPT_KEY.
        
     --help
     -h
