@@ -1,5 +1,10 @@
 2001-10-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-sendmail (main): Bugfix.  Recipients being passed to
+	tmda-sendmail as arguments weren't being propogated to
+	tmda-inject.  This is now fixed unless `-t' is specified, in which
+	case recipients are extracted from the message headers.
+
 	* tmda-filter (verify_dated_cookie): Move check for --discard to
 	into bouncegen().
 

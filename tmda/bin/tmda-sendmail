@@ -14,6 +14,7 @@ import sys
 
 
 program = sys.argv[0]
+header_recipients = None
 execdir = os.path.dirname(os.path.abspath(program))
 arglist = ['']
 
@@ -34,8 +35,8 @@ for opt, arg in opts:
         usage(0)
     elif opt in list('BpvixmeoEJb'):
         pass 
-    elif opt == 't':
-        pass
+    elif opt == '-t':
+        header_recipients = 1
     elif opt == '-f':
         pass
     elif opt == '-F':
@@ -43,6 +44,11 @@ for opt, arg in opts:
 
 
 def main():
+    # If recipients are provided as args, pass them to tmda-inject
+    # unless `-t' was specified.
+    if args and not header_recipients:
+        for a in args:
+            arglist.append(a)
     os.execv(os.path.join(execdir,'tmda-inject'), arglist)
 
 
