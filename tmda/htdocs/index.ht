@@ -49,9 +49,8 @@ confirmation process looks like, try sending
 This methodology has the advantage of being very selective about what
 it allows in, while at the same time permitting legitimate, but
 previously unknown senders to reach you.  TMDA also has several
-techniques (See 'Dated' and 'Sender' Addresses below) that make it easier
-for contacts that aren't on your whitelist to reach you.
-<br><br>
+techniques (See the Client Configuration section) that make it easier
+for contacts that aren't on your whitelist to reach you.  <br><br>
 </ul>
 
 <u>Traditional Blacklist-based Strategy</u>&nbsp;&nbsp;
