@@ -143,3 +143,8 @@ Title: Compiling tmda-cgi
 <blockquote>
   <pre>os.umask(027)</pre>
 </blockquote>
+
+<p>If you have many users who use tmda-cgi in no-su mode, you may find it 
+  advantageous to put all of the TMDA files in one central location, such as 
+  <tt>/var/tmda</tt>. If this sounds appealing, check out the <a 
+  href="nosu.html">centralized no-su</a> example.
