@@ -251,7 +251,7 @@ class FilterParser:
     """, re.VERBOSE | re.IGNORECASE)
     
     out_action = re.compile(r"""
-    ( (?:(?:bare|sender|dated)(?:=\S+)?)
+    ( (?:(?:bare|sender|domain|dated)(?:=\S+)?)
     | (?:(?:exp(?:licit)?|as|ext(?:ension)?|kw|keyword)=\S+)
     | default )""", re.VERBOSE | re.IGNORECASE)
     

@@ -47,6 +47,11 @@ Incoming 'sender' messages are accepted if:
 
     1.  SENDERMAC is verified by matching it with a new HMAC generated
         against the sender's e-mail address.
+    2.  If the new HMAC does not match, a new HMAC is generated against
+	the sender's fully qualified domain.  If there is still no
+	match, one level of qualification is stripped (eg, 'DOMAIN.DOM'
+	-> 'DOM') and a new HMAC is generated and compared.  The process
+	repeats until a match is found or no more domain parts remain.
 
 Keyword Addresses:
 ------------------

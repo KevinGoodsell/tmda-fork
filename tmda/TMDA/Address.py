@@ -201,11 +201,24 @@ class SenderAddress(TaggedAddress):
         self.address = tagged_local + '@' + domain
         return self
 
+    # Try to match against the HMAC generated from the full sender first.
+    # If that doesn't match, try to match against the full domain, removing
+    # domain parts (eg, 'foo.example.com' => 'example.com') until there's a
+    # match or there are no more parts left.
     def verify(self, sender):
+        sender = str(sender).lower()
         hmac = self.local_parts[-1]
-        try_hmac = Cookie.make_sender_cookie(str(sender).lower())
+        try_hmac = Cookie.make_sender_cookie(sender)
         if try_hmac != hmac:
-            raise BadCryptoError, "Invalid cryptographic tag."
+            domain = sender.split('@')[-1]
+            dot = '.'
+            domain_parts = domain.split(dot)
+
+            while try_hmac != hmac and domain_parts:
+              try_hmac = Cookie.make_sender_cookie(dot.join(domain_parts))
+              del domain_parts[0]
+            if try_hmac != hmac:
+              raise BadCryptoError, "Invalid cryptographic tag."
 
     def hmac(self):
         return self.local_parts[-1]

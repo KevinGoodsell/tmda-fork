@@ -27,7 +27,8 @@ Contributions:
     * Ron Bickers -- countless suggestions, bugfixes, documentation
       additions, and code patches (too many to list).
 
-    * Ed Blackman -- bugfixes.
+    * Ed Blackman -- bugfixes, and enchancement of the sender style
+      tagged address to support domains.
 
     * Francisco Sam Castillo -- QAdmin-TMDA web management utility.
 

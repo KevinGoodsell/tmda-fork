@@ -173,6 +173,7 @@ for opt, arg in opts:
 
 
 from TMDA import Defaults
+from TMDA import Address
 from TMDA import Cookie
 from TMDA import Errors
 from TMDA import FilterParser
@@ -636,12 +637,12 @@ def verify_dated_cookie(dated_cookie):
 
 def verify_sender_cookie(sender_address,sender_cookie):
     """Verify a sender cookie."""
-    sender_address_cookie = Cookie.make_sender_cookie(sender_address)
-    # Accept the message only if the HMAC can be verified.
-    if (sender_cookie == sender_address_cookie):
+    try:
+        addr = Address.Factory(envelope_recipient)
+        addr.verify(sender_address)
         logit("OK", "good_sender_cookie")
         mta.deliver(msgin)
-    else:
+    except Address.AddressError, msg:
         defact = Defaults.ACTION_FAIL_SENDER.lower()
         bouncetext = Defaults.BOUNCE_TEXT_FAIL_SENDER
         do_default_action(defact, 'action_fail_sender', bouncetext)

@@ -186,6 +186,11 @@ def make_field(cookie_type, cookie_option, from_address, to_address):
 	# Send a message with a tagged (sender) address
 	sender_cookie_address = cookie_option or to_address
 	field = Cookie.make_sender_address (from_address, sender_cookie_address)
+    elif cookie_type == 'domain':
+	# Send a message with a tagged (sender) address using only the
+	# domain portion of the address
+	domain_cookie_address = (cookie_option or to_address).split('@')[-1]
+	field = Cookie.make_sender_address (from_address, domain_cookie_address)
     elif cookie_type in ('as','exp','explicit') and cookie_option:
 	# Send a message with an explicitly defined address.
 	field = cookie_option

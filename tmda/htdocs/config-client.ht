@@ -43,7 +43,8 @@ jason-sender-a751af@mastaler.com
 
 This particular sender address will only accept messages from
 <em>president@whitehouse.gov</em>.  Other messages must go through
-the confirmation process.
+the confirmation process.  Sender addresses can also be generated to
+accept mail from any sender at a given domain.
 <br><br>
 
 Sender addresses are often used to subscribe to mailing lists.  This
@@ -182,6 +183,26 @@ X-TMDA: sender=owner-xemacs-beta@xemacs.org
 <td>
 Send the message to all recipients with a sender cookie based on
 owner-xemacs-beta@xemacs.org instead of the recipient address.
+</td>
+</tr>
+
+<tr>
+<td><code>
+X-TMDA: sender=xemacs.org
+</td></code>
+<td>
+Send the message to all recipients with a sender cookie based on
+xemacs.org instead of the recipient address.
+</td>
+</tr>
+
+<tr>
+<td><code>
+X-TMDA: domain
+</td></code>
+<td>
+Send the message to all recipients with a sender cookie that is based
+on the domain of the recipient address.
 </td>
 </tr>
 

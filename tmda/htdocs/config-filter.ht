@@ -263,6 +263,8 @@ bare (don't tag)
 bare=append (don't tag, and also add recipient to your BARE_APPEND file)
 sender (tag with a sender address based on recipient)
 sender=address (tag with a sender address based on address instead)
+domain (tag with a sender address based on recipient's domain)
+domain=address (tag with a sender address based on the domain of address instead)
 dated (tag with a dated address)
 dated=timeout_interval 
 exp,explicit,as=full_address (use an explicit address)
@@ -530,6 +532,9 @@ to king@grassland.com keyword=elvis_parsley
 # Dated addresses (some with a non-default timeout interval)
 to bobby@peru.com dated
 to-dbm /var/dbm/slowpokes.db dated=6M
+
+# Allow anyone at whitehouse.gov to reply
+to president@whitehouse.gov domain
 
 # Majordomo and Mailman check the From: header for membership
 to mutt-users@mutt.org tag

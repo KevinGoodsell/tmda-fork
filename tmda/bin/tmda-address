@@ -52,7 +52,7 @@ OPTIONS:
 	-s <address>
 	--sender <address>
 	   Generate a sender-style tagged address.  address is
-	   a required sender e-mail address.
+	   a required sender e-mail address or domain name.
 
 	-d [timeout]
 	--dated [timeout]
