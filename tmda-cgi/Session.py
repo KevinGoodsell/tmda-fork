@@ -93,6 +93,32 @@ should be 4755 (-rwsr-xr-x) and the owner should be root.<br>Also check in which
 partition you placed the CGI.  You cannot run the CGI in system-wide mode if
 its partition is marked "nosuid" in /etc/fstab.""")
 
+  def __getpwnam___(self, User):
+    # Virtual users have @ in the user name
+    if User.find("@") >= 0:
+      try:
+        PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
+        UID = PasswordRecord[2]
+        GID = PasswordRecord[3]
+        F = os.popen \
+        (
+          '%svuserinfo -d "%s" 2>&1' % (os.environ["TMDA_VBIN"], User)
+        )
+        Home = F.read().strip()
+        if (F.close()):
+          UID = GID = Home = ""
+      except KeyError:
+        UID = GID = Home = ""
+    else:
+      try:
+        PasswordRecord = pwd.getpwnam(User)
+        UID  = PasswordRecord[2]
+        GID  = PasswordRecord[3]
+        Home = PasswordRecord[5]
+      except KeyError:
+        UID = GID = Home = ""
+    return UID, GID, Home
+
   def __init__(self, Form):
     "Reload an existing SID or create a new one."
     
@@ -144,6 +170,11 @@ its partition is marked "nosuid" in /etc/fstab.""")
     for i in range(8):
       self.SID += SessionChars[Rands.randrange(len(SessionChars))]
     self.Vars = {}
+    if Form.has_key("user"):
+      UID, self.Vars["GID"], self.Vars["HOME"] = \
+        self.__getpwnam___(Form["user"].value)
+      os.environ["HOME"] = self.Vars["HOME"]
+      if not UID: return
 
     # Logging in?
     if not Form.has_key("user"): return
@@ -159,7 +190,8 @@ its partition is marked "nosuid" in /etc/fstab.""")
     try:
       if os.environ.has_key( "TMDA_AUTH_TYPE" ):
         if os.environ["TMDA_AUTH_TYPE"] == "program":
-          Authenticate.InitProgramAuth( os.environ["TMDA_AUTH_ARG"] )
+          Authenticate.InitProgramAuth( os.environ["TMDA_AUTH_ARG"],
+            os.environ["TMDA_AUTH_TRUE"] )
         elif os.environ["TMDA_AUTH_TYPE"] == "remote":
           Authenticate.InitRemoteAuth( os.environ["TMDA_AUTH_ARG"] )
         elif os.environ["TMDA_AUTH_TYPE"] == "file":
@@ -174,8 +206,6 @@ its partition is marked "nosuid" in /etc/fstab.""")
           File = os.path.join(os.path.split(os.environ["TMDARC"])[0],
                               "tmda-cgi")
         else:
-          # FIXME: "getpwnam" will not work for virtual users!
-          os.environ["HOME"] = pwd.getpwnam(Form["user"].value)[5]
           File = os.path.expanduser("~/.tmda/tmda-cgi")
         if not os.access( File, os.F_OK ):
           File = "/etc/tmda-cgi"
@@ -186,20 +216,26 @@ its partition is marked "nosuid" in /etc/fstab.""")
         "init auth type %s" % os.environ["TMDA_AUTH_TYPE"], err, "Fix the code." )
 
     # Validate the new session
+    if not Form.has_key("password"): return
     if Authenticate.CheckPassword(Form):
       self.Vars["User"]  = Form["user"].value
-      PasswordRecord     = pwd.getpwnam(self.Vars["User"])
-      self.Vars["UID"]   = PasswordRecord[2]
-      self.Vars["GID"]   = PasswordRecord[3]
+      self.Vars["UID"]   = UID
       self.__suid__(self.Vars["UID"], self.Vars["GID"])
-      self.Vars["HOME"]  = PasswordRecord[5]
       os.environ["USER"] = self.Vars["User"]
-      os.environ["HOME"] = self.Vars["HOME"]
       self.Vars["IP"]    = os.environ["REMOTE_ADDR"]
       self.Vars["debug"] = Form["debug"].value
 
       # Now that we know who we are, get our defaults
-      from TMDA import Defaults
+      from TMDA import Errors
+      try:
+        from TMDA import Defaults
+      except Errors.ConfigError, (ErrStr):
+        CgiUtil.TermError("ConfigError", ErrStr, "import Defaults",
+          "", """Recheck the CGI's permissions and owner.  The file permissions
+should be 4755 (-rwsr-xr-x) and the owner should be root for system-wide
+install or a non-privileged user for single-user mode.<br>Also check in which
+partition you placed the CGI.  You cannot run the CGI in system-wide or single-
+user modes if its partition is marked "nosuid" in /etc/fstab.""")
 
       # Test CGI_ACTIVE
       if not Defaults.CGI_ACTIVE:
@@ -234,7 +270,8 @@ use the user name<br>configured into your web server.  For Apache, look for the
 <tt>User</tt> directive.  You may need to recompile the CGI.""")
 
     # Clean up?
-    if Rands.random() < self.Vars["CLEANUP"]:
+    if self.Vars.has_key("CLEANUP") and \
+      (Rands.random() < self.Vars["CLEANUP"]):
       # Go through all sessions and check a-times
       Sessions = glob.glob(CGI_SESSION_PREFIX + "*")
       for Session in Sessions:
