@@ -292,17 +292,16 @@ def make_msgid(timesecs=None, pid=None):
 
 
 def make_date(timesecs=None):
-    """Return an RFC 2822 compliant Date: string.  e.g,
+    """Return an RFC 2822 compliant Date string relative to the local
+    timezone.  e.g,
 
-    Thu, 24 Apr 2003 10:15:15 +1200 (NZST)
+    Tue, 02 Mar 2004 15:55:05 +1300
 
     timesecs is optional, and if not given, the current time is used.
     """
     if timesecs is None:
         timesecs = time.time()
-    tzname = time.tzname[time.localtime(timesecs)[-1]]
-    basedate = email.Utils.formatdate(timesecs, localtime=1)
-    return '%s (%s)' % (basedate, tzname)
+    return email.Utils.formatdate(timesecs, localtime=True)
 
 
 def file_to_dict(file, dict):
@@ -508,7 +507,7 @@ def confirm_append_address(xp, rp):
     return rp
 
 
-def msg_from_file(fp, strict=0):
+def msg_from_file(fp, strict=False):
     """Read a file and parse its contents into a Message object model.
     Replacement for email.message_from_file().
     
@@ -523,7 +522,7 @@ def msg_from_file(fp, strict=0):
     return msg
 
 
-def msg_as_string(msg, maxheaderlen=0, mangle_from_=0, unixfrom=0):
+def msg_as_string(msg, maxheaderlen=False, mangle_from_=False, unixfrom=False):
     """A more flexible replacement for Message.as_string().  The default
     is a textual representation of the message where the headers are
     not wrapped, From is not escaped, and a leading From_ line is not
@@ -750,7 +749,7 @@ def build_dbm(filename):
         return 1
 
 
-def pickleit(object, file, bin=0):
+def pickleit(object, file, bin=False):
     """Store object in a pickle file.
     Optional bin specifies whether to use binary or text pickle format."""
     tempfile.tempdir = os.path.dirname(file)
