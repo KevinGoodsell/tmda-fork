@@ -1,3 +1,8 @@
+2002-06-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (getfileuid): New function that returns the numerical
+	UID of a given file.
+
 2002-06-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (BOUNCE_ENV_SENDER): Set default to '<>' in all

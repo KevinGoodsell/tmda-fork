@@ -83,6 +83,11 @@ def getfilemode(path):
     return mode
 
 
+def getfileuid(path):
+    statinfo = os.stat(path)
+    return stat.S_IMODE(statinfo[stat.ST_UID])
+
+
 def seconds(timeout):
     """Translate the defined timeout interval into seconds."""
     match = re.match("^([0-9]+)([YMwdhms])$", timeout)
