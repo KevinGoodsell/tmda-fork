@@ -1,3 +1,8 @@
+2001-12-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* download.ht (Links): Mention that the Debian and FreeBSD
+	packages might be lagging behind the latest release.
+
 2001-12-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-client.ht: Replace `tmda-dated-address' references with
