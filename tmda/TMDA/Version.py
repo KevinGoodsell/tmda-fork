@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.75+"
+TMDA = "0.76"
 
 # TMDA version codename
 CODENAME = "Middleground"
