@@ -27,6 +27,10 @@ RFC 2104 (http://www.faqs.org/rfcs/rfc2104.html).
 
 Python >= 2.2 includes a more general purpose HMAC module
 (http://www.python.org/doc/current/lib/module-hmac.html).
+
+Based on code from p2.py
+<URL:http://www.nightsong.com/phr/crypto/p2.py>
+Copyright (C) 2002 Paul Rubin
 """
 
 from array import array
