@@ -49,12 +49,6 @@ stop() {
 	echo
 	[ $RETVAL = 0 ] && rm -f $lockfile $pidfile
 }
-reload() {
-	echo -n $"Reloading $progname: "
-	killproc $program -HUP
-	RETVAL=$?
-	echo
-}
 
 # See how we were called.
 case "$1" in
@@ -78,11 +72,8 @@ case "$1" in
 		start
 	fi
 	;;
-  reload)
-        reload
-	;;
   *)
-	echo $"Usage: $progname {start|stop|restart|condrestart|reload|status}"
+	echo $"Usage: $progname {start|stop|restart|condrestart|status}"
 	exit 1
 esac
 
