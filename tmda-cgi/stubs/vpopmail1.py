@@ -24,7 +24,7 @@
 import re
 
 # Constants
-Matcher = re.compile("^([^:]+):\s*(\S.+)\s*$")
+Matcher = re.compile("^([^:]+):\s*(\S.*?)\s*$")
 
 def getuserparams(List):
   # Convert a list returned by vuserinfo into a dictionary
