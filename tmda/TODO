@@ -39,11 +39,6 @@ tmda-filter
 	- Support reading from DBM/GDBM style databases in addition to
 	textfiles.
 
-Defaults.py
-
-	- The speed startup, the user's .tmdarc should probably read
-	first with default values computed only if necessary.
-
 Greylist.py
 	
 	- Support reading from DBM/GDBM style databases in addition to
