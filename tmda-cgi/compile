@@ -61,7 +61,7 @@ Where:
     --virtual-lookup <path>
        Specify a path to virtual user lookup script.
        - The lookup script should take user login as a parameter and return
-         <homedir>\n<UID>\n<GID>
+         <homedir>\\n<UID>\\n<GID>
 
     -m system-wide|single-user|no-su
     --mode system-wide|single-user|no-su
@@ -203,7 +203,7 @@ def Interactive(OptD):
     OptD["AuthArg"] = OptD["AuthFile"]
   elif OptD["AuthType"] == "program":
     Ask("""Authentication (checkpassword-style) program (full path and args)
- * For more details, see config --help option -p *""", OptD,
+ * For more details, see `config --help` option -p *""", OptD,
       "AuthProg")
     OptD["AuthArg"] = OptD["AuthProg"]
   elif OptD["AuthType"] == "remote":
