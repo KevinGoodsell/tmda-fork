@@ -77,6 +77,13 @@ Once that's working, proceed with the following steps:
 
    1.2.3.:allow,RELAYCLIENT="",QMAILQUEUE="/usr/local/bin/qfilter-tmda"
 
+   If you are already using SMTP authentication to authenticate for
+   permission to relay, you should remove RELAYCLIENT="" above, so
+   that it will only be set upon authentication.  However, if you're
+   only using authentication to determine the user for TMDA, and you
+   also want non-authenticated users to be allowed to relay, the
+   RELAYCLIENT="" must be there.
+
    NOTE: The SMTP authentication is only needed to provide TMDA with
    the correct username for processing.  If your client has a static
    IP address (ex: 1.2.3.4), and you are the only user of this
