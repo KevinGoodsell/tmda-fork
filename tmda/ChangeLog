@@ -1,3 +1,11 @@
+2001-04-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* CRYPTO: New file.  Explains the cryptography functions used in
+	TMDA.
+
+	* UPGRADE: New file.  Contains upgrade instructions for users of
+	TMDA < 0.10.
+
 2001-04-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* doc/: New directory.  Documentation in HTML.
