@@ -1,3 +1,21 @@
+2003-01-28  Tim Legant  <tim@catseye.net>
+
+	* FilterStore.py: New file.  Part of FilterParser.firstmatch
+	cleanup patch from Jonathan Ellis.
+
+	* FilterParser.py (FilterParser.firstmatch): Massive cleanup of
+	the ever-lengthening firstmatch method.  Now uses the classes from
+	FilterStore where possible.  Part of FilterParser.firstmatch
+	cleanup patch from Jonathan Ellis.
+
+	* Util.py: Move CDB and DBM-building functions to appropriate
+	classes in FilterStore.  Part of FilterParser.firstmatch cleanup
+	patch from Jonathan Ellis.
+
+	(findmatch): Return only true or false.  We no longer support an
+	action override in flat files or databases.  Part of the
+	FilterParser.firstmatch cleanup patch from Jonathan Ellis.
+
 2003-01-27  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Deliver.py (Deliver.__deliver_maildir): Strengthen the
