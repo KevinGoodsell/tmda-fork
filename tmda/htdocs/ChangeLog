@@ -1,3 +1,10 @@
+2001-11-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* features.ht (Links): Add DBM support.
+
+	* config-filter.ht (source): Better DBM documentation including
+	links to the list2dbm/printdbm scripts.
+
 2001-11-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* faq.ht (Links): Amend "whitelist" Q to reflect use of filter

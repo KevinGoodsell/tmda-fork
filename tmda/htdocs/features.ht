@@ -29,6 +29,8 @@ an interpreted, interactive, object-oriented programming language.
 
 <li>Pattern matching using Unix shell-style wildcard characters.<br><br>
 
+<li>Supports DBM/GDBM style databases.<br><br>
+
 <li>Optional delivery logging.<br><br>
 
 <li>Easy customization of confirmation messages through templates.<br><br>

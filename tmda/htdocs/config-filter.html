@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Nov 17 10:53:12 2001 -->
+<!-- Tue Nov 20 14:29:14 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -200,9 +200,30 @@ size (message size)
 <li><b>match</b>: 
 should be an expression, or the full path to a textfile or
 DBM database containing more expressions if <b>source</b> was suffixed
-with `-file' or `-dbm'.  The second field within a textfile or DBM is
-optional, but overrides action if present.  The following table shows
-what the <b>match</b> expression should contain for a given <b>source</b>:
+with `-file' or `-dbm'.
+<br><br>
+
+The second field within a textfile or DBM is optional, but overrides
+action if present.  e.g,
+
+<blockquote><pre>
+foo@mastaler.com
+bar@mastaler.com bounce
+
+</blockquote></pre>
+
+In a DBM, the keys should be the e-mail addresses to match, and their
+corresponding values should be empty unless you want to override the
+action specified in the filter file.  The scripts 
+<a href="http://mla.libertine.org/tmda-workers/200111/bin00000.bin">list2dbm</a>
+and
+<a href="http://mla.libertine.org/tmda-workers/200111/bin00001.bin">printdbm</a> 
+are available to convert your lists into DBM files and
+vice-versa.  
+<br><br>
+
+The following table shows what the <b>match</b> expression should
+contain for a given <b>source</b>:
 <br><br>
 
 <blockquote><pre>
@@ -220,7 +241,8 @@ size		comparison operator and number of bytes to compare to the
 In addition to explicit e-mail addresses, you can use expressions
 based on UNIX shell-style wildcard characters in either the
 <b>match</b> field of a line, or within the textfile in the
-<b>match</b> field.  The special characters are:
+<b>match</b> field.  Wildcard characters are not recognized
+in a DBM file.  The special characters are:
 
 <blockquote><pre>
 
