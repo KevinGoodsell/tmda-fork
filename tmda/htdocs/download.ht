@@ -10,15 +10,18 @@ latest release</a> as a gzipped tarball.
 
 <u>Packages:</u><br>
 <ul>
-<li><a href="http://packages.debian.org/python2-tmda" TARGET="Resource Window">
-Debian Package</a><br><br>
+<li>Linux RPM: See the <a href="install.html">installation</a> page for how to 
+easily build an RPM directly from the source tarball.<br><br>
 
-<li>If you run FreeBSD, TMDA is part of the "ports" tree 
+<li><a href="http://packages.debian.org/python2-tmda" TARGET="Resource Window">
+Debian Linux Package</a><br><br>
+
+<li>If you run FreeBSD, TMDA is part of the "ports" collection
 <a href="http://www.freebsd.org/cgi/ports.cgi?query=tmda&stype=name" TARGET="Resource Window">(mail/tmda)</a>
 <br><br>
 </ul>
 
-<strong>NOTE:</strong> Packages are maintained by 3rd parties and may not be caught up
+<strong>NOTE:</strong> Packages maintained by extraneous parties may not be caught up
 with the latest release.
 <br><br>
 

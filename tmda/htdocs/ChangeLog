@@ -1,5 +1,8 @@
 2002-01-26  Jason R. Mastaler  <jason@mastaler.com>
 
+	* download.ht (Links): Mention that the tarball can be used to
+	easily create an RPM package since it includes a tmda.spec file.
+
 	* config-filter.ht (Links): Document the new filter file syntax,
 	new tag action, and the new default action keyword.
 
