@@ -1,3 +1,7 @@
+2002-11-13  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* sample.tmdarc: Renamed sample.config.
+
 2002-11-11  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* collectaddys (addys): Remove Python 2.0 compatibility, and also

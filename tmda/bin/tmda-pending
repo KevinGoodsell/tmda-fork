@@ -26,7 +26,7 @@ Usage:  %(program)s [OPTIONS] [messages ... | - ]
 Where:
     -c <file>
     --config-file <file>
-       Specify a different configuration file other than ~/.tmdarc.
+       Specify a different configuration file other than ~/.tmda/config.
 
     -i
     --interactive
@@ -59,8 +59,7 @@ Where:
     -T
     --terse-summary
        Print a terse (one-line per message) summary of pending messages.
-       Customize display with TERSE_SUMMARY_HEADERS in the tmdarc.
-       Implies --verbose.
+       Customize display with TERSE_SUMMARY_HEADERS. Implies --verbose.
        
     -S
     --show

@@ -61,7 +61,7 @@ if os.path.islink(progpath):
         progpath = os.path.normpath(progdir + '/' + linkpath)
 PARENTDIR = os.path.split(os.path.dirname(progpath))[0] # '../'
 
-# If the file /etc/tmdarc exists, read it before ~/.tmdarc.
+# If the file /etc/tmdarc exists, read it before ~/.tmda/config.
 # Make site-wide configuration changes to this file.
 GLOBAL_TMDARC = '/etc/tmdarc'
 if os.path.exists(GLOBAL_TMDARC):

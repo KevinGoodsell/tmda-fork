@@ -26,8 +26,8 @@ Usage:  %(program)s [-c <file>] [-V] [-h] address [senderaddr]
 Where:
     -c <file>
     --config-file <file>
-       Specify a different configuration file other than ~/.tmdarc.
-
+       Specify a different configuration file other than ~/.tmda/config.
+       
     -l
     --localtime
        Display dates in the local time zone instead of UTC.

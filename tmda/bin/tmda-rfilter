@@ -34,7 +34,7 @@ OPTIONS:
            
 	-c <file>
 	--config-file <file>
-	   Specify a different configuration file other than ~/.tmdarc.
+	   Specify a different configuration file other than ~/.tmda/config.
 
         -d
 	--discard
@@ -47,7 +47,7 @@ OPTIONS:
         -I <file>
         --filter-incoming-file <file>
            Full pathname to your incoming filter file.  Overrides FILTER_INCOMING
-           in ~/.tmdarc.
+           in ~/.tmda/config.
            
         -M <recipient> <sender>
         --filter-match <recipient> <sender>

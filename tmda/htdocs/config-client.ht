@@ -102,7 +102,7 @@ If you don't have an outgoing filter file, or the destination address
 doesn't match any lines in your filter file, the message will be
 tagged with a dated address by default.  The lines in your filter make
 exceptions to that rule.  You can also change the default by setting
-<strong>ACTION_OUTGOING</strong> in your tmdarc.
+<strong>ACTION_OUTGOING</strong> in your tmda/config.
 <br><br>
 
 <strong>TIP:</strong>
@@ -217,7 +217,7 @@ Send the message to all recipients from jason-mlist-xemacs-beta@mastaler.com
 </ul>
 </ul>
 
-<li>.tmdarc configuration:<br><br>
+<li>.tmda/config configuration:<br><br>
 
 Make sure that your <b>crypt_key</b> file is the same
 on both your mail server and your mail client -- they must match.
