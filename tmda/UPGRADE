@@ -3,6 +3,13 @@ this file.
 
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.83:
+
+* The unmaintained tmda-gui and tmda-manager programs have been
+  removed from the distribution.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.81:
 
 * The {from,to}-mysql rules have been replaced by from-sql and
