@@ -13,7 +13,13 @@ Things left to do:
     * List Editor -- current editor is fine for short lists, but lacking for
                      long lists
 
+    * Remember Keyword Addreses -- Put all 'keyword' addresses you generate in
+                                   a list for easy revocation later
+
     * Remember Me -- set a cookie to skip login
+
+    * Revoke Keyword Addresses -- Once they're remembered, have a way to add
+                                  these addresses to a revocation list
 
     * Search -- Implement Cacheing for Pending List, and implement Search for 
                 lists and/or filters
