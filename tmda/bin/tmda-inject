@@ -125,7 +125,7 @@ from TMDA import Defaults
 from TMDA import FilterParser
 from TMDA import Util
 
-import email
+from email.Utils import formataddr, getaddresses, parseaddr
 import socket
 import string
 
@@ -138,7 +138,7 @@ if filter_match:
     Util.filter_match(Defaults.FILTER_OUTGOING, recip, sender)
     sys.exit()
 
-msgout = email.message_from_file(sys.stdin)
+msgout = Util.msg_from_file(sys.stdin)
 orig_msgout_as_string = Util.msg_as_string(msgout)
 orig_msgout_size = len(orig_msgout_as_string)
 orig_msgout_body_as_raw_string = Util.body_as_raw_string(msgout)
@@ -146,9 +146,9 @@ orig_msgout_body_as_raw_string = Util.body_as_raw_string(msgout)
 def message_format(fsa, ffn, type):
     # "angles" is the default MESSAGE_FROM_STYLE
     if type == 'address':
-        return email.Utils.formataddr((None, fsa))
+        return formataddr((None, fsa))
     else:
-        return email.Utils.formataddr((ffn, fsa))
+        return formataddr((ffn, fsa))
 
 def make_field(cookie_type, cookie_option, from_address, to_address):
     """
@@ -233,7 +233,7 @@ def inject_message(resending,
     # If the MUA has added a `Mail-Followup-To' header that contains
     # the untagged address, we need to tag that as well.
     if msg.has_key('mail-followup-to'):
-	mft_list = email.Utils.getaddresses(msg.get_all('mail-followup-to'))
+	mft_list = getaddresses(msg.get_all('mail-followup-to'))
 	new_mft_list = []
 	for a in mft_list:
 	    emaddy = a[1]
@@ -340,12 +340,12 @@ def main():
     
     if msgout.has_key('resent-from'):
         # We must be resending (bouncing) the message.
-        fullname, from_address = email.Utils.parseaddr(msgout.get
-                                                       ('resent-from'))
+        fullname, from_address = parseaddr(msgout.get
+                                           ('resent-from'))
         resending = 1
     else:
         # Use the existing From: header if possible.
-        fullname, from_address = email.Utils.parseaddr(msgout.get('from'))
+        fullname, from_address = parseaddr(msgout.get('from'))
         resending = None
     if not fullname:
         fullname = Defaults.FULLNAME
@@ -367,17 +367,17 @@ def main():
             resent_tos = msgout.get_all('resent-to', [])
             resent_ccs = msgout.get_all('resent-cc', [])
             resent_bccs = msgout.get_all('resent-bcc', [])
-            header_pairs = email.Utils.getaddresses(resent_tos +
-                                                    resent_ccs +
-                                                    resent_bccs)
+            header_pairs = getaddresses(resent_tos +
+                                        resent_ccs +
+                                        resent_bccs)
         else:
             # Use To, Cc, Bcc, and Apparently-To addresses.
             tos = msgout.get_all('to', [])
             ccs = msgout.get_all('cc', [])
             bccs = msgout.get_all('bcc', [])
             apparently_tos = msgout.get_all('apparently-to', [])
-            header_pairs = email.Utils.getaddresses(tos + ccs +
-                                                    bccs + apparently_tos)
+            header_pairs = getaddresses(tos + ccs +
+                                        bccs + apparently_tos)
         for pair in header_pairs:
             address = pair[1]
             if address:

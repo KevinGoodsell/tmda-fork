@@ -146,7 +146,7 @@ mta = MTA.init(Defaults.MAIL_TRANSFER_AGENT, Defaults.DELIVERY)
 stdin = StringIO(sys.stdin.read())
 
 # The incoming message as an email.Message object.
-msgin = email.message_from_file(stdin)
+msgin = Util.msg_from_file(stdin)
 
 # Original message contents as a string.
 orig_msgin_as_string = Util.msg_as_string(msgin)
@@ -465,7 +465,7 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         if Defaults.CONFIRM_ACCEPT_CC:
             send_cc(Defaults.CONFIRM_ACCEPT_CC)
         if os.path.exists(confirmed_filepath):
-            msg = email.message_from_file(open(confirmed_filepath, 'r'))
+            msg = Util.msg_from_file(open(confirmed_filepath, 'r'))
             # Optionally append the sender's address to a file.
             if Defaults.CONFIRM_APPEND:
                 confirm_append_addr = Util.confirm_append_address(

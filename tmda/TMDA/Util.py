@@ -23,7 +23,6 @@
 
 
 from cStringIO import StringIO
-from email.Generator import Generator
 from string import whitespace as WHITESPACE
 import cPickle
 import email
@@ -468,6 +467,19 @@ def confirm_append_address(xp, rp):
     return rp
 
 
+def msg_from_file(fp, strict=0):
+    """Read a file and parse its contents into a Message object model.
+    Replacement for email.message_from_file().
+    
+    We use the HeaderParser subclass instead of Parser to avoid trying
+    to parse the message body, instead setting the payload to the raw
+    body as a string.  This is faster, and also helps us avoid
+    problems trying to parse spam with broken MIME bodies."""
+    from email.Message import Message
+    from email.Parser import HeaderParser
+    return HeaderParser(Message, strict=strict).parse(fp)
+
+
 def msg_as_string(msg, maxheaderlen=0, mangle_from_=0, unixfrom=0):
     """A more flexible replacement for Message.as_string().  The default
     is a textual representation of the message where the headers are
@@ -485,6 +497,7 @@ def msg_as_string(msg, maxheaderlen=0, mangle_from_=0, unixfrom=0):
 
     unixfrom forces the printing of the envelope header delimiter.
     Default is False."""
+    from email.Generator import Generator
     fp = StringIO()
     g = Generator(fp, mangle_from_=mangle_from_, maxheaderlen=maxheaderlen)
     g.flatten(msg, unixfrom=unixfrom)
