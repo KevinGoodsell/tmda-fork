@@ -34,7 +34,6 @@ import types
 import time
 
 import Util
-import FilterStore
 
 
 # exception classes
@@ -277,6 +276,7 @@ class FilterParser:
         'headers-file' : ('case', 'optional'),
         'size'         : None
         }
+
 
     def __init__(self):
         self.macros = []
@@ -679,6 +679,110 @@ class FilterParser:
 	return actions
 	
 
+    def __search_file(self, pathname, keys, actions, source):
+        """
+        Search a text file for match in first column.
+        """
+        found_match = 0
+        match_list = Util.file_to_list(pathname)
+        # This list comprehension splits each line in the list into
+        # two columns, lowercases the first column and stuffs the
+        # columns back together.  The result is the original list of
+        # lines from the file with the first field in each line
+        # lowercased.
+        match_list = [' '.join(
+            apply(lambda f1, f2=None: f2 and [f1.lower(), f2]
+                                          or [f1.lower()],
+                  line.split(None, 1))) for line in match_list]
+        found_match = Util.findmatch(match_list, keys)
+        if found_match:
+            # The second column of the line may contain an
+            # overriding action specification.
+            if found_match != 1:
+                actions.clear()
+                actions.update(self.__buildactions(found_match, source))
+                # it's already true, but everywhere else it's 1
+                found_match = 1
+        return found_match
+
+
+    def __search_cdb(self, pathname, keys, actions, source):
+        """
+        Search DJB's constant databases; see <http:/cr.yp.to/cdb.html>.
+        """
+        import cdb
+        cdb = cdb.init(pathname)
+        found_match = 0
+        for key in keys:
+            if key and cdb.has_key(string.lower(key)):
+                found_match = 1
+                cdb_value = cdb[string.lower(key)]
+                # If there is an entry for this key,
+                # we consider it an overriding action
+                # specification.
+                if cdb_value:
+                    actions.clear()
+                    actions.update(self.__buildactions(cdb_value, source))
+                break
+        return found_match
+
+
+    def __search_dbm(self, pathname, keys, actions, source):
+        """
+        Search a DBM-style database.
+        """
+        import anydbm
+        dbm = anydbm.open(pathname, 'r')
+        found_match = 0
+        for key in keys:
+            if key and dbm.has_key(string.lower(key)):
+                found_match = 1
+                dbm_value = dbm[string.lower(key)]
+                # If there is an entry for this key,
+                # we consider it an overriding action
+                # specification.
+                if dbm_value:
+                    actions.clear()
+                    actions.update(self.__buildactions(dbm_value, source))
+                dbm.close()
+                break
+        return found_match
+
+
+    def __autobuild_db(self, basename, extension,
+                       surrogate, build_func, search_func, optional):
+        """
+        Automatically build a CDB/DBM database if it's out-of-date.
+        """
+        dbname = basename + extension
+        try:
+            txt_mtime = os.path.getmtime(basename)
+        except OSError:
+            # If the text file doesn't exist, and the optional flag is not
+            # specified, re-raise the exception.
+            if optional:
+                search_func = None
+            else:
+                raise
+        else:
+            # If the db doesn't exist, that's not an error.
+            try:
+                db_mtime = os.path.getmtime(surrogate)
+            except OSError:
+                db_mtime = 0
+            if db_mtime <= txt_mtime:
+                if build_func(basename):
+                    if os.path.exists(surrogate):
+                        mtime = time.time()
+                        os.utime(surrogate, (mtime, mtime))
+                    else:
+                        os.close(os.open(surrogate, os.O_CREAT, 0600))
+                else:
+                    dbname = basename
+                    search_func = self.__search_file
+        return (dbname, search_func)
+
+
     def firstmatch(self, recipient, senders=None,
                    msg_body=None, msg_headers=None, msg_size=None):
         """Iterate over each rule in the list looking for a match.  As
@@ -697,20 +801,123 @@ class FilterParser:
             #
             # Here starts the matching against the various rules
             #
-
-            # an external store
-            # todo: integrate the body/header type?
-            fs = FilterStore.getStore(source, match, args)
-            if fs != None and fs.contains(keys):
-                found_match = 1
-                break
-
             # regular 'from' or 'to' addresses
             if source in ('from', 'to'):
                 found_match = Util.findmatch([string.lower(match)], keys)
 		if found_match:
 		    break
-
+            # 'from-file' or 'to-file', including autocdb functionality
+            if source in ('from-file', 'to-file'):
+                dbname = os.path.expanduser(match)
+                search_func = self.__search_file
+                # If we have an 'auto*' argument, ensure that the database
+                # is up-to-date.  If the 'optional' argument is also given,
+                # don't die if the file doesn't exist.
+                optional = args.has_key('optional')
+                if args.has_key('autocdb'):
+                    (dbname, search_func) = self.__autobuild_db(
+                        dbname, '.cdb', dbname + '.cdb',
+                        Util.build_cdb, self.__search_cdb, optional)
+                elif args.has_key('autodbm'):
+                    (dbname, search_func) = self.__autobuild_db(
+                        dbname, '.db', dbname + '.last_built',
+                        Util.build_dbm, self.__search_dbm, optional)
+                else:
+                    if not os.path.exists(dbname) and optional:
+                        search_func = None
+                try:
+                    if search_func:
+                        found_match = search_func(dbname, keys,
+                                                  actions, source)
+                except Error, e:
+                    raise MatchError(lineno, e._msg)
+                if found_match:
+                    break
+            # DBM-style databases.
+            if source in ('from-dbm', 'to-dbm'):
+                import anydbm
+                match = os.path.expanduser(match)
+                try:
+                    found_match = self.__search_dbm(match, keys,
+                                                    actions, source)
+                except anydbm.error, e:
+                    if not args.has_key('optional'):
+                        raise MatchError(lineno, str(e))
+                if found_match:
+		    break
+            # DJB's constant databases; see <http://cr.yp.to/cdb.html>.
+            if source in ('from-cdb', 'to-cdb'):
+                import cdb
+                match = os.path.expanduser(match)
+                try:
+                    found_match = self.__search_cdb(match, keys,
+                                                    actions, source)
+                except cdb.error, e:
+                    if not args.has_key('optional'):
+                        raise MatchError(lineno, str(e))
+                if found_match:
+                    break
+            # ezmlm subscriber directories.
+            if source in ('from-ezmlm', 'to-ezmlm'):
+                match = os.path.join(os.path.expanduser(match), 'subscribers')
+                ezmlm_list = []
+                try:
+                    # See ezmlm(5) for dir/subscribers format.
+                    for file in os.listdir(match):
+                        fp = open(os.path.join(match, file), 'r')
+                        subs = fp.read().split('\x00')
+                        for sub in subs:
+                            if sub:
+                                ezmlm_list.append(sub.split('T', 1)[1].lower())
+                    for key in keys:
+                        if key and key.lower() in ezmlm_list:
+                            found_match = 1
+                            break
+                except OSError:
+                    if not args.has_key('optional'):
+                        raise
+                if found_match:
+                    break
+            # Mailman configuration databases.
+            if source in ('from-mailman', 'to-mailman'):
+                match = os.path.expanduser(match)
+                try:
+                    mmdb_key = args['attr']
+                except KeyError:
+                    raise MatchError(lineno,
+                                     '"%s" missing -attr argument' % source)
+                # Find the Mailman configuration database.
+                # 'config.db' is a Python marshal used in MM 2.0, and
+                # 'config.pck' is a Python pickle used in MM 2.1.
+                try_open = 1  # Try to open file.
+                config_db = os.path.join(match, 'config.db')
+                config_pck = os.path.join(match, 'config.pck')
+                if os.path.exists(config_pck):
+                    dbfile = config_pck
+                    import cPickle as Serializer
+                elif os.path.exists(config_db):
+                    dbfile = config_db
+                    import marshal as Serializer
+                elif args.has_key('optional'):
+                    # This is the case where neither of the Mailman
+                    # configuration databases exists.  If the -optional flag
+                    # was specified, don't bother trying to open a non-existent
+                    # file.
+                    try_open = 0
+                if try_open:
+                    mmdb_file = open(dbfile, 'r')
+                    mmdb_data = Serializer.load(mmdb_file)
+                    mmdb_file.close()
+                    mmdb_addylist = mmdb_data[mmdb_key]
+                    # Make sure mmdb_addylist is a list of e-mail addresses.
+                    if type(mmdb_addylist) is types.DictType:
+                         mmdb_addylist = mmdb_data[mmdb_key].keys()
+                    for addy in keys:
+                        if addy and addy.lower() in mmdb_addylist:
+                            found_match = 1
+                            break
+                if found_match:
+		    break
             if source in ('body', 'headers'):
                 if source == 'body' and msg_body:
                     content = msg_body
@@ -722,9 +929,8 @@ class FilterParser:
                 if not args.has_key('case'):
                     re_flags = re_flags | re.IGNORECASE
                 if content and re.search(match,content,re_flags):
-                    found_match = 1
+		    found_match = 1
                     break
-
             if source in ('body-file','headers-file'):
                 match = os.path.expanduser(match)
                 try:
@@ -751,7 +957,6 @@ class FilterParser:
                                 break
                 if found_match:
 		    break
-
             if source == 'size' and msg_size:
                 match_list = list(match)
                 operator = match_list[0] # first character should be < or >

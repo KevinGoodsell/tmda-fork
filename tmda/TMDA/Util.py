@@ -505,6 +505,59 @@ def rename_headers(msg, old, new):
                 msg._headers[index] = (new, '%s' % pair[1])
 
 
+def build_cdb(filename):
+    """Build a cdb file from a text file."""
+    import cdb
+    try:
+        cdbname = filename + '.cdb'
+        tempfile.tempdir = os.path.dirname(filename)
+        tmpname = os.path.split(tempfile.mktemp())[1]
+        cdb = cdb.cdbmake(cdbname, cdbname + '.' + tmpname)
+        for line in file_to_list(filename):
+            linef = line.split()
+            key = linef[0].lower()
+            try:
+                value = linef[1]
+            except IndexError:
+                value = ''
+            cdb.add(key, value)
+        cdb.finish()
+    except:
+        return 0
+    else:
+        return 1
+
+
+def build_dbm(filename):
+    """Build a DBM file from a text file."""
+    import anydbm
+    import glob
+    try:
+        dbmpath, dbmname = os.path.split(filename)
+        dbmname += '.db'
+        tempfile.tempdir = dbmpath
+        tmpname = tempfile.mktemp()
+        dbm = anydbm.open(tmpname, 'n')
+        for line in file_to_list(filename):
+            linef = line.split()
+            key = linef[0].lower()
+            try:
+                value = linef[1]
+            except IndexError:
+                value = ''
+            dbm[key] = value
+        dbm.close()
+        for f in glob.glob(tmpname + '*'):
+            (tmppath, tmpname) = os.path.split(tmpname)
+            newf = f.replace(tmpname, dbmname)
+            newf = os.path.join(tmppath, newf)
+            os.rename(f, newf)
+    except:
+        return 0
+    else:
+        return 1
+
+
 def pickleit(object, file, bin=0):
     """Store object in a pickle file.
     Optional bin specifies whether to use binary or text pickle format."""
@@ -528,7 +581,8 @@ def unpickle(file):
 def findmatch(list, addrs):
     """Determine whether any of the passed e-mail addresses match a
     Unix shell-style wildcard pattern contained in list.  The
-    comparison is case-insensitive."""
+    comparison is case-insensitive.  Also, return the second half of
+    the string if it exists (for exp and ext addresses only)."""
     for address in addrs:
         if address:
             address = string.lower(address)
@@ -549,8 +603,10 @@ def findmatch(list, addrs):
                 else:
                     match = fnmatch.fnmatch(address,p)
                 if match:
-                    return 1
-    return 0
+                    try:
+                        return stringparts[1]
+                    except IndexError:
+                        return 1
 
 
 def wraptext(text, column=70, honor_leading_ws=1):
