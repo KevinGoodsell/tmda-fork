@@ -9,7 +9,7 @@ directory.
 If you are upgrading from an earlier release of TMDA, make sure to
 consult the `UPGRADE' file.
 
-To report success:
+To report success: (from a TMDA user's account, not root)
   % ( python -c 'from TMDA.Defaults import *; print DELIVERY_AGENT' ) \
     | mail jason-tmdausage@mastaler.com
 
