@@ -251,6 +251,11 @@ def pipecmd(command, *strings):
     command is the program to execute as a sub-process.
 
     *strings are optional pieces of data to write to command.
+
+    Based on code from getmail
+    <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
+    Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
+    General Public License version 2.
     """
     try:
         popen2._cleanup()
@@ -463,13 +468,17 @@ def findmatch(list, addrs):
 
 def wraptext(text, column=70, honor_leading_ws=1):
     """Wrap and fill the text to the specified column.
-    Adapted from Mailman's Utils.wrap().
 
     Wrapping is always in effect, although if it is not possible to
     wrap a line (because some word is longer than `column' characters)
     the line is broken at the next available whitespace boundary.
     Paragraphs are also always filled, unless honor_leading_ws is true
     and the line begins with whitespace.
+
+    Includes code from Mailman
+    <URL:http://www.gnu.org/software/mailman/mailman.html>
+    Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.,
+    and licensed under the GNU General Public License version 2.
     """
     wrapped = ''
     # first split the text into paragraphs, defined as a blank line
@@ -538,10 +547,14 @@ def wraptext(text, column=70, honor_leading_ws=1):
 
 def maketext(templatefile, vardict):
     """Make some text from a template file.
-    Adapted from Mailman's Utils.maketext().
 
     Reads the `templatefile' which should be a full pathname, and does
     string substitution by interpolating in the `localdict'.
+
+    Based on code from Mailman
+    <URL:http://www.gnu.org/software/mailman/mailman.html>
+    Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.,
+    and licensed under the GNU General Public License version 2.
     """
     fp = open(templatefile)
     template = fp.read()
