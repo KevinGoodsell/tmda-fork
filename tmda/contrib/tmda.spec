@@ -48,7 +48,7 @@ rm -rf %{buildroot}
 %verify(not size md5 mtime) %attr(0644,root,root) %{pylibdir}/TMDA/*.pyc
 %attr(0644,root,root) %{_datadir}/tmda/*
 
-%doc ChangeLog COPYRIGHT CRYPTO INSTALL README THANKS TODO UPGRADE contrib/ doc/
+%doc --parents ChangeLog COPYRIGHT CRYPTO INSTALL README THANKS TODO UPGRADE contrib/ htdocs/{README,*.html}
 
 %changelog
 

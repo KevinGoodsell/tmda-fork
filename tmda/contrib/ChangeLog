@@ -2,6 +2,8 @@
 
 	* tmda.spec: FAQ is now in HTML within htdocs.
 
+	(%doc): Replace "doc" with "htdocs".
+
 2001-10-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: REMOVE INJECT & INJECT_FLAGS, and add SENDMAIL.
