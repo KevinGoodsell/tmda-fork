@@ -37,6 +37,13 @@ Where:
        Print a summary of pending messages along with a release address link.
        Implies --verbose.
 
+    -C
+    --cache
+       Operate only on messages which aren't stored in .msgcache (i.e,
+       haven't yet been seen).  After operation, store the message in
+       .msgcache.  Useful primarily in conjunction with the --summary
+       option.
+       
     -A
     --ascending
        Operate on messages in ascending order (default).
@@ -96,8 +103,8 @@ Where:
     (silently and immediately delete all messages older than 30 days)
     %(program)s -q -b -d -O 30d
     
-    (mail a summary report of all pending messages)
-    %(program)s -b -s | mail -s 'TMDA pending summary' jason
+    (mail a summary report of all new pending messages)
+    %(program)s -C -b -s | mail -s 'TMDA pending summary' jason
 """
 
 import cStringIO
@@ -112,6 +119,7 @@ import time
 
 program = sys.argv[0]
 # Defaults
+cache = None
 command_recipient = None
 descending = None
 dispose = None
@@ -132,21 +140,22 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:ipbrdsADR:Y:O:vqh', ['config-file=',
-                                                       'interactive',
-                                                       'pretend',
-                                                       'batch',
-                                                       'release',
-                                                       'delete',
-                                                       'summary',
-                                                       'ascending',
-                                                       'descending',
-                                                       'recipient=',
-                                                       'younger=',
-                                                       'older=',
-                                                       'verbose',
-                                                       'quiet',
-                                                       'help'])
+                               'c:ipbrdsCADR:Y:O:vqh', ['config-file=',
+                                                        'interactive',
+                                                        'pretend',
+                                                        'batch',
+                                                        'release',
+                                                        'delete',
+                                                        'summary',
+                                                        'cache',
+                                                        'ascending',
+                                                        'descending',
+                                                        'recipient=',
+                                                        'younger=',
+                                                        'older=',
+                                                        'verbose',
+                                                        'quiet',
+                                                        'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -167,6 +176,8 @@ for opt, arg in opts:
         dispose = 'delete'
     elif opt in ('-s', '--summary'):
         summary = 1
+    elif opt in ('-C', '--cache'):
+        cache = 1
     elif opt in ('-A', '--ascending'):
         descending = 0
     elif opt in ('-D', '--descending'):
@@ -235,6 +246,7 @@ def release(headers, body, recipient):
 
 
 def main():
+    global cache
     global command_recipient
     global descending
     global dispose
@@ -262,6 +274,13 @@ def main():
         dispose_def = 'skip'
     else:
         dispose_def = dispose
+
+    if cache:
+        cache_file = Defaults.PENDING_CACHE
+        if os.path.exists(cache_file):
+            msgcache = Util.unpickle(cache_file)
+        else:
+            msgcache = []
     
     for msg in msgs:
         count = count + 1
@@ -277,6 +296,13 @@ def main():
                    (older and msg_time > min_time):
                     # skip this message
                     continue
+            if cache:
+                if msg in msgcache:
+                    # skip this message
+                    total = total - 1
+                    continue
+                else:
+                    msgcache.insert(0, msg)
             fp = cStringIO.StringIO(open(msg, 'r').read())
             headers = rfc822.Message(fp)
             body = fp.read()
@@ -343,6 +369,10 @@ def main():
                     os.unlink(msg)
                 elif dispose == 'skip':
                     continue
+    if cache:
+        # Trim tail entries off if necessary, and then save the cache.
+        msgcache = msgcache[:Defaults.PENDING_CACHE_LEN]
+        Util.pickleit(msgcache, cache_file)
 
 
 # This is the end my friend.

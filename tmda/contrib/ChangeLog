@@ -1,3 +1,7 @@
+2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add PENDING_CACHE & PENDING_CACHE_LEN.
+
 2002-01-31  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda.spec (Requires): Depend/Require python2.

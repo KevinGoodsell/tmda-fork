@@ -421,6 +421,24 @@ if not vars().has_key('LOGFILE_INCOMING'):
 if not vars().has_key('MESSAGE_FROM_STYLE'):
     MESSAGE_FROM_STYLE = "angles"
 
+# PENDING_CACHE
+# Path to the cache file used when tmda-pending is invoked with the
+# --cache option.
+#
+# Default is ~/.tmda/pending/.msgcache
+if not vars().has_key('PENDING_CACHE'):
+    PENDING_CACHE = DATADIR + 'pending/.msgcache'
+
+# PENDING_CACHE_LEN
+# An integer which specifies the maximum number of entries held by
+# PENDING_CACHE.  Make sure this is greater than the number of
+# messages kept in your pending queue, or else you'll start seeing
+# previously viewed messages again.
+#
+# Default is 5000
+if not vars().has_key('PENDING_CACHE_LEN'):
+    PENDING_CACHE_LEN = 5000
+
 # PURGED_HEADERS
 # A list containing one or more message headers that should be removed
 # from outgoing client-side messages (i.e, messages sent with

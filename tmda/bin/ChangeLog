@@ -1,3 +1,8 @@
+2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-pending: Add --cache option to operate only on messages
+	which aren't stored in Defaults.PENDING_CACHE.
+
 2002-02-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-pending: Add --younger and --older options to operate only

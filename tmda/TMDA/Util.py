@@ -3,6 +3,7 @@
 """General purpose functions."""
 
 
+import cPickle
 import fileinput
 import fnmatch
 import os
@@ -271,6 +272,23 @@ def build_cdb(filename):
         return 0
     else:
         return 1
+
+
+def pickleit(object, file, bin=0):
+    """Store object in a pickle file.
+    Optional bin specifies whether to use binary or text pickle format."""
+    fp = open(file, 'w')
+    cPickle.dump(object, fp, bin)
+    fp.close()
+    return
+
+
+def unpickle(file):
+    """Retrieve and return object from the file file."""
+    fp = open(file, 'r')
+    object = cPickle.load(fp)
+    fp.close()
+    return object
 
 
 def findmatch(list, addrs):

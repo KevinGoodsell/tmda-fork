@@ -1,3 +1,14 @@
+2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (pickleit): New helper function to save an object to a
+	Python pickle file.
+
+	(unpickle): New helper function to retrieve an object from a
+	Python pickle file.
+	
+	* Defaults.py (PENDING_CACHE, PENDING_CACHE_LEN): New variables
+	used by tmda-pending's --cache option.
+
 2002-02-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (make_date): Import just email.Utils.

@@ -94,6 +94,10 @@ import os                                      # don't remove
 
 # MESSAGE_FROM_STYLE = "angles"
 
+# PENDING_CACHE = os.path.expanduser("~/.tmda/pending/.msgcache")
+
+# PENDING_CACHE_LEN = 5000
+
 # PURGED_HEADERS = []
 
 # RECIPIENT_HEADER = "x-originally-to"
