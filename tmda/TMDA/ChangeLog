@@ -1,3 +1,7 @@
+2002-11-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Defaults.py: Removed DELIVERED_CACHE and DELIVERED_CACHE_LEN.
+	
 2002-11-12  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Util.py (confirm_append_address): New function.

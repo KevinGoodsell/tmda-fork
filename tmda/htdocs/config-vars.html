@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Nov 18 14:34:23 2002 -->
+<!-- Thu Nov 21 16:46:18 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -252,10 +252,6 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#DATED_TEMPLATE_VARS">DATED_TEMPLATE_VARS</a></td>
-<td><a href="#DELIVERED_CACHE">DELIVERED_CACHE</a></td>
-</tr>
-<tr>
-<td><a href="#DELIVERED_CACHE_LEN">DELIVERED_CACHE_LEN</a></td>
 <td><a href="#DELIVERY">DELIVERY</a></td>
 </tr>
 <tr>
@@ -825,25 +821,6 @@ Set this variable to 1 if you want to use 'dated' address variables
 in your templates.
 <br><br>
 Default is 0 (turned off)
-<dt><hr>
-<a name="DELIVERED_CACHE"><h4>DELIVERED_CACHE</h4></a>
-<dd>
-Path to the cache file used to keep track of which messages have
-already been delivered.
-<br><br>
-Default is ~/.tmda/pending/.delivered_cache
-<dt><hr>
-<a name="DELIVERED_CACHE_LEN"><h4>DELIVERED_CACHE_LEN</h4></a>
-<dd>
-An integer which specifies the maximum number of entries held by
-DELIVERED_CACHE.
-<br><br>
-Make sure this value is larger than the number of messages normally
-stored in your pending queue.  The default value may not suffice if
-you run a very high traffic TMDA, and/or have a long pending queue
-purge interval.
-<br><br>
-Default is 5000
 <dt><hr>
 <a name="DELIVERY"><h4>DELIVERY</h4></a>
 <dd>

@@ -426,21 +426,16 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         logit("BOUNCE invalid_confirmation_address")
         bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
     confirmed_filename = '%s.%s.msg' % (confirm_timestamp, confirm_pid)
-    confirmed_file = os.path.join(pendingdir, confirmed_filename)
-    if os.path.exists(Defaults.DELIVERED_CACHE):
-        delcache = Util.unpickle(Defaults.DELIVERED_CACHE)
-    else:
-        delcache = []
-    # Determine whether this message has already been delivered, and
-    # if by manual release, or confirmation.
-    delivered = None
-    for dict in delcache:
-        if dict.has_key(confirmed_filename):
-            # 'c' for confirmed, 'r' for released
-            delivered = dict[confirmed_filename]
-            break
-    # pre-confirmation
+    confirmed_filepath = os.path.join(pendingdir, confirmed_filename)
     if confirm_action == 'accept':
+        # Determine whether this message has already been delivered, and
+        # if by manual release (:3,R), or confirmation (:3,C).
+        if os.path.exists(confirmed_filepath + ':3,R'):
+            delivery_status = 'r'
+        elif os.path.exists(confirmed_filepath + ':3,C'):
+            delivery_status = 'c'
+        else:
+            delivery_status = None
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
                                                   confirm_pid, confirm_action)
         # Accept the message only if the HMAC can be verified.
@@ -449,15 +444,15 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
             bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
         # If the message isn't recorded as delivered and doesn't exist,
         # alert sender that their original is missing.
-        if not delivered and not (os.path.exists(confirmed_file)):
+        if not delivery_status and not (os.path.exists(confirmed_filepath)):
             logit("BOUNCE nonexistent_pending_message")
             bouncegen('bounce', Defaults.BOUNCE_TEXT_NONEXISTENT_PENDING)
         logit("CONFIRM accept " + confirmed_filename)
         # Optionally carbon copy the confirmation to another address.
         if Defaults.CONFIRM_ACCEPT_CC:
             send_cc(Defaults.CONFIRM_ACCEPT_CC)
-        if os.path.exists(confirmed_file):
-            msg = email.message_from_file(open(confirmed_file, 'r'))
+        if os.path.exists(confirmed_filepath):
+            msg = email.message_from_file(open(confirmed_filepath, 'r'))
             # Optionally append the sender's address to a file.
             if Defaults.CONFIRM_APPEND:
                 confirm_append_addr = Util.confirm_append_address(
@@ -465,32 +460,29 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                     parseaddr(msg.get('return-path'))[1])
                 if not confirm_append_addr:
                     raise IOError, \
-                          confirmed_file + ' has no Return-Path header!'
+                          confirmed_filepath + ' has no Return-Path header!'
                 if Util.append_to_file(confirm_append_addr,
                                        Defaults.CONFIRM_APPEND) != 0:
                     logit('CONFIRM_APPEND ' + Defaults.CONFIRM_APPEND)
         # Optionally generate a confirmation acceptance notice.
         if Defaults.CONFIRM_ACCEPT_NOTIFY:
-            if (delivered == 'c' and
+            if (delivery_status == 'c' and
                 Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED):
                 bouncegen('accept',
                           Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED)
-            elif (delivered == 'r' and
+            elif (delivery_status == 'r' and
                   Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED):
                 bouncegen('accept',
                           Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED)
-            elif not delivered:
+            elif not delivery_status:
                 bouncegen('accept', Defaults.CONFIRM_ACCEPT_TEXT_INITIAL)
         # Just stop if the message has already been delivered.  Also,
-        # change the release mark from 'r' to 'c' to note that this
+        # change the release mark from 'R' to 'C' to note that this
         # message has had a confirmation attempt.
-        if delivered:
-            if delivered == 'r':
-                for dict in delcache:
-                    if dict.has_key(confirmed_filename):
-                        dict[confirmed_filename] = 'c'
-                        Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
-                        break
+        if delivery_status:
+            if delivery_status == 'r':
+                os.rename(confirmed_filepath + ':3,R',
+                          confirmed_filepath + ':3,C')
             mta.stop()
         # Release the message for delivery if we get this far.
         release_pending(confirm_timestamp, confirm_pid, msg)
@@ -508,19 +500,13 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
             # redirecting a previously confirmed message.
             bouncegen('request')
         else:
-            # Cache and deliver the message.
+            # Update the delivery status flag and deliver the message.
             if msgin.has_key('x-tmda-confirmed'):
-                msgval = 'c'
+                status_flag = ':3,C'
             elif msgin.has_key('x-tmda-released'):
-                msgval = 'r'
-            # Record this message in the cache as a dictionary,
-            # where the message filename is the key, and how it was
-            # delivered is the value. e.g, {'1017186412.798.msg':'c'}
-            if not {confirmed_filename:msgval} in delcache:
-                delcache.insert(0, {confirmed_filename:msgval})
-                # Trim tail entries off if necessary, and then write the cache.
-                delcache = delcache[:Defaults.DELIVERED_CACHE_LEN]
-                Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
+                status_flag = ':3,R'
+            if os.path.exists(confirmed_filepath):
+                os.rename(confirmed_filepath, confirmed_filepath + status_flag)
             logit("OK good_confirm_done_cookie")
             # Remove X-TMDA-Confirm-Done: since it's only used
             # internally.  This won't work when delivering '_qok_',

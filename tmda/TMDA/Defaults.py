@@ -987,28 +987,6 @@ if not vars().has_key('RESPONSE_DIR') and MAX_AUTORESPONSES_PER_DAY != 0:
 if not vars().has_key('AUTORESPONSE_INCLUDE_SENDER_COPY'):
     AUTORESPONSE_INCLUDE_SENDER_COPY = 2
 
-# DELIVERED_CACHE
-# Path to the cache file used to keep track of which messages have
-# already been delivered.
-#
-# Default is ~/.tmda/pending/.delivered_cache
-if not vars().has_key('DELIVERED_CACHE'):
-    DELIVERED_CACHE = os.path.join(DATADIR, 'pending', '.delivered_cache')
-
-# DELIVERED_CACHE_LEN
-#
-# An integer which specifies the maximum number of entries held by
-# DELIVERED_CACHE.
-#
-# Make sure this value is larger than the number of messages normally
-# stored in your pending queue.  The default value may not suffice if
-# you run a very high traffic TMDA, and/or have a long pending queue
-# purge interval.
-#
-# Default is 5000
-if not vars().has_key('DELIVERED_CACHE_LEN'):
-    DELIVERED_CACHE_LEN = 5000
-
 # PENDING_CACHE
 # Path to the cache file used when tmda-pending is invoked with the
 # --cache option.

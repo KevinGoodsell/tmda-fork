@@ -335,7 +335,7 @@ def main():
             msgs.remove('-')
 
     if not msgs and not wantedstdin:
-        msgs = glob.glob('*.*.msg')
+        msgs = glob.glob('*.*.msg*')
 
     msgs.sort()
     if descending:
@@ -348,10 +348,6 @@ def main():
     else:
         dispose_def = dispose
 
-    if os.path.exists(Defaults.DELIVERED_CACHE):
-        delcache = Util.unpickle(Defaults.DELIVERED_CACHE)
-    else:
-        delcache = []
     if cache:
         if os.path.exists(Defaults.PENDING_CACHE):
             msgcache = Util.unpickle(Defaults.PENDING_CACHE)
@@ -363,11 +359,10 @@ def main():
         if not os.path.exists(msg):
             cprint(verbose, msg, 'not found!')
         else:
-            delivered = None
-            for dict in delcache:
-                if dict.has_key(msg):
-                    delivered = 1
-                    break
+            if msg.endswith(',R') or msg.endswith(',C'):
+                delivered = 1
+            else:
+                delivered = None
             if delivered:
                 if dispose == 'delete' and not interactive:
                     # continue if we are running in batch/delete mode,
