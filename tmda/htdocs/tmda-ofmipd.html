@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Feb  3 14:00:16 2003 -->
+<!-- Thu Feb 20 17:29:16 2003 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -322,12 +322,12 @@ tmda-ofmipd with the `-u' option.
 <h4>Starting tmda-ofmipd</h4>
 
 <blockquote><pre>
-$ tmda-ofmipd -d
+$ tmda-ofmipd -d -f
 tmda-ofmipd started at Mon Feb 3 13:55:37 MST 2003
         Listening on hrothgar.la.mastaler.com:8025
 
 </blockquote></pre>
-tmda-ofmipd is now listening in the background for
+tmda-ofmipd is now listening in the foreground for
 connections on port 8025 of your server.
 
 <blockquote><pre>
@@ -344,7 +344,8 @@ Connection closed by foreign host.
 
 The host:port combination can be changed using the `-p' option.  The `-d'
 option prints debugging information to stderr which might be useful until
-you get tmda-ofmipd working as you want it to.
+you get tmda-ofmipd working as you want it to. Leave off the `-f' option,
+and tmda-ofmipd will detach and run in the background.
 
 <hr>
 
