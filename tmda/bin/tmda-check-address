@@ -189,7 +189,7 @@ def main():
 
     elif ext == 'keyword':
         if valid_keyword_cookie(cookie):
-            print 'STATUS: VAILD'
+            print 'STATUS: VALID'
         else:
             print 'STATUS: INVALID COOKIE'
         
