@@ -113,7 +113,8 @@ Contributions:
 
     * Mate Wierdl -- tmda4ezmlm script.
 
-    * Cory Wright -- mirror of www.tmda.net, the vadduser-tmda script.
+    * Cory Wright -- mirror of www.tmda.net, various contrib scripts,
+      the TEMPLATE_DIR_MATCH_RECIPIENT feature, tmda-users support.
 
     * Lloyd Zusman -- "whitelist" and "blacklist" commands for
       tmda-pending.
