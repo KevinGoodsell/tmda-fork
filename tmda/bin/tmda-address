@@ -16,11 +16,10 @@ OPTIONS:
 	-a <address>
 	--address <address>
 	   Specify a different address as the basis for the tagged address.
-
-	-d [timeout]
-	--dated [timeout]
-	   Generate a dated-style tagged address.  timeout is an
-	   optional timeout interval to override your default.
+           
+	-n
+        --no-newline
+           Do not print a newline after the address.
 
 	-k <keyword>
 	--keyword <keyword>
@@ -31,10 +30,11 @@ OPTIONS:
 	--sender <address>
 	   Generate a sender-style tagged address.  address is
 	   a required sender e-mail address.
-           
-	-n
-        --no-newline
-           Do not print a newline after the address.
+
+	-d [timeout]
+	--dated [timeout]
+	   Generate a dated-style tagged address.  timeout is an
+	   optional timeout interval to override your default.
 """
 
 import getopt
