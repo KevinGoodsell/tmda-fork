@@ -18,3 +18,7 @@ them by sending e-mail to the following special address:
 which will only work when you are sending e-mail from:
                                                              
     <%(envelope_sender)s>
+
+--- Below this line is a copy of your message.
+
+%(original_message)s

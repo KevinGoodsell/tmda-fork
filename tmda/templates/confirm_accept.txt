@@ -6,3 +6,7 @@ an automated SPAM/UCE reduction system.
 
 Your confirmation (shown below) was accepted, and as a result, your
 original message has been successfully delivered.
+
+--- Below this line is a copy of your message.
+
+%(original_message)s

@@ -162,8 +162,6 @@ def send_bounce(bounce_message, **vars):
     pipeline.write(str(message_headers))
     pipeline.write('\n')
     pipeline.write(message_body)
-    pipeline.write('\n\n--- Below this line is a copy of your message.\n\n')
-    pipeline.write(message) # original message with headers
     pipeline.close()
     
 
@@ -207,6 +205,7 @@ def inject_pending(pathname,timestamp,pid):
 
 def locate_pending(timestamp,pid):
     """Locate the message in the pending queue."""
+    original_message = globals().get('message')
     pendingdir = Defaults.DATADIR + 'pending'
     pending_message = timestamp + '.' + pid + '.msg'
     pending_message_pathname = pendingdir + '/' + pending_message
@@ -322,6 +321,7 @@ def bouncegen(mode,passed_cookie=None):
     envelope_recipient = globals().get('envelope_recipient')
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
+    original_message = globals().get('message')
     if mode == 'dated':                  # only for 'dated'
         timeout = Util.format_timeout(Defaults.TIMEOUT)
         expire_date = now + Util.seconds(Defaults.TIMEOUT)

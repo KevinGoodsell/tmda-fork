@@ -3,7 +3,10 @@
 	* tmda-filter (inject_pending): Change format of `X-Confirmed:' to
 	resemble rfc822 dates to more easily compare it to the `Date:'
 	header.
-	
+
+	(send_bounce): Make inclusion of the original message optional by
+	defining it in the templates instead.
+
 	(bouncegen): Save the pending message with a Return-Path: header
 	so that when reinjected it will be sent with the original envelope
 	sender.  This will allow any post-TMDA processing that uses the

@@ -16,3 +16,7 @@ them by sending e-mail to the following special address:
     <mailto:%(dated_cookie_address)s>
         
 which will expire in exactly %(timeout)s (%(utc_expire_date)s UTC).
+
+--- Below this line is a copy of your message.
+
+%(original_message)s
