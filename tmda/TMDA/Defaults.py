@@ -40,13 +40,8 @@ if not TMDARC:TMDARC = os.path.expanduser("~/.tmdarc")
 if not os.path.exists(TMDARC):
     print "Can't open configuration file:",TMDARC
     sys.exit(EX_TEMPFAIL)
-else:
-    try:
-        execfile(TMDARC)
-    except Exception, error_msg:
-        print TMDARC, error_msg
-        sys.exit(EX_TEMPFAIL)
-                
+execfile(TMDARC)
+
 # Check for proper file permissions before proceeding.
 statinfo = os.stat(TMDARC)
 permbits = stat.S_IMODE(statinfo[stat.ST_MODE])
@@ -391,7 +386,7 @@ if not vars().has_key('HOSTNAME'):
 # No default.
 if not vars().has_key('LOGFILE_DEBUG'):
     LOGFILE_DEBUG = None
-
+    
 # LOGFILE_INCOMING
 # Filename which delivery summaries should be written to.
 # No default.
