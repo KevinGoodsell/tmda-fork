@@ -867,8 +867,9 @@ if not vars().has_key('LOCALDATE'):
     LOCALDATE = 1
 
 # MESSAGE_FROM_STYLE
-# Specifies how `From' headers should look when tagging outgoing
-# messages with tmda-sendmail.  There are two valid values:
+# Specifies how `From' and `Resent-From' headers should look when
+# tagging outgoing messages with tmda-sendmail.  There are two valid
+# values:
 #
 # "address"
 #      Just the address - king@grassland.com
@@ -878,7 +879,18 @@ if not vars().has_key('LOCALDATE'):
 #
 # Default is "angles".
 if not vars().has_key('MESSAGE_FROM_STYLE'):
-    MESSAGE_FROM_STYLE = "angles"
+    MESSAGE_FROM_STYLE = 'angles'
+
+# MESSAGE_TAG_HEADER_STYLE
+# Specifies how headers (other than `From' and `Resent-From') should
+# look when tagging outgoing messages with tmda-sendmail.  These are
+# the headers such as Reply-To which are defined using the `tag'
+# action in your FILTER_OUTGOING file.
+#
+# The valid values and default value is identical to that of
+# MESSAGE_FROM_STYLE.
+if not vars().has_key('MESSAGE_TAG_HEADER_STYLE'):
+    MESSAGE_TAG_HEADER_STYLE = 'angles'
 
 # MAX_AUTORESPONSES_PER_DAY
 # An integer specifying the maximum number of automatic responses sent

@@ -1,3 +1,7 @@
+2002-10-04  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Defaults.py (MESSAGE_TAG_HEADER_STYLE): New variable.
+
 2002-10-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* pythonlib/email: Sync up with email 2.4.

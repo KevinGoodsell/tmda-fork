@@ -278,7 +278,8 @@ def inject_message(resending,
         (cookie_type, cookie_option) = actions[header]
         field = make_field(cookie_type, cookie_option, from_address, to_address)
         if cookie_type:
-            field = message_format(field, full_name, Defaults.MESSAGE_FROM_STYLE)
+            field = message_format(field, full_name,
+                                   Defaults.MESSAGE_TAG_HEADER_STYLE)
         nice_header = string.capwords(header.replace('-', ' ')).replace(' ', '-')
         nice_headers.append((nice_header, field))
     if nice_headers:

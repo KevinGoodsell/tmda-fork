@@ -1,3 +1,9 @@
+2002-10-04  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-inject (inject_message): Use MESSAGE_TAG_HEADER_STYLE when
+	creating the extra headers (other than From/Resent-From) defined
+	using the `tag' action.
+
 2002-10-02  Jason R. Mastaler  <jasonrm@aguirre.la.mastaler.com>
 
 	* tmda-inject (make_field): Reset $TMDA_TIMEOUT if no timeout

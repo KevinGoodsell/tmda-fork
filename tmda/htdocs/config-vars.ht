@@ -122,67 +122,69 @@ Each variable definition below contains one or more examples.
 <td><a href="#MESSAGE_FROM_STYLE">MESSAGE_FROM_STYLE</a></td>
 </tr>
 <tr>
+<td><a href="#MESSAGE_TAG_HEADER_STYLE">MESSAGE_TAG_HEADER_STYLE</a></td>
 <td><a href="#OUTGOINGMAIL">OUTGOINGMAIL</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_BLACKLIST_APPEND">PENDING_BLACKLIST_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_CACHE">PENDING_CACHE</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_CACHE_LEN">PENDING_CACHE_LEN</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_DELETE_APPEND">PENDING_DELETE_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_RELEASE_APPEND">PENDING_RELEASE_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_WHITELIST_APPEND">PENDING_WHITELIST_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#PURGED_HEADERS">PURGED_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#RECIPIENT_DELIMITER">RECIPIENT_DELIMITER</a></td>
+</tr>
+<tr>
 <td><a href="#RECIPIENT_HEADER">RECIPIENT_HEADER</a></td>
-</tr>
-<tr>
 <td><a href="#RESPONSE_DIR">RESPONSE_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#SENDER_TEMPLATE_VARS">SENDER_TEMPLATE_VARS</a></td>
-</tr>
-<tr>
 <td><a href="#SENDMAIL_PROGRAM">SENDMAIL_PROGRAM</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPAUTH_PASSWORD">SMTPAUTH_PASSWORD</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPAUTH_USERNAME">SMTPAUTH_USERNAME</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPHOST">SMTPHOST</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL">SMTPSSL</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPSSL_CERTFILE">SMTPSSL_CERTFILE</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL_KEYFILE">SMTPSSL_KEYFILE</a></td>
+</tr>
+<tr>
 <td><a href="#SMTP_MAX_SESSIONS_PER_CONNECTION">SMTP_MAX_SESSIONS_PER_CONNECTION</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_CONFIRM">TAGS_CONFIRM</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_DATED">TAGS_DATED</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_KEYWORD">TAGS_KEYWORD</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_SENDER">TAGS_SENDER</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TIMEOUT">TIMEOUT</a></td>
+</tr>
+<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
-<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 <td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
+</tr>
 </table>
 
 <dl>
@@ -854,8 +856,10 @@ Default is 50
 <dt><hr>
 <a name="MESSAGE_FROM_STYLE"><h4>MESSAGE_FROM_STYLE</h4></a>
 <dd>
-Specifies how `From' headers should look when tagging outgoing
-messages with tmda-sendmail.  There are two valid values:
+Specifies how `From' and `Resent-From' headers should look when
+tagging outgoing messages with tmda-sendmail.  There are two valid
+<br>
+values:
 <br><br>
 "<code>address</code>"
 <blockquote>
@@ -868,6 +872,16 @@ messages with tmda-sendmail.  There are two valid values:
 </blockquote>
 <br>
 Default is "angles".
+<dt><hr>
+<a name="MESSAGE_TAG_HEADER_STYLE"><h4>MESSAGE_TAG_HEADER_STYLE</h4></a>
+<dd>
+Specifies how headers (other than `From' and `Resent-From') should
+look when tagging outgoing messages with tmda-sendmail.  These are
+the headers such as Reply-To which are defined using the `tag'
+action in your FILTER_OUTGOING file.
+<br><br>
+The valid values and default value is identical to that of
+MESSAGE_FROM_STYLE.
 <dt><hr>
 <a name="OUTGOINGMAIL"><h4>OUTGOINGMAIL</h4></a>
 <dd>
