@@ -48,10 +48,9 @@ Title: Surprises & Gotcha's
   to a misconfigured authentication method. To aid in finding out precisely 
   what is misconfigured, we have added a variety of debugging messages to 
   various parts of the authentication code.</p>
-<p>For most users, the debugging messages will be embedded in comments in the 
-  login page. Try logging in and when you get the "Wrong password." message, do 
-  a "View/Source" of the HTML page. At the top of the page, you should see 
-  something like:</p>
+<p>The debugging messages are embedded in comments in the login page. Try 
+  logging in and when you get the "Wrong password." message, do a "View/Source" 
+  of the HTML page. At the top of the page, you should see something like:</p>
 <table class="example">
   <tr>
     <td>
@@ -78,17 +77,8 @@ Authentication returned: 0<br>
 ...</td>
   </tr>
 </table>
-<p>If the message says:</p>
-<table class="example">
-  <tr>
-    <td>
-No error message returned.  Sorry!
-</td>
-  </tr>
-</table>
-<p>it may indicate that your system is incapable of capturing the debug stream. 
-  Check your webserver error logs instead to see if the messages ended up 
-  there.</p>
+<p>If you do not wish for these messages to be embedded, modify the template 
+  file <tt>login.html</tt> and remove the <tt>%(ErrMsg)s</tt> string.
 <p>If the messages do not help you get to the root of the problem, refer to the 
   instructions on the <a href="contact.html">Contact</a> page to get some 
   assistance.  Be sure to copy and paste the debug information you are getting, 
