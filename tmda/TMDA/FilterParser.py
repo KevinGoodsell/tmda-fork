@@ -223,7 +223,7 @@ class FilterParser:
 
     most_sources = re.compile(r"""
     ( (?:to|from)-(?:file|cdb|dbm|ezmlm|mailman|sql)
-    | size | pipe
+    | size | pipe-headers | pipe
     | (?:to|from) (?!-) )
     """, re.VERBOSE | re.IGNORECASE)
 
@@ -279,6 +279,7 @@ class FilterParser:
         'body-file'    : ('case', 'optional'),
         'headers-file' : ('case', 'optional'),
         'size'         : None,
+        'pipe-headers' : None,
         'pipe'         : None
         }
 
@@ -583,7 +584,7 @@ class FilterParser:
 	Parse a single rule from a filter file.  If successful, return a tuple
 	with five fields.  The five fields are:
 	
-	  source    - string: to*, from*, body*, headers*, size, pipe
+	  source    - string: to*, from*, body*, headers*, size, pipe, pipe-headers
           args      - any arguments that might be specified
 	  match     - string: the email address to be matched against, a
                       filename or a regular expression enclosed within
@@ -1031,6 +1032,31 @@ class FilterParser:
                     selectstmt, args, keys, actions, source, lineno)
                 if found_match:
                     break
+            # A match is found if the command exits with a zero exit
+            # status.
+            if source == 'pipe-headers' and msg_headers:
+                cmd = popen2.Popen3(match, 1, bufsize=-1)
+                cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
+                cmdin.write(msg_headers)
+                cmdin.flush()
+                cmdin.close()
+                err = cmderr.read().strip()
+                cmderr.close()
+                out = cmdout.read().strip()
+                cmdout.close()
+                r = cmd.wait()
+                if r == 0:
+                    found_match = 1
+                    break
+                else:
+                    # non-zero exit status
+                    if os.WIFEXITED(r):
+                        pass
+                    # raise an exception if the process exited due to
+                    # a signal.
+                    elif os.WIFSIGNALED(r):
+                        raise Error, 'command "%s" abnormal exit signal %s (%s)' \
+                              % (match, os.WTERMSIG(r), err or '')
             # A match is found if the command exits with a zero exit
             # status.
             if source == 'pipe' and msg_body and msg_headers:
