@@ -40,7 +40,7 @@ Where:
     -S
     --show
        Display the full contents of the given message with $PAGER (usually
-       the `more', or `less' program).  Implies --verbose.
+       the `more', or `less' program).
        
     -C
     --cache
