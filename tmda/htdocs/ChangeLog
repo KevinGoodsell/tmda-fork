@@ -1,5 +1,8 @@
 2001-11-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* results.ht (Links): Add testimonial from Matt Armstrong
+	Message-Id: <20011102235444.E9C73BD48@squeaker.lickey.com>
+
 	* faq.ht: New FAQ entry: "I use BBDB, and every time it sees a new
 	'dated' address it asks me whether I want it added to so-and-so's
 	BBDB record. How can I prevent this?"
