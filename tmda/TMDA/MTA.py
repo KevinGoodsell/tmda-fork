@@ -34,9 +34,15 @@ class Postfix(MTA):
         sys.exit(self.EX_OK)
     def deliver(self, message=None):
         self.local_delivery_agent = Defaults.LOCAL_DELIVERY_AGENT
-        self.__pipeline = os.popen(self.local_delivery_agent, 'w')
-        self.__pipeline.write(message)
-        sys.exit(self.__pipeline.close())
+        # Make sure the LDA actually exists first.
+        lda_path = string.split(string.lstrip(self.local_delivery_agent))[0]
+        if not os.path.exists(lda_path):
+            print "Nonexistent LOCAL_DELIVERY_AGENT:",lda_path
+            self.defer()
+        else:
+            self.__pipeline = os.popen(self.local_delivery_agent, 'w')
+            self.__pipeline.write(message)
+            sys.exit(self.__pipeline.close())
 
 
 class Qmail(MTA):

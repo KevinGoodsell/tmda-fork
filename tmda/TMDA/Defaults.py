@@ -102,23 +102,15 @@ if not vars().has_key('RECIPIENT_DELIMITER'):
 # The full path to the program used to deliver a sucessful message to
 # your mailbox.  Only necessary if you are NOT running qmail!
 # Tested LDAs include maildrop and procmail.
-# e.g, LOCAL_DELIVERY_AGENT = "/usr/bin/procmail"
 # This variable may also contain arguments which will be passed to the command.
 # e.g, LOCAL_DELIVERY_AGENT = "/usr/bin/procmail -p"
 # No default
 if not vars().has_key('LOCAL_DELIVERY_AGENT'):
     LOCAL_DELIVERY_AGENT = None
-if MAIL_TRANSFER_AGENT != 'qmail':
-    if not LOCAL_DELIVERY_AGENT:
-        print "Not running qmail: you must define LOCAL_DELIVERY_AGENT"
-        sys.exit(EX_TEMPFAIL)
-    else:
-        # just /path/to/lda without any command arguments
-        lda_path = string.split(string.lstrip(LOCAL_DELIVERY_AGENT))[0]
-        if not os.path.exists(lda_path):
-            print "Invalid LOCAL_DELIVERY_AGENT path:",lda_path
-            sys.exit(EX_TEMPFAIL)
-    
+if MAIL_TRANSFER_AGENT != 'qmail' and not LOCAL_DELIVERY_AGENT:
+    print "Not running qmail: you must define LOCAL_DELIVERY_AGENT in",TMDARC
+    sys.exit(EX_TEMPFAIL)
+
 # SENDMAIL
 # The path to the sendmail program, or sendmail compatibility
 # interface.  Defaults to one of the two standard locations, but you

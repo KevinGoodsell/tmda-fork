@@ -1,3 +1,13 @@
+2001-10-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* MTA.py (Postfix.deliver): Check whether LOCAL_DELIVERY_AGENT
+	actually exists and defer if it doesn't.  Otherwise, pass the
+	message to LOCAL_DELIVERY_AGENT for final delivery.
+
+	* Defaults.py (LOCAL_DELIVERY_AGENT): Remove os.path.exists check
+	since it's not necessary to verify this upon each import of
+	Defaults.
+	
 2001-10-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Removed INJECT & INJECT_FLAGS.
