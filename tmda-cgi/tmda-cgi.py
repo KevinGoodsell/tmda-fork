@@ -107,9 +107,7 @@ def main():
   elif Form.has_key("cmd"):
     # Just log in?
     if Form.has_key("user"):
-      PVars["SortDir"]   = "desc"
       PVars["Pager"]     = 0
-      PVars["Headers"]   = "short"
       PVars["InProcess"] = {}
       PVars.Save()
       

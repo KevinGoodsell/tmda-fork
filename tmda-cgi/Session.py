@@ -96,8 +96,7 @@ giving up an throwing an exception.
   # Globals
   Rands = random.Random()
   RealUser = 0
-  ThemesDir = os.path.join(os.path.abspath(os.path.split(sys.argv[0])[0]),
-    "display", "themes")
+  ThemesDir = os.path.join(os.getcwd(), "display", "themes")
   Valid = 0
 
   def __suid__(self, User):
@@ -192,12 +191,14 @@ rights.""")
     # Set up the template to use the theme and load the theme's .ini
     ThemeDir = os.path.join(self.ThemesDir, self.PVars["Theme"])
     Filename = os.path.join(ThemeDir, "theme.ini")
-    self.ThemeVars.read(Filename)
+    Default  = os.path.join(os.getcwd(), "defaults.ini")
+    self.ThemeVars.read([Default, Filename])
     if len(self.ThemeVars.sections()) < 2:
-      CgiUtil.TermError("Theme Error", "Incomplete theme.ini", "import theme",
+      CgiUtil.TermError("Missing defaults.ini", "Cannot load defaults.ini",
+        "import defaults", "%s<br>%s" % (
         CgiUtil.FileDetails("Theme settings", Filename),
-        "Download a new copy of theme %s or delete the directory: %s" %
-        (self.PVars["Theme"], ThemeDir))
+        CgiUtil.FileDetails("Defaults settings", Default)),
+        "Download a new copy of tmda-cgi.")
     Template.Template.BaseDir = os.path.join(ThemeDir, "template")
     Template.Template.Dict["ThemeDir"] = \
       os.path.join(os.environ["TMDA_CGI_DISP_DIR"], "themes",
@@ -385,9 +386,9 @@ user modes if its partition is marked "nosuid" in /etc/fstab.""")
       F = open(Filename)
       self.PVars = pickle.load(F)
       F.close()
-      os.chdir(CWD)
     except IOError:
       self.PVars = {}
+    os.chdir(CWD)
 
     # Get our theme
     self.GetTheme()
@@ -430,7 +431,5 @@ user modes if its partition is marked "nosuid" in /etc/fstab.""")
     if type(a) in StringTypes:
       return self.PVars.has_key(a)
     else:
-      if self.PVars.has_key(":".join(a)):
-        return 1
-      else:
-        return self.ThemeVars.has_option(a[0], a[1])
+      return self.PVars.has_key(":".join(a)) or \
+        self.ThemeVars.has_option(a[0], a[1])

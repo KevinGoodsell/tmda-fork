@@ -120,10 +120,10 @@ def Show():
 
     # Toggle headers?
     elif Form["subcmd"].value == "headers":
-      if PVars["Headers"] == "short":
-        PVars["Headers"] = "all"
+      if PVars[("ViewPending", "Headers")] == "short":
+        PVars[("ViewPending", "Headers")] = "all"
       else:
-        PVars["Headers"] = "short"
+        PVars[("ViewPending", "Headers")] = "short"
 
     else:
       # Read in e-mail
@@ -170,7 +170,7 @@ def Show():
   Queue._addCache(PVars["MsgID"])
   Queue._saveCache()
 
-  if PVars["Headers"] == "all":
+  if PVars[("ViewPending", "Headers")] == "all":
     # Remove header table
     T["HeaderRow"]
     T["Headers"]
