@@ -31,6 +31,15 @@ def make_confirm_cookie(time,pid,keyword=None):
     return timestamp + '.' + process_id + '.' + chmac
 
 
+def make_confirm_address(address,time,pid,keyword):
+    """Return a full confirmation-style e-mail address."""
+    confirm_cookie = make_confirm_cookie(time,pid,keyword)
+    (username, hostname) = string.split(address,'@')
+    confirm_address = username + '-confirm-' + keyword + '.' + \
+                      confirm_cookie + '@' + hostname
+    return confirm_address
+
+
 def datemac(time):
     """Expects time as a string, and returns an HMAC in hex."""
     datemac = HMAC.new(Defaults.CRYPT_KEY,time).digest()[:3]

@@ -1,3 +1,10 @@
+2001-08-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (original_recipient): original_recipient is the
+	original address the message was sent to, not qmail-send's
+	rewritten interpretation.  This is now used in the code and
+	templates instead of envelope_recipient.
+
 2001-08-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (bouncegen): Add support for Debian Linux packages

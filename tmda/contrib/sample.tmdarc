@@ -58,9 +58,13 @@ import os                                      # don't remove
 # YYYYmm = time.strftime('%Y-%m',localtime) 
 # LOGFILE = os.path.expanduser("~/tmda/log/tmdalog." + YYYYmm)
 
+# QMAILVIRTUALDOMAINS = 1
+
 # TIMEOUT = "5d"
 
 # USERNAME = "jdoe" 
+
+# VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
 
 # BARE_FILE = "/full/path/to/bare.txt"
 

@@ -105,19 +105,40 @@ envelope_sender = os.environ.get('SENDER')
 envelope_recipient = (message_headers.getheader('x-originally-to') or
                       os.environ.get('RECIPIENT'))
 
+# original_recipient is the original address the message was sent to,
+# not qmail-send's rewritten interpretation.  This will be the same as
+# envelope_recipient if we are not running under a virtualdomain.
+original_recipient = envelope_recipient
+if Defaults.QMAILVIRTUALDOMAINS:
+    (ousername, odomain) = string.split(envelope_recipient,'@')
+    for line in fileinput.input(Defaults.VIRTUALDOMAINS):
+        line = string.lower(string.strip(line))
+        # Comment or blank line?
+        if line == '' or line[0] in '#':
+            continue
+        else:
+            (vdomain, prepend) = string.split(line,':')
+            if vdomain == string.lower(odomain):
+                # strip off the prepend
+                if prepend:
+                    nusername = string.replace(ousername,prepend + '-','')
+                    original_recipient = nusername + '@' + odomain
+                    fileinput.close()
+                    break
+
 # Collect the message's Subject: for later use.
 subject = message_headers.getheader('subject', 'None')
 
 
 def logit(action_msg,date):
     """Write delivery statistics to the LOGFILE if enabled."""
-    if Defaults.LOGFILE and envelope_recipient:
+    if Defaults.LOGFILE and original_recipient:
         try:
             logfile = open(Defaults.LOGFILE, 'a') # append to the file
             Date = time.asctime(time.localtime(date))
             From = message_headers.getheader('from')
             if not From:From = envelope_sender
-            To = envelope_recipient
+            To = original_recipient
             Subject = subject
             Action = action_msg
             actionstr = 'Actn: ' + Action
@@ -168,10 +189,15 @@ def bounce_cc(address):
 
 def inject_pending(pathname,timestamp,pid):
     """Reinject then unlink a sucessfully confirmed message."""
+    (username, hostname) = string.split(original_recipient,'@')
+    # Strip off the '-confirm-accept.TIMESTAMP.PID.HMAC' from username.
+    base_username = string.join((string.split(username,'-')[:-2]),'-')
+    base_recipient = base_username + '@' + hostname
     # Create the `confirm-done' address
-    confirm_done_cookie = Cookie.make_confirm_cookie(timestamp,pid,'done')
-    confirm_done_address = Defaults.USERNAME + '-confirm-done.' + \
-                           confirm_done_cookie + '@' + Defaults.HOSTNAME
+    confirm_done_address = Cookie.make_confirm_address(base_recipient,
+                                                       timestamp,
+                                                       pid,
+                                                       'done')
     curdate = time.strftime('%a, %d %b %Y %X -0000', time.gmtime(time.time()))
     try:
         fileobj = open(pathname,'r')
@@ -289,7 +315,7 @@ def bouncegen(mode):
     """Bounce a message back to sender."""
     # Common variables.
     now = time.time()
-    envelope_recipient = globals().get('envelope_recipient')
+    original_recipient = globals().get('original_recipient')
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
     original_message = globals().get('message')
@@ -319,9 +345,10 @@ def bouncegen(mode):
         pkg_template = pkg_template_dir + 'confirm_request.txt'
         timestamp = str('%d' %now)
         pid = str(os.getpid())
-        confirm_cookie = Cookie.make_confirm_cookie(timestamp,pid,'accept')
-        confirm_accept_address = Defaults.USERNAME + '-confirm-accept.' + \
-                                 confirm_cookie + '@' + Defaults.HOSTNAME
+        confirm_accept_address = Cookie.make_confirm_address(original_recipient,
+                                                             timestamp,
+                                                             pid,
+                                                             'accept')
         pendingdir = Defaults.DATADIR + 'pending'
         pending_message = timestamp + '.' + pid + '.msg'
         # Create ~/.tmda/ and friends if necessary.

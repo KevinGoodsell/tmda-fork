@@ -1,5 +1,5 @@
-From: "%(FULLNAME)s" <%(USERNAME)s@%(HOSTNAME)s>
-Subject: Confirmation required for your message to %(envelope_recipient)s
+From: %(original_recipient)s
+Subject: Confirmation required for your message to %(original_recipient)s
 
 Your e-mail message with the subject of "%(subject)s"
 was not delivered because your address was not recognized.

@@ -1,5 +1,14 @@
 2001-08-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (QMAILVIRTUALDOMAINS): New variable to toggle qmail
+	virtualdomains support.
+
+	(VIRTUALDOMAINS): New variable pointing to qmail's virtualdomains
+	control file.
+
+	* Cookie.py (make_confirm_address): New function to create full
+        confirmation-style addresses (both 'accept' and 'done).
+
 	* Defaults.py (TMDA_VERSION): Begin 0.33 development.
 
 2001-08-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>

@@ -1,4 +1,4 @@
-From: "%(FULLNAME)s" <%(USERNAME)s@%(HOSTNAME)s>
+From: %(original_recipient)s
 Subject: Confirmation accepted
 
 Your confirmation was accepted, and as a result, your original message
