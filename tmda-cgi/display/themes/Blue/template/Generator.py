@@ -181,10 +181,11 @@ name="%s"''' % (alt, height, name)
             if sidebar[i][0]:
               Match = FindCmd.search(sidebar[i][0])
               if Match and (('%s.html' % Match.group(1)) == html):
-                # deactivate us
-                sidebar[i] = (None, sidebar[i][1], sidebar[i][2])
-                # found us, collapse others
-                while type(sidebar[i]) != StringType: i += 1
+                if len(sidebar[i]) > 2:
+                  # deactivate us
+                  sidebar[i] = (None, sidebar[i][1], sidebar[i][2])
+                  # found us, collapse others
+                  while type(sidebar[i]) != StringType: i += 1
                 while 1:
                   if type(sidebar[i]) != StringType:
                     sidebar[i:i+1] = []

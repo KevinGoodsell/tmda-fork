@@ -2,16 +2,16 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sun Apr 20 18:22:33 2003 -->
+<!-- Sun Apr 20 19:14:11 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
-Title: Global Configuration File
+Title: About tmda-cgi
 
 -->
 
 <head>
-<title>Global Configuration File</title>
+<title>About tmda-cgi</title>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="HT2HTML/2.1">
 <link rel="STYLESHEET" href="%(ThemeDir)s/styles.css" type="text/css">
@@ -59,43 +59,79 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r4_c1.png" name="x290" height="35" width="
 onmouseover="document.images.x375.src='%(ThemeDir)s/dyn_buttons/layout1_r5_c1_h.png'"
 onmouseout="document.images.x375.src='%(ThemeDir)s/dyn_buttons/layout1_r5_c1.png'"><img
 src="%(ThemeDir)s/dyn_buttons/layout1_r5_c1.png" name="x375" height="35" width="194" border="0" alt="Settings"></a></td></tr>
-<tr><td><a href="%(Script)s?cmd=localconfig&SID=%(SID)s" onmouseover="document.images.subtopic9.src='%(ThemeDir)s/dyn_buttons/h-subtopic9.png'"
-onmouseout="document.images.subtopic9.src='%(ThemeDir)s/dyn_buttons/subtopic9.png'"><img src="%(ThemeDir)s/dyn_buttons/subtopic9.png" border="0" alt=" - Local Config" width="194" height="14"
-name="subtopic9"></a></td></tr>
-<tr><td><img src="%(ThemeDir)s/dyn_buttons/h-subtopic10.png" border="0" alt=" - Global Config" width="194" height="14"
-name="subtopic10"></td></tr>
-<tr><td><a href="%(Script)s?cmd=theme&SID=%(SID)s" onmouseover="document.images.subtopic11.src='%(ThemeDir)s/dyn_buttons/h-subtopic11.png'"
-onmouseout="document.images.subtopic11.src='%(ThemeDir)s/dyn_buttons/subtopic11.png'"><img src="%(ThemeDir)s/dyn_buttons/subtopic11.png" border="0" alt=" - Theme" width="194" height="14"
-name="subtopic11"></a></td></tr>
-<tr><td><a href="%(Script)s?cmd=password&SID=%(SID)s" onmouseover="document.images.subtopic12.src='%(ThemeDir)s/dyn_buttons/h-subtopic12.png'"
-onmouseout="document.images.subtopic12.src='%(ThemeDir)s/dyn_buttons/subtopic12.png'"><img src="%(ThemeDir)s/dyn_buttons/subtopic12.png" border="0" alt=" - Change Password" width="194" height="14"
-name="subtopic12"></a></td></tr>
 <tr><td><a href="%(Script)s?cmd=info&SID=%(SID)s"
-onmouseover="document.images.x733.src='%(ThemeDir)s/dyn_buttons/layout1_r6_c1_h.png'"
-onmouseout="document.images.x733.src='%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png'"><img
-src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x733" height="35" width="194" border="0" alt="Info"></a></td></tr>
+onmouseover="document.images.x460.src='%(ThemeDir)s/dyn_buttons/layout1_r6_c1_h.png'"
+onmouseout="document.images.x460.src='%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png'"><img
+src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x460" height="35" width="194" border="0" alt="Info"></a></td></tr>
 <tr><td><a href="%(Script)s?cmd=logout&SID=%(SID)s"
-onmouseover="document.images.x818.src='%(ThemeDir)s/dyn_buttons/layout1_r7_c1_h.png'"
-onmouseout="document.images.x818.src='%(ThemeDir)s/dyn_buttons/layout1_r7_c1.png'"><img
-src="%(ThemeDir)s/dyn_buttons/layout1_r7_c1.png" name="x818" height="35" width="194" border="0" alt="Logout"></a></td></tr>
+onmouseover="document.images.x545.src='%(ThemeDir)s/dyn_buttons/layout1_r7_c1_h.png'"
+onmouseout="document.images.x545.src='%(ThemeDir)s/dyn_buttons/layout1_r7_c1.png'"><img
+src="%(ThemeDir)s/dyn_buttons/layout1_r7_c1.png" name="x545" height="35" width="194" border="0" alt="Logout"></a></td></tr>
 </table><!-- end of sidebar table -->
 
 </td>
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
-<td valign="top" class="body"><table align="center">
-  <form>
-    <tr>
-      <td height="30" align="center" valign="top"><b>%(FilePath)s:</b></td>
-    </tr>
-    <tr>
-      <td align="center"><!-- var: NoFile --><textarea name="textarea" 
-        cols="64" rows="15">%(FileContents)s</textarea><!-- /var -->
-        <!-- var: NoneLook="<i>None.</i>" -->
-      </td>
-    </tr>
-  </form>
-</table>
+<td valign="top" class="body"><h2>Version</h2>
+<table>
+  <tr>
+    <td><b>tmda-cgi:</b></td>
+    <td class="TextField">%(CgiVersion)s</td>
+  </tr>
+  <tr>
+    <td><b>TMDA:</b></td>
+    <td class="TextField">%(TmdaVersion)s</td>
+  </tr>
+</table><p>
+
+<hr width="50%">
+
+<h2>Authors</h2>
+<p>tmda-cgi was written by <a href="mailto:gre7g@wolfhome.com">Gre7g 
+  Luterman</a> and <a href="mailto:i.am@jimramsay.com">Jim Ramsay</a></p>
+
+<hr width="50%">
+
+<h2>Links</h2>
+<p>Find out more about
+  <a href="http://tmda.sourceforge.net/tmda-cgi/">tmda-cgi</a>.</p>
+<p>Find out more about <a href="http://tmda.sourceforge.net/">TMDA</a>.</p>
+
+<hr width="50%">
+
+<h2>Acknowledgements</h2>
+<table cellspacing="7">
+<!-- var: AckRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td>%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+
+<hr width="50%">
+
+<h2>Contributions</h2>
+<table cellspacing="7">
+<!-- var: ContRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td>%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+
+<hr width="50%">
+
+<h2>Still To Do</h2>
+<table cellspacing="7">
+<!-- var: ToDoRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td>%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
 </td>
 <!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
@@ -114,16 +150,10 @@ x205.src = "%(ThemeDir)s/dyn_buttons/layout1_r3_c1_h.png";
 x290.src = "%(ThemeDir)s/dyn_buttons/layout1_r4_c1_h.png";
   var x375 = new Image();
 x375.src = "%(ThemeDir)s/dyn_buttons/layout1_r5_c1_h.png";
-var subtopic9 = new Image();
-subtopic9.src = "%(ThemeDir)s/dyn_buttons/h-subtopic9.png";
-var subtopic11 = new Image();
-subtopic11.src = "%(ThemeDir)s/dyn_buttons/h-subtopic11.png";
-var subtopic12 = new Image();
-subtopic12.src = "%(ThemeDir)s/dyn_buttons/h-subtopic12.png";
-  var x733 = new Image();
-x733.src = "%(ThemeDir)s/dyn_buttons/layout1_r6_c1_h.png";
-  var x818 = new Image();
-x818.src = "%(ThemeDir)s/dyn_buttons/layout1_r7_c1_h.png";
+  var x460 = new Image();
+x460.src = "%(ThemeDir)s/dyn_buttons/layout1_r6_c1_h.png";
+  var x545 = new Image();
+x545.src = "%(ThemeDir)s/dyn_buttons/layout1_r7_c1_h.png";
 }
 //-->
 </script>

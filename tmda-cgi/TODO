@@ -1,0 +1,19 @@
+Things left to do:
+==================
+
+    * SpamCop -- an option to delete/blacklist/forward to SpamCop
+
+    * Language Support -- code to recognize the language an e-mail is in and
+                          include the appropriate language identifiers in the
+                          viewer
+
+    * Install / Uninstall -- options to allow users to add or remove TMDA
+                             filtering from their e-mail account
+
+    * Auto-Cleanup -- scheduling and somehow dealing with virtual users
+
+    * Filter Viewer -- graphic view of your filters
+
+    * List Editor -- view and edit your lists
+
+    * Change Password -- figure out a way to do it or remove it from the menu

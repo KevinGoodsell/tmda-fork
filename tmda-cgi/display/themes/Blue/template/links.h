@@ -17,5 +17,7 @@
 <li><a href="%(Script)s?cmd=globalconfig&SID=%(SID)s">Global Config</a>
 <li><a href="%(Script)s?cmd=theme&SID=%(SID)s">Theme</a>
 <li><a href="%(Script)s?cmd=password&SID=%(SID)s">Change Password</a>
+<h3>Info</h3>
+<li><a href="%(Script)s?cmd=info&SID=%(SID)s"></a>
 <h3>Logout</h3>
 <li><a href="%(Script)s?cmd=logout&SID=%(SID)s"></a>

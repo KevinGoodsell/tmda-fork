@@ -1,0 +1,62 @@
+Title: About tmda-cgi
+
+<h2>Version</h2>
+<table>
+  <tr>
+    <td><b>tmda-cgi:</b></td>
+    <td class="TextField">%(CgiVersion)s</td>
+  </tr>
+  <tr>
+    <td><b>TMDA:</b></td>
+    <td class="TextField">%(TmdaVersion)s</td>
+  </tr>
+</table><p>
+
+<hr width="50%">
+
+<h2>Authors</h2>
+<p>tmda-cgi was written by <a href="mailto:gre7g@wolfhome.com">Gre7g 
+  Luterman</a> and <a href="mailto:i.am@jimramsay.com">Jim Ramsay</a></p>
+
+<hr width="50%">
+
+<h2>Links</h2>
+<p>Find out more about
+  <a href="http://tmda.sourceforge.net/tmda-cgi/">tmda-cgi</a>.</p>
+<p>Find out more about <a href="http://tmda.sourceforge.net/">TMDA</a>.</p>
+
+<hr width="50%">
+
+<h2>Acknowledgements</h2>
+<table cellspacing="7">
+<!-- var: AckRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td>%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+
+<hr width="50%">
+
+<h2>Contributions</h2>
+<table cellspacing="7">
+<!-- var: ContRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td>%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+
+<hr width="50%">
+
+<h2>Still To Do</h2>
+<table cellspacing="7">
+<!-- var: ToDoRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td>%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>

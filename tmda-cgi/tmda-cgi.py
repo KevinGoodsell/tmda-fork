@@ -112,6 +112,7 @@ def main():
       
     import GenAddr
     import GlobalConfig
+    import Info
     import LocalConfig
     import PendList
     import TestAddr
@@ -151,6 +152,8 @@ def main():
       TestAddr.Show()
     elif Form["cmd"].value == "localconfig":
       LocalConfig.Show()
+    elif Form["cmd"].value == "info":
+      Info.Show()
     else:
       CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
         Form["cmd"].value, "interpret command", "", "Please be patient while "

@@ -12,43 +12,45 @@ aS'Lists'
 p6
 aS'Settings'
 p7
-aS'Logout'
+aS'Info'
 p8
-asS'subtopics'
+aS'Logout'
 p9
-(lp10
+asS'subtopics'
+p10
+(lp11
 S'   E-mail'
-p11
-aS'Generate Dynamic/Return Address'
 p12
-aS'Test Dynamic Address'
+aS'Generate Dynamic/Return Address'
 p13
-aS'Pending E-mails'
+aS'Test Dynamic Address'
 p14
-aS'Auto-cleanup'
+aS'Pending E-mails'
 p15
-aS'Incoming Filter'
+aS'Auto-cleanup'
 p16
-aS'Outgoing Filter'
+aS'Incoming Filter'
 p17
-aS'Test Filters'
+aS'Outgoing Filter'
 p18
-aS'Local Config'
+aS'Test Filters'
 p19
-aS'Global Config'
+aS'Local Config'
 p20
-aS'Theme'
+aS'Global Config'
 p21
-aS'Change Password'
+aS'Theme'
 p22
-aS'whitelist'
+aS'Change Password'
 p23
-aS'blacklist'
+aS'whitelist'
 p24
-aS'confirmed'
+aS'blacklist'
 p25
-aS'revoked'
+aS'confirmed'
 p26
-aS'other'
+aS'revoked'
 p27
+aS'other'
+p28
 as.

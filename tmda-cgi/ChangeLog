@@ -1,5 +1,7 @@
 2003-04-20  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* tmda-cgi 0.04 is released.
+
 	* Added code for "generate address", "test address", and "local config"
 	  buttons.
 

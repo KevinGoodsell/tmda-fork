@@ -1,24 +1,24 @@
 Acknowledgements:
 -----------------
 
-    * Jason R. Mastaler -- the creator of TMDA.
+    * Jason R. Mastaler -- the creator of TMDA
 
-    * Guido van Rossum -- the creator Python.
+    * Guido van Rossum -- the creator Python
 
 Contributions:
 --------------
 
-    * Jesse Guardiani -- For providing valuable insight into virtual user
+    * Jesse Guardiani -- providing valuable insight into virtual user
                          setup and the proper way to interface to the
-                         libraries.
+                         libraries
 
-    * Tim Legant -- Authentication.
+    * Tim Legant -- authentication
 
-    * Jim Ramsay -- Authentication, brainstorming, user interface feature
+    * Jim Ramsay -- authentication, brainstorming, user interface feature
                     plans, and hopefully lots of the programming in the near
                     future!
 
-    * Tim Rice -- Compiler suggestions so we can work in more environments.
+    * Tim Rice -- compiler suggestions so we can work in more environments
 
-    * Cory Wright -- Providing insight into how to use vpopmail and gently
-                     pointing out the obvious when I miss it.
+    * Cory Wright -- providing insight into how to use vpopmail and gently
+                     pointing out the obvious when I miss it
