@@ -40,7 +40,7 @@ class FilterParser:
     bol_comment = re.compile(r'\s*#')
 
     most_sources = re.compile(r"""
-    ( (?:(?:to|from)(?:-(?:file|cdb|dbm|mailman\.\S+))?)
+    ( (?:(?:to|from)(?:-(?:file|cdb|dbm|ezmlm|mailman\.\S+))?)
     | size )
     \ (?# NOTE: preceding character must be an actual space)
     """, re.VERBOSE | re.IGNORECASE)
@@ -279,9 +279,11 @@ class FilterParser:
             source = string.lower(source)
             if source in ('from', 'to'):
                 if source == 'from' and senders:
-		    found_match = Util.findmatch([string.lower(match)],senders)
+		    found_match = Util.findmatch([string.lower(match)],
+                                                 senders)
                 elif source == 'to' and recipient:
-		    found_match = Util.findmatch([string.lower(match)],[recipient])
+		    found_match = Util.findmatch([string.lower(match)],
+                                                 [recipient])
 		if found_match:
 		    break
             if source in ('from-file', 'to-file'):
@@ -297,7 +299,8 @@ class FilterParser:
                     # overriding action specification.
                     if found_match != 1:
 			actions = self.__buildactions(found_match)
-			found_match = 1 # it's already true, but everywhere else it's 1
+                        # it's already true, but everywhere else it's 1
+			found_match = 1
                     break
             # DBM-style databases.
             if source in ('from-dbm', 'to-dbm'):
@@ -342,6 +345,27 @@ class FilterParser:
                         break
                 if found_match:
 		    break
+            # ezmlm `subscribers' directories.
+            if source in ('from-ezmlm', 'to-ezmlm'):
+                match = os.path.expanduser(match)
+                if source == 'from-ezmlm':
+                    keys = senders
+                elif source == 'to-ezmlm':
+                    keys = [recipient]
+                ezmlm_list = []
+                # See ezmlm(5) for dir/subscribers format.
+                for file in os.listdir(match):
+                    fp = open(os.path.join(match, file), 'r')
+                    subs = fp.read().split('\x00')
+                    for sub in subs:
+                        if sub:
+                            ezmlm_list.append(sub.split('T', 1)[1].lower())
+                for key in keys:
+                    if key and key.lower() in ezmlm_list:
+                        found_match = 1
+                        break
+                if found_match:
+                    break
             # Mailman list-configuration databases.
             if (source[:len('from-mailman')] == 'from-mailman' or
                 source[:len('to-mailman')] == 'to-mailman'):
@@ -372,7 +396,7 @@ class FilterParser:
                 if type(mmdb_addylist) is types.DictType:
                      mmdb_addylist = mmdb_data[mmdb_key].keys()
                 for addy in keys:
-                    if string.lower(addy) in mmdb_addylist:
+                    if addy and string.lower(addy) in mmdb_addylist:
                         found_match = 1
                         break
                 if found_match:

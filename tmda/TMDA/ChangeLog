@@ -1,3 +1,9 @@
+2002-01-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py (FilterParser.firstmatch): Add from/to-ezmlm
+	rules to support matching from ezmlm `subscribers' directories
+	which contain hash files of list subscriber addresses.
+
 2002-01-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* FilterParser.py: Remove the trailing space in the matches regex.
