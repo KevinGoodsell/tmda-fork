@@ -32,31 +32,42 @@ Where:
     -b <path>
     --base-dir <path>
        Specify a path to TMDA.
+       Current default: %(Base)s
 
     -c <file>
     --config-file <file>
-       Specify a different configuration file other than ~/.tmda/config.
+       Specify a TMDA configuration file.  May be an equation with ~ used to
+       represent the user name.
+       Current default: %(Config)s
 
     -d <path>
     --display-dir <path>
-       Specify a different directory for supplimental display files (icons and
+       Specify a directory for supplimental display files (icons and
        stylesheet).
+       Current default: %(DispDir)s
 
     -e <seconds>
     --session-exp <seconds>
        Specify the number of seconds old a session may be before it risk get-
        ting "cleaned".
+       Current default: %(SessionExp)s
 
     -f <authfile>
     --file-auth <authfile>
-       Specify a different authentication file than the default.
-       - The default is either <config_directory>/tmda-cgi, ~/.tmda/tmda-cgi
-         for the authenticating user, or /etc/tmda-cgi, whichever is found
-         first.
+       Specify an authentication file.
+       - If you specify "None", the system will check either
+         <config_directory>/tmda-cgi, ~/.tmda/tmda-cgi for the authenticating
+         user, or /etc/tmda-cgi, whichever is found first.
+       Current default: %(AuthFile)s
 
     -h
     --help
        Print this help message and exit.
+
+    -i <path>
+    --install-prefix <path>
+       Specify path to tmda-cgi.py and the other tmda-cgi program files.
+       Current default: %(Path)s
 
     -l <path>
     --virtual-lookup <path>
@@ -65,10 +76,13 @@ Where:
          Python stub, <program> is the program that must be run to feed the
          stub, and <params...> are any parameters needed by <program>.  Any
          parameter that is a ~ will be replaced by the login name.
+       - Use "None" if your system does not support virtual users.
+       Current default: %(VLookup)s
 
     -m system-wide|single-user|no-su
     --mode system-wide|single-user|no-su
        Specify an operating mode.
+       Current default: %(Mode)s
 
     -n
     --no-su
@@ -77,21 +91,23 @@ Where:
     -o <odds>
     --cleanup-odds
        Specify chance of cleaning up session files.
+       Current default: %(SessionOdds)s
 
     -p <checkpassword>
     --program-auth <checkpassword>
        Specify checkpassword-style authentication
        - Must conform exactly to the checkpassword stardard
             http://cr.yp.to/checkpwd/interface.html
-        - Any program that returns '0' (true) is acceptable as the command
+        - Any program that returns "0" (true) is acceptable as the command
           run by the checkpassword program upon successful authentication.
-        - If "program" requires commandline switches, you must supply the
+        - If <checkpassword> requires commandline switches, you must supply the
           command to be run upon successful authentication.
-          If "program" does not, the default program (/usr)/bin/true is
-          automatically appended if not specified.
-        Examples: -p "/usr/sbin/checkpassword-pam -s id -- /bin/true"
-                  -p /home/vpopmail/bin/vchkpw
-                     (/usr/bin/true or /bin/true is automatically used)
+          If <checkpassword> does not, the default program (/usr)/bin/true is
+          automatically appended.
+       Examples: -p "/usr/sbin/checkpassword-pam -s id -- /bin/true"
+                 -p /home/vpopmail/bin/vchkpw
+                    (/usr/bin/true or /bin/true is automatically used)
+       Current default: %(AuthProg)s
 
     -r protocol[://host[:port]][/dn]
     --remote-auth protocol[://host[:port]][/dn]
@@ -106,50 +122,21 @@ Where:
                   -r imaps://myimapserver.net
                   -r pop3://mypopserver.net:2110
                   -r ldap://host.com/cn=%%(user)s,dc=host,dc=com
+       Current default: %(AuthURI)s
 
     -s <prefix>
     --session-prefix <prefix>
        Path/file prefix for session files.
+       Current default: %(SessionPrefix)s
 
     -t <file>
     --target <file>
        Compile as a file other than ./tmda-cgi.
-
-    -v <user>
-    --virt_user <user>
-       Specify real login name to use when user logs in as a virtual user.
+       Current default: %(Target)s
 
 If you specify no options, then the program will run in an interactive mode,
 provide defaults for all values, and remember the new values you give it as
 future defaults in case you need to recompile later.
-
-The -m option is seldom needed.  This option is for the rare cases when a user 
-other than root needs to compile the program for use in system-wide mode.  For 
-the resulting code to run correctly, root will have to chown the resulting 
-program.
-
-When specifying -p, ensure that the value of -T is correct for your system.
-
-The -B and -v options are used if you have virtual users on your system.
-If you don't support virtual users, then leave these to the default settings.
-
-The target may be specified on the command line with the -t option.
-
-You can specify the location of the supplimental display files (icons and
-stylesheet) with the -d option.  The default location is:
-
-    /display/
-
-Use the -c option to specify a different location for your TMDA configuration
-file.  You may use a "~" anywhere in the path to specify "the current user".
-For example:
-
-    %(Program)s -c /var/tmda/~/config
-
-Will look for configuration files at /var/tmda/<user>/config instead of the
-usual ~<user>/.tmda/config.
-
-If no ~ is specified, %(Program)s will make a "best guess".
 """
 
 import compileall
@@ -201,7 +188,10 @@ You may enter a relative path (relative to the CWD) if you like.
 If you installed TMDA from an RPM,
   try: "/usr/lib/python2.2/site-packages".
 If you installed TMDA from a FreeBSD port, try:
-  "/usr/local/lib/python2.2/site-packages""", "Base", os.path.isdir, "%s/TMDA")
+  "/usr/local/lib/python2.2/site-packages".""", "Base", os.path.isdir,
+    "%s/TMDA")
+  Ask("""Where did you install tmda-cgi?
+This is typically the CWD.""", "Path", os.path.isfile, "%s/tmda-cgi.py")
   Ask("""Would you like to override the default config file location?
 If so, enter a "formula" to specify where to look for the config file.
 This formula is just a path, but it can include the character "~".
@@ -286,15 +276,17 @@ if not os.path.isdir("../tmda"):
 
 def Usage(Code, Msg=""):
   "Show usage information and possibly an error message."
-  print __doc__ % globals()
+  OptD.update(globals())
+  print __doc__ % OptD
   if Msg: print Msg
   sys.exit(Code)
 
 try:
-  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:e:f:l:m:nho:p:r:s:t:",
-    ["base-dir=", "config-file=", "display-dir=", "session-exp", "file-auth=", 
-     "help", "mode=", "no-su", "cleanup-odds", "program-auth=", "remote-auth=", 
-     "session-prefix=", "target=", "virtual-lookup="])
+  Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:e:f:hi:l:m:no:p:r:s:t:",
+    ["base-dir=", "config-file=", "display-dir=", "session-exp=", "file-auth=", 
+     "help", "install-prefix=", "virtual-lookup=", "mode=", "no-su",
+     "cleanup-odds", "program-auth=", "remote-auth=", "session-prefix=",
+     "target="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
@@ -314,6 +306,8 @@ for Opt, Arg in Opts:
     OptD["AuthType"] = "file"
     OptD["AuthFile"] = Arg
     OptD["AuthArg"] = Arg
+  elif Opt in ("-i", "--install-prefix"):
+    OptD["Path"] = Arg
   elif Opt in ("-l", "--virtual-lookup"):
     OptD["VLookup"] = Arg
   elif Opt in ("-o", "--cleanup-odds"):
@@ -422,21 +416,24 @@ if OptD["AuthArg"] != "None":
 F.close()
 
 # Create Makefile
+OptD["TargDir"], OptD["TargFN"] = os.path.split(OptD["Target"])
 F = open("Makefile", "w")
 F.write("""# This makefile is automatically generated by ./configure
 # Do not edit by hand
 
+DESTDIR ?= %(TargDir)s
+
 all: tmda.cgi
 
 tmda.cgi: tmda-cgi.h
-\tcc -I . %(Path)stmda-cgi.c -o tmda.cgi
-\tchmod %(Perm)s tmda.cgi
+	cc -I . %(Path)stmda-cgi.c -o tmda.cgi
+	chmod %(Perm)s tmda.cgi
 
-install: %(Target)s
+install: $(DESTDIR)/%(TargFN)s
 
-%(Target)s: tmda.cgi
-\tcp -f tmda.cgi %(Target)s
-\tchmod %(Perm)s %(Target)s
+$(DESTDIR)/%(TargFN)s: tmda.cgi
+	cp -f tmda.cgi $(DESTDIR)/%(TargFN)s
+	chmod %(Perm)s $(DESTDIR)/%(TargFN)s
 """ % OptD)
 
 # Compile Python code

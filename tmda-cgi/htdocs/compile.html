@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu May 22 12:49:14 2003 -->
+<!-- Thu May 22 15:48:22 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -161,6 +161,7 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x696" height="35" width="194" 
   <li>The location of your Python interpreter</li>
   <li>Where to save the CGI</li>
   <li>The path to TMDA's root directory</li>
+  <li>The path to tmda-cgi's root directory</li>
   <li>An optional path or &quot;formula&quot; to find the user <tt>config</tt>
     files</li>
   <li>The <a href="auth.html">authentication mechanism</a> (file / program /
@@ -183,11 +184,11 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x696" height="35" width="194" 
 <h3><a name="Display"></a><tt>display</tt> Directory</h3>
 
 <p>Finally, tmda-cgi requires a variety of visual elements saved in a
-  <tt>display</tt> directory (see #6, above). This directory comes with the
+  <tt>display</tt> directory (see #7, above). This directory comes with the
   tmda-cgi source and will need to be manually copied or symbolically linked
   (make sure your web server is configured to follow links!) into the
   appropriate web directory.</p>
-<p>Please note that #6 specifies the relative <i>web path</i> from the CGI to
+<p>Please note that #7 specifies the relative <i>web path</i> from the CGI to
   the <tt>display</tt> directory, which may be different than the actual path.
   For example:</p>
 <table border="0" cellspacing="0" cellpadding="0">
@@ -213,7 +214,7 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x696" height="35" width="194" 
 <p>In the above example, the actual path from the CGI to the display directory
   is <tt>../htdocs/display/</tt> but the web path is <tt>../display/</tt>. The
   web path (<tt>../display/</tt>) is the one that should be entered in question
-  #6.</p>
+  #7.</p>
 
 <h3><a name="AutoInstall"></a>Auto-installation</h3>
 
