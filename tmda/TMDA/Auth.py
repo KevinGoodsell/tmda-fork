@@ -26,7 +26,6 @@ import os
 import sys
 import socket
 import base64
-import hmac
 import md5
 import popen2
 import time
@@ -129,13 +128,6 @@ class Auth(Util.Debugable):
             self.setup_vuser( vlookupscript, vdomainfile )
         elif configdir is not None:
             self.setup_configdir( configdir )
-
-        # check whether we are running a recent enough Python
-        if not Version.PYTHON >= '2.2':
-            msg = 'Python 2.2 or greater is required to run ' + \
-                  self.__program + \
-                  ' -- Visit http://python.org/download/ to upgrade.'
-            self.warning(msg)
 
     def warning(self, msg='', exit=1):
         delimiter = '*' * 70
@@ -347,6 +339,13 @@ class Auth(Util.Debugable):
                               digestmod = md5):
         """Authenticates a cram_md5 response based on a ticket.
            Expects a base-64 encoded "response" unless otherwise specified."""
+        try:
+            import hmac
+        except ImportError:
+            raise Errors.AuthError, \
+              ( "Cram MD5 authentication not supported.",\
+                "This authentication requires the \"hmac\" module, which is" + \
+                "only included with python version 2.2 and later" )
         if not self.supports_cram_md5():
             raise Errors.AuthError, \
               ( "Cram MD5 authentication not supported.",\
@@ -370,8 +369,13 @@ class Auth(Util.Debugable):
 
     def supports_cram_md5(self):
         """Check if Cram MD5 authentication is supported.
-           Requirements: File authentication, file allows cleartext passwords"""
+           Requirements: "hmac" module, File authentication, 
+                         and file allows cleartext passwords"""
         retval = 0
+        try:
+            import hmac
+        except ImportError:
+            return 0
         if self.__authtype == "file" and self.__authfile_allows_cleartext:
             retval = 1
         return retval
