@@ -23,8 +23,9 @@ Where:
        Print this help message and exit.
 
     timeout is the required minimum retention time in seconds (s),
-    minutes (m), hours (h), days (d), or weeks (w), for unconfirmed
-    messages.  Messages older than timeout will be purged.
+    minutes (m), hours (h), days (d), weeks (w), months (M), or years
+    (Y) for unconfirmed messages.  Messages older than timeout will be
+    purged.
 
     e.g, %(program)s 30d
 """
