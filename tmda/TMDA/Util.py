@@ -190,15 +190,10 @@ def maketext(templatefile, vardict):
     """Make some text from a template file.
     Adapted from Mailman's Util.maketext().
 
-    Reads the `templatefile', from ../templates/, does string
-    substitution by interpolating in the `localdict'.
+    Reads the `templatefile' which should be a full pathname, and does
+    string substitution by interpolating in the `localdict'.
     """
-    # ../templates/
-    template_dir = os.path.split(os.path.dirname
-                                 (os.path.abspath
-                                  (sys.argv[0])))[0] + '/templates'
-    file = os.path.join(template_dir, templatefile)
-    fp = open(file)
+    fp = open(templatefile)
     template = fp.read()
     fp.close()
     import Defaults

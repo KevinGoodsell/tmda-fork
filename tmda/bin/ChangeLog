@@ -2,7 +2,13 @@
 
 	* tmda-filter (envelope_sender): The envelope sender is used in
 	more than one place.
-	
+
+	(bounce_dated): Add the ability to draw the bounce template from
+	multiple locations.  Command line takes priority, followed by the
+	.tmdarc setting, followed by the default in ../templates/.
+
+	(bounce_sender): Ditto.
+
 	(bounce_dated): Exit ERR_STOP (99) so qmail no longer sends its
 	own bounce, but .qmail processing still stops.
 

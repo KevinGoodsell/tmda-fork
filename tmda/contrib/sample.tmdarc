@@ -20,7 +20,11 @@ import os                                      # don't remove
 
 # BOUNCE_DATED_CC = "jdoe-bounces-dated@domain.dom"
 
+# BOUNCE_DATED_TEMPLATE = os.path.expanduser("~/.tmda_bounce_dated.txt")
+
 # BOUNCE_SENDER_CC = "jdoe-bounces-sender@domain.dom"
+
+# BOUNCE_SENDER_TEMPLATE = os.path.expanduser("~/.tmda_bounce_sender.txt")
 
 # BOUNCE_ENV_SENDER = ""
 

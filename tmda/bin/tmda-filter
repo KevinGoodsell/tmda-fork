@@ -6,7 +6,7 @@
 
 """Filter incoming messages on standard input.
 
-Usage:  %(program)s [-c <file>] [-d] [-h]
+Usage:  %(program)s [-c <file>] [-d] [-D <file>] [-S <file>] [-h]
 
 Where:
 	-c <file>
@@ -16,6 +16,14 @@ Where:
 	-d
 	--discard
 	   Discard message if address is invalid instead of bouncing it.
+
+	-D
+	--dated-template <file>
+	   Specify the full pathname to a custom template for 'dated' bounces.
+
+        -S
+	--sender-template <file>
+	   Specify the full pathname to a custom template for 'sender' bounces.
 
 	--help
 	-h
@@ -45,18 +53,26 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                                   'c:dh', ['config-file=','discard','help'])
+                                   'c:dD:S:h', ['config-file=',
+                                                'discard',
+                                                'dated-template=',
+                                                'sender-template=',
+                                                'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
-    elif opt in ('-c', '--config-file'):
-        os.environ['TMDARC'] = arg
+    elif opt in ('-S', '--sender-template'):
+        os.environ['TMDA_SENDER_TEMPLATE'] = arg
+    elif opt in ('-D', '--dated-template'):
+        os.environ['TMDA_DATED_TEMPLATE'] = arg
     elif opt in ('-d', '--discard'):
 	discard = 1
-
+    elif opt in ('-c', '--config-file'):
+        os.environ['TMDARC'] = arg
+    
 
 import paths
 from TMDA import Cookie
@@ -189,7 +205,21 @@ def bounce_dated():
     if Defaults.BOUNCE_DATED_CC:
         bounce_cc(Defaults.BOUNCE_DATED_CC)
 
-    bounce_message = Util.maketext('bounce_dated.txt',vars())
+    # Create the bounce message from a template.
+    TMDA_DATED_TEMPLATE = os.environ.get('TMDA_DATED_TEMPLATE')
+    if TMDA_DATED_TEMPLATE and os.path.exists(TMDA_DATED_TEMPLATE):
+        bounce_message = Util.maketext(TMDA_DATED_TEMPLATE,vars())
+    elif (Defaults.BOUNCE_DATED_TEMPLATE and
+          os.path.exists(Defaults.BOUNCE_DATED_TEMPLATE)):
+        bounce_message = Util.maketext(Defaults.BOUNCE_DATED_TEMPLATE,vars())
+    else:
+        # default to ../templates/bounce_dated.txt
+        template_dir = os.path.split(os.path.dirname
+                                     (os.path.abspath
+                                      (sys.argv[0])))[0] + '/templates'
+        dt = os.path.join(template_dir, 'bounce_dated.txt')
+        bounce_message = Util.maketext(dt,vars())
+
     send_bounce(bounce_message)
     sys.exit(Defaults.ERR_STOP)
 
@@ -201,7 +231,21 @@ def bounce_sender(sender_address,sender_address_cookie):
     if Defaults.BOUNCE_SENDER_CC:
         bounce_cc(Defaults.BOUNCE_SENDER_CC)
 
-    bounce_message = Util.maketext('bounce_sender.txt',vars())
+    # Create the bounce message from a template.
+    TMDA_SENDER_TEMPLATE = os.environ.get('TMDA_SENDER_TEMPLATE')
+    if TMDA_SENDER_TEMPLATE and os.path.exists(TMDA_SENDER_TEMPLATE):
+        bounce_message = Util.maketext(TMDA_SENDER_TEMPLATE,vars())
+    elif (Defaults.BOUNCE_SENDER_TEMPLATE and
+          os.path.exists(Defaults.BOUNCE_SENDER_TEMPLATE)):
+        bounce_message = Util.maketext(Defaults.BOUNCE_SENDER_TEMPLATE,vars())
+    else:
+        # default to ../templates/bounce_sender.txt
+        template_dir = os.path.split(os.path.dirname
+                                     (os.path.abspath
+                                      (sys.argv[0])))[0] + '/templates'
+        st = os.path.join(template_dir, 'bounce_sender.txt')
+        bounce_message = Util.maketext(st,vars())
+        
     send_bounce(bounce_message)
     sys.exit(Defaults.ERR_STOP)
 

@@ -107,6 +107,20 @@ if not vars().has_key('BOUNCE_SENDER_CC'):
 if not vars().has_key('BOUNCE_ENV_SENDER'):
     BOUNCE_ENV_SENDER = ''
 
+# BOUNCE_DATED_TEMPLATE
+# Full path to a custom template for 'dated' bounces.  Overrides
+# templates/bounce_dated.txt.
+# No default.
+if not vars().has_key('BOUNCE_DATED_TEMPLATE'):
+    BOUNCE_DATED_TEMPLATE = None
+
+# BOUNCE_SENDER_TEMPLATE
+# Full path to a custom template for 'sender' bounces.  Overrides
+# templates/bounce_sender.txt.
+# No default.
+if not vars().has_key('BOUNCE_SENDER_TEMPLATE'):
+    BOUNCE_SENDER_TEMPLATE = None
+    
 # COOKIE_TYPE
 # The default cookie type is dated.  It could be:
 #       dated   can only be replied to for TIMEOUT

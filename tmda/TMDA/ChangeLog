@@ -1,10 +1,19 @@
 2001-06-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Util.py (maketext): Accept the fullpathname of the template file
+	instead of assuming it lies in ../templates/.
+
 	* Defaults.py (BOUNCE_ENV_SENDER): New variable to specify the
 	envelope sender of bounce messages.
 
 	(DELIVERY_AGENT): New variable containing TMDA version info.
 
+	(BOUNCE_DATED_TEMPLATE): New variable specifying an optional
+	custom template for 'dated' bounce messages.
+
+	(BOUNCE_SENDER_TEMPLATE): New variable specifying an optional
+	custom template for 'sender' bounce messages.
+	
 2001-06-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (format_timeout): A more efficient implementation which
