@@ -85,7 +85,7 @@ def getfilemode(path):
 
 def getfileuid(path):
     statinfo = os.stat(path)
-    return stat.S_IMODE(statinfo[stat.ST_UID])
+    return statinfo[stat.ST_UID]
 
 
 def seconds(timeout):
