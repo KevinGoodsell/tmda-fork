@@ -1,3 +1,9 @@
+2001-06-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-dated-address (main): Bugfix. When you provide extra
+	arguments to tmda-sender-address (e.g. -c /other/.tmdarc), the
+	wrong argument is read.
+
 2001-05-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-keygen (key): Add some integrity checking to make sure

@@ -49,7 +49,7 @@ from TMDA import Cookie
 def main():
 
     try:                                # check for timeout override
-        os.environ['TMDA_TIMEOUT'] =  sys.argv[1]
+        os.environ['TMDA_TIMEOUT'] = args[0]
     except IndexError:
         pass
     dated_address = Cookie.make_dated_address()
