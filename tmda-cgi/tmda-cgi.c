@@ -20,9 +20,11 @@ along with TMDA; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 
 #include <stdlib.h>
+#include <fcntl.h>
 
 int main(int argc, char *argv[])
 {
+  int fd;
 #ifdef TMDARC
   putenv(TMDARC);
 #endif
@@ -36,6 +38,8 @@ int main(int argc, char *argv[])
   putenv(BASE_DIR);
   putenv(VUSER);
   putenv(VBIN);
+
+  fd = open("/dev/null", O_RDONLY);
 
   if (!chdir(INSTALL))
   {
