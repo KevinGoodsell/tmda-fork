@@ -37,7 +37,8 @@ Contributions:
     * Arcady Genkin -- Gentoo Linux Package.
 
     * David Guerizec -- Pending.py module, lots of tmda-ofmipd
-      improvements, miscellaneous bugfixes.
+      improvements, miscellaneous bugfixes, and tmda-gui (TKinter
+      interface).
 
     * Lou Hevly -- documentation (vpopmail tutorial).
 
