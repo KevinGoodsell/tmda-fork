@@ -1,3 +1,8 @@
+2002-07-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (verify_dated_cookie): Log expiration date for a
+	good_dated_cookie.
+	
 2002-06-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: Cosmetic improvements.

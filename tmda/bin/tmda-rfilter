@@ -498,32 +498,26 @@ def verify_dated_cookie(dated_cookie):
     try:
         cookie_date, datemac = dated_cookie.split('.')
     except ValueError:
-        defact = Defaults.ACTION_FAIL_DATED.lower()
-        bouncetext = Defaults.BOUNCE_TEXT_FAIL_DATED
-        do_default_action(defact, 'action_fail_dated', bouncetext)
-    now = time.time()
-    newdatemac = Cookie.datemac(cookie_date)
+        do_default_action(Defaults.ACTION_FAIL_DATED.lower(),
+                          'action_fail_dated',
+                          Defaults.BOUNCE_TEXT_FAIL_DATED)
     # Accept the message only if the address has not expired, and the
     # HMAC is valid.
-    if int(cookie_date) >= int('%d' % now):
-        if datemac != newdatemac:
-            defact = Defaults.ACTION_FAIL_DATED.lower()
-            bouncetext = Defaults.BOUNCE_TEXT_FAIL_DATED
-            do_default_action(defact, 'action_fail_dated', bouncetext)
-        else:
-            logit("OK good_dated_cookie", now)
-            mta.deliver(message_headers, message_body)
+    if datemac != Cookie.datemac(cookie_date): 
+        do_default_action(Defaults.ACTION_FAIL_DATED.lower(),
+                          'action_fail_dated',
+                          Defaults.BOUNCE_TEXT_FAIL_DATED)
     else:
-        if datemac != newdatemac:
-            defact = Defaults.ACTION_FAIL_DATED.lower()
-            bouncetext = Defaults.BOUNCE_TEXT_FAIL_DATED
-            do_default_action(defact, 'action_fail_dated', bouncetext)
+        now = time.time()
+        if int(cookie_date) >= int('%d' % now):
+            logit("OK good_dated_cookie (%s)" % \
+                  Util.unixdate(int(cookie_date)), now)
+            mta.deliver(message_headers, message_body)
         else:
-            defact = Defaults.ACTION_EXPIRED_DATED.lower()
-            bouncetext = Defaults.BOUNCE_TEXT_EXPIRED_DATED
             logmsg = "action_expired_dated (%s)" % \
                      Util.unixdate(int(cookie_date))
-            do_default_action(defact, logmsg, bouncetext)
+            do_default_action(Defaults.ACTION_EXPIRED_DATED.lower(),
+                              logmsg, Defaults.BOUNCE_TEXT_EXPIRED_DATED)
 
 
 def verify_sender_cookie(sender_address,sender_cookie):
