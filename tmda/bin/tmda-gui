@@ -1,8 +1,51 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+#
+# Copyright (C) 2001,2002 Jason R. Mastaler <jason@mastaler.com>
+#
+# Author: David Guerizec <david@guerizec.net>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-import os, sys
+"""
+tmda-gui: Tkinter interface to TMDA
 
-from Tkinter import *
+Usage:
+    tmda-gui
+        gives a (yet) non fonctionnal Address generator interface.
+
+    tmda-gui -p
+        gives a functionnal (but yet to finish) Pending queue graphical
+        interface.
+        Tricks:
+        . you can resize the list columns width
+        . you can resize the height of the list
+        . double-click on a message and you'll see it's content
+        . W & B buttons are resp. whilelist and blacklist (need some icons...)
+        . the list is refreshed every 5 mins by default but you can
+          change it in Edit/Settings... (not memorized between runs yet)
+
+NOTE: This is early alpha software, so please try it, and send your
+comments on the tmda-gui or tmda-workers list.  Please don't use it
+yet in a production environment.
+"""
+
+import os
+import sys
 
 try:
     import paths
@@ -13,6 +56,17 @@ except ImportError:
     sys.path.insert(0, sitedir)
 
 import email
+
+try:
+    from Tkinter import *
+except ImportError:
+    from TMDA.Util import wraptext
+    no_tk = 'It appears your Python is not configured with Tkinter ' + \
+            'support. Visit http://python.org/topics/tkinter/trouble.html ' + \
+            'for more information.'
+    print 'ERROR:\n'
+    print wraptext(no_tk), '\n'
+    sys.exit()
 
 
 class HSplitterFrame(Frame):
@@ -25,7 +79,8 @@ class HSplitterFrame(Frame):
         self.one.place(rely=0, relheight=self.split, relwidth=1)
         self.two.place(rely=self.split, relheight=1.0-self.split, relwidth=1)
 
-        self.sep = Frame(self, bd=2, relief=RAISED, width=8, height=2, cursor="sb_v_double_arrow")
+        self.sep = Frame(self, bd=2, relief=RAISED, width=8, height=2,
+                         cursor="sb_v_double_arrow")
         self.sep.place(relx=0, rely=self.split, anchor=W, relwidth=1)
         self.sep.bind('<ButtonPress>', self.Start)
         self.sep.bind('<ButtonRelease>', self.Stop)
@@ -61,7 +116,8 @@ class VSplitterFrame(Frame):
         self.one.place(relx=0, relwidth=self.split, relheight=1)
         self.two.place(relx=self.split, relwidth=1.0-self.split, relheight=1)
 
-        self.sep = Frame(self, bd=2, relief=RAISED, height=8, width=2, cursor="sb_h_double_arrow")
+        self.sep = Frame(self, bd=2, relief=RAISED, height=8, width=2,
+                         cursor="sb_h_double_arrow")
         self.sep.place(rely=0, relx=self.split, anchor=N, relheight=1)
         self.sep.bind('<ButtonPress>', self.Start)
         self.sep.bind('<ButtonRelease>', self.Stop)
@@ -183,7 +239,8 @@ class MessageList(Frame):
     def GetSelectedMsgContent(self):
         from TMDA import Pending
         try:
-            return Pending.Message(self.msgs[int(self.curselection()[0])]).show().split('\n\n', 1)
+            return Pending.Message(self.msgs[int(self.curselection()
+                                                 [0])]).show().split('\n\n', 1)
         except IndexError:
             return ('', '')
         
@@ -289,7 +346,8 @@ class PendingGUI(Frame):
         self.ws.ri = Entry(self.ws)
         self.ws.ri.insert(END, self.refresh_interval)
         self.ws.ri.grid(row=0, column=1)
-        Button(self.ws, text="OK", command=self.UpdateSettings, relief=GROOVE).grid(columnspan=2)
+        Button(self.ws, text="OK", command=self.UpdateSettings,
+               relief=GROOVE).grid(columnspan=2)
         self.ws.transient(self)
         
     def UpdateSettings(self):
@@ -334,12 +392,14 @@ class PendingGUI(Frame):
     def MessageRefresh(self, ev=None):
         self.listbox.Refresh()
         self.message.text.delete(1.0, END)
-        self.status.label['text'] = "%d messages in pending queue" % len(self.listbox.msgs)
+        self.status.label['text'] = "%d messages in pending queue" \
+                                    % len(self.listbox.msgs)
 
     def MessageShow(self, ev=None):
         self.message.text.delete(1.0, END)
         (hdr, bdy) = self.listbox.GetSelectedMsgContent()
-        self.message.text.tag_configure('header', font=('Courier', 10, 'bold'), foreground='blue', background='#CCCCCC')
+        self.message.text.tag_configure('header', font=('Courier', 10, 'bold'),
+                                        foreground='blue', background='#CCCCCC')
         self.message.text.tag_configure('body', font=('Courier', 10))
         self.message.text.insert(END, hdr+'\n', ('header',))
         self.message.text.insert(END, '\n'+bdy, ('body',))
@@ -364,23 +424,31 @@ class PendingGUI(Frame):
         self.createMenu()
 
         self.toolbar = Frame(self, relief=GROOVE)
-        b = Button(self.toolbar, text="Rfsh", bd=1, width=1, command=self.MessageRefresh)
+        b = Button(self.toolbar, text="Rfsh", bd=1, width=1,
+                   command=self.MessageRefresh)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="Show", bd=1, width=1, command=self.MessageShow)
+        b = Button(self.toolbar, text="Show", bd=1, width=1,
+                   command=self.MessageShow)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="W", bd=1, width=1, command=self.MessageWhitelist)
+        b = Button(self.toolbar, text="W", bd=1, width=1,
+                   command=self.MessageWhitelist)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="Rel", bd=1, width=1, command=self.MessageRelease)
+        b = Button(self.toolbar, text="Rel", bd=1, width=1,
+                   command=self.MessageRelease)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="B", bd=1, width=1, command=self.MessageBlacklist)
+        b = Button(self.toolbar, text="B", bd=1, width=1,
+                   command=self.MessageBlacklist)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="Del", bd=1, width=1, command=self.MessageDelete)
+        b = Button(self.toolbar, text="Del", bd=1, width=1,
+                   command=self.MessageDelete)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="Quit", bd=1, width=1, command=self.FileQuit)
+        b = Button(self.toolbar, text="Quit", bd=1, width=1,
+                   command=self.FileQuit)
         b.pack(side=RIGHT, padx=0, pady=0)
         self.toolbar.pack(side=TOP, fill=X)
         
-        self.split = HSplitterFrame(self, width=100, height=100, relief=GROOVE, bg='red')
+        self.split = HSplitterFrame(self, width=100, height=100,
+                                    relief=GROOVE, bg='red')
         self.split.pack(fill=BOTH, expand=YES)
 
         self.listbox = MessageList(self.split.one)
@@ -466,7 +534,8 @@ class AddressGUI(Frame):
         f = Frame(self)
         f.grid(row=R, columnspan=3)
         Button(f, text="Calc", command=self.Calc).grid(row=0, column=0)
-        Button(f, text="Pending", command=self.LaunchPending).grid(row=0, column=1)
+        Button(f, text="Pending",
+               command=self.LaunchPending).grid(row=0, column=1)
         Button(f, text="Exit", command=master.destroy).grid(row=0, column=2)
 
         R += 1
