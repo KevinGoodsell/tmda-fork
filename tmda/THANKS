@@ -15,6 +15,8 @@ Acknowledgements:
 Contributions:
 --------------
 
+    * Matt Armstrong - contributed heavily to the Postfix support.
+
     * Binesh Bannerjee - SACRED_FILE feature.
     
     * Ron Bickers -- countless suggestions, bugfixes, documentation

@@ -1,3 +1,11 @@
+2001-10-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* MTA.py (Postfix.deliver): Bugfix.  The exit code from
+	LOCAL_DELIVERY_AGENT was not being propagated to the MTA.  
+	(e.g, tmda-filter returns 0 if procmail returns 77.)  
+	The fix is to do some more processing on the exitcode before
+	passing it to sys.exit.  Patch contributed by Matt Armstrong.
+
 2001-10-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* MTA.py (Postfix.deliver): Check whether LOCAL_DELIVERY_AGENT
