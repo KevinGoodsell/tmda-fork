@@ -3,7 +3,7 @@ Title: Requirements
 <h2>Requirements</h2>
 <ul>
   <li><a href="http://python.org/">Python</a> 2.1 or later.
-  <li><a href="/releases">TMDA</a> 0.74 or later.
+  <li><a href="/releases">TMDA</a> 0.75 or later.
   <li>A webserver capable of running CGI (such as
 <a href="http://httpd.apache.org/">Apache</a>)
 </ul>

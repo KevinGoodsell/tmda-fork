@@ -137,14 +137,13 @@ Title: Password Authentication
   <p><b>Warning: This is not heavily tested yet.</b></p>
 <p>tmda-cgi supports authentication by a checkpassword-style program
   (see <a href="http://cr.yp.to/checkpwd/interface.html">a description</a> of
-  this interface).</p>
+  this interface). Typically, this is <tt>checkpassword</tt> or 
+  <tt>vchkpw</tt>.</p>
 <p>When specifying this method of authentication, you may need to supply
   additional parameters to your checkpassword program. By default,
-  <tt>compile</tt> will append <tt>/usr/bin/true</tt> or
+  <tt>compile</tt> will append <tt>/bin/true</tt> or
   <tt>/usr/bin/true</tt>, but any program that eventually returns
   &quot;0&quot; will do.</p>
-<p>Some brief explanation may exist in the web server error log if this
-  authentication method fails.</p>
 
 <h3><a name="RemtAuth"></a>Remote Authentication</h3>
 <p><b>Warning: This is not heavily tested yet.</b></p>
@@ -161,5 +160,3 @@ existing protocols:</p>
 format: <tt>protocol://host.domain.com[:port][/ldap_domain]</tt> where
 &quot;protocol&quot; must be from the list above, and the rest should be
 self-explanatory.</p>
-<p>Some brief explanation may exist in the web server error log if this
-authentication method fails.</p>

@@ -10,6 +10,12 @@
 	  detailed there.  You can edit the login.html template if you don't
 	  wish for this information to be available.
 
+	* SECURITY ADVISORY *
+	  A rather large security hole was plugged.  Users running in system-
+	  wide mode were vulnerable to real users running privileged commands
+	  in their config files.  Users with releases prior to 0.03 are
+	  STRONGLY ENCOURAGED to upgrade to the latest version.
+
 2003-04-12  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* tmda-cgi 0.02 is released.

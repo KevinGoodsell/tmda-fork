@@ -181,3 +181,8 @@ Title: Configuration
 <p>There is no reason to edit this file by hand, although you may delete the 
   file to return to all default preferences. No error will be reported if this 
   file does not exist.</p>
+<p>tmda-cgi must have permission to create/update this file. If the CGI does 
+  not have rights to create files in the directory, then you will want to 
+  manually create a blank file (with <tt>touch</tt>) and <tt>chown</tt>, 
+  <tt>chgrp</tt>, and/or <tt>chmod</tt> it so that CGI may write updates to 
+  it.</p>

@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Apr 17 14:33:21 2003 -->
+<!-- Sat Apr 19 12:41:19 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -75,37 +75,95 @@ name="subtopic12"></a></td></tr>
 <p>This section of the documentation is reserved for functionality and quirks
   that, although not erroneous, may not be what you expect. Check this list for
   help if you experience problems with tmda-cgi.</p>
-<ol>
-  <li>tmda-cgi's whitelist feature does not update the list pointed to by
-    configuration variable
-    <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a></tt><tt>.</tt>
-    <p>tmda-cgi uses configuration variable
-      <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
-      instead of
-      <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a>.</tt>
-      To use the whitelist feature, you must set
-      <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
-      to a list that is handled by your incoming filter.<p></li>
-  <li>TMDA requires Python version 2.1 but some flavors of Linux (such as <a
-    href="http://redhat.com">RedHat</a>) come with two different versions of
-    Python installed, one older and one newer.
-    <p>If tmda-cgi tries to run using the wrong version of Python, then you
-      must specify the correct version at compile time. Instead of typing:
-    <blockquote>
-	  <pre>$ ./compile &lt;options&gt;</pre>
-	</blockquote>
-    <p>Type:</p>
-	<blockquote>
-	  <pre>$ /usr/bin/python2 compile &lt;options&gt;</pre>
-	</blockquote>
-    <p>(Assuming that your Python 2.1+ can be found at
-      <tt>/usr/bin/python2</tt>.) The compiler will save the correct version of
-      the Python interpreter and use it when tmda-cgi is run.</p>
-	</li>
-  <li>
-    <p>URL confirmation does not work for virtual users.</p>
-    <p>We hope to add support for this soon.</p>
-</ol>
+<h3>Index</h3>
+<p><a href="#Whitelist">Whitelist Woes</a><br>
+<a href="#Python">Python Problems</a><br>
+<a href="#Confirm">URL Confirmation Catastrophes</a><br>
+<a href="#Authentication">Authentication Ailments</a></p>
+
+<h3><a name="Whitelist"></a>Whitelist Woes</h3>
+<p>tmda-cgi's whitelist feature does not update the list pointed to by
+  configuration variable
+  <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a></tt><tt>.</tt></p>
+<p>tmda-cgi uses configuration variable
+  <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
+  instead of
+  <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a>.</tt>
+  To use the whitelist feature, you must set
+  <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
+  to a list that is handled by your incoming filter.</p>
+
+<h3><a name="Python"></a>Python Problems</h3>
+<p>TMDA requires Python version 2.1 but some flavors of Linux (such as <a
+  href="http://redhat.com">RedHat</a>) come with two different versions of
+  Python installed, one older and one newer.</p>
+<p>If tmda-cgi tries to run using the wrong version of Python, then you
+  must specify the correct version at compile time. Instead of typing:</p>
+<blockquote>
+  <pre>$ ./compile &lt;options&gt;</pre>
+</blockquote>
+<p>Type:</p>
+<blockquote>
+  <pre>$ /usr/bin/python2 compile &lt;options&gt;</pre>
+</blockquote>
+<p>(Assuming that your Python 2.1+ can be found at
+  <tt>/usr/bin/python2</tt>.) The compiler will save the correct version of
+  the Python interpreter and use it when tmda-cgi is run.</p>
+
+<h3><a name="Confirm"></a>URL Confirmation Catastrophes</h3>
+<p>URL confirmation does not work for virtual users.</p>
+<p>We hope to add support for this soon.</p>
+
+<h3><a name="Authentication"></a>Authentication Ailments</h3>
+<p>If no username/password combination lets you log in, your problem may be due 
+  to a misconfigured authentication method. To aid in finding out precisely 
+  what is misconfigured, we have added a variety of debugging messages to 
+  various parts of the authentication code.</p>
+<p>For most users, the debugging messages will be embedded in comments in the 
+  login page. Try logging in and when you get the "Wrong password." message, do 
+  a "View/Source" of the HTML page. At the top of the page, you should see 
+  something like:</p>
+<table class="example">
+  <tr>
+    <td>
+&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><br>
+&lt;!--<br>
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+Having difficulties logging in?<br>
+Here's some details of why you couldn't:<br>
+&nbsp;<br>
+Capturing the debug stream...<br>
+Setting up remote authentication with pop3://localhost<br>
+Trying pop3 authentication for gre7g@lazarus.wolfhome.com@localhost:110<br>
+pop3 authentication for gre7g@lazarus.wolfhome.com@localhost<br>
+failed: -ERR authorization failed<br>
+Authentication returned: 0<br>
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+--><br>
+&lthtml><br>
+...</td>
+  </tr>
+</table>
+<p>If the message says:</p>
+<table class="example">
+  <tr>
+    <td>
+No error message returned.  Sorry!
+</td>
+  </tr>
+</table>
+<p>it may indicate that your system is incapable of capturing the debug stream. 
+  Check your webserver error logs instead to see if the messages ended up 
+  there.</p>
+<p>If the messages do not help you get to the root of the problem, refer to the 
+  instructions on the <a href="contact.html">Contact</a> page to get some 
+  assistance.  Be sure to copy and paste the debug information you are getting, 
+  to make it easier for the developers to help you.</p>
 </td>
 <!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->

@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Apr 17 14:33:22 2003 -->
+<!-- Sat Apr 19 11:20:25 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -68,27 +68,44 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x355" height="35" width="194" 
 <!-- start of body cell -->
 <td valign="top" class="body"><h2><a name="Virtual" id="Virtual"></a>Virtual users</h2>
 <p><b>Warning:  This is not heavily tested yet.</b></p>
-<p>Virtual users are now mostly* supported. To use tmda-cgi with a virtual 
-  user account, you will need Jesse Guardiani's
-  <tt>getuserinfo-vpopmail.sh</tt>, which you can find in TMDA's contrib 
-  directory. This script calls <tt>/home/vpopmail/bin/vuserinfo</tt> and 
-  extracts:
-  <ul>
-    <li>home directory
-    <li>UID
-    <li>GID
-  </ul>
-  for any given user. To allow logins for real <b><i>and</i></b> virtual 
-  users simultaneously, you must make sure that there are entries in your 
-  virtual user database for each real user. Be sure the UID and GID 
-  information in your database is correct.<p>
-<p>If you put your vpopmail directory in an atypical location, you may need to 
-  edit <tt>getuserinfo-vpopmail.sh</tt> to make it work.</p>
-<p>If you use vmailmgr or some other virtual user system, you will probably
-  need to make a new version of the <tt>getuserinfo</tt> stub to match your 
-  system. Please contact the
-  <a href="http://tmda.net/lists/listinfo/">tmda-workers</a> mailing list to 
-  contribute any new stubs for systems not yet supported.</p>
+<p>Virtual users are now mostly* supported. tmda-cgi uses a "stub" program
+  which converts the output of a virtual user information package into a
+  format that tmda-cgi can handle. In other words, you must have the 
+  appropriate stub program for tmda-cgi to work on your system.</p>
+<p>The current tmda-cgi release includes the following stub:</p>
+<ul>
+  <li>vpopmail1 - compatible with vpopmail 5.2.1</li>
+</ul>
+<p>If you use a different program to handle your virtual mail system, you will 
+  either need to write a stub (they're pretty darn simple) or work with one of 
+  the developers to get one written. Either way, you'll want to contact the 
+  developers on the
+  <a href="http://tmda.net/lists/listinfo/tmda-workers">tmda-workers mailing 
+  list</a> so that your new stub can be included in future releases.</p>
+<p>If you have a listed virtual mail system, but the version you are using is 
+  different, try picking the stub with the closest version number.  We don't 
+  have a good way to test these stubs against every version ever created, so 
+  there's no saying for sure whether your version will work or not. If you 
+  can't find a stub that works, you will either need to write one or work with 
+  one of the developers to get one written. Either way, you'll want to contact 
+  the developers on the
+  <a href="http://tmda.net/lists/listinfo/tmda-workers">tmda-workers mailing 
+  list</a> so that your new stub can be included in future releases.</p>
+<p>If you wish to write your own stub, see <tt>tmda-cgi/stubs/vpopmail1.py</tt> 
+  as an example of what data will be provided and what data should be 
+  returned.</p>
+<p>Virtual user support must be configured when you <a 
+  href="compile.html">compile</a> tmda-cgi. You will be asked for a "virtual 
+  user stub and parameters". For vpopmail, this is typically:</p>
+<blockquote>
+  <tt>vpopmail1 /home/vpopmail/bin/vuserinfo ~</tt>
+</blockquote>
+<p><tt>vpopmail1</tt> is the stub name, <tt>/home/vpopmail/bin/vuserinfo</tt> 
+  is the vpopmail program which provides user information, and <tt>~</tt> means 
+  to pass the login name in as the first and only parameter to 
+  <tt>vuserinfo</tt>. If you use a different stub or keep vuserinfo located 
+  somewhere else, you will need to specify a different string.</p>
+<hr width="50%">
 <p>* URL confirmation does not currently work for virtual users.</p>
 </td>
 <!-- end of body cell -->

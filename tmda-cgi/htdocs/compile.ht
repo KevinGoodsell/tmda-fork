@@ -80,8 +80,10 @@ Title: Compiling tmda-cgi
   <li>The web path from the CGI to the <a href="#Display"><tt>display</tt>
     directory</a></li> 
   <li>Mode</li>
+  <li>Unprivileged user to use when writing session data (system-wide mode 
+    only)</li>
   <li>Real user to use when someone logs in with a virtual e-mail account</li> 
-  <li>Virtual user lookup script</a>
+  <li><a href="virtual.html">Virtual user stub and parameters</a></li>
 </ol>
 
 <h3><a name="Display"></a><tt>display</tt> Directory</h3>
@@ -90,9 +92,10 @@ Title: Compiling tmda-cgi
   <tt>display</tt> directory (see #7, above). This directory comes with the 
   tmda-cgi source and will need to be manually copied or symbolically linked 
   (make sure your web server is configured to follow links!) into the 
-  appropriate web directory. Please note that #7 specifies the relative <i>web 
-  path</i> from the CGI to the <tt>display</tt> directory, which may be 
-  different than the actual path. For example:</p>
+  appropriate web directory.</p>
+<p>Please note that #7 specifies the relative <i>web path</i> from the CGI to 
+  the <tt>display</tt> directory, which may be different than the actual path. 
+  For example:</p>
 <table border="0" cellspacing="0" cellpadding="0">
   <tr> 
     <td width="35">&nbsp;</td>
@@ -115,7 +118,8 @@ Title: Compiling tmda-cgi
 </table>
 <p>In the above example, the actual path from the CGI to the display directory 
   is <tt>../htdocs/display/</tt> but the web path is <tt>../display/</tt>. The 
-  web path is the path that should be entered in question #7.</p>
+  web path (<tt>../display/</tt>) is the one that should be entered in question 
+  #7.</p>
 
 <h3>Additional no-su Setup</h3>
 

@@ -25,13 +25,13 @@ import sys
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.02+"
+tmda_cgi = "0.03"
 
 # tmda-cgi version codename
 Codename = "Helium"
 
 # TMDA version required
-TMDAReqVer = "0.74"
+TMDAReqVer = "0.75"
 
 # Python version
 Python = sys.version.split()[0]
