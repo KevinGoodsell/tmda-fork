@@ -1,5 +1,7 @@
 General
 	
+	- FAQ
+
 	- Investigate whether to distribute TMDA using the Python
 	Distribution Utilities (``Distutils'') system.
 	
@@ -23,6 +25,10 @@ tmda-inject
 	- X-TMDA: bare timeout (to override Defaults.TIMEOUT)
 		
 tmda-filter
+
+	- Add a custom header to differentiate TMDA initiated bounces
+	from other doublebounces.  The question is how to do this without
+	reinventing qmail-send's bounce generation code completely.
 
 	- Make bounces easier for the user to reply to, by perhaps
 	adding a "Reply-To:" containing the new tagged
