@@ -9,6 +9,8 @@ import stat
 import string
 import sys
 
+import Errors
+
 
 ##############################
 # General system-wide defaults
@@ -46,13 +48,14 @@ if os.path.exists(GLOBAL_TMDARC):
 # Look for the user-config-file in the environment first then default
 # to ~/.tmdarc.
 TMDARC = os.environ.get('TMDARC')
-if not TMDARC:TMDARC = os.path.expanduser("~/.tmdarc")
+if not TMDARC:
+    TMDARC = os.path.expanduser("~/.tmdarc")
 
 # Read-in the user's configuration file.
-if not os.path.exists(TMDARC):
-    print "Can't open configuration file:",TMDARC
-    sys.exit(EX_TEMPFAIL)
-execfile(TMDARC)
+if os.path.exists(TMDARC):
+    execfile(TMDARC)
+else:
+    raise Errors.ConfigError, "Can't open configuration file: " + TMDARC
 
 # Check for proper file permissions before proceeding.
 statinfo = os.stat(TMDARC)
@@ -68,10 +71,7 @@ if not vars().has_key('ALLOW_MODE_640'):
 if ALLOW_MODE_640 and mode in (400, 600, 640):
     pass
 elif mode not in (400, 600):
-    print TMDARC,"must be permission mode 400 or 600!"
-    sys.exit(EX_TEMPFAIL)
-else:
-    pass
+    raise Errors.ConfigError, TMDARC + " must be chmod 400 or 600!"
 
 
 import Util
@@ -111,8 +111,8 @@ if not vars().has_key('MAIL_TRANSFER_AGENT'):
 if not vars().has_key('LOCAL_DELIVERY_AGENT'):
     LOCAL_DELIVERY_AGENT = None
 if MAIL_TRANSFER_AGENT != 'qmail' and not LOCAL_DELIVERY_AGENT:
-    print "Not running qmail: you must define LOCAL_DELIVERY_AGENT in",TMDARC
-    sys.exit(EX_TEMPFAIL)
+    raise Errors.ConfigError, \
+          "non-qmail must define LOCAL_DELIVERY_AGENT in " + TMDARC
 
 # RECIPIENT_DELIMITER
 # A single character which specifies the separator between user names
@@ -133,12 +133,10 @@ if not vars().has_key('SENDMAIL'):
         if os.path.exists(sendmail):
             SENDMAIL = sendmail
             break
-    if not SENDMAIL:
-        print "Can't find your sendmail program!"
-        sys.exit(EX_TEMPFAIL)
+    if SENDMAIL is None:
+        raise IOError, "Can't find your sendmail program!"
 elif not os.path.exists(SENDMAIL):
-    print "Invalid SENDMAIL path:",SENDMAIL
-    sys.exit(EX_TEMPFAIL)
+    raise IOError, "Invalid SENDMAIL path: " + SENDMAIL
 
 # USEVIRTUALDOMAINS
 # Set this variable to 0 if want to turn off TMDA's qmail virtualdomains
@@ -240,8 +238,7 @@ if not vars().has_key('SENDER_TEMPLATE_VARS'):
 # Use the included "tmda-keygen" program to generate your key.
 # No default.
 if not vars().has_key('CRYPT_KEY'):
-    print "Encryption key not found!"
-    sys.exit(EX_TEMPFAIL)
+    raise Errors.ConfigError, "CRYPT_KEY not defined in " + TMDARC
 else:
     # Convert key from hex back into raw binary.
     # Hex has only 4 bits of entropy per byte as opposed to 8.

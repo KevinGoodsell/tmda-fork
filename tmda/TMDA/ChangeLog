@@ -1,3 +1,10 @@
+2002-02-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py: raise TMDA.Errors.ConfigError for tmdarc problems
+	instead of using print; sys.exit(75).
+
+	* Errors.py: Add ConfigError for tmdarc related errors.
+	
 2002-02-21  Tim Legant  <tim@catseye.net>
 
 	* FilterParser.py (FilterParser.__readrule): Fixed bug.  Last rule

@@ -8,6 +8,10 @@ class TMDAError(Exception):
     """Base class for all TMDA exceptions."""
     pass
 
+class ConfigError(TMDAError):
+    """tmdarc errors."""
+    pass
+
 class MissingEnvironmentVariable(TMDAError):
     """An essential environment variable is not defined."""
     def __init__(self, varname):
