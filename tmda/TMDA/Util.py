@@ -62,13 +62,17 @@ def getusername():
 
 def seconds(timeout):
     """Translate the defined timeout interval into seconds."""
-    match = re.match("^([0-9]+)([wdhms])$", timeout)
+    match = re.match("^([0-9]+)([YMwdhms])$", timeout)
     if not match:
         print "Invalid timeout value:", timeout
         import Defaults
         sys.exit(Defaults.ERR_CONFIG)
     (num, unit) = match.groups()
-    if unit == 'w':                     # weeks --> seconds
+    if unit == 'Y':                     # years --> seconds
+        seconds = int(num) * 60 * 60 * 24 * 365
+    elif unit == 'M':                   # months --> seconds
+        seconds = int(num) * 60 * 60 * 24 * 30
+    elif unit == 'w':                   # weeks --> seconds
         seconds = int(num) * 60 * 60 * 24 * 7
     elif unit == 'd':                   # days --> seconds
         seconds = int(num) * 60 * 60 * 24
@@ -83,11 +87,15 @@ def seconds(timeout):
 
 def format_timeout(timeout):
     """Return a human readable translation of the timeout interval."""
-    match = re.match("^([0-9]+)([wdhms])$", timeout)
+    match = re.match("^([0-9]+)([YMwdhms])$", timeout)
     if not match:
         return timeout
     (num, unit) = match.groups()
-    if unit == 'w':
+    if unit == 'Y':
+        timeout = num + " years"
+    elif unit == 'M':
+        timeout = num + " months"
+    elif unit == 'w':
         timeout = num + " weeks"
     elif unit == 'd':
         timeout = num + " days"
