@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed May 21 14:29:00 2003 -->
+<!-- Thu May 29 12:22:50 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -70,14 +70,23 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x435" height="35" width="194" 
 </td>
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
-<td valign="top" class="body"><h2><a name="Virtual" id="Virtual"></a>Virtual users</h2>
-<p>Virtual users are now fully supported. tmda-cgi uses a "stub" program
-  which converts the output of a virtual user information package into a
-  format that tmda-cgi can handle. In other words, you must have the
-  appropriate stub program for tmda-cgi to work on your system.</p>
-<p>The current tmda-cgi release includes the following stub:</p>
+<td valign="top" class="body"><h2>Virtual users</h2>
+<p>Virtual users are now fully supported. If your system has virtual users, you
+  will need to read over the following sections to insure compatibility.</p>
+
+<a href="#Stub">Stub programs</a><br>
+<a href="#Annoy">Virtual user specific settings</a><p>
+
+<h3><a name="Stub"></a>Stub programs</h3>
+<p>tmda-cgi uses a "stub" program which converts the output of a virtual user
+  information package into a format that tmda-cgi can handle. In other words,
+  you must have the appropriate stub program for tmda-cgi to work on your
+  system.</p>
+<p>The current tmda-cgi release includes the following stubs:</p>
 <ul>
-  <li>vpopmail1 - compatible with vpopmail 5.2.1</li>
+  <li>vpopmail1 - compatible with vpopmail (version 5.2.1)</li>
+  <li>qmailuserassign - compatible with qmail's (version 1.0.3)
+    <tt>users/assign</tt> file</li>
 </ul>
 <p>If you use a different program to handle your virtual mail system, you will
   either need to write a stub (they're pretty darn simple) or work with one of
@@ -106,8 +115,25 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x435" height="35" width="194" 
 <p><tt>vpopmail1</tt> is the stub name, <tt>/home/vpopmail/bin/vuserinfo</tt>
   is the vpopmail program which provides user information, and <tt>~</tt> means
   to pass the login name in as the first and only parameter to
-  <tt>vuserinfo</tt>. If you use a different stub or keep vuserinfo located
+  <tt>vuserinfo</tt>.</p>
+<p>For qmailuserassign, this is typically:</p>
+<blockquote>
+  <tt>qmailuserassign /bin/grep ~ /var/qmail/users/assign</tt>
+</blockquote>
+<p>If you use a different stub or keep vuserinfo located
   somewhere else, you will need to specify a different string.</p>
+
+<h3><a name="Settings"></a>Virtual user specific settings</h3>
+<p>To support virtual users, you will need to make sure you have set various
+  virtual user specific configuration settings correctly. Here's a list of some
+  things to check before installing:</p>
+<ul>
+  <li><a href="defaults.html#NoOverrideVPop">NoOverride:VPop</a></li>
+  <li><a href="defaults.html#NoOverrideVPopBin">NoOverride:VPopBin</a></li>
+  <li><a href="autoinstall.html#VIRTUAL_TEST">VIRTUAL_TEST</a></li>
+</ul>
+<p>There are a few other virtual user specific settings, but these are the ones
+  most likely to need adjusting.</p>
 </td>
 <!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
