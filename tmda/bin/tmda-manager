@@ -118,6 +118,7 @@ except ImportError:
 
 from TMDA import Util
 from TMDA import Auth
+from TMDA import Errors
 from TMDA import Version
 
 # Some defaults
@@ -175,11 +176,23 @@ for opt, arg in opts:
     elif opt in ('-u', '--username'):
         username = arg
     elif opt in ('-R', '--remoteauth'):
-        authobj.init_remote( arg )
+        try:
+            authobj.init_remote( arg )
+        except ValueError, err:
+            print >> sys.stderr, "Fatal: %s" % err
+            sys.exit(1)
     elif opt in ('-A', '--authprog'):
-        authobj.init_checkpw( arg )
+        try:
+            authobj.init_checkpw( arg )
+        except ValueError, err:
+            print >> sys.stderr, "Fatal: %s" % err
+            sys.exit(1)
     elif opt in ('-a', '--authfile'):
-        authobj.init_file( arg )
+        try:
+            authobj.init_file( arg )
+        except ValueError, err:
+            print >> sys.stderr, "Fatal: %s" % err
+            sys.exit(1)
     elif opt in ('-l', '--virtual-lookup'):
         VLookup = arg
 
@@ -203,7 +216,6 @@ import time
 warning = 'NOTE: This is early alpha software, and not yet meant for general ' + \
           'use. If you decide to use it anyway, please send your comments to ' + \
           'the tmda-workers@tmda.net mailing list, and not tmda-users.'
-print 'WARNING:\n'
 print Util.wraptext(warning), '\n'
 
 __version__ = Version.TMDA
@@ -323,20 +335,23 @@ class TMDAShell(Cmd):
             self.userid = None
             self.password = None
             return self.error(0, "ARG", "Missing argument.")
-        if auth_obj.authenticate_plain(self.userid, self.password):
-            self.authenticated = 1
-            try:
-                home, uid, gid = Util.getuserparams(self.userid, VLookup)
-                os.environ['HOME'] = home
-                os.seteuid(uid)
-                os.setegid(gid)
-            except KeyError:
-                sys.exit(1)
-        else:
-            self.authenticated = 0
-            return self.error(0, "AUTH", "Invalid credentials.")
-
-#        What is this for???
+        try:
+            if authobj.authenticate_plain(self.userid, self.password):
+                self.authenticated = 1
+                try:
+                    home, uid, gid = Util.getuserparams(self.userid, VLookup)
+                    os.environ['HOME'] = home
+                    os.seteuid(uid)
+                    os.setegid(gid)
+                except KeyError:
+                    self.authenticated = 0
+                    return self.error(0, "AUTH", "Auth succeeded, but no user %s found in system." % self.userid )
+            else:
+                self.authenticated = 0
+                return self.error(0, "AUTH", "Invalid credentials.")
+        except Errors.AuthError, ex:
+            self.error(0, "AUTH", ex.__repr__() )
+#        What is/was this for???
 #        if Auth.auth_fork(self.userid):
 #            sys.exit(0)
 
