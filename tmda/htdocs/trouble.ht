@@ -3,6 +3,14 @@ Links: overview-links.h usage-links.h support-links.h
 
 <h3>TMDA Troubleshooting</h3>
 
+<blockquote>
+
+``TMDA is a spam <u>reduction</u> system; its use requires
+occasional intervention of common sense.''
+
+    -- Drew Raines
+</blockquote>
+
 If you encounter problems with running TMDA, please exhaust the
 following checklist first before reporting them or asking for
 assistance on the appropriate TMDA mailing list.<br><br>
