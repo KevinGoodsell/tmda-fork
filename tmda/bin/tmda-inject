@@ -190,6 +190,16 @@ def inject_message(resending,
         message_headers['Message-ID'] = Util.make_msgid()
     # Add `X-Delivery-Agent' header.
     message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
+    # Optionally, add an `X-TMDA-Fingerprint' header.
+    if Defaults.FINGERPRINT:
+        hdrlist = []
+        for hdr in Defaults.FINGERPRINT:
+            hdrval = message_headers.getheader(hdr, None)
+            if hdrval:
+                hdrlist.append(hdrval)
+        if hdrlist:
+            message_headers['X-TMDA-Fingerprint'] = (
+                Cookie.make_fingerprint(hdrlist))
     # Optionally, remove some headers.
     if Defaults.PURGED_HEADERS:
         for hdr in Defaults.PURGED_HEADERS:

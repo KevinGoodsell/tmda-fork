@@ -328,6 +328,53 @@ if not vars().has_key('ACTION_INCOMING'):
 if not vars().has_key('ACTION_OUTGOING'):
     ACTION_OUTGOING = "dated"
 
+# FINGERPRINT
+#
+# A list containing one or more message headers whose values should be
+# used to create a "fingerprint" for the message.  The fingerprint is
+# a SHA-1 HMAC digest represented as a base64-encoded string.  This
+# fingerprint will be added to your outgoing client-side messages
+# (i.e, messages sent with tmda-sendmail) in an `X-TMDA-Fingerprint'
+# header prior to injection.
+#
+# Examples:
+#
+# FINGERPRINT = ["message-id"]
+# FINGERPRINT = ["message-id", "from", "date"]
+#
+# Things to keep in mind, especially if verifying these fingerprints
+# with non-TMDA code.
+#
+# * CRYPT_KEY is converted from hex into raw binary before it is
+#   used to create the HMAC object.
+# * The order of header names in the FINGERPRINT list is important;
+#   updates are made in the order listed.
+# * If a listed header doesn't exist in the message, no update attempt
+#   will be made for that header.
+# * For a listed header, only the header value (i.e, text after the
+#   colon) is used.  Additionally, leading and trailing whitespace (but
+#   not internal whitespace) is stripped from that value.
+#
+# For example, if the listed headers consisted of:
+#
+# Message-ID: <20011212192455.A7060@nightshade.la.mastaler.com>
+# From: "Jason R. Mastaler" <jason-dated-1008901496.5356ec@mastaler.com>
+# Date: Wed, 12 Dec 2001 19:24:55 -0700
+#
+# The strings which are used to create the HMAC digest are the
+# following (in order):
+#
+# <20011212192455.A7060@nightshade.la.mastaler.com>
+# "Jason R. Mastaler" <jason-dated-1008901496.5356ec@mastaler.com>
+# Wed, 12 Dec 2001 19:24:55 -0700
+#
+# The following header would then be added to the outgoing message:
+# X-TMDA-Fingerprint: vDBoOHtIUE6VniJguxJ+w2fR5bU
+#
+# No default
+if not vars().has_key('FINGERPRINT'):
+    FINGERPRINT = None
+    
 # FULLNAME
 # Your full name.
 # Default comes from your environment or the password file.

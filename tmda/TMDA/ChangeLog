@@ -1,3 +1,11 @@
+2001-12-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (FINGERPRINT): New list which contains the headers
+	to be used to create X-TMDA-Fingerprint.
+
+	* Cookie.py (make_fingerprint): New function to create an HMAC
+	from one or more message headers.
+
 2001-12-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (PURGED_HEADERS): New variable specifying a list of

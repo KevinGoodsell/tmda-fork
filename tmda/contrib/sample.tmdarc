@@ -79,6 +79,8 @@ import os                                      # don't remove
 
 # FILTER_OUTGOING = "/full/path/to/outgoing"
 
+# FINGERPRINT = []
+
 # FULLNAME = "John Doe"
 
 # HMAC_BYTES = 3

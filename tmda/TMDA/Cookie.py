@@ -3,6 +3,7 @@
 """Crypto-cookie functions."""
 
 
+import base64
 import os
 import string
 import time
@@ -103,3 +104,12 @@ def make_keyword_address(address, keyword):
     keyword_address = username + Defaults.RECIPIENT_DELIMITER + \
                      keyword_cookie + '@' + hostname
     return keyword_address
+
+
+def make_fingerprint(hdrlist):
+    """Expects a list of message header values as strings, and returns
+    a full (unsliced) HMAC as a base64 encoded string (sans newline)."""
+    fp = HMAC.hmac(Defaults.CRYPT_KEY)
+    for hdr in hdrlist:
+        fp.update(hdr)
+    return base64.encodestring(fp.digest())[:-2]
