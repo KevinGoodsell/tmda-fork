@@ -31,7 +31,6 @@ assumed to be in one of the supported mailbox formats.
 Sample usage:
 
 $ cd ~/Mail/archive/
-$ collectaddys
 $ collectaddys > ~/.tmda/lists/whitelist
 """
 
@@ -39,7 +38,7 @@ import mailbox
 import os
 
 # Collect addresses from these headers only; season to taste.
-hdrs = [ 'from', 'reply-to', 'return-path', 'sender' ]
+hdrs = [ 'from', 'return-path', 'sender' ]
 
 addys = []
 
@@ -55,11 +54,7 @@ for path in os.listdir('.'):
             mb = mailbox.MHMailbox(path)
     # Otherwise assume a Unix-style mbox file.
     else:
-        try:
-            # PortableUnixMailbox in Python >= 2.1 only
-            mb = mailbox.PortableUnixMailbox(open(path))
-        except AttributeError:
-            mb = mailbox.UnixMailbox(open(path))
+        mb = mailbox.PortableUnixMailbox(open(path))
     while 1:
         msg = mb.next()
         if not msg:
