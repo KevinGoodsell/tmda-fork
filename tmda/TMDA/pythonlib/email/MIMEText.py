@@ -22,9 +22,9 @@ class MIMEText(MIMENonMultipart):
 
         _subtype is the MIME sub content type, defaulting to "plain".
 
-        _charset is the character set parameter added to the Content-Type:
+        _charset is the character set parameter added to the Content-Type
         header.  This defaults to "us-ascii".  Note that as a side-effect, the
-        Content-Transfer-Encoding: header will also be set.
+        Content-Transfer-Encoding header will also be set.
 
         The use of the _encoder is deprecated.  The encoding of the payload,
         and the setting of the character set parameter now happens implicitly
@@ -35,14 +35,14 @@ class MIMEText(MIMENonMultipart):
         """
         MIMENonMultipart.__init__(self, 'text', _subtype,
                                   **{'charset': _charset})
-        if _text and _text[-1] <> '\n':
+        if _text and not _text.endswith('\n'):
             _text += '\n'
         self.set_payload(_text, _charset)
         if _encoder is not None:
             warnings.warn('_encoder argument is obsolete.',
                           DeprecationWarning, 2)
             # Because set_payload() with a _charset will set its own
-            # Content-Transfer-Encoding: header, we need to delete the
+            # Content-Transfer-Encoding header, we need to delete the
             # existing one or will end up with two of them. :(
             del self['content-transfer-encoding']
             _encoder(self)
