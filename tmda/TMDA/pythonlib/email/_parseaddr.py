@@ -1,18 +1,18 @@
 # Copyright (C) 2002 Python Software Foundation
 
-"""Module containing address parsing code lifted directly from
-rfc822.py.  Should eventually be rewritten.
+"""Email address parsing code.
+
+Lifted directly from rfc822.py.  This should eventually be rewritten.
 """
 
 import time
 
-
 # Parse a date field
-
 _monthnames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
                'aug', 'sep', 'oct', 'nov', 'dec',
                'january', 'february', 'march', 'april', 'may', 'june', 'july',
                'august', 'september', 'october', 'november', 'december']
+
 _daynames = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 
 # The timezone table does not include the military time zones defined
