@@ -16,6 +16,9 @@ General
 	
 	- Write a Tkinter based GUI for .tmdarc management.
 
+	- Write a Python web-interface to the .tmda-* files to
+	facilitate use by non-unix-shell users.
+
 tmda-inject
 	
 	None
