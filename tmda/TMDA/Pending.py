@@ -147,10 +147,8 @@ class Queue:
     def listPendingIds(self):
         """Return the list of still pending (i.e, not yet confirmed or
         released) messages."""
-        return filter(lambda x:
-                      x not in self.listDeliveredIds(), self.listIds()) + \
-               filter(lambda x:
-                      x not in self.listIds(), self.listDeliveredIds())
+        return [i for i in self.listIds()
+                if not (i.endswith(',C') or i.endswith(',R'))]
         
     
     ## Cache related functions (-C option)
