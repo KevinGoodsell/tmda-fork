@@ -73,8 +73,13 @@ the <b>localuser</b> directors if they are not there already:
 suffix = -*
 # or "+*" if you prefer "user+suffix" addresses
 suffix_optional
+
 </blockquote></pre>
 
+<strong>NOTE:</strong> If you are running Exim version 4.x, 
+use <em>local_part_suffix</em>
+and <em>local_part_suffix_optional</em> instead.
+<br><br>
 </ol>
 
 <h5>TRANSPORTS CONFIGURATION</h5>
