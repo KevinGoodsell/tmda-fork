@@ -1,3 +1,15 @@
+2002-02-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (bouncegen): Write an `X-TMDA-Recipient' header
+	containing the original envelope recipient address which will
+	later be used by release_pending().
+
+	(release_pending): Merged inject_pending() into
+	release_pending().  Also, use X-TMDA-Recipient to create the
+	-confirm-done address.
+
+	(inject_pending): Removed.
+	
 2002-02-01  Tim Legant  <tim@catseye.net>
 
 	* tmda-inject (make_field): Add special case for cookie_type of

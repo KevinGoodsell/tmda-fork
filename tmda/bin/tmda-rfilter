@@ -306,27 +306,33 @@ def send_cc(address):
     logit(string.join(inject))
 
 
-def inject_pending(pathname,timestamp,pid):
-    """Reinject a sucessfully confirmed message."""
-    (username, hostname) = string.split(recipient_address,'@')
-    # Strip off the '-confirm-accept.TIMESTAMP.PID.HMAC' from username.
-    base_username = string.join(
-        (string.split(username,Defaults.RECIPIENT_DELIMITER)[:-2]),
-        Defaults.RECIPIENT_DELIMITER)
-    base_recipient = base_username + '@' + hostname
+def release_pending(pathname, timestamp, pid):
+    """Release a confirmed message from the pending queue."""
+    fp = open(pathname, 'r')
+    message_headers = rfc822.Message(fp)
+    message_body = fp.read()
+    fp.close()
+    # Optionally append the envelope sender to a file.
+    return_path = message_headers.getaddr('return-path')[1]
+    if Defaults.CONFIRM_APPEND:
+        if Util.append_to_file(return_path, Defaults.CONFIRM_APPEND) != 0:
+            logit('CONFIRM_APPEND ' + return_path)
+    # Optionally generate the confirmation acceptance notice.
+    if Defaults.CONFIRM_ACCEPT_NOTIFY:
+        bouncegen('accept')
+    # Optionally send the confirmation to a special address.
+    if Defaults.CONFIRM_ACCEPT_CC:
+        send_cc(Defaults.CONFIRM_ACCEPT_CC)
     # Create the `confirm-done' address
-    confirm_done_address = Cookie.make_confirm_address(base_recipient,
-                                                       timestamp,
-                                                       pid,
-                                                       'done')
-    fileobj = open(pathname,'r')
-    message_headers = rfc822.Message(fileobj)
-    message_body = fileobj.read()
-    fileobj.close()
+    confirm_done_address = Cookie.make_confirm_address(
+        message_headers.getheader('x-tmda-recipient'),
+        timestamp,
+        pid,
+        'done')
+    del message_headers['x-tmda-recipient']
     # Add the date when confirmed in a header.
     message_headers['X-TMDA-Confirmed'] = Util.unixdate()
-    # Collect the envelope sender to pass to sendmail.
-    return_path = message_headers.getaddr('return-path')[1]
+    # Reinject the message.
     inject = []
     inject.append(Defaults.SENDMAIL)
     inject.append('-f')
@@ -338,27 +344,6 @@ def inject_pending(pathname,timestamp,pid):
     pipeline.write(message_body)
     pipeline.close()
     mta.stop()
-
-
-def release_pending(pathname, timestamp, pid):
-    """Release a message from the pending queue."""
-    # Optionally append the envelope sender to the whitelist.
-    if Defaults.CONFIRM_APPEND:
-        # Grab the original envelope sender to append.
-        fileobj = open(pathname,'r')
-        message_headers = rfc822.Message(fileobj)
-        fileobj.close()
-        orig_env_sender = message_headers.getaddr('return-path')[1]
-        if Util.append_to_file(orig_env_sender,Defaults.CONFIRM_APPEND) != 0:
-            logit("APPEND " + orig_env_sender)
-    # Optionally generate the confirmation acceptance notice.
-    if Defaults.CONFIRM_ACCEPT_NOTIFY:
-        bouncegen('accept')
-    # Optionally send the confirmation to a special address.
-    if Defaults.CONFIRM_ACCEPT_CC:
-        send_cc(Defaults.CONFIRM_ACCEPT_CC)
-    # Reinject the original (now confirmed) message.
-    inject_pending(pathname,timestamp,pid)
 
 
 def verify_confirm_cookie(confirm_cookie):
@@ -512,6 +497,8 @@ def bouncegen(mode):
             os.makedirs(pendingdir,0700) # stores the unconfirmed messages
         # Write ~/.tmda/pending/TIMESTAMP.PID.msg
         message_headers['Return-Path'] = '<' + envelope_sender + '>'
+        # X-TMDA-Recipient is used by release_pending().
+        message_headers['X-TMDA-Recipient'] = recipient_address
         pending_contents = str(message_headers) + '\n' + message_body
         Util.writefile(pending_contents, pendingdir + '/' + pending_message)
     # Find the right template.
