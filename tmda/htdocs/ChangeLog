@@ -2,6 +2,7 @@
 
 	* config-server.ht (Links): Mention that you should add your own
 	e-mail address to the whitelist to facilitate initial testing.
+	Also suggest a minimal .procmailrc-tmda.
 
 	(Links): Mention that "-" is also an acceptable value for
 	Postfix's recipient_delimiter.

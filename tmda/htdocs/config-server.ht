@@ -171,6 +171,15 @@ LOCAL_DELIVERY_AGENT = "/path/to/bin/procmail ~/.procmailrc-tmda"
 
 </blockquote></pre>
 
+<b>~/.procmailrc-tmda</b> at a minimum might contain the location of
+your default mailbox.  e.g,
+
+<blockquote><pre>
+
+DEFAULT=/path/to/your/inbox
+
+</blockquote></pre>
+
 Next, make sure your <b>~/.forward</b> calls procmail with the <b>-p</b> option:
 
 <blockquote><pre>
