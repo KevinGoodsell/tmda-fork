@@ -89,8 +89,8 @@ class FilterParser:
     arguments = {
         'from'         : None,
         'to'           : None,
-        'from-file'    : ('autocdb',),
-        'to-file'      : ('autocdb',),
+        'from-file'    : ('autocdb', 'autodbm'),
+        'to-file'      : ('autocdb', 'autodbm'),
         'from-cdb'     : None,
         'to-cdb'       : None,
         'from-dbm'     : None,
@@ -397,6 +397,28 @@ class FilterParser:
         return found_match
 
 
+    def __search_dbm(self, pathname, keys, actions, source):
+        """
+        Search a DBM-style database.
+        """
+        import anydbm
+        dbm = anydbm.open(pathname, 'r')
+        found_match = 0
+        for key in keys:
+            if key and dbm.has_key(string.lower(key)):
+                found_match = 1
+                dbm_value = dbm[string.lower(key)]
+                # If there is an entry for this key,
+                # we consider it an overriding action
+                # specification.
+                if dbm_value:
+                    actions.clear()
+                    actions.update(self.__buildactions(dbm_value, source))
+                dbm.close()
+                break
+        return found_match
+        
+
     def firstmatch(self, recipient, senders=None,
                    msg_body=None, msg_headers=None, msg_size=None):
         """Iterate over each rule in the list looking for a match.  As
@@ -423,31 +445,37 @@ class FilterParser:
             # 'from-file' or 'to-file', including autocdb functionality
             if source in ('from-file', 'to-file'):
                 match = os.path.expanduser(match)
-                valid_cdb = 0
+                dbname = match
+                build_func = None
+                search_func = self.__search_file
+                # If we have an argument, reset the preceding variables
+                # appropriately.
                 if args.has_key('autocdb'):
-                    cdbname = match + '.cdb'
+                    dbname += '.cdb'
+                    build_func = Util.build_cdb
+                    search_func = self.__search_cdb
+                elif args.has_key('autodbm'):
+                    dbname += '.db'
+                    build_func = Util.build_dbm
+                    search_func = self.__search_dbm
+                # If we have a valid build_func, we want to try to build
+                # the database.  If build_func is None, this is just a
+                # plain 'from-/to-file' with no -auto* argument.
+                if build_func:
                     # If the text file doesn't exist, let the exception
                     #  happen and get passed back to tmda-filter.
-                    txtmtime = os.path.getmtime(match)
+                    txt_mtime = os.path.getmtime(match)
                     # If the cdb file doesn't exist, that's not an error.
                     try:
-                        cdbmtime = os.path.getmtime(cdbname)
+                        db_mtime = os.path.getmtime(dbname)
                     except OSError:
-                        cdbmtime = 0
-                    valid_cdb = 1
-                    if cdbmtime <= txtmtime:
-                        valid_cdb = Util.build_cdb(match)
-                # At this point, valid_cdb will be 1 (true) if there
-                # is an -autocdb flag and the .cdb is now up-to-date.
-                # If there was no -autocdb flag or if there was an
-                # error rebuilding an autocdb, valid_cdb be 0 (false).
+                        db_mtime = 0
+                    if db_mtime <= txt_mtime and not build_func(match):
+                            dbname = match
+                            search_func = self.__search_file
                 try:
-                    if valid_cdb:
-                        found_match = self.__search_cdb(cdbname, keys,
-                                                        actions, source)
-                    else:
-                        found_match = self.__search_file(match, keys,
-                                                         actions, source)
+                    found_match = search_func(dbname, keys,
+                                              actions, source)
                 except Error, e:
                     raise MatchError(lineno, e._msg)
                 if found_match:
@@ -455,19 +483,11 @@ class FilterParser:
             # DBM-style databases.
             if source in ('from-dbm', 'to-dbm'):
                 match = os.path.expanduser(match)
-                import anydbm
-                dbm = anydbm.open(match,'r')
-                for key in keys:
-                    if key and dbm.has_key(string.lower(key)):
-			found_match = 1
-                        dbm_value = dbm[string.lower(key)]
-                        # If there is an entry for this key,
-                        # we consider it an overriding action
-                        # specification.
-                        if dbm_value:
-                            actions = self.__buildactions(dbm_value, source)
-                        dbm.close()
-                        break
+                try:
+                    found_match = self.__search_dbm(match, keys,
+                                                    actions, source)
+                except Error, e:
+                    raise MatchError(lineno, e._msg)
                 if found_match:
 		    break
             # DJB's constant databases; see <http://cr.yp.to/cdb.html>.

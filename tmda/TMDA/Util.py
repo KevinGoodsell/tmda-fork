@@ -290,6 +290,38 @@ def build_cdb(filename):
         return 1
 
 
+def build_dbm(filename):
+    import anydbm
+    import glob
+    import sys
+    import tempfile
+
+    try:
+        (dbmpath, dbmname) = os.path.split(filename)
+        dbmname += '.db'
+        tempfile.tempdir = dbmpath
+        tmpname = tempfile.mktemp()
+
+        dbm = anydbm.open(tmpname,'n')
+        for line in file_to_list(filename):
+            linef = line.split()
+            key = linef[0].lower()
+            try:
+                value = linef[1]
+            except IndexError:
+                value = ''
+            dbm[key] = value
+        dbm.close()
+
+        for f in glob.glob(tmpname + '*'):
+            newf = f.replace(tmpname,dbmname)
+            os.rename(f, newf)
+    except:
+        return 0
+    else:
+        return 1
+
+
 def pickleit(object, file, bin=0):
     """Store object in a pickle file.
     Optional bin specifies whether to use binary or text pickle format."""

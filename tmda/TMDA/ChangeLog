@@ -1,3 +1,17 @@
+2002-02-22  Tim Legant  <tim@catseye.net>
+
+	* Util.py (build_dbm): New function, based on the list2dbm
+	utility.
+
+	* FilterParser.py (FilterParser): Added -autodbm option to
+	'from-file' and 'to-file'.
+
+	(FilterParser.__search_dbm): New function.
+
+	(FilterParser.firstmatch): Modified 'from-/to-file' clause to
+	support the -autodbm argument.  Modified 'from-/to-dbm' clause to
+	use the new __search_dbm function.
+
 2002-02-21  Tim Legant  <tim@catseye.net>
 
 	* FilterParser.py (FilterParser): Modified 'in_action' and
