@@ -36,7 +36,7 @@ import os
 import glob
 
 PKG_NAME = "TMDA"
-PKG_VERSION = "0.48"
+PKG_VERSION = "0.49"
 PKG_FULL_NAME = "%s-%s" % (PKG_NAME, PKG_VERSION)
 
 distutils.core.setup(name=PKG_NAME,
