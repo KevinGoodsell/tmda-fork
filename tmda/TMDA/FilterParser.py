@@ -66,6 +66,143 @@ class MatchError(Error):
         Error.__init__(self, '[line %2d]: %s' % (lineno, errmsg))
 
 
+class Macro:
+
+    """Macro definition as parsed by the filter parser."""
+
+    macro_words = re.compile(r'([_a-zA-Z][_\w]*)')
+    macro_chars = '_' + string.digits + string.letters
+
+    def __init__(self, name):
+        self.name = name
+        self.parms = []
+        self.definition = ''
+
+    def set_definition(self, definition):
+        """Store the text to be substituted."""
+        if not definition:
+            errstr = '"%s": macro name without definition' % self.name
+            raise Error, errstr
+        self.definition = definition
+
+    def has_parms(self):
+        """Return true if the macro expects arguments."""
+        return len(self.parms)
+
+    def findname(self, text):
+        """Find the macro name in 'text' or raise ValueError.
+
+        If the name is found, return two strings: the text preceding the
+        name and the text following the name.
+        
+        """
+        pattern = r'(?:^|[^_\w])(' + self.name + r')(?:[^_\w]|$)'
+        re_macro = re.compile(pattern, re.IGNORECASE)
+        mo = re_macro.search(text)
+        if not mo:
+            raise ValueError
+        (start, end) = mo.span(1)
+        return (text[:start], text[end:])
+
+    def getargs(self, text):
+        """Parse comma-separated text from between parens - '(' and ')'.
+
+        Return list of strings and the text following the right paren - ')'.
+        If no parens are found, return an empty argument list and the
+        original text.
+        
+        """
+        args = []
+        tmp_text = text.lstrip()
+        if tmp_text.startswith('('):
+            endargs_idx = tmp_text.find(')', 1)
+            if endargs_idx == -1:
+                raise Error, '"%s": missing ")"' % self.name
+            args_text = tmp_text[1:endargs_idx].strip()
+            text = tmp_text[endargs_idx+1:]
+            args = [ arg.strip() for arg in args_text.split(',') ]
+        return (args, text)
+
+    def parseparms(self, macro_line):
+        """Parse macro parameters and store them in self.parms.
+
+        If the macro takes parameters, get their names and verify that they
+        are valid names (no invalid characters).  Store them in self.parms.
+
+        Return the text following any parameters.
+
+        """
+        (parms, macro_line) = self.getargs(macro_line)
+        macro_line = macro_line.lstrip()
+        for parm in parms:
+            if not self.macro_words.match(parm):
+                errstr = '"%s": ' % self.name
+                errstr += 'invalid argument: "%s" ' % parm
+                errstr += 'valid chars: _, 0-9, a-z, A-Z'
+                raise Error, errstr
+            self.parms.append(parm)
+        return macro_line
+
+    def expandargs(self, args):
+        """Expand args into the macro definition."""
+        if not self.has_parms():
+            return self.definition
+        if len(args) != len(self.parms):
+            errstr = '"%s": ' % self.name
+            errstr += 'expected %d arguments, got %d' % (len(self.parms),
+                                                         len(args))
+            raise Error, errstr
+        low_parms = [ parm.lower() for parm in self.parms ]
+        parm2arg = {}
+        for i in range(len(low_parms)):
+            parm2arg[low_parms[i]] = args[i]
+        # Create a copy of the definition to modify.
+        definition = self.definition[:]
+        # Lowercase the macro definition to simplify searching.
+        low_def = definition.lower()
+        new_def = ''
+        in_word = 0
+        while low_def:
+            found_parm = 0
+            cur_char = definition[0]
+            if in_word:
+                if cur_char not in self.macro_chars:
+                    in_word = 0
+            elif cur_char in self.macro_chars:
+                for low_parm in low_parms:
+                    parm_len = len(low_parm)
+                    if (low_def.startswith(low_parm)
+                        and (parm_len == len(low_def)
+                        or low_def[parm_len] not in self.macro_chars)):
+                        # Substitute parameter for the argument.
+                        new_def += parm2arg[low_parm]
+                        definition = definition[parm_len:]
+                        low_def = low_def[parm_len:]
+                        found_parm = 1
+                        break
+                else:
+                    in_word = 1
+            if not found_parm:
+                new_def += cur_char
+                definition = definition[1:]
+                low_def = low_def[1:]
+        return new_def
+
+    def __repr__(self):
+        """Print the macro definition.  Useful for debugging."""
+        s = 'macro %s' % self.name
+        if self.has_parms():
+            s += '('
+            for i in range(len(self.parms)):
+                if i > 0:
+                    s += ', '
+                s += self.parms[i]
+            s += ')'
+        s += '\t%s' % self.definition
+        return s
+    __str__ = __repr__
+
+
 class FilterParser:
     bol_comment = re.compile(r'\s*#')
 
@@ -104,27 +241,27 @@ class FilterParser:
     | (?:(?:exp(?:licit)?|as|ext(?:ension)?|kw|keyword)=\S+)
     | default )""", re.VERBOSE | re.IGNORECASE)
     
-    action_option = re.compile(r'(\w+)(?:\s*=\s*(.*)$)?')
-
     arg_option = re.compile(r'(\w+)(=?)')
+
+    variable = re.compile(r'\$\{([_\w]+)\}')
 
     arguments = {
         'from'         : None,
         'to'           : None,
-        'from-file'    : ('autocdb', 'autodbm'),
-        'to-file'      : ('autocdb', 'autodbm'),
-        'from-cdb'     : None,
-        'to-cdb'       : None,
-        'from-dbm'     : None,
-        'to-dbm'       : None,
-        'from-ezmlm'   : None,
-        'to-ezmlm'     : None,
-        'from-mailman' : ('attr',),
-        'to-mailman'   : ('attr',),
+        'from-file'    : ('autocdb', 'autodbm', 'optional'),
+        'to-file'      : ('autocdb', 'autodbm', 'optional'),
+        'from-cdb'     : ('optional',),
+        'to-cdb'       : ('optional',),
+        'from-dbm'     : ('optional',),
+        'to-dbm'       : ('optional',),
+        'from-ezmlm'   : ('optional',),
+        'to-ezmlm'     : ('optional',),
+        'from-mailman' : ('attr', 'optional' ),
+        'to-mailman'   : ('attr', 'optional' ),
         'body'         : ('case',),
         'headers'      : ('case',),
-        'body-file'    : ('case',),
-        'headers-file' : ('case',),
+        'body-file'    : ('case', 'optional'),
+        'headers-file' : ('case', 'optional'),
         'size'         : None
         }
 
@@ -136,6 +273,7 @@ class FilterParser:
     def read(self, filename):
         """Open and read the named filter file if it exists."""
         self.filename = filename
+        self.macros = []
         self.filterlist = []
         self.__lineno = 0
         self.__rule_lineno = 0
@@ -164,8 +302,14 @@ class FilterParser:
 	while 1:
             try:
                 rule_line = self.__readrule(fp)
-                rule = self.__parserule(rule_line)
-		self.filterlist.append(rule)
+                macro = self.__parsemacro(rule_line)
+                if macro:
+                    self.macros.append(macro)
+                else:
+                    rule_line = self.__expandmacros(rule_line, self.macros[:])
+                    rule_line = self.__interpolatevars(rule_line)
+                    rule = self.__parserule(rule_line)
+                    self.filterlist.append(rule)
             except EOFError:
                 break
             except Error, e:
@@ -227,6 +371,93 @@ class FilterParser:
 		    rule = line
 		    self.__rule_lineno = self.__lineno
 	return rule
+
+
+    def __parsemacro(self, rule_line):
+        """Parse a macro definition and return a Macro object."""
+        macro = None
+        if 'macro' == rule_line[:5].lower():
+            macro_line = rule_line[5:]
+            if not macro_line:
+                raise Error, 'incomplete macro definition'
+            if macro_line[0] != ' ':
+                errstr = '"%s": unrecognized filter rule' % rule_line.split()[0]
+                raise Error, errstr
+            macro_line = macro_line.lstrip()
+            mo = Macro.macro_words.match(macro_line)
+            if mo:
+                macro = Macro(mo.group(1))
+                macro_line = macro_line[mo.end():].lstrip()
+                macro.set_definition(macro.parseparms(macro_line))
+            else:
+                raise Error, 'invalid macro name: valid chars: _, 0-9, a-z, A-Z'
+        return macro
+
+
+    def __expandmacros(self, text, macros):
+        """Expand any macros into 'text'.
+
+        Any arguments are expanded into the macro definition.  The expanded
+        definition is then recursively expanded to support nested macros.  Once
+        the definition is fully expanded, it is inserted into 'text' and 'text'
+        is again searched for the current macro.
+
+        This is done for each defined macro.
+
+        """
+        for macro in macros:
+            rhs = text
+            text = ''
+            while rhs:
+                try:
+                    (text, rhs) = macro.findname(rhs)
+                except ValueError:
+                    text += rhs
+                    break
+                (args, rhs) = macro.getargs(rhs)
+                definition = macro.expandargs(args)
+                # Create a copy of the list of macros and remove
+                # the current macro to prevent an infinite loop
+                # during recursion.
+                valid_macros = macros[:]
+                valid_macros.remove(macro)
+                # Call ourselves to expand any macros in the definition of
+                # the current macro.
+                definition = self.__expandmacros(definition, valid_macros)
+                # Substitute the expanded definition back into the text.
+                text += definition
+        return text
+
+
+    def __findvarsub(self, var):
+        """Look up 'var' in the Defaults namespace and the environment."""
+        sub = None
+        # First, check the Defaults namespace.
+        import Defaults
+        try:
+            sub = getattr(sys.modules['Defaults'], var)
+        except AttributeError:
+            pass
+        # Then, try the environment.
+        if not sub:
+            sub = os.environ.get(var)
+        if not sub:
+            raise Error, "${%s} not found in the Defaults " \
+                         "namespace nor the environment." % var
+        return sub
+
+
+    def __interpolatevars(self, rule_line):
+        """Interpolate variables of the form ${name} into the rule."""
+        idx = 0
+        while 1:
+            mo = self.variable.search(rule_line, idx)
+            if not mo:
+                break
+            var = mo.group(1)
+            sub = self.__findvarsub(var)
+            rule_line = rule_line[:mo.start()] + sub + rule_line[mo.end():]
+        return rule_line
 
 
     def __parseargs(self, argtuple, rule_line):
@@ -442,29 +673,36 @@ class FilterParser:
 
 
     def __autobuild_db(self, basename, extension,
-                       surrogate, build_func, search_func):
+                       surrogate, build_func, search_func, optional):
         """
         Automatically build a CDB/DBM database if it's out-of-date.
         """
         dbname = basename + extension
-        # If the text file doesn't exist, let the exception
-        #  happen and get passed back to tmda-filter.
-        txt_mtime = os.path.getmtime(basename)
-        # If the db doesn't exist, that's not an error.
         try:
-            db_mtime = os.path.getmtime(surrogate)
+            txt_mtime = os.path.getmtime(basename)
         except OSError:
-            db_mtime = 0
-        if db_mtime <= txt_mtime:
-            if build_func(basename):
-                if os.path.exists(surrogate):
-                    mtime = time.time()
-                    os.utime(surrogate, (mtime, mtime))
-                else:
-                    os.close(os.open(surrogate, os.O_CREAT, 0600))
+            # If the text file doesn't exist, and the optional flag is not
+            # specified, re-raise the exception.
+            if optional:
+                search_func = None
             else:
-                dbname = basename
-                search_func = self.__search_file
+                raise
+        else:
+            # If the db doesn't exist, that's not an error.
+            try:
+                db_mtime = os.path.getmtime(surrogate)
+            except OSError:
+                db_mtime = 0
+            if db_mtime <= txt_mtime:
+                if build_func(basename):
+                    if os.path.exists(surrogate):
+                        mtime = time.time()
+                        os.utime(surrogate, (mtime, mtime))
+                    else:
+                        os.close(os.open(surrogate, os.O_CREAT, 0600))
+                else:
+                    dbname = basename
+                    search_func = self.__search_file
         return (dbname, search_func)
 
 
@@ -495,58 +733,72 @@ class FilterParser:
             if source in ('from-file', 'to-file'):
                 dbname = os.path.expanduser(match)
                 search_func = self.__search_file
-                # If we have an argument, ensure that the database is
-                # up-to-date.
+                # If we have an 'auto*' argument, ensure that the database
+                # is up-to-date.  If the 'optional' argument is also given,
+                # don't die if the file doesn't exist.
+                optional = args.has_key('optional')
                 if args.has_key('autocdb'):
                     (dbname, search_func) = self.__autobuild_db(
                         dbname, '.cdb', dbname + '.cdb',
-                        Util.build_cdb, self.__search_cdb)
+                        Util.build_cdb, self.__search_cdb, optional)
                 elif args.has_key('autodbm'):
                     (dbname, search_func) = self.__autobuild_db(
                         dbname, '.db', dbname + '.last_built',
-                        Util.build_dbm, self.__search_dbm)
+                        Util.build_dbm, self.__search_dbm, optional)
+                else:
+                    if not os.path.exists(dbname) and optional:
+                        search_func = None
                 try:
-                    found_match = search_func(dbname, keys,
-                                              actions, source)
+                    if search_func:
+                        found_match = search_func(dbname, keys,
+                                                  actions, source)
                 except Error, e:
                     raise MatchError(lineno, e._msg)
                 if found_match:
                     break
             # DBM-style databases.
             if source in ('from-dbm', 'to-dbm'):
+                import anydbm
                 match = os.path.expanduser(match)
                 try:
                     found_match = self.__search_dbm(match, keys,
                                                     actions, source)
-                except Error, e:
-                    raise MatchError(lineno, e._msg)
+                except anydbm.error, e:
+                    if not args.has_key('optional'):
+                        raise MatchError(lineno, str(e))
                 if found_match:
 		    break
             # DJB's constant databases; see <http://cr.yp.to/cdb.html>.
             if source in ('from-cdb', 'to-cdb'):
+                import cdb
                 match = os.path.expanduser(match)
                 try:
                     found_match = self.__search_cdb(match, keys,
                                                     actions, source)
-                except Error, e:
-                    raise MatchError(lineno, e._msg)
+                except cdb.error, e:
+                    if not args.has_key('optional'):
+                        raise MatchError(lineno, str(e))
                 if found_match:
                     break
             # ezmlm subscriber directories.
             if source in ('from-ezmlm', 'to-ezmlm'):
                 match = os.path.join(os.path.expanduser(match), 'subscribers')
                 ezmlm_list = []
-                # See ezmlm(5) for dir/subscribers format.
-                for file in os.listdir(match):
-                    fp = open(os.path.join(match, file), 'r')
-                    subs = fp.read().split('\x00')
-                    for sub in subs:
-                        if sub:
-                            ezmlm_list.append(sub.split('T', 1)[1].lower())
-                for key in keys:
-                    if key and key.lower() in ezmlm_list:
-                        found_match = 1
-                        break
+                try:
+                    # See ezmlm(5) for dir/subscribers format.
+                    for file in os.listdir(match):
+                        fp = open(os.path.join(match, file), 'r')
+                        subs = fp.read().split('\x00')
+                        for sub in subs:
+                            if sub:
+                                ezmlm_list.append(sub.split('T', 1)[1].lower())
+                    for key in keys:
+                        if key and key.lower() in ezmlm_list:
+                            found_match = 1
+                            break
+                except OSError:
+                    if not args.has_key('optional'):
+                        raise
                 if found_match:
                     break
             # Mailman configuration databases.
@@ -568,17 +820,18 @@ class FilterParser:
                 elif os.path.exists(config_db):
                     dbfile = config_db
                     import marshal as Serializer
-                mmdb_file = open(dbfile, 'r')
-                mmdb_data = Serializer.load(mmdb_file)
-                mmdb_file.close()
-                mmdb_addylist = mmdb_data[mmdb_key]
-                # Make sure mmdb_addylist is a list of e-mail addresses.
-                if type(mmdb_addylist) is types.DictType:
-                     mmdb_addylist = mmdb_data[mmdb_key].keys()
-                for addy in keys:
-                    if addy and addy.lower() in mmdb_addylist:
-                        found_match = 1
-                        break
+                elif not args.has_key('optional'):
+                    mmdb_file = open(dbfile, 'r')
+                    mmdb_data = Serializer.load(mmdb_file)
+                    mmdb_file.close()
+                    mmdb_addylist = mmdb_data[mmdb_key]
+                    # Make sure mmdb_addylist is a list of e-mail addresses.
+                    if type(mmdb_addylist) is types.DictType:
+                         mmdb_addylist = mmdb_data[mmdb_key].keys()
+                    for addy in keys:
+                        if addy and addy.lower() in mmdb_addylist:
+                            found_match = 1
+                            break
                 if found_match:
 		    break
             if source in ('body', 'headers'):
@@ -596,23 +849,28 @@ class FilterParser:
                     break
             if source in ('body-file','headers-file'):
                 match = os.path.expanduser(match)
-                match_list = Util.file_to_list(match)
-                if source == 'body-file' and msg_body:
-                    content = msg_body
-                elif source == 'headers-file' and msg_headers:
-                    content = msg_headers
+                try:
+                    match_list = Util.file_to_list(match)
+                except IOError:
+                    if not args.has_key('optional'):
+                        raise
                 else:
-                    content = None
-                re_flags = re.MULTILINE
-                if not args.has_key('case'):
-                    re_flags = re_flags | re.IGNORECASE
-                for line in match_list:
-                    mo = self.matches.match(line)
-                    if mo:
-                        expr = mo.group(2) or mo.group(3)
-                        if content and re.search(expr,content,re_flags):
-                            found_match = 1
-                            break
+                    if source == 'body-file' and msg_body:
+                        content = msg_body
+                    elif source == 'headers-file' and msg_headers:
+                        content = msg_headers
+                    else:
+                        content = None
+                    re_flags = re.MULTILINE
+                    if not args.has_key('case'):
+                        re_flags = re_flags | re.IGNORECASE
+                    for line in match_list:
+                        mo = self.matches.match(line)
+                        if mo:
+                            expr = mo.group(2) or mo.group(3)
+                            if content and re.search(expr,content,re_flags):
+                                found_match = 1
+                                break
                 if found_match:
 		    break
             if source == 'size' and msg_size:
@@ -689,11 +947,10 @@ def splitaction(action):
     """
     Split the action at the '=' and return a tuple of the two
     parts. If there is no '=', the second field in the tuple will
-    be None. If the first part of the action cannot be matched,
-    the returned tuple will be (None, None).
+    be None.
     """
     # Split the action=option apart if possible.
-    mo = FilterParser.action_option.match(action)
-    if mo:
-        return string.lower(mo.group(1)), mo.group(2)
-    return None, None
+    parts = [ part.strip() for part in action.split('=', 1) ]
+    if len(parts) == 1:
+        return (parts[0], None)
+    return tuple(parts)

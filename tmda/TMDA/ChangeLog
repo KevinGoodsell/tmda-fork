@@ -1,3 +1,17 @@
+2002-08-06  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py: Added macro substitution and variable
+	interpolation.
+
+	(Macro): New class.
+
+	(FilterParser.__parsemacro, FilterParser.__expandmacros,
+	FilterParser.__findvarsub, FilterParser.__interpolatevars): New
+	functions.
+
+	(FilterParser.firstmatch): Added '-optional' argument to all rules
+	that access files.
+
 2002-07-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (X_TMDA_IN_SUBJECT, ADDED_HEADERS_SERVER): New
