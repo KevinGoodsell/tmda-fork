@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Feb 27 14:27:40 2002 -->
+<!-- Wed Mar 27 16:51:24 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -146,6 +146,8 @@ Author
 <li><a href="#10">Is TMDA planning to support Microsoft Exchange Server?</a><br>
 <li><a href="#11">Can't spammers just setup an auto-responder to defeat TMDA?</a><br>
 <li><a href="#12">Why isn't TMDA written in Perl, C, C++, Java, etc..?</a><br>
+<li><a href="#13">Can I post to a TMDA protected mailing list with a 'dated' address?</a><br>
+<li><a href="#13">How do I prevent my auto-whitelist from being filled with 'dated' addresses?</a><br>
 </ol>
 
 <hr>
@@ -442,6 +444,34 @@ for example.
 The <a href="http://python.org/doc/current/tut/" TARGET="Resource Window">Python Tutorial</a>
 is a good place to start.  You may be surprised how much you like it.
 </ul>
+<hr>
+
+<li><b>
+<a name="13">Can I post to a TMDA protected mailing list with a <a href="config-client.html">'dated'</a>
+ address?  Every time I post with one, I'm asked to confirm my message.</a>
+</b>
+<br><br>
+Yes.  See 
+<a href="http://mla.libertine.org/tmda-users/200203/msg00127.html" TARGET="Resource Window">this message</a> 
+for how to do this; these instructions apply to any mailing list protected by TMDA.
+<hr>
+
+<li><b>
+<a name="13">How do I prevent my auto-whitelist from being filled with 
+<a href="config-client.html">'dated'</a> addresses?</a>
+</b>
+<br><br>
+If you are using TMDA's <strong>CONFIRM_APPEND</strong> feature to
+implement an "auto-whitelist", you may have noticed that it is being
+filled with the 'dated' addresses of other TMDA users, which isn't
+very helpful.  This can be disconcerting to the other party who must
+confirm each of their messages to you.  <br><br>
+
+The solution is to mix social practices with the technology.  Don't
+rely entirely on CONFIRM_APPEND.  When you start to interact with a
+new TMDA user, add a wildcard entry for them to your whitelist (e.g, 
+<code>jason*@mastaler.com</code>).  This will work for
+other TMDA-like schemes that use one-time addresses as well.
 <hr>
 
 </TD><!-- end of body cell -->

@@ -1,3 +1,11 @@
+2002-03-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht: New entries:
+	- "Can I post to a TMDA protected mailing list with a 'dated'
+	address?"
+	- "How do I prevent my auto-whitelist from being filled with
+	'dated' addresses?"
+	
 2002-03-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-client.ht: Link to Mutt/VVV-NNTP instructions.
