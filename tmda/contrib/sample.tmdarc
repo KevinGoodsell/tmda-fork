@@ -24,7 +24,9 @@ import os                                      # don't remove
 
 # CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key
 #                                                    # with tmda-keygen!
- 
+
+# FULLNAME = "John Doe"
+
 # HOSTNAME = "domain.dom" 
 
 # INJECT = "/var/qmail/bin/qmail-inject"
