@@ -31,71 +31,47 @@ import sys
 
 from TMDA import Auth
 from TMDA import Errors
+from TMDA import Util
+
+authobj = Auth.Auth()
 
 # For now, output all Auth.py errors to http error log
-Auth.DEBUGSTREAM = sys.stderr
+authobj.DEBUGSTREAM = sys.stderr
 
 authinit = 0
 
 def InitProgramAuth( Program ):
   """Initializes the authentication scheme with a checkpw-style program.
-(Implemented by Auth.py)"""
+    (Implemented by Auth.py)"""
   global authinit
-  Auth.authtype = 'prog'
+  authinit = 0
   try:
-    realprog, args = Program.split(" ", 1)
-  except ValueError:
-    try:
-      if CanRun( "/usr/bin/true" ):
-        args = "/usr/bin/true"
-    except IOError:
-      try:
-        if CanRun( "/bin/true" ):
-          args = "/bin/true"
-      except IOError:
-        raise ValueError, "Could not find /usr/bin/true or /bin/true"
-    realprog = Program
-  try:
-    if not CanRun( realprog ):
-      authinit = 0
-      raise ValueError, "'%s' is not executable" % realprog
-  except IOError:
-    authinit = 0
-    raise ValueError, "'%s' does not exist" % realprog
-  # Now initialize the authprog with the checkpasswd program and "true"
-  Auth.authprog = "%s %s" % ( realprog, args )
-  authinit = 1
+    authobj.init_auth_method( 'checkpw', Program )
+    authinit = 1
+  except ValueError, verr:
+    raise verr
 
 def InitFileAuth( Filename="/etc/tmda-cgi" ):
   """Initializes the authentication scheme with a flat file
-(Not implemented by Auth.py yet)"""
+    (Implemented by Auth.py)"""
   global authinit
-  Auth.authtype = 'file'
+  authinit = 0
   try:
-    if not CanRead( Filename ):
-      authinit = 0
-      raise ValueError, "File '%s' cannot be read" % Filename
-  except IOError:
-    authinit = 0
-    raise ValueError, "File '%s' does not exist" % Filename
-  Auth.authfile = Filename
-  authinit = 1
+    authobj.init_auth_method( 'file', Filename )
+    authinit = 1
+  except ValueError, verr:
+    raise verr
 
 def InitRemoteAuth( URI ):
   """Initialaze the authentication scheme with a remote URL
-(Implemented by Auth.py)"""
+    (Implemented by Auth.py)"""
   global authinit
-  Auth.authtype = 'remote'
+  authinit = 0
   try:
-    Auth.parse_auth_uri( URI )
-    Auth.init_auth_method()
+    authobj.init_auth_method( 'remote', URI )
     authinit = 1
-  except ValueError, err:
-    authinit = 0
-    raise Errors.AuthError, "Bad URI: %s" % err.value
-  except ImportError, err:
-    authinit = 0
-    raise Errors.AuthError, "URI scheme not supported: %s" % err.value
+  except ValueError, verr:
+    raise verr
 
 def Authenticate(User, Password):
   """Checks password against initialized authentication scheme filename.
@@ -106,52 +82,10 @@ def Authenticate(User, Password):
   global authinit
   RetVal = 0
   if authinit:
-    if Auth.authtype == 'prog' or Auth.authtype == 'remote':
-      try:
-        if Auth.authenticate_plain( User, Password ):
-          RetVal = 1
-      except Errors.AuthError:
-        pass
-    elif Auth.authtype == 'file':
-      Filename = Auth.authfile
-      # Revert to original code since Auth.py doesn't implement files yet.
-      try:
-        F = open(Filename) 
-      except IOError:
-        raise Errors.AuthError, \
-          "Cannot open file '%s' for reading." % Filename, \
-          "Check file permissions"
-
-      PasswordRecord = F.readline()
-      while PasswordRecord != "":
-
-        # Split about the :
-        Temp = PasswordRecord.strip().split(":")
-
-        # Have we found the correct user record?
-        if Temp[0] == User:
-          if Temp[1] == "":
-            raise Errors.AuthError, \
-              "User %s is denied login" % Temp[0], \
-              "Blank password in file"
-
-          Perm = os.stat(Filename)[0] & 07777
-
-          # Any file may have encrypted passwords in it.
-          # Even though this is a Bad Idea.
-          if crypt.crypt(Password, Temp[1][:2]) == Temp[1]:
-            RetVal = 1
-            break
-          # Only <secret> files may have cleartext passwords in it.
-          if Perm == 0400 or Perm == 0600:
-            if Temp[1] == Password:
-              RetVal = 1
-              break
-        PasswordRecord = F.readline()
-      F.close()
-    else:
-      raise Errors.AuthError, \
-        "Authentication mechanism '%s' unknown." % Auth.authtype
+    try:
+      RetVal = authobj.authenticate_plain( User, Password )
+    except Errors.AuthError, error:
+      pass
   else:
     raise Errors.AuthError, "No authentication mechanism initialized."
   # If we made it this far, we're either returning 1 or 0.
@@ -173,41 +107,5 @@ def CheckPassword(Form):
   if int(Form["debug"].value):
     CgiUtil.TermError("Login failed", "Authentication error",
       "validate password", errMsg, errHelp)
-  else:
-    return 0
-
-def CanRead(File):
-  """Checks if File can be read be current euid/egid"""
-  try:
-    fstat = os.stat( File )
-  except:
-    raise IOError, "File %s not found" % File
-  needuid = fstat.st_uid
-  needgid = fstat.st_gid
-  filemod = fstat.st_mode & 0777
-  if filemod & 04:
-    return 1
-  elif filemod & 040 and needgid == os.getegid():
-    return 1
-  elif filemod & 0400 and needuid == os.geteuid():
-    return 1
-  else:
-    return 0
-
-def CanRun(File):
-  """Checks if File can be run be current euid/egid"""
-  try:
-    fstat = os.stat( File )
-  except:
-    raise IOError, "File %s not found" % File
-  needuid = fstat.st_uid
-  needgid = fstat.st_gid
-  filemod = fstat.st_mode & 0777
-  if filemod & 01:
-    return 1
-  elif filemod & 010 and needgid == os.getegid():
-    return 1
-  elif filemod & 0100 and needuid == os.geteuid():
-    return 1
   else:
     return 0
