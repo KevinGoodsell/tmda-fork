@@ -31,11 +31,6 @@ Currently supported MTAs include
 and <a href="http://www.sendmail.org/" TARGET="Resource Window">Sendmail</a>.
 <br><br>
 
-<li>If you are using an MTA <strong>other than qmail</strong>, a local
-delivery agent such as <a href="http://www.procmail.org/"
-TARGET="Resource Window">procmail</a> or <a
-href="http://www.flounder.net/~mrsam/maildrop/" TARGET="Resource
-Window">maildrop</a>.  On non-qmail systems, TMDA uses the LDA to
-perform final mail delivery, and in the case of Sendmail, to invoke
-TMDA <em>and</em> do final delivery.  Thus, a .procmailrc is only required if
-you are running Sendmail.
+<li>The <a href="http://www.procmail.org/" TARGET="Resource Window">procmail</a>
+local delivery agent, <strong>if and only if</strong> you are running Sendmail as
+your MTA.

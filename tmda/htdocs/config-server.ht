@@ -162,7 +162,7 @@ otherwise it goes through the confirmation process.
 <li>Finish setting up your <b>~/.tmdarc</b> and optionally a
 system-wide <b>/etc/tmdarc</b> by reading through the
 included <b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b>,
-<b>MAIL_TRANSFER_AGENT</b>, <b>LOCAL_DELIVERY_AGENT</b>, and
+<b>MAIL_TRANSFER_AGENT</b>, <b>DELIVERY</b>, and
 <b>RECIPIENT_DELIMITER</b> are required entries for non-qmail users.
 <br><br>
 
@@ -187,26 +187,7 @@ interpreter, e.g,:
 <li>If you already filter your mail with procmail and wish to continue
 doing so, you can invoke tmda-filter from your <b>.procmailrc</b> instead.<br><br>
 
-First, modify <b>LOCAL_DELIVERY_AGENT</b> in your <b>~/.tmdarc</b> so
-that it runs procmail with an separate rcfile (to avoid an infinite
-loop):
-
-<blockquote><pre>
-
-LOCAL_DELIVERY_AGENT = "/path/to/bin/procmail ~/.procmailrc-tmda"
-
-</blockquote></pre>
-
-<b>~/.procmailrc-tmda</b> at a minimum might contain the location of
-your default mailbox.  e.g,
-
-<blockquote><pre>
-
-DEFAULT=/path/to/your/inbox
-
-</blockquote></pre>
-
-Next, make sure your <b>~/.forward</b> calls procmail with the <b>-p</b> option:
+Make sure your <b>~/.forward</b> calls procmail with the <b>-p</b> option:
 
 <blockquote><pre>
 
@@ -244,29 +225,9 @@ mailer as described in the
 <li>Finish setting up your <b>~/.tmdarc</b> and optionally a
 system-wide <b>/etc/tmdarc</b> by reading through the
 included <b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b>,
-<b>MAIL_TRANSFER_AGENT</b>, <b>LOCAL_DELIVERY_AGENT</b>, and
+<b>MAIL_TRANSFER_AGENT</b>, <b>DELIVERY</b>, and
 <b>RECIPIENT_DELIMITER</b> are required entries for non-qmail users.
 <br><br>
-
-
-Modify <b>LOCAL_DELIVERY_AGENT</b> in your <b>~/.tmdarc</b> so
-that it runs procmail with an separate rcfile (to avoid an infinite
-loop):
-
-<blockquote><pre>
-
-LOCAL_DELIVERY_AGENT = "/path/to/bin/procmail ~/.procmailrc-tmda"
-
-</blockquote></pre>
-
-<b>~/.procmailrc-tmda</b> at a minimum might contain the location of
-your default mailbox.  e.g,
-
-<blockquote><pre>
-
-DEFAULT=/path/to/your/inbox
-
-</blockquote></pre>
 
 <li>Set the SENDER, RECIPIENT, and EXTENSION variables, and then
 invoke tmda-filter by adding the following snippet to the end of your

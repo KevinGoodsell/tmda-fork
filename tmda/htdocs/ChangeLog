@@ -1,5 +1,10 @@
 2002-05-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* requirements.ht: Now only Sendmail installations require
+	procmail.
+	
+	* config-server.ht: DELIVERY replaces LOCAL_DELIVERY_AGENT.
+
 	* faq.ht: Extend FAQ #1 to include CONFIRM_APPEND info.
 
 2002-05-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
