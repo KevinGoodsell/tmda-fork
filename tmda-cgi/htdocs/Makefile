@@ -17,11 +17,9 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-DEF2HTML =      ../contrib/def2html
-
 HTROOT = 	.
-HT2HTML =	/usr/local/packages/ht2html/ht2html.py
-HTSTYLE =	TMDAGenerator
+HT2HTML =	../ht2html/ht2html.py
+HTSTYLE =	Generator
 HTALLFLAGS =	-f -s $(HTSTYLE)
 HTFLAGS =	$(HTALLFLAGS) -r $(HTROOT)
 
@@ -31,7 +29,7 @@ GENERATED_HTML= $(SOURCES:.ht=.html)
 
 DEST =          tmda.sourceforge.net:/home/groups/t/tm/tmda/htdocs/tmda-cgi/
 EXCLUDES =      --exclude "*"
-INCLUDES =	--include "*.html"
+INCLUDES =	--include "*.html" --include "*.gif" --include "*.png"
 ARGS =          -v -a -z --delete $(INCLUDES) $(EXCLUDES)
 
 
@@ -42,19 +40,16 @@ ARGS =          -v -a -z --delete $(INCLUDES) $(EXCLUDES)
 
 all: $(TARGETS)
 
-config-vars.ht: config-vars.tpl config-vars.tmp
-	sed -e '/<!--config_vars-->/r config-vars.tmp' -e \
-	'/<!--config_vars-->/d' < config-vars.tpl > config-vars.ht
-
-config-vars.tmp: ../TMDA/Defaults.py
-	$(DEF2HTML) ../TMDA/Defaults.py > config-vars.tmp
-
-clean: clean
+clean:
 	-rm -f *~
 	-rm -f $(GENERATED_HTML)
-	-rm -f config-vars.tmp
 
 remake: clean all
 
 install: 
 	rsync $(ARGS) . $(DEST)
+
+build:
+	rm -f buttons.p
+
+rebuild: build remake
