@@ -123,7 +123,7 @@ def make_dated_bounce(expire_utc_tuple,dated_cookie):
         
     You can contact me at the following address:
     
-        <%s-dated-%s@%s>
+        <mailto:%s-dated-%s@%s>
         
     which will expire in %s (%s UTC).
     If you're just sending me SPAM/UCE, buzz off.
@@ -149,7 +149,7 @@ def make_sender_bounce(sender_address,sender_address_cookie):
         
     You can contact me at the following address:
     
-        <%s-sender-%s@%s>
+        <mailto:%s-sender-%s@%s>
         
     which will only work when you are sending me e-mail from:
                                                              
