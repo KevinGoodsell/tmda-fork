@@ -48,6 +48,9 @@ def Call(Library, Str = None):
   else:
     Library.Show()
 
+# Capture WebUID
+Session.WebUID = os.getuid()
+
 # Prepare the traceback in case of uncaught exception
 MyCgiTb.Content()
 MyCgiTb.ErrTemplate = "prog_err2.html"

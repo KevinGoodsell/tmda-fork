@@ -83,8 +83,8 @@ example:
 
 The Save() member saves the session's current values on disk, but can only be
 called once a validated session has been established.  Writes to the
-/tmp/TMDASess.XXXXXXXX file are done as TMDA_CGI_USER, as specified at compile
-time.  Writes to the Defaults.CGI_SETTINGS file are done as the user's UID.
+/tmp/TMDASess.XXXXXXXX file are done as the base RUID.  Writes to the
+Defaults.CGI_SETTINGS file are done as the user's UID.
 
 Indexies to the class may be simple strings or two element arrays or tuples.
 Reading a value will first check previously saved values for an index match,
@@ -103,7 +103,7 @@ giving up an throwing an exception.
     """Try to change to a new user.
 
 User can be "root", "web", or "user".  "root" attempts to setuid to root.
-"web" attempts to seteuid to TMDA_CGI_USER.  "user" attempt to setuid to
+"web" attempts to seteuid to the base RUID.  "user" attempt to setuid to
 Vars["UID"].  An exception will be thrown if __suid_ is called after
 __suid__("user").  __suid__ reports an error if we can't change IDs, but should
 be able to."""
@@ -125,13 +125,13 @@ be able to."""
 
         # If they want "web", go find out who that is
         elif User == "web":
-          PasswordRecord = pwd.getpwnam(os.environ["TMDA_CGI_USER"])
+          PasswordRecord = pwd.getpwuid(WebUID)
           UID = PasswordRecord[2]
           GID = PasswordRecord[3]
           if not UID:
             CgiUtil.TermError("CGI_USER is UID 0.", "It is not safe to allow "
               "root to process session files.", "set euid",
-              "CGI_USER = %s" % os.environ["TMDA_CGI_USER"], "Recompile CGI.")
+              "", "Do not run your webserver as root.")
           os.setegid(GID)
           os.seteuid(UID)
 

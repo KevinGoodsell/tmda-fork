@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
   putenv(AUTH_ARG);
 #endif
   putenv(MODE);
-  putenv(USER);
   putenv(DISP_DIR);
   putenv(BASE_DIR);
 #ifdef VLOOKUP

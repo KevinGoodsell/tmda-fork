@@ -1,5 +1,7 @@
 2003-05-03  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Automatically detect web user.  No longer needs to be set in compile.
+
 	* Added a mechanism for reporting spam to SpamCop.
 
 	* Added a template editor.

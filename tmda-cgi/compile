@@ -131,11 +131,6 @@ Where:
     --target <file>
        Compile as a file other than ./tmda-cgi.
 
-    -u <user>
-    --user <user>
-       Specifies user to use when reading and writing session files.
-       (Only affects system-wide mode.)
-
     -v <user>
     --virt_user <user>
        Specify real login name to use when user logs in as a virtual user.
@@ -250,9 +245,7 @@ def Interactive():
   Ask("CGI mode [system-wide, single-user, no-su]", "Mode")
   Ask('Virtual user stub and parameters (or "None" if no virtual users)',
     "VLookup")
-  if OptD["Mode"] == "system-wide":
-    Ask("User name to use while accessing session data", "User")
-    if OptD["VLookup"] != "None":
+  if (OptD["Mode"] == "system-wide") and (OptD["VLookup"] != "None"):
       Ask("Real user name to use when login is a virtual user", "VUser")
   Ask('Session path/file prefix', "SessionPrefix")
   Ask('Session expiration (seconds)', "SessionExp")
@@ -272,7 +265,6 @@ OptD = \
   "Base":          "../tmda/",
   "Path":          "./",
   "DispDir":       "../display/",
-  "User":          "nobody",
   "AuthType":      "default",
   "AuthFile":      "None",
   "AuthProg":      "/usr/sbin/checkpassword",
@@ -301,11 +293,11 @@ def Usage(Code, Msg=""):
   sys.exit(Code)
 
 try:
-  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:De:f:i:l:m:nho:p:r:s:t:u:",
+  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:De:f:i:l:m:nho:p:r:s:t:",
     ["base-dir=", "config-file=", "display-dir=", "dont-compile",
      "session-exp", "file-auth=", "help", "install-prefix=", "mode=", "no-su",
      "cleanup-odds", "program-auth=", "remote-auth=", "session-prefix",
-     "target=", "user=", "virtual-lookup="])
+     "target=", "virtual-lookup="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
@@ -351,8 +343,6 @@ for Opt, Arg in Opts:
     OptD["Mode"] = Arg
   elif Opt in ("-n", "--no-su"):
     OptD["Mode"] = "no-su"
-  elif Opt in ("-u", "--user"):
-    OptD["User"] = Arg
 
 # No options means interactive mode
 if not len(Opts):
@@ -404,18 +394,6 @@ except ImportError, ErrStr:
   print ErrStr
   sys.exit()
 
-# Check that User is valid and unprivileged (system-wide mode only).
-if OptD["Mode"] == "system-wide":
-  try:
-    if not pwd.getpwnam(OptD["User"])[2]:
-      print """Compile terminated.  User may not be root.  Please specify a non-
-privileged user with the -u option."""
-      sys.exit()
-  except KeyError:
-    print """Compile terminated.  User not found.  Please specify a real, non-
-privileged user with the -u option."""
-    sys.exit()
-
 OptD["Path"] = os.path.abspath(OptD["Path"])
 
 if OptD["DispDir"][-1] != "/": OptD["DispDir"] += "/"
@@ -429,7 +407,6 @@ F.write("""
 #define PYTHON    "%(Python)s"
 #define INSTALL   "%(Path)s"
 #define MODE      "TMDA_CGI_MODE=%(Mode)s"
-#define USER      "TMDA_CGI_USER=%(User)s"
 #define DISP_DIR  "TMDA_CGI_DISP_DIR=%(DispDir)s"
 #define BASE_DIR  "TMDA_BASE_DIR=%(Base)s"
 #define VUSER     "TMDA_VUSER=%(VUser)s"
