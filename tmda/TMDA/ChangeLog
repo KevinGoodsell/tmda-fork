@@ -1,5 +1,7 @@
 2001-05-28  Jason R. Mastaler  <jason@mastaler.com>
 
+	* Defaults.py (TMDA_VERSION): Begin 0.15 development.
+
 	* Util.py:  Import Defaults only for functions that need them.
 	Fixes tmda-keygen.
 
