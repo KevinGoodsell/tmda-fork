@@ -62,9 +62,24 @@ Title: Auto-installation & Auto-uninstallation
     <td>The constant string "<tt>..</tt>".</td>
   </tr>
   <tr>
+    <td valign="top" nowrap><b><tt>%(ShortUrlDom)s</tt></b></td>
+    <td>The domain name portion of the URL the user surfed up, without any
+      "www.", if present.<br>
+      Also see <tt>%(UrlDomain)s</tt>, below.</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(UrlDomain)s</tt></b></td>
+    <td>The domain name portion of the URL the user surfed up.<br>
+      Also see <tt>%(ShortUrlDom)s</tt>, above.</td>
+  </tr>
+  <tr>
     <td valign="top" nowrap><b><tt>%(User)s</tt></b></td>
     <td>The user's login name, or the left-most portion (before the "@") of the 
       user's e-mail address in the case of virtual users.</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(VirtUser)d</tt></b></td>
+    <td>1 if the user is a virtual user, 0 if the user is real.</td>
   </tr>
   <tr>
     <td valign="top" nowrap><b><tt>%(VPop)s</tt></b></td>

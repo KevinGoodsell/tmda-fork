@@ -284,8 +284,10 @@ def Install():
 
   # Are we supposed to ignore any of those?
   if re.search(Anomalies["VIRTUAL_TEST"], PVars["HOME"]):
+    Dict["VirtUser"] = 1
     ListDiff(FilesToInstall, Anomalies["REAL_ONLY"])
   else:
+    Dict["VirtUser"] = 0
     ListDiff(FilesToInstall, Anomalies["VIRTUAL_ONLY"])
 
   # What files will that clobber?
@@ -570,15 +572,17 @@ def Show():
   global Dict
   Dict = \
   {
-    "Base":     os.path.abspath(os.environ["TMDA_BASE_DIR"]),
-    "CryptKey": KeyGen(),
-    "Domain":   Util.gethostname(),
-    "Home":     os.environ["HOME"],
-    "Parent":   "..",
-    "User":     os.environ["USER"],
-    "VPop":     PVars[("NoOverride", "VPop")],
-    "VPopBin":  PVars[("NoOverride", "VPopBin")]
+    "Base":      os.path.abspath(os.environ["TMDA_BASE_DIR"]),
+    "CryptKey":  KeyGen(),
+    "Domain":    Util.gethostname(),
+    "Home":      os.environ["HOME"],
+    "Parent":    "..",
+    "UrlDomain": os.environ["SERVER_NAME"],
+    "User":      os.environ["USER"],
+    "VPop":      PVars[("NoOverride", "VPop")],
+    "VPopBin":   PVars[("NoOverride", "VPopBin")]
   }
+  Dict["ShortUrlDom"] = re.sub("^www.", "", Dict["UrlDomain"], re.I)
 
   # Load the display template
   if Form["cmd"].value == "conf-example":

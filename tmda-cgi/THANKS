@@ -26,6 +26,9 @@ Contributions:
 
     * Remo Mattei -- bug finding
 
+    * Kelvin D. Olson -- suggested adding UrlDomain and ShortUrlDom to the
+                         autoinstall variable list
+
     * Jim Ramsay -- authentication, brainstorming, user interface, feature
                     plans, alternate character set stuff
 
