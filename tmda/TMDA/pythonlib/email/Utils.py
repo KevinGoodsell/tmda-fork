@@ -54,8 +54,8 @@ EMPTYSTRING = ''
 UEMPTYSTRING = u''
 CRLF = '\r\n'
 
-specialsre = re.compile(r'[][\()<>@,:;".]')
-escapesre = re.compile(r'[][\()"]')
+specialsre = re.compile(r'[][\\()<>@,:;".]')
+escapesre = re.compile(r'[][\\()"]')
 
 
 
@@ -66,8 +66,6 @@ def _identity(s):
 
 
 def _bdecode(s):
-    if not s:
-        return s
     # We can't quite use base64.encodestring() since it tacks on a "courtesy
     # newline".  Blech!
     if not s:
