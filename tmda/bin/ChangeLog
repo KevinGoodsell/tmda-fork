@@ -1,3 +1,8 @@
+2003-05-24  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (bouncegen): Consult Defaults.CGI_VIRTUALUSER when
+	creating confirm_accept_url.
+
 2003-05-24  Tim Legant  <tim@catseye.net>
 
 	* tmda-inject (inject_message): Use Util.add_headers and

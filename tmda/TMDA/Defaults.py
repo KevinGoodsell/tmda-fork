@@ -430,6 +430,14 @@ if not vars().has_key('CGI_SETTINGS'):
 if not vars().has_key('CGI_URL'):
     CGI_URL = None
 
+# CGI_VIRTUALUSER
+# Set this variable to 1 if you wish to enable tmda-cgi's "virtual
+# user" support (http://tmda.net/tmda-cgi/virtual.html).
+#
+# Default is 0 (disabled)
+if not vars().has_key('CGI_VIRTUALUSER'):
+    CGI_VIRTUALUSER = 0
+
 # CONFIRM_ADDRESS
 # An optional e-mail address to use for creating confirmation
 # addresses.  Normally, the recipient address is used, but in some

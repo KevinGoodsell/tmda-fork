@@ -650,15 +650,23 @@ def bouncegen(mode, text=None):
                                                              'accept')
         if Defaults.CGI_URL:
             # create the url for tmda-cgi release.
-            # include the current uid, recipient address, and release cookie.
-            confirm_accept_url = '%s?%s&%s&%s' %(Defaults.CGI_URL,
-                                                 os.getuid(),
-                                                 recipient_address,
-                                                 Cookie.make_confirm_cookie(
-                                                   timestamp,
-                                                   pid,
-                                                   'accept'
-                                                   ) )
+
+            if Defaults.CGI_VIRTUALUSER:
+                # include the current uid, recipient address, and release cookie.
+                confirm_accept_url = '%s?%s&%s&%s' %(Defaults.CGI_URL,
+                                                     os.getuid(),
+                                                     recipient_address,
+                                                     Cookie.make_confirm_cookie(
+                    timestamp,
+                    pid,
+                    'accept'
+                    ))
+            else:
+                # include the current euid and release cookie.
+                confirm_accept_url = '%s?%s.%s' %(Defaults.CGI_URL, os.geteuid(),
+                                                  Cookie.make_confirm_cookie(timestamp,
+                                                                             pid,
+                                                                             'accept'))
         pending_message = create_pending_msg(timestamp, pid)
     elif mode == 'hold':
         pending_message = create_pending_msg(str('%d' % now), Defaults.PID)
