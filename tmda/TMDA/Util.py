@@ -832,7 +832,10 @@ def CanMode( file, mode = MODE_READ, uid = None, gid = None ):
     needuid = fstat.st_uid
     needgid = fstat.st_gid
     filemod = fstat.st_mode & 0777
-    if filemod & mode:
+    if uid == 0:
+        # Root always wins.
+        return 1
+    elif filemod & mode:
         return 1
     elif filemod & ( mode * 010 ) and needgid == gid:
         return 1
