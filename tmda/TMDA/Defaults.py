@@ -279,7 +279,8 @@ if not vars().has_key('SMTPSSL') and OUTGOINGMAIL == 'smtp':
 # When SMTPSSL is enabled, this is the optional name of a PEM
 # formatted file that contains your private key.
 # No default.
-if not vars().has_key('SMTPSSL_KEYFILE') and SMTPSSL:
+if not vars().has_key('SMTPSSL_KEYFILE') and \
+       OUTGOINGMAIL == 'smtp' and SMTPSSL:
     SMTPSSL_KEYFILE = None
 
 # SMTPSSL_CERTFILE
@@ -287,7 +288,8 @@ if not vars().has_key('SMTPSSL_KEYFILE') and SMTPSSL:
 # formatted certificate chain file.  Warning: This does not do any
 # certificate verification.
 # No default.
-if not vars().has_key('SMTPSSL_CERTFILE') and SMTPSSL:
+if not vars().has_key('SMTPSSL_CERTFILE') and \
+       OUTGOINGMAIL == 'smtp' and SMTPSSL:
     SMTPSSL_CERTFILE = None
 
 # SMTP_MAX_SESSIONS_PER_CONNECTION
