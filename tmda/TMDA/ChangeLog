@@ -1,3 +1,8 @@
+2003-09-22  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Util.py (append_to_file): Strip inline comments before checking
+	for duplicate entries.
+
 2003-08-21  Tim Legant  <tim@catseye.net>
 
 	* Pending.py (initQueue): After reading message list from stdin,

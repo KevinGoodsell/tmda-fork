@@ -412,16 +412,18 @@ def append_to_file(str, fullpathname):
     """Append a string to a text file if it isn't already in there."""
     if os.path.exists(fullpathname):
         for line in fileinput.input(fullpathname):
-            line = string.lower(string.strip(line))
+            line = line.strip().lower()
             # Comment or blank line?
             if line == '' or line[0] in '#':
                 continue
             else:
-                if string.lower(string.strip(str)) == line:
+                line = line.expandtabs().split('#')[0].strip()
+                bare = str.expandtabs().split('#')[0].strip()
+                if bare.lower() == line:
                     fileinput.close()
                     return 0
     file = open(fullpathname, 'a+')
-    file.write(string.strip(str) + '\n')
+    file.write(str.strip() + '\n')
     file.close()
 
 
