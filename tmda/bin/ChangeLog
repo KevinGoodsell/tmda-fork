@@ -1,3 +1,8 @@
+2002-01-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-sendmail (usage): Remove the `-bs' option, since
+	tmda-inject does not support it.
+
 2002-01-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (address_extension): If we are running a qmail

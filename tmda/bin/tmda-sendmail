@@ -5,7 +5,7 @@
 ##################################################################
 
 """
-Usage:  %(program)s [ -t ] [ -fsender ] [ -Fname ] [ -bs ] [ arg ... ]
+Usage:  %(program)s [ -t ] [ -fsender ] [ -Fname ] [ arg ... ]
 """
 
 import getopt
@@ -26,14 +26,14 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'hvimte:f:p:o:B:F:EJxb:', ['help'])
+                               'hvimte:f:p:o:B:F:EJx', ['help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
-    elif opt in list('BpvixmeoEJb'):
+    elif opt in list('BpvixmeoEJ'):
         pass 
     elif opt == '-t':
         header_recipients = 1
