@@ -259,6 +259,8 @@ sendmail-path="/path/to/tmda/bin/tmda-sendmail"
 set sendmail="/path/to/tmda/bin/tmda-sendmail"
 
 </pre></blockquote>
+and make sure <em>sendmail_wait</em> is not set to <code>-1</code>.
+<br><br>
 
 <li>For <a href="http://www.wonderworks.com/vm/" TARGET="Resource Window">VM</a>,
 add the following line to your .vm file:<br>
