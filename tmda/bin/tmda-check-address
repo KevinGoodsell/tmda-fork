@@ -91,10 +91,10 @@ def valid_keyword_cookie(cookie):
     """Check a keyword cookie"""
     parts = string.split(cookie, '.')
     if len(parts) != 2:
-        None
+        return None
     keyword = parts[0]
     mac = parts[1]
-    newmac = Cookie.keywordmac(keyword)
+    newmac = Cookie.make_keywordmac(keyword)
     return mac == newmac
 
 
