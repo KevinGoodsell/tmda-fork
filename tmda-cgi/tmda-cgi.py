@@ -109,7 +109,7 @@ Unicode.PVars = PVars
 # First visit to any page?
 if not Form.keys():
   # Release an e-mail by URL?
-  if os.environ["QUERY_STRING"]:
+  if os.environ.has_key("QUERY_STRING") and os.environ["QUERY_STRING"]:
     import Release
     Release.Release(os.environ["QUERY_STRING"])
     sys.exit()
