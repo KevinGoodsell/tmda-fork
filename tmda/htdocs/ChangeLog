@@ -1,5 +1,8 @@
 2002-02-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* index.ht (Links): Mention TMDA's local mail delivery agent
+	capability up front.
+
 	* config-pre.ht: Document how to make Exim add Return-Path to
 	command pipe messages.
 
