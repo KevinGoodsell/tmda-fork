@@ -20,7 +20,6 @@ try:
 except ImportError:
     PLATFORM = sys.platform
 
-# A summary of all the version identifiers; used primarily for the
-# `X-Delivery-Agent' headers.  e.g,
-# "TMDA/0.43 (Python 2.1.1; freebsd-4.4-RELEASE-i386)"
+# A summary of all the version identifiers.  e.g,
+# TMDA/0.43 (Python 2.2; linux-sparc64)
 ALL = "TMDA/%s (Python %s; %s)" % (TMDA, PYTHON, PLATFORM)
