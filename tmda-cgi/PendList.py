@@ -169,7 +169,7 @@ def Show():
     Queue.initQueue()
     Queue._loadCache()
     Msgs = Queue.listPendingIds()
-  except Errors.QueueError:
+  except (Errors.QueueError, TypeError):
     Msgs = []
 
   # Search the Pending List:
@@ -216,7 +216,7 @@ def Show():
     for Msg in Msgs:
       try:
         MsgObj = Pending.Message(Msg)
-      except (IOError, Errors.MessageError), ErrStr:
+      except (IOError, Errors.MessageError, TypeError), ErrStr:
         continue
       # Slow search - Search the fulltext of the message
       if searchScope == 'fullMessage' and \

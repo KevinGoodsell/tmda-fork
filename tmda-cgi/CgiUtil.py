@@ -190,4 +190,8 @@ def TestTextFilePath(Path):
   for Var in PVars.ThemeVars.options("AccessPaths"):
     if re.search(PVars.ThemeVars.get("AccessPaths", Var, 1) % Dict, Path):
       return 1
+  for Var in PVars.PVars:
+    if Var[:12] == "AccessPaths:":
+      if re.search(PVars.PVars[Var] % Dict, Path):
+        return 1
   return None

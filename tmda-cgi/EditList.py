@@ -63,13 +63,14 @@ def Show():
     Parser.read(CgiUtil.ExpandUser(Filters))
     for Test in Parser.filterlist:
       if Test[0] in ["from-file", "to-file", "body-file", "headers-file"]:
-        Filename = os.path.split(Test[2])[1].lower()
-        if SysButtons.has_key(Filename):
-          Buttons[CgiUtil.ExpandUser(Test[2])] = \
-            (Filename, SysButtons[Filename])
-        else:
-          Buttons[CgiUtil.ExpandUser(Test[2])] = \
-            (Filename, SysButtons["other"])
+        if CgiUtil.TestTextFilePath(Test[2]):
+          Filename = os.path.split(Test[2])[1].lower()
+          if SysButtons.has_key(Filename):
+            Buttons[CgiUtil.ExpandUser(Test[2])] = \
+              (Filename, SysButtons[Filename])
+          else:
+            Buttons[CgiUtil.ExpandUser(Test[2])] = \
+              (Filename, SysButtons["other"])
   Files = Buttons.keys()
   Files.sort()
 

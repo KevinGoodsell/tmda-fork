@@ -1,3 +1,13 @@
+2004-02-04  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Allow AccessPaths configuration settings to be in local configuration
+	  files as well.
+
+	* Make sure a list file location passes an AccessPaths test before
+	  bringing it up in an editor.
+
+	* Catch an unusual error when handling a pending e-mail.
+
 2003-12-10  Jim Ramsay      <i.am@jimramsay.com>
 
 	* ./configure now checks for 'cc' and 'gcc' for those few systems
