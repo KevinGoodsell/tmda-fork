@@ -46,10 +46,14 @@ Contributions:
 
     * David Lebel -- OpenBSD port.
 
-    * Tim Legant -- Improvements to the filter file language such as
-      support for multi-line, multi-action filters, support for
-      arguments, and improved error reporting.  -autocdb, -autodbm,
-      bugfixes.
+    * Tim "FilterParser" Legant -- By far the most prolific
+      contributor.  Rewrite of FilterParser.py plus many improvements
+      to the filter file language such as support for multi-line,
+      multi-action filters, support for arguments, improved error
+      reporting, macros, variable interpolation, and assorted new
+      arguments such as `-autocdb', `-autodbm', and `-optional'.  Also
+      documentation and lots of general bugfixes, suggestions and
+      tmda-users support.
 
     * Adam McKenna -- Debian package.
 
