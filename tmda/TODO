@@ -21,8 +21,6 @@ tmda-inject
 	- Possibly support substring matching for the special
 	case addresses in addition to just matching specific
 	addresses.
-	
-	- X-TMDA: bare timeout (to override Defaults.TIMEOUT)
 		
 tmda-filter
 

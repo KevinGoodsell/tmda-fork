@@ -155,7 +155,13 @@ def main():
         x_tmda_over = 1
         x_tmda = message_headers.getheader('x-tmda')
         fields = string.split(x_tmda)
-        if fields[0] in ('bare','dated','sender'):
+        if fields[0] == 'dated':
+            address_cookie = fields[0]
+            try:                        # check for timeout override
+                os.environ['TMDA_TIMEOUT'] =  fields[1]
+            except IndexError:
+                pass
+        elif fields[0] in ('bare','sender'):
             address_cookie = fields[0]
         elif fields[0] == 'exp':
             address_cookie = fields[0]

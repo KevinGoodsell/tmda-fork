@@ -3,6 +3,7 @@
 """Dated/Sender crypto-cookie functions."""
 
 
+import os
 import string
 import time
 
@@ -19,7 +20,9 @@ def datemac(time):
 
 def make_dated_cookie(time):
     """Return a dated-style cookie (expire date + HMAC)."""
-    expire_time = str(int(time) + Util.seconds(Defaults.TIMEOUT))
+    tmda_timeout = os.environ.get('TMDA_TIMEOUT')
+    if not tmda_timeout:tmda_timeout = Defaults.TIMEOUT
+    expire_time = str(int(time) + Util.seconds(tmda_timeout))
     datedmac = datemac(expire_time)
     return expire_time + '.' + datedmac
 

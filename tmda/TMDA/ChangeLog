@@ -1,3 +1,8 @@
+2001-05-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Cookie.py (make_dated_cookie): Support `X-TMDA: dated timeout'
+	(to override Defaults.TIMEOUT)
+
 2001-05-10  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Defaults.py (TMDA_VERSION): Begin 0.13 development.
