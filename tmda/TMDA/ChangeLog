@@ -1,3 +1,7 @@
+2001-08-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (TMDA_VERSION): Begin 0.34 development.
+
 2001-08-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (USEVIRTUALDOMAINS): Replaces QMAILVIRTUALDOMAINS.
