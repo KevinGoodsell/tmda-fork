@@ -4,7 +4,7 @@
 <li><a href="history.html">History</a>
 <li><a href="features.html">Features</a>
 <li><a href="challengeresponse.html">Challenge/Response</a>
-<li><a href="results.html">Results &amp; Testimonials</a>
+<li><a href="results.html">User Testimonials</a>
 <li><a href="inuse.html">TMDA In Use</a>
 <li><a href="press.html">Press Coverage</a>
 <li><a href="donations.html">Donations</a>
