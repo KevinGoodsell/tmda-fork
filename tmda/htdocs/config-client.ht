@@ -319,7 +319,7 @@ be accomplished with the following addition to your .gnus file:
 </pre></blockquote>
 
 <li>For <a href="http://www.slrn.org/" TARGET="Resource Window">slrn</a>, you can define
-an m4 macro that modifies your .slrnrc each time slrn is invoked:
+an m4 macro that modifies your .slrnrc each time slrn is invoked:<br><br>
 
 <ol>
 <li>
