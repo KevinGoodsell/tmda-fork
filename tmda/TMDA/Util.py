@@ -228,6 +228,7 @@ def maketext(templatefile, vardict):
         print error_msg,'is not a valid template variable'
         sys.exit(Defaults.ERR_CONFIG)
 
+
 def writefile(contents,fullpathname):
     """Simple function to write contents to a file."""
     if os.path.exists(fullpathname):

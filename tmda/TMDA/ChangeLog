@@ -4,6 +4,8 @@
 	specifies the maximum size the a message can be before its body is
 	excluded from the confirmation request/acceptance notices.
 
+	(CONFIRM_MAX_MESSAGE_SIZE): Change default to 50000 bytes.
+
 2001-09-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (TMDA_HOMEPAGE): Use sf.net instead of

@@ -133,9 +133,9 @@ if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
 # This is the largest size (in bytes) that a message can be before the
 # its body is excluded from the confirmation request/acceptance
 # notices.  Set this to None to allow any size message.
-# Default is 500000
+# Default is 50000
 if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
-    CONFIRM_MAX_MESSAGE_SIZE = 500000
+    CONFIRM_MAX_MESSAGE_SIZE = 50000
 
 # CONFIRM_ACCEPT_TEMPLATE
 # Full path to a custom template for confirmation acceptance notices.
