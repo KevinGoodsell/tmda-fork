@@ -6,7 +6,7 @@ Summary: Tagged Message Delivery Agent
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source0: http://tmda.net/releases/%{name}-%{version}.tgz
+Source0: http://tmda.net/releases/unstable/%{name}-%{version}.tgz
 License: GPL
 Group: Utilities/System
 BuildRoot: %{_tmppath}/%{name}-buildroot
