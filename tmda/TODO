@@ -14,8 +14,11 @@ General
 	
 	- Write a LOGFILE statistics/summary script.
 	
-	- Possibly Object-Orientize TMDA with Classes, inheritance,
-	etc.  Are there any real benefits to doing this?
+	- More OOP.
+
+	- Elegant rewrites of some of the gorpish functions and
+	flow-control in tmda-filter/tmda-inject.  (Are there any
+	*good* _Python_ programmers out there?)
 	
 	- Regression testing script.
 	
@@ -37,6 +40,4 @@ tmda-filter
 	certainly a sign that someone is attempting forgery.
 	
 	- Support reading from DBM/GDBM style databases in addition to
-	textfiles.  Currently, a 10,000 line list is read in
-	under 15 seconds on a PIII/700, but DB support may be
-	necessary for much larger lists.
+	textfiles.
