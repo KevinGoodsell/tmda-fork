@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Aug  7 14:48:31 2002 -->
+<!-- Sat Aug 17 22:40:04 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -113,7 +113,7 @@ Configuration
 <A HREF="config-client.html">Client Configuration</A>
 </TD></TR>
 <TR><TD BGCOLOR="#cccccc">
-<b>Filter Specification</b>
+<A HREF="config-filter.html">Filter Specification</A>
 </TD></TR>
 <TR><TD BGCOLOR="#cccccc">&nbsp;
 <TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
@@ -172,11 +172,18 @@ which can be changed by setting <b>FILTER_INCOMING</b> in your
 <u><b>Format of Filter Files</u></b>:
 <br><br>
 
-A filter file is composed of filters, blank lines and comments.  Each
-filter in a filter file is expected to be a string containing three
-fields separated by whitespace.  Each filter may be placed on a single
-line or may be spread over several lines, to increase readability.
-You must follow a few rules when formatting your filters.
+A filter file is composed of filters, blank lines and comments.  For
+ease of organization, macros, variable interpolation and the ability
+to include other filter files is supported.  These features are
+documented below in the <a href="#addlfeatures">Additional
+Features</a> section.
+<br><br>
+
+Each filter in a filter file is expected to be a string containing
+three fields separated by whitespace.  Each filter may be placed on a
+single line or may be spread over several lines, to increase
+readability.  You must follow a few rules when formatting your
+filters.
 
 <ul>
 <li>Each filter must start at the beginning of a line.
@@ -185,7 +192,7 @@ You must follow a few rules when formatting your filters.
 indented by one or more spaces or tabs.
 
 <li>Blank lines (either empty or containing only whitespace) or a line
-beginning a new filter signify the end of the previous rule.
+beginning a new filter signify the end of the previous filter.
 
 <li>A line containing only a comment does <i>not</i> end a filter.  You
 may intersperse comment lines within your filters (see the examples).
@@ -198,21 +205,21 @@ message into the debug log and the mail is deferred.  This is to allow
 you the chance to fix your filter before processing the mail.
 </ul>
 
-The filter file is read sequentially from top to bottom, and the first match
-wins.  The three fields in a filter are:
+The filter file is read sequentially from top to bottom.  The first
+filter that matches is used.  The three fields in a filter are:
 
 <blockquote><pre><b>
 source match action
 
 </blockquote></pre></b>
 
-<li><b>source</b>: specifices the source of the match.<p>
+<li><b>source</b>: specifices the source of the match.<br><br>
 
 Some sources take optional arguments.  An argument begins with a dash
 (<b>-</b>).  Some arguments take options.  If an argument takes an
 option, the argument is followed immediately by an equals sign
 (<b>=</b>) and the option.  No whitespace is allowed on either side of
-the equals sign.<p>
+the equals sign.<br><br>
 
 Single arguments look like this:
 <pre>
@@ -222,45 +229,20 @@ and arguments with options look like this:
 <pre>
     -argument=option
 </pre>
-
-Arguments are listed below.  Square brackets (<b>[]</b>) indicate the
-the argument is optional.  Words in chevrons (<b>&lt;&gt;</b>)
-should be replaced by the appropriate option, without the chevrons.<p>
-
-Sources can be one of:
-
-<br><br>
-
-(for both incoming and outgoing):
-<blockquote><pre>
-from (sender address)
-from-file [ -autocdb | -autodbm ]
-from-cdb
-from-dbm
-from-ezmlm
-from-mailman -attr=&lt;attribute&gt;
-to (recipient address)
-to-file [ -autocdb | -autodbm ]
-to-cdb
-to-dbm
-to-ezmlm
-to-mailman -attr=&lt;attribute&gt;
-</blockquote></pre>
-
-(for incoming only):
-<blockquote><pre>
-body [ -case ] (message body)
-body-file [ -case ]
-headers [ -case ] (message headers)
-headers-file [ -case ]
-size (message size)
-
-</blockquote></pre>
+<br>
+Sources are documented <a href="filter-sources.html">here</a> along
+with any optional arguments and the expected match field.<br><br>
 
 <li><b>match</b>: 
 should be an expression, or the full path to a textfile, CDB database, or
 DBM database containing more expressions if <b>source</b> was suffixed
 with `-file', `-cdb', or `-dbm'.
+<br><br>
+
+The match expression and the contents of the textfile vary based on
+the source.  For an explanation of the match field expected for a
+given source, see the <a href="filter-sources.html">source
+documentation</a>.
 <br><br>
 
 The second field within a textfile, CDB or DBM is optional, but overrides
@@ -271,124 +253,14 @@ foo@mastaler.com
 bar@mastaler.com bounce
 
 </blockquote></pre>
-In a CDB or DBM, the keys should be the e-mail addresses to match, and
-their corresponding values (or records) should be empty unless you
-want to override the action specified in the filter file
-
 DBM support comes with your Python interpreter, but CDB support
 currently requires that you first install the
 <a href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource Window">python-cdb</a>
 extension module.
 <br><br>
 
-The '-autocdb' and '-autodbm' arguments are intended to ease the use
-of CDB/DBM lists in TMDA by automatically rebuilding the CDB or DBM
-file as necessary.  This gives you the performance advantages of
-hashed databases without the hassle of having to manually maintain
-them.  Both 'from-file' and 'to-file' take the -autocdb/-autodbm
-flags.  The match field of 'from-file' and 'to-file' is always the
-name of the textfile.  You do not need to add '.cdb' or '.db' if you
-use the -auto* flags. It will be automatically appended to the
-filename.  With the -auto* arguments, TMDA will rebuild the database
-if it doesn't exist or if its timestamp is older than its source file.
-If the rebuild fails for some reason, TMDA will fall back to matching
-from the sourcefile instead.  Before you try the CDB version of this
-feature, make sure you have the <a
-href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource
-Window">python-cdb</a> extension module installed.  
-
 The <em>printcdb/printdbm</em> scripts in the <strong>contrib</strong> directory
 can be used to print the contents of CDB/DBM files in TMDA-list format.
-<br><br>
-
-The '-ezmlm' and '-mailman' sources can be used to match the
-subscribers of an <a href="http://cr.yp.to/ezmlm.html" TARGET="Resource Window">ezmlm</a> 
-or <a href="http://list.org/" TARGET="Resource Window">Mailman</a> mailing list.
-<br><br>
-
-'-ezmlm' sources match addresses contained in ezmlm `subscribers' directories.
-The match field of an -ezmlm line should be the full path to the parent directory.
-<br><br>
-
-'-mailman' sources match addresses contained in a Mailman
-configuration database.  The match field should be the full path to
-the list directory.  Both Mailman 2.0 and 2.1-style configuration
-databases are supported.  The '-mailman' sources require you to
-specify an `attribute' to search.  Use the '-attr=<attribute>' flag to
-specify the name of an attribute contained in the database.  For
-example, `members' (subscriber addresses), `digest_members' (digest
-subscriber addresses), or `owner' (list owner's address).
-
-<br><br>
-
-The following table shows what the <b>match</b> expression should
-contain for a given <b>source</b>:
-<br><br>
-
-<blockquote><pre>
-source:		match:
--------		------
-to*		recipient e-mail address or wildcard expression.
-from*		sender e-mail address or wildcard expression.
-body*		regular expression matching message body content.
-headers*	regular expression matching message header content.
-size		comparison operator and number of bytes to compare to the
-		size of the message.  Only `<' and `>' are supported.
-
-</blockquote></pre>
-<strong>NOTE:</strong> To match the empty envelope sender such as bounce
-messages are sent with, use <b><code><></code></b> as the expression.
-<br><br>
-
-In addition to explicit e-mail addresses, you can use expressions
-based on UNIX shell-style wildcard characters in either the
-<b>match</b> field of a line, or within the textfile in the
-<b>match</b> field.  Wildcard characters are not recognized
-in a CDB or DBM file.  The special characters are:
-
-<blockquote><pre>
-
-Characters(s)    Description
--------------    -----------
-*                Matches everything.
-?                Matches any single character.
-[seq]            Matches any character in seq.
-[!seq]           Matches any character not in seq.
-
-</blockquote></pre>
-
-In addition, <code>`@='</code> (a custom rule) will expand to match
-both <code>@</code> and <code>@*.</code>
-<br><br>
-
-Here are some common examples:
-<blockquote><pre>   
-# match only jdoe@domain.dom
-jdoe@domain.dom
-# match anyone@domain.dom, but not anyone@sub.domain.dom
-*@domain.dom 
-# match anyone@sub.domain.dom, but not anyone@domain.dom
-*@*.domain.dom
-# match both anyone@domain.dom, and anyone@sub.domain.dom
-*@=domain.dom   
-
-</blockquote></pre>
-
-The body* and headers* sources on the other hand take regular expressions as defined
-in Python's
-<a href="http://www.python.org/doc/current/lib/module-re.html" TARGET="Resource Window">
-re module</a>.  Because regular expressions may include spaces, you
-must surround the regular expressions with quotation marks.  You may
-use either single quotes (<code><b>'</b></code>) or double quotes
-(<code><b>"</b></code>) as long as you use the the same one at both
-the beginning and the end.<p>
-
-The regular expression sources use case-insensitive matching by
-default.  If you want a case-sensitive match, use the '-case' flag.<p>
-
-If you need to match a quote in your regular expression, simply use
-the other style of quotes to surround the expression or escape the
-embedded quote with a backslash (<code><b>\</b></code>).
 <br><br>
 
 <li><b>action</b>: 
@@ -403,20 +275,18 @@ outgoing.
 bounce,reject (bounce the message)
 drop,exit,stop (silently drop the message)
 ok,accept,deliver (deliver the message)
-ok,accept,deliver=instruction (deliver to a Maildir, mbox, program, or address)
+ok,accept,deliver=&lt;instruction&gt; (deliver to a Maildir, mbox, program, or address)
 confirm (request confirmation for the message)
 
 </blockquote></pre>
 
-The <b>instruction</b> option to <b>ok,accept,deliver</b> can be
-
-used to short-circuit the default delivery method by delivering the
-message to a specific location.  Delivery to 
-qmail-style <a href="http://www.qmail.org/man/man5/maildir.html" TARGET="Resource Window">
-Maildirs</a>, mboxrd-format
-<a href="http://www.qmail.org/man/man5/mbox.html" TARGET="Resource Window">
-mboxes</a>, 
-programs (pipe), and different e-mail addresses
+The <b>instruction</b> option to <b>ok,accept,deliver</b> can be used
+to short-circuit the default delivery method by delivering the message
+to a specific location.  Delivery to qmail-style <a
+href="http://www.qmail.org/man/man5/maildir.html" TARGET="Resource
+Window"> Maildirs</a>, mboxrd-format <a
+href="http://www.qmail.org/man/man5/mbox.html" TARGET="Resource
+Window"> mboxes</a>, programs (pipe), and different e-mail addresses
 are supported.
 <br><br>
 
@@ -435,7 +305,7 @@ A program instruction begins with a vertical bar.  The rest of the line will
 be passed to /bin/sh.  Whitespace and shell variables (i.e, $HOME and
 ~) are allowed.
 </td>
-<td>
+<td nowrap>
 <code>
 deliver=|/usr/ucb/vacation jason<br>
 deliver=| /usr/bin/maildrop $HOME/.mailfilter
@@ -536,82 +406,184 @@ tag (tag one or more specific headers with the above actions)
 
 For all of the outgoing actions except <b>tag</b>, the tag applies to
 both the From: (or Resent-From:) header and the envelope sender.  Both
-will be set to the same address.<p>
+will be set to the same address.
+<br><br>
 
 The <b>tag</b> action is a little more flexible, in that it can be
 used to tag more than one header and each header can be tagged with a
 different address.  The <b>tag</b> syntax is as follows:
 
 <pre><blockquote>
-to* &lt;email_address&gt; tag &lt;header action&gt; [header action] ...
+&lt;to* | from*&gt; &lt;match&gt; tag &lt;header action&gt; [header action] ...
 
 </blockquote></pre>
-
-Any of the to* <b>sources</b> may be used.  The email_address is
-explained in the <b>match</b> section above.  The email address is
-followed by the keyword <b>tag</b> which is followed by a list of
-header/action pairs.<p>
+Any of the to* or from* <b>sources</b> may be used.  The &lt;match&gt;
+is explained in the <a href="filter-sources.html">source
+documentation</a>.  The &lt;match&gt; is followed by the keyword
+<b>tag</b> which is followed by a list of header/action pairs.
+<br><br>
 
 The header is the name of the RFC822 header field you want to tag,
 usually From: or Reply-To:.  When you specify the header name, do not
-include the <code><b>:</b></code>.  Use <b>envelope</b> to tag the
-envelope sender.<p>
+include the colon (<code><b>:</b></code>).  Use <b>envelope</b> to tag
+the envelope sender.
+<br><br>
 
 The action is any one of the outgoing actions from the list above
 (except <b>tag</b>, of course).  That action will be used to tag the
 specified header only.  If the specified action is not one from the
-list above, the action is inserted verbatim as a string.  This can
-be used to add arbitrary headers to your outgoing messages based on
-destination.  Quotes are required for text that includes whitespace and is
-be unnecessary for single word strings.
-<p>
+list above, the action is inserted verbatim as a string.  This can be
+used to add arbitrary headers to your outgoing messages based on
+destination.  Quotes are required for text that includes whitespace
+and are unnecessary for single word strings.
+<br><br>
 
-Why would you want to do this?  Some mailing lists restrict posting to
-subscribers only.  The way they accomplish this is by comparing the
-email address of the sender to their subscriber list.  Some lists
-compare the envelope sender while others compare the From: header.  If
-the particular list you are subscribed to compares against the From:
-header, that means your From: header must contain a valid email
-address, which can be harvested by spammers.<p>
-
-The solution to this problem is to subscribe with a <u>sender
-address</u> and use that same address in your From: header.  Then
-only the list can successfully send mail to you using that address.
-See the <a href="config-client.html">Client Configuration</a> page for
-more information about <u>sender</u> addresses.<p>
-
-The final issue now is that legitimate list members can't respond to
-you, since the <u>sender address</u> works only for the list itself.
-To get around that problem, set the Reply-To: header to a <b>dated</b>
-address.  Then list members will be able to reply for a period of time
-but by the time the spammers harvest that address, it will have
-expired.<p>
-
-Here's how to set all that up in your outgoing filter:
+The <b>tag</b> action is especially useful for mailing lists.  Here,
+the envelope sender is set to your subscription address but the From:
+header is set to a dated address, making it easy for list members to
+respond to you but greatly reducing the likelihood that spammers will
+be able to harvest and use the dated address before it expires.
 <pre><blockquote>
-to closed-list@lists.com tag
-   from      sender=closed-list-admin@lists.com
-   envelope  sender=closed-list-admin@lists.com
-   reply-to  dated
+to tmda-users@tmda.net tag
+   envelope  exp=foo@catseye.net
+   from      dated=1w
 
 </blockquote></pre>
-
-As you can see, the ability to place a filter on several lines helps
-with the readability of these longer <b>tag</b> actions.<p>
-
-There is one last wrinkle.  A common case is where you wish to tag the
-From: header and the envelope sender with the same address but tag
-Reply-To: differently.  If you specify the From: header but not the
-envelope sender, TMDA will use address in the From: header as the
-envelope sender.<p>
-
-Thus, the above example can be shortened to this:
+In simple cases where you wish to tag the From: header and the
+envelope sender with the same address but tag Reply-To: differently,
+you may specify the From: header but not the envelope sender.  TMDA
+will use address in the From: header as the envelope sender.
 <pre><blockquote>
 to closed-list@lists.com tag
    from      sender=closed-list-admin@lists.com
    reply-to  dated
 
 </blockquote></pre>
+This will set both the From: header and the envelope sender to the
+same address (a sender address) based on the envelope sender of the
+list.  Reply-To: will be dated to allow list members to reply to you.
+<br><br>
+
+<a name="addlfeatures">
+<u><b>Additional Features</b></u>:</a>
+<br><br>
+
+<li> <b>Macros</b><br><br>
+
+A macro is, in its simplest form, a piece of text that is to be
+substituted for another piece of text, rather like a #define in C.
+Here's how to define a simple macro in a filter file.
+<pre><blockquote>
+macro INBOX ~/Mail/Inbox
+
+</blockquote></pre>
+Here's how to use that macro in a filter rule.
+<pre><blockquote>
+to foo@catseye.net deliver=INBOX
+
+</blockquote></pre>
+Before the filter parser attempts to parse a rule it performs a macro
+substitution pass on the text.  The result of that substitution on the
+above example filter is this.
+<pre><blockquote>
+to foo@catseye.net deliver=~/Mail/Inbox
+
+</blockquote></pre>
+After the substitution is performed, the rule is parsed normally and
+any syntax errors are identified and logged as usual.
+<br><br>
+
+Macros may also take parameters.  For example, assume that you always
+deliver list mail to a unique maildir per list.  Here's a macro to
+help with that.
+<pre><blockquote>
+macro LIST_DELIVER(m) deliver=~/Mail/m/
+
+</blockquote></pre>
+Here's how you might use it for the two TMDA mailing lists.
+<pre><blockquote>
+from tmda-users-admin@tmda.net   LIST_DELIVER(TMDA-Users)
+from tmda-workers-admin@tmda.net LIST_DELIVER(TMDA-Workers)
+
+</blockquote></pre>
+Expanding the above macros results in these rules.
+<pre><blockquote>
+from tmda-users-admin@tmda.net   deliver=~/Mail/TMDA-Users/
+from tmda-workers-admin@tmda.net deliver=~/Mail/TMDA-Workers/
+
+</blockquote></pre>
+Macros may refer to other macros but may not refer to themselves, even
+indirectly.  In other words, if macro A refers to macro B, B may not
+refer to A.  This will result in a parser syntax error.
+<br><br>
+
+Macros are not case-sensitive.  Use case as you prefer to help clarify
+your filter files.
+<br><br>
+
+<li> <b>Included Filters</b><br><br>
+
+Filter files may include the contents of other filter files.  The
+included filter rules are placed inline right where they were
+included.  This positioning is important to remember, since the first
+matching rule encountered is the one that will be applied to an
+incoming email.
+<br><br>
+
+A filter include statement looks like this.
+<pre><blockquote>
+include [ -optional ] /path/to/included/filter_file
+
+</blockquote></pre>
+If the -optional flag is specified, the parser will not raise an error
+if the file is missing.  If you expect that the file will always be
+present and its absence would be an error, do not specify this flag!
+That way, the parser will log an error and defer the mail, so that you
+can fix the problem.
+<br><br>
+
+Filter includes may be nested; that is, the included filter file may
+include other filter files itself, and those files may also include
+other files.  If a filter file tries to include one of the files that
+included it, however, an error will be logged and the mail will be
+deferred.
+<br><br>
+
+<li> <b>Variable Interpolation</b><br><br>
+
+Filter files support variable interpolation or substitution, like the
+shell.  A variable is recognized if it begins with a dollar sign and a
+left curly brace (<code><b>${</b></code>) and ends with a right curly
+brace (<code><b>}</b></code>), like this: <code>${TMDADIR}</code>.
+<br><br>
+
+A variable name is looked up first in the Defaults namespace (all of
+the configuration variables set in Defaults.py or your .tmdarc) and
+then in the environment if it was not found in the Defaults
+namespace.  If it is still not found, the parser generates an error
+and the mail is deferred.  Variable names are case-sensitive.
+<br><br>
+
+Using variables may allow you to create a system-wide filter that
+users can modify by providing their own additions.  A Python variable,
+such as 'username', would need to be set in the user's configuration
+file, like this.
+<pre><blockquote>
+username = "foo"
+
+</blockquote></pre>
+Here's an extremely simple system-wide filter that uses the 'username'
+variable to include a user's filter.
+<pre><blockquote>
+from /etc/company_blacklist drop
+from /etc/company_whitelist accept
+include -optional /home/vdomain/tmda/lists/whitelist.${username}
+
+</blockquote></pre>
+If the 'foo' user chooses to create a whitelist and names it
+"whitelist.foo", it will automatically be included.  Because of the
+use of the -optional flag, the file is not required.
+<br><br>
 
 <u><b>Example Incoming Filter</u></b>:
 
