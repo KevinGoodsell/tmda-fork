@@ -1462,13 +1462,18 @@ if not vars().has_key('TERSE_SUMMARY_HEADERS'):
 #       existing Message-ID fields.  Normally tmda-inject only adds a
 #       Message-ID field if the incoming message lacks one.
 #
+# TMDAINJECT is looked for in the environment first.
+#
 # Examples:
 #
 # TMDAINJECT = "i"
 # TMDAINJECT = "di"
 #
 # No default.
-if not vars().has_key('TMDAINJECT'):
+env_TMDAINJECT = os.environ.get('TMDAINJECT')
+if env_TMDAINJECT:
+    TMDAINJECT = env_TMDAINJECT
+elif not vars().has_key('TMDAINJECT'):
     TMDAINJECT = ''
 
 # SUMMARY_HEADERS

@@ -1,3 +1,8 @@
+2004-01-10  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Defaults.py (TMDAINJECT): Look for $TMDAINJECT in the
+	environment first.
+	
 2004-01-09  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Defaults.py (DATED_TIMEOUT): TIMEOUT renamed.
