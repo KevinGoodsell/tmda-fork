@@ -20,7 +20,7 @@
 DEF2HTML =      ../contrib/def2html
 
 HTROOT = 	.
-HT2HTML =	/usr/local/packages/ht2html/ht2html.py
+HT2HTML =	ht2html
 HTSTYLE =	TMDAGenerator
 HTALLFLAGS =	-f -s $(HTSTYLE)
 HTFLAGS =	$(HTALLFLAGS) -r $(HTROOT)
@@ -29,7 +29,7 @@ SOURCES =	$(shell echo *.ht)
 TARGETS =	$(filter-out *.html,$(SOURCES:%.ht=%.html)) $(EXTRA_TARGETS)
 GENERATED_HTML= $(SOURCES:.ht=.html)
 
-DEST =          jasonrm@tmda.sourceforge.net:/home/groups/t/tm/tmda/htdocs/
+DEST =          jasonrm@tmda.sourceforge.net:/home/groups/t/tm/tmda/htdocs/unstable
 EXCLUDES =      --exclude "*"
 INCLUDES =	--include "*.html"
 ARGS =          -e ssh -v -a -z --delete $(INCLUDES) $(EXCLUDES)
