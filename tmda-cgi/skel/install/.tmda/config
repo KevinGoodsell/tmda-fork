@@ -8,3 +8,4 @@ LOGFILE_INCOMING = "%(VPop)s/tmdaincoming.log"
 ADDED_HEADERS_CLIENT = {"X-Primary-Address": "%(User)s@%(Domain)s"}
 PENDING_BLACKLIST_APPEND = "%(Home)s/.tmda/lists/blacklist"
 PENDING_WHITELIST_APPEND = "%(Home)s/.tmda/lists/whitelist"
+TEMPLATE_DIR = "%(Home)s/.tmda/templates/"

@@ -41,9 +41,15 @@ def Show():
   # Hide save button?
   if PVars[("NoOverride", "MayEditTemplates")][0].lower() == "n":
     T["SaveButton"]
+  else:
+    T["NoSave"]
 
   for BaseName in ("bounce", "confirm_accept", "confirm_request"):
-    Filename = os.path.join(Defaults.TEMPLATE_DIR, BaseName + ".txt")
+    if Defaults.TEMPLATE_DIR:
+      Filename = os.path.join(Defaults.TEMPLATE_DIR, BaseName + ".txt")
+    else:
+      Filename = os.path.join(os.environ["TMDA_BASE_DIR"], "templates",
+        BaseName + ".txt")
     T["Var"] = BaseName
 
     # Get file

@@ -22,6 +22,9 @@ Title: Autoresponse Templates
         <input type="hidden" name="cmd" value="templates">
         <input type="hidden" name="SID" value="%(SID)s">
 <!-- /var (SaveButton) -->
+<!-- var: NoSave -->
+        You may not make changes to these templates.
+<!-- /var (NoSave) -->
       </td>
     </tr>
   </form>
