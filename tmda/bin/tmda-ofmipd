@@ -666,6 +666,7 @@ class TMDAProxy(PureProxy):
 
 def main():
     pw_uid = pwd.getpwnam(username)[2]
+    pw_gid = pwd.getpwnam(username)[3]
     # check ownership of authfile
     if Util.getfileuid(authfile) != pw_uid:
         raise IOError, \
@@ -675,6 +676,8 @@ def main():
     if authfile_mode not in (400, 600):
         raise IOError, \
               authfile + ' must be chmod 400 or 600!'
+    # try setgid()
+    os.setgid(pw_gid)
     # try setuid()
     os.setuid(pw_uid)
     # try binding to the specified host:port
