@@ -1,3 +1,9 @@
+2004-03-25  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-ofmipd: Add -P / --pure-proxy.
+	(VDomainProxy.process_message): Use pure_proxy.
+	(TMDAProxy.process_message): Ditto.
+	
 2004-03-05    <jason@mastaler.com>
 
 	* tmda-keygen (keygen): /dev/urandom or equivalent is now required.

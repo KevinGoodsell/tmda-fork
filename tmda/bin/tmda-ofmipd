@@ -64,6 +64,17 @@ OPTIONS:
         domain name for the local host).  Use 0.0.0.0:8025 to listen
         on all available interfaces.
 
+    -P
+    --pure-proxy
+	Proxy the message straight through to the mail transport
+	system unaltered if the user's TMDA config file is missing.
+	The /usr/sbin/sendmail program on the system is
+	used to inject the message.  You can override this by setting
+	$TMDA_SENDMAIL_PROGRAM in the environment.
+	
+	This option might be useful when serving a mixed environment
+	of TMDA and non-TMDA users.
+
     -R proto[://host[:port]]
     --remoteauth proto[://host[:port]][/dn]
         Host to connect to to check username and password.
@@ -196,6 +207,7 @@ program = sys.argv[0]
 configdir = None
 authprog = None
 fallback = 0
+pure_proxy = False
 foreground = None
 remoteauth = { 'proto': None,
                'host':  'localhost',
@@ -257,22 +269,23 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                      'p:u:a:R:A:Fc:C:dVhfbS:v:t:', ['proxyport=',
-                                                     'username=',
-                                                     'authfile=',
-                                                     'remoteauth=',
-                                                     'authprog=',
-                                                     'fallback',
-                                                     'configdir=',
-                                                     'connections=',
-                                                     'debug',
-                                                     'version',
-                                                     'help',
-                                                     'foreground',
-                                                     'background',
-                                                     'vhome-script=',
-                                                     'vdomains-path=',
-                                                     'throttle-script='])
+                               'p:u:a:R:A:Fc:C:dVhfbPS:v:t:', ['proxyport=',
+                                                               'username=',
+                                                               'authfile=',
+                                                               'remoteauth=',
+                                                               'authprog=',
+                                                               'fallback',
+                                                               'configdir=',
+                                                               'connections=',
+                                                               'debug',
+                                                               'version',
+                                                               'help',
+                                                               'foreground',
+                                                               'background',
+                                                               'pure-proxy',
+                                                               'vhome-script=',
+                                                               'vdomains-path=',
+                                                               'throttle-script='])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -293,6 +306,8 @@ for opt, arg in opts:
         foreground = 1
     elif opt in ('-b', '--background'):
         foreground = 0
+    elif opt in ('-P', '--pure-proxy'):
+        pure_proxy = True
     elif opt in ('-p', '--proxyport'):
         proxyport = arg
     elif opt in ('-u', '--username'):
@@ -1006,8 +1021,8 @@ class DebuggingServer(SMTPServer):
 
 
 class PureProxy(SMTPServer):
-    """Proxies all messages to a real smtpd which does final
-    delivery."""
+    """Proxies all messages to a real smtpd which does final delivery.
+    Not used currently."""
     def process_message(self, peer, mailfrom, rcpttos, data):
         lines = data.split('\n')
         # Look for the last header
@@ -1097,6 +1112,14 @@ class VDomainProxy(PureProxy):
         print >> DEBUGSTREAM, 'vuser homedir: "%s"' % (vhomedir,)
         # This is so "~" will work in the .tmda/* files.
         os.environ['HOME'] = vhomedir
+        # change inject_cmd to pass the message through if
+        # --pure-proxy was specified and the .tmda/config file is
+        # missing.
+        if pure_proxy and not os.path.exists(os.path.join
+                                             (vhomedir, '.tmda', 'config')):
+            sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
+                               or '/usr/sbin/sendmail'
+            inject_cmd = [sendmail_program, '-i', '--'] + rcpttos
         try:
             Util.pipecmd(inject_cmd, data)
         except Exception, err:
@@ -1120,9 +1143,15 @@ class TMDAProxy(PureProxy):
             tmda_configdir = os.path.join(os.path.expanduser
                                           (configdir), auth_username)
         tmda_configfile = os.path.join(tmda_configdir, 'config')
-        execdir = os.path.dirname(os.path.abspath(program))
-        inject_path = os.path.join(execdir, 'tmda-inject')
-        inject_cmd = [inject_path, '-c', tmda_configfile] + rcpttos
+        if pure_proxy and not os.path.exists(tmda_configfile):
+            sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
+                               or '/usr/sbin/sendmail'
+            inject_cmd = [sendmail_program, '-i', '--'] + rcpttos
+        else:
+            execdir = os.path.dirname(os.path.abspath(program))
+            inject_path = os.path.join(execdir, 'tmda-inject')
+            inject_cmd = [inject_path, '-c', tmda_configfile] + rcpttos
+
         # This is so "~" will always work in the .tmda/* files.
         os.environ['HOME'] = Util.gethomedir(auth_username)
         # If running as uid 0, fork the tmda-inject process, and
