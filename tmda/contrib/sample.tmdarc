@@ -6,7 +6,7 @@
 # See the "User configurable settings" section of TMDA/Defaults.py for
 # explanations of the possible settings and their default values.
 #
-# Only CRYPT_KEY is REQUIRED in the .tmdarc.
+# Only CRYPT_KEY is required in the .tmdarc.
 #
 # NOTE: This file must be mode 600 or 400.
 
@@ -14,7 +14,7 @@ import os                                      # don't remove
 
 # ALLOW_MODE_640 = 0
 
-# BLACKLIST = "/full/path/to/blacklist.txt"
+# BLACKLIST = "/full/path/to/blacklist"
 
 # BOUNCE_BLACKLIST_CC = "jdoe-bounces-blacklist@domain.dom"
 
@@ -24,7 +24,7 @@ import os                                      # don't remove
 
 # CONFIRM_ACCEPT_NOTIFY = 1
 
-# CONFIRM_MAX_MESSAGE_SIZE = 500000
+# CONFIRM_MAX_MESSAGE_SIZE = 50000
 
 # CONFIRM_ACCEPT_TEMPLATE = "/full/path/to/confirm_accept.txt"
 
@@ -68,19 +68,19 @@ import os                                      # don't remove
 
 # VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
 
-# BARE_FILE = "/full/path/to/bare.txt"
+# BARE_FILE = "/full/path/to/bare"
 
-# DATED_FILE = "/full/path/to/dated.txt"
+# DATED_FILE = "/full/path/to/dated"
 
-# EXP_FILE = "/full/path/to/exp.txt"
+# EXP_FILE = "/full/path/to/exp"
 
-# EXT_FILE = "/full/path/to/ext.txt"
+# EXT_FILE = "/full/path/to/ext"
 
-# SACRED_FILE = "/full/path/to/sacred.txt"
+# SACRED_FILE = "/full/path/to/sacred"
 
-# SENDER_FILE = "/full/path/to/sender.txt"
+# SENDER_FILE = "/full/path/to/sender"
 
-# WHITELIST = "/full/path/to/whitelist.txt"
+# WHITELIST = "/full/path/to/whitelist"
 
 # WHITELIST_AUTO_APPEND = 0
 

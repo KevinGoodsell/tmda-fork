@@ -2,7 +2,8 @@
 
 	* sample.tmdarc: Add WHITELIST_AUTO_APPEND.
 	Add SACRED_FILE.
-	
+	.txt suffix depreciated for "lists" files.
+
 2001-09-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add CONFIRM_MAX_MESSAGE_SIZE.
