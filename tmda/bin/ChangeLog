@@ -4,6 +4,15 @@
 	virtualdomain, address_extension needs to have both the "prepend"
 	and virtual username stripped off to be accurate.
 
+	(verify_confirm_cookie): Now we also check whether the message
+	actually exists in the pending queue before proceeding.
+
+	(release_pending): Renamed locate_pending since we no longer check
+	whether the message exists here.
+
+	(inject_pending): Don't unlink the confirmed message yet, we need
+	it around for verify_confirm_cookie to look for later on.
+
 2001-12-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (logit): Use Util.unixdate() for the Date: field.

@@ -315,7 +315,7 @@ def send_cc(address):
 
 
 def inject_pending(pathname,timestamp,pid):
-    """Reinject then unlink a sucessfully confirmed message."""
+    """Reinject a sucessfully confirmed message."""
     (username, hostname) = string.split(recipient_address,'@')
     # Strip off the '-confirm-accept.TIMESTAMP.PID.HMAC' from username.
     base_username = string.join(
@@ -349,42 +349,32 @@ def inject_pending(pathname,timestamp,pid):
     except IOError, error_msg:
         print error_msg
         mta.defer()
-    os.unlink(pathname)
     mta.stop()
 
 
-def locate_pending(timestamp,pid):
-    """Locate the message in the pending queue."""
-    pendingdir = Defaults.DATADIR + 'pending'
-    pending_message = timestamp + '.' + pid + '.msg'
-    pending_message_pathname = pendingdir + '/' + pending_message
-    if os.path.exists(pending_message_pathname):
-        logit("CONFIRM accept " + pending_message, time.time())
-        # Optionally append the envelope sender to the whitelist.
-        if Defaults.CONFIRM_APPEND:
-            try:
-                # Grab the original envelope sender to append.
-                fileobj = open(pending_message_pathname,'r')
-                message_headers = rfc822.Message(fileobj)
-                fileobj.close()
-                orig_env_sender = message_headers.getaddr('return-path')[1]
-            except IOError, error_msg:
-                print error_msg
-                mta.defer()
-            if Util.append_to_file(orig_env_sender,Defaults.CONFIRM_APPEND) != 0:
-                logit("APPEND " + orig_env_sender, time.time())
-        # Optionally generate the confirmation acceptance notice.
-        if Defaults.CONFIRM_ACCEPT_NOTIFY:
-            bouncegen('accept')
-        # Optionally send the confirmation to a special address.
-        if Defaults.CONFIRM_ACCEPT_CC:
-            send_cc(Defaults.CONFIRM_ACCEPT_CC)
-        # Reinject the original (now confirmed) message.
-        inject_pending(pending_message_pathname,timestamp,pid)
-    else:
-        logit("BOUNCE nonexistent_pending_message",time.time())
-        print "Sorry, your original message could not be located, please resend."
-        mta.bounce()
+def release_pending(pathname, timestamp, pid):
+    """Release a message from the pending queue."""
+    # Optionally append the envelope sender to the whitelist.
+    if Defaults.CONFIRM_APPEND:
+        try:
+            # Grab the original envelope sender to append.
+            fileobj = open(pending_message_pathname,'r')
+            message_headers = rfc822.Message(fileobj)
+            fileobj.close()
+            orig_env_sender = message_headers.getaddr('return-path')[1]
+        except IOError, error_msg:
+            print error_msg
+            mta.defer()
+        if Util.append_to_file(orig_env_sender,Defaults.CONFIRM_APPEND) != 0:
+            logit("APPEND " + orig_env_sender, time.time())
+    # Optionally generate the confirmation acceptance notice.
+    if Defaults.CONFIRM_ACCEPT_NOTIFY:
+        bouncegen('accept')
+    # Optionally send the confirmation to a special address.
+    if Defaults.CONFIRM_ACCEPT_CC:
+        send_cc(Defaults.CONFIRM_ACCEPT_CC)
+    # Reinject the original (now confirmed) message.
+    inject_pending(pathname,timestamp,pid)
 
 
 def verify_confirm_cookie(confirm_cookie):
@@ -397,29 +387,45 @@ def verify_confirm_cookie(confirm_cookie):
         logit("BOUNCE invalid_confirmation_address",time.time())
         print("Sorry, this confirmation address is invalid.")
         mta.bounce()
+    pendingdir = Defaults.DATADIR + 'pending'
+    confirmed_message = confirm_timestamp + '.' + confirm_pid + '.msg'
+    confirmed_message_pathname = pendingdir + '/' + confirmed_message
     # pre-confirmation
     if confirm_action == 'accept':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
                                                   confirm_pid,'accept')
-        # Accept the message only if the HMAC can be verified.
-        if (confirm_hmac == new_confirm_hmac):
-            locate_pending(confirm_timestamp,confirm_pid)
-        else:
+        # Accept the message only if the HMAC can be verified and the
+        # message actually exists in the pending queue.
+        if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address",time.time())
             print("Sorry, this confirmation address is invalid.")
             mta.bounce()
+        elif not (os.path.exists(confirmed_message_pathname)):
+            logit("BOUNCE nonexistent_pending_message",time.time())
+            print "Sorry, your original message could not be located."
+            mta.bounce()
+        else:
+            logit("CONFIRM accept " + confirmed_message, time.time())
+            release_pending(confirmed_message_pathname,
+                            confirm_timestamp,confirm_pid)
     # post-confirmation
     elif confirm_action == 'done':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
                                                   confirm_pid,'done')
-        # Accept the message only if the HMAC can be verified.
-        if (confirm_hmac == new_confirm_hmac):
-            logit("OK good_confirm_cookie", time.time())
-            mta.deliver(message)
-        else:
+        # Accept the message only if the HMAC can be verified and the
+        # message has not already been delivered.
+        if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address",time.time())
             print("Sorry, this confirmation address is invalid.")
             mta.bounce()
+        elif not (os.path.exists(confirmed_message_pathname)):
+            logit("BOUNCE already_confirmed_message",time.time())
+            print "Sorry, this message has already been confirmed."
+            mta.bounce()
+        else:
+            logit("OK good_confirm_cookie", time.time())
+            os.unlink(confirmed_message_pathname)
+            mta.deliver(message)
 
 
 def verify_dated_cookie(dated_cookie):
