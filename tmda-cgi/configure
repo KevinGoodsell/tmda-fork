@@ -197,8 +197,8 @@ def Interactive():
     os.path.isfile, "%s")
   Ask("""When I compile the binary executable, where should I save it?
 Enter the full path AND filename.
-Generally, you will use the path to your webserver's cgi-bin directory, but it 
-can be stored elsewhere if you have your webserver configured to run CGI's in 
+Generally, you will use the path to your webserver's cgi-bin directory, but it
+can be stored elsewhere if you have your webserver configured to run CGI's in
 other directories.""", "Target")
   Ask("""Where did you install TMDA?
 For source installs, this is the directory where you unzipped the archive.
@@ -304,7 +304,7 @@ def Usage(Code, Msg=""):
 
 try:
   Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:e:f:hi:l:m:no:p:r:s:t:",
-    ["base-dir=", "config-file=", "display-dir=", "session-exp=", "file-auth=", 
+    ["base-dir=", "config-file=", "display-dir=", "session-exp=", "file-auth=",
      "help", "install-prefix=", "virtual-lookup=", "mode=", "no-su",
      "cleanup-odds", "program-auth=", "remote-auth=", "session-prefix=",
      "target="])

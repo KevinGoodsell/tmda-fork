@@ -2,8 +2,15 @@
 
 If you are upgrading from a release of tmda-cgi < 0.11:
 
+* IF YOU ARE INSTALLING OVER AN EXISTING COPY OF tmda-cgi, DELETE
+  configure AND THEN REINSTALL.  configure used to have the "w" bit
+  turned off, so extracting a tgz on top of it silently failed and
+  you still have an old version.  Delete the old and reinstall to
+  make sure you have the new version!
+
 * Added "%(RealHome)s" as one of the substitution variables available
-  during auto-install.
+  during auto-install.  Added PARENT_RE to anomalies files and generally
+  changed their format.
 
 ======================================================================
 
