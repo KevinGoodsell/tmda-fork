@@ -18,11 +18,8 @@ BuildRequires: /usr/bin/python2
 Requires: /usr/bin/python2
 
 %description
-TMDA is an OSI certified software application designed to
-significantly reduce the amount of SPAM/UCE (junk-mail) you receive.
-TMDA combines a "whitelist" (for known/trusted senders), a "blacklist"
-(for undesired senders), and a cryptographically enhanced confirmation
-system (for unknown, but legitimate senders).
+TMDA is an OSI certified local mail delivery agent and SPAM
+reduction system.
 
 %prep
 %setup
