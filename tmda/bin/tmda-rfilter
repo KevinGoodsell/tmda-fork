@@ -307,6 +307,7 @@ def autorespond_to_sender(sender):
         for hdr in list_headers:
             if msgin.has_key(hdr):
                 guilty_header = '%s: %s' % (hdr, msgin.get(hdr))
+                break
     #   - header "Precedence:" value junk, bulk, or list
     if guilty_header is None:
         precedence = msgin.get('precedence')
