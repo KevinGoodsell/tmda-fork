@@ -1,3 +1,9 @@
+2003-04-07  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Util.py (headers_as_string): Return the raw (undecoded) headers
+	if we encounter a HeaderParseError exception while trying to
+	decode the headers.
+	
 2003-03-12  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* FilterParser.py (_FilterFile.__init__): Add `-domains', a new

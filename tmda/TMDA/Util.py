@@ -469,17 +469,23 @@ def headers_as_list(msg):
     return ['%s: %s' % (k, v) for k, v in msg.items()]
 
 
-def headers_as_string(msg):
-    """Return the (decoded) message headers as a string."""
-    return '\n'.join(['%s: %s' %
-                      (k, decode_header(v)) for k, v in msg.items()])
-
-
 def headers_as_raw_string(msg):
     """Return the headers as a raw (undecoded) string."""
     msgtext = msg.as_string()
     idx = msgtext.index('\n\n')
     return msgtext[:idx+1]
+
+
+def headers_as_string(msg):
+    """Return the (decoded) message headers as a string.  If the
+    sequence can't be decoded, punt and return a raw (undecoded)
+    string instead."""
+    try:
+        hdrstr = '\n'.join(['%s: %s' %
+                            (k, decode_header(v)) for k, v in msg.items()])
+    except email.Errors.HeaderParseError:
+        hdrstr = headers_as_raw_string(msg)
+    return hdrstr
 
 
 def body_as_raw_string(msg):
