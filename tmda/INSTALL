@@ -8,3 +8,8 @@ directory.
 
 If you are upgrading from an earlier release of TMDA, make sure to
 consult the `UPGRADE' file.
+
+To report success:
+  % ( python -c 'from TMDA.Defaults import *; print DELIVERY_AGENT' ) \
+    | mail jason-tmdausage@mastaler.com
+
