@@ -1,7 +1,7 @@
 2003-02-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
         * tmda-inject (msgout): Create the message object from our own
-        Message module.
+        Message module. `From' is no longer escaped.
         
 2003-02-17  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
 
