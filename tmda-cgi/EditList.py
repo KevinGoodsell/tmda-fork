@@ -63,7 +63,7 @@ def Show():
     Parser.read(CgiUtil.ExpandUser(Filters))
     for Test in Parser.filterlist:
       if Test[0] in ["from-file", "to-file", "body-file", "headers-file"]:
-        if CgiUtil.TestTextFilePath(Test[2]):
+        if CgiUtil.TestTextFilePath(CgiUtil.ExpandUser(Test[2])):
           Filename = os.path.split(Test[2])[1].lower()
           if SysButtons.has_key(Filename):
             Buttons[CgiUtil.ExpandUser(Test[2])] = \
