@@ -35,6 +35,8 @@ lists/    'whitelist' is a file that you can edit that should
 	  'blacklist' contains sender addresses and domains that
 	  should not be accepted.  Format is the same as 'whitelist'.
 
+	  It is ok if these files are empty.
+
 ====================================================================
 
 Please send any comments and suggestions to the tmda-workers mailing
