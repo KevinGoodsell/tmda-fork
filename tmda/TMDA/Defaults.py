@@ -19,13 +19,15 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""TMDA configuration variable defaults."""
+"""TMDA configuration variable defaults.
+
+See http://tmda.net/config-vars.html for an HTMLized version of the
+information below.
+"""
 
 
 # NEVER make configuration changes to this file.  ALWAYS make them in
-# /etc/tmdarc or ~/.tmdarc instead.  Settings in ~/.tmdarc override
-# those in /etc/tmdarc.
-
+# /etc/tmdarc or ~/.tmda/config instead.
 
 import binascii
 import os

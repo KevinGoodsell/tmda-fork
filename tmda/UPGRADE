@@ -69,7 +69,7 @@ If you are upgrading from a release of TMDA < 0.56:
   instead of the /usr/sbin/sendmail program.  By default it will use
   the standard SMTP port (25) on the local host.  You can modify this
   by setting the "SMTPHOST" variable in your tmdarc.  See
-  TMDA/Defaults.py for further information.
+  http://tmda.net/config-vars.html for further information.
 
 * tmdarc variable SENDMAIL has been renamed SENDMAIL_PROGRAM, but is
   irrelevant unless OUTGOINGMAIL = "sendmail".
@@ -116,11 +116,11 @@ If you are upgrading from a release of TMDA < 0.55:
    
   DELIVERY = "|/usr/bin/maildrop ~/.mailfilter_tmda"
 
-  However, you should also read about DELIVERY in Defaults.py, as it
-  contains some significant enhancements that may simplify your
-  overall configuration.  e.g, if the only purpose of the above
-  ~/.mailfilter_tmda is to deliver to your mailbox, you can use the
-  following instead for example:
+  However, you should also read about DELIVERY in
+  http://tmda.net/config-vars.html, as it contains some significant
+  enhancements that may simplify your overall configuration.  e.g, if
+  the only purpose of the above ~/.mailfilter_tmda is to deliver to
+  your mailbox, you can use the following instead for example:
 
   DELIVERY = "/var/mail/jasonrm"
 
@@ -286,7 +286,8 @@ If you are upgrading from a release of TMDA < 0.45:
   
   RECIPIENT_HEADER = "x-originally-to"
 
-  See the related documentation for RECIPIENT_HEADER in Defaults.py.
+  See the related documentation for RECIPIENT_HEADER in
+  http://tmda.net/config-vars.html.
 
 ======================================================================
 

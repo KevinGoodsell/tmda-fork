@@ -1,0 +1,1247 @@
+Title: TMDA Configuration Variables
+Links: overview-links.h usage-links.h config-links.h support-links.h
+
+<h3>TMDA Configuration Variables</h3>
+
+<ul>
+
+<li>Set TMDA configuration variables in /etc/tmdarc or ~/.tmda/config only.
+Settings in ~/.tmda/config override those in /etc/tmdarc.
+<br><br>
+
+<li>Each variable has a default value, and in most cases that will suffice.
+You only need to set a variable in your configuration file if you want to
+override the default value.
+<br><br>
+
+<li>/etc/tmdarc and ~/.tmda/config are interpreted as executable Python code.
+Thus, variable declarations must adhere to proper 
+<a href="http://www.python.org/doc/current/" TARGET="Resource Window">Python syntax</a>.
+Each variable definition below contains one or more examples.
+
+</ul>
+
+<h3>Index</h3>
+
+<table width="100%">
+
+<tr>
+<td><a href="#ACTION_EXPIRED_DATED">ACTION_EXPIRED_DATED</a></td>
+<td><a href="#ACTION_FAIL_DATED">ACTION_FAIL_DATED</a></td>
+</tr>
+<tr>
+<td><a href="#ACTION_FAIL_KEYWORD">ACTION_FAIL_KEYWORD</a></td>
+<td><a href="#ACTION_FAIL_SENDER">ACTION_FAIL_SENDER</a></td>
+</tr>
+<tr>
+<td><a href="#ACTION_INCOMING">ACTION_INCOMING</a></td>
+<td><a href="#ACTION_OUTGOING">ACTION_OUTGOING</a></td>
+</tr>
+<tr>
+<td><a href="#ADDED_HEADERS_CLIENT">ADDED_HEADERS_CLIENT</a></td>
+<td><a href="#ADDED_HEADERS_SERVER">ADDED_HEADERS_SERVER</a></td>
+</tr>
+<tr>
+<td><a href="#BARE_APPEND">BARE_APPEND</a></td>
+<td><a href="#BOUNCE_ENV_SENDER">BOUNCE_ENV_SENDER</a></td>
+</tr>
+<tr>
+<td><a href="#BOUNCE_TEXT_EXPIRED_DATED">BOUNCE_TEXT_EXPIRED_DATED</a></td>
+<td><a href="#BOUNCE_TEXT_FAIL_DATED">BOUNCE_TEXT_FAIL_DATED</a></td>
+</tr>
+<tr>
+<td><a href="#BOUNCE_TEXT_FAIL_KEYWORD">BOUNCE_TEXT_FAIL_KEYWORD</a></td>
+<td><a href="#BOUNCE_TEXT_FAIL_SENDER">BOUNCE_TEXT_FAIL_SENDER</a></td>
+</tr>
+<tr>
+<td><a href="#BOUNCE_TEXT_FILTER_INCOMING">BOUNCE_TEXT_FILTER_INCOMING</a></td>
+<td><a href="#BOUNCE_TEXT_INVALID_CONFIRMATION">BOUNCE_TEXT_INVALID_CONFIRMATION</a></td>
+</tr>
+<tr>
+<td><a href="#BOUNCE_TEXT_NONEXISTENT_PENDING">BOUNCE_TEXT_NONEXISTENT_PENDING</a></td>
+<td><a href="#CONFIG_EXEC">CONFIG_EXEC</a></td>
+</tr>
+<tr>
+<td><a href="#CONFIRM_ACCEPT_CC">CONFIRM_ACCEPT_CC</a></td>
+<td><a href="#CONFIRM_ACCEPT_NOTIFY">CONFIRM_ACCEPT_NOTIFY</a></td>
+</tr>
+<tr>
+<td><a href="#CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED">CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED</a></td>
+<td><a href="#CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED">CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED</a></td>
+</tr>
+<tr>
+<td><a href="#CONFIRM_ACCEPT_TEXT_INITIAL">CONFIRM_ACCEPT_TEXT_INITIAL</a></td>
+<td><a href="#CONFIRM_ADDRESS">CONFIRM_ADDRESS</a></td>
+</tr>
+<tr>
+<td><a href="#CONFIRM_APPEND">CONFIRM_APPEND</a></td>
+<td><a href="#CONFIRM_CC">CONFIRM_CC</a></td>
+</tr>
+<tr>
+<td><a href="#CONFIRM_MAX_MESSAGE_SIZE">CONFIRM_MAX_MESSAGE_SIZE</a></td>
+<td><a href="#CRYPT_KEY_FILE">CRYPT_KEY_FILE</a></td>
+</tr>
+<tr>
+<td><a href="#DATADIR">DATADIR</a></td>
+<td><a href="#DATED_TEMPLATE_VARS">DATED_TEMPLATE_VARS</a></td>
+</tr>
+<tr>
+<td><a href="#DELIVERED_CACHE">DELIVERED_CACHE</a></td>
+<td><a href="#DELIVERED_CACHE_LEN">DELIVERED_CACHE_LEN</a></td>
+</tr>
+<tr>
+<td><a href="#DELIVERY">DELIVERY</a></td>
+<td><a href="#FILTER_BOUNCE_CC">FILTER_BOUNCE_CC</a></td>
+</tr>
+<tr>
+<td><a href="#FILTER_DROP_CC">FILTER_DROP_CC</a></td>
+<td><a href="#FILTER_INCOMING">FILTER_INCOMING</a></td>
+</tr>
+<tr>
+<td><a href="#FILTER_OUTGOING">FILTER_OUTGOING</a></td>
+<td><a href="#FINGERPRINT">FINGERPRINT</a></td>
+</tr>
+<tr>
+<td><a href="#FULLNAME">FULLNAME</a></td>
+<td><a href="#HMAC_BYTES">HMAC_BYTES</a></td>
+</tr>
+<tr>
+<td><a href="#HOSTNAME">HOSTNAME</a></td>
+<td><a href="#LOCALDATE">LOCALDATE</a></td>
+</tr>
+<tr>
+<td><a href="#LOGFILE_DEBUG">LOGFILE_DEBUG</a></td>
+<td><a href="#LOGFILE_INCOMING">LOGFILE_INCOMING</a></td>
+</tr>
+<tr>
+<td><a href="#LOGFILE_OUTGOING">LOGFILE_OUTGOING</a></td>
+<td><a href="#MAIL_TRANSFER_AGENT">MAIL_TRANSFER_AGENT</a></td>
+</tr>
+<tr>
+<td><a href="#MAX_AUTORESPONSES_PER_DAY">MAX_AUTORESPONSES_PER_DAY</a></td>
+<td><a href="#MESSAGE_FROM_STYLE">MESSAGE_FROM_STYLE</a></td>
+</tr>
+<tr>
+<td><a href="#OUTGOINGMAIL">OUTGOINGMAIL</a></td>
+<td><a href="#PENDING_BLACKLIST_APPEND">PENDING_BLACKLIST_APPEND</a></td>
+</tr>
+<tr>
+<td><a href="#PENDING_CACHE">PENDING_CACHE</a></td>
+<td><a href="#PENDING_CACHE_LEN">PENDING_CACHE_LEN</a></td>
+</tr>
+<tr>
+<td><a href="#PENDING_DELETE_APPEND">PENDING_DELETE_APPEND</a></td>
+<td><a href="#PENDING_RELEASE_APPEND">PENDING_RELEASE_APPEND</a></td>
+</tr>
+<tr>
+<td><a href="#PENDING_WHITELIST_APPEND">PENDING_WHITELIST_APPEND</a></td>
+<td><a href="#PURGED_HEADERS">PURGED_HEADERS</a></td>
+</tr>
+<tr>
+<td><a href="#RECIPIENT_DELIMITER">RECIPIENT_DELIMITER</a></td>
+<td><a href="#RECIPIENT_HEADER">RECIPIENT_HEADER</a></td>
+</tr>
+<tr>
+<td><a href="#RESPONSE_DIR">RESPONSE_DIR</a></td>
+<td><a href="#SENDER_TEMPLATE_VARS">SENDER_TEMPLATE_VARS</a></td>
+</tr>
+<tr>
+<td><a href="#SENDMAIL_PROGRAM">SENDMAIL_PROGRAM</a></td>
+<td><a href="#SMTPAUTH_PASSWORD">SMTPAUTH_PASSWORD</a></td>
+</tr>
+<tr>
+<td><a href="#SMTPAUTH_USERNAME">SMTPAUTH_USERNAME</a></td>
+<td><a href="#SMTPHOST">SMTPHOST</a></td>
+</tr>
+<tr>
+<td><a href="#SMTPSSL">SMTPSSL</a></td>
+<td><a href="#SMTPSSL_CERTFILE">SMTPSSL_CERTFILE</a></td>
+</tr>
+<tr>
+<td><a href="#SMTPSSL_KEYFILE">SMTPSSL_KEYFILE</a></td>
+<td><a href="#SMTP_MAX_SESSIONS_PER_CONNECTION">SMTP_MAX_SESSIONS_PER_CONNECTION</a></td>
+</tr>
+<tr>
+<td><a href="#TAGS_CONFIRM">TAGS_CONFIRM</a></td>
+<td><a href="#TAGS_DATED">TAGS_DATED</a></td>
+</tr>
+<tr>
+<td><a href="#TAGS_KEYWORD">TAGS_KEYWORD</a></td>
+<td><a href="#TAGS_SENDER">TAGS_SENDER</a></td>
+</tr>
+<tr>
+<td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
+<td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
+</tr>
+<tr>
+<td><a href="#TIMEOUT">TIMEOUT</a></td>
+<td><a href="#USERNAME">USERNAME</a></td>
+</tr>
+<tr>
+<td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
+<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
+</tr>
+<tr>
+<td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
+</table>
+
+<dl>
+<dt><hr>
+<a name="ACTION_EXPIRED_DATED"><h4>ACTION_EXPIRED_DATED</h4></a>
+<dd>
+Specifies how incoming messages should be disposed of if they are
+sent to an expired dated address.
+Possible values include:
+<br><br>
+"<code>bounce</code>"
+<blockquote>
+   bounce the message - uses BOUNCE_TEXT_EXPIRED_DATED
+</blockquote>
+<br>
+"<code>drop</code>"
+<blockquote>
+   silently drop the message
+</blockquote>
+<br>
+"<code>ok</code>"
+<blockquote>
+   deliver the message
+</blockquote>
+<br>
+"<code>confirm</code>"
+<blockquote>
+   request confirmation for the message
+</blockquote>
+<br>
+"<code>hold</code>"
+<blockquote>
+   silently hold message in pending queue
+</blockquote>
+<br>
+Default is confirm
+<dt><hr>
+<a name="ACTION_FAIL_DATED"><h4>ACTION_FAIL_DATED</h4></a>
+<dd>
+Specifies how incoming messages should be disposed of if they are sent
+to a dated address that does not properly verify.
+Possible values include:
+<br><br>
+"<code>bounce</code>"
+<blockquote>
+   bounce the message - uses BOUNCE_TEXT_FAIL_DATED
+</blockquote>
+<br>
+"<code>drop</code>"
+<blockquote>
+   silently drop the message
+</blockquote>
+<br>
+"<code>ok</code>"
+<blockquote>
+   deliver the message
+</blockquote>
+<br>
+"<code>confirm</code>"
+<blockquote>
+   request confirmation for the message
+</blockquote>
+<br>
+"<code>hold</code>"
+<blockquote>
+   silently hold message in pending queue
+</blockquote>
+<br>
+Default is confirm
+<dt><hr>
+<a name="ACTION_FAIL_KEYWORD"><h4>ACTION_FAIL_KEYWORD</h4></a>
+<dd>
+Specifies how incoming messages should be disposed of if they are
+sent to a keyword address that fails to verify.
+Possible values include:
+<br><br>
+"<code>bounce</code>"
+<blockquote>
+   bounce the message - uses BOUNCE_TEXT_FAIL_KEYWORD
+</blockquote>
+<br>
+"<code>drop</code>"
+<blockquote>
+   silently drop the message
+</blockquote>
+<br>
+"<code>ok</code>"
+<blockquote>
+   deliver the message
+</blockquote>
+<br>
+"<code>confirm</code>"
+<blockquote>
+   request confirmation for the message
+</blockquote>
+<br>
+"<code>hold</code>"
+<blockquote>
+   silently hold message in pending queue
+</blockquote>
+<br>
+Default is confirm
+<dt><hr>
+<a name="ACTION_FAIL_SENDER"><h4>ACTION_FAIL_SENDER</h4></a>
+<dd>
+Specifies how incoming messages should be disposed of if they are sent
+to a sender address, but were not sent from the correct sender, and
+fail to verify.
+Possible values include:
+<br><br>
+"<code>bounce</code>"
+<blockquote>
+   bounce the message - uses BOUNCE_TEXT_FAIL_SENDER
+</blockquote>
+<br>
+"<code>drop</code>"
+<blockquote>
+   silently drop the message
+</blockquote>
+<br>
+"<code>ok</code>"
+<blockquote>
+   deliver the message
+</blockquote>
+<br>
+"<code>confirm</code>"
+<blockquote>
+   request confirmation for the message
+</blockquote>
+<br>
+"<code>hold</code>"
+<blockquote>
+   silently hold message in pending queue
+</blockquote>
+<br>
+Default is confirm
+<dt><hr>
+<a name="ACTION_INCOMING"><h4>ACTION_INCOMING</h4></a>
+<dd>
+Specifies how incoming messages should be disposed of by default if
+they didn't match FILTER_INCOMING and were not sent to a tagged
+address.
+Possible values include:
+<br><br>
+"<code>bounce</code>"
+<blockquote>
+   bounce the message
+</blockquote>
+<br>
+"<code>drop</code>"
+<blockquote>
+   silently drop the message
+</blockquote>
+<br>
+"<code>ok</code>"
+<blockquote>
+   deliver the message
+</blockquote>
+<br>
+"<code>confirm</code>"
+<blockquote>
+   request confirmation for the message
+</blockquote>
+<br>
+"<code>hold</code>"
+<blockquote>
+   silently hold message in pending queue
+</blockquote>
+<br>
+Default is confirm
+<dt><hr>
+<a name="ACTION_OUTGOING"><h4>ACTION_OUTGOING</h4></a>
+<dd>
+Specifies how outgoing messages should be tagged by default if there
+are no matches in FILTER_OUTGOING and no X-TMDA header.
+Possible values include:
+<br><br>
+"<code>bare[=append]</code>"
+<blockquote>
+   don't tag
+</blockquote>
+<br>
+"<code>dated[=timeout_interval]</code>"
+<blockquote>
+   tag with a dated address
+</blockquote>
+<br>
+"<code>sender[=sender_address]</code>"
+<blockquote>
+   tag with a sender address
+</blockquote>
+<br>
+"<code>exp=full_address</code>"
+<blockquote>
+   tag with explicit address
+</blockquote>
+<br>
+"<code>kw=keyword</code>"
+<blockquote>
+   tag with a keyword address
+</blockquote>
+<br>
+Default is dated
+<dt><hr>
+<a name="ADDED_HEADERS_CLIENT"><h4>ADDED_HEADERS_CLIENT</h4></a>
+<dd>
+A Python dictionary containing one or more header:value string pairs
+that should be added to _all_ outgoing client-side messages (i.e,
+messages sent with tmda-sendmail) prior to injection.  Listed
+headers and their values are case-sensitive.
+<br><br>
+As the examples below illustrate, the full power of Python is
+available to create these headers -- just make sure both the header
+and its value end up as strings.
+<br><br>
+Examples:
+<br><br>
+<code>ADDED_HEADERS_CLIENT = {"X-Fact" : "Father Hennepin Discovered Niagra Falls"}</code><br>
+<code>import time, os, random</code><br>
+<code>ADDED_HEADERS_CLIENT = {</code><br>
+<blockquote>
+<code>    "X-Localtime" : time.asctime(),</code><br>
+<code>    "X-Favorite-Author" : "James Joyce",</code><br>
+<code>    "X-OperatingSystem" : os.uname()[0],</code><br>
+<code>    "Organization" : os.environ.get("ORGANIZATION"),</code><br>
+<code>    "X-Uptime" : os.popen("/usr/bin/uptime").read().strip(),</code><br>
+<code>    "X-Now-Reading" : random.choice(open</code><br>
+<code>                                    ("/home/jasonrm/.now-reading").</code><br>
+<code>                                    readlines()).strip()</code><br>
+<code>    }</code>
+</blockquote>
+<br>
+No default
+<dt><hr>
+<a name="ADDED_HEADERS_SERVER"><h4>ADDED_HEADERS_SERVER</h4></a>
+<dd>
+A Python dictionary containing one or more header:value string pairs
+that should be added to _all_ outgoing server-side messages (i.e,
+messages sent with tmda-filter) prior to injection.  Listed
+headers and their values are case-sensitive.
+<br><br>
+See ADDED_HEADERS_CLIENT (above) for some examples.
+<br><br>
+No default
+<dt><hr>
+<a name="BARE_APPEND"><h4>BARE_APPEND</h4></a>
+<dd>
+Filename to which a recipient's e-mail address should be
+automatically appended if the outgoing &lt;action&gt; is in the form
+'bare=append'.
+<br><br>
+Example:
+<br><br>
+<code>BARE_APPEND = "/full/path/to/whitelist"</code>
+<br><br>
+No default
+<dt><hr>
+<a name="BOUNCE_ENV_SENDER"><h4>BOUNCE_ENV_SENDER</h4></a>
+<dd>
+The envelope sender of a bounce message.
+<br><br>
+Example:
+<br><br>
+<code>BOUNCE_ENV_SENDER = "devnull@domain.dom"</code>
+<br><br>
+Default is an empty envelope sender &lt;&gt;.
+<dt><hr>
+<a name="BOUNCE_TEXT_EXPIRED_DATED"><h4>BOUNCE_TEXT_EXPIRED_DATED</h4></a>
+<dd>
+Text for the failure notice returned to the sender when a
+dated address is expired.  Set to None to disable notification.  Setting
+to None will cause the same behavior as setting ACTION_EXPIRED_DATED to
+drop
+<br><br>
+Default is "You have sent email to an expired address."
+<dt><hr>
+<a name="BOUNCE_TEXT_FAIL_DATED"><h4>BOUNCE_TEXT_FAIL_DATED</h4></a>
+<dd>
+Text for the failure notice returned to the sender when a
+dated address does not verify with a correct HMAC.  Set to None
+to disable notification.  Setting to None will cause the same behavior
+as setting ACTION_FAIL_DATED to drop
+<br><br>
+Default is "You have sent email to an invalid address."
+<dt><hr>
+<a name="BOUNCE_TEXT_FAIL_KEYWORD"><h4>BOUNCE_TEXT_FAIL_KEYWORD</h4></a>
+<dd>
+Text for the failure notice returned to the sender when a
+keyword address does not verify with a correct HMAC. Set to None
+to disable notification.  Setting to None will cause the same behavior
+as setting ACTION_FAIL_KEYWORD to drop.
+<br><br>
+Default is "You have sent email to an invalid address."
+<dt><hr>
+<a name="BOUNCE_TEXT_FAIL_SENDER"><h4>BOUNCE_TEXT_FAIL_SENDER</h4></a>
+<dd>
+Text for the failure notice returned to the sender when a
+sender address does not verify with a correct HMAC.  Set to None
+to disable notification.  Setting to None will cause the same behavior
+as setting ACTION_FAIL_SENDER to drop
+<br><br>
+Default is "You have sent email to an address you are not authorized to use."
+<dt><hr>
+<a name="BOUNCE_TEXT_FILTER_INCOMING"><h4>BOUNCE_TEXT_FILTER_INCOMING</h4></a>
+<dd>
+Text for the failure notice returned to the sender when a 'bounce'
+or 'reject' rule is matched in the incoming filter file.  Set to
+None to disable notification.
+<br><br>
+Default is "Message rejected by recipient."
+<dt><hr>
+<a name="BOUNCE_TEXT_INVALID_CONFIRMATION"><h4>BOUNCE_TEXT_INVALID_CONFIRMATION</h4></a>
+<dd>
+Text for the failure notice returned to the sender when a message is
+sent to an invalid confirmation address.  Set to None to disable
+notification.
+<br><br>
+Default is "This confirmation address is invalid."
+<dt><hr>
+<a name="BOUNCE_TEXT_NONEXISTENT_PENDING"><h4>BOUNCE_TEXT_NONEXISTENT_PENDING</h4></a>
+<dd>
+Text for the failure notice returned to the sender when a
+confirmation response arrives for a message which could not be
+located.  Set to None to disable notification.
+<br><br>
+Default is "Your original message could not be located."
+<dt><hr>
+<a name="CONFIG_EXEC"><h4>CONFIG_EXEC</h4></a>
+<dd>
+If set to 0 in GLOBAL_TMDARC, the user's TMDARC file will be parsed
+using ConfigParser, otherwise it will evaluated as a sequence of
+Python statements using execfile().
+<br><br>
+Default is 1 (execfile())
+<dt><hr>
+<a name="CONFIRM_ACCEPT_CC"><h4>CONFIRM_ACCEPT_CC</h4></a>
+<dd>
+An optional e-mail address which will be sent a copy of the
+confirmation acceptance messages people send you.
+<br><br>
+Example:
+<br><br>
+<code>CONFIRM_ACCEPT_CC = "jdoe-confirm-replies@domain.dom"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="CONFIRM_ACCEPT_NOTIFY"><h4>CONFIRM_ACCEPT_NOTIFY</h4></a>
+<dd>
+Set this variable to 0 if you do not want to generate any confirmation
+acceptance notices.
+<br><br>
+Default is 1 (turned on)
+<dt><hr>
+<a name="CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED"><h4>CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED</h4></a>
+<dd>
+Text for the confirmation acceptance notice returned to the sender
+when they successfully confirm a message which has already been
+confirmed.  Set to None to disable notification.
+<br><br>
+Default is:
+"<code>Your original message has already been confirmed and delivered; you don't need to confirm it again.</code>"
+<dt><hr>
+<a name="CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED"><h4>CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED</h4></a>
+<dd>
+Text for the confirmation acceptance notice returned to the sender
+when they successfully confirm a message which has already been
+manually released with tmda-pending.  Set to None to disable
+notification.
+<br><br>
+Default is "Your original message has already been released and delivered."
+<dt><hr>
+<a name="CONFIRM_ACCEPT_TEXT_INITIAL"><h4>CONFIRM_ACCEPT_TEXT_INITIAL</h4></a>
+<dd>
+Text for the confirmation acceptance notice returned to the sender
+when they initially confirm their original message causing it to
+be delivered.  Set to None to disable notification.
+<br><br>
+Default is:
+"<code>Your confirmation was accepted, and so your original message has been delivered.</code>"
+<dt><hr>
+<a name="CONFIRM_ADDRESS"><h4>CONFIRM_ADDRESS</h4></a>
+<dd>
+An optional e-mail address to use for creating confirmation
+addresses.  Normally, the recipient address is used, but in some
+virtual domain or forwarding scenarios, you may wish to have
+confirmation address be based on a fixed address regardless of the
+recipient address.
+<br><br>
+Example:
+<br><br>
+<code>CONFIRM_ADDRESS = "webmaster@domain.dom"</code>
+<br><br>
+No default
+<dt><hr>
+<a name="CONFIRM_APPEND"><h4>CONFIRM_APPEND</h4></a>
+<dd>
+Filename to which a sender's e-mail address should be automatically
+appended once they confirm a message.  This can be used to implement
+"auto-whitelisting" functionality.
+<br><br>
+Example:
+<br><br>
+<code>CONFIRM_APPEND = "/full/path/to/whitelist"</code>
+<br><br>
+No default
+<dt><hr>
+<a name="CONFIRM_CC"><h4>CONFIRM_CC</h4></a>
+<dd>
+An optional e-mail address which will be sent a copy of any message
+that triggers a confirmation request.
+<br><br>
+Example:
+<br><br>
+<code>CONFIRM_CC = "jdoe-confirms@domain.dom"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="CONFIRM_MAX_MESSAGE_SIZE"><h4>CONFIRM_MAX_MESSAGE_SIZE</h4></a>
+<dd>
+This is the largest size (in bytes) that a message can be before the
+its body is excluded from the confirmation request/acceptance
+notice.  Set this to None to allow any size message.
+<br><br>
+Default is 50000
+<dt><hr>
+<a name="CRYPT_KEY_FILE"><h4>CRYPT_KEY_FILE</h4></a>
+<dd>
+File which contains your unique TMDA secret key generated by the
+`tmda-keygen' program.  The key should be unquoted in the file.
+This file must be chmod 400 or 600, unless ALLOW_MODE_640 is on.
+<br><br>
+Default is ~/.tmda/crypt_key
+<dt><hr>
+<a name="DATADIR"><h4>DATADIR</h4></a>
+<dd>
+Top-level directory which TMDA uses to store its files and
+directories.  TMDA should be free to create files and directories
+under DATADIR if need be.  Make sure to include a trailing "/".
+<br><br>
+Default is ~/.tmda/
+<dt><hr>
+<a name="DATED_TEMPLATE_VARS"><h4>DATED_TEMPLATE_VARS</h4></a>
+<dd>
+Set this variable to 1 if you want to use 'dated' address variables
+in your templates.
+<br><br>
+Default is 0 (turned off)
+<dt><hr>
+<a name="DELIVERED_CACHE"><h4>DELIVERED_CACHE</h4></a>
+<dd>
+Path to the cache file used to keep track of which messages have
+already been delivered.
+<br><br>
+Default is ~/.tmda/pending/.delivered_cache
+<dt><hr>
+<a name="DELIVERED_CACHE_LEN"><h4>DELIVERED_CACHE_LEN</h4></a>
+<dd>
+An integer which specifies the maximum number of entries held by
+DELIVERED_CACHE.
+<br><br>
+Make sure this value is larger than the number of messages normally
+stored in your pending queue.  The default value may not suffice if
+you run a very high traffic TMDA, and/or have a long pending queue
+purge interval.
+<br><br>
+Default is 5000
+<dt><hr>
+<a name="DELIVERY"><h4>DELIVERY</h4></a>
+<dd>
+The default delivery instruction for successful messages, or TMDA's
+final delivery location.  Only required if you are NOT running
+qmail.  The default value for qmail users is "_qok_" which means
+exit(0) and proceed to the next instruction in the dot-qmail file.
+<br><br>
+Delivery to qmail-style Maildirs, mboxrd-format mboxes, programs
+(pipe), and forward to an e-mail addresses are supported.
+<br><br>
+Acceptable syntax and restrictions for delivery instructions are
+discussed in the ``action'' section of the TMDA Filter Specification
+(config-filter.html).  Please read this documentation.
+<br><br>
+Examples:
+<br><br>
+<code>DELIVERY = "~/Maildir/"</code><br>
+<code>DELIVERY = "~/Mailbox"</code><br>
+<code>DELIVERY = "/var/mail/jasonrm"</code><br>
+<code>DELIVERY = "|/usr/bin/maildrop"</code><br>
+<code>DELIVERY = "|/usr/bin/procmail -f $SENDER ~/.procmailrc-tmda"</code><br>
+<code>DELIVERY = "me@new.job.com"</code>
+<br><br>
+No default for non-qmail users.
+<dt><hr>
+<a name="FILTER_BOUNCE_CC"><h4>FILTER_BOUNCE_CC</h4></a>
+<dd>
+An optional e-mail address which will be sent a copy of any message
+that bounces because of a match in FILTER_INCOMING.
+<br><br>
+Example:
+<br><br>
+<code>FILTER_BOUNCE_CC = "jdoe-bounces@domain.dom"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="FILTER_DROP_CC"><h4>FILTER_DROP_CC</h4></a>
+<dd>
+An optional e-mail address which will be sent a copy of any message
+that is dropped because of a match in FILTER_INCOMING.
+<br><br>
+Example:
+<br><br>
+<code>FILTER_DROP_CC = "jdoe-drops@domain.dom"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="FILTER_INCOMING"><h4>FILTER_INCOMING</h4></a>
+<dd>
+Filter file which controls how incoming messages are tagged.
+Look for the filter-file in the environment first.
+<br><br>
+Default is ~/.tmda/filters/incoming
+<dt><hr>
+<a name="FILTER_OUTGOING"><h4>FILTER_OUTGOING</h4></a>
+<dd>
+Filter file which controls how outgoing messages are tagged.
+Look for the filter-file in the environment first.
+<br><br>
+Default is ~/.tmda/filters/outgoing
+<dt><hr>
+<a name="FINGERPRINT"><h4>FINGERPRINT</h4></a>
+<dd>
+A list containing one or more message headers whose values should be
+used to create a "fingerprint" for the message.  If the header value
+is 'body' (all-lowercase), the message body content is used instead
+of a header value.  The fingerprint is a SHA-1 HMAC digest
+represented as a base64-encoded string.  This fingerprint will be
+added to your outgoing client-side messages (i.e, messages sent with
+tmda-sendmail) in an `X-TMDA-Fingerprint' header prior to injection.
+<br><br>
+Examples:
+<br><br>
+<code>FINGERPRINT = ["message-id"]</code><br>
+<code>FINGERPRINT = ["message-id", "from", "date"]</code><br>
+<code>FINGERPRINT = ["message-id", "body"]</code>
+<br><br>
+Things to keep in mind, especially if verifying these fingerprints
+with non-TMDA code.
+<ul>
+<li>
+CRYPT_KEY is converted from hex into raw binary before it is
+  used to create the HMAC object.
+<li>
+The order of header names in the FINGERPRINT list is important;
+  updates are made in the order listed.
+<li>
+If a listed header doesn't exist in the message, no update attempt
+  will be made for that header.
+<li>
+For a listed header, only the header value (i.e, text after the
+  colon) is used.  Additionally, leading and trailing whitespace (but
+  not internal whitespace) is stripped from that value.
+</ul>
+For example, if the listed headers consisted of:
+<br>
+<br>
+Message-ID: &lt;20011212192455.A7060@nightshade.la.mastaler.com&gt;
+<br>
+From: "Jason R. Mastaler" &lt;jason-dated-1008901496.5356ec@mastaler.com&gt;
+<br>
+Date: Wed, 12 Dec 2001 19:24:55 -0700
+<br><br>
+The strings which are used to create the HMAC digest are the header
+values only (right hand side of Header:).
+<br><br>
+The following header would then be added to the outgoing message:
+<br>
+X-TMDA-Fingerprint: vDBoOHtIUE6VniJguxJ+w2fR5bU
+<br><br>
+No default
+<dt><hr>
+<a name="FULLNAME"><h4>FULLNAME</h4></a>
+<dd>
+Your full name.
+<br><br>
+Example:
+<br><br>
+<code>FULLNAME = "John Doe"</code>
+<br><br>
+Default comes from your environment or the password file.
+<dt><hr>
+<a name="HMAC_BYTES"><h4>HMAC_BYTES</h4></a>
+<dd>
+An integer which determines the length of the HMACs used in TMDA's
+"cookies".  Read the `CRYPTO' file for more information.  Changing
+this value will will invalidate all previously generated HMACs.
+<br><br>
+Default is 3 (24-bit HMACs)
+<dt><hr>
+<a name="HOSTNAME"><h4>HOSTNAME</h4></a>
+<dd>
+The right-hand side of your email address (after `@').  Used only in
+cases where TMDA can't determine this itself.
+<br><br>
+Example:
+<br><br>
+<code>HOSTNAME = "domain.dom"</code>
+<br><br>
+Defaults to the fully qualified domain name of the localhost.
+<dt><hr>
+<a name="LOCALDATE"><h4>LOCALDATE</h4></a>
+<dd>
+Set this variable to 0 if you want TMDA to generate ``Date:''
+headers in UTC instead of the local time zone.
+<br><br>
+Default is 1 (use local time zone)
+<dt><hr>
+<a name="LOGFILE_DEBUG"><h4>LOGFILE_DEBUG</h4></a>
+<dd>
+Filename which uncaught exceptions should be written to.
+<br><br>
+Example:
+<br><br>
+<code>LOGFILE_DEBUG = "/path/to/logs/tmda.debug"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="LOGFILE_INCOMING"><h4>LOGFILE_INCOMING</h4></a>
+<dd>
+Filename which incoming delivery (i.e, tmda-filter) summaries should
+be written to.
+<br><br>
+Example:
+<br><br>
+<code>LOGFILE_INCOMING = "/path/to/logs/tmda.in"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="LOGFILE_OUTGOING"><h4>LOGFILE_OUTGOING</h4></a>
+<dd>
+Filename which outgoing message (i.e, tmda-sendmail) summaries
+should be written to.
+<br><br>
+Example:
+<br><br>
+<code>LOGFILE_OUTGOING = "/path/to/logs/tmda.out"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="MAIL_TRANSFER_AGENT"><h4>MAIL_TRANSFER_AGENT</h4></a>
+<dd>
+Defines which mail transfer agent (MTA) software you are running.
+Possible choices are "exim", "postfix", "qmail", or "sendmail".
+<br><br>
+Default is qmail
+<dt><hr>
+<a name="MAX_AUTORESPONSES_PER_DAY"><h4>MAX_AUTORESPONSES_PER_DAY</h4></a>
+<dd>
+An integer specifying the maximum number of automatic responses sent
+to a given sender address in a day.  This includes _all_
+auto-responses sent by TMDA (confirmation requests, confirmation
+acceptance notices, failure notices, etc.)
+<br><br>
+This limit prevents response loops between TMDA and misconfigured
+remote auto-responders.  TMDA already inhibits automatic replies to
+any message that looks like a mailing list message or a bounce
+message.  This is a fallback safety valve so it should be set fairly
+high.  Set to 0 for no limit.
+<br><br>
+Default is 50
+<dt><hr>
+<a name="MESSAGE_FROM_STYLE"><h4>MESSAGE_FROM_STYLE</h4></a>
+<dd>
+Specifies how `From' headers should look when tagging outgoing
+messages with tmda-sendmail.  There are two valid values:
+<br><br>
+"<code>address</code>"
+<blockquote>
+     Just the address - king@grassland.com
+</blockquote>
+<br>
+"<code>angles</code>"
+<blockquote>
+     Elvis Parsley &lt;king@grassland.com&gt;
+</blockquote>
+<br>
+Default is "angles".
+<dt><hr>
+<a name="OUTGOINGMAIL"><h4>OUTGOINGMAIL</h4></a>
+<dd>
+Final delivery method for all outgoing mail (server and client).
+Possible values include:
+<br><br>
+"<code>smtp</code>"
+<blockquote>
+   Deliver messages by handing them off to an SMTP server (i.e,
+   smarthost).  Be sure that the "SMTPHOST" variable (see below) is
+   set correctly.
+</blockquote>
+<br>
+"<code>sendmail</code>"
+<blockquote>
+   Deliver messages via the command line interface to the sendmail
+   program (/usr/sbin/sendmail).  Use at your own risk.  "smtp" is
+   highly recommended.
+<br><br>
+   SECURITY WARNING: The 'sendmail' method is not secure.  Because
+   this method uses popen(), it goes through the shell.  It does not
+   scan the arguments for potential exploits and so it should be
+   considered unsafe.  For performance reasons, it's not recommended
+   either -- use the 'smtp' method instead, even if
+   MAIL_TRANSFER_AGENT is "sendmail".
+</blockquote>
+<br>
+Default is "smtp"
+<dt><hr>
+<a name="PENDING_BLACKLIST_APPEND"><h4>PENDING_BLACKLIST_APPEND</h4></a>
+<dd>
+Filename to which a sender's e-mail address should be appended
+when a message is "blacklisted" by tmda-pending.
+<br><br>
+Example:
+<br><br>
+<code>PENDING_BLACKLIST_APPEND = "/full/path/to/blacklist"</code>
+<br><br>
+No default
+<dt><hr>
+<a name="PENDING_CACHE"><h4>PENDING_CACHE</h4></a>
+<dd>
+Path to the cache file used when tmda-pending is invoked with the
+--cache option.
+<br><br>
+Default is ~/.tmda/pending/.msgcache
+<dt><hr>
+<a name="PENDING_CACHE_LEN"><h4>PENDING_CACHE_LEN</h4></a>
+<dd>
+An integer which specifies the maximum number of entries held by
+PENDING_CACHE.  Make sure this is greater than the number of
+messages kept in your pending queue, or else you'll start seeing
+previously viewed messages again.
+<br><br>
+Default is 5000
+<dt><hr>
+<a name="PENDING_DELETE_APPEND"><h4>PENDING_DELETE_APPEND</h4></a>
+<dd>
+Filename to which a sender's e-mail address should be automatically
+appended when a message is "deleted" by tmda-pending.
+<br><br>
+Example:
+<br><br>
+<code>PENDING_DELETE_APPEND = "/full/path/to/blacklist"</code>
+<br><br>
+No default
+<dt><hr>
+<a name="PENDING_RELEASE_APPEND"><h4>PENDING_RELEASE_APPEND</h4></a>
+<dd>
+Filename to which a sender's e-mail address should be automatically
+appended when a message is "released" by tmda-pending.
+<br><br>
+Example:
+<br><br>
+<code>PENDING_RELEASE_APPEND = "/full/path/to/whitelist"</code>
+<br><br>
+No default
+<dt><hr>
+<a name="PENDING_WHITELIST_APPEND"><h4>PENDING_WHITELIST_APPEND</h4></a>
+<dd>
+Filename to which a sender's e-mail address should be appended
+when a message is "whitelisted" by tmda-pending.
+<br><br>
+Example:
+<br><br>
+<code>PENDING_WHITELIST_APPEND = "/full/path/to/whitelist"</code>
+<br><br>
+No default
+<dt><hr>
+<a name="PURGED_HEADERS"><h4>PURGED_HEADERS</h4></a>
+<dd>
+A list containing one or more message headers that should be removed
+from outgoing client-side messages (i.e, messages sent with
+tmda-sendmail) prior to injection.  Listed headers are
+case-insensitive, and the purging will only be attempted if the
+header actually exists.
+<br><br>
+NOTE: PURGED_HEADERS is run _after_ ADDED_HEADERS (see above).
+<br><br>
+Examples:
+<br><br>
+<code>PURGED_HEADERS = ["bcc", "resent-bcc", "x-mailer"]</code><br>
+<code>PURGED_HEADERS = ["bcc", "resent-bcc", "x-mailer", "user-agent"]</code>
+<br><br>
+Default is "Bcc:" and "Resent-Bcc"
+<dt><hr>
+<a name="RECIPIENT_DELIMITER"><h4>RECIPIENT_DELIMITER</h4></a>
+<dd>
+A single character which specifies the separator between user names
+and address extensions (e.g, user-ext).
+The default under qmail is `-', while the default for Sendmail and
+friends is likely `+'.
+<br><br>
+Default is "-"
+<dt><hr>
+<a name="RECIPIENT_HEADER"><h4>RECIPIENT_HEADER</h4></a>
+<dd>
+A string containing the name of a header (case-insensitive) whose
+contents will be taken as the envelope recipient of the message.
+The header should contain one fully-qualified e-mail address.  This
+can be used in rare cases when you need to override the RECIPIENT
+environment variable, which is how TMDA normally determines the
+envelope recipient address.
+<br><br>
+Example:
+<br><br>
+<code>RECIPIENT_HEADER = 'x-originally-to'</code>
+<br><br>
+Then, if the message contains the following header:
+<br>
+<br>
+X-Originally-To: webmaster@domain.dom
+<br><br>
+TMDA will take webmaster@domain.dom as the envelope recipient of the
+message rather than the value of RECIPIENT.
+<br><br>
+WARNING: If you enable this feature, make sure that the method you
+are using to add the header will overwrite or replace an existing
+header of the same name (such as reformail/formail's -i and -I
+options do).  Otherwise the envelope recipient will be invalid which
+will break the confirmation process.
+<br><br>
+No default
+<dt><hr>
+<a name="RESPONSE_DIR"><h4>RESPONSE_DIR</h4></a>
+<dd>
+Full path to a directory containing auto-response rate-limiting
+information.  Only consulted if MAX_AUTORESPONSES_PER_DAY != 0
+<br><br>
+Example:
+<br><br>
+<code>RESPONSE_DIR = "/full/path/to/responses/"</code>
+<br><br>
+Default is ~/.tmda/responses
+<dt><hr>
+<a name="SENDER_TEMPLATE_VARS"><h4>SENDER_TEMPLATE_VARS</h4></a>
+<dd>
+Set this variable to 1 if you want to use 'sender' address variables
+in your templates.
+<br><br>
+Default is 0 (turned off)
+<dt><hr>
+<a name="SENDMAIL_PROGRAM"><h4>SENDMAIL_PROGRAM</h4></a>
+<dd>
+The path to the sendmail program, or sendmail compatibility
+interface when OUTGOINGMAIL is "sendmail".
+<br><br>
+Defaults to one of the two standard locations.
+<dt><hr>
+<a name="SMTPAUTH_PASSWORD"><h4>SMTPAUTH_PASSWORD</h4></a>
+<dd>
+The password to authenticate with if your SMTP server requires
+authentication.  You must also define SMTPAUTH_USERNAME if you use
+this option.  Requires Python 2.2 or greater.
+<br><br>
+Examples:
+<br><br>
+<code>SMTPAUTH_PASSWORD = "6Yu_9iKzs"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="SMTPAUTH_USERNAME"><h4>SMTPAUTH_USERNAME</h4></a>
+<dd>
+The username to authenticate with if your SMTP server requires
+authentication.  You must also define SMTPAUTH_PASSWORD if you use
+this option.  Requires Python 2.2 or greater.
+<br><br>
+Examples:
+<br><br>
+<code>SMTPAUTH_USERNAME = "johndoe"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="SMTPHOST"><h4>SMTPHOST</h4></a>
+<dd>
+SMTP host and optional port, when OUTGOINGMAIL is "smtp".
+If the hostname or IP address ends with a colon (":") followed by a
+number, that suffix will be stripped off and the number interpreted
+as the port number to use.  Otherwise, the standard SMTP port (25)
+will be used.
+<br><br>
+Examples:
+<br><br>
+<code>SMTPHOST = "localhost"</code><br>
+<code>SMTPHOST = "172.16.78.20:2525"</code><br>
+<code>SMTPHOST = "mailhost.company.com"</code><br>
+<code>SMTPHOST = "mailhost.company.com:1234"</code>
+<br><br>
+Default is "localhost" (port 25 on the local host)
+<dt><hr>
+<a name="SMTPSSL"><h4>SMTPSSL</h4></a>
+<dd>
+Set this variable to 1 to put the SMTP connection in TLS (Transport
+Layer Security) mode. All SMTP commands that follow will be
+encrypted.  Your Python's socket module must be compiled with SSL
+support.  Requires Python 2.2 or greater.
+<br><br>
+Default is 0 (turned off)
+<dt><hr>
+<a name="SMTPSSL_CERTFILE"><h4>SMTPSSL_CERTFILE</h4></a>
+<dd>
+When SMTPSSL is enabled, this is the optional name of a PEM
+formatted certificate chain file.  Warning: This does not do any
+certificate verification.
+<br><br>
+No default.
+<dt><hr>
+<a name="SMTPSSL_KEYFILE"><h4>SMTPSSL_KEYFILE</h4></a>
+<dd>
+When SMTPSSL is enabled, this is the optional name of a PEM
+formatted file that contains your private key.
+<br><br>
+No default.
+<dt><hr>
+<a name="SMTP_MAX_SESSIONS_PER_CONNECTION"><h4>SMTP_MAX_SESSIONS_PER_CONNECTION</h4></a>
+<dd>
+An integer specifying a ceiling on the number of SMTP sessions to
+perform on a single socket connection, when OUTGOINGMAIL is
+"smtp".  Some MTAs have limits.  Set this to 0 to do as many
+as we like (i.e. your MTA has no limits).  Set this to some number
+great than 0 and TMDA will close the SMTP connection and re-open it
+after this number of consecutive sessions.
+<br><br>
+Default is 0
+<dt><hr>
+<a name="TAGS_CONFIRM"><h4>TAGS_CONFIRM</h4></a>
+<dd>
+A list of one or more strings used to identify a confirmation
+address.  The first element in the list will be used when
+generating a new confirmation address.
+<br><br>
+Example:
+<br><br>
+<code>TAGS_CONFIRM = ['confirm', 'c']</code>
+<br><br>
+Default is 'confirm'
+<dt><hr>
+<a name="TAGS_DATED"><h4>TAGS_DATED</h4></a>
+<dd>
+A list of one or more strings used to identify a dated address.  The
+first element in the list will be used by `tmda-address' when
+generating a new dated address.
+<br><br>
+Example:
+<br><br>
+<code>TAGS_DATED = ['dated', 'd', 'exp', 'expires']</code>
+<br><br>
+Default is 'dated'
+<dt><hr>
+<a name="TAGS_KEYWORD"><h4>TAGS_KEYWORD</h4></a>
+<dd>
+A list of one or more strings used to identify a keyword address.
+The first element in the list will be used by `tmda-address' when
+generating a new keyword address.
+<br><br>
+Example:
+<br><br>
+<code>TAGS_KEYWORD = ['keyword', 'key', 'kw']</code>
+<br><br>
+Default is 'keyword'
+<dt><hr>
+<a name="TAGS_SENDER"><h4>TAGS_SENDER</h4></a>
+<dd>
+A list of one or more strings to identify a sender address.  The
+first element in the list will be used by `tmda-address' when
+generating a new sender address.
+<br><br>
+Example:
+<br><br>
+<code>TAGS_SENDER = ['sender', 's']</code>
+<br><br>
+Default is 'sender'
+<dt><hr>
+<a name="TEMPLATE_DIR"><h4>TEMPLATE_DIR</h4></a>
+<dd>
+Full path to a directory containing custom TMDA templates.  Any
+templates found in this directory will be used, otherwise the
+default templates will be used.
+<br><br>
+Example:
+<br><br>
+<code>TEMPLATE_DIR = "/full/path/to/templates/"</code>
+<br><br>
+No default.
+<dt><hr>
+<a name="TERSE_SUMMARY_HEADERS"><h4>TERSE_SUMMARY_HEADERS</h4></a>
+<dd>
+A list containing one or more message headers that should be
+displayed by tmda-pending's `--terse option'.  Listed headers are
+case-insensitive.  'from_name' and 'from_address' can be used to
+specify the Fullname and e-mail address from the message's "From:"
+header.
+<br><br>
+Examples:
+<br><br>
+<code>TERSE_SUMMARY_HEADERS = ["return-path"]</code><br>
+<code>TERSE_SUMMARY_HEADERS = ["from_name", "from_address", "subject"]</code>
+<br><br>
+Default is the Fullname followed by Subject.
+<dt><hr>
+<a name="TIMEOUT"><h4>TIMEOUT</h4></a>
+<dd>
+The timeout interval for 'dated' addresses.  The available units are
+(Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).
+<br><br>
+Default is 5d (5 days).
+<dt><hr>
+<a name="USERNAME"><h4>USERNAME</h4></a>
+<dd>
+The left-hand side of your e-mail address (before `@').
+<br><br>
+Example:
+<br><br>
+<code>USERNAME = "jdoe"</code>
+<br><br>
+Defaults to your UNIX username.
+<dt><hr>
+<a name="USEVIRTUALDOMAINS"><h4>USEVIRTUALDOMAINS</h4></a>
+<dd>
+Set this variable to 0 if want to turn off TMDA's qmail virtualdomains
+support.  This should obviously only be done if you are not running
+any qmail virtualdomains, but it will improve performance.
+<br><br>
+Default is 1 (turned on)
+<dt><hr>
+<a name="VIRTUALDOMAINS"><h4>VIRTUALDOMAINS</h4></a>
+<dd>
+virtualdomains defaults to /var/qmail/control/virtualdomains, but
+this lets you override it in case it is installed elsewhere.  Used
+for virtualdomain processing in tmda-filter.
+<br><br>
+Default is /var/qmail/control/virtualdomains
+<dt><hr>
+<a name="X_TMDA_IN_SUBJECT"><h4>X_TMDA_IN_SUBJECT</h4></a>
+<dd>
+With this variable set to 1, tmda-inject will parse the Subject
+header looking for `X-TMDA' actions, and then remove them before
+sending the message.  This is useful for users that desire the
+`X-TMDA' override behavior, but don't use an MUA which easily allows
+addition of arbitrary headers (e.g, Outlook).
+<br><br>
+The Subject header should contain `X-TMDA' followed by whitespace
+followed by the desired action followed by the real subject.  Case
+is insensitive.
+<br><br>
+Examples:
+<br><br>
+<code>Subject: X-TMDA dated Re: You're fired!</code><br>
+<code>Subject:     X-TMDA dated=5M Re: You're fired!</code><br>
+<code>Subject: X-TMDA   sender      Re: You're fired!</code>
+<br><br>
+In all cases, the resulting subject will simply be:
+<br>
+Subject: Re: You're fired!
+<br><br>
+Default is 0 (turned off)
+</dl>

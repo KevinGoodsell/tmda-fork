@@ -221,7 +221,7 @@ Send the message to all recipients from jason-mlist-xemacs-beta@mastaler.com
 
 Make sure that your <b>crypt_key</b> file is the same
 on both your mail server and your mail client -- they must match.
-See <b>TMDA/Defaults.py</b> for more client options.
+See <a href="config-vars.html">Configuration Variables</a> for more client options.
 <br><br>
 
 

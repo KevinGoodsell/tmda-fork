@@ -1,0 +1,255 @@
+#!/usr/bin/env python
+#
+# Copyright (C) 2001,2002 Jason R. Mastaler <jason@mastaler.com>
+#
+# Author: Tim Legant <tim@catseye.net>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+"""Generate HTML from Defaults.py variable comments."""
+
+
+import re
+import string
+
+
+class Variable:
+    def __init__(self, name):
+        self.name = name
+        self.blocks = []
+
+    def add_line(self, line):
+        self.blocks.append(line)
+
+    def as_string(self):
+        s = '<dt><hr>\n'
+        s += '<a name="%s"><h4>%s</h4></a>\n' % (self.name, self.name)
+        s += '<dd>\n'
+        s += '\n'.join(self.blocks)
+        return s
+
+    def __cmp__(self, other):
+        if isinstance(other, Variable):
+            return cmp(self.name, other.name)
+        return cmp(self.name, other)
+
+
+escapes = (('&', '&amp;'), ('<', '&lt;'), ('>', '&gt;'))
+
+def escape(text):
+    for char, entity in escapes:
+        text = text.replace(char, entity)
+    return text
+
+def is_all_caps(text):
+    for ch in list(text):
+        if ch not in string.uppercase + '_':
+            return 0
+    return 1
+
+def is_indented(text):
+    return text[0] == ' '
+
+def is_next_line_blank(idx, section):
+    if idx+1 < len(section) and len(section[idx+1]) == 0:
+        return 1
+    return 0
+
+def is_line_header(idx, section):
+    if idx < len(section):
+        line = section[idx]
+        if (re.match(r'[\w_-]+:', line, re.IGNORECASE) and
+            not line.startswith('Example') and
+            not line.startswith('NOTE') and
+            not line.startswith('WARNING')):
+            return 1
+    return 0
+
+def is_next_line_indented(idx, section):
+    if idx+1 < len(section) and is_indented(section[idx+1]):
+        return 1
+    return 0
+
+def is_next_line_listitem(idx, section):
+    if idx+1 < len(section) and section[idx+1].startswith('* '):
+        return 1
+    return 0
+
+def print_index(variables):
+    column = 0
+    print '<table width="100%">\n'
+    for variable in variables:
+        if column % 2 == 0:
+            print '<tr>'
+        print '<td><a href="#%s">%s</a></td>' % (variable.name, variable.name)
+        column += 1
+        if column % 2 == 0:
+            print '</tr>'
+    print '</table>\n'
+
+def read_section(fp):
+    name = ''
+    section = []
+    in_section = 0
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        elif line[0] != '#':
+            if in_section:
+                break
+        else:
+            line = line[2:].rstrip()
+            if not in_section and line and is_all_caps(line):
+                name = line
+                in_section = 1
+            elif in_section:
+                if not line and len(section) == 0:
+                    continue
+                section.append(line)
+    return (name, section)
+
+def parse_section(name, section):
+    variable = Variable(name)
+
+    indented = 0
+    in_list = 0
+    in_examples = 0
+    saw_example = 0
+    idx = 0
+
+    for idx in range(len(section)):
+        line = escape(section[idx])
+        if not line:
+            if in_examples and saw_example:
+                in_examples = 0
+                saw_example = 0
+            if in_list and not is_next_line_listitem(idx, section):
+                variable.add_line('</ul>')
+                in_list = 0
+            elif not indented or is_next_line_indented(idx, section):
+                if is_line_header(idx+1, section) and not in_examples:
+                    variable.add_line('<br>')
+                elif not is_next_line_listitem(idx, section):
+                    variable.add_line('<br><br>')
+            continue
+        elif indented:
+            if not is_indented(line):
+                variable.add_line('</blockquote>')
+                variable.add_line('<br>')
+                indented = 0
+        elif is_indented(line) and not in_list:
+            indented = 1
+            variable.add_line('<blockquote>')
+        if line.startswith('Example'):
+            variable.add_line(line)
+            if not is_next_line_blank(idx, section):
+                variable.add_line('<br><br>')
+            in_examples = 1
+            saw_example = 0
+            continue
+        elif in_examples:
+            ex_line = '<code>' + line + '</code>'
+            if not is_next_line_blank(idx, section):
+                ex_line += '<br>'
+            variable.add_line(ex_line)
+            saw_example = 1
+            continue
+        elif idx+1 < len(section) and section[idx+1].startswith('Default'):
+            variable.add_line(line)
+            variable.add_line('<br><br>')
+            continue
+        elif line.startswith('* '):
+            line = line[2:]
+            if not in_list:
+                variable.add_line('<ul>')
+                in_list = 1
+            variable.add_line('<li>')
+        elif len(line) > 2 and line[0] == '"' and line[-1] == '"':
+            variable.add_line('"<code>' + line[1:-1] + '</code>"')
+            continue
+        else:
+            if is_line_header(idx, section):
+                variable.add_line('<br>')
+        variable.add_line(line)
+
+    return variable
+
+def main(fp):
+    variables = []
+    while 1:
+        (name, section) = read_section(fp)
+        if not section:
+            break
+        variable = parse_section(name, section)
+        if variable:
+            variables.append(variable)
+
+    variables.sort()
+    print_index(variables)
+    print '<dl>'
+    for variable in variables:
+        print variable.as_string()
+    print '</dl>'
+
+
+
+###
+### Main script code
+###
+
+if __name__ == "__main__":
+
+    import cStringIO
+    import getopt
+    import os
+    import sys
+
+    _usage = """Usage: %s [ -c | -css ] path_to_Defaults.py
+    -c | -css    use Cascading Style Sheet tags"""
+    _progname = os.path.basename(sys.argv[0])
+    _use_css = 0
+    _exitcode = 0
+
+    def usage(code, msg=''):
+        print >> sys.stderr, _usage % (_progname,)
+        if msg:
+            print >> sys.stderr, msg
+        sys.exit(code)
+
+
+    try:
+        (options, arguments) = getopt.getopt(sys.argv[1:], 'c', 'css')
+    except getopt.error, msg:
+        usage(1, msg)
+
+    for option, value in options:
+        if option == '-c' or option == '--css':
+            _use_css = 1
+
+    if arguments:
+        try:
+            fp = open(arguments[0])
+        except IOError:
+            usage(2, 'Error: can\'t open input file "%s"', (arguments[0],))
+    else:
+        fp = cStringIO.StringIO(sys.stdin.read())
+
+    _exitcode = main(fp)
+
+    sys.exit(_exitcode)

@@ -17,6 +17,8 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
+DEF2HTML =      ../contrib/def2html
+
 HTROOT = 	.
 HT2HTML =	/usr/local/packages/ht2html/ht2html.py
 HTSTYLE =	TMDAGenerator
@@ -34,8 +36,16 @@ GENERATED_HTML= $(SOURCES:.ht=.html)
 
 all: $(TARGETS)
 
+config-vars.ht: config-vars.tpl config-vars.tmp
+	sed -e '/<!--config_vars-->/r config-vars.tmp' -e \
+	'/<!--config_vars-->/d' < config-vars.tpl > config-vars.ht
+
+config-vars.tmp: ../TMDA/Defaults.py
+	$(DEF2HTML) ../TMDA/Defaults.py > config-vars.tmp
+
 clean: clean
 	-rm -f *~
 	-rm -f $(GENERATED_HTML)
+	-rm -f config-vars.tmp
 
 remake: clean all

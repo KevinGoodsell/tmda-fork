@@ -2,17 +2,10 @@
 
 # sample.tmdarc - Sample configuration file for TMDA.
 #
-# /etc/tmdarc and ~/.tmdarc are interpreted as executable Python code.
-# See the Python documentation for more on Python syntax:
-# <URL:http://www.python.org/doc/current/>
+# See http://tmda.net/config-vars.html for descriptions of all
+# the available options.
 #
-# NOTE: ~/.tmdarc must be chmod 400 or chmod 600 !
-#
-# See the "User configurable settings" section of TMDA/Defaults.py for
-# more information on all the variables below.
-#
-# Any variable set here overrides the default value set in
-# Defaults.py.
+# NOTE: ~/.tmda/config must be chmod 400 or chmod 600 !
 
 #########################################################
 # qmail required variables; required only for qmail users
@@ -21,14 +14,13 @@
 #
 #########################################################
 
-
 #################################################################
 # Non-qmail required variables; required only for non-qmail users
 #
 # Uncomment one line from each section.
 #
-# Please read the "User configurable settings" section of
-# TMDA/Defaults.py for more information on these variables.
+# Please read http://tmda.net/config-vars.html for more information
+# on these variables.
 #################################################################
 
 #MAIL_TRANSFER_AGENT = "exim"
@@ -47,8 +39,7 @@
 
 ######################################################################
 # No other variables are required, but you may be interested in
-# further customization.  See the "User configurable settings" section
-# of TMDA/Defaults.py for more information on the other available
-# configuration variables.
+# further customization.  See http://tmda.net/config-vars.html for
+# more information on the other available configuration variables.
 ######################################################################
 
