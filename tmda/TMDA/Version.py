@@ -22,6 +22,7 @@
 """ Various versioning information."""
 
 
+import os
 import sys
 
 
@@ -29,11 +30,21 @@ import sys
 TMDA = "0.49+"
 
 # Python version
+# e.g, 2.2 
 PYTHON = sys.version.split()[0]
 
-# Platform identifier
-PLATFORM = sys.platform
+# System information
+# e.g, ('IRIX64', 'acl', '6.5', '10181059', 'IP27')
+UNAME = os.uname()
 
-# A summary of all the version identifiers.  e.g,
-# TMDA/0.46 (Python 2.2 on freebsd4)
-ALL = "TMDA/%s (Python %s on %s)" % (TMDA, PYTHON, PLATFORM)
+# Platform identifier
+# e.g, IRIX64
+PLATFORM = UNAME[0]
+
+# Machine architecture
+# e.g, IP27
+ARCH = UNAME[4]
+
+# Summary of all the version identifiers
+# e.g, TMDA/0.49 (Python 2.2; IRIX64-IP27)
+ALL = "TMDA/%s (Python %s; %s-%s)" % (TMDA, PYTHON, PLATFORM, ARCH)

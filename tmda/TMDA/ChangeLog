@@ -1,3 +1,8 @@
+2002-03-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Version.py: Add machine architecture to the mix, and base ALL on
+	os.uname().
+
 2002-03-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (make_msgid): Simplify the algorithm.
