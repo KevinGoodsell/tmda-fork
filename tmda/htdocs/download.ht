@@ -4,7 +4,7 @@ Links: overview-links.h usage-links.h support-links.h
 <h3>TMDA Download</h3>
 
 <u>Latest Release:</u><br>
-Download the <a href="http://software.libertine.org/tmda/releases/" TARGET="Resource Window">
+Download the <a href="http://tmda.net/releases/" TARGET="Resource Window">
 latest release</a> as a gzipped tarball.
 <br><br>
 
@@ -50,7 +50,7 @@ TARGET="Resource Window">(mail/tmda)</a>
 </ul>
 
 <u>Old Releases:</u><br>
-<a href="http://software.libertine.org/tmda/releases/old/" TARGET="Resource Window">
+<a href="http://tmda.net/releases/old/" TARGET="Resource Window">
 Past releases</a> are available for download as well.<br><br>
 
 <u>Development Sources:</u><br>
@@ -63,7 +63,7 @@ tmda-cvs mailing list</a> to stay abreast of changes.<br><br>
 The TMDA development sources can be accessed via anonymous (pserver)
 CVS through module <b>tmda</b>.<br><br>
 
-<li><a href="http://software.libertine.org/tmda/snapshots/" TARGET="Resource Window">
+<li><a href="http://tmda.net/snapshots/" TARGET="Resource Window">
 Nightly Snapshots:</a><br> Snapshots of the current development sources are checked out from CVS
 and tarballed each morning at 05:00 UTC.<br><br>
 
