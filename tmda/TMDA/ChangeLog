@@ -19,6 +19,11 @@
 	* Util.py: Remove hexlify and unhexlify functions; use the
 	binascii module instead.
 
+2002-01-30  Tim Legant  <tim@catseye.net>
+
+	* Defaults.py: Updated PARENTDIR to support relative symlinks in
+	addition to absolute symlinks.
+
 2002-01-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Add a new variable PARENTDIR that refers to the

@@ -26,7 +26,12 @@ EX_TEMPFAIL = 75
 # TMDA parent directory.
 progpath = os.path.abspath(sys.argv[0])
 if os.path.islink(progpath):
-    progpath = os.path.abspath(os.readlink(progpath))
+    progdir = os.path.dirname(progpath)
+    linkpath = os.readlink(progpath)
+    if os.path.isabs(linkpath):
+        progpath = linkpath
+    else:
+        progpath = os.path.normpath(progdir + '/' + linkpath)
 PARENTDIR = os.path.split(os.path.dirname(progpath))[0] # '../'
 
 # If the file /etc/tmdarc exists, read it before ~/.tmdarc.

@@ -9,7 +9,12 @@ import sys
 progpath = os.path.abspath(sys.argv[0])
 
 if os.path.islink(progpath):
-    progpath = os.path.abspath(os.readlink(progpath))
+    progdir = os.path.dirname(progpath)
+    linkpath = os.readlink(progpath)
+    if os.path.isabs(linkpath):
+        progpath = linkpath
+    else:
+        progpath = os.path.normpath(progdir + '/' + linkpath)
 
 prefix = os.path.split(os.path.dirname(progpath))[0] # '../'
 
