@@ -1,3 +1,7 @@
+2001-10-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py: Removed INJECT & INJECT_FLAGS.
+
 2001-10-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* MTA.py (Postfix.deliver): Exit the deliver method by the same

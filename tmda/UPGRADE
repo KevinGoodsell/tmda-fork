@@ -4,6 +4,9 @@ If you are upgrading from a release of TMDA < 0.38:
 
 * The `X-Confirmed' header is now `X-TMDA-Confirmed'.
 
+* You can remove INJECT and INJECT_FLAGS from your .tmdarc as they are
+  no longer used.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.36:

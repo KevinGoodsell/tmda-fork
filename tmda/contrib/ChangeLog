@@ -1,3 +1,7 @@
+2001-10-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: REMOVE INJECT & INJECT_FLAGS, and add SENDMAIL.
+	
 2001-10-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add RECIPIENT_DELIMITER.

@@ -272,20 +272,6 @@ if not vars().has_key('HMAC_BYTES'):
 if not vars().has_key('HOSTNAME'):
     HOSTNAME = Util.gethostname()
 
-# INJECT
-# inject defaults to /var/qmail/bin/qmail-inject, but this lets
-# you override it in case it is installed elsewhere.
-if not vars().has_key('INJECT'):
-     INJECT = "/var/qmail/bin/qmail-inject"
-if not os.path.exists(INJECT):
-    print "Injection mechanism not found:",INJECT
-    sys.exit(EX_TEMPFAIL)
-
-# INJECT_FLAGS
-# inject_flags defaults to `f' (see qmail-inject(8) for flag descriptions)
-if not vars().has_key('INJECT_FLAGS'):
-    INJECT_FLAGS = "f"
-
 # LOGFILE
 # Filename which delivery statistics should be written to.
 # Default is 0 (no logging)

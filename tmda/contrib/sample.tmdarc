@@ -49,10 +49,6 @@ import os                                      # don't remove
 
 # HOSTNAME = "domain.dom" 
 
-# INJECT = "/var/qmail/bin/qmail-inject"
-
-# INJECT_FLAGS = "f"
-
 # LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
 
 # Optional delivery logging
@@ -69,6 +65,8 @@ import os                                      # don't remove
 # MAIL_TRANSFER_AGENT = "qmail"
 
 # RECIPIENT_DELIMITER = "-"
+
+# SENDMAIL = "/usr/sbin/sendmail"
 
 # TIMEOUT = "5d"
 

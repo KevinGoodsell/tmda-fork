@@ -35,12 +35,11 @@ for opt, arg in opts:
     elif opt in list('BpvixmeoEJb'):
         pass 
     elif opt == 't':
-        # qmail-inject -H
         pass
     elif opt == '-f':
-        os.environ['QMAILUSER'] = arg
+        pass
     elif opt == '-F':
-        os.environ['QMAILNAME'] = arg
+        os.environ['NAME'] = arg
 
 
 def main():

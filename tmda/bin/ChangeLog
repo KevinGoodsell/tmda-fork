@@ -1,3 +1,23 @@
+2001-10-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-sendmail (usage): Set $NAME rather than $QMAILNAME if
+	invoked with `-F'.
+
+	* tmda-inject (main): Update exit status codes from Defaults.py.
+	
+	(inject_message): MTA generalization.  Remove use of
+	qmail-specific environment variables to tag the message.  Instead,
+	set the "From:" header, and then set the envelope sender address
+	with `sendmail -f user@host'.  Also removed the rather redundant
+	send_* functions, and moved their functionality into
+	inject_message.
+
+	(main): Rather than setting qmail-specific environment variables,
+	append to the `envelope_sender_address' and `sender_full_name'
+	lists to build the sender tag.
+	
+	* tmda-sendmail: Remove qmail-specific bits.
+
 2001-10-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: Instead of raising qmail-specific exit codes to
