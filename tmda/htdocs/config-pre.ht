@@ -140,32 +140,23 @@ trailing or leading whitespace, or any other extraneous characters.
 
 If your Sendmail installation is using <a
 href="http://www.procmail.org/" TARGET="Resource Window">procmail</a>
-as its local mailer, one way to do this is to have Sendmail to add
-the envelope information as headers in the message.  Your
-<b>.procmailrc</b> can then set the environment variables from these
-headers.  The necessary Sendmail configuration changes are
-covered below, and a sample .procmailrc is shown in the next section.
-<br><br>
-
+as its local mailer, the necessary information is passed as a command
+line argument to procmail, typically introduced by the "-a" flag.
+Your <b>.procmailrc</b> will then be able to construct the environment
+variables from this argument.  The necessary Sendmail configuration
+changes are covered below, and a sample .procmailrc is given in the
+next section.  <br><br>
 <ol>
 
 <li>Make sure procmail is installed on your server, and then add the
-following rules to your <b>sendmail.mc</b> file if they are not
-already present: <br><br>
+following rule to your <b>sendmail.mc</b> file if it is not
+already present (most Linux distributions already define this!):
+<br><br>
 
 <blockquote><pre>
 FEATURE(`local_procmail', `/usr/bin/procmail')
 
-LOCAL_CONFIG
-HX-Envelope-To: $u 
-HX-Envelope-From: $g 
-
 </blockquote></pre>
-
-Sendmail will now use procmail to delivery local mail, and will
-add `X-Envelope-To' and `X-Envelope-From' headers to every 
-message it handles.
-<br><br>
 
 <li>Now run <b>sendmail.mc</b> through <b>m4</b> to produce your new
 <b>sendmail.cf</b> file, and restart Sendmail so the changes will take

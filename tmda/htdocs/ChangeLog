@@ -1,3 +1,13 @@
+2001-12-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-pre.ht (href): Modify Sendmail configuration
+	instructions: Only FEATURE(`local_procmail') is necessary, no need
+	to add X-Envelope-* headers.
+
+	* config-server.ht: Modify Sendmail/.procmailrc instructions to
+	construct both RECIPIENT and SENDER from a combination of
+	EXTENSION and available environment variables.
+
 2001-12-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-pre.ht (href): Clarify the required format of SENDER,

@@ -237,8 +237,7 @@ DEFAULT=/dev/null
 <a name="sendmail"><h4>TMDA Server Configuration (Sendmail only)</h4></a>
 
 These instructions assume you are running procmail as your local
-mailer, and have configured Sendmail to add `X-Envelope-To' and
-`X-Envelope-From' headers to your messages as described on the 
+mailer as described in the 
 <a href="config-pre.html#sendmail">Pre-Configuration</a> page.
 <ol>
 
@@ -249,11 +248,8 @@ included <b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b>,
 <b>RECIPIENT_DELIMITER</b> are required entries for non-qmail users.
 <br><br>
 
-<li>Modify your <b>.procmailrc</b> to set the SENDER, RECIPIENT,
-and EXTENSION variables, and then invoke tmda-filter.
-<br><br>
 
-First, modify <b>LOCAL_DELIVERY_AGENT</b> in your <b>~/.tmdarc</b> so
+Modify <b>LOCAL_DELIVERY_AGENT</b> in your <b>~/.tmdarc</b> so
 that it runs procmail with an separate rcfile (to avoid an infinite
 loop):
 
@@ -272,16 +268,21 @@ DEFAULT=/path/to/your/inbox
 
 </blockquote></pre>
 
-Finally, add the following snippet to the end of your <b>~/.procmailrc</b>
-to do final delivery:
+<li>Set the SENDER, RECIPIENT, and EXTENSION variables, and then
+invoke tmda-filter by adding the following snippet to the end of your
+<b>~/.procmailrc</b>.
 
 <blockquote><pre>
 
 # Set the necessary environment variables.
-# Remove the angle brackets and leading whitespace.
-SENDER=`formail -x X-Envelope-From | sed 's/[<>]//g;s/^[ ]*//'`
-RECIPIENT=`formail -x X-Envelope-To | sed 's/[<>]//g;s/^[ ]*//'`
 EXTENSION="$1"
+:0
+* EXTENSION ?? .
+{
+  DELIMITER="+"
+}
+RECIPIENT="$LOGNAME$DELIMITER$EXTENSION@$HOST"
+SENDER=`formail -x Return-Path | sed 's/[<>]//g;s/^[ ]*//'`
 
 # Run the message through tmda-filter.
 :0 w
