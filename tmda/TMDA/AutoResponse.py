@@ -189,7 +189,8 @@ class AutoResponse:
             self.mimemsg['Auto-Submitted'] = 'auto-replied'
         elif self.responsetype == 'bounce':
             self.mimemsg['Auto-Submitted'] = 'auto-generated (failure)'
-        self.mimemsg['X-Delivery-Agent'] = 'TMDA/%s' % Version.TMDA
+        self.mimemsg['X-Delivery-Agent'] = 'TMDA/%s (%s)' % (Version.TMDA,
+                                                             Version.CODENAME)
         # Optionally, add some user-specified headers.
         if Defaults.ADDED_HEADERS_SERVER:
             for hdr in Defaults.ADDED_HEADERS_SERVER.keys():

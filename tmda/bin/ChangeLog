@@ -1,3 +1,8 @@
+2002-11-03  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
+
+	* tmda-inject (inject_message): Add Version.CODENAME to
+	X-Delivery-Agent.
+	
 2002-10-29  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-pending (main): Allow messages to be specified on standard

@@ -28,6 +28,9 @@ import sys
 # TMDA version
 TMDA = "0.63+"
 
+# TMDA version codename
+CODENAME = "Lawrin"
+
 # Python version
 PYTHON = sys.version.split()[0]
 

@@ -1,3 +1,8 @@
+2002-11-03  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
+
+	* AutoResponse.py (AutoResponse.create): Add Version.CODENAME to
+	X-Delivery-Agent.
+	
 2002-11-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Util.py (maketext): Recognize TEMPLATE_DIR_MATCH_SENDER.
