@@ -181,6 +181,7 @@ Title: Default Settings
 <h4><a name="NoOverrideSpamCopFilter"></a>NoOverride:SpamCopFilter</h4>
 <blockquote>
   <p>Optional message filter to use before reporting spam.</p>
+  <p>The filter program should expect data on stdin and output to stdout.</p>
   <p>Example:
     <table class="example">
       <tr>
