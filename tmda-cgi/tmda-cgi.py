@@ -42,13 +42,26 @@ __builtins__.__import__ = NewImport
 # Prepare the traceback in case of uncaught exception
 import os
 import sys
+import ConfigParser
 import MyCgiTb
 import Template
 MyCgiTb.ErrTemplate = "prog_err2.html"
-Template.Template.Dict["ThemeDir"] = "%s/themes/Blue" % \
-  os.environ["TMDA_CGI_DISP_DIR"]
-Template.Template.BaseDir = "%s/display/themes/Blue/template" % \
-  os.path.abspath(os.path.split(sys.argv[0])[0])
+
+# Setup the "default" theme so it is used for traceback.
+defaultTheme = "Blue"
+# If possible, get the theme from defaults.ini, else fallback to default
+# setting, above
+try:
+  localDefaults = ConfigParser.ConfigParser()
+  localDefFile = os.path.join( os.getcwd(), "defaults.ini" )
+  localDefaults.read(localDefFile)
+  defaultTheme = localDefaults.get("General", "Theme")
+except:
+  pass
+Template.Template.Dict["ThemeDir"] = "%s/themes/%s" % \
+  ( os.environ["TMDA_CGI_DISP_DIR"], defaultTheme )
+Template.Template.BaseDir = "%s/display/themes/%s/template" % \
+  ( os.path.abspath(os.path.split(sys.argv[0])[0]), defaultTheme )
 
 import cgi
 
