@@ -21,16 +21,20 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""
-tmda-gui: Tkinter interface to TMDA
+"""Tkinter interface to TMDA.
 
-Usage:
-    tmda-gui
-        gives a (yet) non fonctionnal Address generator interface.
+Usage: %(program)s [OPTIONS]
 
-    tmda-gui -p
-        gives a functionnal (but yet to finish) Pending queue graphical
-        interface.
+Where:
+   -a
+   --address
+       Gives a (yet) non functional Address generator interface.
+
+   -p
+   --pending
+       Gives a functionnal (but yet to finish) Pending queue graphical
+       interface.
+
         Tricks:
         . you can resize the list columns width
         . you can resize the height of the list
@@ -67,6 +71,9 @@ except ImportError:
     print 'ERROR:\n'
     print wraptext(no_tk), '\n'
     sys.exit()
+
+
+program = sys.argv[0]
 
 
 class HSplitterFrame(Frame):
