@@ -14,7 +14,8 @@ class MTA:
     """Methods and instance variables common to all MTAs. """
     def __init__(self):
         pass
-       
+
+
 class Postfix(MTA):
     """Postfix-specific methods and instance variables."""
     def __init__(self):
