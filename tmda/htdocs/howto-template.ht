@@ -99,7 +99,7 @@ confirm_request.txt, taking the defaults for the other templates.
 <br><br>
 
 If you want to use particular custom templates for a specific sender
-address, or sender addresses in a specific domain or top-level domain, 
+address, or sender addresses in a specific sub-domain or top-level domain, 
 see the 
 <a href="config-vars.html#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a> 
 feature.
