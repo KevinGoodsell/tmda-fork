@@ -1,5 +1,9 @@
 2001-10-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* requirements.ht (Links): Claify that TMDA only uses the local
+	delivery agent internally to do final mail final delivery.  Users
+	don't need to maintain filter files.
+
 	* resources.ht (Links): Changed "Other" to "External".
 
 	* index.ht (Links): Emphasize test mailto: link.

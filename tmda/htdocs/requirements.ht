@@ -35,8 +35,12 @@ are in process.
 such as 
 <a href="http://www.procmail.org/" TARGET="Resource Window">procmail</a>
 or 
+
 <a href="http://www.flounder.net/~mrsam/maildrop/" TARGET="Resource Window">maildrop</a> 
-for final mail delivery.  Again, this is only required if you are 
+This doesn't mean you need to maintain a .procmailrc or .mailfilter file; TMDA just
+uses the executable to perform final mail delivery.  Any program capable of 
+accepting a message on stdin and writing it to mailbox will suffice.  But
+again, this is only required if you are 
 <strong>NOT running qmail!</strong>
 <br><br>
 
