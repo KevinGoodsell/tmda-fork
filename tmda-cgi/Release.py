@@ -117,7 +117,7 @@ and validate the pending email in question.
         CgiUtil.ParseString(os.environ["TMDA_VLOOKUP"], User )
       List = Util.RunTask(VLookup[1:])
       Sandbox = {"User": User}
-      Filename = os.path.join("stubs", "%s.py", VLookup[0])
+      Filename = os.path.join("stubs", "%s.py" % VLookup[0])
       try:
         execfile(Filename, Sandbox)
       except IOError:
