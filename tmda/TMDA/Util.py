@@ -10,6 +10,21 @@ import string
 import sys
 
 
+def hexlify(b):
+    """Return the hexadecimal representation of the binary data."""
+    return "%02x"*len(b) % tuple(map(ord, b))
+
+
+def unhexlify(s):
+    """Return the binary data represented by the hexadecimal string."""
+    acc = []
+    append = acc.append
+    int16 = string.atoi
+    for i in range(0, len(s), 2):
+        append(chr(int16(s[i:i+2], 16)))
+    return string.join(acc, '')
+
+
 def gethostname():
     hostname = os.environ.get('QMAILHOST') or \
                os.environ.get('MAILHOST')
@@ -107,16 +122,23 @@ def file_to_list(file,list):
     return list
 
 
-def hexlify(b):
-    """Return the hexadecimal representation of the binary data."""
-    return "%02x"*len(b) % tuple(map(ord, b))
+def maketext(templatefile, vardict):
+    """Make some text from a template file.
+    Adapted from Mailman's Util.maketext().
 
-
-def unhexlify(s):
-    """Return the binary data represented by the hexadecimal string."""
-    acc = []
-    append = acc.append
-    int16 = string.atoi
-    for i in range(0, len(s), 2):
-        append(chr(int16(s[i:i+2], 16)))
-    return string.join(acc, '')
+    Reads the `templatefile', from ../templates/, does string
+    substitution by interpolating in the `localdict'.
+    """
+    # ../templates/
+    template_dir = os.path.split(os.path.dirname
+                                 (os.path.abspath
+                                  (sys.argv[0])))[0] + '/templates'
+    file = os.path.join(template_dir, templatefile)
+    fp = open(file)
+    template = fp.read()
+    fp.close()
+    import Defaults
+    localdict = Defaults.__dict__.copy()
+    localdict.update(vardict)
+    text = template % localdict
+    return text

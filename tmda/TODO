@@ -24,10 +24,6 @@ tmda-inject
 		
 tmda-filter
 
-	- Move the bounce text out into seperate files (templates) so
-	that it is easier for users to customize.  See mailman/templates
-	and Mailman/MailList.py for example implementation.
-	
 	- Make bounces easier for the user to reply to, by perhaps
 	adding a "Reply-To:" containing the new tagged
 	address to the bounce. (suggested by Reuben Sumner)

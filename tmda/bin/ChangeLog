@@ -1,3 +1,11 @@
+2001-05-02  Jason R. Mastaler  <jasonrm@nightshade.acl.lanl.gov>
+
+	* tmda-filter (make_dated_bounce): Depreciated function.
+	(make_sender_bounce): Ditto.
+	(bounce_dated): Read the bounce message text from a template file
+	in ../templates/dated_bounce.txt to ease local customization.
+	(bounce_sender): Ditto (bounce_sender.txt).
+
 2001-04-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (program): Add support for alternate rcfile.
