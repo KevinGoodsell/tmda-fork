@@ -18,7 +18,7 @@ import Util
 ##############################
 
 TMDA_VERSION = "0.35"
-TMDA_HOMEPAGE = "<http://tmda.sourceforge.net/>"
+TMDA_HOMEPAGE = "<http://tmda.sf.net/>"
 
 PYTHON_VERSION = string.split(sys.version)[0]
 # e.g, "TMDA v0.12/Python 2.1 (linux2)"
