@@ -24,9 +24,8 @@ packages are not recommended)
 <li>TMDA is part of <a href="http://www.mandrakelinux.com/" 
 TARGET="Resource Window">Mandrake Linux</a> Contribs<br><br>
 
-<li>TMDA is part of the Gentoo Linux portage collection 
-<a href="http://www.gentoo.org/cgi-bin/viewcvs.cgi/gentoo-x86/net-mail/tmda/" 
-TARGET="Resource Window">(net-mail/tmda)</a><br><br>
+<li><a href="http://www.gentoo.org/packages/net-mail/tmda.html"
+TARGET="Resource Window">Gentoo Linux Package</a><br><br>
 
 <li>*BSD ports/packages:<br><br>
 <ul>
