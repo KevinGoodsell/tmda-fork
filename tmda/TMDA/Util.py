@@ -34,6 +34,8 @@ import sys
 import tempfile
 import time
 
+import Errors
+
 
 EMPTYSTRING = ''
 NL = '\n'
@@ -368,26 +370,32 @@ def pager(file):
     os.spawnvp(os.P_WAIT, pager_list[0], pager_list)
 
 
-def sendmail(headers, body, recip, return_path=None):
-    """Send e-mail by opening a pipe to the sendmail program.
-
-    headers can be either a rfc822.Message instance, or a set of
+def sendmail(headers, body, envrecip, envsender):
+    """Send e-mail via direct SMTP, or by opening a pipe to the
+    sendmail program.
+    
+    headers can be either an rfc822.Message instance, or a set of
     rfc822 compatible message headers as a string.
 
     body is the message body content as a string.
 
-    recip is the recipient e-mail address.
+    envrecip is the envelope recipient address.
 
-    return_path is an optional e-mail address which the envelope
-    sender address of the message will be set to.
+    envsender is the envelope sender address.
     """
     import Defaults
-    if return_path is not None:
-        env_sender = "-f '%s'" % (return_path)
+    if Defaults.OUTGOINGMAIL == 'smtp':
+        import SMTP
+        server = SMTP.Connection()
+        server.sendmail(envsender, envrecip, (str(headers) + '\n' + body))
+        server.quit()
+    elif Defaults.OUTGOINGMAIL == 'sendmail':
+        cmd = "%s -f '%s' '%s'" % (Defaults.SENDMAIL_PROGRAM,
+                                   envsender, envrecip)
+        pipecmd(cmd, str(headers), '\n', body)
     else:
-        env_sender = ''
-    cmd = "%s %s '%s'" % (Defaults.SENDMAIL, env_sender, recip)
-    pipecmd(cmd, str(headers), '\n', body)
+        raise Errors.ConfigError, \
+              "Invalid OUTGOINGMAIL method: " + Defaults.OUTGOINGMAIL
 
 
 def build_cdb(filename):

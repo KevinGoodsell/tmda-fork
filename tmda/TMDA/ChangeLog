@@ -1,3 +1,15 @@
+2002-05-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* SMTP.py: New module.
+
+	* Util.py (sendmail): Send mail either via SMTP or using
+	/usr/sbin/sendmail depending on Defaults.OUTGOINGMAIL.
+
+	* Defaults.py (OUTGOINGMAIL, SMTPHOST,
+	SMTP_MAX_SESSIONS_PER_CONNECTION): New variables.
+
+	(SENDMAIL_PROGRAM): Replaces SENDMAIL.
+
 2002-05-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (getfilemode): New utility function which takes a file

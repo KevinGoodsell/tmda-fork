@@ -316,7 +316,7 @@ def send_bounce(bounce_message, **vars):
 
 def send_cc(address):
     """Send a 'carbon copy' of the message to address."""
-    Util.sendmail(message_headers, message_body, address)
+    Util.sendmail(message_headers, message_body, address, envelope_sender)
     logit('CC ' + address)
 
 

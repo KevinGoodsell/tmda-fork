@@ -174,14 +174,68 @@ else:
 # raw binary.  Hex has only 4 bits of entropy per byte as opposed to 8.
 CRYPT_KEY = binascii.unhexlify(open(CRYPT_KEY_FILE).read().strip())
 
-# SENDMAIL
+# OUTGOINGMAIL
+# Final delivery method for outgoing mail, both for replies to
+# incoming messages, and also for the client side of TMDA.  Possible
+# values include:
+# 
+# "smtp"
+#    Deliver messages via SMTP to a locally specified daemon.  Be sure
+#    that the "SMTPHOST" variable (see below) is set correctly.
+#
+# "sendmail"
+#    Deliver messages via the command line interface to the sendmail
+#    program.  Use at your own risk.  smtp is recommended.
+#
+#    SECURITY WARNING: The 'sendmail' method is not secure.  Because
+#    this method uses popen(), it goes through the shell.  It does not
+#    scan the arguments for potential exploits and so it should be
+#    considered unsafe.  For performance reasons, it's not recommended
+#    either -- use the 'smtp' method instead, even if
+#    MAIL_TRANSFER_AGENT is "sendmail".
+#
+# Default is "smtp"
+if not vars().has_key('OUTGOINGMAIL'):
+    OUTGOINGMAIL = "smtp"
+
+# SMTPHOST
+# SMTP host and optional port, when OUTGOINGMAIL is "smtp".
+# If the hostname or IP address ends with a colon (":") followed by a
+# number, that suffix will be stripped off and the number interpreted
+# as the port number to use.  Otherwise, the standard SMTP port (25)
+# will be used.
+#
+# Examples:
+#
+# SMTPHOST = "localhost"
+# SMTPHOST = "172.16.78.20:2525"
+# SMTPHOST = "mailhost.company.com"
+# SMTPHOST = "mailhost.company.com:1234"
+#
+# Default is "localhost" (port 25 on the local host)
+if not vars().has_key('SMTPHOST') and OUTGOINGMAIL == 'smtp':
+    SMTPHOST = "localhost"
+
+# SMTP_MAX_SESSIONS_PER_CONNECTION
+# An integer specifying a ceiling on the number of SMTP sessions to
+# perform on a single socket connection, when OUTGOINGMAIL is
+# "smtp".  Some MTAs have limits.  Set this to 0 to do as many
+# as we like (i.e. your MTA has no limits).  Set this to some number
+# great than 0 and TMDA will close the SMTP connection and re-open it
+# after this number of consecutive sessions.
+# Default is 0
+if not vars().has_key('SMTP_MAX_SESSIONS_PER_CONNECTION') and \
+       OUTGOINGMAIL == 'smtp':
+    SMTP_MAX_SESSIONS_PER_CONNECTION = 0
+
+# SENDMAIL_PROGRAM
 # The path to the sendmail program, or sendmail compatibility
-# interface.  Defaults to one of the two standard locations, but you
-# can override it in case it is installed elsewhere.
-if not vars().has_key('SENDMAIL'):
+# interface when OUTGOINGMAIL is "sendmail".
+# Defaults to one of the two standard locations.
+if not vars().has_key('SENDMAIL_PROGRAM') and OUTGOINGMAIL == 'sendmail':
     for sendmail in ('/usr/sbin/sendmail', '/usr/lib/sendmail'):
         if os.path.exists(sendmail):
-            SENDMAIL = sendmail
+            SENDMAIL_PROGRAM = sendmail
             break
 
 # USEVIRTUALDOMAINS

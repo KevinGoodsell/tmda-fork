@@ -112,16 +112,8 @@ configuration details</a>
 for a site-wide TMDA install using smtpd-auth, vpopmail and qmailadmin.
 <br><br>
 
-TMDA also works perfectly under <a href="http://www.cygwin.com/" TARGET="Resource Window">
-cygwin</a> with the sSMTP sendmail emulation program (which comes with cygwin).
-Just add the following line your tmdarc:
-
-<blockquote><pre>
-SENDMAIL = "/usr/sbin/ssmtp.exe"
-</blockquote></pre>
-
-You'll then be able to tag your outgoing mail with cygwin-compatible
-MUAs (mutt, XEmacs, etc.) just as under UNIX.
+TMDA also works perfectly under 
+<a href="http://www.cygwin.com/" TARGET="Resource Window"> cygwin</a>.
 
 <hr>
 <li><b>

@@ -1,3 +1,7 @@
+2002-05-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht: Update cygwin entry -- SENDMAIL is not required.
+
 2002-05-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* requirements.ht: Now only Sendmail installations require
