@@ -1,5 +1,17 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.43:
+
+* The TIMEZONE configuration setting has been removed.  If you need to
+  specify a timezone for TMDA different than that of the local system,
+  set the `TZ' environment variable directly from /etc/tmdarc or
+  ~/.tmdarc.  e.g,
+
+  import os
+  os.environ['TZ'] = "Europe/Moscow"
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.41:
 
 Version 0.41 introduced TMDA filter files which are used to control
