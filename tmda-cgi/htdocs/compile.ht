@@ -28,6 +28,7 @@ Title: Compiling tmda-cgi
 
 <a href="#Running">Running <tt>configure</tt></a><br>
 <a href="#Display"><tt>display</tt> Directory</a><br>
+<a href="#AutoInstall">Auto-installation</a><br>
 <a href="#International">International Character Sets</a><br>
 <a href="#NoSu">Additional no-su Setup</a><p>
 
@@ -133,17 +134,29 @@ Title: Compiling tmda-cgi
   web path (<tt>../display/</tt>) is the one that should be entered in question
   #6.</p>
 
+<h3><a name="AutoInstall"></a>Auto-installation</h3>
+
+<p>tmda-cgi can set up e-mail accounts to use TMDA. If you wish to allow this,
+  you will need to read over the <a href="autoinstall.html">auto-install
+  page</a>, as various files may need to be customized to support this.</p>
+
 <h3><a name="International"></a>International Character Sets</h3>
 
-<p>tmda-cgi supports the following international character set:</p>
+<p>tmda-cgi supports various international character sets. Some of which,
+  however, require an additional download. Please refer to the following
+  list:</p>
 
 <blockquote>
   <a href="http://sourceforge.net/cvs/?group_id=22022">Chinese</a>
 </blockquote>
 
-<p>To be able to use a given character set, you must first install the
-  appropriate codec from the link above. Download and install as per the
-  instructions on the appropriate web page and README files.</p>
+<p>If tmda-cgi does not correctly support a character set you need, please
+  contact <a href="contact.html">the program authors</a> about adding this
+  support. As we do not speak any foreign languages, we will need your
+  assistance in both supplying sample e-mails that use alternate character sets
+  and checking over new versions of the code to verify that these e-mails are
+  correctly displayed. Please be prepared to spend some time discussing the
+  situation with us by e-mail.</p>
 
 <h3><a name="NoSu"></a>Additional no-su Setup</h3>
 

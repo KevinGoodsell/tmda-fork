@@ -13,6 +13,7 @@ Title: Surprises & Gotcha's
 <a href="#Base">Bad Base</a><br>
 <a href="#Install">Install Again?</a><br>
 <a href="#NoInstall">Can't Install!</a><br>
+<a href="#BadInstall">Bad Install</a><br>
 <a href="#International">International Intrigue</a></p>
 
 <h3><a name="Whitelist"></a>Whitelist Woes</h3>
@@ -156,6 +157,16 @@ Can't find key file:<br>
   permissions to put a file in the web tree. Can I do <tt>make install</tt> as
   root?</p>
 <p>Yes, you may do <tt>make install</tt> as root.</p>
+
+<h3><a name="BadInstall"></a>Bad Install</h3>
+<p>I used tmda-cgi's auto-install feature to add TMDA to my e-mail account, but
+  it didn't work. I am still receiving spam and no confirmations are being
+  sent.</p>
+<p>Did you read the <a href="autoinstall.html">auto-install page</a>?</p>
+<p>tmda-cgi comes with a default installation that it will apply to all new TMDA
+  users, but this installation may <b><i>not</i></b> match your system. You may
+  need to customize the <a href="autoinstall.html#Skel"><tt>skel</tt></a> files
+  to match your system setup.</p>
 
 <h3><a name="International"></a>International Intrigue</h3>
 <p>Instead of Chinese characters in the pending list, the subject lines are
