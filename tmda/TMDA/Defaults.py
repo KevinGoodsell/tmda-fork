@@ -16,8 +16,8 @@ import Util
 # General system-wide defaults
 ##############################
 
+TMDA_VERSION = "0.14"
 TMDA_HOMEPAGE = "<http://tmda.sourceforge.net/>"
-TMDA_VERSION = "0.13"
 
 # Exit codes: everything except 0, 99 and 100 are soft errors.
 ERR_OK = 0          # Success; look at the next .qmail file instruction.
