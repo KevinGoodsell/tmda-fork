@@ -108,6 +108,7 @@ from types import StringType
 class Template:
   # Members global across all instantiations:
   Dict = {}
+  BaseDir = "."
   VarSearchStr = "<!--\s*var:\s*%s\s*-->"
   VarEndSearch = re.compile("<!--\s*/var[^-]*-->", re.I)
   SearchDict = {}
@@ -124,7 +125,7 @@ class Template:
     else:
       self.HTML = []
     if (Filename):
-      F = open(Filename)
+      F = open("%s/%s" % (self.BaseDir, Filename))
       self.HTML = [re.sub("%([^(])", r"%%\1", F.read())]
       F.close()
     self.Items = {}

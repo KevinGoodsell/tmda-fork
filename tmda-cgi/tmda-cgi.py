@@ -38,20 +38,27 @@ Fields:
     PVars: UID, GID, User, HOME, Headers, MsgID
 """
 
-print "Content-type: text/html\n"
-
 import cgi
-try:
-  import cgitb
-  cgitb.enable()
-except ImportError:
-  pass
 import os
 import sys
 
 sys.path.insert(0, os.environ["TMDA_BASE_DIR"])
-import Session
 import CgiUtil
+import MyCgiTb
+import Session
+import Template
+
+# Prepare the traceback in case of uncaught exception
+MyCgiTb.Content()
+MyCgiTb.ErrTemplate = "prog_err.html"
+
+# Make some global stuff available to all
+Template.Template.BaseDir = "%s/themes/Blue/template" % \
+  os.environ["TMDA_CGI_DISP_DIR"]
+Template.Template.Dict["Script"]  = os.environ["SCRIPT_NAME"]
+Template.Template.Dict["DispDir"] = os.environ["TMDA_CGI_DISP_DIR"]
+Template.Template.Dict["ThemeDir"] = "%s/themes/Blue" % \
+  os.environ["TMDA_CGI_DISP_DIR"]
 
 # Check version information
 try:
@@ -88,7 +95,7 @@ def main():
   elif not PVars.has_key("UID"):
     import Login
     if Form.has_key("cmd"):
-      Login.Show("Wrong password. Try again.")
+      Login.Show("Wrong password.")
     else:
       if Form.has_key("debug"):
         Login.Show(Debug = Form["debug"].value)
