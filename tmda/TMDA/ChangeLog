@@ -1,3 +1,11 @@
+2001-12-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py: Only import time once at the toplevel.
+
+	* Defaults.py: Remove TIMEZONE, and import the Util module after
+	/etc/tmdarc and ~/.tmdarc are read so TZ can be set there if need
+	be.
+	
 2001-12-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (MESSAGE_FROM_STYLE):  Add an `unquoted' option

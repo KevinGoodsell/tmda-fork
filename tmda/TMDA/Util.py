@@ -9,6 +9,7 @@ import os
 import re
 import string
 import sys
+import time
 import types
 
 
@@ -122,7 +123,6 @@ def make_msgid(timesecs=None, pid=None):
 
     pid is optional, and if not given, the current process id is used.
     """
-    import time
     if not timesecs:
         timesecs = time.time()
     if not pid:
@@ -147,7 +147,6 @@ def make_date(timesecs=None, localtime=1):
     relative to the local timezone instead of UTC.  This is the
     default.
     """
-    import time
     if not timesecs:
         timesecs = time.time()
     if localtime:

@@ -95,8 +95,6 @@ import os                                      # don't remove
 
 # TIMEOUT = "5d"
 
-# TIMEZONE = "Pacific/Auckland"
-
 # USERNAME = "jdoe" 
 
 # USEVIRTUALDOMAINS = 1

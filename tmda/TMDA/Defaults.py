@@ -8,8 +8,6 @@ import stat
 import string
 import sys
 
-import Util
-
 
 ##############################
 # General system-wide defaults
@@ -79,6 +77,8 @@ else:
 ############################
 # User configurable settings
 ############################
+
+import Util
 
 # Only compute defaults for unset variables to speed startup.
 
@@ -376,26 +376,6 @@ if not vars().has_key('MESSAGE_FROM_STYLE'):
 # Default is 5d (5 days).
 if not vars().has_key('TIMEOUT'):
     TIMEOUT = "5d"
-
-# TIMEZONE
-# A string representing a valid timezone on your system.  e.g,
-#
-# TIMEZONE = "MST7MDT"
-# TIMEZONE = "Pacific/Auckland"
-#
-# If you define this variable, the `TZ' environment variable will be
-# set to its result.  This might be useful when you want dates
-# represented (in logfiles, mail headers, etc.) in a timezone other
-# than the default timezone of the machine running TMDA.
-# Default is the timezone of the local host.
-if not vars().has_key('TIMEZONE'):
-    TIMEZONE = None
-# The time module gets the timezone name when first imported, and it
-# can't be changed by later setting TZ in the environment.  Thus, we
-# must set TZ first, or else the time-zone as hour offset from UTC
-# will be incorrect.
-else:
-    os.environ['TZ'] = TIMEZONE
 
 # USERNAME
 # The left-hand side of your e-mail address (before `@').
