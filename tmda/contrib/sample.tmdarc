@@ -28,10 +28,18 @@ import os                                      # don't remove
 
 # BOUNCE_ENV_SENDER = ""
 
+# CONFIRMATION_MODE = 1
+
+# CONFIRM_ACCEPT_NOTIFY = 1
+
+# CONFIRM_ACCEPT_TEMPLATE = os.path.expanduser("~/.tmda_confirm_accept.txt")
+
 # COOKIE_TYPE = "dated"
 
 # CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key
 #                                                    # with tmda-keygen!
+
+# DATADIR = os.path.expanduser("~/.tmda/")
 
 # FULLNAME = "John Doe"
 

@@ -1,6 +1,6 @@
 # -*- python -*-
 
-"""Dated/Sender crypto-cookie functions."""
+"""Crypto-cookie functions."""
 
 
 import os
@@ -10,6 +10,25 @@ import time
 import Defaults
 import HMAC
 import Util
+
+
+def confirmationmac(time,pid,keyword=None):
+    """Expects time, pid and optionally keyword as strings,
+    and returns an HMAC in hex."""
+    chmac = HMAC.hmac(Defaults.CRYPT_KEY)
+    chmac.update(time)
+    chmac.update(pid)
+    if keyword:
+        chmac.update(keyword)
+    return Util.hexlify(chmac.digest()[:3])
+
+
+def make_confirm_cookie(time,pid,keyword=None):
+    """Return a confirmation-cookie (timestamp.process_id.HMAC)."""
+    timestamp = str(time)
+    process_id = str(pid)
+    chmac = confirmationmac(timestamp,process_id,keyword)
+    return timestamp + '.' + process_id + '.' + chmac
 
 
 def datemac(time):
@@ -27,12 +46,6 @@ def make_dated_cookie(time):
     return expire_time + '.' + datedmac
 
 
-def make_sender_cookie(address):
-    """Return a sender-style cookie based on the given address."""
-    sender_cookie = HMAC.new(Defaults.CRYPT_KEY,address).digest()[:3]
-    return Util.hexlify(sender_cookie)
-
-
 def make_dated_address():
     """Return a full dated-style e-mail address."""
     now = '%d' % time.time()
@@ -42,6 +55,12 @@ def make_dated_address():
     return dated_address
 
 
+def make_sender_cookie(address):
+    """Return a sender-style cookie based on the given address."""
+    sender_cookie = HMAC.new(Defaults.CRYPT_KEY,address).digest()[:3]
+    return Util.hexlify(sender_cookie)
+
+
 def make_sender_address(address):
     """Return a full sender-style e-mail address."""
     address = string.lower(address)
@@ -49,4 +68,3 @@ def make_sender_address(address):
     sender_address = Defaults.USERNAME + '-sender-' + sender_cookie + \
                     '@' + Defaults.HOSTNAME
     return sender_address
-

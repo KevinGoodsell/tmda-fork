@@ -1,3 +1,18 @@
+2001-07-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (verify_confirm_cookie): New function to validate a
+	confirmation cookie.
+
+2001-07-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (usage): Added command-line options for
+	specification of the two confirmation templates.
+
+	(bouncegen): New function that replaces both bounce_dated() and
+	bounce_sender().
+	
+	(send_bounce): Add headers in the templates instead of here.
+	
 2001-07-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-check-address: New program to check the validity of tagged

@@ -40,14 +40,12 @@ TMDARC = os.environ.get('TMDARC')
 if not TMDARC:TMDARC = os.path.expanduser("~/.tmdarc")
 
 # Read-in the user's configuration file first.
-
 if not os.path.exists(TMDARC):
     print "Can't open configuration file:",TMDARC
     sys.exit(ERR_CONFIG)
 execfile(TMDARC)
 
 # Check for proper file permissions before proceeding.
-
 statinfo = os.stat(TMDARC)
 permbits = stat.S_IMODE(statinfo[stat.ST_MODE])
 mode = int(oct(permbits))
@@ -70,7 +68,22 @@ else:
 # User configurable settings
 ############################
 
-# Only compute defaults for settings not in user's ~/.tmdarc to speed startup.
+# Only compute defaults for settings not in user's ~/.tmdarc to speed
+# startup.
+    
+# CONFIRMATION_MODE
+# Set this variable to 0 if you do not want bounces confirmed for
+# validity.
+# Default is 1 (turned on)
+if not vars().has_key('CONFIRMATION_MODE'):
+    CONFIRMATION_MODE = 1
+
+# CONFIRM_ACCEPT_NOTIFY
+# Set this variable to 0 if you do not want to generate confirmation
+# acceptance notices.
+# Default is 1 (turned on)
+if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
+    CONFIRM_ACCEPT_NOTIFY = 1
 
 # BLACKLIST
 # Filename which contains a list of e-mail addresses and/or
@@ -108,25 +121,40 @@ if not vars().has_key('BOUNCE_ENV_SENDER'):
     BOUNCE_ENV_SENDER = ''
 
 # BOUNCE_DATED_TEMPLATE
-# Full path to a custom template for 'dated' bounces.  Overrides
-# templates/bounce_dated.txt.
-# Default is ../templates/bounce_dated.txt
+# Full path to a custom template for 'dated' bounces.
+# Default is bounce_confirm_dated.txt or bounce_dated.txt in
+# ../templates/ depending on CONFIRMATION_MODE.
 if not vars().has_key('BOUNCE_DATED_TEMPLATE'):
+    if CONFIRMATION_MODE:
+        d_template = '/templates/bounce_confirm_dated.txt'
+    else:
+        d_template =  '/templates/bounce_dated.txt'
     BOUNCE_DATED_TEMPLATE = os.path.split(os.path.dirname
                                           (os.path.abspath
-                                           (sys.argv[0])))[0] \
-                                           + '/templates/bounce_dated.txt'
+                                           (sys.argv[0])))[0] + d_template
 
 # BOUNCE_SENDER_TEMPLATE
-# Full path to a custom template for 'sender' bounces.  Overrides
-# templates/bounce_sender.txt.
-# Default is ../templates/bounce_sender.txt
+# Full path to a custom template for 'sender' bounces.
+# Default is bounce_confirm_sender.txt or bounce_sender.txt in
+# ../templates/ depending on CONFIRMATION_MODE.
 if not vars().has_key('BOUNCE_SENDER_TEMPLATE'):
+    if CONFIRMATION_MODE:
+        s_template = '/templates/bounce_confirm_sender.txt'
+    else:
+        s_template = '/templates/bounce_sender.txt'
     BOUNCE_SENDER_TEMPLATE = os.path.split(os.path.dirname
                                            (os.path.abspath
-                                            (sys.argv[0])))[0] \
-                                            + '/templates/bounce_sender.txt'
+                                            (sys.argv[0])))[0] + s_template 
 
+# CONFIRM_ACCEPT_TEMPLATE
+# Full path to a custom template for confirmation acceptance notices.
+# Default is confirm_accept.txt in ../templates/.
+if not vars().has_key('CONFIRM_ACCEPT_TEMPLATE'):
+    ca_template = '/templates/confirm_accept.txt'
+    CONFIRM_ACCEPT_TEMPLATE = os.path.split(os.path.dirname
+                                            (os.path.abspath
+                                             (sys.argv[0])))[0] + ca_template 
+    
 # COOKIE_TYPE
 # The default cookie type is dated.  It could be:
 #       dated   can only be replied to for TIMEOUT
@@ -137,9 +165,8 @@ if not vars().has_key('COOKIE_TYPE'):
 
 # CRYPT_KEY
 # Your encryption key should be unique and kept secret.
-# Use the included "bin/tmda-keygen" program to generate your key.
+# Use the included "tmda-keygen" program to generate your key.
 # No default.
-#
 if not vars().has_key('CRYPT_KEY'):
     print "Encryption key not found!"
     sys.exit(ERR_CONFIG)
@@ -147,6 +174,15 @@ else:
     # Convert key from hex back into raw binary.
     # Hex has only 4 bits of entropy per byte as opposed to 8.
     CRYPT_KEY = Util.unhexlify(CRYPT_KEY)
+
+# DATADIR
+# Top-level directory which TMDA uses to store temporary files and
+# directories such as the "pending" queue for yet-to-be-confirmed
+# messages.  TMDA should be free to create subdirectories under
+# DATADIR if need be.  Make sure to include a traling "/".
+# Default is ~/.tmda/
+if not vars().has_key('DATADIR'):
+    DATADIR = os.path.expanduser("~/.tmda/")
 
 # FULLNAME
 # Your full name.

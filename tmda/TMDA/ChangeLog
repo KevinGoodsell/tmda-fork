@@ -1,4 +1,30 @@
+2001-07-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (CONFIRM_ACCEPT_TEMPLATE): New template for
+	notification that a confirmation request was accepted.
+
+	(CONFIRM_ACCEPT_NOTIFY): New variable to toggle generation of
+	confirmation acceptance notices.
+
+2001-07-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (BOUNCE_DATED_TEMPLATE): Allow for an alternate
+	template based on CONFIRMATION_MODE.
+	
+	(BOUNCE_SENDER_TEMPLATE): Ditto.
+
+	* Util.py (writefile): New function to write contents to a
+	new file.
+	
 2001-07-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (CONFIRMATION_MODE): New variable which turns
+	confirmation mode on or off. 
+
+	(DATADIR): New variable for TMDA data-manipulation directory.
+
+	* Cookie.py (confirmationmac,make_confirm_cookie): Add two new
+	functions for creation of confirmation-style cookies.
 
 	* Defaults.py (TMDA_VERSION): Begin 0.30 development.
 

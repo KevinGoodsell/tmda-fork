@@ -215,3 +215,20 @@ def maketext(templatefile, vardict):
     localdict.update(vardict)
     text = template % localdict
     return text
+
+
+def writefile(contents,fullpathname):
+    """Simple function to write contents to a file."""
+    if os.path.exists(fullpathname):
+        import Defaults
+        print fullpathname,"already exists"
+        sys.exit(Defaults.ERR_IO)
+    else:
+        try:
+            file = open(fullpathname,'w')
+            file.write(contents)
+            file.close()
+        except IOError, error_msg:
+            import Defaults
+            print error_msg
+            sys.exit(Defaults.ERR_IO)
