@@ -112,17 +112,18 @@ class FilterParser:
     def read(self, filename):
         """Open and read the named filter file.  Files that cannot be opened
         are silently ignored."""
-	self.filename = filename
+        self.filename = filename
         self.filterlist = []
-	self.__lineno = 0
-	self.__rule_lineno = 0
-	self.__pushback = None
+        self.__lineno = 0
+        self.__rule_lineno = 0
+        self.__pushback = None
         self.__exception = None
 
-        fp = open(filename)
-        self.__parse(fp)
-        fp.close()
-
+        if os.path.exists(filename):
+            fp = open(filename)
+            self.__parse(fp)
+            fp.close()
+            
 
     def __parse(self, fp):
         """
