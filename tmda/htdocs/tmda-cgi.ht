@@ -13,6 +13,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#nosuExample">Centralized 
   no-su setup</a><br>
   <a href="#Pass">Passwords</a><br>
+  <a href="#Virtual">Virtual users</a><br>
   <a href="#Config">Configuration</a><br>
   <a href="#Surprise">Surprises &amp; gotcha's</a><br>
   <a href="#Template">Templates (URL confirmation)</a></p>
@@ -148,8 +149,8 @@ can:</p>
   <li>tmda-cgi assumes it will run from within the source tree. No testing has 
     been done to date to see if it will work in other locations.<br>
   </li>
-  <li>You will have to recompile tmda-cgi if you move your configuration files 
-    or source tree.<br>
+  <li>You will have to recompile tmda-cgi if you move your configuration files, 
+    supplimental display files (icons and style sheet), or source tree.<br>
   </li>
   <li>You will have to recompile tmda-cgi if you change which mode (system-wide, 
     single-user, or no-su) you run in.</li>
@@ -168,10 +169,11 @@ can:</p>
 <blockquote> 
   <pre># ./compile -t /path/to/webpage/directory/index.cgi</pre>
 </blockquote>
-<p>Finally, tmda-cgi expects to find a variety of visual elements in a subdirectory 
-  called &quot;display&quot;. This directory should be located directly below 
-  the CGI itself. Sample files are provided in <tt>contrib/cgi/display</tt>. Feel 
-  free to use these files as-is or modify/replace them to personalize the program.</p>
+<p>Finally, tmda-cgi expects to find a variety of visual elements in web directory 
+  <tt>../display/</tt>, relative to the CGI itself. The location of this directory 
+  may be changed with <tt>compile</tt>'s <tt>-d</tt> flag. Sample files are provided 
+  in <tt>contrib/cgi/display</tt>. Feel free to use these files as-is or modify/replace 
+  them to personalize the program.</p>
 <p>The simplest way to provide this directory is with a symbolic link (assuming 
   you have you web server configured to follow symbolic links). For example:</p>
 <blockquote> 
@@ -191,10 +193,11 @@ can:</p>
 <blockquote> 
   <pre>$ ./compile -t /path/to/webpage/directory/index.cgi</pre>
 </blockquote>
-<p>Finally, tmda-cgi expects to find a variety of visual elements in a subdirectory 
-  called &quot;display&quot;. This directory should be located directly below 
-  the CGI itself. Sample files are provided in <tt>contrib/cgi/display</tt>. Feel 
-  free to use these files as-is or modify/replace them to personalize the program.</p>
+<p>Finally, tmda-cgi expects to find a variety of visual elements in web directory 
+  <tt>../display/</tt>, relative to the CGI itself. The location of this directory 
+  may be changed with <tt>compile</tt>'s <tt>-d</tt> flag. Sample files are provided 
+  in <tt>contrib/cgi/display</tt>. Feel free to use these files as-is or modify/replace 
+  them to personalize the program.</p>
 <p>The simplest way to provide this directory is with a symbolic link (assuming 
   you have you web server configured to follow symbolic links). For example:</p>
 <blockquote> 
@@ -214,10 +217,11 @@ can:</p>
 <blockquote> 
   <pre>$ ./compile -nt /path/to/webpage/directory/index.cgi</pre>
 </blockquote>
-<p>tmda-cgi expects to find a variety of visual elements in a subdirectory called 
-  &quot;display&quot;. This directory should be located directly below the CGI 
-  itself. Sample files are provided in <tt>contrib/cgi/display</tt>. Feel free 
-  to use these files as-is or modify/replace them to personalize the program.</p>
+<p> tmda-cgi expects to find a variety of visual elements in web directory <tt>../display/</tt>, 
+  relative to the CGI itself. The location of this directory may be changed with 
+  <tt>compile</tt>'s <tt>-d</tt> flag. Sample files are provided in <tt>contrib/cgi/display</tt>. 
+  Feel free to use these files as-is or modify/replace them to personalize the 
+  program.</p>
 <p>The simplest way to provide this directory is with a symbolic link (assuming 
   you have you web server configured to follow symbolic links). For example:</p>
 <blockquote> 
@@ -504,6 +508,11 @@ ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
   permissions on your password file(s). To debug this, append a <tt>?debug=1</tt> 
   onto the end of your CGI URL. This will display some diagnostic information 
   if the login fails instead of simply saying &quot;Wrong password. Try again.&quot;</p>
+<hr>
+<h2><a name="Virtual" id="Virtual"></a>Virtual users</h2>
+<p>Although planned for future releases, there is no support for virtual users 
+  at this time. Each user who plans to use tmda-cgi must have a login record in 
+  <tt>/etc/passwd</tt>.</p>
 <hr>
 <h2><a name="Config"></a>Configuration</h2>
 <p>tmda-cgi is configured by a set of parameters in your configuration file(s). 
