@@ -97,6 +97,7 @@ def make_keyword_cookie(keyword):
 
 def make_keyword_address(address, keyword):
     """Return a full keyword-style e-mail address."""
+    keyword = string.lower(keyword)
     keyword_cookie = make_keyword_cookie(keyword)
     (username, hostname) = string.split(address,'@')
     keyword_address = username + Defaults.RECIPIENT_DELIMITER + \
