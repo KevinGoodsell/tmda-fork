@@ -75,6 +75,7 @@ except ImportError:
 
 from TMDA import Cookie
 from TMDA import Defaults
+from TMDA import FilterParser
 from TMDA import Util
 
 
@@ -87,30 +88,36 @@ def inject_message(to_address,
                    message_headers,
                    message_body,
                    cookie_type,
-                   extension=None):
+                   cookie_option=None):
     """Hand the message off to sendmail."""
     if cookie_type == 'bare':
         # Send a message with an untagged address.
         envelope_sender_address.append(from_address)
     elif cookie_type == 'dated':
         # Send a message with a tagged (dated) address.
+        if cookie_option:               # check for timeout override
+            os.environ['TMDA_TIMEOUT'] =  cookie_option
         envelope_sender_address.append(Cookie.make_dated_address(from_address))
     elif cookie_type == 'sender':
         # Send a message with a tagged (sender) address
         envelope_sender_address.append(Cookie.make_sender_address
                                        (from_address, to_address))
-    elif cookie_type == 'exp':
+    elif cookie_type in ('exp','explicit') and cookie_option:
         # Send a message with an explicitly defined address.
-        envelope_sender_address.append(from_address)
-    elif cookie_type == 'ext':
+        envelope_sender_address.append(cookie_option)
+    elif cookie_type in ('ext','extension') and cookie_option:
         # Send a message with a tagged (extension added) address.
         (username, hostname) = string.split(from_address,'@')
         envelope_sender_address.append(username + Defaults.RECIPIENT_DELIMITER
-                                       + extension + '@' + hostname)
-    elif cookie_type == 'keyword':
+                                       + cookie_option + '@' + hostname)
+    elif cookie_type in ('kw','keyword') and cookie_option:
         # Send a message with a tagged (keyword) address.
         envelope_sender_address.append(Cookie.make_keyword_address
-                                       (from_address, extension))
+                                       (from_address, cookie_option))
+    else:
+        # If cookie_type is invalid, punt and use an untagged address.
+        envelope_sender_address.append(from_address)
+        
     # Set From: to match the envelope sender address.
     final_sender_address = envelope_sender_address[-1:][0]
     final_full_name = sender_full_name[0]
@@ -141,9 +148,8 @@ def inject_message(to_address,
 def main():
 
     x_tmda_over = None
-    exp_from_address = None
-    ext_extension = None
-    keyword_extension = None
+    action = None
+    action_option = None
 
     # Use the existing From: header if possible.
     (fullname, from_address) = message_headers.getaddr("from")
@@ -181,135 +187,42 @@ def main():
     if message_headers.has_key('x-tmda'):
         x_tmda_over = 1
         x_tmda = message_headers.getheader('x-tmda')
-        fields = string.split(x_tmda)
-        tagtype = string.lower(fields[0])
-        if tagtype == 'dated':
-            address_cookie = tagtype
-            try:                        # check for timeout override
-                os.environ['TMDA_TIMEOUT'] =  fields[1]
+        # X-TMDA should only have one field.
+        if len(string.split(x_tmda)) == 1:
+            fields = string.split(x_tmda,'=')
+            action = string.strip(string.lower(fields[0]))
+            # Test for an action option.
+            try:
+                action_option = string.strip(fields[1])
             except IndexError:
                 pass
-        elif tagtype in ('bare','sender'):
-            address_cookie = tagtype
-        elif tagtype in ('exp','explicit'):
-            address_cookie = 'exp'
-            exp_from_address = fields[1]
-        elif tagtype in ('ext','extension'):
-            address_cookie = 'ext'
-            ext_extension = fields[1]
-        elif tagtype in ('kw','keyword'):
-            address_cookie = 'keyword'
-            keyword_extension = fields[1]
-        else:
-            pass
         # Delete `X-TMDA' before sending.
         del message_headers['x-tmda']
     else:
-        # Without `X-TMDA', we need to process the special-case files.
-        bare_list = []
-        if os.path.exists(Defaults.BARE_FILE):
-            bare_list = Util.file_to_list(Defaults.BARE_FILE,bare_list)
-        if Defaults.WHITELIST_TO_BARE and os.path.exists(Defaults.WHITELIST):
-            bare_list = Util.file_to_list(Defaults.WHITELIST,bare_list)
+        # Without `X-TMDA', we need to parse the outgoing filter file.
+        outfilter = FilterParser.FilterParser()
+        outfilter.read(Defaults.FILTER_OUTGOING)
 
-        dated_list = []
-        if os.path.exists(Defaults.DATED_FILE):
-            dated_list = Util.file_to_list(Defaults.DATED_FILE,dated_list)
-
-        sender_list = []
-        if os.path.exists(Defaults.SENDER_FILE):
-            sender_list = Util.file_to_list(Defaults.SENDER_FILE,sender_list)
-
-        keyword_list = []
-        if os.path.exists(Defaults.KEYWORD_FILE):
-            keyword_list = Util.file_to_list(Defaults.KEYWORD_FILE,keyword_list)
-
-        exp_list = []
-        if os.path.exists(Defaults.EXP_FILE):
-            exp_list = Util.file_to_list(Defaults.EXP_FILE,exp_list)
-    
-        ext_list = []
-        if os.path.exists(Defaults.EXT_FILE):
-            ext_list = Util.file_to_list(Defaults.EXT_FILE,ext_list)
-
-    # If the address matches a special case, it is tagged accordingly,
-    # otherwise it is tagged with the default cookie type.
+    # If the address matches a line in the filter file, it is tagged
+    # accordingly, otherwise it is tagged with the default cookie
+    # type.
     for address in address_list:
         # If `X-TMDA' is present we are done here.
         if x_tmda_over:
             pass                        
-
-        elif Util.findmatch(bare_list,address):
-            address_cookie = 'bare'
-
-        elif Util.findmatch(dated_list,address):
-            address_cookie = 'dated'
-                    
-        elif Util.findmatch(sender_list,address):
-            address_cookie = 'sender'
-
         else:
-            exp_match = Util.findmatch(exp_list,address)
-            ext_match = Util.findmatch(ext_list,address)
-            keyword_match = Util.findmatch(keyword_list,address)
-            if exp_match:
-                address_cookie = 'exp'
-                if not exp_from_address:exp_from_address = exp_match
-            elif ext_match:
-                address_cookie = 'ext'
-                if not ext_extension:ext_extension = ext_match
-            elif keyword_match:
-                address_cookie = 'keyword'
-                if not keyword_extension:keyword_extension = keyword_match
-            else:
-                address_cookie = Defaults.COOKIE_TYPE
-
+            (action, action_option) = outfilter.firstmatch(address)
+        if not action:action = Defaults.COOKIE_TYPE
         # The message is sent to each recipient separately so that
         # everyone gets the correct tag.  Make sure your MUA
         # generates its own Message-ID: and Date: headers so they
         # match on multiple recipient messages.
-        if address_cookie == 'bare':
-            inject_message(address,
-                           from_address,
-                           message_headers,
-                           message_body,
-                           address_cookie)
-        elif address_cookie == 'dated':
-            inject_message(address,
-                           from_address,
-                           message_headers,
-                           message_body,
-                           address_cookie)
-        elif address_cookie == 'sender':
-            inject_message(address,
-                           from_address,
-                           message_headers,
-                           message_body,
-                           address_cookie)
-        elif address_cookie == 'exp':
-            inject_message(address,
-                           exp_from_address,
-                           message_headers,
-                           message_body,
-                           address_cookie)
-        elif address_cookie == 'ext':
-            inject_message(address,
-                           from_address,
-                           message_headers,
-                           message_body,
-                           address_cookie,
-                           ext_extension)
-        elif address_cookie == 'keyword':
-            inject_message(address,
-                           from_address,
-                           message_headers,
-                           message_body,
-                           address_cookie,
-                           keyword_extension)
-        else:
-            print "Unknown cookie type:",address_cookie
-            sys.exit(Defaults.EX_TEMPFAIL)
-
+        inject_message(address,
+                       from_address,
+                       message_headers,
+                       message_body,
+                       action,
+                       action_option)
     if qfilter:
         sys.exit(qfilter)
     else:

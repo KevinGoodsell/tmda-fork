@@ -1,5 +1,8 @@
 2001-11-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (FILTER_OUTGOING): New variable specifying the
+	location of the 'outgoing' filter file.
+
 	* FilterParser.py: New file implementing the parser for TMDA
 	filter files.
 

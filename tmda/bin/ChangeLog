@@ -1,3 +1,10 @@
+2001-11-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject: Parse an single 'outgoing' style filter file to
+	obtain the tagging information rather than combination of 'dated',
+	'sender', 'bare', 'exp', 'ext', and 'keyword'.  X-TMDA now uses
+	the 'action=option' syntax rather than 'action option'
+	
 2001-10-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (main): Don't downcase address_list since

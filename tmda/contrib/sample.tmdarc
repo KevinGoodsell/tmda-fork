@@ -93,6 +93,8 @@ import os                                      # don't remove
 
 # VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
 
+# FILTER_OUTGOING = "/full/path/to/outgoing"
+
 # BARE_FILE = "/full/path/to/bare"
 
 # DATED_FILE = "/full/path/to/dated"

@@ -324,6 +324,12 @@ else:
 if not vars().has_key('USERNAME'):
     USERNAME = Util.getusername()
 
+# FILTER_OUTGOING
+# Filter file which controls how outgoing messages are tagged.
+# Default is ~/.tmda/lists/outgoing
+if not vars().has_key('FILTER_OUTGOING'):
+    FILTER_OUTGOING = DATADIR + "lists/" + "outgoing"
+
 # BARE_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive untagged (no cookie added) messages.
