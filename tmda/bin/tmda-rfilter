@@ -1,0 +1,659 @@
+#!/usr/bin/env python
+
+########################
+# Delivery (server) mode
+########################
+
+"""Filter incoming messages on standard input.
+
+Usage:  %(program)s [OPTIONS]
+
+OPTIONS:
+	-h
+ 	--help
+	   Print this help message and exit.
+           
+	-c <file>
+	--config-file <file>
+	   Specify a different configuration file other than ~/.tmdarc.
+	   
+	-d
+	--discard
+	   Discard message if address is invalid instead of bouncing it.
+
+        -A <file>
+	--confirm-accept-template <file>
+	   Full pathname to a custom template for confirmation acceptance notices.
+
+        -R <file>
+	--confirm-request-template <file>
+	   Full pathname to a custom template for confirmation requests.
+
+        -I <file>
+        --filter-incoming-file <file>
+           Full pathname to your incoming filter file.  Overrides FILTER_INCOMING
+           in ~/.tmdarc.
+           
+        -M <recipient> <sender>
+        --filter-match <recipient> <sender>
+           Check whether the given e-mail addresses match a line in your incoming
+           filter and then exit.  The first address given should be the message
+           recipient (you), and the second is the sender.  This option will also
+           check for parsing errors in the filter file.
+"""
+
+import getopt
+import os
+import sys
+
+filter_match = None
+discard = None
+program = sys.argv[0]
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+    
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                               'c:dA:R:I:M:h',['config-file=',
+                                               'discard',
+                                               'confirm-accept-template=',
+                                               'confirm-request-template=',
+                                               'filter-incoming-file=',
+                                               'filter-match=',
+                                               'help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    elif opt in ('-M', '--filter-match'):
+	filter_match = 1
+    elif opt in ('-I', '--filter-incoming-file'):
+	os.environ['TMDA_FILTER_INCOMING'] = arg
+    elif opt in ('-R', '--confirm-request-template'):
+        os.environ['TMDA_CONFIRM_REQUEST_TEMPLATE'] = arg
+    elif opt in ('-A', '--confirm-accept-template'):
+        os.environ['TMDA_CONFIRM_ACCEPT_TEMPLATE'] = arg
+    elif opt in ('-d', '--discard'):
+	discard = 1
+    elif opt in ('-c', '--config-file'):
+        os.environ['TMDARC'] = arg
+
+
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Defaults
+from TMDA import Cookie
+from TMDA import Errors
+from TMDA import FilterParser
+from TMDA import MTA
+from TMDA import Util
+from TMDA import Version
+
+import cStringIO
+import fileinput
+import popen2
+import rfc822
+import string
+import time
+
+
+# Just check Defaults.FILTER_INCOMING for syntax errors and possible
+# matches, and then exit.
+if filter_match:
+    sender = sys.argv[-1]
+    recip = sys.argv[-2]
+    Util.filter_match(Defaults.FILTER_INCOMING, recip, sender)
+    sys.exit()
+    
+# We use this MTA instance to control the fate of the message.
+mta = MTA.init()
+
+# Read sys.stdin into a temporary variable for later access.
+stdin = cStringIO.StringIO(sys.stdin.read())
+
+# Collect the message headers.
+message_headers = rfc822.Message(stdin)
+# Collect the message body.
+message_body = stdin.read()
+
+# Collect the entire message.
+message = stdin.getvalue()
+# Calculate the message size.
+message_size = str(len(message_body))
+
+# Collect the three essential environment variables, and defer if they
+# are missing.
+
+# SENDER is the envelope sender address.
+envelope_sender = os.environ.get('SENDER')
+if envelope_sender == None:
+    raise Errors.MissingEnvironmentVariable('SENDER')
+# RECIPIENT is the envelope recipient address.
+# Use the X-Originally-To header if it exists.
+envelope_recipient = (message_headers.getheader('x-originally-to')
+                      or os.environ.get('RECIPIENT'))
+if envelope_recipient == None:
+    raise Errors.MissingEnvironmentVariable('RECIPIENT')
+# EXT is the recipient address extension.
+address_extension = (os.environ.get('EXT')           # qmail
+                     or os.environ.get('EXTENSION')) # Postfix
+
+# If SENDER exists but its value is empty, the message has an empty
+# envelope sender.  Set it to the string '<>' so it can be matched as
+# such in the filter files.
+if envelope_sender == '':
+    envelope_sender = '<>'
+# If the envelope sender contains only a user part, we need to form it
+# into a fully qualified address by appending the local hostname.
+# This should only be the case when running Sendmail, and the message
+# is sent between local users.
+elif len(string.split(envelope_sender,'@')) == 1:
+    envelope_sender = envelope_sender + '@' + Util.gethostname()
+    
+# If the envelope recipient contains only a user part, we need to form
+# it into a fully qualified address by appending the local hostname.
+# This should only be the case when running Sendmail, and the message
+# is sent between local users.
+if len(string.split(envelope_recipient,'@')) == 1:
+    envelope_recipient = envelope_recipient + '@' + Util.gethostname()
+
+# recipient_address is the original address the message was sent to,
+# not qmail-send's rewritten interpretation.  This will be the same as
+# envelope_recipient if we are not running under a qmail virtualdomain.
+recipient_address = envelope_recipient
+if Defaults.USEVIRTUALDOMAINS and os.path.exists(Defaults.VIRTUALDOMAINS):
+    # Parse the virtualdomains control file; see qmail-send(8) for
+    # syntax rules.  All this because qmail doesn't store the original
+    # envelope recipient in the environment.
+    (ousername, odomain) = string.split(envelope_recipient,'@')
+    for line in fileinput.input(Defaults.VIRTUALDOMAINS):
+        vdomain_match = 0
+        line = string.lower(string.strip(line))
+        # Comment or blank line?
+        if line == '' or line[0] in '#':
+            continue
+        else:
+            (vdomain, prepend) = string.split(line,':')
+            # domain:prepend
+            if vdomain == string.lower(odomain):
+                vdomain_match = 1
+            # .domain:prepend (wildcard)
+            elif not string.split(vdomain,'.',1)[0]:
+                if string.find(string.lower(odomain), vdomain) != -1:
+                    vdomain_match = 1
+            # user@domain:prepend
+            else:
+                try:
+                    if string.split(vdomain,'@')[1] == string.lower(odomain):
+                        vdomain_match = 1
+                except IndexError:
+                    pass
+            if vdomain_match:
+                # strip off the prepend
+                if prepend:
+                    nusername = string.replace(ousername,prepend + '-','')
+                    recipient_address = nusername + '@' + odomain
+                    # also strip off the prepend and the virtual
+                    # username from address_extension
+                    address_extension = (
+                        string.join(string.split
+                                    (nusername,
+                                     Defaults.RECIPIENT_DELIMITER)[1:],
+                                    Defaults.RECIPIENT_DELIMITER))
+                    fileinput.close()
+                    break
+
+# Collect the message's Subject: for later use.
+subject = message_headers.getheader('subject', 'None')
+
+# Collect the message's Precedence: header.
+precedence = message_headers.getheader('precedence', None)
+# If its value is "bulk", "junk", or "list" we should not generate any
+# auto-replies.
+auto_reply = 1
+if precedence and string.lower(precedence) in ('bulk','junk','list'):
+    auto_reply = 0
+
+# Don't generate an auto-reply if the message contains any of the
+# List-XXX: mailing list headers defined in rfc2369.
+list_headers = ['list-help', 'list-subscribe', 'list-unsubscribe',
+                'list-post', 'list-owner', 'list-archive']
+for hdr in list_headers:
+    if message_headers.has_key(hdr):
+        auto_reply = 0
+        break
+
+
+###########
+# Functions
+###########
+
+def logit(action_msg,date):
+    """Write delivery statistics to the LOGFILE if enabled."""
+    if Defaults.LOGFILE and recipient_address:
+        try:
+            logfile = open(Defaults.LOGFILE, 'a') # append to the file
+            Date = Util.unixdate(date)
+            From = message_headers.getheader('from')
+            EnvelopeSender = envelope_sender
+            To = recipient_address
+            Subject = subject
+            Action = action_msg
+            actionstr = 'Actn: ' + Action
+            sizestr = '(' + message_size + ')'
+            wsbuf = 78 - len(actionstr) - len(sizestr)
+            # Write the log entry and then close the log.
+            logfile.write('Date: ' + Date + '\n')
+            if (EnvelopeSender
+                and message_headers.getaddr('from')[1] != EnvelopeSender):
+                logfile.write('Sndr: ' + EnvelopeSender + '\n')
+            if From:
+                logfile.write('From: ' + From + '\n')
+            logfile.write('  To: ' + To + '\n')
+            logfile.write('Subj: ' + Subject + '\n')
+            logfile.write(actionstr + ' '*wsbuf + sizestr + '\n')
+            logfile.write('\n')
+            logfile.close()
+        except IOError, error_msg:
+            print error_msg
+            mta.defer()
+
+
+def send_bounce(bounce_message, **vars):
+    """Send a confirmation message back to the sender."""
+    if auto_reply:
+        bounce_message = cStringIO.StringIO(bounce_message)
+        message_headers = rfc822.Message(bounce_message)
+        # Add some headers.
+        timesecs = time.time()
+        message_headers['Date'] = Util.make_date(timesecs)
+        message_headers['Message-ID'] = Util.make_msgid(timesecs)
+        message_headers['To'] = envelope_sender
+        if not vars.has_key('already_confirmed'):
+            message_headers['Reply-To'] = vars['confirm_accept_address']
+        message_headers['Precedence'] = 'bulk'
+        message_headers['X-Delivery-Agent'] = Version.ALL
+        message_body = bounce_message.read()
+        inject = []
+        inject.append(Defaults.SENDMAIL)
+        inject.append('-f')
+        inject.append(Defaults.BOUNCE_ENV_SENDER)
+        inject.append(envelope_sender)
+        try:
+            pipeline = popen2.popen2(inject)[1]
+            pipeline.write(str(message_headers))
+            pipeline.write('\n')
+            pipeline.write(message_body)
+            pipeline.close()
+        except IOError, error_msg:
+            print error_msg
+            mta.defer()
+
+
+def send_cc(address):
+    """Send a 'carbon copy' of the message to address."""
+    inject = []
+    inject.append(Defaults.SENDMAIL)
+    inject.append(address)
+    try:
+        pipeline = popen2.popen2(inject)[1]
+        pipeline.write(message)
+        pipeline.close()
+    except IOError, error_msg:
+        print error_msg
+        mta.defer()
+    logit(string.join(inject),time.time())
+
+
+def inject_pending(pathname,timestamp,pid):
+    """Reinject a sucessfully confirmed message."""
+    (username, hostname) = string.split(recipient_address,'@')
+    # Strip off the '-confirm-accept.TIMESTAMP.PID.HMAC' from username.
+    base_username = string.join(
+        (string.split(username,Defaults.RECIPIENT_DELIMITER)[:-2]),
+        Defaults.RECIPIENT_DELIMITER)
+    base_recipient = base_username + '@' + hostname
+    # Create the `confirm-done' address
+    confirm_done_address = Cookie.make_confirm_address(base_recipient,
+                                                       timestamp,
+                                                       pid,
+                                                       'done')
+    try:
+        fileobj = open(pathname,'r')
+        message_headers = rfc822.Message(fileobj)
+        message_body = fileobj.read()
+        fileobj.close()
+        # Add the date when confirmed in a header.
+        message_headers['X-TMDA-Confirmed'] = Util.unixdate()
+        # Collect the envelope sender to pass to sendmail.
+        return_path = message_headers.getaddr('return-path')[1]
+        inject = []
+        inject.append(Defaults.SENDMAIL)
+        inject.append('-f')
+        inject.append(return_path)
+        inject.append(confirm_done_address)
+        pipeline = popen2.popen2(inject)[1]
+        pipeline.write(str(message_headers))
+        pipeline.write('\n')
+        pipeline.write(message_body)
+        pipeline.close()
+    except IOError, error_msg:
+        print error_msg
+        mta.defer()
+    mta.stop()
+
+
+def release_pending(pathname, timestamp, pid):
+    """Release a message from the pending queue."""
+    # Optionally append the envelope sender to the whitelist.
+    if Defaults.CONFIRM_APPEND:
+        try:
+            # Grab the original envelope sender to append.
+            fileobj = open(pending_message_pathname,'r')
+            message_headers = rfc822.Message(fileobj)
+            fileobj.close()
+            orig_env_sender = message_headers.getaddr('return-path')[1]
+        except IOError, error_msg:
+            print error_msg
+            mta.defer()
+        if Util.append_to_file(orig_env_sender,Defaults.CONFIRM_APPEND) != 0:
+            logit("APPEND " + orig_env_sender, time.time())
+    # Optionally generate the confirmation acceptance notice.
+    if Defaults.CONFIRM_ACCEPT_NOTIFY:
+        bouncegen('accept')
+    # Optionally send the confirmation to a special address.
+    if Defaults.CONFIRM_ACCEPT_CC:
+        send_cc(Defaults.CONFIRM_ACCEPT_CC)
+    # Reinject the original (now confirmed) message.
+    inject_pending(pathname,timestamp,pid)
+
+
+def verify_confirm_cookie(confirm_cookie):
+    """Verify a confirmation cookie."""
+    # Save some time if the cookie is bogus.
+    try:
+        (confirm_action, confirm_timestamp,
+         confirm_pid, confirm_hmac) = string.split(confirm_cookie,'.')
+    except ValueError:
+        logit("BOUNCE invalid_confirmation_address",time.time())
+        print("Sorry, this confirmation address is invalid.")
+        mta.bounce()
+    pendingdir = Defaults.DATADIR + 'pending'
+    confirmed_message = confirm_timestamp + '.' + confirm_pid + '.msg'
+    confirmed_message_pathname = pendingdir + '/' + confirmed_message
+    # pre-confirmation
+    if confirm_action == 'accept':
+        new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
+                                                  confirm_pid,'accept')
+        # Accept the message only if the HMAC can be verified and the
+        # message actually exists in the pending queue.
+        if not (confirm_hmac == new_confirm_hmac):
+            logit("BOUNCE invalid_confirmation_address",time.time())
+            print("Sorry, this confirmation address is invalid.")
+            mta.bounce()
+        elif not (os.path.exists(confirmed_message_pathname)):
+            logit("BOUNCE nonexistent_pending_message",time.time())
+            print "Sorry, your original message could not be located."
+            mta.bounce()
+        else:
+            logit("CONFIRM accept " + confirmed_message, time.time())
+            release_pending(confirmed_message_pathname,
+                            confirm_timestamp,confirm_pid)
+    # post-confirmation
+    elif confirm_action == 'done':
+        new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
+                                                  confirm_pid,'done')
+        # Accept the message only if the HMAC can be verified and the
+        # message has not already been delivered.
+        if not (confirm_hmac == new_confirm_hmac):
+            logit("BOUNCE invalid_confirmation_address",time.time())
+            print("Sorry, this confirmation address is invalid.")
+            mta.bounce()
+        elif not (os.path.exists(confirmed_message_pathname)):
+            logit("BOUNCE already_confirmed_message",time.time())
+            print "Sorry, this message has already been confirmed."
+            mta.bounce()
+        else:
+            logit("OK good_confirm_cookie", time.time())
+            os.unlink(confirmed_message_pathname)
+            mta.deliver(message)
+
+
+def verify_dated_cookie(dated_cookie):
+    """Verify a dated cookie."""
+    # Save some time if the cookie is bogus.
+    dated_cookie_split = string.split(dated_cookie,'.')
+    if len(dated_cookie_split) != 2:
+        bouncegen('request')
+    cookie_date = dated_cookie_split[0]
+    datemac = dated_cookie_split[1]
+    newdatemac = Cookie.datemac(cookie_date)
+    # Accept the message only if the address has not expired *and* the HMAC
+    # can be verified.
+    now = time.time()
+    if ((int(cookie_date) >= int('%d' % now)) and (datemac == newdatemac)):
+        logit("OK good_dated_cookie",now)
+        mta.deliver(message)
+    else:
+        bouncegen('request')
+
+
+def verify_sender_cookie(sender_address,sender_cookie):
+    """Verify a sender cookie."""
+    sender_address_cookie = Cookie.make_sender_cookie(sender_address)
+    # Accept the message only if the HMAC can be verified.
+    if (sender_cookie == sender_address_cookie):
+        logit("OK good_sender_cookie", time.time())
+        mta.deliver(message)
+    else:
+        bouncegen('request')
+
+
+def verify_keyword_cookie(keyword_cookie):
+    """Verify a keyword cookie."""
+    parts = string.split(keyword_cookie, '.')
+    keyword = string.join(parts[:-1], '.')
+    mac = parts[-1:][0]
+    newmac = Cookie.make_keywordmac(keyword)
+    # Accept the message only if the HMAC can be verified.
+    if mac == newmac:
+        logit("OK good_keyword_cookie \"" + keyword + "\"", time.time())
+        mta.deliver(message)
+    else:
+        bouncegen('request')
+
+
+def bouncegen(mode):
+    """Bounce a message back to sender."""
+    # Stop right away if --discard was specified.
+    if discard:
+        mta.stop()
+    # Common variables.
+    now = time.time()
+    recipient_address = globals().get('recipient_address')
+    envelope_sender = globals().get('envelope_sender')
+    subject = globals().get('subject')
+    original_message_headers = globals().get('message_headers')
+
+    if (Defaults.CONFIRM_MAX_MESSAGE_SIZE and
+        int(Defaults.CONFIRM_MAX_MESSAGE_SIZE) < int(globals().get('message_size'))):
+        original_message = str(original_message_headers) + "\n" + \
+                           "[ Message body suppressed (exceeded " + \
+                           str(Defaults.CONFIRM_MAX_MESSAGE_SIZE) + " bytes) ]"
+    else:
+        original_message = globals().get('message')
+
+    pkg_template_dir = '/etc/tmda/'    # Debian
+    if not os.path.exists(pkg_template_dir):
+        pkg_template_dir = sys.prefix + '/share/tmda/' # Redhat
+    # Optional 'dated' address variables.
+    if Defaults.DATED_TEMPLATE_VARS:
+        dated_timeout = Util.format_timeout(Defaults.TIMEOUT)
+        dated_expire_date = time.asctime(
+            time.gmtime(now + Util.seconds(Defaults.TIMEOUT)))
+        dated_cookie_address = Cookie.make_dated_address(
+            Defaults.USERNAME + '@' + Defaults.HOSTNAME)
+    # Optional 'sender' address variables.
+    if Defaults.SENDER_TEMPLATE_VARS:
+        sender_cookie_address = Cookie.make_sender_address(
+            Defaults.USERNAME + '@' + Defaults.HOSTNAME,
+            envelope_sender)
+    if mode == 'accept':                # confirmation acceptance notices
+        env_template = os.environ.get('TMDA_CONFIRM_ACCEPT_TEMPLATE')
+        def_template = Defaults.CONFIRM_ACCEPT_TEMPLATE
+        pkg_template = pkg_template_dir + 'confirm_accept.txt'
+    if mode == 'request':               # request confirmations
+        env_template = os.environ.get('TMDA_CONFIRM_REQUEST_TEMPLATE')
+        def_template = Defaults.CONFIRM_REQUEST_TEMPLATE
+        pkg_template = pkg_template_dir + 'confirm_request.txt'
+        timestamp = str('%d' %now)
+        pid = Defaults.PID
+        confirm_accept_address = Cookie.make_confirm_address(recipient_address,
+                                                             timestamp,
+                                                             pid,
+                                                             'accept')
+        pendingdir = Defaults.DATADIR + 'pending'
+        pending_message = timestamp + '.' + pid + '.msg'
+        # Create ~/.tmda/ and friends if necessary.
+        if not os.path.exists(pendingdir):
+            try:
+                os.makedirs(pendingdir,0700) # stores the unconfirmed messages
+            except IOError, error_msg:
+                print error_msg
+                mta.defer()
+        # Write ~/.tmda/pending/TIMESTAMP.PID.msg
+        message_headers['Return-Path'] = '<' + envelope_sender + '>'
+        pending_contents = str(message_headers) + '\n' + message_body
+        Util.writefile(pending_contents, pendingdir + '/' + pending_message)
+        logit("CONFIRM pending " + pending_message, time.time())
+    # Find the right template.
+    if env_template and os.path.exists(env_template):
+        right_template = env_template
+    elif def_template and os.path.exists(def_template):
+        right_template = def_template
+    else:
+        # must be installed from a package
+        right_template = pkg_template
+    # Create the message and then send it.
+    bounce_message = Util.maketext(right_template,vars())
+    if mode == 'accept':
+        send_bounce(bounce_message,already_confirmed=1)
+    if mode == 'request':
+        if Defaults.CONFIRM_CC:
+            send_cc(Defaults.CONFIRM_CC)
+        send_bounce(bounce_message,
+                    confirm_accept_address = confirm_accept_address)
+        mta.stop()  
+
+
+######
+# Main
+######
+
+def main():
+
+    # Get the cookie type and value by parsing the extension address.
+    ext = address_extension
+    if ext:
+        ext = string.lower(ext)
+        ext_split = string.split(ext, Defaults.RECIPIENT_DELIMITER)
+        cookie_value = ext_split[-1]
+        try:
+            cookie_type = ext_split[-2]
+        except IndexError:
+            cookie_type = None
+        if cookie_type not in ('confirm','dated','sender'):
+            cookie_type = 'keyword'
+            cookie_value = ext
+    else:
+        cookie_type = None
+        cookie_value = None
+
+    # The list of sender e-mail addresses comes from the envelope
+    # sender, the "From:" header and the "Reply-To:" header.
+    sender_list = [envelope_sender]
+    from_list = message_headers.getaddrlist("from")
+    replyto_list = message_headers.getaddrlist("reply-to")
+    for list in from_list,replyto_list:
+        for a in list:
+            emaddy = a[1]
+            sender_list.append(emaddy)
+
+    # Process confirmation messages first.
+    if cookie_type == 'confirm' and cookie_value:
+        verify_confirm_cookie(cookie_value)
+
+    # Parse the incoming filter file.
+    infilter = FilterParser.FilterParser()
+    infilter.read(Defaults.FILTER_INCOMING)
+    (action,action_option,matching_line) = infilter.firstmatch(recipient_address,
+                                                               sender_list,
+                                                               message_body,
+                                                               str(message_headers),
+                                                               message_size)
+    # Dispose of the message now if there was a filter file match.
+    # Log the action along with and the matching line in the filter
+    # file that caused it.
+    disposal_time = time.time()
+    if action in ('bounce','reject'):
+        if Defaults.FILTER_BOUNCE_CC:
+            send_cc(Defaults.FILTER_BOUNCE_CC)
+        logit('%s (%s)' % ('BOUNCE', matching_line), disposal_time)
+        print 'Message rejected by recipient.'
+        mta.bounce()
+    elif action in ('drop','exit','stop'):
+        if Defaults.FILTER_DROP_CC:
+            send_cc(Defaults.FILTER_DROP_CC)
+        logit('%s (%s)' % ('DROP', matching_line), disposal_time)
+        mta.stop()
+    elif action in ('accept','deliver','ok'):
+        logit('%s (%s)' % ('OK', matching_line), disposal_time)
+        mta.deliver(message)
+    elif action == 'confirm':
+        # bouncegen does logging
+        bouncegen('request')
+
+    # The message didn't match the filter file, so check if it was
+    # sent to a 'tagged' address.
+    # Dated tag?
+    if cookie_type == 'dated' and cookie_value:
+        verify_dated_cookie(cookie_value)
+    # Sender tag?
+    elif cookie_type == 'sender' and cookie_value:
+        sender_address = globals().get('envelope_sender')
+        verify_sender_cookie(sender_address,cookie_value)
+    # Keyword tag?
+    elif cookie_type == 'keyword' and cookie_value:
+        verify_keyword_cookie(cookie_value)
+        
+    # If the message gets this far (i.e, was not sent to a tagged
+    # address and it didn't match the filter file), then we consult
+    # Defaults.ACTION_INCOMING.
+    default_action = string.lower(Defaults.ACTION_INCOMING)
+    if default_action in ('bounce','reject'):
+        logit('%s %s' % ('BOUNCE', 'action_incoming'), disposal_time)
+        print 'Message rejected by recipient.'
+        mta.bounce()
+    elif default_action in ('drop','exit','stop'):
+        logit('%s %s' % ('DROP', 'action_incoming'), disposal_time)
+        mta.stop()
+    elif default_action in ('accept','deliver','ok'):
+        logit('%s %s' % ('OK', 'action_incoming'), disposal_time)
+        mta.deliver(message)
+    else:
+        # bouncegen does logging
+        bouncegen('request')
+
+
+# This is the end my friend.
+if __name__ == '__main__':
+    main()

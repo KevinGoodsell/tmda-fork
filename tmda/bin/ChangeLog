@@ -1,3 +1,8 @@
+2002-01-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter: Replace tmda-filter with a wrapper script, and
+	rename it 'tmda-rfilter'.
+
 2002-01-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-sendmail (usage): Remove the `-bs' option, since
