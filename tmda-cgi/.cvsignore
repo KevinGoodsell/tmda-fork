@@ -1,1 +1,4 @@
-compile.ini
+configure.ini
+Makefile
+tmda-cgi.h
+tmda.cgi

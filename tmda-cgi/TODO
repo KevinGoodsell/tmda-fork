@@ -1,8 +1,6 @@
 Things left to do:
 ==================
 
-    * configure -- switch from compile to configure/make/make install
-
     * FAQ -- should this be made a CGI?  Add help on adding whitelist &
              blacklist options.
 

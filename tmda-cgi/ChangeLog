@@ -1,3 +1,8 @@
+2003-05-04  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Replaced compile with new, improved configure.  Makes better guesses
+	  about where TMDA is installed.  A little more standard to use.
+
 2003-05-03  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Added override.py for overriding user variables.  See docs.
