@@ -1,3 +1,8 @@
+2003-12-04  Jim Ramsay      <i.am@jimramsay.com>
+
+	* Added preliminary searching in the Pending List and the Blue theme.
+	  This should be refined / bugtested.
+
 2003-11-24  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Changed configure to strip slashes from DispDir to keep Netscape

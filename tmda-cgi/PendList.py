@@ -172,6 +172,47 @@ def Show():
   except Errors.QueueError:
     Msgs = []
 
+  # Search the Pending List:
+  #
+  #  If the from has the keys searchPattern and search
+  #  we can search.
+  #
+  #  - searchPattern: a basic RE pattern which contains exactly one "%s" 
+  #    where the user's search string goes.
+  #  - search: The user's search string for incorporation into the searchPattern
+  #
+  # For an example, check out the source for the Pending List in the theme 
+  # 'Blue'
+  #
+  Searching = 0
+  if Form.has_key("searchPattern") and Form.has_key("search"):
+    Searching = 1
+    expression = Form['searchPattern'].value % Form['search'].value
+    flags = re.M
+    # TODO: Decide about case-insensitive searching.
+    #       It could be done by default or an HTML for checkbox.
+    # To implement case-insensitive searching:
+    # flags = flags | re.I
+
+    # TODO: Improve this efficiency, if possible.
+    #       It can be horribly slow if there are many pending messages.
+    #
+    # Current search algorithm:
+    # - For each message in the pending queue:
+    #   - Do a Python RE match for the expression
+    #   - If it matches, add it to the list.
+    exp = re.compile(expression, flags)
+    matchingMsgs = []
+    for Msg in Msgs:
+      try:
+        MsgObj = Pending.Message(Msg)
+      except (IOError, Errors.MessageError), ErrStr:
+        continue
+      if exp.search( MsgObj.show() ) != None:
+        matchingMsgs = matchingMsgs + [ Msg ]
+    Msgs = matchingMsgs
+    # TODO: Catch the error which results if no matches are found.
+
   # Mark messages as read if necessary
   for MsgObj in ReadList:
     # Mark as Read
@@ -189,6 +230,15 @@ def Show():
   T = Template.Template("pending.html")
   T["CharSet"] = "utf-8"
   T["MsgID"]   = ""
+
+  if Searching:
+    # TODO: If searching, we must either:
+    #       - Save the search results from page to page
+    #       - Show all the search results in the one page, disregarding 
+    #         pager settings
+    T['searchForm']
+  else:
+    T['clearSearch']
 
   # Find the message numbers we'll display
   FirstMsg = PVars["Pager"]

@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Oct  4 16:51:34 2003 -->
+<!-- Thu Dec  4 11:15:33 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -311,6 +311,56 @@ function Set(Value)
     </td>
   </tr>
 </table>
+
+<!-- var: searchForm-->
+<BR>
+<table align=center style="border-style: solid; border-color: #7A7AB6; border-width: 2px; color: #FFFFFF; background: #DADCEB"><tr><td>
+<form name="search" method="get" %(OnSubmit)s action="%(Script)s">
+  <input type="hidden" name="SID" value="%(SID)s">
+  <input type="hidden" name="cmd" value="pending">
+<table>
+  <tr>
+    <td style="font-family: sans-serif; font-weight: bold">
+      Search for
+    </td>
+    <td>
+      <!-- This sets up the search pattern.  The user's input in the "search"
+           box will be put where the '%%s' is in the value of the selected
+           term -->
+      <select name="searchPattern" style="font-weight: bold; text-align: right">
+        <option value="^From: .*%%s.*$">From:&nbsp;
+        <option value="^To: .*%%s.*$">To:&nbsp;
+        <option value="^Cc: .*%%s.*$">Cc:&nbsp;
+        <option value="^Subject: .*%%s.*$" selected>Subject containing:&nbsp;
+        <option value="^\n.*%%s.*">Body containing:&nbsp;
+        <option value="%%s">Pure Regular Expression:&nbsp;
+      </select>
+    </td>
+    <td>
+      <!-- This is the user's search argument which will be inserted into the
+           searchPattern above -->
+      <input name="search" size=40>
+    </td>
+  </tr>
+  <tr>
+    <td colspan=2></td>
+    <td>
+      <input type="submit" value="Search">
+    </td>
+  </tr>
+</table>
+</form>
+</td></tr></table>
+<P align=center>
+  <i><b>Note:</b> Be patient, the search may take a long time, especially if you have many pending mesages.</i>
+</P>
+<!-- /var -->
+<!-- var: clearSearch -->
+<BR>
+<table align=center style="border-style: solid; border-color: #7A7AB6; border-width: 2px; color: #FFFFFF; background: #DADCEB"><tr><td>
+  <A href="%(Script)s?cmd=pending&SID=%(SID)s" style="font-family: sans-serif; font-size: 14pt">Clear search results</A>
+</td></tr></table>
+<!-- /var -->
 </td>
 <!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
