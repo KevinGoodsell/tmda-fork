@@ -12,12 +12,11 @@ Title: URL Confirmation
 <p><em><strong>Notes:</strong></em></p>
 <ul>
   <li>Be sure you set
-    <a href="config-vars.html#CGI_ACTIVE"><tt>CGI_ACTIVE</tt></a>,
-    <a href="config-vars.html#CGI_URL"><tt>CGI_URL</tt></a>, and
+    <a href="config-vars.html#CGI_URL"><tt>CGI_URL</tt></a> and
     <a href="config-vars.html#TEMPLATE_DIR"><tt>TEMPLATE_DIR</tt></a>
     before modifying your template! No confirmation e-mails will be sent if you
-    specify a <tt>%(confirm_accept_url)</tt> until these variables are properly
-    configured.<p>
+    specify a <nobr><tt>%(confirm_accept_url)s</tt></nobr> until these
+    variables are properly configured.<p>
   </li>
   <li>Always test your configuration after making a change to your
     templates.<p>

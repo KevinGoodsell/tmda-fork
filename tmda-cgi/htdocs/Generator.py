@@ -132,7 +132,6 @@ name="%s"''' % (alt, height, name)
       os.system('../button_maker/compose.pl -w 194 -i 20 display/left_bg.gif '
         '7 0 14H "%s" display/dyn_buttons/h-subtopic%d.png' % (name, button))
       button += 1
-    sys.exit()
 
   def make_assoc(self, sidebar):
     self.assoc = {}

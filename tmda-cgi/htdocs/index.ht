@@ -2,8 +2,8 @@ Title: What is it?
 
 <h2>What is it?</h2>
 
-<p>tmda-cgi is an alpha-release program for managing your <a href="/">TMDA</a>
-  account over the web. The current release can:</p>
+<p>tmda-cgi is an beta-release program for managing your <a href="/">TMDA</a>
+  account over the web. tmda-cgi can:</p>
 <ul>
   <li>Configure a user's account to use TMDA.</li>
   <li>Remove TMDA from a user's account.</li>
@@ -11,6 +11,7 @@ Title: What is it?
     still awaiting confirmation)</li>
   <li>View the text content (and see what sorts of attachments are included) in
     any of your pending e-mails</li>
+  <li>Strip Javascript and other "nasty" bits when viewing e-mails</li>
   <li>Release (move into your mail folder as if a confirmation had been
     received) any of your pending e-mails</li>
   <li>Delete any pending e-mail</li>
@@ -21,14 +22,13 @@ Title: What is it?
   <li>Edit any of your text-file based lists</li>
   <li>Edit your local TMDA configuration file (disable-able)</li>
   <li>View the global TMDA configuration file</li>
+  <li>Configure various parameters from within tmda-cgi</li>
   <li>Select a theme (although only one theme is currently included in the
     releases)</li>
   <li>View configuration information and pertinent links</li>
 </ul>
-<p>Features we hope to add soon include:</p>
+<p>Future versions may include:</p>
 <ul>
-  <li>Stripping Javascript and other "nasty" bits when viewing e-mails</li>
-  <li>Configuration of various parameters from within tmda-cgi</li>
   <li>Filter testing</li>
   <li>The ability to change your login password</li>
   <li>The ability to report spammers to services such as <a

@@ -51,6 +51,14 @@ Title: Default Settings
   </tr>
   <tr>
     <td><a href="#PendingListPagerSize">PendingList:PagerSize</a></td>
+    <td><a href="#ViewPendingAltPref">ViewPending:AltPref</a></td>
+  </tr>
+  <tr>
+    <td><a href="#ViewPendingAllowTags">ViewPending:AllowTags</a></td>
+    <td><a href="#ViewPendingBlockRemove">ViewPending:BlockRemove</a></td>
+  </tr>
+  <tr>
+    <td><a href="#ViewPendingEmailClass">ViewPending:EmailClass</a></td>
     <td><a href="#ViewPendingHeaders">ViewPending:Headers</a></td>
   </tr>
 </table>
@@ -293,6 +301,63 @@ Title: Default Settings
       </tr>
     </table>
   <p>Default: <tt>15</tt></p>
+</blockquote>
+
+<h4><a name="ViewPendingAltPref"></a>ViewPending:AltPref</h4>
+<blockquote>
+  <p>Specify a preferred e-mail format if multiple options are present.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[ViewPending]<br>
+          AltPref = text/html</td>
+      </tr>
+    </table>
+  <p>Default: <tt>text/plain</tt></p>
+</blockquote>
+
+<h4><a name="ViewPendingAllowTags"></a>ViewPending:AllowTags</h4>
+<blockquote>
+  <p>Specify which tags may be included when displaying an HTML-formatted
+    e-mail. Any tag <b><i>not</i></b> listed will be removed.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[ViewPending]<br>
+          AllowTags = br,p</td>
+      </tr>
+    </table>
+  <p>Default: <tt>a,b,br,center,div,font,hr,i,p,table,td,th,tr</tt></p>
+</blockquote>
+
+<h4><a name="ViewPendingBlockRemove"></a>ViewPending:BlockRemove</h4>
+<blockquote>
+  <p>Specify which blocks of HTML must be removed before displaying an
+    HTML-formatted e-mail. Not only will any tag listed be removed, all text
+    and/or tags <b><i>between the start and end tags</i></b> will also be
+    removed.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[ViewPending]<br>
+          BlockRemove = script</td>
+      </tr>
+    </table>
+  <p>Default: <tt>head,noframes,noscript,script,title</tt></p>
+</blockquote>
+
+<h4><a name="ViewPendingEmailClass"></a>ViewPending:EmailClass</h4>
+<blockquote>
+  <p>Default font used when viewing e-mails. These fonts may be customized in
+    the <tt>styles.css</tt> file.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[ViewPending]<br>
+          EmailClass = fixed</td>
+      </tr>
+    </table>
+  <p>Default: <tt>proportional</tt></p>
 </blockquote>
 
 <h4><a name="ViewPendingHeaders"></a>ViewPending:Headers</h4>

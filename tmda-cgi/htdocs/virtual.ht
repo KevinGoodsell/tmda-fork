@@ -1,7 +1,6 @@
 Title: Virtual Users
 
 <h2><a name="Virtual" id="Virtual"></a>Virtual users</h2>
-<p><b>Warning:  This is not heavily tested yet.</b></p>
 <p>Virtual users are now mostly* supported. tmda-cgi uses a "stub" program
   which converts the output of a virtual user information package into a
   format that tmda-cgi can handle. In other words, you must have the 

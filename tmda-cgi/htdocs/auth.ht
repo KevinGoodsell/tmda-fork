@@ -134,7 +134,6 @@ Title: Password Authentication
 
 <h3><a name="ProgAuth"></a>Program Authentication</h3>
 
-  <p><b>Warning: This is not heavily tested yet.</b></p>
 <p>tmda-cgi supports authentication by a checkpassword-style program
   (see <a href="http://cr.yp.to/checkpwd/interface.html">a description</a> of
   this interface). Typically, this is <tt>checkpassword</tt> or 
@@ -146,7 +145,6 @@ Title: Password Authentication
   &quot;0&quot; will do.</p>
 
 <h3><a name="RemtAuth"></a>Remote Authentication</h3>
-<p><b>Warning: This is not heavily tested yet.</b></p>
 <p>tmda-cgi supports authentication by a remote host, using some common
 existing protocols:</p>
 <ul>

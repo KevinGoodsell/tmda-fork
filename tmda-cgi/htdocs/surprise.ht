@@ -11,7 +11,10 @@ Title: Surprises & Gotcha's
 <a href="#Authentication">Authentication Ailments</a><br>
 <a href="#Attach">Attachment Anxiety</a><br>
 <a href="#WhiteBlack">Whitelist, Blacklist... where are the options?</a><br>
-<a href="#RPM">Where, oh where, did the RPM install?</a></p>
+<a href="#RPM">Where, oh where, did the RPM install?</a><br>
+<a href="#Port">Any FreeBSD port in a storm</a><br>
+<a href="#Base">Bad Base</a><br>
+<a href="#Install">Install Again?</a></p>
 
 <h3><a name="Whitelist"></a>Whitelist Woes</h3>
 <p>tmda-cgi's whitelist feature does not update the list pointed to by
@@ -81,7 +84,7 @@ Authentication returned: 0<br>
   </tr>
 </table>
 <p>If you do not wish for these messages to be embedded, modify the template 
-  file <tt>login.html</tt> and remove the <tt>%(ErrMsg)s</tt> string.
+  file <tt>login.html</tt> and remove the <tt>%(ErrMsg)s</tt> string.</p>
 <p>If the messages do not help you get to the root of the problem, refer to the 
   instructions on the <a href="contact.html">Contact</a> page to get some 
   assistance.  Be sure to copy and paste the debug information you are getting, 
@@ -115,3 +118,59 @@ Authentication returned: 0<br>
   <code>/usr/lib/python2.2/site-packages</code>
 </blockquote>
 and see if that makes it happy.
+
+<h3><a name="Port"></a>Any FreeBSD port in a storm</h3>
+<p><tt>./compile</tt> wants to know where I installed TMDA, but I used the
+  FreeBSD port, and have no idea where it put the files!</p>
+<p>The ports collection puts TMDA files all over the place, so when
+  <tt>./compile</tt> asks, "Path to TMDA root directory", try:</p>
+<blockquote>
+  <code>/usr/local/lib/python2.2/site-packages</code>
+</blockquote>
+and see if that makes it happy.
+
+<h3><a name="Base"></a>Bad Base</h3>
+<p>My <tt>skel</tt> files use <tt>%(Base)s/bin/</tt> to refer to TMDA's
+  <tt>bin/</tt> directory, but when my users install, the files created point
+  to the wrong directory.</p>
+<p>The variable <tt>%(Base)s</tt> asssumes you have installed TMDA from source. 
+  If you installed TMDA from RPM or FreeBSD port, then the assumed relationship 
+  between library files and executables is no longer valid.</p>
+<p>Simply modify the <tt>skel</tt> files, remove <tt>%(Base)s/bin/</tt> and 
+  replace it with the correct path to TMDA's executables.</p>
+
+<h3><a name="Install"></a>Install Again?</h3>
+<p>I've already installed TMDA on this e-mail account, but when I login to
+  tmda-cgi, it gives me the welcome screen and asks if I want to install.</p>
+<p>If tmda-cgi cannot detect a valid TMDA install on a given e-mail account, it
+  will ask if you wish to install. The reason why it can't detect a valid
+  install are hidden in the comments at the top of HTML for this page. Do a
+  "View/Source" and at the top of the page, you should see something like:</p>
+<table class="example">
+  <tr>
+    <td>
+&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><br>
+&lt;!--<br>
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+Why did I end up here?<br>
+Here's some details:<br>
+&nbsp;<br>
+Can't find key file:<br>
+/home/vpopmail/domains/lazarus.wolfhome.com/gre7g/.tmda/crypt_key<br>
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+&nbsp;<br>
+--><br>
+&lthtml><br>
+...</td>
+  </tr>
+</table>
+<p>If you do not wish for these messages to be embedded, modify the template 
+  file <tt>welcome.html</tt> and remove the <tt>%(ErrMsg)s</tt> string.</p>
+<p>If the messages do not help you get to the root of the problem, refer to the 
+  instructions on the <a href="contact.html">Contact</a> page to get some 
+  assistance.  Be sure to copy and paste the debug information you are getting, 
+  to make it easier for the developers to help you.</p>

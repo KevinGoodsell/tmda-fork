@@ -6,13 +6,13 @@ Title: Auto-installation & Auto-uninstallation
 
 <p><b><i>TMDA must already be installed on the server.</i></b></p>
 
-<p>This feature does not install TMDA, but configures an already existing e-
-  mail account so it will work with TMDA.</p>
+<p>This feature does not install TMDA, but configures an already existing
+  e-mail account so it will work with TMDA.</p>
 
 <p>To use this feature, the user need only log in to tmda-cgi (<a 
   href="auth.html#ProgAuth">program</a> or <a 
   href="auth.html#RemtAuth">remote</a> authentication is strongly recommended 
-  if you wish to use auto-install) and click "Sign up.", however, the system 
+  if you wish to use auto-install) and click "Sign up." However, the system 
   administrator will need to verify how the installation will be done 
   beforehand!</p>
 

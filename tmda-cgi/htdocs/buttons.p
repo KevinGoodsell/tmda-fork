@@ -23,32 +23,32 @@ aS'Screenshots'
 p12
 aS'Requirements'
 p13
-aS'Credit'
-p14
 aS'Download'
-p15
+p14
 aS'Modes'
-p16
+p15
 aS'Compilation'
-p17
+p16
 aS'Centralized no-su'
-p18
+p17
 aS'Configuration'
-p19
+p18
 aS'   TMDA config'
-p20
+p19
 aS'   defaults.ini'
-p21
+p20
 aS'   theme.ini'
-p22
+p21
 aS'   User prefs.'
-p23
+p22
 aS'Auto-installation'
-p24
+p23
 aS'URL Confirmation'
-p25
+p24
 aS'Surprises & Gotchas'
-p26
+p25
 aS'Contact'
+p26
+aS'Commercial Support'
 p27
 as.

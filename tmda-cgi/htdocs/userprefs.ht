@@ -1,11 +1,12 @@
 Title: User Preferences
 
 <h3><a name="User"></a>User Preferences</h3>
-<p>User preferences are set by user actions while running tmda-cgi, and 
-  override any settings in both the <a 
+<p>User preferences are set by user actions while running tmda-cgi.  Many of
+  these parameters may be set on tmda-cgi's theme page (Settings menu). These
+  settings override any settings in both the <a 
   href="defaults.html"><tt>defaults.ini</tt></a> and <a 
-  href="themeini.html"><tt>theme.ini</tt></a> files. These preferences are 
-  saved in a file located at <a 
+  href="themeini.html"><tt>theme.ini</tt></a> files.</p>
+<p>User preferences are saved in a file located at <a 
   href="tmdaconfig.html#CGI_SETTINGS"><tt>CGI_SETTINGS</tt></a>.<p>
 <p>There is no reason to edit this file by hand, although you may delete the 
   file to return to all default preferences. No error will be reported if this 
