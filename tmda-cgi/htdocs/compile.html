@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Apr 16 14:51:47 2003 -->
+<!-- Wed Apr 16 15:21:27 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -193,6 +193,33 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x607" height="35" width="194" 
 <p>In the above example, the actual path from the CGI to the display directory 
   is <tt>../htdocs/display/</tt> but the web path is <tt>../display/</tt>. The 
   web path is the path that should be entered in question #7.</p>
+
+<h3>Additional no-su Setup</h3>
+
+<p>If you compile in no-su mode, you will need to change permissions on any
+  existing pending mail and configuration files so that they can be read by the 
+  CGI. You can either make these files world accessible or group accessible.</p>
+
+<p>Group accessible is a little more secure than world accessible. World 
+  accessible files are easily read by accident. Users actually have to take 
+  intentional steps to mess with files in another group.</p>
+
+<p>We recommend you assign permissions of 660 to files and 2660 to directories 
+  to make them group accessible. Don't forget to <tt>chgrp</tt> then into the 
+  appropriate group! Look in your Apache (or other web server) configuration 
+  file to find out which group you should use. For Apache, this directive will 
+  look like:</p>
+
+<blockquote>
+  <pre>Group nobody</pre>
+</blockquote>
+
+<p>You will also need to add in code to make sure new e-mails are group 
+  accessible. We recommend adding the following to your <tt>/etc/tmdarc</tt>:
+
+<blockquote>
+  <pre>os.umask(027)</pre>
+</blockquote>
 </td>
 <!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
