@@ -1,3 +1,7 @@
+2002-02-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter: Python2ize, and cleanup log output.
+
 2002-02-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-pending: Add -S, --show option to display the given message

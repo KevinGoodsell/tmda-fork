@@ -40,7 +40,7 @@ except:
     try:
         status = 75
         tb1 = sys.exc_info()
-        import string, time
+        import time
 
         from TMDA.Defaults import LOGFILE_DEBUG
         if not LOGFILE_DEBUG:
@@ -65,11 +65,10 @@ except:
 
 if status:
     try:
-        log_header = ('%s (%s):%s' %
-                      ('\n' + 'Uncaught Python '
-                       + string.split(sys.version)[0] + ' exception',
-                       time.asctime(time.gmtime(time.time())) + ' UTC',
-                       '\n' + '-' * 60 + '\n'))
+        fline = ('%s (%s):' %
+                 ('Uncaught Python ' + sys.version.split()[0] + ' exception',
+                  time.asctime(time.gmtime(time.time())) + ' UTC'))
+        log_header = '\n%s\n%s\n' % (fline, '-' * len(fline))
         fp.write(log_header)
         for tb in (tb1, tb2, tb3):
             if tb:
