@@ -1,3 +1,8 @@
+2001-08-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (recipient_address): Only parse VIRTUALDOMAINS if
+	support is turned on *and* the file exists.
+
 2001-08-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (original_recipient): USEVIRTUALDOMAINS replaces

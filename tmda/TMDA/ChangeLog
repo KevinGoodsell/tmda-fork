@@ -2,6 +2,9 @@
 
 	* Defaults.py (TMDA_VERSION): Begin 0.34 development.
 
+	(mode): Remove check for VIRTUALDOMAINS for sites that don't have
+	any such file.
+	
 2001-08-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (USEVIRTUALDOMAINS): Replaces QMAILVIRTUALDOMAINS.

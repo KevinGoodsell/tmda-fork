@@ -93,10 +93,6 @@ if not vars().has_key('USEVIRTUALDOMAINS'):
 # for virtualdomain processing in tmda-filter.
 if not vars().has_key('VIRTUALDOMAINS'):
     VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
-if USEVIRTUALDOMAINS:
-    if not os.path.exists(VIRTUALDOMAINS):
-        print "file not found:",VIRTUALDOMAINS
-        sys.exit(ERR_CONFIG)
 
 # CONFIRM_ACCEPT_NOTIFY
 # Set this variable to 0 if you do not want to generate confirmation
