@@ -1,137 +1,147 @@
 Each TMDA release has a "codename" in addition to a version number.
 
-The naming scheme for this development branch is ``Kentucky Derby
-Winners'' (the names of the winning horses, not jockeys). The winners
-below are listed chronologically since the first race in 1875.
+The naming scheme for this development branch is:
+"Single Malt Scotch Whisky"
+
+The list of single malts below was compiled from
+<URL:http://www.whisky.com/single_malt.html>
 
 =====================================================================
 
-0.01: Aristides
-0.02: Vagrant
-0.03: Baden Baden
-0.04: Day Star
-0.05: Lord Murphy
-0.06: Fonso
-0.07: Hindoo
-0.08: Apollo
-0.09: Leonatus
-0.10: Buchanan
-0.11: Joe Cotton
-0.12: Ben Ali
-0.13: Montrose
-0.14: MacBeth II
-0.15: Spokane
-0.16: Riley
-0.17: Kingman
-0.18: Azra
-0.19: Lookout
-0.20: Chant
-0.21: Halma
-0.22: Ben Brush
-0.23: Typhoon II
-0.24: Plaudit
-0.25: Manuel
-0.26: Lieut. Gibson
-0.27: His Eminence
-0.28: Alan-a-Dale
-0.29: Judge Himes
-0.30: Elwood
-0.31: Agile
-0.32: Sir Huon
-0.33: Pink Star
-0.34: Stone Street
-0.35: Wintergreen
-0.36: Donau
-0.37: Meridan
-0.38: Worth
-0.39: Donerail
-0.40: Old Rosebud
-0.41: Regret
-0.42: George Smith
-0.43: Omar Khayyam
-0.44: Exterminator
-0.45: Sir Barton
-0.46: Paul Jones
-0.47: Behave Yourself
-0.48: Morvich
-0.49: Zev
-0.50: Black Gold
-0.51: Flying Ebony
-0.52: Bubbling Over
-0.53: Whiskery
-0.54: Reigh Count
-0.55: Clyde Van Dusen
-0.56: Gallant Fox
-0.57: Twenty Grand
-0.58: Burgoo King
-0.59: Brokers Tip
-0.60: Cavalcade
-0.61: Omaha
-0.62: Bold Venture
-0.63: War Admiral
-0.64: Lawrin
-0.65: Johnstown
-0.66: Gallahadion
-0.67: Whirlaway
-0.68: Shut Out
-0.69: Count Fleet
-0.70: Pensive
-0.71: Hoop, Jr.
-0.72: Assault
-0.73: Jet Pilot
-0.74: Citation
-0.75: Ponder
-0.76: Middleground
-0.77: Count Turf
-0.78: Hill Gail
-0.79: Dark Star
-0.80: Determine
-0.81: Swaps
-0.82: Needles
-0.83: Iron Liege
-0.84: Tim Tam
-0.85: Tomy Lee
-0.86: Venetian Way
-0.87: Carry Back
-0.88: Decidedly
-0.89: Chateaugay
-0.90: Northern Dancer
-0.91: Lucky Debonair
-0.92: Kauai King
-0.93: Proud Clarion
-0.94: Forward Pass
-0.95: Majestic Prince
-0.96: Dust Commander
-0.97: Canonero II
-0.98: Riva Ridge
-0.99: Secretariat
-1.0.0: Cannonade
-1.0.1: Foolish Pleasure
-1.0.2: Bold Forbes
-1.0.3: Seattle Slew
-1.0.4: Affirmed
-1.0.5: Spectacular Bid
-1.0.6: Genuine Risk
-1.0.7: Pleasant Colony
-1.0.8: Gato del Sol
-1.0.9: Sunnys Halo
-1.0.10: Swale
-1.0.11: Spend A Buck
-1.0.12: Ferdinand
-1.0.13: Alysheba
-1.0.14: Winning Colors
-1.0.15: Sunday Silence
-1.0.16: Unbridled
-1.0.17: Strike the Gold
-1.0.18: Lil E. Tee
-1.0.19: Sea Hero
-1.0.20: Go For Gin
-1.0.21: Thunder Gulch
-1.0.22: Grindstone
-1.0.23: Silver Charm
-1.0.24: Real Quiet
-1.0.25: Charismatic
-1.0.26: Fusaichi Pegasus
-1.0.27: Monarchos
-1.0.28: War Emblem
-1.0.29: Funny Cide
+1.1.0: Aberfeldy
+1.1.1: Balblair
+1.1.2: Caol Ila
+1.1.3: Dailuaine
+1.1.4: Edradour
+1.1.5: Fettercairn
+1.1.6: Glen Albyn
+1.1.7: Hazelburn
+1.1.8: Imperial
+1.1.9: Jura
+1.1.10: Killyloch
+1.1.11: Ladyburn
+1.1.12: Macallan
+1.1.13: Nikka
+1.1.14: Oban
+1.1.15: Pittyvaich
+1.1.16: Rosebank
+1.1.17: Scapa
+1.1.18: Talisker
+1.1.19: Aberlour
+1.1.20: Balmenach
+1.1.21: Caperdonich
+1.1.22: Dallas Dhu
+1.1.23: Glen Deveron
+1.1.24: Highland Park
+1.1.25: Inchgower
+1.1.26: Kinclaith
+1.1.27: Lagavulin 
+1.1.28: Mannochmore
+1.1.29: North Port
+1.1.30: Old Mull
+1.1.31: Poit Dubh
+1.1.32: Singleton
+1.1.33: Tamdhu
+1.1.34: Allt-A-Bhainne
+1.1.35: Balvenie
+1.1.36: Cardhu
+1.1.37: Dalmore
+1.1.38: Glen Elgin
+1.1.39: Hillside
+1.1.40: Inchmoan
+1.1.41: Kininvie
+1.1.42: Laphroaig
+1.1.43: Millburn
+1.1.44: Old Parr
+1.1.45: Port Ellen
+1.1.46: Sonnen Schien
+1.1.47: Tamnavulin
+1.1.48: An Cnoc
+1.1.49: Banff
+1.1.50: Clynelish
+1.1.51: Dalwhinnie
+1.1.52: Glen Flagler
+1.1.53: Inchmurrin
+1.1.54: Kioki Jikomi
+1.1.55: Linkwood
+1.1.56: Miltonduff
+1.1.57: Old Potrero
+1.1.58: Speyburn
+1.1.59: Te Bheag
+1.1.60: Ardbeg
+1.1.61: Ben Nevis
+1.1.62: Coleburn
+1.1.63: Deanston
+1.1.64: Glen Garioch
+1.1.65: Inverleven
+1.1.66: Knappogue Castle
+1.1.67: Littlemill
+1.1.68: Mortlach
+1.1.69: Old Pulteney
+1.1.70: Springbank
+1.1.71: Teaninich
+1.1.72: Ardmore
+1.1.73: Benriach
+1.1.74: Convalmore
+1.1.75: Deerstalker
+1.1.76: Glen Grant
+1.1.77: Knockando
+1.1.78: Loch Lomond
+1.1.79: Old Rhosdhu
+1.1.80: St. Magdalene
+1.1.81: Tobermory
+1.1.82: Arran
+1.1.83: Benrinnes
+1.1.84: Cragganmore
+1.1.85: Drumguish
+1.1.86: Glen Mhor
+1.1.87: Koduru Jikomi
+1.1.88: Lochindaal
+1.1.89: Ord
+1.1.90: Strathisla
+1.1.91: Tomatin
+1.1.92: Auchentoshan
+1.1.93: Benromach
+1.1.94: Craigellachie
+1.1.95: Dufftown
+1.1.96: Glen Moray
+1.1.97: Lochnagar
+1.1.98: Strathmill
+1.1.99: Tomintoul
+1.2.0: Aultmore
+1.2.1: Bladnoch
+1.2.2: Glen Ord
+1.2.3: Lochside
+1.2.4: Tormore
+1.2.5: Blair Athol
+1.2.6: Glen Scotia
+1.2.7: Longmorn
+1.2.8: Tullibardine
+1.2.9: Bowmore
+1.2.10: Glen Spey
+1.2.11: Longrow
+1.2.12: Tyrconnell
+1.2.13: Brackla
+1.2.14: Glenallachie
+1.2.15: Braeval
+1.2.16: Glenburgie
+1.2.17: Bruichladdich
+1.2.18: Glencadam
+1.2.19: Bunnahabhain
+1.2.20: Glendronach
+1.2.21: Glendullan
+1.2.22: Glenesk
+1.2.23: Glenfarclas
+1.2.24: Glenfiddich
+1.2.25: Glenglassaugh
+1.2.26: Glengoyne
+1.2.27: Glenkinchie
+1.2.28: Glenlivet
+1.2.29: Glenlochy
+1.2.30: Glenlossie
+1.2.31: Glenrothes
+1.2.32: Glentauchers
+1.2.33: Glenturret
+1.2.34: Glenugie
+1.2.35: Glenury Royal
+
