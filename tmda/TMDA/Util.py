@@ -569,20 +569,23 @@ def sendmail(msgstr, envrecip, envsender):
 
 def decode_header(str):
     """Accept a possibly encoded message header as a string, and
-    return a decoded string.
+    return a decoded string if it can be decoded.
 
     JRM: email.Header has a decode_header method, but it returns a
     list of decoded pairs, one for each part of the header, which is
     an awkward interface IMO, especially when the header contains a
     mix of encoded and non-encoded parts.
     """
-    from email import Header
-    parts = []
-    pairs = Header.decode_header(str)
-    for pair in pairs:
-        parts.append(pair[0])
-    decoded_string = ' '.join(parts)
-    return decoded_string
+    try:
+        from email import Header
+        parts = []
+        pairs = Header.decode_header(str)
+        for pair in pairs:
+            parts.append(pair[0])
+        decoded_string = ' '.join(parts)
+        return decoded_string
+    except email.Errors.HeaderParseError:
+        return str
 
 
 def headers_as_list(msg):
