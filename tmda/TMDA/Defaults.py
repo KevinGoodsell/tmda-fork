@@ -19,7 +19,7 @@ import Util
 ##############################
 
 TMDA_HOMEPAGE = "<http://tmda.sourceforge.net/>"
-TMDA_VERSION = "0.01"
+TMDA_VERSION = "0.02"
 TMDARC = os.path.expanduser("~/.tmdarc")
 
 # Exit codes: everything except 0, 99 and 100 are soft errors.

@@ -1,3 +1,7 @@
+2001-04-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (TMDA_VERSION): Release v0.02.
+
 2001-04-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Greylist.py (match): function now takes an extra argument
