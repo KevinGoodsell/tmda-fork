@@ -153,7 +153,11 @@ def ReportToSpamCop(MsgObj):
     Sendmail = "-s %s " % PVars[("NoOverride", "Sendmail")]
   else:
     Sendmail = ""
-  Command = "%s reporter.py %s%s" % (sys.executable, Sendmail,
+  if PVars[("NoOverride", "SpamCopFilter")]:
+    Filter = "%s | " % PVars[("NoOverride", "SpamCopFilter")]
+  else:
+    Filter = ""
+  Command = "%s%s reporter.py %s%s" % (Filter, sys.executable, Sendmail,
     PVars[("General", "SpamCopAddr")])
   P = os.popen(Command, "w")
   P.write(MsgObj.msgobj.as_string(1))

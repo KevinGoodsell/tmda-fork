@@ -33,6 +33,9 @@ Contributions:
 
     * Jeff Ross -- bug finding
 
+    * David K. Thompson -- suggestion to support spamassassin by adding an
+			   optional message filter
+
     * Ronald Wiplinger -- providing Chinese spam and feedback on whether
                           tmda-cgi was rendering it correctly
 

@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu May 22 10:53:20 2003 -->
+<!-- Thu May 22 12:08:03 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -116,57 +116,58 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
   </tr>
   <tr>
     <td><a href="#NoOverrideSendmail">NoOverride:Sendmail</a></td>
+    <td><a href="#NoOverrideSpamCopFilter">NoOverride:SpamCopFilter</a></td>
+  </tr>
+  <tr>
     <td><a href="#NoOverrideUninstallBackupTGZ">NoOverride:UninstallBackupTGZ</a></td>
-  </tr>
-  <tr>
     <td><a href="#NoOverrideUninstallInstruct">NoOverride:UninstallInstruct</a></td>
+  </tr>
+  <tr>
     <td><a href="#NoOverrideUserSplit">NoOverride:UserSplit</a></td>
-  </tr>
-  <tr>
     <td><a href="#NoOverrideVPop">NoOverride:VPop</a></td>
+  </tr>
+  <tr>
     <td><a href="#NoOverrideVPopBin">NoOverride:VPopBin</a></td>
-  </tr>
-  <tr>
     <td><a href="#NoOverrideWhichTar">NoOverride:WhichTar</a></td>
+  </tr>
+  <tr>
     <td><a href="#GeneralCSEncoding">General:CSEncoding</a></td>
-  </tr>
-  <tr>
     <td><a href="#GeneralSpamCopAddr">General:SpamCopAddr</a></td>
+  </tr>
+  <tr>
     <td><a href="#GeneralTheme">General:Theme</a></td>
-  </tr>
-  <tr>
     <td><a href="#GeneralUseJSConfirm">General:UseJSConfirm</a></td>
+  </tr>
+  <tr>
     <td><a href="#GenAddrExpireNum">GenAddr:ExpireNum</a></td>
-  </tr>
-  <tr>
     <td><a href="#GenAddrExpireUnit">GenAddr:ExpireUnit</a></td>
+  </tr>
+  <tr>
     <td><a href="#GenAddrKeyword">GenAddr:Keyword</a></td>
-  </tr>
-  <tr>
     <td><a href="#GenAddrSender">GenAddr:Sender</a></td>
+  </tr>
+  <tr>
     <td><a href="#LoginInitPage">Login:InitPage</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListCropDest">PendingList:CropDest</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListCropSender">PendingList:CropSender</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListCropSubject">PendingList:CropSubject</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListDateFormat">PendingList:DateFormat</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListPagerSize">PendingList:PagerSize</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListShowAddr">PendingList:ShowAddr</a></td>
-  </tr>
-  <tr>
     <td><a href="#ViewPendingAltPref">ViewPending:AltPref</a></td>
+  </tr>
+  <tr>
     <td><a href="#ViewPendingAllowTags">ViewPending:AllowTags</a></td>
-  </tr>
-  <tr>
     <td><a href="#ViewPendingBlockRemove">ViewPending:BlockRemove</a></td>
-    <td><a href="#ViewPendingEmailClass">ViewPending:EmailClass</a></td>
   </tr>
   <tr>
+    <td><a href="#ViewPendingEmailClass">ViewPending:EmailClass</a></td>
     <td><a href="#ViewPendingHeaders">ViewPending:Headers</a></td>
   </tr>
 </table>
@@ -265,6 +266,19 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
       <tr>
         <td>[NoOverride]<br>
           Sendmail = /usr/local/bin/sendmail</td>
+      </tr>
+    </table>
+  <p>Default: <i>None.</i></p>
+</blockquote>
+
+<h4><a name="NoOverrideSpamCopFilter"></a>NoOverride:SpamCopFilter</h4>
+<blockquote>
+  <p>Optional message filter to use before reporting spam.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[NoOverride]<br>
+          SpamCopFilter = /home/user/sausr/bin/spamassassin -d</td>
       </tr>
     </table>
   <p>Default: <i>None.</i></p>

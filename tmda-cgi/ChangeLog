@@ -1,5 +1,7 @@
 2003-05-22  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Added optional message filter to use before reporting messages.
+
 	* Added JS confirmation to uninstaller.
 
 	* Widened the list editor text box.
