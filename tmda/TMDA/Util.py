@@ -258,6 +258,23 @@ def append_to_file(str, fullpathname):
     file.close()
 
 
+def pager(file):
+    """Display file using a UNIX text pager such as less or more."""
+    pager_list = []
+    pager = os.environ.get('PAGER')
+    if pager is None:
+        # try to locate less or more if $PAGER is not set
+        for prog in ('less', 'more'):
+            path = os.popen('which ' + prog).read()
+            if path != '':
+                pager = path
+                break
+    for arg in pager.split():
+        pager_list.append(arg)
+    pager_list.append(file)
+    os.spawnvp(os.P_WAIT, pager_list[0], pager_list)
+
+
 def build_cdb(filename):
     """Build a cdb file from a text file."""
     import cdb

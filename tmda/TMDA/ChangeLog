@@ -1,5 +1,8 @@
 2002-02-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Util.py (pager): New function to display a file using a UNIX
+	text paging program such as less or more.
+
 	* Defaults.py (FINGERPRINT): Document 'body'.
 
 	* Cookie.py (make_fingerprint): Use the binascii module instead of

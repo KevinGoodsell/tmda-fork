@@ -1,5 +1,8 @@
 2002-02-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-pending: Add -S, --show option to display the given message
+	with a text paging program.
+
 	* tmda-inject (inject_message): If Defaults.FINGERPRINT contains
 	'body', append the message body to the list passed to
 	Cookie.make_fingerprint().

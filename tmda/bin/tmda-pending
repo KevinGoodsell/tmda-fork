@@ -12,14 +12,14 @@ Where:
     -i
     --interactive
        Display a summary of each pending message and prompt for
-       disposal (skip, release, delete, quit).  Implies --verbose.
-       (default)
+       disposal (pass, show, release, delete, quit).  Implies
+       --verbose.  (default)
 
     -p
     --pretend
        Don't actually operate on messages, just show what would have happened.
        Implies --verbose.
-       
+
     -b
     --batch
        Operate non-interactively.  Use with caution.
@@ -37,6 +37,11 @@ Where:
        Print a summary of pending messages along with a release address link.
        Implies --verbose.
 
+    -S
+    --show
+       Display the full contents of the given message with $PAGER (usually
+       the `more', or `less' program).  Implies --verbose.
+       
     -C
     --cache
        Operate only on messages which aren't stored in .msgcache (i.e,
@@ -151,23 +156,24 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:ipbrdsCADR:Y:O:vqVh', ['config-file=',
-                                                         'interactive',
-                                                         'pretend',
-                                                         'batch',
-                                                         'release',
-                                                         'delete',
-                                                         'summary',
-                                                         'cache',
-                                                         'ascending',
-                                                         'descending',
-                                                         'recipient=',
-                                                         'younger=',
-                                                         'older=',
-                                                         'verbose',
-                                                         'quiet',
-                                                         'version',
-                                                         'help'])
+                               'c:ipbrdsSCADR:Y:O:vqVh', ['config-file=',
+                                                          'interactive',
+                                                          'pretend',
+                                                          'batch',
+                                                          'release',
+                                                          'delete',
+                                                          'summary',
+                                                          'show',
+                                                          'cache',
+                                                          'ascending',
+                                                          'descending',
+                                                          'recipient=',
+                                                          'younger=',
+                                                          'older=',
+                                                          'verbose',
+                                                          'quiet',
+                                                          'version',
+                                                          'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -194,6 +200,8 @@ for opt, arg in opts:
         dispose = 'delete'
     elif opt in ('-s', '--summary'):
         summary = 1
+    elif opt in ('-S', '--show'):
+        dispose = 'show'
     elif opt in ('-C', '--cache'):
         cache = 1
     elif opt in ('-A', '--ascending'):
@@ -284,7 +292,7 @@ def main():
     count = 0
     
     if dispose is None:
-        dispose_def = 'skip'
+        dispose_def = 'pass'
     else:
         dispose_def = dispose
 
@@ -348,13 +356,15 @@ def main():
             if interactive:
                 try:
                     inp = raw_input(
-                        '(s[kip] / r[elease] / d[elete] / q[uit]) [%s]: '
+                        '(p[ass] / s[how] / r[elease] / d[elete] / q[uit]) [%s]: '
                         % dispose_def)
                     ans = inp[0:1].lower()
                     if ans == "":
                         dispose = dispose_def
+                    elif ans == "p":
+                        dispose = 'pass'
                     elif ans == "s":
-                        dispose = 'skip'
+                        dispose = 'show'
                     elif ans == "r":
                         dispose = 'release'
                     elif ans == 'd':
@@ -363,7 +373,7 @@ def main():
                         break
                     else:
                         print '\n', "I don't understand %s" % (`inp`)
-                        dispose = 'skip'
+                        dispose = 'pass'
                 except KeyboardInterrupt:
                     print
                     break
@@ -379,8 +389,14 @@ def main():
                             confirm_done_address(recipient_address, msg))
                 elif dispose == 'delete':
                     os.unlink(msg)
-                elif dispose == 'skip':
+                elif dispose == 'pass':
                     continue
+                elif dispose == 'show':
+                    Util.pager(msg)
+                    if interactive:
+                        count = count - 1
+                        msgs.insert(msgs.index(msg), msg)
+                    
     if cache:
         # Trim tail entries off if necessary, and then save the cache.
         msgcache = msgcache[:Defaults.PENDING_CACHE_LEN]
