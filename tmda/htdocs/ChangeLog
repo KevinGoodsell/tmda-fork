@@ -1,3 +1,8 @@
+2002-02-22  Tim Legant  <tim@catseye.net>
+
+	* config-filter.ht: Docs and an example for new -autodbm flag on
+	the 'from-file' and 'to-file' sources.
+
 2002-02-21  Tim Legant  <tim@catseye.net>
 
 	* config-filter.ht: Move 'from*' sources to list of incoming and

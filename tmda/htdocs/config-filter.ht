@@ -78,13 +78,13 @@ Sources can be one of:
 (for both incoming and outgoing):
 <blockquote><pre>
 from (sender address)
-from-file [-autocdb]
+from-file [ -autocdb | -autodbm ]
 from-cdb
 from-dbm
 from-ezmlm
 from-mailman -attr=&lt;attribute&gt;
 to (recipient address)
-to-file [-autocdb]
+to-file [ -autocdb | -autodbm ]
 to-cdb
 to-dbm
 to-ezmlm
@@ -93,10 +93,10 @@ to-mailman -attr=&lt;attribute&gt;
 
 (for incoming only):
 <blockquote><pre>
-body [-case] (message body)
-body-file [-case]
-headers [-case] (message headers)
-headers-file [-case]
+body [ -case ] (message body)
+body-file [ -case ]
+headers [ -case ] (message headers)
+headers-file [ -case ]
 size (message size)
 
 </blockquote></pre>
@@ -125,25 +125,27 @@ For CDB, you can also use the utilities (cdbmake, cdbdump, etc.) from
 DJB's <a href="http://cr.yp.to/cdb.html" TARGET="Resource Window">CDB distribution</a> 
 if you prefer.
 
-DBM support comes with your Python intrepreter, but CDB support
+DBM support comes with your Python interpreter, but CDB support
 currently requires that you first install the
 <a href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource Window">python-cdb</a>
 extension module.
 <br><br>
 
-The '-autocdb' arguments are intended to ease the use of CDB lists in TMDA
-by automatically rebuilding the CDB file as necessary.  This gives you the
-performance advantages of CDBs without the hassle of having to manually
-maintain them.  Both 'from-file' and 'to-file' take the -autocdb flag.
-The match field of 'from-file' and 'to-file' is always the name of the
-textfile.  You do not need to add '.cdb' if you use the -autocdb flag. It
-will be automatically appended to the filename.  With the -autocdb
-argument, TMDA will rebuild the CDB if it either doesn't exist, or its
-timestamp is older than its source file.  If the rebuild fails for some reason,
-TMDA will fall back to matching from the sourcefile instead.  Before you try
-this feature, make sure you have the <a href="http://pilcrow.madison.wi.us/#pycdb"
-TARGET="Resource Window">python-cdb</a> extension module installed.
-<br><br>
+The '-autocdb' and '-autodbm' arguments are intended to ease the use
+of CDB/DBM lists in TMDA by automatically rebuilding the CDB or DBM
+file as necessary.  This gives you the performance advantages of
+hashed databases without the hassle of having to manually maintain
+them.  Both 'from-file' and 'to-file' take the -autocdb/-autodbm
+flags.  The match field of 'from-file' and 'to-file' is always the
+name of the textfile.  You do not need to add '.cdb' or '.db' if you
+use the -auto* flags. It will be automatically appended to the
+filename.  With the -auto* arguments, TMDA will rebuild the database
+if it doesn't exist or if its timestamp is older than its source file.
+If the rebuild fails for some reason, TMDA will fall back to matching
+from the sourcefile instead.  Before you try the CDB version of this
+feature, make sure you have the <a
+href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource
+Window">python-cdb</a> extension module installed.  <br><br>
 
 The '-ezmlm' and '-mailman' sources can be used to match the
 subscribers of an <a href="http://cr.yp.to/ezmlm.html" TARGET="Resource Window">ezmlm</a> 
@@ -368,6 +370,7 @@ from *@=mycorp.dom ok
 # Include my blacklist and whitelist
 from-dbm ~/.tmda/lists/blacklist.db drop
 from-cdb ~/.tmda/lists/whitelist.cdb accept
+from-file -autodbm ~/.tmda/lists/nastygrams bounce
 from-file -autocdb ~/.tmda/lists/confirmed ok
 from-file ~/.tmda/lists/whitelist_wildcards accept
 
