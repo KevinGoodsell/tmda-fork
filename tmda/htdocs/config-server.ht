@@ -19,7 +19,7 @@ TMDA user's account, not root).  If you installed from gzipped
 tarball, change into the top-level TMDA directory first.
 
 <blockquote><pre>
-  % ( python -c 'from TMDA.Defaults import *; print DELIVERY_AGENT, MAIL_TRANSFER_AGENT' ) \
+  % ( python -c 'from TMDA.Defaults import *; print DELIVERY_AGENT' ) \
     | mail jason-tmdausage@mastaler.com
 </blockquote></pre>
 
