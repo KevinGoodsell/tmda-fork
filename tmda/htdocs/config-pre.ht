@@ -87,17 +87,23 @@ importantly, <strong>SENDER</strong> (the full envelope sender address),
 <strong>EXT</strong> or <strong>EXTENSION</strong> (the recipient
 address extension).  Exim currently sets only the first, so you
 must set the other two using the <em>environment</em> 
-pipe option.
+pipe option.<br><br>
+
+<li>
+You must also have Exim add a Return-Path: 
+header to the message which it doesn't do by default.  Do this
+by enabling the <em>return_path_add</em> transport option.
 <br><br>
 
-Set <em>environment</em> as follows under the
-<strong>address_pipe</strong> transport:
+Set <em>return_path_add</em> and <em>environment</em> as follows under
+the <strong>address_pipe</strong> transport:
 <br><br>
 
 <blockquote><pre>
 address_pipe: 
   driver = pipe 
   return_fail_output 
+  return_path_add
   environment = EXTENSION=${substr_1:$local_part_suffix}:\
                 RECIPIENT=$local_part$local_part_suffix@$domain 
 </blockquote></pre>

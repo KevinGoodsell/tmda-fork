@@ -33,8 +33,7 @@ allowing fine-grained control over how incoming and outgoing mail is
 disposed of.<br><br>
 
 <li>Local mail delivery, including qmail-style Maildirs, mboxrd-format
-mboxes, program (pipe) delivery, and e-mail address
-forwarding.<br><br>
+mboxes, program (pipe) delivery, and forward to an e-mail address.<br><br>
 
 <li>Supports DBM and <a href="http://cr.yp.to/cdb.html" TARGET="Resource Window">
 CDB</a> databases, including on-demand auto-regeneration of DB files.<br><br>
