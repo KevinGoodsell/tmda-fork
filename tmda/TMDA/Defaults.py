@@ -585,6 +585,9 @@ if not vars().has_key('FILTER_DROP_CC'):
 # "confirm"
 #    request confirmation for the message
 #
+# "hold"
+#    silently hold message in pending queue
+#
 # Default is confirm
 if not vars().has_key('ACTION_INCOMING'):
     ACTION_INCOMING = "confirm"
@@ -606,6 +609,9 @@ if not vars().has_key('ACTION_INCOMING'):
 # "confirm"
 #    request confirmation for the message
 #
+# "hold"
+#    silently hold message in pending queue
+#
 # Default is confirm
 if not vars().has_key('ACTION_FAIL_DATED'):
     ACTION_FAIL_DATED = "confirm"
@@ -626,6 +632,9 @@ if not vars().has_key('ACTION_FAIL_DATED'):
 #
 # "confirm"
 #    request confirmation for the message
+#
+# "hold"
+#    silently hold message in pending queue
 #
 # Default is confirm
 if not vars().has_key('ACTION_EXPIRED_DATED'):
@@ -649,6 +658,9 @@ if not vars().has_key('ACTION_EXPIRED_DATED'):
 # "confirm"
 #    request confirmation for the message
 #
+# "hold"
+#    silently hold message in pending queue
+#
 # Default is confirm
 if not vars().has_key('ACTION_FAIL_SENDER'):
     ACTION_FAIL_SENDER = "confirm"
@@ -669,6 +681,9 @@ if not vars().has_key('ACTION_FAIL_SENDER'):
 #
 # "confirm"
 #    request confirmation for the message
+#
+# "hold"
+#    silently hold message in pending queue
 #
 # Default is confirm
 if not vars().has_key('ACTION_FAIL_KEYWORD'):

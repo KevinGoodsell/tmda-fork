@@ -1,3 +1,8 @@
+2002-09-12  Tim Legant  <tim@catseye.net>
+
+	* config-filter.ht: Added 'hold' action to list of incoming
+	actions.
+
 2002-09-12  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* requirements.ht (Links): Update Python minimum requirement to

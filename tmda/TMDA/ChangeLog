@@ -11,6 +11,15 @@
 
 	* pythonlib/email: Add version 2.3 of the `email' package.
 
+2002-08-29  <sen_ml@eccosys.com>
+
+	* FilterParser.py: Make the parser recognize the "hold" action by
+	adding "hold" to in_action.
+
+	* Defaults.py: Added documentation for "hold" action to
+	ACTION_INCOMING, ACTION_FAIL_DATED, ACTION_EXPIRED_DATED,
+	ACTION_FAIL_SENDER, ACTION_FAIL_KEYWORD.
+
 2002-08-22  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* SMTP.py (Connection.__connect): Add support for SSL.

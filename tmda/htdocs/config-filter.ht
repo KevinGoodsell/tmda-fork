@@ -18,7 +18,7 @@ which can be changed by setting <b>FILTER_INCOMING</b> in your
 
 A filter file is composed of filters, blank lines and comments.  For
 ease of organization, macros, variable interpolation and the ability
-to include other filter files is supported.  These features are
+to include other filter files are supported.  These features are
 documented below in the <a href="#addlfeatures">Additional
 Features</a> section.
 <br><br>
@@ -121,6 +121,7 @@ drop,exit,stop (silently drop the message)
 ok,accept,deliver (deliver the message)
 ok,accept,deliver=&lt;instruction&gt; (deliver to a Maildir, mbox, program, or address)
 confirm (request confirmation for the message)
+hold (store the message in the pending queue but do not send a confirmation request)
 
 </blockquote></pre>
 

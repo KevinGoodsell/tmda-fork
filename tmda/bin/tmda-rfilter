@@ -410,6 +410,9 @@ def do_default_action(action, logname, bouncetext):
     elif action in ('accept', 'deliver', 'ok'):
         logit('%s %s' % ('OK', logname))
         mta.deliver(message_headers, message_body)
+    elif action == 'hold':
+        logit('%s %s' % ('HOLD', logname))
+        bouncegen('hold')
     else:
         logit('%s %s' % ('CONFIRM', logname))
         bouncegen('request')
@@ -611,6 +614,19 @@ def verify_keyword_cookie(keyword_cookie):
         do_default_action(defact, 'action_fail_keyword', bouncetext)
 
 
+def create_pending_msg(timestamp, pid):
+    pending_message = "%s.%s.msg" % (timestamp, pid)
+    # Create ~/.tmda/ and friends if necessary.
+    if not os.path.exists(pendingdir):
+        os.makedirs(pendingdir, 0700) # stores the unconfirmed messages
+    # X-TMDA-Recipient is used by release_pending().
+    message_headers['X-TMDA-Recipient'] = recipient_address
+    # Write ~/.tmda/pending/TIMESTAMP.PID.msg
+    pending_contents = str(message_headers) + '\n' + message_body
+    Util.writefile(pending_contents,
+                   os.path.join(pendingdir, pending_message))
+
+
 def bouncegen(mode, text=None):
     """Bounce a message back to sender."""
     # Stop right away if --discard was specified.
@@ -660,17 +676,15 @@ def bouncegen(mode, text=None):
                                                              timestamp,
                                                              pid,
                                                              'accept')
-        pending_message = "%s.%s.msg" % (timestamp, pid)
-        # Create ~/.tmda/ and friends if necessary.
-        if not os.path.exists(pendingdir):
-            os.makedirs(pendingdir, 0700) # stores the unconfirmed messages
-        # X-TMDA-Recipient is used by release_pending().
-        message_headers['X-TMDA-Recipient'] = recipient_address
-        # Write ~/.tmda/pending/TIMESTAMP.PID.msg
-        pending_contents = str(message_headers) + '\n' + message_body
-        Util.writefile(pending_contents,
-                       os.path.join(pendingdir, pending_message))
-    # Create the message and then send it.
+        create_pending_msg(timestamp, pid)
+    elif mode == 'hold':
+        create_pending_msg(str('%d' % now), Defaults.PID)
+        # Don't send anything for silently held messages
+        if Defaults.CONFIRM_CC:
+            send_cc(Defaults.CONFIRM_CC)
+        mta.stop()
+
+    # Create the confirm message and then send it.
     bounce_message = Util.maketext(templatefile, vars())
     if mode in ('accept', 'bounce'):
         send_bounce(bounce_message, already_confirmed=1)
@@ -682,7 +696,7 @@ def bouncegen(mode, text=None):
         logit("CONFIRM pending " + pending_message)
         send_bounce(bounce_message,
                     confirm_accept_address = confirm_accept_address)
-        mta.stop()  
+        mta.stop()     
 
 
 ######
@@ -753,6 +767,10 @@ def main():
     elif action == 'confirm':
         logit('%s (%s)' % ('CONFIRM', matching_line))
         bouncegen('request')
+    elif action == 'hold':
+        logit('%s (%s)' % ('HOLD', matching_line))
+        bouncegen('hold')
+                
 
     # The message didn't match the filter file, so check if it was
     # sent to a 'tagged' address.

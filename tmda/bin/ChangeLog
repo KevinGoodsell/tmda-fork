@@ -19,6 +19,11 @@
 	* tmda-ofmipd: Add -R option for authentication against a pop3,
 	imap or imaps server.
 
+2002-08-29  <sen_ml@eccosys.com>
+
+	* tmda-rfilter (do_default_action, bouncegen, main): Added code to
+	support "hold" action written by J C Lawrence <claw@kanga.nu>.
+
 2002-08-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (autorespond_to_sender): New function.  Determine
