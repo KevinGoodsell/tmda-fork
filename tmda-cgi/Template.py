@@ -109,8 +109,10 @@ class Template:
   # Members global across all instantiations:
   Dict = {}
   BaseDir = "."
-  VarSearchStr = "<!--\s*var:\s*%s\s*-->"
-  VarEndSearch = re.compile("<!--\s*/var[^-]*-->", re.I)
+  VarSearchStr  = "<!--\s*var:\s*%s\s*-->"
+  VarEndSearch  = re.compile("<!--\s*/var[^-]*-->", re.I)
+  LonePctSearch = re.compile("([^%])%([^(%])")
+  LonePctRepl   = r"\1%%\2"
   SearchDict = {}
 
   def __init__ \
@@ -126,7 +128,7 @@ class Template:
       self.HTML = []
     if (Filename):
       F = open("%s/%s" % (self.BaseDir, Filename))
-      self.HTML = [re.sub("%([^(])", r"%%\1", F.read())]
+      self.HTML = [self.LonePctSearch.sub(self.LonePctRepl, F.read())]
       F.close()
     self.Items = {}
 
@@ -142,9 +144,9 @@ class Template:
     RetVal = ""
     for HTML in self.HTML:
       if type(HTML) == StringType:
-        RetVal += HTML % self.Dict
+        RetVal += self.LonePctSearch.sub(self.LonePctRepl, HTML) % self.Dict
       else:
-        RetVal += repr(HTML) % self.Dict
+        RetVal += repr(HTML)
     return RetVal
 
   def UpdateItems(self, Target):
@@ -202,7 +204,8 @@ class Template:
     "Expand any %(<name>)s references in self."
     for i in range(len(self.HTML)):
       if type(self.HTML[i]) == StringType:
-        self.HTML[i] = self.HTML[i] % Dict
+        self.HTML[i] = \
+          self.LonePctSearch.sub(self.LonePctRepl, self.HTML[i]) % Dict
       else:
         self.HTML[i].Expand(Dict)
     return self
