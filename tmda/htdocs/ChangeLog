@@ -1,3 +1,7 @@
+2001-12-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* download.ht (Links): Remove stale mirrors.
+
 2001-12-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* features.ht (Links): Add CDB support.
