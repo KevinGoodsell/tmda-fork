@@ -73,24 +73,26 @@ class AutoResponse:
         response.  Normally the envelope sender address.
         """
         msgin_as_string = Util.msg_as_string(msgin)
-        max_msg_size = int(Defaults.CONFIRM_MAX_MESSAGE_SIZE)
-        # Don't include the payload if it's over a certain size.
-        if max_msg_size and max_msg_size < len(msgin_as_string):
-            msgin.set_payload('[ Message body suppressed '
-                              '(exceeded %s bytes) ]' % max_msg_size)
-            msgin_as_string = Util.msg_as_string(msgin)
-        # Now try to re-parse the message with a full parse (not a header-only
-        # parse) and store that as self.msgin.  If the full parse fails, there
-        # is no choice but to use the header-parsed version, so to prevent
-        # later Generator failures, we reset AUTORESPONSE_INCLUDE_SENDER_COPY
-        # to include only the headers.  Only do this if it was set to include
-        # the entire message.
-        try:
-            self.msgin = message_from_string(msgin_as_string)
-        except (KeyError, MessageError, TypeError, ValueError):
-            self.msgin = msgin
-            if Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY > 1:
+        # Only do this step if the user wants to include the entire message.
+        if Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY > 1:
+            max_msg_size = int(Defaults.CONFIRM_MAX_MESSAGE_SIZE)
+            # Don't include the payload if it's over a certain size.
+            if max_msg_size and max_msg_size < len(msgin_as_string):
+                msgin.set_payload('[ Message body suppressed '
+                                  '(exceeded %s bytes) ]' % max_msg_size)
+                msgin_as_string = Util.msg_as_string(msgin)
+            # Now try to re-parse the message with a full parse (not a
+            # header-only parse) and store that as self.msgin.  If the full
+            # parse fails, there is no choice but to use the header-parsed
+            # version, so to prevent later Generator failures, we reset
+            # AUTORESPONSE_INCLUDE_SENDER_COPY to include only the headers.
+            try:
+                self.msgin = message_from_string(msgin_as_string)
+            except (KeyError, MessageError, TypeError, ValueError):
+                self.msgin = msgin
                 Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY = 1
+        else:
+            self.msgin = msgin
         self.bouncemsg = message_from_string(bouncetext)
         self.responsetype = response_type
         self.recipient = recipient
@@ -138,9 +140,9 @@ class AutoResponse:
             self.mimemsg.attach(textpart)
             if Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY == 1:
                 # include the headers only as a text/rfc822-headers part.
-                rfc822part = MIMEText(Util.headers_as_raw_string(self.msgin),
-                                      'rfc822-headers',
-                                      self.msgin.get_charsets()[0])
+                rfc822part = MIMEText(
+                    self.msgin_as_string[:self.msgin_as_string.index('\n\n')+1],
+                    'rfc822-headers', self.msgin.get_charsets()[0])
                 rfc822part['Content-Description'] = 'Original Message Headers'
             elif Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY == 2:
                 # include the entire message as a message/rfc822 part.

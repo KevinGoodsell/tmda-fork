@@ -1,5 +1,9 @@
 2003-11-16  Tim Legant  <tim@catseye.net>
 
+	* AutoResponse.py (AutoResponse.__init__): Changed to re-parse the
+	message only if AUTORESPONSE_INCLUDE_SENDER_COPY is 2 or greater,
+	since that's the only case in which it matters.
+
 	* Auth.py (Auth.init_auth_method): Cleaned up exception handling
 	so that error messages could actually be read!
 
