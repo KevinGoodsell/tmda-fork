@@ -29,9 +29,9 @@ installs.
 </pre></blockquote>
 </ol>
 
-<u>Installation from Linux RPMs</u><br><br>
+<u>Installation from RedHat Linux RPMs</u><br><br>
 
-If you are running Linux, you may wish to install TMDA via RPM
+If you are running RedHat Linux, you may wish to install TMDA via RPM
 instead.  A binary RPM can be built and installed directly from the source
 tarball:
 
