@@ -1213,6 +1213,22 @@ if not vars().has_key('PENDING_RELEASE_APPEND'):
 if not vars().has_key('PENDING_WHITELIST_APPEND'):
     PENDING_WHITELIST_APPEND = None
 
+# PENDING_WHITELIST_RELEASE
+# An option detailing the action taken when 'Whitelist' is the 
+# current action in tmda-pending or tmda-cgi
+#
+# Available options:
+#
+# 0 - 'Whitelist' does not release any messages, only appends
+#     the envelope sender to PENDING_WHITELIST_APPEND
+#
+# 1 - 'Whitelist' releases the current message and also appends
+#     the envelope sender to PENDING_WHITELIST_APPEND
+#
+# Default is 1
+if not vars().has_key('PENDING_WHITELIST_RELEASE'):
+    PENDING_WHITELIST_RELEASE = 1
+
 # ADDED_HEADERS_CLIENT
 # A Python dictionary containing one or more header:value string pairs
 # that should be added to _all_ outgoing client-side messages (i.e,

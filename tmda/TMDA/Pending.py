@@ -470,6 +470,8 @@ class Message:
         if Defaults.PENDING_WHITELIST_APPEND:
             Util.append_to_file(self.append_address,
                                 Defaults.PENDING_WHITELIST_APPEND)
+            if Defaults.PENDING_WHITELIST_RELEASE == 1:
+                self.release()
         else:
             raise Errors.ConfigError, \
                   'PENDING_WHITELIST_APPEND not defined!'
