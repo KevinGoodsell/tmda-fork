@@ -7,7 +7,7 @@
 # <URL:http://www.python.org/doc/current/>
 #
 #  NOTE: ~/.tmdarc must be chmod 400 or chmod 600 !
-
+#
 # See the "User configurable settings" section of TMDA/Defaults.py for
 # more information on all the variables below.
 
@@ -20,16 +20,17 @@ CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394"
 
 #################################################################
 # Non-qmail required variables; required only for non-qmail users
+# Uncomment one line from each section.
 #################################################################
 
-MAIL_TRANSFER_AGENT = "exim"
+#MAIL_TRANSFER_AGENT = "exim"
 #MAIL_TRANSFER_AGENT = "postfix"
 #MAIL_TRANSFER_AGENT = "sendmail"
 
-LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
+#LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
 #LOCAL_DELIVERY_AGENT = "/full/path/to/bin/maildrop"
 
-RECIPIENT_DELIMITER = "-"
+#RECIPIENT_DELIMITER = "-"
 #RECIPIENT_DELIMITER = "+"
 
 ######################################################################
