@@ -183,6 +183,42 @@ def make_date(timesecs=None, localtime=1):
     return datestr
 
 
+def formataddr(pair):
+    """The inverse of parseaddr(), this takes a 2-tuple of the form
+    (realname, email_address) and returns the string value suitable
+    for an RFC 2822 From:, To: or Cc:.
+    
+    If the first element of pair is false, then the second element is
+    returned unmodified.
+
+    JRM: Once the email mod is included within TMDA, we can nuke this
+    function and use email.Utils.formataddr.
+    """
+    (name, address) = pair
+    newname = []
+    needquotes = 0
+    # special tokens which require name to be double-quoted
+    specials = '()<>@,:;"[].' + '\\'
+    # special tokens which must be escaped with a backslash
+    escapeables = '()[]"' + '\\'
+    if name:
+        for c in list(name):
+            if c in list(specials):
+                needquotes = 1
+                break
+        if needquotes:
+            for c in list(name):
+                if c in list(escapeables):
+                    c = c.replace(c, '\\' + c)
+                newname.append(c)
+            newname = '"' + ''.join(newname) + '"'
+        else:
+            newname = name
+        return '%s <%s>' % (newname, address)
+    else:
+        return address
+
+
 def file_to_dict(file, dict):
     """Process and add then each line of a textfile to a dictionary."""
     for line in fileinput.input(file):

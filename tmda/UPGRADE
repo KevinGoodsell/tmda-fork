@@ -12,6 +12,10 @@ If you are upgrading from a release of TMDA < 0.49:
 
   tmda-filter's -t option, which replaces both -A and -R.
 
+* The 'unquoted' and 'parens' options to MESSAGE_FROM_STYLE have been
+  deprecated.  'angles' now double-quotes the fullname only when
+  necessary.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.48:

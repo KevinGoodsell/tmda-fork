@@ -1,5 +1,10 @@
 2002-03-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Util.py (formataddr): New function.
+
+	* Defaults.py (MESSAGE_FROM_STYLE): Deprecate 'parens' and
+	'unquoted'.
+	
 	* Util.py (make_date): Use the formatdate() method from
 	email.Utils (if available) or rfc822 instead of doing it ourselves.
 

@@ -452,22 +452,14 @@ if not vars().has_key('LOGFILE_INCOMING'):
     LOGFILE_INCOMING = None
 
 # MESSAGE_FROM_STYLE
-# Specifies how `From' headers should look on when tagging outgoing
-# messages with tmda-inject.  There are three valid values:
+# Specifies how `From' headers should look when tagging outgoing
+# messages with tmda-sendmail.  There are two valid values:
 #
 #     "address"
 #           Just the address - king@grassland.com
 #
-#     "parens"
-#           king@grassland.com (Elvis Parsley)
-#
 #     "angles"
-#           "Elvis Parsley" <king@grassland.com>
-#
-#     "unquoted"
 #           Elvis Parsley <king@grassland.com>
-#           (only use if you know your fullname doesn't need
-#           double-quotes; see rfc2822 for clarification)
 #
 # Default is "angles".
 if not vars().has_key('MESSAGE_FROM_STYLE'):

@@ -1,3 +1,8 @@
+2002-03-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (message_format): Util.formataddr() now handles the
+	address header formatting.
+
 2002-03-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter: -t option replaces both -A and -R.

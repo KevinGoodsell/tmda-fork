@@ -140,14 +140,10 @@ message_headers = rfc822.Message(message)
 
 def message_format(fsa, ffn, type):
     # "angles" is the default MESSAGE_FROM_STYLE
-    if type == 'parens':
-        return '%s (%s)' % (fsa, ffn)
-    elif type == 'address':
-        return '%s' % (fsa)
-    elif type == 'unquoted':
-        return '%s <%s>' % (ffn, fsa)
+    if type == 'address':
+        return Util.formataddr((None, fsa))
     else:
-        return '"%s" <%s>' % (ffn, fsa)
+        return Util.formataddr((ffn, fsa))
 
 
 def make_field(cookie_type, cookie_option, from_address, to_address):
