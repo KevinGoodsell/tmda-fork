@@ -1,3 +1,10 @@
+2003-07-04  Tim Legant  <tim@catseye.net>
+
+	* tmda-vdomains.ht (Title): Added information on tmda-filter's
+	ability to work with virtual domains.  Removed unnecessary babble
+	about how virtual domains work.  Cleaned up a few examples.  Fixed
+	internal links.
+
 2003-07-03  Jason R. Mastaler  <jason@mastaler.com>
 
 	* upgrade.ht (Title): New file.
