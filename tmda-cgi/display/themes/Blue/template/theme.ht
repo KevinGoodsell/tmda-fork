@@ -35,7 +35,7 @@ border="0"></a><br>
 <hr width="50%">
 <p><b>Customize your theme:</b></p>
 <!-- var: FormVars="General:UseJSConfirm:Yes:No,
-  ViewPending:AltPref:text/plain:text/html,
+  ViewPending:AltPref:textplain:texthtml,
   ViewPending:EmailClass:proportional:fixed, PendingList:PagerSize,
   PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db,
   Login:InitPage:pending:gen_addr, PendingList:CropSender,
