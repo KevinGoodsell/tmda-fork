@@ -39,11 +39,11 @@ UNAME = os.uname()
 
 # Platform identifier
 # e.g, OSF1
-PLATFORM = UNAME[0].replace(' ', '_')
+PLATFORM = UNAME[0].replace(' ', '_').replace('/', '_')
 
 # Machine architecture
 # e.g, alpha
-ARCH = UNAME[4].replace(' ', '_')
+ARCH = UNAME[4].replace(' ', '_').replace('/', '_')
 
 # Summary of all the version identifiers
 # e.g, TMDA/0.49 (Python 2.2 on OSF1/alpha)

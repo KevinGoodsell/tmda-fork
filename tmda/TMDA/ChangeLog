@@ -2,6 +2,8 @@
 
 	* Version.py (ALL): Separate PLATFORM and ARCH with '/'.
 
+	(PLATFORM, ARCH): Replace any frontslashes with underscores.
+		
 2002-03-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Failure notices can now be disabled by setting the
