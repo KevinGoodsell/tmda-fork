@@ -514,7 +514,6 @@ def bouncegen(mode):
         message_headers['Return-Path'] = '<' + envelope_sender + '>'
         pending_contents = str(message_headers) + '\n' + message_body
         Util.writefile(pending_contents, pendingdir + '/' + pending_message)
-        logit("CONFIRM pending " + pending_message)
     # Find the right template.
     if env_template and os.path.exists(env_template):
         right_template = env_template
@@ -532,6 +531,7 @@ def bouncegen(mode):
             send_cc(Defaults.CONFIRM_CC)
         send_bounce(bounce_message,
                     confirm_accept_address = confirm_accept_address)
+        logit("CONFIRM pending " + pending_message)
         mta.stop()  
 
 
