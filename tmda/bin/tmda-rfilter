@@ -347,6 +347,14 @@ def verify_confirm_cookie(confirm_cookie):
         delcache = Util.unpickle(Defaults.DELIVERED_CACHE)
     else:
         delcache = []
+    # Determine whether this message has already been delivered, and
+    # if by manual release, or confirmation.
+    delivered = None
+    for dict in delcache:
+        if dict.has_key(confirmed_filename):
+            # 'c' for confirmed, 'r' for released
+            delivered = dict[confirmed_filename]
+            break
     # pre-confirmation
     if confirm_action == 'accept':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
@@ -355,35 +363,55 @@ def verify_confirm_cookie(confirm_cookie):
         if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address")
             bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
+        # If the message isn't recorded as delivered and doesn't exist,
+        # alert sender that their original is missing.
+        if not delivered and not (os.path.exists(confirmed_file)):
+            logit("BOUNCE nonexistent_pending_message")
+            bouncegen('bounce', Defaults.BOUNCE_TEXT_NONEXISTENT_PENDING)
         logit("CONFIRM accept " + confirmed_filename)
+        # Optionally carbon copy the confirmation to another address.
+        if Defaults.CONFIRM_ACCEPT_CC:
+            send_cc(Defaults.CONFIRM_ACCEPT_CC)
         if os.path.exists(confirmed_file):
             fp = open(confirmed_file, 'r')
             message_headers = rfc822.Message(fp)
             message_body = fp.read()
             fp.close()
-            # Optionally append the envelope sender to a file.
-            return_path = message_headers.getaddr('return-path')[1]
+            # Optionally append the envelope sender to a file
             if Defaults.CONFIRM_APPEND:
+                return_path = message_headers.getaddr('return-path')[1]
+                if return_path is None:
+                    raise IOError, \
+                          confirmed_file + ' has no Return-Path header!'
                 if Util.append_to_file(return_path,
                                        Defaults.CONFIRM_APPEND) != 0:
                     logit('CONFIRM_APPEND ' + Defaults.CONFIRM_APPEND)
-            # Optionally generate the confirmation acceptance notice.
-            if Defaults.CONFIRM_ACCEPT_NOTIFY:
-                bouncegen('accept')
-            # Optionally send the confirmation to a special address.
-            if Defaults.CONFIRM_ACCEPT_CC:
-                send_cc(Defaults.CONFIRM_ACCEPT_CC)
-        # Just stop if this message has already been delivered,
-        if confirmed_filename in delcache:
+        # Optionally generate a confirmation acceptance notice.
+        if Defaults.CONFIRM_ACCEPT_NOTIFY:
+            if (delivered == 'c' and
+                Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED):
+                bouncegen('accept',
+                          Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED)
+            elif (delivered == 'r' and
+                  Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED):
+                bouncegen('accept',
+                          Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED)
+            elif not delivered:
+                bouncegen('accept', Defaults.CONFIRM_ACCEPT_TEXT_INITIAL)
+        # Just stop if the message has already been delivered.  Also,
+        # change the release mark from 'r' to 'c' to note that this
+        # message has had a confirmation attempt.
+        if delivered:
+            if delivered == 'r':
+                for dict in delcache:
+                    if dict.has_key(confirmed_filename):
+                        dict[confirmed_filename] = 'c'
+                        Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
+                        break
             mta.stop()
-        # otherwise alert sender that the message is missing.
-        elif not (os.path.exists(confirmed_file)):
-            logit("BOUNCE nonexistent_pending_message")
-            bouncegen('bounce', Defaults.BOUNCE_TEXT_NONEXISTENT_PENDING)
-        # Release the message.
-        else:
-            release_pending(confirm_timestamp, confirm_pid,
-                            message_headers, message_body)
+        # Release the message if we get this far.
+        release_pending(confirm_timestamp, confirm_pid,
+                        message_headers, message_body)
     # post-confirmation
     elif confirm_action == 'done':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
@@ -393,16 +421,23 @@ def verify_confirm_cookie(confirm_cookie):
             logit("BOUNCE invalid_confirmation_address")
             bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
         # and it hasn't already been delivered.
-        elif confirmed_filename in delcache:
+        elif delivered:
             # JRM: shouldn't get here - you are either trying to
             # re-release a message, or someone is playing silly
             # buggers and trying to sneak a message through.
             logit("DROP already_delivered_message")
             mta.stop()
         else:
-            # Add message to the front of the cache.
-            if confirmed_filename not in delcache:
-                delcache.insert(0, confirmed_filename)
+            # Cache and deliver the message.
+            incoming_headers = globals().get('message_headers')
+            if incoming_headers.has_key('x-tmda-confirmed'):
+                msgval = 'c'
+            elif incoming_headers.has_key('x-tmda-released'):
+                msgval = 'r'
+            # Record this message in the cache as a dictionary,
+            # where the message filename is the key, and how it was
+            # delivered is the value. e.g, {'1017186412.798.msg':'c'}
+            delcache.insert(0, {confirmed_filename:msgval})
             # Trim tail entries off if necessary, and then write the cache.
             delcache = delcache[:Defaults.DELIVERED_CACHE_LEN]
             Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
@@ -492,9 +527,13 @@ def bouncegen(mode, text=None):
                                                            envelope_sender)
     if mode == 'accept':                # confirmation acceptance notices
         templatefile = 'confirm_accept.txt'
+        confirm_accept_text = Util.wraptext(text)
     elif mode == 'bounce':              # failure notices
-        templatefile = 'bounce.txt'
-        bounce_text = Util.wraptext(text)
+        if text is None:
+            mta.stop()
+        else:
+            templatefile = 'bounce.txt'
+            bounce_text = Util.wraptext(text)
     elif mode == 'request':               # confirmation requests
         templatefile = 'confirm_request.txt'
         timestamp = str('%d' %now)

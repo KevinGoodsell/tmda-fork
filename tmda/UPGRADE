@@ -8,6 +8,15 @@ If you are upgrading from a release of TMDA < 0.50:
 
 * BOUNCE_TEXT_ALREADY_CONFIRMED has been deprecated.
 
+* The confirm_accept.txt template has been modified.  The message body
+  of the notification is no longer hardcoded, but rather stored in
+  %(confirm_accept_text)s, which comes from one of the following
+  tmdarc variables depending on context:
+
+  CONFIRM_ACCEPT_TEXT_INITIAL
+  CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED
+  CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.49:

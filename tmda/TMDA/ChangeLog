@@ -1,3 +1,12 @@
+2002-03-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py: Failure notices can now be disabled by setting the
+	appropriate BOUNCE_TEXT_* variable to None.
+
+	(CONFIRM_ACCEPT_TEXT_INITIAL,
+	CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED,
+	CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED): New variables.
+
 2002-03-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (BOUNCE_TEXT_ALREADY_CONFIRMED): Removed.  No longer

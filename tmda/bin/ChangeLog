@@ -1,3 +1,15 @@
+2002-03-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (verify_confirm_cookie): Modify DELIVERED_CACHE to
+	hold both the message filename, as well as how it was delivered
+	('released' or 'confirmed').  
+
+	Send a different confirm_accept.txt message depending on whether
+	the message is being confirmed for the first time, confirmed after
+	it was already manual released, or is a re-confirmation.
+
+	Raise an IOError if the message lacks a Return-Path header.
+	
 2002-03-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (release_pending): Move the CONFIRM_APPEND,

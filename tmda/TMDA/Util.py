@@ -419,7 +419,7 @@ def pickleit(object, file, bin=0):
 
 
 def unpickle(file):
-    """Retrieve and return object from the file file."""
+    """Retrieve and return object from file."""
     fp = open(file, 'r')
     object = cPickle.load(fp)
     fp.close()

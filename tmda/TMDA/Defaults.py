@@ -179,19 +179,22 @@ if not vars().has_key('BOUNCE_ENV_SENDER'):
 
 # BOUNCE_TEXT_FILTER_INCOMING
 # Text for the failure notice returned to the sender when a 'bounce'
-# or 'reject' rule is matched in the incoming filter file.
+# or 'reject' rule is matched in the incoming filter file.  Set to
+# None to disable notification.
 if not vars().has_key('BOUNCE_TEXT_FILTER_INCOMING'):
     BOUNCE_TEXT_FILTER_INCOMING = """Message rejected by recipient."""
 
 # BOUNCE_TEXT_INVALID_CONFIRMATION
 # Text for the failure notice returned to the sender when a message is
-# sent to an invalid confirmation address.
+# sent to an invalid confirmation address.  Set to None to disable
+# notification.
 if not vars().has_key('BOUNCE_TEXT_INVALID_CONFIRMATION'):
     BOUNCE_TEXT_INVALID_CONFIRMATION = """This confirmation address is invalid."""
 
 # BOUNCE_TEXT_NONEXISTENT_PENDING
 # Text for the failure notice returned to the sender when a
-# confirmation response arrives for a message which could not be located.
+# confirmation response arrives for a message which could not be
+# located.  Set to None to disable notification.
 if not vars().has_key('BOUNCE_TEXT_NONEXISTENT_PENDING'):
     BOUNCE_TEXT_NONEXISTENT_PENDING = """Your original message could not be located."""
         
@@ -230,12 +233,39 @@ if not vars().has_key('CONFIRM_CC'):
     CONFIRM_CC = None
 
 # CONFIRM_ACCEPT_NOTIFY
-# Set this variable to 0 if you do not want to generate confirmation
+# Set this variable to 0 if you do not want to generate any confirmation
 # acceptance notices.
 # Default is 1 (turned on)
 if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
     CONFIRM_ACCEPT_NOTIFY = 1
 
+# CONFIRM_ACCEPT_TEXT_INITIAL
+# Text for the confirmation acceptance notice returned to the sender
+# when they initially confirm their original message causing it to
+# be delivered.  Set to None to disable notification.
+if not vars().has_key('CONFIRM_ACCEPT_TEXT_INITIAL'):
+    CONFIRM_ACCEPT_TEXT_INITIAL = \
+"""Your confirmation was accepted,
+and so your original message has been delivered."""
+
+# CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED
+# Text for the confirmation acceptance notice returned to the sender
+# when they successfully confirm a message which has already been
+# confirmed.  Set to None to disable notification.
+if not vars().has_key('CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED'):
+    CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED = \
+"""Your original message has already been confirmed and delivered;
+you don't need to confirm it again."""
+
+# CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED
+# Text for the confirmation acceptance notice returned to the sender
+# when they successfully confirm a message which has already been
+# manually released with tmda-pending.  Set to None to disable
+# notification.
+if not vars().has_key('CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED'):
+    CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED = \
+"""Your original message has already been released and delivered."""
+    
 # CONFIRM_ACCEPT_CC
 # An optional e-mail address which will be sent a copy of the
 # confirmation acceptance messages people send you.

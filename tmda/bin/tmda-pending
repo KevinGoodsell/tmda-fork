@@ -321,7 +321,12 @@ def main():
         if not os.path.exists(msg):
             cprint(verbose, msg, 'not found!')
         else:
-            if msg in delcache:
+            delivered = None
+            for dict in delcache:
+                if dict.has_key(msg):
+                    delivered = 1
+                    break
+            if delivered:
                 # skip delivered messages
                 continue
             if threshold:
