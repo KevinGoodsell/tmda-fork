@@ -17,8 +17,8 @@ import time
 import paths
 from TMDA import Cookie
 from TMDA import Defaults
+from TMDA import Greylist
 from TMDA import Util
-from TMDA import Whitelist
 
 
 # Read sys.stdin into a temporary variable for later access.
@@ -185,7 +185,7 @@ def main():
     while 1:
         # Is the sender in the BLACKLIST?
         if os.path.exists(Defaults.BLACKLIST) and \
-           Whitelist.match(message_headers):
+           Greylist.match(message_headers,Defaults.BLACKLIST):
             logit("BOUNCE blacklist_match", time.time())
             print "Sorry, your address matches my blacklist."
             sys.exit(Defaults.ERR_HARD)
@@ -200,7 +200,7 @@ def main():
             verify_sender_cookie(sender_address,sender_cookie)
         # Is the sender in the WHITELIST?
         elif os.path.exists(Defaults.WHITELIST) and \
-             Whitelist.match(message_headers):
+             Greylist.match(message_headers,Defaults.WHITELIST):
             logit("OK whitelist_match", time.time())
             sys.exit(Defaults.ERR_OK)
         # They get the default tag.

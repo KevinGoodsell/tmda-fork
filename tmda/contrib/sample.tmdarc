@@ -12,6 +12,8 @@
 
 import os                                      # don't remove
 
+BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
+
 BLOCK_CIPHER = "DES3"
 
 COOKIE_TYPE = "dated"

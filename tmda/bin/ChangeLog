@@ -1,0 +1,5 @@
+2001-04-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (main): changed all references of Whitelist.match()
+	to Greylist.match().
+

@@ -12,3 +12,5 @@ Acknowledgements:
     * Andrew Archibald -- provided much cryptography-related help and
     insight. Most of the crypto design in TMDA stems from his input.
     
+    * Reuben Sumner -- for suggesting the addition of the "blacklist"
+    functionality.

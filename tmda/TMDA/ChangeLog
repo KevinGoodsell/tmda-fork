@@ -1,0 +1,6 @@
+2001-04-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Greylist.py (match): function now takes an extra argument
+	`listfile' which is the file containing addresses/regex to match
+	against, so that it can be used for both the black and white lists.
+

@@ -1,6 +1,6 @@
 # -*- python -*-
 
-"""Whitelist functionality."""
+"""Blacklist/Whitelist functionality."""
 
 
 import fileinput
@@ -12,9 +12,9 @@ import sys
 import Defaults
 
 
-def match(message_headers):
+def match(message_headers,listfile):
     """Determine whether the Envelope-Sender, From:, or Reply-To:
-    matches the WHITELIST."""
+    matches the listfile."""
     # Extract the e-mail address from Envelope-Sender, From:, and Reply-To:
     Envelope = os.environ.get('SENDER')
     From = message_headers.getaddr('from')[1]
@@ -22,18 +22,18 @@ def match(message_headers):
 
     try:
         regex = None
-        whitelist = []
-        for line in fileinput.input(Defaults.WHITELIST):
+        greylist = []
+        for line in fileinput.input(listfile):
             line = string.strip(line)
             # Comment or blank line?
             if line == '' or line[0] in '#':
                 continue
             else:
-                whitelist.append(re.escape(line))
-        whitelist.sort()
+                greylist.append(re.escape(line))
+        greylist.sort()
         
         # "address1|address2|address3|addressN"
-        regex = string.join(whitelist,'|')
+        regex = string.join(greylist,'|')
         if regex:
             reo = re.compile(regex, re.I)
         else:
