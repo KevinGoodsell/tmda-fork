@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Feb 20 03:00:45 2002 -->
+<!-- Thu Feb 21 23:58:19 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -227,6 +227,12 @@ Sources can be one of:
 
 (for both incoming and outgoing):
 <blockquote><pre>
+from (sender address)
+from-file [-autocdb]
+from-cdb
+from-dbm
+from-ezmlm
+from-mailman -attr=&lt;attribute&gt;
 to (recipient address)
 to-file [-autocdb]
 to-cdb
@@ -237,12 +243,6 @@ to-mailman -attr=&lt;attribute&gt;
 
 (for incoming only):
 <blockquote><pre>
-from (sender address)
-from-file [-autocdb]
-from-cdb
-from-dbm
-from-ezmlm
-from-mailman -attr=&lt;attribute&gt;
 body [-case] (message body)
 body-file [-case]
 headers [-case] (message headers)
@@ -548,6 +548,12 @@ size >1000000 exit
 <pre>
 
 #### ~/.tmda/filters/outgoing (first match wins) ###
+
+# All mail from postmaster is sent bare
+from postmaster@* bare
+
+# And so is all mail from the tmda-users mailing list owner
+from-mailman -attr=owner ~mailman/lists/tmda-users/config.db bare
 
 # All whitelisted contacts receive untagged messages
 to-cdb ~/.tmda/lists/whitelist.cdb bare
