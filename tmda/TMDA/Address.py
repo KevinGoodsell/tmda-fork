@@ -79,7 +79,7 @@ class TaggedAddress(Address):
         (self.local_parts, dummy, dummy) = _split(address)
 
     def tag(self):
-        return self.local_parts[1]
+        return self.local_parts[-2]
 
 
 class ConfirmAddress(TaggedAddress):
