@@ -313,6 +313,7 @@ class InteractiveQueue(Queue):
             self.dispose_def = 'pass'
         else:
             self.dispose_def = self.dispose
+        return self
 
     def checkDelivered(self, M):
         if M.wasDelivered():

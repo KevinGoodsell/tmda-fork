@@ -269,6 +269,7 @@ for opt, arg in opts:
 
 
 from TMDA import Pending
+from TMDA import Errors
 
 def cprint(verbose=1, *strings):
     """Conditionally print one or more strings."""
@@ -301,7 +302,7 @@ def main():
             pretend = pretend
             ).initQueue()
         q.mainLoop()
-    except Pending.QueueError, obj:
+    except Errors.QueueError, obj:
         print obj
         sys.exit(1)
 
