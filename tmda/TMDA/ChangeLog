@@ -1,3 +1,9 @@
+2003-06-04  Tim Legant  <tim@catseye.net>
+
+	* Util.py (make_msgid): Added ability for TMDAIDTAG environment
+	variable to override the string "TMDA" in the tag portion of the
+	generated Message-ID.
+
 2003-05-25  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Defaults.py (PENDING_DIR): New variable.

@@ -289,7 +289,8 @@ def make_msgid(timesecs=None, pid=None):
     idhost = os.environ.get('TMDAIDHOST') or \
              os.environ.get('QMAILIDHOST') or \
              gethostname()
-    msgid = '<%s.%s.TMDA@%s>' % (int(timesecs), pid, idhost)
+    idtag = os.environ.get('TMDAIDTAG') or 'TMDA'
+    msgid = '<%s.%s.%s@%s>' % (int(timesecs), pid, idtag, idhost)
     return msgid
 
 
