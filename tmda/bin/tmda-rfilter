@@ -489,7 +489,7 @@ def release_pending(timestamp, pid, msg):
                                                             pid, 'done')
     # Add the date when confirmed in a header.
     del msg['X-TMDA-Confirmed']
-    msg['X-TMDA-Confirmed'] = Util.unixdate()
+    msg['X-TMDA-Confirmed'] = Util.make_date()
     # Reinject the message to the original envelope recipient.
     Util.sendmail(Util.msg_as_string(msg), recipient, return_path)
     mta.stop()
@@ -626,11 +626,11 @@ def verify_dated_cookie(dated_cookie):
     else:
         if int(cookie_date) >= int('%d' % time.time()):
             logit("OK", "good_dated_cookie (%s)" % \
-                  Util.unixdate(int(cookie_date)))
+                  Util.make_date(int(cookie_date)))
             mta.deliver(msgin)
         else:
             logmsg = "action_expired_dated (%s)" % \
-                     Util.unixdate(int(cookie_date))
+                     Util.make_date(int(cookie_date))
             do_default_action(Defaults.ACTION_EXPIRED_DATED.lower(),
                               logmsg, Defaults.BOUNCE_TEXT_EXPIRED_DATED)
 

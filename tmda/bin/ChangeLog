@@ -1,3 +1,14 @@
+2004-01-11  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-rfilter (verify_dated_cookie): Use Util.Make_date().
+
+	* tmda-ofmipd (SMTPServer.__init__): Ditto.
+	
+2004-01-10  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-rfilter (release_pending): Use Util.make_date() for
+	X-TMDA-Confirmed.
+	
 2003-11-13  Tim Legant  <tim@catseye.net>
 
 	* tmda-ofmipd (class IMAP4_SSL): This local class is only

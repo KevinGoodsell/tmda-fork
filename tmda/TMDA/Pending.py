@@ -454,7 +454,7 @@ class Message:
                                                                    pid, 'done')
         # Add the date when confirmed in a header.
         del self.msgobj['X-TMDA-Released']
-        self.msgobj['X-TMDA-Released'] = Util.unixdate()
+        self.msgobj['X-TMDA-Released'] = Util.make_date()
         # Reinject the message to the original envelope recipient.
         Util.sendmail(self.show(), self.recipient, self.return_path)
 
@@ -500,7 +500,7 @@ class Message:
 
     def getDate(self):
         timestamp = self.msgid.split('.')[0]
-        return Util.unixdate(int(timestamp))
+        return Util.make_date(int(timestamp))
 
     def terse(self, date=0, tsv=0):
         """Return terse header information."""

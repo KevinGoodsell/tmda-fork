@@ -998,7 +998,7 @@ class SMTPServer(asyncore.dispatcher):
         self.listen(5)
         print >> DEBUGSTREAM, \
               'tmda-ofmipd started at %s\n\tListening on %s' % \
-              (Util.unixdate(), proxyport)
+              (Util.make_date(), proxyport)
 
     def readable(self):
         if len(asyncore.socket_map) > int(connections):

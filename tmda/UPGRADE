@@ -7,6 +7,14 @@ If you are upgrading from a release of TMDA < 1.1.1:
 
 * The TIMEOUT configuration variable has been renamed DATED_TIMEOUT.
 
+* The Unix-style date strings in TMDA have been replaced by RFC 2822
+  compatible strings in all areas of the code for easier parsing.
+  You can safely ignore this unless you process these strings with
+  custom scripts.
+
+  Before: Mon Jan 19 00:13:01 MST 2004
+  After:  Mon, 19 Jan 2004 00:13:01 -0700 (MST)
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 1.1.0:

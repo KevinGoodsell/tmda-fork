@@ -1,5 +1,14 @@
+2004-01-11  Jason R. Mastaler  <jason@mastaler.com>
+
+	* MessageLogger.py (MessageLogger.write): Use Util.make_date().
+	
+	* Pending.py (Message.getDate): Use Util.make_date().
+
 2004-01-10  Jason R. Mastaler  <jason@mastaler.com>
 
+	* Pending.py (Message.release): Use Util.make_date() for
+	X-TMDA-Released.
+	
 	* Defaults.py (TMDAINJECT): Look for $TMDAINJECT in the
 	environment first.
 	

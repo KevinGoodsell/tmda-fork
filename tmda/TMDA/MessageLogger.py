@@ -57,7 +57,7 @@ class MessageLogger:
         Subj: (Subject header)
         Actn: (message trigger and size of message)
         """
-        self.__writeline('Date', Util.unixdate())
+        self.__writeline('Date', Util.make_date())
         XPri = self.msg.get('x-primary-address')
         if XPri:
             self.__writeline('XPri', XPri)
