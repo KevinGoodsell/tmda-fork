@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+##################################################################
+# Sendmail compatibility wrapper; adapted from qmail's sendmail.c.
+##################################################################
+
+"""
+Usage:  %(program)s [ -t ] [ -fsender ] [ -Fname ] [ -bs ] [ arg ... ]
+"""
+
+import getopt
+import os
+import sys
+
+
+program = sys.argv[0]
+execdir = os.path.dirname(os.path.abspath(program))
+arglist = ['']
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+    
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                               'hvimte:f:p:o:B:F:EJxb:', ['help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    elif opt in ('B','p','v','i','x','m','e','o','E','J','b'):
+        pass 
+    elif opt == 't':
+        # qmail-inject -H
+        pass
+    elif opt == '-f':
+        os.environ['QMAILUSER'] = arg
+    elif opt == '-F':
+        os.environ['QMAILNAME'] = arg
+
+
+def main():
+    os.execv(os.path.join(execdir,'tmda-inject'), arglist)
+
+
+# This is the end my friend.
+if __name__ == '__main__':
+    main()

@@ -152,13 +152,14 @@ def main():
 
     # Use from header as from address if available.
     header_from = message_headers.getaddr("from")
-    if header_from:
+    if header_from[0] or header_from[1]:
         fullname = header_from[0]
         if fullname:
             os.environ['QMAILNAME'] = fullname
         from_address = header_from[1]
-        if len(string.split(from_address,'@')) != 2:
-            from_address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
+        if from_address:
+            if len(string.split(from_address,'@')) != 2:
+                from_address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
     else:
 	os.environ['QMAILNAME'] = Defaults.FULLNAME
 	from_address = Defaults.USERNAME + '@' + Defaults.HOSTNAME

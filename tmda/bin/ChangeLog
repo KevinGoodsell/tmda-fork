@@ -1,3 +1,11 @@
+2001-09-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (main): Add some error checking.  tmda-inject was
+	failing when the message contained no "From:" header.
+
+	* tmda-sendmail: New program.  A sendmail compatibility wrapper
+	adapted from qmail's sendmail.c.
+
 2001-09-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (locate_pending): Support WHITELIST_AUTO_APPEND.
