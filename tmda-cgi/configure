@@ -256,6 +256,9 @@ OptD = \
   "SessionOdds":   "0.01",
   "Perm":          "6711"
 }
+
+OptD["InstPath"] = OptD["Path"]
+
 if os.geteuid():
   OptD["Mode"] = "single-user"
 else:
@@ -307,7 +310,7 @@ for Opt, Arg in Opts:
     OptD["AuthFile"] = Arg
     OptD["AuthArg"] = Arg
   elif Opt in ("-i", "--install-prefix"):
-    OptD["Path"] = Arg
+    OptD["InstPath"] = Arg
   elif Opt in ("-l", "--virtual-lookup"):
     OptD["VLookup"] = Arg
   elif Opt in ("-o", "--cleanup-odds"):
@@ -389,7 +392,7 @@ if OptD["Mode"] == "no-su": OptD["Perm"] = "711"
 F = open("tmda-cgi.h", "w")
 F.write("""
 #define PYTHON    "%(Python)s"
-#define INSTALL   "%(Path)s"
+#define INSTALL   "%(InstPath)s"
 #define MODE      "TMDA_CGI_MODE=%(Mode)s"
 #define DISP_DIR  "TMDA_CGI_DISP_DIR=%(DispDir)s"
 #define BASE_DIR  "TMDA_BASE_DIR=%(Base)s"
