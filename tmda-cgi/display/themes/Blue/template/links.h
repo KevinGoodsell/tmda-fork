@@ -8,7 +8,7 @@
 <h3>Filters</h3>
 <li><a href="%(Script)s?cmd=incoming&SID=%(SID)s">Incoming Filter</a>
 <li><a href="%(Script)s?cmd=outgoing&SID=%(SID)s">Outgoing Filter</a>
-<li><a href="%(Script)s?cmd=test_filt&SID=%(SID)s">Test Filters</a>
+<!--li><a href="%(Script)s?cmd=test_filt&SID=%(SID)s">Test Filters</a -->
 <h3>Lists</h3>
 <li><a href="%(Script)s?cmd=editlist&SID=%(SID)s">%(Lists)s</a>
 <h3>Settings</h3>
