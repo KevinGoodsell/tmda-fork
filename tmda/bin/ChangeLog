@@ -1,3 +1,8 @@
+2002-04-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-pending (main): Don't pass over delivered messages if
+	running in batch / delete mode.
+
 2002-03-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (verify_confirm_cookie): Modify DELIVERED_CACHE to

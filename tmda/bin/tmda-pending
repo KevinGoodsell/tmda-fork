@@ -327,8 +327,14 @@ def main():
                     delivered = 1
                     break
             if delivered:
-                # skip delivered messages
-                continue
+                if dispose == 'delete' and not interactive:
+                    # continue if we are running in batch/delete mode,
+                    # else delivered messages will never be removed
+                    # from disk
+                    pass
+                else:
+                    # skip delivered messages
+                    continue
             if threshold:
                 threshold_secs = Util.seconds(threshold)
                 now = '%d' % time.time()
