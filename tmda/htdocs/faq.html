@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Oct 15 17:47:30 2001 -->
+<!-- Tue Oct 16 11:30:01 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -129,14 +129,14 @@ Author
 <li><b>
 Will TMDA run on non-unix clients such as Microsoft Windows?
 </b>
-<p>
+<br><br>
 
 Not directly since qmail and Postfix are only available for UNIX.
 However, you can configure a qmail relay to re-write the address of
 outgoing messages with tmda-inject, so that those running Microsoft
 Windows clients can take full advantage of TMDA.  See `README.RELAY'
 in the contrib/ directory for the full details.
-<p>
+<br><br>
 
 Also, here is one user's 
 <a href="http://mla.libertine.org/tmda-users/200108/msg00002.html" TARGET="Resource Window">
@@ -149,7 +149,7 @@ Can you clarify the syntax for the whitelist?  I'd like any address in
 my domain (domain.dom) to be able to send me mail directly without
 worrying about confirmations.
 </b>
-<p>
+<br><br>
 
 In addition to explicit e-mail addresses, TMDA supports matching
 patterns in the list files which use Unix shell-style wildcard
@@ -165,7 +165,7 @@ Characters(s)    Description
 
 In addition, <code>`@='</code> (a custom rule) will expand to match
 both <code>@</code> and <code>@*.</code> in one shot.
-<p>
+<br><br>
 
 Here are some common examples:
 <blockquote><pre>   
@@ -187,12 +187,12 @@ when looking for a match.
 <li><b>
 How can I delete old, unconfirmed messages from TMDA's pending queue?
 </b>
-<p>
+<br><br>
 
 TMDA comes with a utility called `tmda-clean' which does this for you.
 You can run it by hand, or periodically from cron.  Run `tmda-clean'
 without any arguments to get a listing of possible options.
-<p>
+<br><br>
 
 For example, to purge unconfirmed messages older than 14 days each
 morning at 2AM, add the following crontab entry:

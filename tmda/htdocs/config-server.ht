@@ -12,7 +12,7 @@ you are running.  First follow the <A HREF="#general">general</a>
 set of instructions, and then read the set of instructions 
 corresponding to your local configuration [ <A HREF="#qmail">qmail</a> | 
 <A HREF="#postfix">Postfix</a> ]
-<br>
+<br><br>
 <hr>
 
 <a name="general"><h4>TMDA Server Configuration (general)</h4></a>
