@@ -431,6 +431,35 @@ if not vars().has_key('MESSAGE_FROM_STYLE'):
 if not vars().has_key('PURGED_HEADERS'):
     PURGED_HEADERS = None
 
+# RECIPIENT_HEADER
+# A string containing the name of a header (case-insensitive) whose
+# contents will be taken as the envelope recipient of the message.
+# The header should contain one fully-qualified e-mail address.  This
+# can be used in rare cases when you need to override the RECIPIENT
+# environment variable, which is how TMDA normally determines the
+# envelope recipient address.
+#
+# Example:
+#
+# RECIPIENT_HEADER = 'x-originally-to'
+#
+# Then, if the message contains the following header:
+#
+# X-Originally-To: webmaster@domain.dom
+#
+# TMDA will take webmaster@domain.dom as the envelope recipient of the
+# message rather than the value of RECIPIENT.
+#
+# WARNING: If you enable this feature, make sure that the method you
+# are using to add the header will overwrite or replace an existing
+# header of the same name (such as reformail/formail's -i and -I
+# options do).  Otherwise the envelope recipient will be invalid which
+# will break the confirmation process.
+#
+# No default
+if not vars().has_key('RECIPIENT_HEADER'):
+    RECIPIENT_HEADER = None
+
 # TIMEOUT
 # The timeout interval for 'dated' addresses.  The available units are
 # (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).

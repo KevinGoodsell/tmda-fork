@@ -138,9 +138,11 @@ envelope_sender = os.environ.get('SENDER')
 if envelope_sender == None:
     raise Errors.MissingEnvironmentVariable('SENDER')
 # RECIPIENT is the envelope recipient address.
-# Use the X-TMDA-Originally-To header if it exists.
-envelope_recipient = (message_headers.getheader('x-tmda-originally-to')
-                      or os.environ.get('RECIPIENT'))
+# Use Defaults.RECIPIENT_HEADER instead if set.
+recipient_header = None
+if Defaults.RECIPIENT_HEADER:
+    recipient_header = message_headers.getheader(Defaults.RECIPIENT_HEADER)
+envelope_recipient = (recipient_header or os.environ.get('RECIPIENT'))
 if envelope_recipient == None:
     raise Errors.MissingEnvironmentVariable('RECIPIENT')
 # EXT is the recipient address extension.

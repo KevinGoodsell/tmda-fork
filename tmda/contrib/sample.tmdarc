@@ -96,6 +96,8 @@ import os                                      # don't remove
 
 # PURGED_HEADERS = []
 
+# RECIPIENT_HEADER = "x-originally-to"
+
 # SENDER_TEMPLATE_VARS = 0
 
 # SENDMAIL = "/usr/sbin/sendmail"

@@ -1,3 +1,7 @@
+2002-01-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add RECIPIENT_HEADER.
+
 2002-01-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda.spec: Raise version number to 0.44.

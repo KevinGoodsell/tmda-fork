@@ -2,8 +2,13 @@
 
 If you are upgrading from a release of TMDA < 0.45:
 
-* tmda-filter will now use the `X-TMDA-Originally-To' header if it
-  exists rather than `X-Originally-To'.
+* tmda-filter no longer looks for the `X-Originally-To' header by
+  default.  If you need to retain this feature, set the following in
+  your tmdarc:
+
+  RECIPIENT_HEADER = "x-originally-to"
+
+  See the related documentation for RECIPIENT_HEADER in Defaults.py.
 
 ======================================================================
 
