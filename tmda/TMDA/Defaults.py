@@ -93,8 +93,8 @@ if not vars().has_key('MAIL_TRANSFER_AGENT'):
 # A single character which specifies the separator between user names
 # and address extensions (e.g, user-ext).
 # The default under qmail is `-', while the default for Sendmail and
-# friends is likely `+'.  Postfix has a config variable named
-# `recipient_delimiter' that defines this character.
+# friends is likely `+'.
+# Default is "-"
 if not vars().has_key('RECIPIENT_DELIMITER'):
     RECIPIENT_DELIMITER = "-"
 
@@ -103,7 +103,7 @@ if not vars().has_key('RECIPIENT_DELIMITER'):
 # your mailbox.  Only necessary if you are NOT running qmail!
 # Tested LDAs include maildrop and procmail.
 # This variable may also contain arguments which will be passed to the command.
-# e.g, LOCAL_DELIVERY_AGENT = "/usr/bin/procmail -p"
+# e.g, LOCAL_DELIVERY_AGENT = "/usr/bin/procmail -p ~/.procmailrc"
 # No default
 if not vars().has_key('LOCAL_DELIVERY_AGENT'):
     LOCAL_DELIVERY_AGENT = None
@@ -128,9 +128,9 @@ elif not os.path.exists(SENDMAIL):
     sys.exit(EX_TEMPFAIL)
 
 # USEVIRTUALDOMAINS
-# Set this variable to 0 if want to turn off TMDA's virtualdomains
+# Set this variable to 0 if want to turn off TMDA's qmail virtualdomains
 # support.  This should obviously only be done if you are not running
-# any virtualdomains, but it will improve performance.
+# any qmail virtualdomains, but it will improve performance.
 # Default is 1 (turned on)
 if not vars().has_key('USEVIRTUALDOMAINS'):
     USEVIRTUALDOMAINS = 1
