@@ -62,34 +62,45 @@ OPTIONS:
     -R proto[://host[:port]]
     --remoteauth proto[://host[:port]][/dn]
         Host to connect to to check username and password.
-        - proto can be one of the following:
-          `imap' (IMAP4 server)
-          'imaps' (IMAP4 server over SSL)
-          `pop3' (POP3 server)
-          `apop' (POP3 server with APOP authentication)
-          `ldap' (LDAP server)
-        - host defaults to localhost
-        - port defaults to 143 (imap), 993 (imaps), 110 (pop3/apop), 389 (ldap)
-        - dn is mandatory for ldap and should contain a `%%s' identifying
-          the username
-        Examples: -R imaps://myimapserver.net
-                  -R pop3://mypopserver.net:2110
-                  -R ldap://host.com/cn=%%s,dc=host,dc=com
+        - Allowed protocols are:
+            imap, imaps, apop, pop3, ldap
+        - Host defaults to localhost
+        - Port defaults to default port for the protocol
+        - dn is manditory for ldap and must contain a '%%(user)s'
+          identifying the username
+        Examples: -r imap
+                  -r imaps://myimapserver.net
+                  -r pop3://mypopserver.net:2110
+                  -r ldap://host.com/cn=%%(user)s,dc=host,dc=com
 
     -A <program>
     --authprog <program>
-        checkpassword compatible command used to check username/password. e.g,
-              `-A /usr/sbin/checkpassword-pam -s id --stdin -- /bin/true'
-        The program must be able to receive the username/password pair
-        on its stdin, and in the following format:
-              `username\\0password\\0'
+        Specify checkpassword-style authentication
+        - Must conform exactly to the checkpassword stardard:
+            http://cr.yp.to/checkpwd/interface.html
+        - Any program that returns '0' (true) is acceptable as the command
+          run by the checkpassword program upon successful authentication.
+        - If "program" requires commandline switches, you must supply the
+          command to be run upon successful authentication.
+          If "program" does not, the default program (/usr)/bin/true is
+          automatically appended if not specified.
+        Examples: -p "/usr/sbin/checkpassword-pam -s id -- /bin/true"
+                  -p /usr/local/vpopmair/vchkpw
+                     (/usr/bin/true or /bin/true is automatically used) 
 
-    -a <file>
     --authfile <file>
-        Path to the file holding authentication information for this
-        proxy.  Default location is /etc/tofmipd if running as
-        root/tofmipd, otherwise ~user/.tmda/tofmipd.  Use this option
-        to override these defaults.
+       Specify a different authentication file than the default.
+       - This file is expected to have a single username:password pair on each
+         line.  The password may be unix crypt encrypted.
+       - The file mode must be 400 or 600 if it contains cleartext passwords.
+       - The default is "/.tmda/tmdauth or /etc/tmdauth, whichever is found
+         first.
+
+    -l <path>
+    --virtual-lookup <path>
+       Specify a path to virtual user lookup script.
+       - The lookup script should take user login as a parameter and return
+         <homedir>\\n<UID>\\n<GID>
 """
 
 import getopt
@@ -117,6 +128,8 @@ program = sys.argv[0]
 daemon_mode = None
 quiet = 0
 debug = 0
+VLookup = None
+authobj = Auth.Auth()
 
 def usage(code, msg=''):
     print __doc__ % globals()
@@ -125,12 +138,13 @@ def usage(code, msg=''):
     sys.exit(code)
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], 'H:u:R:A:a:dDqVh',
+    opts, args = getopt.getopt(sys.argv[1:], 'H:u:R:A:a:l:dDqVh',
                                             ['hostport=',
                                              'username=',
                                              'authfile=',
                                              'remoteauth=',
                                              'authprog=',
+                                             'virtual-lookup=',
                                              'daemon',
                                              'debug',
                                              'quiet',
@@ -151,7 +165,7 @@ for opt, arg in opts:
         sys.exit()
     elif opt in ('-D', '--debug'):
         debug = 1
-        Auth.DEBUGSTREAM = sys.stderr
+        authobj.DEBUGSTREAM = sys.stderr
     elif opt in ('-q', '--quiet'):
         quiet = 1
     elif opt in ('-d', '--daemon'):
@@ -161,17 +175,15 @@ for opt, arg in opts:
     elif opt in ('-u', '--username'):
         username = arg
     elif opt in ('-R', '--remoteauth'):
-        Auth.parse_auth_uri(arg)
-        Auth.authtype = 'remote'
+        authobj.init_remote( arg )
     elif opt in ('-A', '--authprog'):
-        Auth.authprog = arg
-        if Auth.authtype != 'remote':
-            Auth.authtype = 'prog'
+        authobj.init_checkpw( arg )
     elif opt in ('-a', '--authfile'):
-        Auth.authfile = arg
+        authobj.init_file( arg )
+    elif opt in ('-l', '--virtual-lookup'):
+        VLookup = arg
 
-Auth.security_disclaimer()
-Auth.init_auth_method()
+authobj.security_disclaimer()
 
 if daemon_mode and quiet:
     print >> sys.stderr, "Warning: cannot be quiet in daemon mode."
@@ -215,7 +227,7 @@ class TMDAShell(Cmd):
             self.prompt = ''
         else:
             self.prompt = prompt
-        self.authenticated = not Auth.running_as_root
+        self.authenticated = not authobj.running_as_root
         if debug:
             # patch ourself
             self.precmd = self._precmd
@@ -311,13 +323,22 @@ class TMDAShell(Cmd):
             self.userid = None
             self.password = None
             return self.error(0, "ARG", "Missing argument.")
-        if Auth.authenticate_plain(self.userid, self.password):
+        if auth_obj.authenticate_plain(self.userid, self.password):
             self.authenticated = 1
+            try:
+                home, uid, gid = Util.getuserparams(self.userid, VLookup)
+                os.environ['HOME'] = home
+                os.seteuid(uid)
+                os.setegid(gid)
+            except KeyError:
+                sys.exit(1)
         else:
             self.authenticated = 0
             return self.error(0, "AUTH", "Invalid credentials.")
-        if Auth.auth_fork(self.userid):
-            sys.exit(0)
+
+#        What is this for???
+#        if Auth.auth_fork(self.userid):
+#            sys.exit(0)
 
         return 0
 
