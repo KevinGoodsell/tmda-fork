@@ -49,14 +49,18 @@ class MessageLogger:
         Write a log entry for this message in a common format.
 
         Date: (timestamp)
-        Sndr: (envelope sender address if different from From:)
-        From: (From: header)
-        Rept: (Reply-To: header)
+        XPri: (X-Primary-Address header if present)
+        Sndr: (envelope sender address if different than From)
+        From: (From header)
+        Rept: (Reply-To header if present)
           To: (envelope recipient address)
-        Subj: (Subject: header)
+        Subj: (Subject header)
         Actn: (message trigger and size of message)
         """
         self.__writeline('Date', Util.unixdate())
+        XPri = self.msg.get('x-primary-address')
+        if XPri:
+            self.__writeline('XPri', XPri)
         envsender = self.vardict.get('envsender', None)
         if (envsender
             and parseaddr(self.msg.get('from'))[1] != envsender):

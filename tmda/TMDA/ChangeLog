@@ -1,3 +1,11 @@
+2002-11-12  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Util.py (confirm_append_address): New function.
+
+	* MessageLogger.py (MessageLogger.write): Log X-Primary-Address.
+
+	* Defaults.py (PRIMARY_ADDRESS_MATCH): New variable.
+
 2002-11-10  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Util.py (build_cdb): Uniquify ftmp when doing cdbmake.

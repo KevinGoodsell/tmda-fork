@@ -6,7 +6,7 @@ BodyCharset: US-ASCII
 This message was created automatically by mail delivery software (TMDA).
 
 Your message attached below is being held because the address
-<%(envelope_sender)s> has not been verified.
+<%(confirm_append_address)s> has not been verified.
 
 To release your message for delivery, please send an empty message
 to the following address, or use your mailer's "Reply" feature.

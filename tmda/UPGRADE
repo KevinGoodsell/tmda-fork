@@ -2,6 +2,10 @@
 
 If you are upgrading from a release of TMDA < 0.65:
 
+* If you are using customized templates, you should replace
+  %(envelope_sender)s with %(confirm_append_address)s in your
+  confirm_request.txt.
+
 * When doing program deliveries to procmail, you should no longer be
   using the ``-f'' option. e.g,
 

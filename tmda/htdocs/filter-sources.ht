@@ -14,6 +14,19 @@ This group of sources may be used in either incoming or outgoing
 filter files.
 <br><br>
 
+<strong>NOTE:</strong> <br>
+
+In order to find a match, the <code>from-*</code> sources examine the
+envelope sender address, any addresses in the From header field (not the UNIX
+mbox separator From_), any addresses in the Reply-To header field, and
+the address in the X-Primary-Address header field if the 
+<a href="config-vars.html#PRIMARY_ADDRESS_MATCH">PRIMARY_ADDRESS_MATCH</a>
+setting can be satisfied.
+<br><br>
+The <code>to-*</code> sources examine the envelope recipient address but
+<i>not</i> the To header field, which is often bogus in spam email.
+<br><br>
+
 <dl>
 <dt>
 <code>
@@ -26,18 +39,6 @@ The <code>from</code> and <code>to</code> sources expect a match field
 of either an explicit email address or a wildcarded email address.
 The format of the email address is documented <a
 href="#email_address">below</a>.
-
-<br><br>
-
-The <code>from</code> source examines the envelope sender, any
-addresses in the From header field (not the UNIX mbox separator From_)
-and any addresses in the Reply-To header field in order to find a
-match.
-
-<br><br>
-
-The <code>to</code> source examines the envelope recipient but
-<i>not</i> the To header field, which is often bogus in spam email.
 
 <br><br>
 
@@ -77,17 +78,6 @@ have a chance to fix the problem.
 
 <br><br>
 
-The <code>from-file</code> source examines the envelope sender, any
-addresses in the From header field (not the UNIX mbox separator From_)
-and any addresses in the Reply-To header field in order to find a
-match.
-
-<br><br>
-
-The <code>to-file</code> source examines the envelope recipient but
-<i>not</i> the To header field, which is often bogus in spam email.
-
-<br><br>
 
 <dt>
 <code>
@@ -109,18 +99,6 @@ If the <code>-optional</code> flag is given, the non-existence of the
 file is not an error.  If the file should exist, don't specify this
 flag; the parser will log an error and will defer the mail so that you
 have a chance to fix the problem.
-
-<br><br>
-
-The <code>from-cdb</code> source examines the envelope sender, any
-addresses in the From header field (not the UNIX mbox separator From_)
-and any addresses in the Reply-To header field in order to find a
-match.
-
-<br><br>
-
-The <code>to-cdb</code> source examines the envelope recipient but
-<i>not</i> the To header field, which is often bogus in spam email.
 
 <br><br>
 
@@ -147,17 +125,6 @@ have a chance to fix the problem.
 
 <br><br>
 
-The <code>from-dbm</code> source examines the envelope sender, any
-addresses in the From header field (not the UNIX mbox separator From_)
-and any addresses in the Reply-To header field in order to find a
-match.
-
-<br><br>
-
-The <code>to-dbm</code> source examines the envelope recipient but
-<i>not</i> the To header field, which is often bogus in spam email.
-
-<br><br>
 
 <dt>
 <code>
@@ -182,17 +149,6 @@ have a chance to fix the problem.
 
 <br><br>
 
-The <code>from-ezmlm</code> source examines the envelope sender, any
-addresses in the From header field (not the UNIX mbox separator From_)
-and any addresses in the Reply-To header field in order to find a
-match.
-
-<br><br>
-
-The <code>to-ezmlm</code> source examines the envelope recipient but
-<i>not</i> the To header field, which is often bogus in spam email.
-
-<br><br>
 
 <dt>
 <code>
@@ -210,7 +166,7 @@ Mailman 2.0 and 2.1-style configuration databases are supported.
 <br><br>
 
 The <code>-mailman</code> sources require you to specify an
-`attribute' to search.  Use the <code>-attr=<attribute></code> flag to
+`attribute' to search.  Use the <code>-attr=attribute</code> flag to
 specify the name of an attribute contained in the database.  For
 example, `members' (subscriber addresses), `digest_members' (digest
 subscriber addresses), or `owner' (list owner's address).
@@ -221,18 +177,6 @@ If the <code>-optional</code> flag is given, the non-existence of the
 file is not an error.  If the file should exist, don't specify this
 flag; the parser will log an error and will defer the mail so that you
 have a chance to fix the problem.
-
-<br><br>
-
-The <code>from-mailman</code> source examines the envelope sender, any
-addresses in the From header field (not the UNIX mbox separator From_)
-and any addresses in the Reply-To header field in order to find a
-match.
-
-<br><br>
-
-The <code>to-mailman</code> source examines the envelope recipient but
-<i>not</i> the To header field, which is often bogus in spam email.
 
 <br><br>
 

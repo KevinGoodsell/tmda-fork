@@ -1,3 +1,11 @@
+2002-11-12  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (verify_confirm_cookie): Append the address in
+	X-Primary-Address if the PRIMARY_ADDRESS_MATCH is close enough.
+
+	(main): Check the address in X-Primary-Address against
+	FILTER_INCOMING if the PRIMARY_ADDRESS_MATCH is close enough.
+
 2002-11-08  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-pending (main): Display Defaults.SUMMARY_HEADERS during

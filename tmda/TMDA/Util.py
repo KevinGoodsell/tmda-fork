@@ -362,6 +362,55 @@ def normalize_sender(sender):
     return sender.lower()
 
 
+def confirm_append_address(xp, rp):
+    """
+    xp is an address from the ``X-Primary-Address'' header.
+    rp is the envelope sender address.
+
+    Compare the two addresses, and return the address appropriate for
+    CONFIRM_APPEND use based on the PRIMARY_ADDRESS_MATCH setting.
+    """
+    if not xp:
+        return rp
+    import Defaults
+    rpl = rp.lower()
+    xpl = xp.lower()
+    rplocal, rphost = rpl.split('@', 1)
+    rpdomain = '.'.join(rphost.split('.')[-2:])
+    rpusername = rplocal.split(Defaults.RECIPIENT_DELIMITER)[0]
+    xplocal, xphost = xpl.split('@', 1)
+    xpdomain = '.'.join(xphost.split('.')[-2:])
+    xpusername = xplocal.split(Defaults.RECIPIENT_DELIMITER)[0]
+    match = Defaults.PRIMARY_ADDRESS_MATCH
+    if match == 0:
+        # never a match
+        return rp
+    elif match == 1:
+        # only identical addresses match
+        if xpl == rpl:
+            return xp
+    elif match == 2:
+        # usernames and hostnames must match
+        if xpusername == rpusername and xphost == rphost:
+            return xp
+    elif match == 3:
+        # usernames and domains must match
+        if xpusername == rpusername and xpdomain == rpdomain:
+            return xp
+    elif match == 4:
+        # hostnames must match
+        if xphost == rphost:
+            return xp
+    elif match == 5:
+        # domains must match
+        if xpdomain == rpdomain:
+            return xp
+    elif match == 6:
+        # always a match
+        return xp
+    return rp
+
+
 def sendmail(msgstr, envrecip, envsender):
     """Send e-mail via direct SMTP, or by opening a pipe to the
     sendmail program.

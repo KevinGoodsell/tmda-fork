@@ -124,6 +124,7 @@ from TMDA import Util
 
 
 from cStringIO import StringIO
+from email.Utils import parseaddr, getaddresses
 import email
 import fileinput
 import string
@@ -176,8 +177,7 @@ if envelope_sender == None:
 # Use Defaults.RECIPIENT_HEADER instead if set.
 recipient_header = None
 if Defaults.RECIPIENT_HEADER:
-    recipient_header = email.Utils.parseaddr(msgin.get
-                                             (Defaults.RECIPIENT_HEADER))[1]
+    recipient_header = parseaddr(msgin.get(Defaults.RECIPIENT_HEADER))[1]
 envelope_recipient = (recipient_header or os.environ.get('RECIPIENT'))
 if envelope_recipient == None:
     raise Errors.MissingEnvironmentVariable('RECIPIENT')
@@ -248,8 +248,9 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
                     fileinput.close()
                     break
 
-# Collect the message's Subject: for later use.
+# Collect some header values for later use.
 subject = msgin.get('subject')
+x_primary_address = parseaddr(msgin.get('x-primary-address'))[1]
 
 # The directory of pending messages.
 pendingdir = os.path.join(Defaults.DATADIR, 'pending')
@@ -394,8 +395,7 @@ def do_default_action(action, logname, bouncetext):
 def release_pending(timestamp, pid, msg):
     """Release a confirmed message from the pending queue."""
     # Remove Return-Path: to avoid duplicates.
-    return_path = return_path = email.Utils.parseaddr(msg.get
-                                                      ('return-path'))[1]
+    return_path = return_path = parseaddr(msg.get('return-path'))[1]
     del msg['return-path']
     # Remove X-TMDA-Recipient:
     recipient = msg.get('x-tmda-recipient')
@@ -458,13 +458,15 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
             send_cc(Defaults.CONFIRM_ACCEPT_CC)
         if os.path.exists(confirmed_file):
             msg = email.message_from_file(open(confirmed_file, 'r'))
-            # Optionally append the envelope sender to a file
+            # Optionally append the sender's address to a file.
             if Defaults.CONFIRM_APPEND:
-                return_path = email.Utils.parseaddr(msg.get('return-path'))[1]
-                if return_path is None:
+                confirm_append_addr = Util.confirm_append_address(
+                    parseaddr(msg.get('x-primary-address'))[1],
+                    parseaddr(msg.get('return-path'))[1])
+                if not confirm_append_addr:
                     raise IOError, \
                           confirmed_file + ' has no Return-Path header!'
-                if Util.append_to_file(return_path,
+                if Util.append_to_file(confirm_append_addr,
                                        Defaults.CONFIRM_APPEND) != 0:
                     logit('CONFIRM_APPEND ' + Defaults.CONFIRM_APPEND)
         # Optionally generate a confirmation acceptance notice.
@@ -610,6 +612,9 @@ def bouncegen(mode, text=None):
     recipient_address = globals().get('recipient_address')
     recipient_local, recipient_domain = recipient_address.split('@', 1)
     envelope_sender = globals().get('envelope_sender')
+    x_primary_address = globals().get('x_primary_address')
+    confirm_append_address = Util.confirm_append_address(x_primary_address,
+                                                         envelope_sender)
     subject = globals().get('subject')
     original_message_body = globals().get('orig_msgin_body_as_raw_string')
     original_message_headers = globals().get('orig_msgin_headers_as_raw_string')
@@ -683,24 +688,26 @@ def main():
         except IndexError:
             # not a tagged address
             pass
-            
     # The list of sender e-mail addresses comes from the envelope
-    # sender, the "From:" header and the "Reply-To:" header.
+    # sender, the "From:" header, the "Reply-To:" header, and possibly
+    # the "X-Primary-Address" header.
     sender_list = [envelope_sender]
-    from_list = email.Utils.getaddresses(msgin.get_all('from', []))
-    replyto_list = email.Utils.getaddresses(msgin.get_all('reply-to', []))
+    confirm_append_address = Util.confirm_append_address(x_primary_address,
+                                                         envelope_sender)
+    if confirm_append_address and confirm_append_address != envelope_sender:
+        sender_list.append(confirm_append_address)
+    from_list = getaddresses(msgin.get_all('from', []))
+    replyto_list = getaddresses(msgin.get_all('reply-to', []))
     for list in from_list, replyto_list:
         for a in list:
             emaddy = a[1]
             sender_list.append(emaddy)
-
     # Process confirmation messages first.
     confirm_done_hdr = msgin.get('x-tmda-confirm-done')
     if confirm_done_hdr:
         verify_confirm_cookie(confirm_done_hdr, 'done')
     if (cookie_type in Defaults.TAGS_CONFIRM) and cookie_value:
         verify_confirm_cookie(cookie_value, 'accept')
-
     # Parse the incoming filter file.
     infilter = FilterParser.FilterParser()
     infilter.read(Defaults.FILTER_INCOMING)
@@ -736,8 +743,6 @@ def main():
     elif action == 'hold':
         logit('%s (%s)' % ('HOLD', matching_line))
         bouncegen('hold')
-                
-
     # The message didn't match the filter file, so check if it was
     # sent to a 'tagged' address.
     # Dated tag?
@@ -753,7 +758,6 @@ def main():
     elif (cookie_type in map(lambda s: s.lower(), Defaults.TAGS_KEYWORD)) \
              and cookie_value:
         verify_keyword_cookie(cookie_value)
-        
     # If the message gets this far (i.e, was not sent to a tagged
     # address and it didn't match the filter file), then we consult
     # Defaults.ACTION_INCOMING.

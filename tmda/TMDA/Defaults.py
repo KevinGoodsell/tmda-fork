@@ -1112,6 +1112,44 @@ if not vars().has_key('ADDED_HEADERS_CLIENT'):
 if not vars().has_key('ADDED_HEADERS_SERVER'):
     ADDED_HEADERS_SERVER = None
 
+# PRIMARY_ADDRESS_MATCH
+# An integer which controls how closely the address in the
+# ``X-Primary-Address'' header of an incoming messages must match the
+# envelope sender address before it's honored.
+#
+# If the match is close enough, this address will be used for
+# CONFIRM_APPEND instead of the envelope sender, and also added to the
+# list of addresses checked against FILTER_INCOMING.
+#
+# This option is available to limit cases of abuse where a sender
+# attempts to "whitelist" an address not his own by using an external
+# address in an ``X-Primary-Address'' header.
+#
+# Available options:
+#
+# 0 - Never a match. Equivalent to disabling X-Primary-Address recognition.
+#
+# 1 - Identical addresses match. e.g, king@grassland.com and
+# king@grassland.com.
+#
+# 2 - Usernames and hostnames must match. e.g, king@grassland.com and
+# king-dated-1037839131.65d080@grassland.com.
+#
+# 3 - Usernames and domains must match. e.g, king@grassland.com and
+# king-dated-1037839131.65d080@memphis.grassland.com.
+#
+# 4 - Hostnames must match. e.g, king@grassland.com and
+# elvis@grassland.com.
+#
+# 5 - Domains must match. e.g, king@grassland.com and
+# elvis@memphis.grassland.com.
+#
+# 6 - Always a match. e.g, king@grassland.com and elvis@parsely.com.
+#
+# Default is 5
+if not vars().has_key('PRIMARY_ADDRESS_MATCH'):
+    PRIMARY_ADDRESS_MATCH = 5
+
 # PURGED_HEADERS
 # A list containing one or more message headers that should be removed
 # from outgoing client-side messages (i.e, messages sent with
