@@ -45,33 +45,33 @@ import os                                      # don't remove
 
 # ALLOW_MODE_640 = 0
 
-# DATADIR = os.path.expanduser("~/.tmda/")
-
-# SENDMAIL = "/usr/sbin/sendmail"
-
-# BLACKLIST = "/full/path/to/blacklist"
-
-# BOUNCE_BLACKLIST_CC = "jdoe-bounces-blacklist@domain.dom"
-
-# BOUNCE_CONFIRM_CC = "jdoe-bounces-confirm@domain.dom"
-
-# BOUNCE_REVOKED_CC = "jdoe-bounces-revoked@domain.dom"
-
 # BOUNCE_ENV_SENDER = ""
 
 # CONFIRM_ACCEPT_NOTIFY = 1
 
-# CONFIRM_MAX_MESSAGE_SIZE = 50000
-
 # CONFIRM_ACCEPT_TEMPLATE = "/full/path/to/confirm_accept.txt"
+
+# CONFIRM_APPEND = "/full/path/to/whitelist"
+
+# CONFIRM_CC = "jdoe-confirm@domain.dom"
+
+# CONFIRM_MAX_MESSAGE_SIZE = 50000
 
 # CONFIRM_REQUEST_TEMPLATE = "/full/path/to/confirm_request.txt"
 
+# COOKIE_TYPE = "dated"
+
+# DATADIR = os.path.expanduser("~/.tmda/")
+
 # DATED_TEMPLATE_VARS = 0
 
-# SENDER_TEMPLATE_VARS = 0
+# FILTER_BOUNCE_CC = "jdoe-bounces@domain.dom"
 
-# COOKIE_TYPE = "dated"
+# FILTER_DROP_CC = "jdoe-drop@domain.dom"
+
+# FILTER_INCOMING = "/full/path/to/incoming"
+
+# FILTER_OUTGOING = "/full/path/to/outgoing"
 
 # FULLNAME = "John Doe"
 
@@ -83,6 +83,10 @@ import os                                      # don't remove
 
 # MESSAGE_FROM_STYLE = "angles"
 
+# SENDER_TEMPLATE_VARS = 0
+
+# SENDMAIL = "/usr/sbin/sendmail"
+
 # TIMEOUT = "5d"
 
 # TIMEZONE = "Pacific/Auckland"
@@ -92,28 +96,3 @@ import os                                      # don't remove
 # USEVIRTUALDOMAINS = 1
 
 # VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
-
-# FILTER_OUTGOING = "/full/path/to/outgoing"
-
-# BARE_FILE = "/full/path/to/bare"
-
-# DATED_FILE = "/full/path/to/dated"
-
-# EXP_FILE = "/full/path/to/exp"
-
-# EXT_FILE = "/full/path/to/ext"
-
-# KEYWORD_FILE = "/full/path/to/keyword"
-
-# REVOKED_FILE = "/full/path/to/revoked"
-
-# SACRED_FILE = "/full/path/to/sacred"
-
-# SENDER_FILE = "/full/path/to/sender"
-
-# WHITELIST = "/full/path/to/whitelist"
-
-# WHITELIST_AUTO_APPEND = 0
-
-# WHITELIST_TO_BARE = 1
-

@@ -211,7 +211,7 @@ def main():
         if x_tmda_over:
             pass                        
         else:
-            (action, action_option) = outfilter.firstmatch(address)
+            (action, action_option, matching_line) = outfilter.firstmatch(address)
         if not action:action = Defaults.COOKIE_TYPE
         # The message is sent to each recipient separately so that
         # everyone gets the correct tag.  Make sure your MUA

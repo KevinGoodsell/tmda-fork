@@ -1,4 +1,25 @@
+2001-11-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (findmatch): addrs should now be a list to iterate over.
+	
+	* FilterParser.py: Add support for incoming filter files.
+
+	* Defaults.py: Remove: BOUNCE_BLACKLIST_CC, BOUNCE_CONFIRM_CC,
+	BOUNCE_REVOKED_CC BLACKLIST, WHITELIST, SACRED_FILE, REVOKED_FILE,
+	BARE_FILE, DATED_FILE, EXP_FILE, EXT_FILE, KEYWORD_FILE,
+	SENDER_FILE, WHITELIST_TO_BARE, WHITELIST_AUTO_APPEND
+
+	Add: FILTER_DROP_CC, CONFIRM_CC, FILTER_BOUNCE_CC,
+	FILTER_INCOMING, FILTER_OUTGOING, CONFIRM_APPEND
+
 2001-11-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py (FilterParser.firstmatch): Catch the TypeError
+	exception which is returned by Python 1.x instead of
+	AttributeError when string.split is run on None.
+
+	* Defaults.py (FILTER_INCOMING): New variable specifying the
+	location of the 'incoming' filter file.
 
 	* FilterParser.py: Document outgoing <action> aliases: 'as' and
 	'explicit' for exp, 'extension' for ext, and 'keyword' for kw.

@@ -142,7 +142,7 @@ def file_to_list(file,list):
     return list
 
 
-def findmatch(list, *addrs):
+def findmatch(list, addrs):
     """Determine whether any of the passed e-mail addresses match a
     Unix shell-style wildcard pattern contained in list.  The
     comparison is case-insensitive.  Also, return the second half of

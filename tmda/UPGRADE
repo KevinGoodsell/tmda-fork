@@ -1,5 +1,24 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.41:
+
+TMDA filter file support necessitates several configuration changes:
+
+* BLACKLIST, WHITELIST, SACRED_FILE, and REVOKED_FILE were replaced by
+  FILTER_INCOMING.
+
+* BARE_FILE, DATED_FILE, EXP_FILE, EXT_FILE, KEYWORD_FILE,
+  SENDER_FILE, and WHITELIST_TO_BARE were replaced by FILTER_OUTGOING.
+
+* BOUNCE_BLACKLIST_CC, BOUNCE_CONFIRM_CC, and BOUNCE_REVOKED_CC were
+  replaced by FILTER_DROP_CC, CONFIRM_CC, FILTER_BOUNCE_CC.
+
+* WHITELIST_AUTO_APPEND was replaced by CONFIRM_APPEND.
+
+See Defaults.py and FilterParser.py for more details.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.38:
 
 * The local copy of the documentation is now in `htdocs'.

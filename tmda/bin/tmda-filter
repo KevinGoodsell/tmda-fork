@@ -39,7 +39,6 @@ import rfc822
 import string
 import sys
 import time
-import re
 
 
 discard = None
@@ -81,6 +80,7 @@ except ImportError:
 
 from TMDA import Cookie
 from TMDA import Defaults
+from TMDA import FilterParser
 from TMDA import MTA
 from TMDA import Util
 
@@ -221,8 +221,8 @@ def send_bounce(bounce_message, **vars):
             mta.defer()
 
 
-def bounce_cc(address):
-    """Send a 'carbon copy' of the bounced message to address."""
+def send_cc(address):
+    """Send a 'carbon copy' of the message to address."""
     inject = []
     inject.append(Defaults.SENDMAIL)
     inject.append(address)
@@ -284,9 +284,10 @@ def locate_pending(timestamp,pid):
     if os.path.exists(pending_message_pathname):
         logit("CONFIRM accept " + pending_message, time.time())
         # Optionally append the envelope sender to the whitelist.
-        if Defaults.WHITELIST_AUTO_APPEND:
-            if Util.append_to_file(envelope_sender, Defaults.WHITELIST) != 0:
-                logit("APPEND whitelist " + envelope_sender, time.time())
+        if Defaults.CONFIRM_APPEND:
+            if Util.append_to_file(envelope_sender,
+                                   Defaults.CONFIRM_APPEND) != 0:
+                logit("APPEND " + envelope_sender, time.time())
         # Optionally generate the confirmation acceptance notice.
         if Defaults.CONFIRM_ACCEPT_NOTIFY:
             bouncegen('accept')
@@ -449,13 +450,13 @@ def bouncegen(mode):
     else:
         # must be installed from a package
         right_template = pkg_template
-    # Create the message and the send it.
+    # Create the message and then send it.
     bounce_message = Util.maketext(right_template,vars())
     if mode == 'accept':
         send_bounce(bounce_message,already_confirmed=1)
     if mode == 'request':
-        if Defaults.BOUNCE_CONFIRM_CC:
-            bounce_cc(Defaults.BOUNCE_CONFIRM_CC)
+        if Defaults.CONFIRM_CC:
+            send_cc(Defaults.CONFIRM_CC)
         send_bounce(bounce_message,
                     confirm_accept_address = confirm_accept_address)
         mta.stop()  
@@ -489,50 +490,43 @@ def main():
     EnvelopeSender = envelope_sender
     From = message_headers.getaddr('from')[1]
     ReplyTo = message_headers.getaddr('reply-to')[1]
-    
-    # Is the sender in the BLACKLIST?
-    if os.path.exists(Defaults.BLACKLIST):
-        blacklist_list = []
-        blacklist_list = Util.file_to_list(Defaults.BLACKLIST,
-                                           blacklist_list)
-        if Util.findmatch(blacklist_list, EnvelopeSender,From,ReplyTo):
-            logit("DROP blacklist_match", time.time())
-            if Defaults.BOUNCE_BLACKLIST_CC:
-                bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
-            mta.stop()
+    sender_list = [EnvelopeSender, From, ReplyTo]
+
+    # Parse the incoming filter file.
+    infilter = FilterParser.FilterParser()
+    infilter.read(Defaults.FILTER_INCOMING)
+    (action,action_option,matching_line) = infilter.firstmatch(recipient_address,
+                                                               sender_list,
+                                                               message_body,
+                                                               str(message_headers),
+                                                               message_size)
+    # Dispose of the message now if there was a filter file match.
+    # Log the action along with and the matching line in the filter
+    # file that caused it.
+    disposal_time = time.time()
+    if action in ('bounce','reject'):
+        if Defaults.FILTER_BOUNCE_CC:
+            send_cc(Defaults.FILTER_BOUNCE_CC)
+        logit('%s (%s)' % ('BOUNCE', matching_line), disposal_time)
+        print 'Message rejected by recipient.'
+        mta.bounce()
+    elif action in ('drop','exit','stop'):
+        if Defaults.FILTER_DROP_CC:
+            send_cc(Defaults.FILTER_DROP_CC)
+        logit('%s (%s)' % ('DROP', matching_line), disposal_time)
+        mta.stop()
+    elif action in ('accept','deliver','ok'):
+        logit('%s (%s)' % ('OK', matching_line), disposal_time)
+        mta.deliver(message)
+    elif action == 'confirm':
+        # bouncegen does logging
+        bouncegen('request')
+
+    # The message didn't match the filter file, so check if it was
+    # sent to a 'tagged' address.
     # Confirm tag?
     if cookie_type == 'confirm' and cookie_value:
-            verify_confirm_cookie(cookie_value)
-    # Is the sender in the WHITELIST?
-    if os.path.exists(Defaults.WHITELIST):
-        whitelist_list = []
-        whitelist_list = Util.file_to_list(Defaults.WHITELIST,
-                                           whitelist_list)
-        if Util.findmatch(whitelist_list, EnvelopeSender,From,ReplyTo):
-            logit("OK whitelist_match", time.time())
-            mta.deliver(message)
-    # Is the recipient in the REVOKED_FILE?
-    if os.path.exists(Defaults.REVOKED_FILE):
-        revoked_file_list = []
-        revoked_file_list = Util.file_to_list(Defaults.REVOKED_FILE,
-                                              revoked_file_list)
-        if Util.findmatch(revoked_file_list, recipient_address):
-            logit("BOUNCE revoked_file_match", time.time())
-            if Defaults.BOUNCE_REVOKED_CC:
-                bounce_cc(Defaults.BOUNCE_REVOKED_CC)
-            print "Sorry, this address has been revoked."
-            mta.bounce()
-    # Is the message sacred?
-    if os.path.exists(Defaults.SACRED_FILE):
-        sacred_list = []
-        sacred_list = Util.file_to_list(Defaults.SACRED_FILE,sacred_list)
-        matches = 0
-        for single_expression in sacred_list:
-            if None != re.search(single_expression,message,(re.M|re.I)):
-                matches = matches+1
-        if matches > 0:
-            logit("OK sacred_text_match", time.time())
-            mta.deliver(message)
+        verify_confirm_cookie(cookie_value)
     # Dated tag?
     if cookie_type == 'dated' and cookie_value:
         verify_dated_cookie(cookie_value)
@@ -543,8 +537,9 @@ def main():
     # Keyword tag?
     if cookie_type == 'keyword' and cookie_value:
         verify_keyword_cookie(cookie_value)
+        
     # If the message gets this far (i.e, was not sent to a tagged
-    # address and it didn't match any list files), then we bounce it
+    # address and it didn't match the filter file), then we bounce it
     # for confirmation.
     bouncegen('request')
 

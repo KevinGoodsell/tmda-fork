@@ -1,3 +1,11 @@
+2001-11-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (send_cc): Replaces bounce_cc.
+
+	(main): Parse a single filter file (Defaults.FILTER_INCOMING)
+	instead of multiple list files looking for disposal instructions.
+	Obsoletes BLACKLIST, WHITELIST, SACRED_FILE, and REVOKED_FILE.
+	
 2001-11-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (inject_message): Add 'as' as an aliases for 'exp'.

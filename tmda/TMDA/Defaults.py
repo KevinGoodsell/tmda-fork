@@ -142,35 +142,6 @@ if not vars().has_key('USEVIRTUALDOMAINS'):
 if not vars().has_key('VIRTUALDOMAINS'):
     VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
 
-# BLACKLIST
-# Filename which contains a list of e-mail addresses and/or
-# substrings, one per line, which are considered unacceptable and
-# therefore bounced if there is a match.
-# Default is ~/.tmda/lists/blacklist
-if not vars().has_key('BLACKLIST'):
-    BLACKLIST = DATADIR + "lists/" + "blacklist"
-
-# BOUNCE_BLACKLIST_CC
-# An optional e-mail address which will be sent a copy of any message
-# that bounces because of a BLACKLIST match.
-# No default.
-if not vars().has_key('BOUNCE_BLACKLIST_CC'):
-    BOUNCE_BLACKLIST_CC = None
-
-# BOUNCE_CONFIRM_CC
-# An optional e-mail address which will be sent a copy of any message
-# that triggers a confirmation request.
-# No default.
-if not vars().has_key('BOUNCE_CONFIRM_CC'):
-    BOUNCE_CONFIRM_CC = None
-
-# BOUNCE_REVOKED_CC
-# An optional e-mail address which will be sent a copy of any message
-# that bounces because of a REVOKED match.
-# No default.
-if not vars().has_key('BOUNCE_REVOKED_CC'):
-    BOUNCE_REVOKED_CC = None
-
 # BOUNCE_ENV_SENDER
 # The envelope sender of the bounce message.
 # Default is an empty envelope sender <>.
@@ -180,6 +151,21 @@ if not vars().has_key('BOUNCE_ENV_SENDER'):
         BOUNCE_ENV_SENDER = '<>'
     else:
         BOUNCE_ENV_SENDER = ''
+
+# CONFIRM_APPEND
+# Filename to which a sender's e-mail address should be automatically
+# appended once they confirm a message.  This can be used to implement
+# "auto-whitelisting" functionality.
+# No default
+if not vars().has_key('CONFIRM_APPEND'):
+    CONFIRM_APPEND = None
+
+# CONFIRM_CC
+# An optional e-mail address which will be sent a copy of any message
+# that triggers a confirmation request.
+# No default.
+if not vars().has_key('CONFIRM_CC'):
+    CONFIRM_CC = None
 
 # CONFIRM_ACCEPT_NOTIFY
 # Set this variable to 0 if you do not want to generate confirmation
@@ -247,6 +233,32 @@ else:
     # Convert key from hex back into raw binary.
     # Hex has only 4 bits of entropy per byte as opposed to 8.
     CRYPT_KEY = Util.unhexlify(CRYPT_KEY)
+
+# FILTER_INCOMING
+# Filter file which controls how incoming messages are tagged.
+# Default is ~/.tmda/lists/incoming
+if not vars().has_key('FILTER_INCOMING'):
+    FILTER_INCOMING = DATADIR + "lists/" + "incoming"
+
+# FILTER_OUTGOING
+# Filter file which controls how outgoing messages are tagged.
+# Default is ~/.tmda/lists/outgoing
+if not vars().has_key('FILTER_OUTGOING'):
+    FILTER_OUTGOING = DATADIR + "lists/" + "outgoing"
+
+# FILTER_BOUNCE_CC
+# An optional e-mail address which will be sent a copy of any message
+# that bounces because of a match in FILTER_INCOMING.
+# No default.
+if not vars().has_key('FILTER_BOUNCE_CC'):
+    FILTER_BOUNCE_CC = None
+
+# FILTER_DROP_CC
+# An optional e-mail address which will be sent a copy of any message
+# that is dropped because of a match in FILTER_INCOMING.
+# No default.
+if not vars().has_key('FILTER_DROP_CC'):
+    FILTER_DROP_CC = None
 
 # FULLNAME
 # Your full name.
@@ -323,107 +335,6 @@ else:
 # Defaults to your UNIX username.
 if not vars().has_key('USERNAME'):
     USERNAME = Util.getusername()
-
-# FILTER_OUTGOING
-# Filter file which controls how outgoing messages are tagged.
-# Default is ~/.tmda/lists/outgoing
-if not vars().has_key('FILTER_OUTGOING'):
-    FILTER_OUTGOING = DATADIR + "lists/" + "outgoing"
-
-# BARE_FILE
-# Filename which contains a list of e-mail addresses, one per line,
-# which will receive untagged (no cookie added) messages.
-# Default is ~/.tmda/lists/bare
-if not vars().has_key('BARE_FILE'):
-    BARE_FILE = DATADIR + "lists/" + "bare"
-
-# DATED_FILE
-# Filename which contains a list of e-mail addresses, one per line,
-# which will receive messages with a dated cookie added to your
-# address.
-# Default is ~/.tmda/lists/dated
-if not vars().has_key('DATED_FILE'):
-    DATED_FILE = DATADIR + "lists/" + "dated"
-
-# EXP_FILE
-# Filename which contains a list of explicit to/from pairs, one per
-# line.  If mail is destined for `to', your address will be changed
-# to `from'.  For example,
-#
-#  xemacs-announce@xemacs.org jason@xemacs.org
-#  domreg@internic.net        hostmaster@mastaler.com
-#
-# Default is ~/.tmda/lists/exp
-if not vars().has_key('EXP_FILE'):
-    EXP_FILE = DATADIR + "lists/" + "exp"
-
-# EXT_FILE
-# Filename which contains a list of e-mail address/extension pairs,
-# one per line, which will receive messages with the extension added
-# to the username of your address.  For example,
-#
-#  xemacs-beta@xemacs.org list-xemacs-beta
-#  qmail@list.cr.yp.to    list-qmail
-#
-# Default is ~/.tmda/lists/ext
-if not vars().has_key('EXT_FILE'):
-    EXT_FILE = DATADIR + "lists/" + "ext"
-
-# KEYWORD_FILE
-# Filename which contains a list of e-mail address/keyword pairs, one
-# per line, which will receive messages with a keyword cookie added to
-# your address.  For example,
-#
-#  broker@schwab.com schwab
-#  tmda-*@libertine.org lists-tmda
-#
-# Default is ~/.tmda/lists/keyword
-if not vars().has_key('KEYWORD_FILE'):
-    KEYWORD_FILE = DATADIR + "lists/" + "keyword"
-
-# REVOKED_FILE
-# Filename which contains a list of recipient e-mail addresses, one
-# per line, which have been "revoked" and will therefore bounce.
-# Default is ~/.tmda/lists/revoked
-if not vars().has_key('REVOKED_FILE'):
-    REVOKED_FILE = DATADIR + "lists/" + "revoked"
-    
-# SACRED_FILE
-# Filename which contains a list of sacred keywords, the presence
-# of which automatically zaps the mail into your mailbox.
-# Default is ~/.tmda/lists/sacred
-if not vars().has_key('SACRED_FILE'):
-    SACRED_FILE = DATADIR + "lists/" + "sacred"
-
-# SENDER_FILE
-# Filename which contains a list of e-mail addresses, one per line,
-# which will receive messages with a sender cookie added to your
-# address.
-# Default is ~/.tmda/lists/sender
-if not vars().has_key('SENDER_FILE'):
-    SENDER_FILE = DATADIR + "lists/" + "sender"
-
-# WHITELIST
-# Filename which contains a list of e-mail addresses and/or
-# substrings, one per line, which are considered trusted contacts and
-# therefore allowed directly into your mailbox if there is a match.
-# Default is ~/.tmda/lists/whitelist
-if not vars().has_key('WHITELIST'):
-    WHITELIST = DATADIR + "lists/" + "whitelist"
-
-# WHITELIST_AUTO_APPEND
-# If you set this variable to 1, once a sender confirms a message their
-# e-mail address will be automatically appended to WHITELIST.
-# Default is 0 (turned off)
-if not vars().has_key('WHITELIST_AUTO_APPEND'):
-    WHITELIST_AUTO_APPEND = 0
-
-# WHITELIST_TO_BARE
-# Set this variable to 0 if you don't want addresses in your WHITELIST
-# to automatically receive untagged (no cookie added) messages.
-# Default is 1 (turned on)
-if not vars().has_key('WHITELIST_TO_BARE'):
-    WHITELIST_TO_BARE = 1
 
 ###################################
 # END of user configurable settings
