@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Jan 14 18:49:34 2002 -->
+<!-- Tue Feb  5 18:18:08 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -145,6 +145,7 @@ Author
 <li><a href="#9">Why don't my user+detail addresses work with Sendmail /etc/aliases?</a><br>
 <li><a href="#10">Is TMDA planning to support Microsoft Exchange Server?</a><br>
 <li><a href="#11">Can't spammers just setup an auto-responder to defeat TMDA?</a><br>
+<li><a href="#12">Why isn't TMDA written in Perl, C, C++, Java, etc..?</a><br>
 </ol>
 
 <hr>
@@ -392,6 +393,54 @@ Until someone teaches a computer program to read and understand the
 English language, I think we will have plenty of options here.
 <hr>
 
+<li><b>
+<a name="12">Why isn't TMDA written in Perl, C, C++, Java, etc..?  Or,
+any plans to translate TMDA into Perl, C, C++, Java, etc..?</a>
+</b>
+<br><br>
+In short, no.  Python is an excellent choice for an application like
+TMDA.  Python is a simple yet extremely powerful language with a
+reasonably fast interpreter and comprehensive standard library.  It is
+also very portable and has several features that make it very
+attractive for Rapid Application Development.  I also happen to enjoy
+programming in Python more than any other language.  
+<br><br>
+
+There are a few reasons that I can think of why you are asking
+this question:
+<br><br>
+<ul>
+
+<li>You run a high traffic site and are worried about the performance
+implications of an application written in an interpreted language.  I
+can understand your concern, but I wouldn't discount TMDA for
+performance reasons just because it is written in Python.  Mailman is
+a mailing list manager written in Python, and it handles
+sourceforge.net's list traffic just fine (thousands of lists, hundreds
+of thousands of messages/day).
+<br><br>
+If you find TMDA has performance limitations, we can always try and 
+optimize it.  This might be the case as to my knowledge, it currently
+isn't being used in any extremely high traffic environments.  You'll
+be doing the entire user community a favor by experimenting, reporting
+your results, and working with the developers to improve TMDA's performance.
+<br><br>
+In the meantime, it's likely that not all your users will want to use
+TMDA, so you can save some processing by making it an optional
+service.  I'd also recommend storing your lists in DBM or CDB format
+rather than text where possible, as matching from database files is
+significantly faster (fractions of a second).
+<br><br>
+
+<li>You are a developer and want to extend TMDA, but aren't familiar
+with Python.  If you are a programmer of any repute, this shouldn't
+be a problem.  Python's elegant and remarkably clear syntax make it
+very easy to learn.  Certainly <b>much</b> easier than a language like Perl 
+for example.
+The <a href="http://python.org/doc/current/tut/" TARGET="Resource Window">Python Tutorial</a>
+is a good place to start.  You may be surprised how much you like it.
+</ul>
+<hr>
 
 </TD><!-- end of body cell -->
 </TR><!-- end of sidebar/body row -->
