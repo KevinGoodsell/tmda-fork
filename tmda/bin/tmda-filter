@@ -292,6 +292,7 @@ def locate_pending(timestamp,pid):
         # Reinject the original (now confirmed) message.
         inject_pending(pending_message_pathname,timestamp,pid)
     else:
+        logit("BOUNCE nonexistent_pending_message",time.time())
         print "Sorry, your original message could not be located, please resend."
         mta.bounce()
 
@@ -308,7 +309,7 @@ def verify_confirm_cookie(confirm_cookie):
         if (confirm_hmac == new_confirm_hmac):
             locate_pending(confirm_timestamp,confirm_pid)
         else:
-            logit("BOUNCE confirm_accept",time.time())
+            logit("BOUNCE invalid_confirmation_address",time.time())
             print("Sorry, this confirmation address is invalid.")
             mta.bounce()
     # post-confirmation
@@ -320,8 +321,8 @@ def verify_confirm_cookie(confirm_cookie):
             logit("OK good_confirm_cookie", time.time())
             mta.deliver(message)
         else:
-            logit("BOUNCE confirm_done")
-            print("Sorry, this confirmation address is invalid.",time.time())
+            logit("BOUNCE invalid_confirmation_address",time.time())
+            print("Sorry, this confirmation address is invalid.")
             mta.bounce()
 
 
