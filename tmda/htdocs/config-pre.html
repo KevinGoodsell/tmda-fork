@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Sep  2 01:19:37 2003 -->
+<!-- Wed Sep 24 13:43:39 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -270,22 +270,6 @@ character you choose matches <b>RECIPIENT_DELIMITER</b> in your
 <a name="exim"><h4>MTA Configuration (Exim)</h4></a>
 
 Edit your Exim run time configuration file as follows:
-
-<h5>MAIN CONFIGURATION</h5>
-
-<ol>
-<li>
-TMDA uses sendmail's `-f' option to set the envelope sender
-address on outgoing messages.  By default this option is only
-available to Exim's "trusted users".  You can also add
-<b>untrusted_set_sender = true</b> to your Exim configuration
-which allows untrusted users use of the -f command line option.
-<br><br>
-
-It is recommended that you enable this option or become a
-trusted-user, or else the client side of TMDA becomes much less
-functional.
-</ol>
 
 <h5>DIRECTOR/ROUTER CONFIGURATION</h5>
 
