@@ -447,6 +447,10 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         # Accept the message only if the HMAC can be verified.
         if not (confirm_hmac == new_confirm_hmac):
             logit("CONFIRM bad_confirm_done_cookie")
+            # Ask for confirmation instead of bouncing or dropping the
+            # message in case the sender inadvertently had an
+            # X-TMDA-Confirm-Done field in this message, such as when
+            # redirecting a previously confirmed message.
             bouncegen('request')
         else:
             # Cache and deliver the message.
