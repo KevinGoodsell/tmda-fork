@@ -34,7 +34,7 @@ A. Not directly since qmail is only available on UNIX.  However, you
 
 ------------------------------------------------------------------------------
 
-Q. Can you clarify the syntax for .tmda-whitelist?  I'd like any
+Q. Can you clarify the syntax for the whitelist?  I'd like any
    address in my domain (domain.dom) to be able to send me mail
    directly without worrying about bounces.
 
