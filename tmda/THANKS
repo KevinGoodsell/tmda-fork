@@ -82,7 +82,7 @@ Contributions:
         suggestions and tmda-users support.
 
     * Gre7g Luterman -- tmda-cgi, a web interface to TMDA's pending
-      queue.
+      queue.  MySQL support for filter files.
 
     * Adam McKenna -- Debian package.
 
