@@ -33,7 +33,11 @@ from types import StringType
 # Constants
 FindCmd = re.compile('\?cmd=([^&"]+)')
 
-XtraSub = ['whitelist', 'blacklist', 'confirmed', 'revoked', 'other']
+XtraSub = \
+[
+  'whitelist', 'white', 'blacklist', 'black', 'confirmed', 'confirm', 'revoked',
+  'work', 'family', 'friends', 'accept', 'deny', 'whitelist_confirmed', 'other'
+]
 PageWidth = \
 {
   '': 'width="700"', 'list.html': '', 'prog_err.html': '', 'pending.html': '',
@@ -146,13 +150,20 @@ name="%s"''' % (alt, height, name)
       button += 1
       y = 6
     button = 1
+    Subtopics = {}
     for name in self.buttons['subtopics']:
       os.system('../../../button_maker/compose.pl -w 194 -i 20 left_bg.gif '
         '7 0 14 "%s" dyn_buttons/subtopic%d.png' % (name, button))
       os.system('../../../button_maker/compose.pl -w 194 -i 20 left_bg.gif '
         '7 0 14H "%s" dyn_buttons/h-subtopic%d.png' % (name, button))
+      Subtopics[name] = \
+      {
+        "width": 194, "height": 14,
+        "fn": "dyn_buttons/subtopic%d.png" % button,
+        "hfn": "dyn_buttons/h-subtopic%d.png" % button
+      }
       button += 1
-    sys.exit()
+    pickle.dump(Subtopics, open('subtopics.p', 'w'))
 
   def make_assoc(self, sidebar):
     self.assoc = {}

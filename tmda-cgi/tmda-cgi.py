@@ -19,24 +19,7 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""Web interface to TMDA tools.
-
-This program is expected to be called as a CGI.  See htdocs/tmda-cgi.html for
-specific instructions on using this file.
-
-Fields:
-  Login.Show(Msg)
-    Form:  None
-    PVars: None
-  PendList.Show()
-    Form:  [user, password], cmd=view, [subcmd=first|prev|next|last|batch]
-           [a#=X|r|d|w|b, m#]
-    PVars: UID, GID, User, HOME, SortDir, Pager
-  View.Show()
-    Form:  cmd=view, [subcmd=first|prev|next|last|delete|release|white|black],
-           [headers=short|all], [msgid]
-    PVars: UID, GID, User, HOME, Headers, MsgID
-"""
+"Web interface to TMDA tools."
 
 import cgi
 import os
@@ -110,6 +93,8 @@ def main():
       PVars["InProcess"] = {}
       PVars.Save()
       
+    import EditFilter
+    import EditList
     import GenAddr
     import GlobalConfig
     import Info
@@ -121,6 +106,10 @@ def main():
     
     # Share "globals"
     CgiUtil.PVars     = PVars
+    EditFilter.PVars  = PVars
+    EditFilter.Form   = Form
+    EditList.PVars    = PVars
+    EditList.Form     = Form
     GenAddr.PVars     = PVars
     GenAddr.Form      = Form
     LocalConfig.PVars = PVars
@@ -135,25 +124,29 @@ def main():
     View.Form         = Form
     
     # View?
-    if Form["cmd"].value == "pending":
+    if Form["cmd"].value in ("incoming", "outgoing"):
+      EditFilter.Show()
+    elif Form["cmd"].value[:8] == "editlist":
+      EditList.Show()
+    elif Form["cmd"].value == "gen_addr":
+      GenAddr.Show()
+    elif Form["cmd"].value == "globalconfig":
+      GlobalConfig.Show()
+    elif Form["cmd"].value == "info":
+      Info.Show()
+    elif Form["cmd"].value == "localconfig":
+      LocalConfig.Show()
+    elif Form["cmd"].value == "pending":
       PendList.Show()
     elif Form["cmd"].value == "view":
       try:
         View.Show()
       except Errors.MessageError:  # No messages left?
         PendList.Show()
-    elif Form["cmd"].value == "theme":
-      Theme.Show()
-    elif Form["cmd"].value == "globalconfig":
-      GlobalConfig.Show()
-    elif Form["cmd"].value == "gen_addr":
-      GenAddr.Show()
     elif Form["cmd"].value == "test_addr":
       TestAddr.Show()
-    elif Form["cmd"].value == "localconfig":
-      LocalConfig.Show()
-    elif Form["cmd"].value == "info":
-      Info.Show()
+    elif Form["cmd"].value == "theme":
+      Theme.Show()
     else:
       CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
         Form["cmd"].value, "interpret command", "", "Please be patient while "

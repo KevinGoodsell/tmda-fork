@@ -1,27 +1,30 @@
 Things left to do:
 ==================
 
-    * SpamCop -- an option to delete/blacklist/forward to SpamCop
-
-    * Language Support -- code to recognize the language an e-mail is in and
-                          include the appropriate language identifiers in the
-                          viewer
-
-    * Install / Uninstall -- options to allow users to add or remove TMDA
-                             filtering from their e-mail account
-
     * Auto-Cleanup -- scheduling and somehow dealing with virtual users
-
-    * Filter Viewer -- graphic view of your filters
-
-    * List Editor -- view and edit your lists
 
     * Change Password -- figure out a way to do it or remove it from the menu
 
     * Equivilant Parts -- it would be nice to only show one part if two parts
                           of an e-mail are equivilant (i.e. text & HTML)
 
+    * FAQ -- should this be made a CGI?  Add help on adding whitelist &
+             blacklist options.
+
+    * Filter Viewer -- graphic view of your filters
+
     * Hide Nasty -- need a way to hide the nasty HTML in viewed e-mails
+
+    * Install / Uninstall -- options to allow users to add or remove TMDA
+                             filtering from their e-mail account
+
+    * Language Support -- code to recognize the language an e-mail is in and
+                          include the appropriate language identifiers in the
+                          viewer
 
     * Remove JS -- Javascript code should not be in PendList.py.  It should be
                    in the template pending.ht.
+
+    * SpamCop -- an option to delete/blacklist/forward to SpamCop
+
+    * Tutorial -- someone should write one

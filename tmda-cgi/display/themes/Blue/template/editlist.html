@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sun Apr 20 18:22:32 2003 -->
+<!-- Mon Apr 21 22:13:25 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -79,16 +79,17 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r7_c1.png" name="x545" height="35" width="
       <td height="30" colspan="2"><b>%(FilePath)s:</b></td>
     </tr>
     <tr>
-      <td colspan="2"><textarea name="textarea" cols="30"
+      <td colspan="2"><textarea name="list" cols="30"
         rows="15">%(FileContents)s</textarea></td>
     </tr>
     <tr align="center">
       <td height="30" valign="bottom">
-        <a href="%(Script)s?cmd=blacklist&subcmd=sort&SID=%(SID)s">Sort</a>
+        <a href="%(Script)s?cmd=editlist%(ListNum)d&subcmd=sort&SID=%(SID)s">Sort</a>
       </td>
       <td valign="bottom">
         <input type="submit" value="Save">
-        <input type="hidden" name="cmd" value="blacklist">
+        <input type="hidden" name="cmd" value="editlist%(ListNum)d">
+        <input type="hidden" name="subcmd" value="save">
         <input type="hidden" name="SID" value="%(SID)s">
       </td>
     </tr>
