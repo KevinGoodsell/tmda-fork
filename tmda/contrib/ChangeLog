@@ -1,3 +1,7 @@
+2002-02-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Remove list2cdb and list2bm.
+
 2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add PENDING_CACHE & PENDING_CACHE_LEN.
