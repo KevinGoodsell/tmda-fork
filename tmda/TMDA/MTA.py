@@ -11,19 +11,12 @@ import Defaults
 
 
 class MTA:
-    """Methods and instance variables common to all MTAs. """
+    """Non-qmail methods and instance variables. """
     def __init__(self):
-        pass
-
-
-class Postfix(MTA):
-    """Postfix-specific methods and instance variables."""
-    def __init__(self):
-        MTA.__init__(self)
-        # Postfix exit status codes; see /usr/include/sysexits.h
+        # Exit status codes; see /usr/include/sysexits.h
         self.EX_HARD = 77               # permission denied; bounce message
         self.EX_OK = 0                  # successful termination; exit
-        self.EX_STOP = None             # Postfix doesn't have such an exit code
+        self.EX_STOP = None             # Non-qmail MTAs don't have such an exit code
         self.EX_TEMPFAIL = 75           # temporary failure; defer delivery
         
     # Define the four states of a message.
@@ -63,6 +56,18 @@ class Postfix(MTA):
                 self.defer()
 
 
+class Exim(MTA):
+    """Exim-specific methods and instance variables."""
+    def __init__(self):
+        MTA.__init__(self)
+
+
+class Postfix(MTA):
+    """Postfix-specific methods and instance variables."""
+    def __init__(self):
+        MTA.__init__(self)
+
+
 class Qmail(MTA):
     """qmail-specific methods and instance variables."""
     def __init__(self):
@@ -91,7 +96,9 @@ def init():
     """Factory function which determine what MTA we are running and
     instantiates the corresponding MTA subclass."""
     my_mta = string.capitalize(Defaults.MAIL_TRANSFER_AGENT)
-    if my_mta == 'Postfix':
+    if my_mta == 'Exim':
+        return Exim()
+    elif my_mta == 'Postfix':
         return Postfix()
     elif my_mta == 'Qmail':
         return Qmail()

@@ -1,7 +1,7 @@
 # -*- python -*-
 
-# sample.tmdarc - Sample configuration file for TMDA.  Uncomment and
-# modify to taste.
+# sample.tmdarc - Sample configuration file for TMDA.  Uncomment
+# and/or modify to taste.
 #
 # /etc/tmdarc and ~/.tmdarc are interpreted as a series of Python
 # statements, and as such must follow Python syntax rules.  This file
@@ -24,19 +24,22 @@ import os                                      # don't remove
 
 # CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key!
 
-############################################################
-# Posfix required variables; required only for Postfix users
-############################################################
+#################################################################
+# Non-qmail required variables; required only for non-qmail users
+#################################################################
 
+# MAIL_TRANSFER_AGENT = "exim"
 # MAIL_TRANSFER_AGENT = "postfix"
 
 # LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
+# LOCAL_DELIVERY_AGENT = "/full/path/to/bin/maildrop"
 
+# RECIPIENT_DELIMITER = "-"
 # RECIPIENT_DELIMITER = "+"
 
 #####################################################################
 # Optional variables; the rest may be omitted from the .tmdarc if you
-# wish to take their default values.
+# wish to take the sensible default values.
 #####################################################################
 
 # ALLOW_MODE_640 = 0

@@ -84,7 +84,7 @@ if not vars().has_key('DATADIR'):
 
 # MAIL_TRANSFER_AGENT
 # Defines which mail transfer agent (MTA) software you are running.
-# Possible choices are "postfix" or "qmail"
+# Possible choices are "exim", "postfix" or "qmail"
 # Default is qmail
 if not vars().has_key('MAIL_TRANSFER_AGENT'):
     MAIL_TRANSFER_AGENT = "qmail"
@@ -172,10 +172,14 @@ if not vars().has_key('BOUNCE_REVOKED_CC'):
     BOUNCE_REVOKED_CC = None
 
 # BOUNCE_ENV_SENDER
-# The envelope sender of the bounce message. For a normal bounce, this
-# should be an empty string.
+# The envelope sender of the bounce message.
+# Default is an empty envelope sender <>.
 if not vars().has_key('BOUNCE_ENV_SENDER'):
-    BOUNCE_ENV_SENDER = ''
+    # Exim doesn't like -f ''
+    if MAIL_TRANSFER_AGENT == 'exim':
+        BOUNCE_ENV_SENDER = '<>'
+    else:
+        BOUNCE_ENV_SENDER = ''
 
 # CONFIRM_ACCEPT_NOTIFY
 # Set this variable to 0 if you do not want to generate confirmation

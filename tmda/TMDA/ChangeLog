@@ -1,3 +1,14 @@
+2001-10-31  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py: Add 'exim' as another option for
+	MAIL_TRANSFER_AGENT, and change BOUNCE_ENV_SENDER default if MTA
+	is Exim.
+
+	* MTA.py: Move the Postfix instance variables and methods up to
+	the MTA superclass.  Subclasses automatically inherit this
+	functionality.  The Qmail subclass then overrides all of it since
+	it's unique.  Also, add an Exim subclass.
+
 2001-10-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (findmatch): Downcase each address for case-insensitive
