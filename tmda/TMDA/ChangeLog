@@ -1,3 +1,22 @@
+2002-08-07  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py (_FilterFile): New class to hold per-file data.
+
+	(FilterParser.__init__): Moved Parser initialization to
+	constructor.
+
+	(FilterParser.__pushfile, FilterParser.__popfile,
+	FilterParser.__file): New methods.
+
+	(FilterParser.read, FilterParser.__readrule,
+	FilterParser.__parseargs): Re-coded so recursive calls work.
+
+	(FilterParser.__parse): Re-coded so recursive calls work.  The
+	nested exception is now propagated all the way out.
+
+	(FilterParser.__includefilter): New function.  Recursively loads
+	and parses included filter files.
+
 2002-08-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* FilterParser.py (FilterParser.__findvarsub): Query the Defaults

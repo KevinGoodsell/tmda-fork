@@ -203,6 +203,17 @@ class Macro:
     __str__ = __repr__
 
 
+class _FilterFile:
+    
+    """Storage for per-file data.  Used internally by FilterParser."""
+
+    def __init__(self, filename):
+        self.lineno = 0
+        self.rule_lineno = 0
+        self.pushback = None
+        self.exception = ParsingError(filename)
+
+
 class FilterParser:
     bol_comment = re.compile(r'\s*#')
 
@@ -267,22 +278,37 @@ class FilterParser:
 
 
     def __init__(self):
-        pass
+        self.macros = []
+        self.files = []
+        self.filterlist = []
+
+
+    def __pushfile(self, file):
+        self.files.append(file)
+
+
+    def __popfile(self):
+        if len(self.files) > 0:
+            return self.files.pop()
+        return None
+
+
+    def __file(self):
+        if len(self.files) > 0:
+            return self.files[-1]
+        return None
 
 
     def read(self, filename):
         """Open and read the named filter file if it exists."""
-        self.filename = filename
-        self.macros = []
-        self.filterlist = []
-        self.__lineno = 0
-        self.__rule_lineno = 0
-        self.__pushback = None
-
-        if os.path.exists(filename):
+        try:
             fp = open(filename)
+            self.__pushfile(_FilterFile(filename))
             self.__parse(fp)
             fp.close()
+            self.__popfile()
+        except IOError:
+            pass
             
 
     def __parse(self, fp):
@@ -297,7 +323,7 @@ class FilterParser:
 	messages and, after parsing is completed, the exception is
 	raised.
         """
-        exception = ParsingError(self.filename)
+        file = self.__file()
 
 	while 1:
             try:
@@ -308,37 +334,42 @@ class FilterParser:
                 else:
                     rule_line = self.__expandmacros(rule_line, self.macros[:])
                     rule_line = self.__interpolatevars(rule_line)
-                    rule = self.__parserule(rule_line)
-                    self.filterlist.append(rule)
+                    rule_line = self.__includefilter(rule_line)
+                    if rule_line:
+                        rule = self.__parserule(rule_line)
+                        self.filterlist.append(rule)
             except EOFError:
                 break
+            except ParsingError:
+                raise
             except Error, e:
                 # A non-fatal parsing error occurred.  Set up the
                 # exception but keep going. The exception will be
                 # raised at the end of the file and will contain a
                 # list of all bogus lines.
-                exception.append(self.__rule_lineno, e._msg)
+                file.exception.append(file.rule_lineno, e._msg)
 
         # If any parsing errors occurred raise an exception.
-        if exception.errors:
-            raise exception
+        if file.exception.errors:
+            raise file.exception
 
 
     def __readrule(self, fp):
         rule = None
+        file = self.__file()
 
         while 1:
-	    if self.__pushback:
-		rule = self.__pushback
-		self.__pushback = None
-		self.__rule_lineno = self.__lineno
+	    if file.pushback:
+		rule = file.pushback
+		file.pushback = None
+		file.rule_lineno = file.lineno
 
 	    original_line = fp.readline()
 	    if not original_line:            # exit loop if out of lines
                 if rule:
                     break
 	        raise EOFError
-	    self.__lineno = self.__lineno + 1
+	    file.lineno += 1
             # comment at beginning of line, with or without leading whitespace
             if self.bol_comment.match(original_line):
                 continue
@@ -359,17 +390,17 @@ class FilterParser:
 		else:
 		    # line begins with whitespace, meaning a rule continuation,
                     # but we're not in the middle of a rule.
-                    self.__rule_lineno = self.__lineno
+                    file.rule_lineno = file.lineno
                     raise Error, 'line is improperly indented'
             # line without leading whitespace signifies beginning of new rule
 	    #  (and maybe the end of the current rule)
             else:
 		if rule:
-		    self.__pushback = line
+		    file.pushback = line
 		    break
 		else:
 		    rule = line
-		    self.__rule_lineno = self.__lineno
+		    file.rule_lineno = file.lineno
 	return rule
 
 
@@ -431,7 +462,6 @@ class FilterParser:
 
     def __findvarsub(self, var):
         """Look up 'var' in the Defaults namespace and the environment."""
-        sub = None
         # First, check the Defaults namespace.
         import Defaults
         sub = Defaults.__dict__.get(var, None)
@@ -454,6 +484,30 @@ class FilterParser:
             var = mo.group(1)
             sub = self.__findvarsub(var)
             rule_line = rule_line[:mo.start()] + sub + rule_line[mo.end():]
+        return rule_line
+
+
+    def __includefilter(self, rule_line):
+        optional = 0
+        if 'include' == rule_line[:7].lower():
+            include_line = rule_line[7:]
+            if not include_line:
+                raise Error, "incomplete 'include' statement"
+            if include_line[0] != ' ':
+                errstr = '"%s": unrecognized filter rule' % rule_line.split()[0]
+                raise Error, errstr
+            include_line = include_line.lstrip()
+            if '-optional' == include_line[:9].lower():
+                optional = 1
+                filename = include_line[9:].lstrip()
+            else:
+                filename = include_line
+            filename = os.path.expanduser(filename)
+            if os.path.exists(filename):
+                self.read(filename)
+            elif not optional:
+                raise Error, '"%s": file not found' % filename
+            rule_line = None
         return rule_line
 
 
@@ -544,7 +598,7 @@ class FilterParser:
                 match = mo.group(2) or mo.group(3)
                 action_line = string.lstrip(match_line[mo.end():])
                 actions = self.__buildactions(action_line, source)
-                rule = (source, args, match, actions, self.__rule_lineno)
+                rule = (source, args, match, actions, self.__file().rule_lineno)
 	return rule
 
 
