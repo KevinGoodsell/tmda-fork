@@ -24,6 +24,10 @@
 Usage:  %(Program)s [OPTIONS]
 
 Where:
+    -b <path>
+    --base-dir <path>
+       Specify a path to TMDA.
+
     -c <file>
     --config-file <file>
        Specify a different configuration file other than ~/.tmda/config.
@@ -39,7 +43,7 @@ Where:
 
     -i <path>
     --install-prefix <path>
-       Specify path to tmda-cgi.py other than the currect directory.
+       Specify path to tmda-cgi.py other than the current directory.
 
     -m system-wide|single-user|no-su
     --mode system-wide|single-user|no-su
@@ -58,10 +62,9 @@ Where:
        Overrides the value of CGI_USER found in the configuration files.
        (Only affects system-wide mode.)
 
-By default, this program compiles tmda-cgi in the current directory and sets
-the program to run as the user who compiled it.  If that user is root, the
-resulting CGI will run in system-wide mode.  Otherwise it will run in single-
-user mode. You may optionally specify the -n option to compile for no-su mode.
+If you specify no options, then the program will run in an interactive mode,
+provide defaults for all values, and remember the new values you give it as
+future defaults in case you need to recompile later.
 
 The -i and -m options are seldom needed.  These options are for the rare cases
 when a user other than root needs to compile the program for use in system-
@@ -87,67 +90,124 @@ usual ~<user>/.tmda/config.
 If no ~ is specified, compile will make a "best guess".
 """
 
+import compileall
 import getopt
 import os.path
+import pickle
 import pwd
 import re
 import string
 import sys
 
-import paths
-User = None
-try:
-  import Defaults
-  User = Defaults.CGI_USER
-except ImportError:
-  pass
+def Ask(Question, OptD, Str):
+  "Ask for a member from the keyboard."
+  while 1:
+    print Question
+    Temp = raw_input("(%s): " % OptD[Str]).strip()
+    if Temp:
+      Limit = re.search("\[(.+,.+)\]", Question)
+      if Limit and not (Temp in Limit.group(1).split(", ")): continue
+      OptD[Str] = Temp
+    break
+
+def Interactive(OptD):
+  "Get options interactively."
+  Ask("Location of Python interpreter (version 2.1+)", OptD, "Python")
+  Ask("Target filename (and location) to compile CGI", OptD, "Target")
+  Ask("Path to TMDA root directory", OptD, "Base")
+  Ask("Path to tmda-cgi Python files", OptD, "Path")
+  Ask('User config file location (or "None" for system default)', OptD,
+    "Config")
+  Ask("Relative or absolute web path from CGI to display directory", OptD,
+    "DispDir")
+  if OptD["DispDir"][-1] != "/": OptD["DispDir"] += "/"
+  Ask("CGI mode [system-wide, single-user, no-su]", OptD, "Mode")
+  if OptD["Mode"] == "system-wide":
+    Ask("User name to use while accessing session data", OptD, "User")
+  print
 
 Program = sys.argv[0]
-Target  = "tmda-cgi"
-Perm    = 04755
-Path    = "."
-DispDir = "../display/"
+
+Perm = 04755
+
+# Keep options in one handy dictionary
+OptD = {}
+OptD["Python"]  = sys.executable
+OptD["Target"]  = "tmda-cgi"
+OptD["Base"]    = "../tmda/"
+OptD["Path"]    = "."
+OptD["DispDir"] = "../display/"
+OptD["User"]    = "nobody"
 if os.geteuid():
-  Mode = "single-user"
+  OptD["Mode"] = "single-user"
 else:
-  Mode = "system-wide"
+  OptD["Mode"] = "system-wide"
+if os.environ.has_key("TMDARC"):
+  OptD["Config"] = os.environ["TMDARC"]
+else:
+  OptD["Config"] = "None"
 
 def Usage(Code, Msg=""):
+  "Show usage information and possibly an error message."
   print __doc__ % globals()
   if Msg: print Msg
   sys.exit(Code)
 
 try:
-  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:i:m:nht:u:",
-    ["config-file=", "display-dir=", "help", "install-prefix=", "mode=",
-     "no-su", "target=", "user="])
+  Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:i:m:nht:u:",
+    ["base-dir=", "config-file=", "display-dir=", "help", "install-prefix=",
+     "mode=", "no-su", "target=", "user="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
+# Handle any options passed in
 for Opt, Arg in Opts:
   if Opt in ("-h", "--help"):
     Usage(0)
+  elif Opt in ("-b", "--base-dir"):
+    OptD["Base"] = Arg
   elif Opt in ("-c", "--config-file"):
-    os.environ["TMDARC"] = Arg
+    OptD["Config"] = Arg
   elif Opt in ("-d", "--display-dir"):
     if Arg[-1] == "/":
-      DispDir = Arg
+      OptD["DispDir"] = Arg
     else:
-      DispDir = Arg + "/"
+      OptD["DispDir"] = Arg + "/"
   elif Opt in ("-i", "--install-prefix"):
-    Path = Arg
+    OptD["Path"] = Arg
   elif Opt in ("-t", "--target"):
-    Target = Arg
+    OptD["Target"] = Arg
   elif Opt in ("-m", "--mode"):
     if not Arg in ("system-wide", "single-user", "no-su"):
       Usage(1, "Valid modes are system-wide, single-user, and no-su")
-    Mode = Arg
-    if Arg == "no-su": Perm = 0755
+    OptD["Mode"] = Arg
   elif Opt in ("-n", "--no-su"):
-    Perm = 0755
-    Mode = "no-su"
+    OptD["Mode"] = "no-su"
   elif Opt in ("-u", "--user"):
-    User = Arg
+    OptD["User"] = Arg
+
+# No options means interactive mode
+if not len(Opts):
+  # Try to load options from last interactive run
+  try:
+    F = open("compile.ini")
+    OptD = pickle.load(F)
+    F.close()
+  except IOError:
+    pass
+  Break = 0
+  try:
+    Interactive(OptD)
+  except KeyboardInterrupt:
+    Break = 1
+    print "\nSaving settings. Delete compile.ini to reset back to defaults."
+  try:
+    F = open("compile.ini", "w")
+    pickle.dump(OptD, F)
+    F.close()
+  except IOError:
+    pass
+  if Break: sys.exit()
 
 # Check that we're running in Python version 2.1 or higher
 if sys.version.split()[0] < '2.1':
@@ -168,56 +228,62 @@ when tmda-cgi is run."""
   sys.exit()
 
 # Check that User is valid and unprivileged (system-wide mode only).
-if Mode == "system-wide":
-  if not User:
-    print """Compile terminated.  System-wide mode requires that you specify a non-
-privileged CGI_USER in either a configuration file or with the -u option."""
-    sys.exit()
+if OptD["Mode"] == "system-wide":
   try:
-    if not pwd.getpwnam(User)[2]:
-      print """Compile terminated.  CGI_USER may not be root.  Please specify a non-
+    if not pwd.getpwnam(OptD["User"])[2]:
+      print """Compile terminated.  User may not be root.  Please specify a non-
 privileged user with the -u option."""
       sys.exit()
   except KeyError:
-    print """Compile terminated.  System-wide mode requires that you specify a real, non-
-privileged CGI_USER in either a configuration file or with the -u option."""
+    print """Compile terminated.  User not found.  Please specify a real, non-
+privileged user with the -u option."""
     sys.exit()
 
+OptD["Path"] = os.path.abspath(OptD["Path"])
 
-Path = os.path.abspath(Path)
+if OptD["Mode"] == "no-su": Perm = 0755
 
 # Create dirs.h
 F = open("dirs.h", "w")
-F.write("""#define PYTHON "%s"
-#define INSTALL "%s"
-#define MODE "TMDA_CGI_MODE=%s"
-#define USER "TMDA_CGI_USER=%s"
-#define DISP_DIR "TMDA_CGI_DISP_DIR=%s"
-""" % (sys.executable, Path, Mode, User, DispDir))
-if os.environ.has_key("TMDARC"):
-  TMDARC = os.environ["TMDARC"]
-  if TMDARC.find("~") < 0:
-    TMDARC = string.replace(TMDARC, "/%s/" % os.environ["USER"], "/~/")
+F.write("""#define PYTHON "%(Python)s"
+#define INSTALL "%(Path)s"
+#define MODE "TMDA_CGI_MODE=%(Mode)s"
+#define USER "TMDA_CGI_USER=%(User)s"
+#define DISP_DIR "TMDA_CGI_DISP_DIR=%(DispDir)s"
+#define BASE_DIR "TMDA_BASE_DIR=%(Base)s"
+""" % OptD)
+if OptD["Config"] != "None":
+  if OptD["Config"].find("~") >= 0:
+    OptD["Config"] = string.replace(OptD["Config"], "/%s/" % os.environ["USER"], "/~/")
     print """NOTE:
 tmda-cgi will look for config files at: %s
 Where <user> will be replaced by the user's login name.
-""" % string.replace(TMDARC, "/~/", "/<user>/")
-  F.write("""#define TMDARC "TMDARC=%s"
-""" % TMDARC)
+""" % string.replace(OptD["Config"], "/~/", "/<user>/")
+  F.write("""#define TMDARC "TMDARC=%(Config)s"
+""" % OptD)
 F.close()
+
+print "Compiling..."
 
 # Remove any old tmda-rc
 try:
-  os.unlink(Target)
+  os.unlink(OptD["Target"])
 except: pass
 
 # Compile tmda-cgi
-os.system("gcc tmda-cgi.c -o %s" % Target)
+os.system("gcc tmda-cgi.c -o %s" % OptD["Target"])
 
 # Remove dirs.h
 os.unlink("dirs.h")
 
 # Set permissions
-os.chmod(Target, Perm)
+try:
+  os.chmod(OptD["Target"], Perm)
+except OSError, (ErrNo, StrError):
+  print "Compile aborted.  Error #%d: %s" % (ErrNo, StrError)
+  sys.exit()
+
+# Compile Python code
+compileall.compile_dir(OptD["Path"])
 
 print "Compilation done."
