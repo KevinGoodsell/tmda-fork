@@ -39,14 +39,16 @@ def logit(action_msg,date):
             Subject = message_headers.getheader('subject', 'None')
             Size = str(len(stdin.read()))
             Action = action_msg
-                        
+            actionstr = 'Actn: ' + Action
+            sizestr = '(' + Size + ')'
+            wsbuf = 78 - len(actionstr) - len(sizestr)
+            
             # Write the log entry and then close the log.
             logfile.write('Date: ' + Date + '\n')
             logfile.write('From: ' + From + '\n')
             logfile.write('  To: ' + To + '\n')
             logfile.write('Subj: ' + Subject + '\n')
-            logfile.write('Size: ' + Size + '\n')
-            logfile.write('Actn: ' + Action + '\n')
+            logfile.write(actionstr + ' '*wsbuf + sizestr + '\n')
             logfile.write('\n')
             logfile.close()
 
@@ -67,7 +69,7 @@ def verify_dated_cookie(dated_cookie):
         now = time.time()
         current_date = '%d' % now
         if (cookie_date >= current_date):
-            logit("OK (good dated cookie)",now)
+            logit("OK good_dated_cookie",now)
             sys.exit(Defaults.ERR_OK)
         else:
             print "bounce dated call"
@@ -79,7 +81,7 @@ def verify_sender_cookie(sender_address,sender_cookie):
     sender_address_cookie = Cookie.make_sender_cookie(sender_address)
 
     if (sender_cookie == sender_address_cookie):
-        logit("OK (good sender cookie)", time.time())
+        logit("OK good_sender_cookie", time.time())
         sys.exit(Defaults.ERR_OK)
     else:
         bounce_sender(sender_address,sender_address_cookie)
@@ -92,7 +94,7 @@ def bounce_dated():
     expire_utc_tuple = time.gmtime(expire_date)
     dated_cookie = Cookie.make_dated_cookie(current_date)
     bounce_message = make_dated_bounce(expire_utc_tuple,dated_cookie)
-    logit("BOUNCE (dated)",current_date)
+    logit("BOUNCE dated",current_date)
     print bounce_message
     sys.exit(Defaults.ERR_HARD)
 
@@ -100,7 +102,7 @@ def bounce_dated():
 def bounce_sender(sender_address,sender_address_cookie):
     """Bounce the message back to sender with their sender cookie."""
     bounce_message = make_sender_bounce(sender_address,sender_address_cookie)
-    logit("BOUNCE (sender)",time.time())
+    logit("BOUNCE sender",time.time())
     print bounce_message
     sys.exit(Defaults.ERR_HARD)
 
@@ -191,7 +193,7 @@ def main():
         # Is the sender in the WHITELIST?
         elif os.path.exists(Defaults.WHITELIST) and \
              Whitelist.match(message_headers):
-            logit("OK (whitelist match)", time.time())
+            logit("OK whitelist_match", time.time())
             sys.exit(Defaults.ERR_OK)
         # They get the default tag.
         else:
@@ -200,7 +202,7 @@ def main():
             elif Defaults.COOKIE_TYPE == 'sender':
                 ext = 'sender'
             elif Defaults.COOKIE_TYPE == 'bare':
-                logit("OK (bare)", time.time())
+                logit("OK bare", time.time())
                 sys.exit(Defaults.ERR_OK)
             else:
                 print "unknown cookie type"
