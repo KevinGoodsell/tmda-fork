@@ -1,7 +1,9 @@
 Acknowledgements:
 -----------------
 
-    * Thomas Erskine -- the author of TMS (the predecessor of TMDA).
+    * Thomas Erskine -- the author of TMS, from which TMDA derived the
+      concept of tagged addresses.  TMS served as the impetus for
+      developing TMDA.
 
     * Guido van Rossum -- for creating Python, my language of choice.
       Python allowed me to develop a working version of this software
