@@ -23,6 +23,8 @@ Contributions:
     * Ron Bickers -- countless suggestions, bugfixes, documentation
       additions, and code patches (too many to list).
 
+    * Ed Blackman -- bugfixes.
+
     * Francisco Sam Castillo -- QAdmin-TMDA web management utility.
 
     * Charles Cazabon -- Maildir and mbox delivery code from getmail.

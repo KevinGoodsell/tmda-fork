@@ -83,8 +83,10 @@ def usage(code, msg=''):
         print msg
     sys.exit(code)
 
-try:
-    opts, args = getopt.getopt(sys.argv[1:],
+def processOpts(args):
+    opts = None
+    try:
+	opts, args = getopt.getopt(args,
                                    'c:a:dk:s:hVn', ['config-file=',
                                                     'address=',
                                                     'dated',
@@ -93,45 +95,57 @@ try:
                                                     'help',
                                                     'version',
                                                     'no-newline'])
-except getopt.error, msg:
-    usage(1, msg)
+    except getopt.error, msg:
+	usage(1, msg)
+    return (opts, args)
 
+opts, args = processOpts(sys.argv[1:])
 address = None
 tag = 'dated'
 option = None
 print_newline = 1
 
-for opt, arg in opts:
+for opt, arg in opts[:]:
     if opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
+	opts.remove((opt, arg))
 
 from TMDA import Defaults
 
-for opt, arg in opts:
-    if opt in ('-h', '--help'):
-        usage(0)
-    if opt == '-V':
-        print Version.ALL
-        sys.exit()
-    if opt == '--version':
-        print Version.TMDA
-        sys.exit()
-    elif opt in ('-a', '--address'):
-        address = arg
-    elif opt in ('-d', '--dated'):
-        tag = Defaults.TAGS_DATED[0].lower()
-        try:                            # check for timeout override
-            os.environ['TMDA_TIMEOUT'] = args[0]
-        except IndexError:
-            pass
-    elif opt in ('-k', '--keyword'):
-        tag = Defaults.TAGS_KEYWORD[0].lower()
-        option = arg
-    elif opt in ('-s', '--sender'):
-        tag = Defaults.TAGS_SENDER[0].lower()
-        option = arg
-    elif opt in ('-n', '--no-newline'):
-        print_newline = 0
+while len(opts) > 0:
+    for opt, arg in opts[:]:
+	if opt in ('-h', '--help'):
+	    usage(0)
+	if opt == '-V':
+	    print Version.ALL
+	    sys.exit()
+	if opt == '--version':
+	    print Version.TMDA
+	    sys.exit()
+	elif opt in ('-a', '--address'):
+	    address = arg
+	elif opt in ('-d', '--dated'):
+	    tag = Defaults.TAGS_DATED[0].lower()
+	    option = None
+	    try:                        # check for timeout override
+		os.environ['TMDA_TIMEOUT'] = args[0]
+	    except IndexError:
+		pass
+	    for tmparg in args[:]:
+                if tmparg[0] == '-':
+		    break
+		args.remove(tmparg)
+	    moreOpts, args = processOpts(args)
+	    opts.extend(moreOpts)
+	elif opt in ('-k', '--keyword'):
+	    tag = Defaults.TAGS_KEYWORD[0].lower()
+	    option = arg
+	elif opt in ('-s', '--sender'):
+	    tag = Defaults.TAGS_SENDER[0].lower()
+	    option = arg
+	elif opt in ('-n', '--no-newline'):
+	    print_newline = 0
+	opts.remove((opt, arg))
 
 
 from TMDA import Cookie
