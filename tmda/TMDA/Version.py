@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.81+"
+TMDA = "0.82"
 
 # TMDA version codename
 CODENAME = "Needles"
