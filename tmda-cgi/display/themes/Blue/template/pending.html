@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Apr 15 10:57:02 2003 -->
+<!-- Tue Apr 15 13:41:47 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -103,77 +103,71 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x549" height="35" width="
               height="18" alt="Last"></a><!-- /var --></td>
             <td align="center"><font color="#FFFFFF">%(DispRange)s</font></td>
           </tr>
-<tr bgcolor="#DADCEB">
-  <td colspan="6"><table cellspacing="0" width="100%">
-      <tr valign="bottom">
-        <td height="24"><table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-              <td><img src="%(ThemeDir)s/buttons/options_r1_c1.gif" width="20" 
-                height="15" alt="Leave"></td>
-              <td><img src="%(ThemeDir)s/buttons/options_r1_c2.gif" width="20" 
-                height="15" alt="Release"></td>
-              <td><img src="%(ThemeDir)s/buttons/options_r1_c3.gif" width="20" 
-                height="15" alt="Delete"></td>
+          <tr bgcolor="#DADCEB">
+            <td colspan="6"><table cellspacing="0" width="100%" border=0>
+              <tr valign="bottom">
+                <td height="24" width="20">
+                  <img src="%(ThemeDir)s/buttons/options_r1_c1.gif"
+                   width="20" height="15" alt="Leave">
+                </td>
+                <td width="20">
+                  <img src="%(ThemeDir)s/buttons/options_r1_c2.gif"
+                   width="20" height="15" alt="Release">
+                </td>
+                <td width="20">
+                  <img src="%(ThemeDir)s/buttons/options_r1_c3.gif"
+                   width="20" height="15" alt="Delete">
+                </td>
               <!-- var: WhIcon -->
-                <td><img src="%(ThemeDir)s/buttons/options_r1_c4.gif" width="20" 
-                  height="15" alt="Whitelist"></td>
+                <td width="20">
+                  <img src="%(ThemeDir)s/buttons/options_r1_c4.gif"
+                   width="20" height="15" alt="Whitelist">
+                </td>
               <!-- /var -->
               <!-- var: BlIcon -->
-                <td><img src="%(ThemeDir)s/buttons/options_r1_c5.gif" width="20" 
-                  height="15" alt="Blacklist"></td>
+                <td width="20">
+                  <img src="%(ThemeDir)s/buttons/options_r1_c5.gif"
+                   width="20" height="15" alt="Blacklist">
+                </td>
               <!-- /var -->
-            </tr>
-          </table></td>
-        <td>&nbsp;</td>
-        <th width="150">Sender</th>
-        <td>&nbsp;</td>
-        <th width="250">Subject</th>
-        <td>&nbsp;</td>
-        <th width="80">Date</th>
-        <th width="50">Size</th>
-      </tr>
+                <th width="150">Sender</th>
+                <th width="250">Subject</th>
+                <th width="80">Date</th>
+                <th width="50">Size</th>
+              </tr>
 <!-- var: Row -->
       <tr>
-        <td colspan="8" bgcolor="#7A7AB6" height="1"></td>
+        <td colspan="%(NumCols)s" bgcolor="#7A7AB6" height="1"></td>
       </tr>
       <tr class="%(MsgClass)s">
-        <td><table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-              <td><input type="hidden" name="%(MsgName)s" 
-                value="%(MsgID)s"><input type="radio" name="%(RadioName)s" 
-                value="pass" checked></td>
-              <td><input type="radio" name="%(RadioName)s" value="release"></td>
-              <td><input type="radio" name="%(RadioName)s" value="delete"></td>
-              <!-- var: WhRadio -->
-                <td><input type="radio" name="%(RadioName)s" value="white"></td>
-              <!-- /var -->
-              <!-- var: BlRadio -->
-                <td><input type="radio" name="%(RadioName)s" value="black"></td>
-              <!-- /var -->
-            </tr>
-          </table></td>
-        <td>&nbsp;</td>
-        <td>%(Sender)s</td>
-        <td>&nbsp;</td>
+        <td>
+          <input type="hidden" name="%(MsgName)s" value="%(MsgID)s">
+          <input type="radio" name="%(RadioName)s" value="pass" checked>
+        </td>
+        <td><input type="radio" name="%(RadioName)s" value="release"></td>
+        <td><input type="radio" name="%(RadioName)s" value="delete"></td>
+       <!-- var: WhRadio -->
+        <td><input type="radio" name="%(RadioName)s" value="white"></td>
+       <!-- /var -->
+       <!-- var: BlRadio -->
+        <td><input type="radio" name="%(RadioName)s" value="black"></td>
+       <!-- /var -->
+        <td style="padding-left: 8px">%(Sender)s</td>
         <td>
           <a href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s">%(Subject)s</a>
         </td>
-        <td>&nbsp;</td>
         <td nowrap>%(Date)s</td>
         <td>%(Size)s</td>
       </tr>
 <!-- /var -->
 <!-- var: InProcessRow -->
       <tr>
-        <td colspan="8" bgcolor="#7A7AB6" height="1"></td>
+        <td colspan="%(NumCols)s" bgcolor="#7A7AB6" height="1"></td>
       </tr>
       <tr class="InProcess">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td colspan="%(NumBlankCols)s">&nbsp;</td>
         <td>%(Sender)s</td>
-        <td>&nbsp;</td>
         <td>%(Subject)s</td>
-        <td>&nbsp;</td>
         <td nowrap>%(Date)s</td>
         <td>%(Size)s</td>
       </tr>
