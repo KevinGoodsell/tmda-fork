@@ -1,5 +1,8 @@
 2002-05-22  Jason R. Mastaler  <jason@mastaler.com>
 
+	* Util.py (sendmail): Terminate commandline switch processing with
+	`--'.
+
 	* Defaults.py (ADDED_HEADERS): New variable.
 
 2002-05-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>

@@ -390,8 +390,8 @@ def sendmail(headers, body, envrecip, envsender):
         server.sendmail(envsender, envrecip, (str(headers) + '\n' + body))
         server.quit()
     elif Defaults.OUTGOINGMAIL == 'sendmail':
-        cmd = "%s -f '%s' '%s'" % (Defaults.SENDMAIL_PROGRAM,
-                                   envsender, envrecip)
+        cmd = "%s -f '%s' -- '%s'" % (Defaults.SENDMAIL_PROGRAM,
+                                      envsender, envrecip)
         pipecmd(cmd, str(headers), '\n', body)
     else:
         raise Errors.ConfigError, \
