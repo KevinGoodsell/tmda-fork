@@ -1,3 +1,7 @@
+2002-01-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* inuse.ht (Links): Add Paradigm-Omega, from Robin Lynn Frank.
+	
 2002-01-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* TMDAGenerator.py (TMDAGenerator.__init__): Update copyright for
