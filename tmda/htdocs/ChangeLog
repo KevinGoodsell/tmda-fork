@@ -1,3 +1,8 @@
+2002-03-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-filter.ht: Document the instruction option to the
+	ok,accept,deliver incoming action.
+
 2002-02-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* index.ht (Links): Mention TMDA's local mail delivery agent

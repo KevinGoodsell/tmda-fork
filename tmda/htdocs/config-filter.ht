@@ -250,9 +250,120 @@ outgoing.
 bounce,reject (bounce the message)
 drop,exit,stop (silently drop the message)
 ok,accept,deliver (deliver the message)
+ok,accept,deliver=instruction (deliver to a Maildir, mbox, program, or address)
 confirm (request confirmation for the message)
 
 </blockquote></pre>
+
+The <b>instruction</b> option to <b>ok,accept,deliver</b> can be
+
+used to short-circuit the default delivery method by delivering the
+message to a specific location.  Delivery to 
+qmail-style <a href="http://www.qmail.org/man/man5/maildir.html" TARGET="Resource Window">
+Maildirs</a>, mboxrd-format
+<a href="http://www.qmail.org/man/man5/mbox.html" TARGET="Resource Window">
+mboxes</a>, 
+programs (pipe), and different e-mail addresses
+are supported.
+<br><br>
+
+<table border cellpadding=4 cellspacing=2>
+
+<tr>
+<th>instruction:</th>
+<th>format:</th>
+<th>examples:</th>
+</td>
+
+<tr>
+<td>program (pipe)</td>
+<td>
+A program instruction begins with a vertical bar.  The rest of the line will
+be passed to /bin/sh.  Whitespace and shell variables (i.e, $HOME and
+~) are allowed.
+</td>
+<td>
+<code>
+deliver=|/usr/ucb/vacation jason<br>
+deliver=| /usr/bin/maildrop $HOME/.mailfilter
+</code>
+</td>
+</tr>
+
+<tr>
+<td>forward</td>
+<td>
+A forward instruction begins with an ampersand.  If the address begins with
+a letter or number, you may leave out the ampersand.
+</td>
+<td>
+<code>
+deliver=&johndoe@new.job.com<br>
+deliver=janedoe@new.isp.net
+</code>
+</td>
+</tr>
+
+<tr>
+<td>mbox</td>
+<td>
+An mbox instruction begins with a slash or tilde, and does not end with a
+slash.  Please note the following restrictions below.
+</td>
+<td>
+<code>
+deliver=/home/jason/Mailbox<br>
+deliver=~/Mailbox
+</code>
+</td>
+</tr>
+
+<tr>
+<td>maildir</td>
+<td>
+A maildir instruction begins with a slash or tilde and ends with a slash.
+Please note the following restrictions below.
+</td>
+<td>
+<code>
+deliver=/home/jason/Maildir/<br>
+deliver=~/Maildir/
+</code>
+</td>
+</tr>
+
+</table>
+<br>
+
+<u>Please note the following restrictions to mbox and Maildir delivery:</u><br>
+<ul>
+
+<li>
+TMDA will not create Maildirs or mbox files if they do not exist.  You
+must create them prior to having TMDA deliver mail to them with
+commands like 
+<a href="http://www.qmail.org/man/man1/maildirmake.html" TARGET="Resource Window">
+<em>maildirmake</em></a> 
+and <em>touch</em>.
+<br><br>
+
+<li>
+TMDA requires write access to any Maildir or mbox file you wish to
+deliver mail to.
+<br><br>
+
+<li>
+TMDA will not deliver to an mbox symlink.  Specify the path to the
+actual mbox file instead.
+<br><br>
+
+<li>
+Do not deliver to mbox files located on an NFS filesystem.  This is
+unsafe and can corrupt your mbox file -- this applies to all MDAs, not
+just TMDA.  Use Maildir instead as it is immune to such
+problems.
+</ul>
+<br>
 
 (for outgoing, action can be one of):
 <blockquote><pre>
