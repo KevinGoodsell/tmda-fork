@@ -97,7 +97,7 @@ Set <em>environment</em> as follows under the
 address_pipe: 
   driver = pipe 
   return_fail_output 
-  environment = EXTENSION=${sg{$local_part_suffix}{(^\\-|^\\+)}{}}:\ 
+  environment = EXTENSION=${substr_1:$local_part_suffix}:\
                 RECIPIENT=$local_part$local_part_suffix@$domain 
 </blockquote></pre>
 
