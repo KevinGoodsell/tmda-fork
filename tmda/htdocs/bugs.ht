@@ -2,9 +2,85 @@ Title: TMDA Bugs & Patches
 Links: overview-links.h usage-links.h support-links.h
 
 <h3>TMDA Bugs &amp; Patches</h3>
+Reporting bugs and contributing code are both encouraged, but to make
+things easier on the developers, please adhere to the following guidelines.
+<br><br>
 
 Bug reports and patch submissions should be sent to the
 <a href="http://libertine.org/lists/listinfo/tmda-workers"
 TARGET="Resource Window">tmda-workers</a> mailing list. 
-You do not need to be subscribed to post a message there.
+You <strong>do not</strong> need to be subscribed to post a message there.
 
+<h4>Reporting Bugs:</h4>
+
+In your report, please include at least the following information:
+<ul>
+
+<li>Your TMDA version, your Python version, and your operating system.<br>
+<li>Your type of TMDA installation (tarball, Linux RPM, FreeBSD port, etc.).<br>
+<li>Which MTA you are running (qmail, Postfix, etc.)<br>
+<li>If you are running TMDA from procmail or maildrop.<br>
+<li>Any other information you think might be relevant.<br>
+</ul>
+
+<h4>Submitting Patches:</h4>
+<ul>
+
+<li>
+Emailed patches should preferably be sent in MIME format, with the actual
+patch included as an attachment.
+<br><br>
+
+<li>
+When making patches with <strong>diff</strong>, please use the <b>-u</b>
+option, or if your diff doesn't support it, <b>-c</b>.  Also, it is helpful
+if you create the patch from the top level of the TMDA source
+directory:
+<br><br>
+
+<li>
+Diffs should be made against the current development source from CVS rather
+than the particular TMDA release you happen to be using.
+<br><br>
+
+</ul>
+Here is an example illustrating the above concepts:
+
+<ol>
+
+<li>Checkout the latest developement sources from TMDA's CVS repository.
+This will create a `tmda' subdirectory in your current working directory
+containing the source:
+
+<blockquote><pre>
+% cd /var/tmp
+% cvs -d:pserver:anonymous@cvs.tmda.sf.net:/cvsroot/tmda login
+[press return at the password prompt]
+
+% cvs -z3 -d:pserver:anonymous@cvs.tmda.sf.net:/cvsroot/tmda co tmda
+</blockquote></pre>
+
+<li>Make the necessary changes:
+
+<blockquote><pre>
+% cd /var/tmp/tmda
+(hack, hack, hack....)
+</blockquote></pre>
+
+<li>Create your patch called "tmda.diff":
+
+<blockquote><pre>
+% cd /var/tmp/tmda
+% cvs diff -u > tmda.diff
+</blockquote></pre>
+
+</ol>
+
+If you wish, accompany your patch with an update to the apropriate
+ChangeLog file.  If you use Emacs, you can use the <em>M-x
+add-change-log-entry</em> command to do this automatically.
+
+Guidelines for writing ChangeLog entries are governed by the
+<a href="http://www.gnu.org/prep/standards_toc.html" TARGET="Resource Window">
+GNU coding standards</a>.  See the <em>Change Logs</em> section for
+details.  
