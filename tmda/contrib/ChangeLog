@@ -1,3 +1,9 @@
+2003-02-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tofmipd.init, tofmipd.sysconfig, cgi/tmda-cgi.conf: New support
+	files for making tmda-ofmipd run as a system daemon in the
+	SysV/RedHat style.
+
 2003-02-03  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* sendit.sh: New script from Jesse Guardiani that allows sqwebmail

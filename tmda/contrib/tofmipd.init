@@ -1,0 +1,78 @@
+#!/bin/bash
+#
+# Startup script for the TMDA ofmipd server
+#
+# chkconfig: 2345 87 13
+# description: tofmipd is a server that allows tagging of outgoing mail \
+#          for the TMDA system.
+# processname: tofmipd
+# pidfile: /var/run/tofmipd.pid
+# config: /etc/sysconfig/tofmipd
+
+# Path to the script, server binary, and short-form for messages.
+program=/usr/bin/tmda-ofmipd
+progname=tofmipd
+lockfile=/var/lock/subsys/tofmipd
+pidfile=/var/run/tofmipd.pid
+RETVAL=0
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+if [ -f /etc/sysconfig/$progname ]; then
+        . /etc/sysconfig/$progname
+fi
+
+start() {
+        echo -n $"Starting $progname: "
+        daemon $program $OPTIONS
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ] && touch $lockfile
+        return $RETVAL
+}
+stop() {
+	echo -n $"Stopping $progname: "
+	killproc $program
+	RETVAL=$?
+	echo
+	[ $RETVAL = 0 ] && rm -f $lockfile $pidfile
+}
+reload() {
+	echo -n $"Reloading $progname: "
+	killproc $program -HUP
+	RETVAL=$?
+	echo
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  status)
+        status $program
+	RETVAL=$?
+	;;
+  restart)
+	stop
+	start
+	;;
+  condrestart)
+	if [ -f $pidfile ] ; then
+		stop
+		start
+	fi
+	;;
+  reload)
+        reload
+	;;
+  *)
+	echo $"Usage: $progname {start|stop|restart|condrestart|reload|status}"
+	exit 1
+esac
+
+exit $RETVAL

@@ -57,6 +57,9 @@ Contributions:
 
     * Josh Huber -- tmda.el.
 
+    * Bernard Johnson -- contrib files to support tmda-ofmipd running
+      as a system daemon in SysV/RedHat style.
+
     * Brian Lalor -- testing the initial Sendmail support; bugfixes.
 
     * Tim "FilterParser" Legant -- By far the most prolific
