@@ -529,7 +529,6 @@ def findmatch(list, addrs):
     """Determine whether any of the passed e-mail addresses match a
     Unix shell-style wildcard pattern contained in list.  The
     comparison is case-insensitive."""
-    match = 0
     for address in addrs:
         if address:
             address = string.lower(address)
@@ -549,7 +548,9 @@ def findmatch(list, addrs):
                              or fnmatch.fnmatch(address,p2))
                 else:
                     match = fnmatch.fnmatch(address,p)
-    return match
+                if match:
+                    return 1
+    return 0
 
 
 def wraptext(text, column=70, honor_leading_ws=1):

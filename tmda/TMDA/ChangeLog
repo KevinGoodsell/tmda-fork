@@ -1,3 +1,8 @@
+2003-01-29  Tim Legant  <tim@catseye.net>
+
+	* Util.py (findmatch): Fix bug where the for loop just kept going,
+	regardless of whether a match was found or not.
+
 2003-01-28  Tim Legant  <tim@catseye.net>
 
 	* FilterStore.py: New file.  Part of FilterParser.firstmatch
