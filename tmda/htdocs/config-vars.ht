@@ -67,6 +67,10 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#CGI_CLEANUP_ODDS">CGI_CLEANUP_ODDS</a></td>
+<td><a href="#CGI_CROP_SENDER">CGI_CROP_SENDER</a></td>
+</tr>
+<tr>
+<td><a href="#CGI_CROP_SUBJECT">CGI_CROP_SUBJECT</a></td>
 <td><a href="#CGI_DATE_FORMAT">CGI_DATE_FORMAT</a></td>
 </tr>
 <tr>
@@ -589,6 +593,27 @@ Example:
 <code>CGI_CLEANUP_ODDS = 0.1</code>
 <br><br>
 Default is 0.01 (1%).
+<dt><hr>
+<a name="CGI_CROP_SENDER"><h4>CGI_CROP_SENDER</h4></a>
+<dd>
+Maximum length of a sender's e-mail address before it will be cropped in
+list view.
+<br><br>
+Example:
+<br><br>
+<code>CGI_CROP_SENDER = 40</code>
+<br><br>
+Default is 25.
+<dt><hr>
+<a name="CGI_CROP_SUBJECT"><h4>CGI_CROP_SUBJECT</h4></a>
+<dd>
+Maximum length of an e-mail subject before it will be cropped in list view.
+<br><br>
+Example:
+<br><br>
+<code>CGI_CROP_SUBJECT = 50</code>
+<br><br>
+Default is 40.
 <dt><hr>
 <a name="CGI_DATE_FORMAT"><h4>CGI_DATE_FORMAT</h4></a>
 <dd>

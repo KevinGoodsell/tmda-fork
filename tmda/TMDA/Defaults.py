@@ -449,6 +449,27 @@ if CGI_ACTIVE and not vars().has_key('CGI_URL'):
 if CGI_ACTIVE and not vars().has_key('CGI_CLEANUP_ODDS'):
     CGI_CLEANUP_ODDS = 0.01
 
+# CGI_CROP_SENDER
+# Maximum length of a sender's e-mail address before it will be cropped in
+# list view.
+#
+# Example:
+# CGI_CROP_SENDER = 40
+#
+# Default is 25.
+if CGI_ACTIVE and not vars().has_key('CGI_CROP_SENDER'):
+  CGI_CROP_SENDER = 25
+
+# CGI_CROP_SUBJECT
+# Maximum length of an e-mail subject before it will be cropped in list view.
+#
+# Example:
+# CGI_CROP_SUBJECT = 50
+#
+# Default is 40.
+if CGI_ACTIVE and not vars().has_key('CGI_CROP_SUBJECT'):
+  CGI_CROP_SUBJECT = 40
+
 # CGI_DATE_FORMAT
 # Format string for time.strftime() used when displaying message dates
 # in pending list view.
