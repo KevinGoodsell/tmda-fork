@@ -82,11 +82,24 @@ OPTIONS:
                   
     -A <program>
     --authprog <program>
-        checkpassword compatible command used to check username/password. e.g,
-              `-A /usr/sbin/checkpassword-pam -s id --stdin -- /bin/true'
+        checkpassword compatible command used to check username/password.
+        Examples:
+              -A "/usr/sbin/checkpassword-pam -s id -- /bin/true"
+              -A "/usr/local/vpopmail/bin/vchkpw /usr/bin/true"
         The program must be able to receive the username/password pair
-        on its stdin, and in the following format:
+        on descriptor 3 and in the following format:
               `username\\0password\\0'
+        Any program claiming to be checkpassword-compatible should be able to
+        do this.  If you can tell the program to accept input on another
+        descriptor, such as stdin, don't.  It won't work, because TMDA follows
+        the standard exactly.
+            http://cr.yp.to/checkpwd/interface.html
+        Also, checkpassword-type programs expect to find the name of another
+        program to run on their command line.  For tmda-ofmipd's purpose,
+        (/usr)/bin/true is perfectly fine.
+
+        Note the position of the quotes in the Examples, which cause the the
+        whole string following the -A to be passed as a single argument.
 
     -a <file>
     --authfile <file>
@@ -130,7 +143,7 @@ OPTIONS:
         the domain, on its command line.
 
         This option is for use only with the VPopMail and VMailMgr add-ons to
-        qmail.  See the contrib/ directory for sample scripts.
+        qmail.  See the tmda0.XX/contrib directory for sample scripts.
 
     -v <path_to_qmails_virtualdomains_file>
     --vdomains-path <path_to_qmails_virtualdomains_file>
@@ -143,9 +156,8 @@ OPTIONS:
         need to set this so tmda-ofmipd can find the virtualdomains file.
 
         NOTE: This is only used when you have a qmail installation with virtual
-        domains using the VPopMail or VMailMgr add-ons.  It implies that you
-        will also set the --vhome-script parameter above.  If you set this
-        without setting --vhome-script, tmda-ofmipd will issue a warning."""
+        domains using the VMailMgr add-on.  It implies that you will also set
+        the --vhome-script parameter above."""
 
 import getopt
 import os
@@ -433,7 +445,8 @@ def run_authprog(username, password):
     """authprog should return 0 for auth ok, and a positive integer in
     case of a problem."""
     print >> DEBUGSTREAM, "Trying authprog method"
-    return pipecmd('%s' % authprog, '%s\0%s\0' % (username, password))
+    cmd = "/bin/sh -c 'exec %s 3<&0'" % (authprog,)
+    return pipecmd(cmd, '%s\0%s\0' % (username, password))
 
 
 def quote_rcpts(rcpttos):
