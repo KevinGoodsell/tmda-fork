@@ -8,7 +8,7 @@ import sys
 
 
 def keygen():
-    """Create and return a unique 20-byte (160-bit) key in hex."""
+    """Create and return a unique 160-bit key in hex."""
     # Use the kernel's random number generator if available.
     if os.path.exists("/dev/random"):
         key = open("/dev/random","rb").read(20)
@@ -36,12 +36,13 @@ def keygen():
 
     return binascii.hexlify(key)
         
-print "Generating a unique, 160-bit crypto key, please wait a moment.."
+print "Generating a unique, 160-bit private key, please wait a moment.."
 print
 
 key = keygen()
 
 print "CRYPT_KEY =", '"' + key + '"'
 print
-print "Now paste this line into your ~/.tmdarc file."
+print "Now paste this line into your ~/.tmdarc file,"
+print "and make sure to keep your key secret!"
 

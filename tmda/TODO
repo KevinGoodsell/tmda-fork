@@ -31,6 +31,10 @@ tmda-filter
 	- Make bounces easier for the user to reply to, by perhaps
 	adding a "Reply-To:" containing the new tagged
 	address to the bounce. (suggested by Reuben Sumner)
+
+	- (verify_dated_cookie): Incorrect MACs should be treated
+	differently than expired dates since a wrong MAC is almost
+	certainly a sign that someone is attempting forgery.
 	
 	- Support reading from DBM/GDBM style databases in addition to
 	textfiles.
