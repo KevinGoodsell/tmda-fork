@@ -10,8 +10,6 @@ import string
 import sys
 import types
 
-import Defaults
-
 
 def hexlify(b):
     """Return the hexadecimal representation of the binary data."""
@@ -170,6 +168,7 @@ def substring_match(substrings, *addrs):
                 return 1
   
     except IOError, error_msg:
+        import Defaults
         print error_msg
         sys.exit(Defaults.ERR_IO)
 
@@ -189,6 +188,7 @@ def maketext(templatefile, vardict):
     fp = open(file)
     template = fp.read()
     fp.close()
+    import Defaults
     localdict = Defaults.__dict__.copy()
     localdict.update(vardict)
     text = template % localdict

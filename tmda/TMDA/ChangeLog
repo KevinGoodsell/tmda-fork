@@ -1,3 +1,8 @@
+2001-05-28  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Util.py:  Import Defaults only for functions that need them.
+	Fixes tmda-keygen.
+
 2001-05-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (ALLOW_MODE_640): New variable to support mode 640
