@@ -779,7 +779,8 @@ def bouncegen(mode, text=None, template=None):
 
 def main():
     # Possibly clean the pending queue?
-    if Defaults.PENDING_CLEANUP_ODDS <> 0:
+    if Defaults.PENDING_CLEANUP_ODDS <> 0 and \
+           os.path.exists(Defaults.PENDING_DIR):
         from random import random
         if random() < float(Defaults.PENDING_CLEANUP_ODDS):
             from TMDA import Pending
