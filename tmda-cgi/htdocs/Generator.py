@@ -33,7 +33,7 @@ from types import StringType
 # Constants
 PageWidth = \
 {
-  '': 'width="700"'
+  '': 'width="700"', 'nosu.html': 'width="900"'
 }
 
 from ht2html import __version__

@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="display/styles.css" type="text/css"?>
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Wed Apr 16 15:54:20 2003 -->
+<!-- USING HT2HTML 2.1 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Centralized no-su Setup
+
+-->
+
+<head>
+<title>Centralized no-su Setup</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.1">
+<link rel="STYLESHEET" href="display/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000"
+      onload="Preloader()"
+      link="#0000bb"  vlink="#551a8b"
+      alink="#ff0000">
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="900" height="100%" border="0"
+cellspacing="0" cellpadding="0"><tr><td valign="top"><table class="matte"
+width="100%" height="100%" border="0" cellspacing="0" cellpadding="0"><tr>
+<td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="194" height="135" valign="middle" bgcolor="#7B7CB6" class="corner"><img src="display/corner.gif" width="194" height="135" alt=""></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="top" background="display/top_bg.gif" bgcolor="#7B7CB6" class="banner"><img src="display/title.png" width="341" height="135"
+alt="TMDA (http://tmda.net) CGI Interface"></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="194" background="display/left_bg.gif" bgcolor="#7B7CB6" valign="top" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><a href="index.html"
+onmouseover="document.images.x37.src='display/dyn_buttons/layout1_r1_c1_h.png'"
+onmouseout="document.images.x37.src='display/dyn_buttons/layout1_r1_c1.png'"><img
+src="display/dyn_buttons/layout1_r1_c1.png" name="x37" height="50" width="194" border="0" alt="Overview"></a></td></tr>
+<tr><td><a href="virtual.html"
+onmouseover="document.images.x115.src='display/dyn_buttons/layout1_r2_c1_h.png'"
+onmouseout="document.images.x115.src='display/dyn_buttons/layout1_r2_c1.png'"><img
+src="display/dyn_buttons/layout1_r2_c1.png" name="x115" height="35" width="194" border="0" alt="Virtual Users"></a></td></tr>
+<tr><td><img src="display/dyn_buttons/layout1_r3_c1_h.png"
+height="35" width="194" border="0" alt="Install"></td></tr>
+<tr><td><a href="download.html" onmouseover="document.images.subtopic5.src='display/dyn_buttons/h-subtopic5.png'"
+onmouseout="document.images.subtopic5.src='display/dyn_buttons/subtopic5.png'"><img src="display/dyn_buttons/subtopic5.png" border="0" alt=" - Download" width="194" height="14"
+name="subtopic5"></a></td></tr>
+<tr><td><a href="modes.html" onmouseover="document.images.subtopic6.src='display/dyn_buttons/h-subtopic6.png'"
+onmouseout="document.images.subtopic6.src='display/dyn_buttons/subtopic6.png'"><img src="display/dyn_buttons/subtopic6.png" border="0" alt=" - Modes" width="194" height="14"
+name="subtopic6"></a></td></tr>
+<tr><td><a href="compile.html" onmouseover="document.images.subtopic7.src='display/dyn_buttons/h-subtopic7.png'"
+onmouseout="document.images.subtopic7.src='display/dyn_buttons/subtopic7.png'"><img src="display/dyn_buttons/subtopic7.png" border="0" alt=" - Compilation" width="194" height="14"
+name="subtopic7"></a></td></tr>
+<tr><td><img src="display/dyn_buttons/h-subtopic8.png" border="0" alt=" - Centralized no-su" width="194" height="14"
+name="subtopic8"></td></tr>
+<tr><td><a href="auth.html"
+onmouseover="document.images.x447.src='display/dyn_buttons/layout1_r4_c1_h.png'"
+onmouseout="document.images.x447.src='display/dyn_buttons/layout1_r4_c1.png'"><img
+src="display/dyn_buttons/layout1_r4_c1.png" name="x447" height="35" width="194" border="0" alt="Passwords"></a></td></tr>
+<tr><td><a href="config.html"
+onmouseover="document.images.x527.src='display/dyn_buttons/layout1_r5_c1_h.png'"
+onmouseout="document.images.x527.src='display/dyn_buttons/layout1_r5_c1.png'"><img
+src="display/dyn_buttons/layout1_r5_c1.png" name="x527" height="35" width="194" border="0" alt="Config."></a></td></tr>
+<tr><td><a href="surprise.html"
+onmouseover="document.images.x607.src='display/dyn_buttons/layout1_r6_c1_h.png'"
+onmouseout="document.images.x607.src='display/dyn_buttons/layout1_r6_c1.png'"><img
+src="display/dyn_buttons/layout1_r6_c1.png" name="x607" height="35" width="194" border="0" alt="Support"></a></td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" class="body"><h2>Centralized no-su Setup</h2>
+<p>If you have multiple users using tmda-cgi in no-su mode, then you might 
+  consider moving all of your TMDA files into one central location. This will 
+  make it easier to keep group permissions on your directories and files. Here's 
+  some sample directories and file contents I set up for my user 
+  <tt>cgitest</tt>:</p>
+<blockquote>
+  <tt>/etc:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-r--r-- &nbsp; &nbsp;1 root &nbsp; &nbsp; root &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 22 Nov 24 23:54 tmda-cgi<br>
+-rw-r--r-- &nbsp; &nbsp;1 root &nbsp; &nbsp; root &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;557 Nov 27 15:05 tmdarc<br>
+-rw------- &nbsp; &nbsp;1 tofmipd &nbsp;tofmipd &nbsp; &nbsp; &nbsp; &nbsp;49 Nov 10 11:02 tofmipd</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>drwxr-s--x &nbsp; &nbsp;3 root &nbsp; &nbsp; nobody &nbsp; &nbsp; &nbsp; &nbsp; 72 Nov 27 11:24 tmda</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>drwx--s--- &nbsp; &nbsp;6 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;200 Nov 27 11:39 cgitest</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 11:39 config<br>
+-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; 41 Nov 27 11:39 crypt_key<br>
+drwx--s--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; 96 Nov 27 12:55 filters<br>
+drwx--s--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;144 Nov 27 12:59 lists<br>
+drwx--s--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;120 Nov 27 12:57 logs<br>
+drwxrws--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; 48 Nov 27 11:37 pending<br>
+drwx--s--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;768 Nov 29 09:54 responses<br>
+drwxr-sr-x &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;200 Dec &nbsp;6 20:33 templates</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/filters:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;153 Nov 27 12:54 incoming<br>
+-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;150 Nov 27 12:55 outgoing</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/lists:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:59 blacklist<br>
+-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:59 confirmed<br>
+-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:59 whitelist</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/logs:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:57 debug<br>
+-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:57 in<br>
+-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:57 out</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/templates:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-r--r-- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;407 Dec &nbsp;6 20:30 bounce.txt<br>
+-rw-r--r-- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;215 Dec &nbsp;6 20:30 confirm_accept.txt<br>
+-rw-r--r-- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;702 Dec &nbsp;6 20:33 confirm_request.txt</tt></td>
+    </tr>
+  </table><br>
+  <tt>/etc/tmda-cgi:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>cgitest:XPkY0q/9Uge9I</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/filters/incoming:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>from-file /var/tmda/cgitest/lists/blacklist reject<br>
+from-file /var/tmda/cgitest/lists/whitelist accept<br>
+from-file /var/tmda/cgitest/lists/confirmed accept</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/filters/outgoing:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>to-file /var/tmda/cgitest/lists/whitelist tag envelope dated=10d from bare<br>
+to-file /var/tmda/cgitest/lists/confirmed tag envelope dated=10d from bare</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/templates/confirm_request.txt:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>From.US-ASCII: "%(FULLNAME)s" &lt;%(recipient_address)s><br>
+Subject.US-ASCII: Please confirm your message<br>
+Reply-To.US-ASCII: %(confirm_accept_address)s<br>
+BodyCharset: US-ASCII<br>
+&nbsp;<br>
+This message was created automatically by mail delivery software<br>
+(TMDA).<br>
+&nbsp;<br>
+Your message attached below is being held because the address<br>
+&lt;%(confirm_append_address)s> has not been verified.<br>
+&nbsp;<br>
+To release your message for delivery, please send an empty message<br>
+to the following address, surf the following link, or use your<br>
+mailer's "Reply" feature.<br>
+&nbsp;<br>
+ &nbsp; %(confirm_accept_address)s<br>
+&nbsp;<br>
+ &nbsp; %(confirm_accept_url)s<br>
+&nbsp;<br>
+This confirmation verifies that your message is legitimate and not<br>
+junk-mail. You should only have to confirm your address once.</tt></td>
+    </tr>
+  </table><br>
+  <tt>/etc/tmdarc:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>import Util<br>
+&nbsp;<br>
+# Allow group access to critical files<br>
+ALLOW_MODE_640 = 1<br>
+os.umask(0027)<br>
+&nbsp;<br>
+# Locate important files and directories<br>
+DATADIR = "/var/tmda/%s/" % os.environ["USER"]<br>
+        CONFIRM_APPEND &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "lists/confirmed"<br>
+FILTER_INCOMING &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= DATADIR + "filters/incoming"<br>
+FILTER_OUTGOING &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= DATADIR + "filters/outgoing"<br>
+LOGFILE_DEBUG &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= DATADIR + "logs/debug"<br>
+LOGFILE_INCOMING &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "logs/in"<br>
+LOGFILE_OUTGOING &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "logs/out"<br>
+PENDING_BLACKLIST_APPEND = DATADIR + "lists/blacklist"<br>
+PENDING_WHITELIST_APPEND = DATADIR + "lists/whitelist"<br>
+TEMPLATE_DIR &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "templates/"<br>
+&nbsp;<br>
+# CGI location<br>
+CGI_URL = "http://wolfhome.com/~cgitest/index2.cgi"<br>
+<br>
+# Define X-Primary-Address key for TMDA-to-TMDA communications<br>
+ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
+ &nbsp;(os.environ["USER"], Util.gethostname()) }</tt></td>
+    </tr>
+  </table><br>
+  <tt>~cgitest/.qmail:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>|preline /usr/src/tmda/bin/tmda-filter -c /var/tmda/cgitest/config<br>
+./Maildir/</tt></td>
+    </tr>
+  </table>
+</blockquote>
+<p>tmda-cgi was compiled with the following options:</p>
+<blockquote>
+  <dl>
+    <dt><tt>config</tt> file path:</dt>
+    <dd>/var/tmda/~/config<p></dd>
+    <dt>mode:</dt>
+    <dd>no-su<p></dd>
+    <dt>authentication:</dt>
+    <dd>file<p></dd>
+    <dt>virtual user lookup script:</dt>
+    <dd>None</dd>
+  </dl>
+</blockquote>
+</td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table></td></tr></table></td></tr></table><!-- end of page table -->
+<script>
+<!--
+function Preloader()
+{
+  var x37 = new Image();
+x37.src = "display/dyn_buttons/layout1_r1_c1_h.png";
+  var x115 = new Image();
+x115.src = "display/dyn_buttons/layout1_r2_c1_h.png";
+var subtopic5 = new Image();
+subtopic5.src = "display/dyn_buttons/h-subtopic5.png";
+var subtopic6 = new Image();
+subtopic6.src = "display/dyn_buttons/h-subtopic6.png";
+var subtopic7 = new Image();
+subtopic7.src = "display/dyn_buttons/h-subtopic7.png";
+  var x447 = new Image();
+x447.src = "display/dyn_buttons/layout1_r4_c1_h.png";
+  var x527 = new Image();
+x527.src = "display/dyn_buttons/layout1_r5_c1_h.png";
+  var x607 = new Image();
+x607.src = "display/dyn_buttons/layout1_r6_c1_h.png";
+}
+//-->
+</script>
+</body></html>
