@@ -5,3 +5,6 @@ FILTER_INCOMING = "%(Home)s/.tmda/filters/incoming"
 FILTER_OUTGOING = "%(Home)s/.tmda/filters/outgoing"
 LOGFILE_DEBUG = "%(VPop)s/tmdadebug.log"
 LOGFILE_INCOMING = "%(VPop)s/tmdaincoming.log"
+ADDED_HEADERS_CLIENT = {"X-Primary-Address": "%(User)s@%(Domain)s"}
+PENDING_BLACKLIST_APPEND = "%(Home)s/.tmda/lists/blacklist"
+PENDING_WHITELIST_APPEND = "%(Home)s/.tmda/lists/whitelist"

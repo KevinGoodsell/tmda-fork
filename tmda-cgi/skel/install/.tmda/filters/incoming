@@ -1,4 +1,4 @@
 from-file %(Home)s/.tmda/lists/whitelist ok
 from-file %(Home)s/.tmda/lists/confirmed ok
-from-file %(Home)s/.tmda/lists/revoked confirm
+to-file %(Home)s/.tmda/lists/revoked confirm
 from-file %(Home)s/.tmda/lists/blacklist drop

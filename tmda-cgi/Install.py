@@ -128,7 +128,7 @@ def ExtractTgz(Archive):
 
 Return file list on success, None on error."""
 
-  if os.system("%s -C %s -xzf %s" % (PVars[("NoOverride", "WhichTar")], 
+  if os.system("%s -C %s -xzf %s" % (PVars[("NoOverride", "WhichTar")],
     os.environ["HOME"], Archive)):
     return None
   Files = ReadTgz(Archive)
@@ -426,7 +426,7 @@ Don't release anything if Days=0, release them all if Days=-1."""
     else:
       Threshold = "%dd" % Days
       Younger   = 1
-    Pending.Queue(dispose = "release", threshold = Threshold, younger = 
+    Pending.Queue(dispose = "release", threshold = Threshold, younger =
       Younger, verbose = 0).initQueue().mainLoop()
 
   # Wait for messages to release...
@@ -526,12 +526,15 @@ def Restore():
 def Show():
   "Handle installation."
 
+  import Util
+
   # Make a substitution dictionary
   global Dict
   Dict = \
   {
     "Base":     os.path.abspath(os.environ["TMDA_BASE_DIR"]),
     "CryptKey": KeyGen(),
+    "Domain":   Util.gethostname(),
     "Home":     os.environ["HOME"],
     "Parent":   "..",
     "User":     os.environ["USER"],
