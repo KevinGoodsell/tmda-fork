@@ -376,13 +376,14 @@ def autorespond_to_sender(sender):
     #   - header "Mailing-List:"
     #   - header "X-Mailing-List:"
     #   - header "X-ML-Name:"
+    #   - header "X-List:" (ecartis)
     #   - header "List-(Help|Unsubscribe|Subscribe|Post|Owner|Archive):"
     #     (as per RFC 2369)
     if guilty_header is None:
         list_headers = ['List-Id', 'List-Help', 'List-Subscribe',
                         'List-Unsubscribe', 'List-Post', 'List-Owner',
                         'List-Archive', 'Mailing-List', 'X-Mailing-List',
-                        'X-Ml-Name']
+                        'X-ML-Name', 'X-List']
         for hdr in list_headers:
             if msgin.has_key(hdr):
                 guilty_header = '%s: %s' % (hdr, msgin.get(hdr))
