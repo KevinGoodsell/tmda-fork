@@ -2,7 +2,10 @@
 
 	* tmda-rfilter (verify_dated_cookie): Log expiration date for a
 	good_dated_cookie.
-	
+
+	(send_bounce): Generate In-Reply-To and References header fields
+	if possible.
+
 2002-06-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: Cosmetic improvements.

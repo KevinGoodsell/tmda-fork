@@ -314,18 +314,28 @@ def send_bounce(bounce_message, **vars):
     """Send a confirmation message back to the sender."""
     if auto_reply:
         bounce_message = cStringIO.StringIO(bounce_message)
-        message_headers = rfc822.Message(bounce_message)
+        headers = rfc822.Message(bounce_message)
         # Add some headers.
         timesecs = time.time()
-        message_headers['Date'] = Util.make_date(timesecs)
-        message_headers['Message-ID'] = Util.make_msgid(timesecs)
-        message_headers['To'] = envelope_sender
+        headers['Date'] = Util.make_date(timesecs)
+        headers['Message-ID'] = Util.make_msgid(timesecs)
+        # References
+        refs = [message_headers.getheader(h)
+                for h in ['references', 'message-id']
+                if message_headers.has_key(h)]
+        if refs:
+            headers['References'] = ' '.join(refs)
+        # In-Reply-To
+        if message_headers.has_key('message-id'):
+            headers['In-Reply-To'] = (
+                message_headers.getheader('message-id'))
+        headers['To'] = envelope_sender
         if not vars.has_key('already_confirmed'):
-            message_headers['Reply-To'] = vars['confirm_accept_address']
-        message_headers['Precedence'] = 'bulk'
-        message_headers['X-Delivery-Agent'] = 'TMDA/%s' % Version.TMDA
-        message_body = bounce_message.read()
-        Util.sendmail(message_headers, message_body,
+            headers['Reply-To'] = vars['confirm_accept_address']
+        headers['Precedence'] = 'bulk'
+        headers['X-Delivery-Agent'] = 'TMDA/%s' % Version.TMDA
+        body = bounce_message.read()
+        Util.sendmail(headers, body,
                       envelope_sender, Defaults.BOUNCE_ENV_SENDER)
 
 
