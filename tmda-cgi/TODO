@@ -3,22 +3,14 @@ Things left to do:
 
     * Change Password -- figure out a way to do it or remove it from the menu
 
-    * Equivilant Parts -- it would be nice to only show one part if two parts
-                          of an e-mail are equivilant (i.e. text & HTML)
-
     * FAQ -- should this be made a CGI?  Add help on adding whitelist &
              blacklist options.
 
     * Filter Viewer -- graphic view of your filters
 
-    * Hide Nasty -- need a way to hide the nasty HTML in viewed e-mails
-
     * Language Support -- code to recognize the language an e-mail is in and
                           include the appropriate language identifiers in the
                           viewer
-
-    * Remove JS -- there should be no JS in View.py, it should be in the
-                   template
 
     * SpamCop -- an option to delete/blacklist/forward to SpamCop
 

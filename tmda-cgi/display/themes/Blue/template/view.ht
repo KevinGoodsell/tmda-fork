@@ -1,6 +1,18 @@
 Title: Pending E-mail
 
-%(ConfirmScript)s<table width="100%" border="2" cellpadding="0" cellspacing="0"
+<script>
+function ConfirmDelete()
+{
+  if (confirm("Permanently delete this pending message?\nAny confirmation that follows will fail."))
+    document.location.href = "%(Script)s?cmd=view&subcmd=delete&msgid=%(MsgID)s&SID=%(SID)s"
+}
+function ConfirmBlacklist()
+{
+  if (confirm("Blacklist sender and permanently delete this pending message?"))
+    document.location.href = "%(Script)s?cmd=view&subcmd=black&msgid=%(MsgID)s&SID=%(SID)s"
+}
+</script>
+<table width="100%" border="2" cellpadding="0" cellspacing="0"
   bordercolor="#4E508F">
   <tr>
     <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -42,8 +54,9 @@ Title: Pending E-mail
             height="18" alt="Last" title="Last"></a><!-- /var --></td>
         </tr>
         <tr bgcolor="#DADCEB">
-          <td colspan="%(Columns)d" class="email"><!-- var: Headers --><table
-              class="Headers" border="0" cellspacing="0" cellpadding="0">
+          <td colspan="%(Columns)d" class="email">
+<!-- var: ShortHeaders -->
+            <table class="Headers" border="0" cellspacing="0" cellpadding="0">
 <!-- var: HeaderRow -->
               <tr>
                 <td><b>%(Name)s:</b></td>
@@ -51,8 +64,33 @@ Title: Pending E-mail
                 <td>%(Value)s</td>
               </tr>
 <!-- /var (HeaderRow) -->
-            </table><br><!-- /var (Headers) -->
-            %(Content)s</td>
+            </table><br>
+<!-- /var (ShortHeaders) -->
+<!-- var: AllHeaders -->
+            <pre>%(Headers)s</pre>
+<!-- /var (AllHeaders) -->
+<!-- var: Part -->
+<!-- var: Divider -->
+            <hr width="50%">
+<!-- /var (Divider) -->
+            %(Content)s
+<!-- /var (Part) -->
+<!-- var: NoAttachments -->
+            <table class=Attachments>
+              <tr>
+<!-- var: Attachment -->
+                <td>
+                  <img src="%(DispDir)s/icons/%(Icon)s.gif" width="32" 
+                    height="32"><br>
+                  %(Filename)s<br>
+                  (%(Size)s)
+                </td>
+                <td width="10">&nbsp;</td>
+<!-- /var (Attachment) -->
+              </tr>
+            </table>
+<!-- /var (NoAttachments) -->
+          </td>
         </tr>
         <tr align="center" bgcolor="#7A7AB6" height="24">
           <td><!-- var: FirstButt2 --><a

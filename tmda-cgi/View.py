@@ -36,21 +36,22 @@ from TMDA import Pending
 from TMDA import Util
 
 # Pre-calc the regular expressions
-TextType    = re.compile("^text/")
-MessageType = re.compile("^(message|multipart)/")
-ImageType1  = re.compile("\.(GIF|JPG)$", re.I)
-ImageType2  = re.compile("^image/")
-MovieType1  = re.compile("\.(MOV|AVI|SWF)$", re.I)
-MovieType2  = re.compile("^(video/|application/x-shockwave)")
-PythonType1 = re.compile("\.(PY|PYC|PYO)$", re.I)
-SoundType1  = re.compile("\.(AU|SND|MP3|WAV)$", re.I)
-SoundType2  = re.compile("^audio/")
-TextType1   = re.compile("\.(TXT)$", re.I)
-ZipType1    = re.compile("\.(TGZ|ZIP|BZ|BZ2)$", re.I)
-ZipType2    = re.compile("^application/zip")
+ImageType1   = re.compile("\.(GIF|JPG)$", re.I)
+ImageType2   = re.compile("^image/")
+MovieType1   = re.compile("\.(MOV|AVI|SWF)$", re.I)
+MovieType2   = re.compile("^(video/|application/x-shockwave)")
+PythonType1  = re.compile("\.(PY|PYC|PYO)$", re.I)
+SoundType1   = re.compile("\.(AU|SND|MP3|WAV)$", re.I)
+SoundType2   = re.compile("^audio/")
+TextType1    = re.compile("\.(TXT)$", re.I)
+ZipType1     = re.compile("\.(TGZ|ZIP|BZ|BZ2)$", re.I)
+ZipType2     = re.compile("^application/zip")
 
-def Attachment(Part):
-  "Generates some HTML to display an icon representing the attachment."
+def AddIcon(Part):
+  "Add an appropriate attachment."
+  
+  global Attachment
+  
   Filename = Part.get_filename("")
   Icon = "exe"
   if ImageType1.search(Filename): Icon = "image"
@@ -63,17 +64,15 @@ def Attachment(Part):
   elif MovieType2.search(Part.get_type("text/plain")): Icon = "movie"
   elif SoundType2.search(Part.get_type("text/plain")): Icon = "sound"
   elif ZipType2.search(Part.get_type("text/plain")): Icon = "zip"
-  return """<td>
-  <img src="%sicons/%s.gif" width="32" height="32"><br>
-  %s<br>
-  (%s)
-</td>
-<td width="10">
-</td>""" % (CgiUtil.DispDir, Icon, Filename,
-  CgiUtil.Size(MsgSize = len(Part.as_string())))
+  Attachment["Icon"]     = Icon
+  Attachment["Filename"] = Filename
+  Attachment["Size"]     = CgiUtil.Size(MsgSize = len(Part.as_string()))
+  Attachment.Add()
 
 def Show():
   "Show an e-mail in HTML."
+
+  global Allow, Remove, Attachment, Divider, PartTemplate, T
 
   # Deal with a particular message?
   if Form.has_key("msgid"):
@@ -93,6 +92,7 @@ def Show():
 
   # Get e-mail template
   T = Template.Template("view.html")
+  T["MsgID"] = PVars["MsgID"]
 
   # Locate messages in pending dir
   Msgs = Queue.listPendingIds()
@@ -206,10 +206,11 @@ width="18" height="18" alt="Last">"""
   Queue._addCache(PVars["MsgID"])
   Queue._saveCache()
 
+  # Extract header row
+  HeaderRow = T["HeaderRow"]
   if PVars[("ViewPending", "Headers")] == "all":
     # Remove header table
-    T["HeaderRow"]
-    T["Headers"]
+    T["ShortHeaders"]
 
     # Generate all headers
     Headers = ""
@@ -218,8 +219,8 @@ width="18" height="18" alt="Last">"""
       Headers += Line + "\n"
     T["Headers"] = '<pre class="Headers">%s</pre>' % Headers
   else:
-    # Extract header row
-    HeaderRow = T["HeaderRow"]
+    # Remove all header block
+    T["AllHeaders"]
 
     # Generate short headers
     for Header in Defaults.SUMMARY_HEADERS:
@@ -228,44 +229,14 @@ width="18" height="18" alt="Last">"""
       HeaderRow.Add()
 
   # Go through each part and generate HTML
-  TextParts   = 0
-  Attachments = ""
-  HTML        = ""
-  Allow       = re.split("[,\s]+", PVars[("ViewPending", "AllowTags")])
-  Remove      = re.split("[,\s]+", PVars[("ViewPending", "BlockRemove")])
-  for Part in MsgObj.msgobj.walk():
-    Type = Part.get_type("text/plain")
-    # Display the easily display-able parts
-    if TextType.search(Type):
-      TextParts += 1
-      if TextParts > 1: HTML += '<hr class="PartDiv">'
-      if Type == "text/plain":
-        try:
-          HTML += \
-            CgiUtil.Escape(Part.get_payload(decode=1).strip()).replace("\n",
-              "&nbsp;<br>")
-        except AttributeError:
-          pass
-      else:
-        HTML += CgiUtil.Sterilize(Part.get_payload(decode=1), Allow, Remove)
-    # Don't show anything if the part contains other parts
-    # (those parts will be recursed seperately)
-    elif not MessageType.search(Type):
-      # Create an icon to show other attachments
-      Attachments += Attachment(Part)
-  # Show any attachments at the bottom of the email
-  if Attachments != "":
-    TextParts += 1
-    if TextParts > 1: HTML += '<hr class="PartDiv">'
-    HTML += """<table class=Attachments>
-  <tr>
-    %s
-  </tr>
-</table>
-""" % Attachments
-  T["Content"] = HTML
+  Allow        = re.split("[,\s]+", PVars[("ViewPending", "AllowTags")])
+  Remove       = re.split("[,\s]+", PVars[("ViewPending", "BlockRemove")])
+  Attachment   = T["Attachment"]
+  Divider      = T["Divider"]
+  PartTemplate = T["Part"]
+  ShowPart(MsgObj.msgobj)
 
-  # Remove unneeded icons?
+  # Remove unneeded bits?
   Columns = 9
   if not Defaults.PENDING_BLACKLIST_APPEND:
     Columns -= 1
@@ -276,22 +247,65 @@ width="18" height="18" alt="Last">"""
     T["WhIcon1"]
     T["WhIcon2"]
   T["Columns"] = Columns
-
-  # Javascript confirmation for delete and blacklist?
-  if PVars[("General", "UseJSConfirm")] == "Yes":
-    T["ConfirmScript"] = """<script>
-function ConfirmDelete()
-{
-  if (confirm("Permanently delete this pending message?\\nAny confirmation that follows will fail."))
-    document.location.href = "%(script)s?cmd=view&subcmd=delete&msgid=%(msgid)s&SID=%(SID)s"
-}
-function ConfirmBlacklist()
-{
-  if (confirm("Blacklist sender and permanently delete this pending message?"))
-    document.location.href = "%(script)s?cmd=view&subcmd=black&msgid=%(msgid)s&SID=%(SID)s"
-}
-</script>""" % {"script": os.environ["SCRIPT_NAME"], "msgid": PVars["MsgID"],
-    "SID": PVars.SID}
+  if len(Attachment.HTML) == 0:
+    T["NoAttachments"]
 
   # Display HTML page with email included.
   print T
+
+def ShowPart(Part):
+  "Analyze message part and display it as best possible."
+
+  global Allow, Remove, Divider, PartTemplate, T
+
+  # Each part is one of five things and must be handled accordingly
+  # multipart/alternative - pick one and display it
+  # message or multipart  - recurse through each
+  # text/plain            - escape & display
+  # text/html             - sterilize & display
+  # other                 - show as an attachment
+  if Part.is_multipart():
+    if Part.get_type("multipart/mixed") == "multipart/alternative":
+      # Pick preferred alternative
+      PrefPart   = None
+      PrefRating = -1
+      for SubPart in Part.get_payload():
+        Type = SubPart.get_type("text/plain")
+        Rating = PVars[("ViewPending", "AltPref")].find(Type)
+        # Is this part preferred?
+        if (not PrefPart) or ((PrefRating == -1) and (Rating >= 0)) \
+          or (Rating < PrefRating):
+          PrefPart   = SubPart
+          PrefRating = Rating
+      if PrefPart:
+        ShowPart(PrefPart)
+    else:
+      # Recurse through all subparts
+      for SubPart in Part.get_payload():
+        ShowPart(SubPart)
+  else:
+    Type = Part.get_type("text/plain")
+    # Display the easily display-able parts
+    if Type == "text/plain":
+      # Escape & display
+      try:
+        Str = Part.get_payload(decode=1).strip()
+        T["Content"] = CgiUtil.Escape(Str).replace("\n", "&nbsp;<br>")
+        if len(PartTemplate.HTML) == 1:
+          Divider.Add()
+        PartTemplate.Add()
+      except AttributeError:
+        pass
+    elif Type == "text/html":
+      # Sterilize & display
+      try:
+        T["Content"] = \
+          CgiUtil.Sterilize(Part.get_payload(decode=1), Allow, Remove)
+        if len(PartTemplate.HTML) == 1:
+          Divider.Add()
+        PartTemplate.Add()
+      except AttributeError:
+        pass
+    else:
+      # Display as an attachment
+      AddIcon(Part)

@@ -34,10 +34,10 @@ from TMDA import Errors
 # Handy values
 DispDir        = os.environ["TMDA_CGI_DISP_DIR"]
 ErrTemplate    = "error2.html"
-QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*")
+QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*", re.S)
 UnquotedString = re.compile(r"^(\S+)\s*")
 HomeDirSearch  = re.compile("^~/")
-HTMLTagSearch  = re.compile("</?([^\s>]*).*?>")
+HTMLTagSearch  = re.compile("</?([^\s>]*).*?>", re.S)
 
 # CGI exception classes
 class NotInstalled(Errors.TMDAError):
