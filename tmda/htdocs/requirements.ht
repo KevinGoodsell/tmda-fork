@@ -56,6 +56,7 @@ and <a href="http://www.sendmail.org/" TARGET="Resource Window">Sendmail</a>.
 <br><br>
 
 <li>The <a href="http://www.procmail.org/" TARGET="Resource Window">procmail</a>
+or <a href="http://www.flounder.net/~mrsam/maildrop/" TARGET="Resource Window">maildrop</a> 
 local delivery agent, <strong>if and only if</strong> you are running Sendmail as
 your MTA.
 

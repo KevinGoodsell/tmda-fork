@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Jun  3 15:41:47 2003 -->
+<!-- Tue Jun  3 16:15:17 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -416,24 +416,27 @@ to "| /path/to/bin/tmda-filter"
 
 <a name="sendmail"><h4>TMDA Server Configuration (Sendmail only)</h4></a>
 
-These instructions assume you are running procmail as your local
+These instructions assume you are running either procmail or maildrop as your local
 mailer as described in the 
 <a href="config-pre.html#sendmail">Pre-Configuration</a> page.
-<ol>
 
-<li>Finish setting up your <b>~/.tmda/config</b> and optionally a
+<ol>
+<li>
+Finish setting up your <b>~/.tmda/config</b> and optionally a
 system-wide <b>/etc/tmdarc</b> by reading through the
 included <b>sample.config</b> file.  
 <b>MAIL_TRANSFER_AGENT</b>, <b>DELIVERY</b>, and
 <b>RECIPIENT_DELIMITER</b> are required entries for non-qmail users.
 <br><br>
 
-<li>Set the SENDER, RECIPIENT, and EXTENSION variables, and then
+<li>
+
+<u>Procmail as the local mailer</u><br><br>
+Set the SENDER, RECIPIENT, and EXTENSION variables, and then
 invoke tmda-filter by adding the following snippet to the end of your
 <b>~/.procmailrc</b>.
 
 <blockquote><pre>
-
 # Uncomment this for users without valid shells.
 # SHELL=/bin/sh
 
@@ -456,10 +459,34 @@ EXITCODE=$?
 
 # TMDA takes care of final delivery
 DEFAULT=/dev/null
+</blockquote></pre>
 
+<u>Maildrop as the local mailer</u><br><br>
+Set the SENDER, RECIPIENT, and EXTENSION variables, and then
+invoke tmda-filter by adding the following snippet to the end of your
+<b>~/.mailfilter</b>.
+
+<blockquote><pre>
+# Uncomment this for users without valid shells.
+# SHELL=/bin/sh
+
+# Set the necessary environment variables.
+EXTENSION="$1"
+HOST="$2"
+SENDER="$3"
+if ( "$EXTENSION" ne "" )
+{
+    DELIMITER="+"
+}
+RECIPIENT="$LOGNAME$DELIMITER$EXTENSION@$HOST"
+
+# "to" will deliver to message to tmda-filter.  It will exit with the
+# exit code of the program.
+to "| /path/to/bin/tmda-filter"
 </blockquote></pre>
 
 </ol>
+<hr>
 </td><!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
 </table><!-- end of page table -->

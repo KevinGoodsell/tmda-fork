@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Jun  3 15:26:57 2003 -->
+<!-- Tue Jun  3 16:04:39 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -377,18 +377,22 @@ to the Sendmail developers asking that the recipient delimiter be made configura
 In order to use TMDA, you need some way to obtain the necessary
 envelope information and set the required environment variables.  It
 matters not how you do this, just as long as these variables are
-properly set by the time TMDA sees the message.  We provide a solution
-below for sites with procmail configured as the local mailer.
+properly set by the time TMDA sees the message.  We provide example solutions
+below for sites with 
+<a href="http://www.procmail.org/" TARGET="Resource Window">procmail</a>
+or 
+<a href="http://www.flounder.net/~mrsam/maildrop/" TARGET="Resource Window">maildrop</a> 
+configured as the local mailer.
 <br><br>
 
-If your Sendmail installation is using <a
-href="http://www.procmail.org/" TARGET="Resource Window">procmail</a>
-as its local mailer, the necessary information is passed as a command
-line argument to procmail, typically introduced by the "-a" flag.
-Your <b>.procmailrc</b> will then be able to construct the environment
+<u>Procmail</u><br><br>
+If your Sendmail installation is using procmail as its local mailer,
+the necessary envelope information is passed as a command line argument to
+procmail, typically introduced by the "-a" flag.  Your
+<b>.procmailrc</b> will then be able to construct the environment
 variables from this argument.  The necessary Sendmail configuration
-changes are covered below, and a sample .procmailrc is given on the
-<a href="config-server.html">Server Configuration</a> page.
+changes are covered below, and a sample .procmailrc is given on the <a
+href="config-server.html">Server Configuration</a> page.
 <ol>
 
 <li>Make sure procmail is installed on your server, and then add the
@@ -402,6 +406,33 @@ FEATURE(`local_procmail', `/usr/bin/procmail')
 <li>Now run <b>sendmail.mc</b> through <b>m4</b> to produce your new
 <b>sendmail.cf</b> file, and restart Sendmail so the changes will take
 effect.
+
+</ol>
+
+<u>Maildrop</u><br><br>
+If your Sendmail installation is using maildrop as its local mailer,
+the necessary envelope information is passed as command line arguments to
+maildrop.  Your <b>.mailfilter</b> will then be able to construct the environment
+variables from these arguments.  The necessary Sendmail configuration
+changes are covered below, and a sample .mailfilter is given on the 
+<a href="config-server.html">Server Configuration</a> page.
+<ol>
+
+<li>Make sure maildrop is installed on your server, and then add the
+following rule to your <b>sendmail.mc</b> file if it is not
+already present:
+
+<blockquote><pre>
+FEATURE(local_procmail,`/usr/bin/maildrop',`maildrop -d $u $h $j $g')
+</blockquote></pre>
+
+<li>Now run <b>sendmail.mc</b> through <b>m4</b> to produce your new
+<b>sendmail.cf</b> file, and restart Sendmail so the changes will take
+effect.<br><br>
+
+<li>If for some reason any of your $ macros are not set properly
+please consult the Sendmail documentation. The example above was taken
+from a Redhat Linux 9 system.
 
 </ol>
 
