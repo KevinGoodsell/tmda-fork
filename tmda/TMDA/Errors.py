@@ -58,3 +58,12 @@ class ExpiredAddressError(AddressError):
     """Expired 'dated' address."""
     pass
 
+class QueueError(TMDAError):
+    def __init__(self, errmsg = 'Unknown error'):
+        self.args = errmsg
+
+    def __repr__(self):
+        return '%s:\n%s' % (self.__class__, self.args)
+
+class MessageError(QueueError):
+    pass

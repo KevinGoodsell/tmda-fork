@@ -34,17 +34,6 @@ import Errors
 import Defaults
 import Util
 
-class QueueError:
-    errorMessage = ''
-    def __init__(self, msg = 'Unknown error'):
-        self.errorMessage = msg
-
-    def __repr__(self):
-        return '%s:\n%s' % (self.__class__, self.errorMessage)
-
-class MessageError(QueueError):
-    pass
-
 class Queue:
     """A simple pending queue."""
 
@@ -83,7 +72,7 @@ class Queue:
         """Initialize the queue with the given parameters (see __init__)."""
         self.pendingdir = os.path.join(Defaults.DATADIR, 'pending')
         if not os.path.exists(self.pendingdir):
-            raise QueueError, QueueError('Pending directory %s does not exist, exiting.' % self.pendingdir)
+            raise Errors.QueueError, 'Pending directory %s does not exist, exiting.' % self.pendingdir
     
         # Replace any `-' in the message list with those messages provided
         # via standard input.  (Since it's pointless to call it twice,
@@ -258,7 +247,7 @@ class Queue:
             self.count = self.count + 1
             try:
                 M = Message(msgid, self.command_recipient)
-            except MessageError, obj:
+            except Errors.MessageError, obj:
                 self.cPrint(obj)
                 continue
 
@@ -387,7 +376,7 @@ class Message:
         self.msgid = msgid
         self.msgfile = os.path.join(Defaults.DATADIR, 'pending', self.msgid)
         if not os.path.exists(self.msgfile):
-            raise MessageError, MessageError('%s not found!' % self.msgid)
+            raise Errors.MessageError, '%s not found!' % self.msgid
 
         self.msgobj = email.message_from_file(open(self.msgfile, 'r'))
         self.return_path = email.Utils.parseaddr(
