@@ -116,6 +116,7 @@ height="%(height)d" alt=""" % Buttons[File][1]
     # Make sure the list is properly formatted
     List = re.sub("\r\n", "\n", List)
     List = re.sub("\n*$", "", List)
+    List = re.sub("^\n*", "", List)
     List += "\n"
 
     try:
