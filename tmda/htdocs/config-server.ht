@@ -244,6 +244,9 @@ invoke tmda-filter by adding the following snippet to the end of your
 
 <blockquote><pre>
 
+# Uncomment this for users without valid shells.
+# SHELL=/bin/sh
+
 # Set the necessary environment variables.
 EXTENSION="$1"
 :0
