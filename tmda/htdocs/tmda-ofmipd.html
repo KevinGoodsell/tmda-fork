@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Jan 23 17:43:24 2003 -->
+<!-- Mon Feb  3 14:00:16 2003 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -216,8 +216,8 @@ this, please
 <br><br>
 
 <li>An MUA that supports RFC 2554 SMTP Authentication (i.e, username/password).
-TMDA FAQ 5.6 contains a preliminary list of MUAs known to work with tmda-ofmipd.
-<br><br>
+TMDA <a href="http://tmda.net/faq.cgi?req=all#5.6">FAQ 5.6</a> contains a 
+preliminary list of MUAs known to work with tmda-ofmipd.<br><br>
 NOTE: If your MUA only supports a sendmail command-line interface, but you still
 want to use tmda-ofmipd, see below for some options.
 
@@ -298,35 +298,6 @@ system with once instance of the daemon.
 <h4>Personal mode</h4>
 <ol>
 <li>Create an authentication file as described above in ~/.tmda/tofmipd.
-<br><br>
-
-<li>Start tmda-ofmipd:
-
-<blockquote><pre>
-$ tmda-ofmipd -d &
-[1] 48676
-tmda-ofmipd started at Sun Jul 14 09:31:33 NZST 2002
-        Listening on nightshade.la.mastaler.com:8025
-
-</blockquote></pre>
-tmda-ofmipd is now listening for connections on port 8025 of your server.
-
-<blockquote><pre>
-$ telnet nightshade.la.mastaler.com 8025
-Trying 128.165.148.67...
-Connected to nightshade.la.mastaler.com.
-Escape character is '^]'.
-220 nightshade.la.mastaler.com ESMTP tmda-ofmipd
-quit
-221 Bye
-Connection closed by foreign host.
-
-</blockquote></pre>
-
-The host:port combination can be changed using the `-p' option.  The `-d'
-option prints debugging information to stderr which might be useful until
-you get tmda-ofmipd working as you want it to.
-
 </ol>
 
 <h4>Global mode</h4>
@@ -346,26 +317,25 @@ under FreeBSD:
 
 If you choose a name other than `tofmipd', make sure to start
 tmda-ofmipd with the `-u' option.
-<br><br>
+</ol>
 
-<li>Start tmda-ofmipd as root:
+<h4>Starting tmda-ofmipd</h4>
 
 <blockquote><pre>
-# tmda-ofmipd -d &
-[1] 48676
-tmda-ofmipd started at Sun Jul 14 09:31:33 NZST 2002
-        Listening on nightshade.la.mastaler.com:8025
+$ tmda-ofmipd -d
+tmda-ofmipd started at Mon Feb 3 13:55:37 MST 2003
+        Listening on hrothgar.la.mastaler.com:8025
 
 </blockquote></pre>
-tmda-ofmipd is now running seteuid user `tofmipd', and listening for
+tmda-ofmipd is now listening in the background for
 connections on port 8025 of your server.
 
 <blockquote><pre>
-# telnet nightshade.la.mastaler.com 8025
-Trying 128.165.148.67...
-Connected to nightshade.la.mastaler.com.
+$ telnet hrothgar 8025
+Trying 128.165.147.60...
+Connected to hrothgar.la.mastaler.com.
 Escape character is '^]'.
-220 nightshade.la.mastaler.com ESMTP tmda-ofmipd
+220 hrothgar.la.mastaler.com ESMTP tmda-ofmipd
 quit
 221 Bye
 Connection closed by foreign host.
@@ -375,8 +345,6 @@ Connection closed by foreign host.
 The host:port combination can be changed using the `-p' option.  The `-d'
 option prints debugging information to stderr which might be useful until
 you get tmda-ofmipd working as you want it to.
-
-</ol>
 
 <hr>
 
@@ -397,7 +365,8 @@ http://directory.purdue.edu/MAIL-HUB/md/smtp_auth.html</a><br>
 http://independence.net/internet/port26.htm</a>
 <br><br>
 
-If your MUA only supports a sendmail interface for sending mail, see TMDA FAQ 5.7
+If your MUA only supports a sendmail interface for sending mail, see 
+TMDA <a href="http://tmda.net/faq.cgi?req=all#5.7">FAQ 5.7</a>
 for some options.
 
 </TD><!-- end of body cell -->
