@@ -18,9 +18,7 @@ General
 
 tmda-inject
 	
-	- Possibly support substring matching for the special
-	case addresses in addition to just matching specific
-	addresses.
+	None
 		
 tmda-filter
 

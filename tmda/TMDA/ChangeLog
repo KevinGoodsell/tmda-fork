@@ -1,3 +1,13 @@
+2001-05-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (findmatch): New function to facilitate matching
+	substrings for the special-case addresses.  Used by tmda-inject.
+
+2001-05-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (substring_match): Moved Greylist.py into this function.
+	Greylist.py now obsolete.
+
 2001-05-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (LOCALS): Introduced new variable to support

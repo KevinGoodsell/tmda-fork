@@ -142,6 +142,9 @@ def main():
     message_headers['X-Delivery-Agent'] = 'TMDA ' + 'v' + Defaults.TMDA_VERSION\
                                           + '/Python ' + python_version \
                                           + ' (' + sys.platform + ')'
+
+    # Read in the message body.
+    message_body = message.read()
     
     # Downcase and then combine To:, Cc:, and Bcc: addresses into one list.
     address_list = []
@@ -174,7 +177,7 @@ def main():
         # Delete `X-TMDA' before sending.
         del message_headers['x-tmda']
     else:
-        # Collect all the addresses which are to be treated specially.
+        # Without `X-TMDA', we need to process the special-case files.
         bare_list = []
         if os.path.exists(Defaults.BARE_FILE):
             bare_list = Util.file_to_list(Defaults.BARE_FILE,bare_list)
@@ -189,34 +192,42 @@ def main():
         if os.path.exists(Defaults.SENDER_FILE):
             sender_list = Util.file_to_list(Defaults.SENDER_FILE,sender_list)
 
-        exp_dict = {}
+        exp_list = []
         if os.path.exists(Defaults.EXP_FILE):
-            exp_dict = Util.file_to_dict(Defaults.EXP_FILE,exp_dict)
-
-        ext_dict = {}
-        if os.path.exists(Defaults.EXT_FILE):
-            ext_dict = Util.file_to_dict(Defaults.EXT_FILE,ext_dict)
-
-    # Read in the message body.
-    message_body = message.read()
+            exp_list = Util.file_to_list(Defaults.EXP_FILE,exp_list)
     
-    # If the address is a special case, it gets that special
-    # cookie, otherwise it is tagged with the default cookie type.
+        ext_list = []
+        if os.path.exists(Defaults.EXT_FILE):
+            ext_list = Util.file_to_list(Defaults.EXT_FILE,ext_list)
+
+    # If the address matches a special case, it is tagged accordingly,
+    # otherwise it is tagged with the default cookie type.
     for address in address_list:
+        # If `X-TMDA' is present we are done here.
         if x_tmda_over:
-            pass                        # `X-TMDA' gets first priority.
-        elif address in bare_list:
+            pass                        
+
+        elif Util.findmatch(bare_list,address):
             address_cookie = 'bare'
-        elif address in dated_list:
+
+        elif Util.findmatch(dated_list,address):
             address_cookie = 'dated'
-        elif address in sender_list:
+                    
+        elif Util.findmatch(sender_list,address):
             address_cookie = 'sender'
-        elif exp_dict.has_key(address):
-            address_cookie = 'exp'
-        elif ext_dict.has_key(address):
-            address_cookie = 'ext'
+
         else:
-            address_cookie = Defaults.COOKIE_TYPE
+            exp_match = Util.findmatch(exp_list,address)
+            ext_match = Util.findmatch(ext_list,address)
+        
+            if exp_match:
+                address_cookie = 'exp'
+                if not exp_from_address:exp_from_address = exp_match
+            elif ext_match:
+                address_cookie = 'ext'
+                if not ext_extension:ext_extension = ext_match
+            else:
+                address_cookie = Defaults.COOKIE_TYPE
 
         # The message is sent to each recipient separately so that
         # everyone gets the correct tag.  Make sure your MUA
@@ -229,10 +240,8 @@ def main():
         elif address_cookie == 'sender':
             send_sender(address,str(message_headers),message_body)
         elif address_cookie == 'exp':
-            if not exp_from_address:exp_from_address = exp_dict[address]
             send_exp(address,exp_from_address,str(message_headers),message_body)
         elif address_cookie == 'ext':
-            if not ext_extension:ext_extension = ext_dict[address]
             send_ext(address,ext_extension,str(message_headers),message_body)
         else:
             print "Unknown cookie type:",address_cookie

@@ -54,7 +54,6 @@ for opt, arg in opts:
 import paths
 from TMDA import Cookie
 from TMDA import Defaults
-from TMDA import Greylist
 from TMDA import Util
 
 
@@ -212,10 +211,15 @@ def main():
         ext = ext2
         ext2 = ext3
 
+    # Extract the e-mail address from Envelope-Sender, From:, and Reply-To:
+    Envelope = os.environ.get('SENDER')
+    From = message_headers.getaddr('from')[1]
+    ReplyTo = message_headers.getaddr('reply-to')[1]
+    
     while 1:
         # Is the sender in the BLACKLIST?
         if os.path.exists(Defaults.BLACKLIST) and \
-           Greylist.match(message_headers,Defaults.BLACKLIST):
+           Util.substring_match(Defaults.BLACKLIST, Envelope,From,ReplyTo):
             logit("BOUNCE blacklist_match", time.time())
             if Defaults.BOUNCE_BLACKLIST_CC:
                 bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
@@ -223,7 +227,7 @@ def main():
             sys.exit(Defaults.ERR_HARD)
         # Is the sender in the WHITELIST?
         elif os.path.exists(Defaults.WHITELIST) and \
-             Greylist.match(message_headers,Defaults.WHITELIST):
+             Util.substring_match(Defaults.WHITELIST, Envelope,From,ReplyTo):
             logit("OK whitelist_match", time.time())
             sys.exit(Defaults.ERR_OK)
         # Dated tag?

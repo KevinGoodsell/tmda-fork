@@ -1,6 +1,6 @@
 # -*- python -*-
 
-"""General purpose utility functions."""
+"""General purpose functions."""
 
 
 import fileinput
@@ -8,6 +8,9 @@ import os
 import re
 import string
 import sys
+import types
+
+import Defaults
 
 
 def hexlify(b):
@@ -110,16 +113,65 @@ def file_to_dict(file,dict):
 
 
 def file_to_list(file,list):
-    """Process and add then each line of a textfile to a list."""
-    for address in fileinput.input(file):
-        address = string.strip(address)
+    """Process and then append each line of file to list."""
+    for line in fileinput.input(file):
+        line = string.strip(line)
         # Comment or blank line?
-        if address == '' or address[0] in '#':
+        if line == '' or line[0] in '#':
             continue
         else:
-            address = string.lower(address)
-            list.append(address)
+            line = string.lower(line)
+            list.append(line)
     return list
+
+
+def findmatch(list,address):
+    """Determine whether the substring address is contained in list.
+    Return the 2nd half of the string if it exists (for exp and ext
+    addresses only)."""
+    for s in list:
+        stringparts = string.split(s)
+        if string.find(address,stringparts[0]) != -1:
+            try:
+                return stringparts[1]
+            except IndexError:
+                return 1
+
+
+def substring_match(substrings, *addrs):
+    """Determine whether any of the passed e-mail addresses match a
+    substring contained in substrings which might be a list or a file."""
+    try:
+        regex = None
+        sublist = []
+
+        if type(substrings) is types.ListType:
+            for sub in substrings:
+                sublist.append(re.escape(sub))
+        # We assume a file if substrings is not a list.
+        else:                          
+            for line in fileinput.input(substrings):
+                line = string.strip(line)
+                # Comment or blank line?
+                if line == '' or line[0] in '#':
+                    continue
+                else:
+                    sublist.append(re.escape(line))
+        
+        # "address1|address2|address3|addressN"
+        regex = string.join(sublist,'|')
+        if regex:
+            reo = re.compile(regex, re.I)
+        else:
+            return 0
+        
+        for address in addrs:
+            if address and reo.search(address):
+                return 1
+  
+    except IOError, error_msg:
+        print error_msg
+        sys.exit(Defaults.ERR_IO)
 
 
 def maketext(templatefile, vardict):
@@ -137,7 +189,6 @@ def maketext(templatefile, vardict):
     fp = open(file)
     template = fp.read()
     fp.close()
-    import Defaults
     localdict = Defaults.__dict__.copy()
     localdict.update(vardict)
     text = template % localdict

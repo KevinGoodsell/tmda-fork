@@ -1,3 +1,11 @@
+2001-05-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (main): Special case files can now contain
+	substrings instead of only explicit addresses to match.  To
+	support this, exp and ext cases are now stored in lists like the
+	other cases instead of dictionaries.  Processing is done with
+	Util.findmatch.
+
 2001-05-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-dated-address (main): Support an optional timeout argument
