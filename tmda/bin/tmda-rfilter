@@ -283,7 +283,7 @@ def autorespond_to_sender(sender):
     """Return true if TMDA should auto-respond to this sender."""
     # Try and detect a bounce message.
     if envelope_sender == '<>' or \
-           envelope_sender == '<#@[]>' or \
+           envelope_sender == '#@[]' or \
            envelope_sender.lower().startswith('mailer-daemon'):
         logit ('DROP (envelope sender = %s)' % envelope_sender)
         return 0
