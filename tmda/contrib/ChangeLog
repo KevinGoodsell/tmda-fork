@@ -1,3 +1,9 @@
+2003-02-03  Tim Legant  <tim@catseye.net>
+
+	* vpopmail-vdir.sh (VUSERINFO): Changed the path from a hard-coded
+	/home/vpopmail to ~vpopmail.  This should work on most systems,
+	regardless of where vpopmail is installed.
+
 2003-01-20  Tim Legant  <tim@catseye.net>
 
 	* vmailmgr-vdir.sh: Script to print virtual email user's homedir.

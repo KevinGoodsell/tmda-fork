@@ -11,9 +11,9 @@
 #
 # $ vpopmail-vdir.sh joe example.com
 
-# Change the following paths if VPopMail's vuserinfo program is in a
+# Change the following path if VPopMail's vuserinfo program is in a
 # different location than given here.
-VUSERINFO=/home/vpopmail/bin/vuserinfo
+VUSERINFO=~vpopmail/bin/vuserinfo
 
 if [ -z "$2" ]
 then
