@@ -66,7 +66,7 @@ and set global variables to track what is assigned where."""
 
   global LineNum, AssignVar
 
-  if type(ASP) in StringTypes:
+  if type(ASP) in [StringType, UnicodeType]:
     return ASP
   elif type(ASP[0]) == IntType:
     RetVal = Parse(ASP[1], AllowSym)

@@ -286,15 +286,26 @@ def Install():
     except OSError:
       pass
 
+  # At this point, we need to reload Defaults.  This is easy to do under
+  # Python 2.2, but for some reason Python 2.1 will return an ImportError.
+  # To circumvent this problem, we use execfile and let Defaults be a
+  # dictionary instead of a module to access the contents.  Ugly, but
+  # effective.
+
   # Try to import Defaults again.
   try:
-    from TMDA import Defaults
+    CWD = os.getcwd()
+    os.chdir(os.path.join(os.environ["TMDA_BASE_DIR"], "TMDA"))
+    Defaults = {}
+    execfile("Defaults.py", Defaults)
+    os.chdir(CWD)
   except Errors.ConfigError:
+    os.chdir(CWD)
     Revert(FilesToInstall, Backup, "Re-importing Defaults<br>%s" % ErrStr)
 
   # Prepare template
   T = Template.Template("installed.html")
-  T["EMail"] = "%s@%s" % (Defaults.USERNAME, Defaults.HOSTNAME)
+  T["EMail"] = "%s@%s" % (Defaults["USERNAME"], Defaults["HOSTNAME"])
   Row = T["Row"]
   if len(FilesClobbered):
     # List files clobbered

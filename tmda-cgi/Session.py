@@ -296,7 +296,7 @@ rights.""")
       try:
         self.__suid__("web")
         Filename = os.environ["TMDA_SESSION_PREFIX"] + self.SID
-        if os.stat(Filename).st_uid != os.geteuid():
+        if os.stat(Filename)[4] != os.geteuid():
           CgiUtil.TermError("CGI_USER does not own session file.",
             "Something suspicious is going on here.  This should not happen.",
             "open file",
@@ -468,7 +468,7 @@ rights.""")
           pass
 
   def __delitem__(self, a):
-    if type(a) in StringTypes:
+    if type(a) in [StringType, UnicodeType]:
       del self.PVars[a]
     else:
       ID = ":".join(a)
@@ -478,7 +478,7 @@ rights.""")
         self.ThemeVars.remove_option(a[0], a[1])
 
   def __getitem__(self, a):
-    if type(a) in StringTypes:
+    if type(a) in [StringType, UnicodeType]:
       return self.PVars[a]
     else:
       ID = ":".join(a)
@@ -488,13 +488,13 @@ rights.""")
         return self.ThemeVars.get(a[0], a[1], 1)
 
   def __setitem__(self, a, b):
-    if type(a) in StringTypes:
+    if type(a) in [StringType, UnicodeType]:
       self.PVars[a] = b
     else:
       self.PVars[":".join(a)] = b
 
   def has_key(self, a):
-    if type(a) in StringTypes:
+    if type(a) in [StringType, UnicodeType]:
       return self.PVars.has_key(a)
     else:
       return self.PVars.has_key(":".join(a)) or \

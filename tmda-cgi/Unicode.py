@@ -28,7 +28,7 @@ import Template
 
 # Handy values
 AltChar  = re.compile("[\x80-\xFF]")
-UTF8     = codecs.getencoder("utf-8")
+UTF8     = codecs.lookup("utf-8")[0]
 
 def Xlate(Chr):
   if ord(Chr) >= 160: return unichr(ord(Chr))
