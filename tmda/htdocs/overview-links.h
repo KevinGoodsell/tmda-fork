@@ -4,4 +4,4 @@
 <li><a href="features.html">Features</a>
 <li><a href="results.html">Results &amp; Testimonials</a>
 <li><a href="inuse.html">TMDA In Use</a>
-<li><a href="resources.html">Other Resources</a>
+<li><a href="resources.html">External Resources</a>

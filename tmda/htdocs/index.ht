@@ -15,12 +15,13 @@ system (for unknown, but legitimate senders).  TMDA strives to be more
 effectual, yet less time-consuming than traditional filters.
 <br><br>
 
-TMDA was originally based upon a Perl script written by Thomas Erskine called
+TMDA was originally modeled after a Perl script written by Thomas Erskine called
 <a href="http://www.DeepEddy.Com/tms.html" TARGET="Resource Window">
 Tagged Message Sender</a> (TMS), but has since evolved into a significantly larger and more 
 featureful application.<br><br>
 
-TMDA (and its author) holds the following assumptions about the current Internet infrastructure:<br>
+TMDA's functionality is based upon the following assumptions about the
+current Internet infrastructure:<br>
 <ol>
 <li>You cannot keep your email address secret from spammers.<br>
 <li>Content-based filters can't distinguish spam from legitimate mail with sufficient accuracy.<br>
@@ -50,8 +51,9 @@ To see what the confirmation process looks like,
 This methodology has the advantage of being very selective about what
 it allows in, while at the same time permitting legitimate, but
 previously unknown senders to reach you.  TMDA also has several
-techniques (See the Client Configuration section) that make it easier
-for contacts that aren't on your whitelist to reach you.  <br><br>
+techniques (See the Client Configuration section) that allow senders
+to circumvent the whitelist.  
+<br><br>
 </ul>
 
 <u>Traditional Blacklist-centric Strategy</u>&nbsp;&nbsp;
