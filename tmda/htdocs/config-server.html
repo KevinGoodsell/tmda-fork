@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Jun  3 13:55:13 2003 -->
+<!-- Tue Jun  3 15:41:47 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -263,7 +263,7 @@ delivery of mail messages.
 <tr>
 <td>.qmail</td>
 <td><code>
-|preline /path/to/tmda/bin/tmda-filter<br>
+|preline /path/to/bin/tmda-filter<br>
 ./Mailbox
 </code>
 </td>
@@ -313,7 +313,7 @@ there to <b>.qmail-tmda-default</b>.<br><br>
 <tr>
 <td>.qmail-tmda</td>
 <td><code>
-|preline /path/to/tmda/bin/tmda-filter<br>
+|preline /path/to/bin/tmda-filter<br>
 ./Mailbox
 </code>
 </td>
@@ -362,9 +362,7 @@ included <b>sample.config</b> file.  <b>MAIL_TRANSFER_AGENT</b>, <b>DELIVERY</b>
 <li>Modify <b>~/.forward</b> to send your mail through tmda-filter.
 
 <blockquote><pre>
-
-"| /path/to/tmda/bin/tmda-filter"
-
+"| /path/to/bin/tmda-filter"
 </blockquote></pre>
 
 If this produces a bounce with an <em>env: python: No such file or
@@ -372,9 +370,7 @@ directory</em> error, you will need to add the full path to your Python
 interpreter, e.g,:
 
 <blockquote><pre>
-
-"|/usr/local/bin/python /path/to/tmda/bin/tmda-filter"
-
+"|/path/to/bin/python /path/to/bin/tmda-filter"
 </blockquote></pre>
 
 <li>If you already filter your mail with procmail and wish to continue
@@ -383,26 +379,36 @@ doing so, you can invoke tmda-filter from your <b>.procmailrc</b> instead.<br><b
 Make sure your <b>~/.forward</b> calls procmail with the <b>-p</b> option:
 
 <blockquote><pre>
-
 "|/path/to/bin/procmail -p"
-
 </blockquote></pre>
 
 Finally, add the following snippet to the end of your existing <b>.procmailrc</b>
 to do final delivery:
 
 <blockquote><pre>
-
 # Run the message through tmda-filter.
 :0 w
-| /path/to/tmda/bin/tmda-filter
+| /path/to/bin/tmda-filter
 
 # Take the exit code from TMDA.
 EXITCODE=$?
 
 # TMDA takes care of final delivery
 DEFAULT=/dev/null
+</blockquote></pre>
 
+<li>If you already filter your mail with maildrop and wish to continue
+doing so, you can invoke tmda-filter from your <b>.mailfilter</b> instead.<br><br>
+
+Add the following snippet to the end of your existing <b>.mailfilter</b>
+to do final delivery:
+
+<blockquote><pre>
+import SENDER
+import RECIPIENT
+import EXTENSION
+
+to "| /path/to/bin/tmda-filter"
 </blockquote></pre>
 
 </ol>
@@ -443,7 +449,7 @@ SENDER=`formail -x Return-Path | sed 's/[<>]//g;s/^[ ]*//'`
 
 # Run the message through tmda-filter.
 :0 w
-| /path/to/tmda/bin/tmda-filter
+| /path/to/bin/tmda-filter
 
 # Take the exit code from TMDA.
 EXITCODE=$?
