@@ -11,8 +11,8 @@ from TMDA import Util
 def keygen():
     """Create and return a unique 160-bit key in hex."""
     # Use the kernel's random number generator if available.
-    if os.path.exists("/dev/random"):
-        key = open("/dev/random","rb").read(20)
+    if os.path.exists("/dev/urandom"):
+        key = open("/dev/urandom","rb").read(20)
     # Otherwise generate some pseudo-random data from the command-line
     # and use the SHA of resulting key as the key.
     else:

@@ -1,3 +1,9 @@
+2001-04-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-keygen (keygen): Replace /dev/random with /dev/urandom;
+	/dev/urandom is secure enough for almost any application and saves
+	you from blocking.
+
 2001-04-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (verify_dated_cookie): Modified to accommodate the
