@@ -615,11 +615,11 @@ Default is False (disabled)
 <dt><hr>
 <a name="CONFIG_EXEC"><h4>CONFIG_EXEC</h4></a>
 <dd>
-If set to 0 in GLOBAL_TMDARC, the user's TMDARC file will be parsed
+If set to False in GLOBAL_TMDARC, the user's TMDARC file will be parsed
 using ConfigParser, otherwise it will evaluated as a sequence of
 Python statements using execfile().
 <br><br>
-Default is 1 (execfile())
+Default is True (use execfile())
 <dt><hr>
 <a name="CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY"><h4>CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY</h4></a>
 <dd>
