@@ -1,5 +1,8 @@
 2002-01-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* FilterParser.py (FilterParser.firstmatch): Also pass if
+	cdb.error is raised while matching a CDB file.
+
 	* Defaults.py (RECIPIENT_HEADER): New variable specifying the
 	header whose contents will be taken as the envelope recipient of
 	the message.

@@ -182,7 +182,7 @@ class FilterParser:
                                 self.action = action
                             break
                     if self.action: break
-                except (ImportError, IOError):
+                except (ImportError, IOError, cdb.error):
                     pass
             # Extract addresses from a Mailman list-configuration `database'.
             if (source[:len('from-mailman')] == 'from-mailman' or
