@@ -15,7 +15,7 @@ def gethostname():
                os.environ.get('MAILHOST')
     if not hostname:
         import socket
-        hostname = socket.gethostname()
+        hostname = socket.gethostbyaddr(socket.gethostname())[0]
     return hostname
 
 
