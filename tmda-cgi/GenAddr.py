@@ -151,7 +151,7 @@ def Show():
     T[DestField] = PVars[("TestAddr", "To")] = \
       Address.Factory(tag = Tag).create(Base, Option).address
     PVars.Save()
-  except TypeError:
+  except (TypeError, UnboundLocalError):
     pass
 
   # Display template
