@@ -70,7 +70,7 @@ else:
     username = None
     authfile = os.path.join(os.path.expanduser('~'), '.tmda', 'tofmipd')
 
-
+authtype = 'file'
 
 def warning(msg='', exit=1):
     delimiter = '*' * 70
@@ -250,6 +250,7 @@ def run_remoteauth(username, password):
         try:
             M.login(username, password)
             M.logout()
+            M.close()
             return 1
         except:
             print >> DEBUGSTREAM, "imap authentication for %s@%s failed" % \
@@ -306,6 +307,18 @@ def run_remoteauth(username, password):
             remoteauth['proto']
     return 0
 
+def authenticate_plain(username, password, type=None):
+    if type == None:
+        type = authtype
+    if type == 'remote':
+        return run_remoteauth(username, password)
+    if type == 'prog':
+        return run_authprog(username, password)
+    if type == 'file':
+        ## FIXME: implement /etc/tofmipd auth
+        return 0
+    
+    raise AuthError, "Unknown authentication type '%s'." % type
 
 def authfile2dict(authfile):
     """Iterate over a tmda-ofmipd authentication file, and return a
@@ -354,6 +367,8 @@ def auth_fork(auth_username):
             if status != 0:
                 raise IOError, 'it seems that user %s experienced problems!' \
                                % auth_username
+            return 1
+    return 0
 
 
 pw_uid = None
