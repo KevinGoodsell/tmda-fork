@@ -79,13 +79,6 @@ else:
 if not vars().has_key('DATADIR'):
     DATADIR = os.path.expanduser("~/.tmda/")
 
-# CONFIRMATION_MODE
-# Set this variable to 0 if you do not want bounces confirmed for
-# validity.
-# Default is 1 (turned on)
-if not vars().has_key('CONFIRMATION_MODE'):
-    CONFIRMATION_MODE = 1
-
 # CONFIRM_ACCEPT_NOTIFY
 # Set this variable to 0 if you do not want to generate confirmation
 # acceptance notices.
@@ -128,32 +121,6 @@ if not vars().has_key('BOUNCE_SENDER_CC'):
 if not vars().has_key('BOUNCE_ENV_SENDER'):
     BOUNCE_ENV_SENDER = ''
 
-# BOUNCE_DATED_TEMPLATE
-# Full path to a custom template for 'dated' bounces.
-# Default is bounce_confirm_dated.txt or bounce_dated.txt in
-# ../templates/ depending on CONFIRMATION_MODE.
-if not vars().has_key('BOUNCE_DATED_TEMPLATE'):
-    if CONFIRMATION_MODE:
-        d_template = '/templates/bounce_confirm_dated.txt'
-    else:
-        d_template =  '/templates/bounce_dated.txt'
-    BOUNCE_DATED_TEMPLATE = os.path.split(os.path.dirname
-                                          (os.path.abspath
-                                           (sys.argv[0])))[0] + d_template
-
-# BOUNCE_SENDER_TEMPLATE
-# Full path to a custom template for 'sender' bounces.
-# Default is bounce_confirm_sender.txt or bounce_sender.txt in
-# ../templates/ depending on CONFIRMATION_MODE.
-if not vars().has_key('BOUNCE_SENDER_TEMPLATE'):
-    if CONFIRMATION_MODE:
-        s_template = '/templates/bounce_confirm_sender.txt'
-    else:
-        s_template = '/templates/bounce_sender.txt'
-    BOUNCE_SENDER_TEMPLATE = os.path.split(os.path.dirname
-                                           (os.path.abspath
-                                            (sys.argv[0])))[0] + s_template 
-
 # CONFIRM_ACCEPT_TEMPLATE
 # Full path to a custom template for confirmation acceptance notices.
 # Default is confirm_accept.txt in ../templates/.
@@ -162,6 +129,15 @@ if not vars().has_key('CONFIRM_ACCEPT_TEMPLATE'):
     CONFIRM_ACCEPT_TEMPLATE = os.path.split(os.path.dirname
                                             (os.path.abspath
                                              (sys.argv[0])))[0] + ca_template 
+
+# CONFIRM_REQUEST_TEMPLATE
+# Full path to a custom template for confirmation requests.
+# Default is confirm_request.txt in ../templates/.
+if not vars().has_key('CONFIRM_REQUEST_TEMPLATE'):
+    cr_template = '/templates/confirm_request.txt'
+    CONFIRM_REQUEST_TEMPLATE = os.path.split(os.path.dirname
+                                            (os.path.abspath
+                                             (sys.argv[0])))[0] + cr_template 
     
 # COOKIE_TYPE
 # The default cookie type is dated.  It could be:

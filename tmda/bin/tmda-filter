@@ -6,7 +6,7 @@
 
 """Filter incoming messages on standard input.
 
-Usage:  %(program)s [-c <file>] [-d] [-C <file>] [-D <file>] [-S <file>] [-h]
+Usage:  %(program)s [-c <file>] [-d] [-A <file>] [-R <file>] [-h]
 
 Where:
 	-c <file>
@@ -17,18 +17,14 @@ Where:
 	--discard
 	   Discard message if address is invalid instead of bouncing it.
 
-        -C
+        -A
 	--confirm-accept-template <file>
 	   Full pathname to a custom template for confirmation acceptance notices.
 
-	-D
-	--dated-template <file>
-	   Full pathname to a custom template for 'dated' bounces.
-
-        -S
-	--sender-template <file>
-	   Full pathname to a custom template for 'sender' bounces.
-
+        -R
+	--confirm-request-template <file>
+	   Full pathname to a custom template for confirmation requests.
+           
 	--help
 	-h
 	   Print this help message and exit.
@@ -57,23 +53,20 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:dC:D:S:h',['config-file=',
-                                             'discard',
-                                             'confirm-accept-template='
-                                             'dated-template=',
-                                             'sender-template=',
-                                             'help'])
+                               'c:dA:R:h',['config-file=',
+                                           'discard',
+                                           'confirm-accept-template='
+                                           'confirm-request-template='
+                                           'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
-    elif opt in ('-S', '--sender-template'):
-        os.environ['TMDA_SENDER_TEMPLATE'] = arg
-    elif opt in ('-D', '--dated-template'):
-        os.environ['TMDA_DATED_TEMPLATE'] = arg
-    elif opt in ('-C', '--confirm-accept-template'):
+    elif opt in ('-R', '--confirm-request-template'):
+        os.environ['TMDA_CONFIRM_REQUEST_TEMPLATE'] = arg
+    elif opt in ('-A', '--confirm-accept-template'):
         os.environ['TMDA_CONFIRM_ACCEPT_TEMPLATE'] = arg
     elif opt in ('-d', '--discard'):
 	discard = 1
@@ -144,11 +137,11 @@ def logit(action_msg,date):
 
 
 def send_bounce(bounce_message, **vars):
-    """Send a bounce/confirmation message back to the sender."""
+    """Send a confirmation message back to the sender."""
     bounce_message = cStringIO.StringIO(bounce_message)
     message_headers = rfc822.Message(bounce_message)
     # Add some headers.
-    if Defaults.CONFIRMATION_MODE and not vars.has_key('already_confirmed'):
+    if not vars.has_key('already_confirmed'):
         message_headers['Reply-To'] = vars['confirm_accept_address']
     message_headers['Return-Path'] = '<' + Defaults.BOUNCE_ENV_SENDER + '>'
     message_headers['To'] = envelope_sender
@@ -210,24 +203,17 @@ def locate_pending(timestamp,pid):
     pending_message_pathname = pendingdir + '/' + pending_message
     if os.path.exists(pending_message_pathname):
         if Defaults.CONFIRM_ACCEPT_NOTIFY:
-            if Defaults.COOKIE_TYPE == 'bare':
-                default_from_address = Defaults.USERNAME + '@' + \
-                                       Defaults.HOSTNAME
-            else:
-                default_from_address = Defaults.USERNAME + '-' + \
-                                       Defaults.COOKIE_TYPE + '@' + \
-                                       Defaults.HOSTNAME
-            TMDA_CONFIRM_ACCEPT_TEMPLATE = os.environ.get(
-                'TMDA_CONFIRM_ACCEPT_TEMPLATE')
-            if (TMDA_CONFIRM_ACCEPT_TEMPLATE and
-                os.path.exists(TMDA_CONFIRM_ACCEPT_TEMPLATE)):
-                right_template = TMDA_CONFIRM_ACCEPT_TEMPLATE
-            elif (Defaults.CONFIRM_ACCEPT_TEMPLATE and
-                  os.path.exists(Defaults.CONFIRM_ACCEPT_TEMPLATE)):
-                right_template = Defaults.CONFIRM_ACCEPT_TEMPLATE
+            # Find the right template.
+            env_template = os.environ.get('TMDA_CONFIRM_ACCEPT_TEMPLATE')
+            def_template = Defaults.CONFIRM_ACCEPT_TEMPLATE
+            pkg_template = sys.prefix + '/share/tmda/confirm_accept.txt'
+            if env_template and os.path.exists(env_template):
+                right_template = env_template
+            elif def_template and os.path.exists(def_template):
+                right_template = def_template
             else:
                 # must be installed from a package, so look in ../share/tmda/
-                right_template = sys.prefix + '/share/tmda/confirm_accept.txt'
+                right_template = pkg_template
             bounce_message = Util.maketext(right_template,vars())
             # Send a confirmation accepted notice.
             logit("CONFIRM accept " + pending_message, time.time())
@@ -235,7 +221,7 @@ def locate_pending(timestamp,pid):
         # Reinject the original, now confirmed message.
         inject_pending(pending_message_pathname,timestamp,pid)
     else:
-        print "Sorry, your original message could not be located."
+        print "Sorry, your original message could not be located, please resend."
         sys.exit(Defaults.ERR_HARD)
 
 
@@ -310,7 +296,7 @@ def verify_sender_cookie(sender_address,sender_cookie):
     elif discard:
         sys.exit(Defaults.ERR_STOP)
     else:
-        bouncegen('sender',sender_address_cookie)
+        bouncegen('sender')
 
 
 def bouncegen(mode,passed_cookie=None):
@@ -321,65 +307,47 @@ def bouncegen(mode,passed_cookie=None):
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
     original_message = globals().get('message')
+    timestamp = str('%d' %now)
+    pid = str(os.getpid())
+    confirm_cookie = Cookie.make_confirm_cookie(timestamp,pid,'accept')
+    confirm_accept_address = Defaults.USERNAME + '-confirm-accept.' + \
+                             confirm_cookie + '@' + Defaults.HOSTNAME
+    pendingdir = Defaults.DATADIR + 'pending'
+    pending_message = timestamp + '.' + pid + '.msg'
     if mode == 'dated':                  # only for 'dated'
-        timeout = Util.format_timeout(Defaults.TIMEOUT)
-        expire_date = now + Util.seconds(Defaults.TIMEOUT)
-        expire_utc_tuple = time.gmtime(expire_date)
-        utc_expire_date = time.asctime(expire_utc_tuple)
-        default_template = Defaults.BOUNCE_DATED_TEMPLATE
-        dated_cookie = Cookie.make_dated_cookie('%d' % now)
-        dated_cookie_address = Defaults.USERNAME + '-dated-' + dated_cookie \
-                               + '@' + Defaults.HOSTNAME
         logit("BOUNCE dated",now)
         if Defaults.BOUNCE_DATED_CC:
             bounce_cc(Defaults.BOUNCE_DATED_CC)
     if mode == 'sender':                 # only for 'sender'
-        default_template = Defaults.BOUNCE_SENDER_TEMPLATE
-        sender_cookie_address = Defaults.USERNAME + '-sender-' + \
-                                passed_cookie + '@' + Defaults.HOSTNAME
         logit("BOUNCE sender",time.time())
         if Defaults.BOUNCE_SENDER_CC:
             bounce_cc(Defaults.BOUNCE_SENDER_CC)
-    if Defaults.CONFIRMATION_MODE:
-        timestamp = str('%d' %now)
-        pid = str(os.getpid())
-        confirm_cookie = Cookie.make_confirm_cookie(timestamp,pid,'accept')
-        confirm_accept_address = Defaults.USERNAME + '-confirm-accept.' + \
-                                 confirm_cookie + '@' + Defaults.HOSTNAME
-        pendingdir = Defaults.DATADIR + 'pending'
-        pending_message = timestamp + '.' + pid + '.msg'
-        package_template = sys.prefix + '/share/tmda/bounce_confirm_' \
-                           + mode + '.txt'
-        # Create ~/.tmda/ and friends if necessary.
-        if not os.path.exists(pendingdir):
-            try:
-                os.makedirs(pendingdir,0700) # stores the unconfirmed messages
-            except IOError, error_msg:
-                print error_msg
-                sys.exit(Defaults.ERR_IO)
-        # Write ~/.tmda/pending/TIMESTAMP.PID.msg
-        message_headers['Return-Path'] = '<' + envelope_sender + '>'
-        pending_contents = str(message_headers) + '\n' + message_body
-        Util.writefile(pending_contents, pendingdir + '/' + pending_message)
-        logit("CONFIRM pending " + pending_message, time.time())
-    else:
-        package_template = sys.prefix + '/share/tmda/bounce_' + mode + '.txt'
+    # Create ~/.tmda/ and friends if necessary.
+    if not os.path.exists(pendingdir):
+        try:
+            os.makedirs(pendingdir,0700) # stores the unconfirmed messages
+        except IOError, error_msg:
+            print error_msg
+            sys.exit(Defaults.ERR_IO)
+    # Write ~/.tmda/pending/TIMESTAMP.PID.msg
+    message_headers['Return-Path'] = '<' + envelope_sender + '>'
+    pending_contents = str(message_headers) + '\n' + message_body
+    Util.writefile(pending_contents, pendingdir + '/' + pending_message)
+    logit("CONFIRM pending " + pending_message, time.time())
     # Find the right template.
-    env_template = os.environ.get('TMDA_' + string.upper(mode) + '_TEMPLATE')
+    env_template = os.environ.get('TMDA_CONFIRM_REQUEST_TEMPLATE')
+    def_template = Defaults.CONFIRM_REQUEST_TEMPLATE
+    pkg_template = sys.prefix + '/share/tmda/confirm_request..txt'
     if env_template and os.path.exists(env_template):
         right_template = env_template
-    elif default_template and os.path.exists(default_template):
-        right_template = default_template
+    elif def_template and os.path.exists(def_template):
+        right_template = def_template
     else:
         # must be installed from a package, so look in ../share/tmda/
-        right_template = package_template
-    # Create the bounce message and the send it.
+        right_template = pkg_template
+    # Create the confirmation request and the send it.
     bounce_message = Util.maketext(right_template,vars())
-    if Defaults.CONFIRMATION_MODE:
-        send_bounce(bounce_message,
-                    confirm_accept_address = confirm_accept_address)
-    else:
-        send_bounce(bounce_message)
+    send_bounce(bounce_message,confirm_accept_address = confirm_accept_address)
     sys.exit(Defaults.ERR_STOP)  
 
 

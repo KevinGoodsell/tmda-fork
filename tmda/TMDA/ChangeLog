@@ -1,3 +1,8 @@
+2001-07-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py: Remove CONFIRMATION_MODE, BOUNCE_DATED_TEMPLATE,
+	BOUNCE_SENDER_TEMPLATE, and add CONFIRM_REQUEST_TEMPLATE.  
+
 2001-07-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Change default location of former dot-tmda files to

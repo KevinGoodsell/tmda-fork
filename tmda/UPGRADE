@@ -4,11 +4,16 @@ If you are upgrading from a release of TMDA < 0.30:
 
 Version 0.30 introduced "confirmation mode" where instead of just
 bouncing the message, it will be stored in a pending-queue until the
-sender responds to a confirmation request.  Some configuration changes
-are necessary:
+sender responds to a confirmation request.  This replaces the old
+behavior.  Some configuration changes are necessary:
 
-* Confirmation mode is the default, so if you want to retain the old
-  behavior instead, set "CONFIRMATION_MODE = 0" in your .tmdarc.
+* confirm_request.txt is the template used when generating
+  confirmation requests.  This obsoletes bounce_dated.txt and
+  bounce_sender.txt.  confirm_accept.txt is the template used to
+  generate confirmation acceptance notices.
+
+* The copy of the original message is now added through the template
+  instead of the code.
 
 * The pending message queue will be maintained under ~/.tmda/ by
   default, and it will be created automatically if it doesn't exist.
@@ -25,8 +30,6 @@ are necessary:
   ~/.tmda-ext       -->  ~/.tmda/lists/ext
   ~/.tmda-sender    -->  ~/.tmda/lists/sender
   ~/.tmda-whitelist -->  ~/.tmda/lists/whitelist
-
-* The copy of the original message is now added through the templates.
 
 ======================================================================
 

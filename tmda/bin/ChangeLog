@@ -1,3 +1,7 @@
+2001-07-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter: Make confirmation mode the only option.
+
 2001-07-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: stat module not necessary here.

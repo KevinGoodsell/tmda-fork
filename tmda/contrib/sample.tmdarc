@@ -20,19 +20,15 @@ import os                                      # don't remove
 
 # BOUNCE_DATED_CC = "jdoe-bounces-dated@domain.dom"
 
-# BOUNCE_DATED_TEMPLATE = "/full/path/to/bounce_dated.txt"
-
 # BOUNCE_SENDER_CC = "jdoe-bounces-sender@domain.dom"
 
-# BOUNCE_SENDER_TEMPLATE = "/full/path/to/bounce_sender.txt"
-
 # BOUNCE_ENV_SENDER = ""
-
-# CONFIRMATION_MODE = 1
 
 # CONFIRM_ACCEPT_NOTIFY = 1
 
 # CONFIRM_ACCEPT_TEMPLATE = "/full/path/to/confirm_accept.txt"
+
+# CONFIRM_REQUEST_TEMPLATE = "/full/path/to/confirm_request.txt"
 
 # COOKIE_TYPE = "dated"
 
