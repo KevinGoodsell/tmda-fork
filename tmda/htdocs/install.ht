@@ -31,27 +31,16 @@ installs.
 
 <u>Installation from Linux RPMs</u><br><br>
 
-If you are running Linux, you may wish to install a TMDA package
-instead. Both a "binary" RPM for RedHat-7.x and source
-RPM are available.
+If you are running Linux, you may wish to install TMDA via RPM
+instead.  A binary RPM can be built and installed directly from the source
+tarball:
 
-<br><br>
-<ul>
-<li>RedHat-7.x RPM:<br>
 <blockquote><pre>
 
-# rpm -Uvh tmda-0.01-1.noarch.rpm
-
-</pre></blockquote>
-
-<li>source RPM:<br>
-<blockquote><pre>
-
-# rpm --rebuild tmda-0.01-1.src.rpm
+# rpm -tb tmda-0.01.tgz 
 # rpm -Uvh /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
 
 </pre></blockquote>
-</ul>
 
 <u>Post-Installation</u><br><br>
 
