@@ -150,9 +150,6 @@ BodyCharset: LATIN-1
 
 </pre></blockquote>
 
-The entire <code>BodyCharset</code> field is case-insensitive.
-<br><br>
-
 Then just enter the non-ASCII characters directly into your template
 along with the ASCII characters. TMDA will properly encode the message
 based on the charset you specified.
@@ -164,6 +161,10 @@ plan to use in your template. For example, you can write
 German+Polish+English with LATIN-2 or German+Turkish+English with
 LATIN-5 but there is no 8-bit charset to properly mix
 German+Russian+English, for instance.
+<br><br>
+
+The entire <code>BodyCharset</code> field is case-insensitive. If 
+<code>BodyCharset</code> is not provided, it defaults to US-ASCII.
 
 <h3>Internationalized headers</h3>
 
@@ -190,6 +191,9 @@ From.EUC-JP: "Kenichi OKADA" <%(recipient_address)s>
 Subject.LATIN-1: Please confirm your message / Bitte Bestätigen
 
 </pre></blockquote>
+
+If a charset suffix is not provided, it defaults to US-ASCII for
+that header.
 
 <h3>CJK (Chinese, Japanese, Korean)</h3>
 
