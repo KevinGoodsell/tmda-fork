@@ -28,11 +28,13 @@ Contributions:
 
     * Samuel Hill -- bug fixing
 
+    * Brian Ipsen -- bug fixing
+
     * Bernard Johnson -- RPM & RPM guidance, bug finding, feature suggestions
 
     * Rob Leachman -- bug finding
 
-    * Tim Legant -- authentication
+    * Tim Legant -- authentication, bug solution suggestions
 
     * Gre7g Luterman -- tmda-cgi head-honcho and instigator
 
@@ -52,6 +54,8 @@ Contributions:
 
     * David K. Thompson -- suggestion to support spamassassin by adding an
 			   optional message filter
+
+    * Michael Toulouse -- bug finding
 
     * Simeon Vlahov -- bug finding
 
