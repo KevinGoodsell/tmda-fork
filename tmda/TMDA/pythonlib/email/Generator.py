@@ -356,6 +356,26 @@ class DecodedGenerator(Generator):
 
 
 
+class HeaderParsedGenerator(Generator):
+    """Generate text from a Message created by HeaderParser.
+
+    Header is generated as usual (by Generator).  The payload of a Message
+    created by HeaderParser is a raw string.  No encoding is necessary.  If it
+    came in valid, it goes out valid.  Conversely, if it came in bogus, it goes
+    out bogus.
+    """
+    def _dispatch(self, msg):
+        payload = msg.get_payload()
+        if payload is None:
+            return
+        if not _isstring(payload):
+            raise TypeError, 'string payload expected: %s' % type(payload)
+        if self._mangle_from_:
+            payload = fcre.sub('>From ', payload)
+        self._fp.write(payload)
+
+
+
 # Helper
 _width = len(repr(sys.maxint-1))
 _fmt = '%%0%dd' % _width
