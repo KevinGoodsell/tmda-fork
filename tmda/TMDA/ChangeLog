@@ -1,3 +1,8 @@
+2002-02-21  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py (FilterParser.__readrule): Fixed bug.  Last rule
+	was being ignored.
+
 2002-02-20  Tim Legant  <tim@catseye.net>
 
 	* FilterParser.py (FilterParser.__parse): Cleaned up the last of

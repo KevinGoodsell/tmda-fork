@@ -167,6 +167,8 @@ class FilterParser:
 
 	    original_line = fp.readline()
 	    if not original_line:            # exit loop if out of lines
+                if rule:
+                    break
 	        raise EOFError
 	    self.__lineno = self.__lineno + 1
             # comment at beginning of line, with or without leading whitespace
@@ -189,6 +191,7 @@ class FilterParser:
 		else:
 		    # line begins with whitespace, meaning a rule continuation,
                     # but we're not in the middle of a rule.
+                    self.__rule_lineno = self.__lineno
                     raise Error, 'line is improperly indented'
             # line without leading whitespace signifies beginning of new rule
 	    #  (and maybe the end of the current rule)
