@@ -5,6 +5,10 @@
 	* Added code for "generate address", "test address", and "local config"
 	  buttons.
 
+	* Added a bugfix that was causing some users to get an error when
+	  the pending list tried to find the size of a message.  No idea why
+	  it was doing that!
+
 2003-04-19  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Added code for "theme picker", "logout", and "global config" buttons.
