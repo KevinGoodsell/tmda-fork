@@ -1,3 +1,7 @@
+2002-01-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-filter.ht (Links): Update python-cdb module link.
+
 2002-01-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* index.ht (Links): Link to the Client Configuration page, don't
