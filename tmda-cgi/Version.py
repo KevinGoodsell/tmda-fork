@@ -28,7 +28,7 @@ from TMDA import Version
 tmda_cgi = "0.03"
 
 # tmda-cgi version codename
-Codename = "Helium"
+Codename = "Lithium"
 
 # TMDA version required
 TMDAReqVer = "0.75"
