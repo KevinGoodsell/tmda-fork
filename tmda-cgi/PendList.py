@@ -187,20 +187,30 @@ def Show():
   Searching = 0
   if Form.has_key("searchPattern") and Form.has_key("search"):
     Searching = 1
-    expression = Form['searchPattern'].value % Form['search'].value
-    flags = re.M
-    # TODO: Decide about case-insensitive searching.
-    #       It could be done by default or an HTML for checkbox.
-    # To implement case-insensitive searching:
-    # flags = flags | re.I
+    # By default, set no flags.
+    flags = 0
 
-    # TODO: Improve this efficiency, if possible.
-    #       It can be horribly slow if there are many pending messages.
-    #
-    # Current search algorithm:
-    # - For each message in the pending queue:
-    #   - Do a Python RE match for the expression
-    #   - If it matches, add it to the list.
+    # Check what sort of search - a full body search or just a header search
+    if( re.search( '%s', Form['searchPattern'].value ) ):
+      searchScope = 'fullMessage'
+      expression = Form['searchPattern'].value % Form['search'].value
+      # Do a multiline search through the entire message, matching a newline
+      # with '.'
+      flags = re.MULTILINE | re.DOTALL
+    elif( re.match( '^_header:', Form['searchPattern'].value ) ):
+      ( searchScope, headerList ) = Form['searchPattern'].value.split(':')
+      headerList = headerList.split(',')
+      expression = Form['search'].value
+    elif( Form['searchPattern'].value == "_header" and \
+          Form.has_key("searchHeaderList" ) ):
+      searchScope = Form['searchPattern'].value
+      headerList = Form['searchHeaderList'].value.split(',')
+      expression = Form['search'].value
+
+    # Assume case-insensitive unless the form has 'searchCaseSensitive'
+    if not Form.has_key("searchCaseSensitive"):
+      flags = flags | re.I
+
     exp = re.compile(expression, flags)
     matchingMsgs = []
     for Msg in Msgs:
@@ -208,8 +218,17 @@ def Show():
         MsgObj = Pending.Message(Msg)
       except (IOError, Errors.MessageError), ErrStr:
         continue
-      if exp.search( MsgObj.show() ) != None:
+      # Slow search - Search the fulltext of the message
+      if searchScope == 'fullMessage' and \
+         exp.search( MsgObj.show() ) != None:
         matchingMsgs = matchingMsgs + [ Msg ]
+      # Faster search - just matches a header
+      elif searchScope == '_header':
+        for header in headerList:
+          if MsgObj.msgobj.has_key( header ) and \
+             exp.search( MsgObj.msgobj[ header ] ):
+            matchingMsgs = matchingMsgs + [ Msg ]
+            break
     Msgs = matchingMsgs
     # TODO: Catch the error which results if no matches are found.
 

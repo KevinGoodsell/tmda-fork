@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Dec  4 13:54:50 2003 -->
+<!-- Sat Dec  6 16:15:57 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -385,17 +385,28 @@ function Set(Value)
 <table>
   <tr>
     <td style="font-family: sans-serif; font-weight: bold">
-      Search for
+      Search
     </td>
     <td>
-      <!-- This sets up the search pattern.  The user's input in the "search"
-           box will be put where the '%%s' is in the value of the selected
-           term -->
+      <!-- This sets up the search pattern:
+           - If the value contains '%%s', the user's search argument will be
+             placed into the regular expression and the entire message searched
+             (using a multi-line regular expression search) for that term.
+             This is very slow, especially with a lot of messages.
+           - If the value is of the format '_header:h1,h2,h3...'
+             The user's search argument will be searched for in the headers h1,
+             h2, h3, and so on.  This is much quicker than a regular expression
+             search on the entire message
+           - Theme designers can allow users to type in their own header list.
+             In this case, the search pattern must be '_header' (with no colon)
+             and the form must also supply the field 'searchHeaderList' which is
+             expected to be a comma-delimited list of headers to be searched.
+       -->
       <select name="searchPattern" style="font-weight: bold; text-align: right">
-        <option value="^From: .*%%s.*$">From:&nbsp;
-        <option value="^To: .*%%s.*$">To:&nbsp;
-        <option value="^Cc: .*%%s.*$">Cc:&nbsp;
-        <option value="^Subject: .*%%s.*$" selected>Subject containing:&nbsp;
+        <option value="_header:from">From:&nbsp;
+        <option value="_header:to,cc,x-tmda-recipient">Recipient (To:/CC:)&nbsp;
+        <option value="_header:subject">Subject:&nbsp;
+        <option value="_header:date">Date:&nbsp;
         <option value="^\n.*%%s.*">Body containing:&nbsp;
         <option value="%%s">Pure Regular Expression:&nbsp;
       </select>
@@ -403,11 +414,14 @@ function Set(Value)
     <td>
       <!-- This is the user's search argument which will be inserted into the
            searchPattern above -->
-      <input name="search" size=40>
+      <input name="search" size=30>
     </td>
   </tr>
   <tr>
-    <td colspan=2></td>
+    <td></td>
+    <td align=Left>
+      <input type="checkbox" name="searchCaseSensitive">Case Sensitive
+    </td>
     <td>
       <input type="submit" value="Search">
     </td>
@@ -416,7 +430,7 @@ function Set(Value)
 </form>
 </td></tr></table>
 <P align=center>
-  <i><b>Note:</b> Be patient, the search may take a long time, especially if you have many pending mesages.</i>
+  <i><b>Note:</b> Body searches and "Pure regular expression" searches may take a long time, especially if you have many pending mesages, so please be patient.</i>
 </P>
 <!-- /var -->
 <!-- var: clearSearch -->
