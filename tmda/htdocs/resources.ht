@@ -34,11 +34,6 @@ TARGET="Resource Window">TMDA plugin</a> for the
 <a href="http://www.squirrelmail.org/" TARGET="Resource Window">SquirrelMail</a>
 webmail package.<br><br>
 
-<li>Andrew Wilson has written the Perl module 
-<a href="http://search.cpan.org/search?dist=Mail-Address-Tagged" TARGET="Resource Window">
-Mail::Address::Tagged</a> which generates and validates tagged email addresses.
-<br><br>
-
 <li>Mate Wierdl has written 
 <a href="http://mla.libertine.org/tmda-users/200205/msg00216.html"
 TARGET="Resource Window">tmda4ezmlm</a>, a script that sets up TMDA for an 
