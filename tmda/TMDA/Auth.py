@@ -40,16 +40,18 @@ class Auth(Util.Debugable):
     """Authentication mechanisms for TMDA"""
 
     def __init__(self, authtype=None, autharg=None, \
-                 configdir = None, vhomescript = None, \
-                 vdomainfile = "/var/qmail/control/virtualdomains", \
-                 ipauthmapfile = None, localip = "127.0.0.1" ):
+                 configdir = None, \
+                 vuser = None, vlookupscript = None, \
+                 ipauthmapfile = None, localip = "127.0.0.1",
+                 debugObject = Util.DevnullOutput() ):
         """Setup initial values.
         Optional: authtype and autharg initialize the authentication mechanism
                   configdir to set an alternate directory to /home/user
                     (tmda dir will be configdir/.tmda/ )
-                  vhomescript and optionally vdomainfile for virtual users
+                  vlookupscript and vuser for virtual users
+                  debugObject to begin debugging immediately
         """
-        Util.Debugable.__init__(self)
+        Util.Debugable.__init__(self, debugObject)
 
         # Internal vars
         self.__version__ = Version.TMDA
@@ -123,8 +125,8 @@ class Auth(Util.Debugable):
         # Initialize virtual users if necessary
         self.__use_confdir = 0
         self.__use_vhome = 0
-        if vhomescript is not None:
-            self.setup_vuser( vhomescript, vdomainfile )
+        if vlookupscript is not None:
+            self.setup_vuser( vlookupscript, vdomainfile )
         elif configdir is not None:
             self.setup_configdir( configdir )
 
@@ -373,10 +375,8 @@ class Auth(Util.Debugable):
             retval = 1
         return retval
 
-    def setup_vuser( self, vhomescript, \
-                     vdomainsfile = "/var/qmail/control/virtualdomains"):
-        self.__vhomescript = vhomescript
-        self.__vdomainsfile = vdomainsfile
+    def setup_vuser( self, vlookupscript ):
+        self.__vlookupscript = vlookupscript
         self.__use_vhome = 1
         self.__use_confdir = 0
 
@@ -392,7 +392,7 @@ class Auth(Util.Debugable):
         elif self.__use_vhome:
             if domain is None:
                 raise ValueError, "domain is requined for virtual users"
-            return Util.getvuserhomedir(user, domain, self.__vhomescript)
+            return Util.getvuserhomedir(user, domain, self.__vlookupscript)
         else:
             return Util.gethomedir( username )
 
@@ -404,15 +404,17 @@ class Auth(Util.Debugable):
     def authenticate_plain_file(self, username, password):
         """Checks authdict for the password.
         Return 1 for a match, 0 otherwise."""
-        self.debug( "Trying file authentication" )
+        self.debug( "Trying file authentication with '%s'" % self.__authfile )
         import crypt
         self.__update_authdict()
         pw = self.__authdict.get(username.lower(), 0)
         if pw == 0:
+            self.debug( "No user %s" % username.lower() )
             raise Errors.AuthError, \
                 ( "User %s not found in password file" % username, \
                   "Ensure that this user exists in '%s'" % self.__authfile )
         if pw == "":
+            self.debug( "Blank %s password" % username.lower() )
             raise Errors.AuthError, \
                 ( "User %s is denied login" % username, \
                   "Blank password in file '%s'" % self.__authfile )
