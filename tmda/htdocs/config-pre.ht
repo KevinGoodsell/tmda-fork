@@ -79,6 +79,23 @@ character you choose matches <b>RECIPIENT_DELIMITER</b> in your
 
 Edit your Exim run time configuration file as follows:
 
+<h5>MAIN CONFIGURATION</h5>
+
+<ol>
+<li>
+TMDA uses sendmail's `-f' option to set the envelope sender
+address on outgoing messages.  By default this option is only
+available to Exim's "trusted users".  You can also add
+<b>untrusted_set_sender = true</b> to your Exim configuration
+which allows untrusted users use of the -f command line option.
+<br><br>
+
+If you cannot set this option for some reason, a workaround
+is to set <strong>MAIL_TRANSPORT = "smtp"</strong> in your
+~/.tmda/config, which will cause TMDA to send mail using direct
+SMTP instead of the sendmail command, thus bypassing this problem.
+</ol>
+
 <h5>DIRECTOR/ROUTER CONFIGURATION</h5>
 
 <ol>
