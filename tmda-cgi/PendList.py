@@ -170,33 +170,7 @@ width="18" height="18" alt="Last">"""
   # Javascript confirmation?
   if PVars[("General", "UseJSConfirm")]:
     T["OnSubmit"] = 'onSubmit="return TestConfirm()"'
-    T["ConfirmScript"] = """<script>
-function TestConfirm()
-{
-  ToBlacklist = 0
-  ToDelete = 0
-  for (i = 0; i < %s; i++)
-  {
-    action = document.forms.actions["a" + i]
-    if (action)
-      for (j = 0; j < action.length; j++)
-      {
-        if (action[j].checked && (action[j].value == "blacklist")) ToBlacklist++
-        if (action[j].checked && (action[j].value == "delete")) ToDelete++
-      }
-  }
-  if (ToDelete)
-    if (ToBlacklist) Msg = "Permanently delete and blacklist"
-    else Msg = "Permanently delete"
-  else
-    if (ToBlacklist) Msg = "Permanently blacklist"
-    else return true
-  if ((ToDelete + ToBlacklist) == 1) Msg += " this pending message?"
-  else Msg += " these pending messages?"
-  if (ToDelete) Msg += "\\nAny confirmation that follows will fail."
-  return confirm(Msg)
-}
-</script>""" % PVars[("PendingList", "PagerSize")]
+  T["PagerSize"] = PVars[("PendingList", "PagerSize")]
 
   # Parse out embedded variables from template
   Row          = T["Row"]

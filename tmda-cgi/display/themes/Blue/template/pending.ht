@@ -1,6 +1,35 @@
 Title: Pending E-mail
 
-%(ConfirmScript)s<table border="2" cellpadding="0" cellspacing="0"
+<script>
+<!-- Hide script
+function TestConfirm()
+{
+  ToBlacklist = 0
+  ToDelete = 0
+  for (i = 0; i < %(PagerSize)s; i++)
+  {
+    action = document.forms.actions["a" + i]
+    if (action)
+      for (j = 0; j < action.length; j++)
+      {
+        if (action[j].checked && (action[j].value == "blacklist")) ToBlacklist++
+        if (action[j].checked && (action[j].value == "delete")) ToDelete++
+      }
+  }
+  if (ToDelete)
+    if (ToBlacklist) Msg = "Permanently delete and blacklist"
+    else Msg = "Permanently delete"
+  else
+    if (ToBlacklist) Msg = "Permanently blacklist"
+    else return true
+  if ((ToDelete + ToBlacklist) == 1) Msg += " this pending message?"
+  else Msg += " these pending messages?"
+  if (ToDelete) Msg += "\nAny confirmation that follows will fail."
+  return confirm(Msg)
+}
+// -->
+</script>
+<table border="2" cellpadding="0" cellspacing="0"
   bordercolor="#4E508F">
   <tr>
     <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
