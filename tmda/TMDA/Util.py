@@ -35,7 +35,6 @@ import pwd
 import re
 import socket
 import stat
-import string
 import sys
 import tempfile
 import time
@@ -266,9 +265,9 @@ def unixdate(timesecs=None):
         timesecs = time.time()
     timetuple = time.localtime(timesecs)
     tzname = time.tzname[timetuple[-1]]
-    asctime_list = string.split(time.asctime(timetuple))
+    asctime_list = time.asctime(timetuple).split()
     asctime_list.insert(len(asctime_list)-1, tzname)
-    return string.join(asctime_list)
+    return ' '.join(asctime_list)
 
 
 def make_msgid(timesecs=None, pid=None):
@@ -311,14 +310,14 @@ def make_date(timesecs=None):
 def file_to_dict(file, dict):
     """Process and add then each line of a textfile to a dictionary."""
     for line in fileinput.input(file):
-        line = string.strip(line)
+        line = line.strip()
         # Comment or blank line?
         if line == '' or line[0] in '#':
             continue
         else:
-            fields = string.split(line)
+            fields = line.split()
             key = fields[0]
-            key = string.lower(key)
+            key = key.lower()
             value = fields[1]
             dict[key] = value
     return dict
@@ -328,14 +327,12 @@ def file_to_list(file):
     """Process and then append each line of file to list."""
     list = []
     for line in fileinput.input(file):
-        line = string.strip(line)
+        line = line.strip()
         # Comment or blank line?
         if line == '' or line[0] in '#':
             continue
         else:
-            line = string.expandtabs(line)
-            line = string.split(line, ' #')[0]
-            line = string.strip(line)
+            line = line.expandtabs().split('#')[0].strip()
             list.append(line)
     return list
 
@@ -767,13 +764,13 @@ def findmatch(list, addrs):
     the string if it exists (for exp and ext addresses only)."""
     for address in addrs:
         if address:
-            address = string.lower(address)
+            address = address.lower()
             for p in list:
-                stringparts = string.split(p)
+                stringparts = p.split()
                 p = stringparts[0]
                 # Handle special @=domain.dom syntax.
                 try:
-                    at = string.rindex(p, '@')
+                    at = p.rindex('@')
                     atequals = p[at+1] == '='
                 except (ValueError, IndexError):
                     atequals = None
