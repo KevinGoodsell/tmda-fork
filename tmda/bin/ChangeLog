@@ -1,3 +1,7 @@
+2002-05-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (logit): Log Reply-To if it exists in the message.
+	
 2002-05-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (main): Do all deliveries via mta.deliver().
