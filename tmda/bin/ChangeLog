@@ -1,3 +1,8 @@
+2002-11-22  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-pending: Add --whitelist and --blacklist command-line
+	options.
+	
 2002-11-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-ofmipd (main): Do port binding before the seteuid call.

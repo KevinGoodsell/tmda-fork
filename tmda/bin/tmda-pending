@@ -51,6 +51,14 @@ Where:
     --delete
        Delete messages.
 
+    -B
+    --blacklist
+       Append the sender of the message to the PENDING_BLACKLIST_APPEND file.
+
+    -W
+    --whitelist
+       Append the sender of the message to the PENDING_WHITELIST_APPEND file.
+
     -s
     --summary
        Print a summary of pending messages along with a release address link.
@@ -187,25 +195,27 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:ipbrdsTSCADR:Y:O:vqVh', ['config-file=',
-                                                           'interactive',
-                                                           'pretend',
-                                                           'batch',
-                                                           'release',
-                                                           'delete',
-                                                           'summary',
-                                                           'terse-summary',
-                                                           'show',
-                                                           'cache',
-                                                           'ascending',
-                                                           'descending',
-                                                           'recipient=',
-                                                           'younger=',
-                                                           'older=',
-                                                           'verbose',
-                                                           'quiet',
-                                                           'version',
-                                                           'help'])
+                               'c:ipbrdBWsTSCADR:Y:O:vqVh', ['config-file=',
+                                                             'interactive',
+                                                             'pretend',
+                                                             'batch',
+                                                             'release',
+                                                             'delete',
+                                                             'blacklist',
+                                                             'whitelist',
+                                                             'summary',
+                                                             'terse-summary',
+                                                             'show',
+                                                             'cache',
+                                                             'ascending',
+                                                             'descending',
+                                                             'recipient=',
+                                                             'younger=',
+                                                             'older=',
+                                                             'verbose',
+                                                             'quiet',
+                                                             'version',
+                                                             'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -230,6 +240,10 @@ for opt, arg in opts:
         dispose = 'release'
     elif opt in ('-d', '--delete'):
         dispose = 'delete'
+    elif opt in ('-B', '--blacklist'):
+        dispose = 'blacklist'
+    elif opt in ('-W', '--whitelist'):
+        dispose = 'whitelist'
     elif opt in ('-s', '--summary'):
         summary = 1
     elif opt in ('-T', '--terse-summary'):
@@ -258,6 +272,7 @@ for opt, arg in opts:
 
 from TMDA import Cookie
 from TMDA import Defaults
+from TMDA import Errors
 from TMDA import Util
 
 
@@ -451,9 +466,9 @@ def main():
                         dispose = 'release'
                     elif ans == 'd':
                         dispose = 'delete'
-                    elif ans == 'w' and Defaults.PENDING_WHITELIST_APPEND:
+                    elif ans == 'w':
                         dispose = 'whitelist'
-                    elif ans == 'b' and Defaults.PENDING_BLACKLIST_APPEND:
+                    elif ans == 'b':
                         dispose = 'blacklist'
                     elif ans == "q":
                         break
@@ -486,10 +501,16 @@ def main():
                     if Defaults.PENDING_WHITELIST_APPEND:
                         Util.append_to_file(return_path,
                                             Defaults.PENDING_WHITELIST_APPEND)
+                    else:
+                        raise Errors.ConfigError, \
+                              'PENDING_WHITELIST_APPEND not defined!'
 		elif dispose == 'blacklist':
                     if Defaults.PENDING_BLACKLIST_APPEND:
                         Util.append_to_file(return_path,
                                             Defaults.PENDING_BLACKLIST_APPEND)
+                    else:
+                        raise Errors.ConfigError, \
+                              'PENDING_BLACKLIST_APPEND not defined!'
                 elif dispose == 'pass':
                     continue
                 elif dispose == 'show':
