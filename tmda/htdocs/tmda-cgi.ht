@@ -99,8 +99,16 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
     trust the software, but trusts the other users on the server (since they could 
     get read/write access to his/er pending e-mail)</li>
 </ul>
-<p><b><i>Note:</i></b> tmda-cgi assumes it will run from within the source tree. 
-  No testing has been done to date to see if it will work in other locations.</p>
+<p><b><i>Notes:</i></b></p>
+<ul>
+  <li>tmda-cgi assumes it will run from within the source tree. No testing has 
+    been done to date to see if it will work in other locations.<br>
+  </li>
+  <li>You will have to recompile tmda-cgi if you move your configuration files 
+    or source tree.<br></li>
+  <li>You will have to recompile tmda-cgi if you change which mode (system-wide, 
+    single-user, or no-su) you run in.</li>
+</ul>
 <h3>Installing system-wide</h3>
 <p>As root, change to the cgi directory.</p>
 <blockquote> 
@@ -248,22 +256,7 @@ ADDED_HEADERS_CLIENT = { &quot;X-Primary-Address&quot;: &quot;%s@%s&quot; % \
 <blockquote>
   <pre>./compile -nc /var/tmda/~/config -t /www/tmda.cgi</pre>
 </blockquote>
-<h3>Moving your configuration files</h3>
-<p>Compiling tmda-cgi tests to see if you have relocated your configuration file 
-  by setting the <tt>TMDARC</tt> environment variable.</p>
-<p>Suppose I have set <tt>TMDARC</tt> to <tt>/var/tmda/cgitest/config</tt>, as 
-  would be appropriate for the previous example. Compiling tmda-cgi will show 
-  the following:</p>
-<blockquote> 
-  <pre>$ ./compile no-su<br>NOTE: User configuration files have been relocated by setting TMDARC.
-tmda-cgi will look for config files at: /var/tmda/&lt;user&gt;/config
-Where &lt;user&gt; will be replaced by the user's login name.
-
-Compilation done.</pre>
-</blockquote>
-<p>Double-check where tmda-cgi will look for configuration files.</p>
-<p>You will have to recompile tmda-cgi if you move your configuration files or 
-  source tree.</p>
+<p>Use the <tt>./compile -h</tt> for more details on how to use compile.</p>
 <h3>Passwords</h3>
 <p>tmda-cgi currently authenticate logins against user name &amp; password pairs 
   stored in a password file (or files). tmda-cgi will look in two different places 
@@ -275,10 +268,11 @@ Compilation done.</pre>
   is configured to run as) or made globally readable See the table below for a 
   better breakdown of your options.</p>
 <p>tmda-cgi first checks for a readable file called <tt>tmda-cgi</tt> in the same 
-  directory as the user's <tt>.tmdarc</tt> or <tt>config</tt> file. It then tries 
-  <tt>/etc/tmda-cgi</tt> if it can't find a match or cannot read the file. This 
-  allows the system administrator to keep a list of access passwords while allowing 
-  the user to override what the sysadmin has set.</p>
+  directory as the user's configuration file (if that location has been specified, 
+  otherwise it will look in <tt>~user/.tmda/tmda-cgi</tt>). It then tries <tt>/etc/tmda-cgi</tt> 
+  if it can't find a match or cannot read the file. This allows the system administrator 
+  to keep a list of access passwords while allowing the user to override what 
+  the sysadmin has set.</p>
 <table border="0" cellpadding="0" cellspacing="0">
   <tr> 
     <td width="35">&nbsp;</td>
@@ -374,6 +368,10 @@ Compilation done.</pre>
 <blockquote> 
   <pre>$ contrib/cgi/genpass.py joe &gt; /home/joe/.tmda/tmda-cgi</pre>
 </blockquote>
+<p>If you encounter difficulties logging in, the problem may be a result of incorrect 
+  permissions on your password file(s). To debug this, append a <tt>?debug=1</tt> 
+  onto the end of your CGI URL. This will display some diagnostic information 
+  if the login fails instead of simply saying &quot;Wrong password. Try again.&quot;</p>
 <hr width="90%">
 <h2>Configuration</h2>
 <p>tmda-cgi is configured by a set of parameters in your <tt>/etc/tmdarc</tt>, 
