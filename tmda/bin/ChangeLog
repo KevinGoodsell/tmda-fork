@@ -1,3 +1,11 @@
+2002-02-21  Tim Legant  <tim@catseye.net>
+
+	* tmda-inject (inject_message): Custom headers are now written
+	directly to sendmail through 'pipeline' rather than being added to
+	'message_headers'.  This fixes the bug where custom headers should
+	only be added to one recipient's mail but all subsequent
+	recipients were receiving those headers.
+
 2002-02-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: Python2ize, and cleanup log output.

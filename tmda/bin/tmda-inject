@@ -207,19 +207,6 @@ def inject_message(resending,
     else:
 	message_headers['From'] = message_format(magic_from, full_name,
                                                  Defaults.MESSAGE_FROM_STYLE)
-    # Add in any custom headers
-    for header in actions.keys():
-	if header in ('from', 'envelope', 'resent-from'):
-	    continue
-	(cookie_type, cookie_option) = actions[header]
-	field = make_field(cookie_type, cookie_option, from_address, to_address)
-	nice_header = string.replace(string.capwords(
-            string.replace(header, '-', ' ')), ' ', '-')
-        if cookie_type:
-            message_headers[nice_header] = message_format(field, full_name,
-                                               Defaults.MESSAGE_FROM_STYLE)
-        else:
-            message_headers[nice_header] = field
     # If the MUA has added a `Mail-Followup-To' header that contains
     # the untagged address, we need to tag that as well.
     if message_headers.has_key('mail-followup-to'):
@@ -264,6 +251,20 @@ def inject_message(resending,
     inject.append(to_address)
     pipeline = popen2.popen2(inject)[1]
     pipeline.write(str(message_headers))
+    # Write the custom headers.
+    print actions.keys()
+    custom_headers = [ h for h in actions.keys()
+                       if h not in ('from', 'envelope', 'resent-from') ]
+    print custom_headers
+    for header in custom_headers:
+	(cookie_type, cookie_option) = actions[header]
+	field = make_field(cookie_type, cookie_option, from_address, to_address)
+        if cookie_type:
+            field = message_format(field, full_name, Defaults.MESSAGE_FROM_STYLE)
+	nice_header = string.capwords(
+                          header.replace('-', ' ')).replace(' ', '-')
+        print '%s: %s' % (nice_header, field)
+        pipeline.write('%s: %s\n' % (nice_header, field))
     pipeline.write('\n')
     pipeline.write(message_body)
     pipeline.close()
