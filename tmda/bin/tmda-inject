@@ -263,9 +263,11 @@ def inject_message(resending,
 	    msg['X-TMDA-Fingerprint'] = (Cookie.make_fingerprint(hdrlist))
     # Optionally, add some headers.
     if Defaults.ADDED_HEADERS_CLIENT:
-        for hdr in Defaults.ADDED_HEADERS_CLIENT.keys():
-            del msg[hdr]
-            msg[hdr] = Defaults.ADDED_HEADERS_CLIENT[hdr]
+        keys = Defaults.ADDED_HEADERS_CLIENT.keys()
+        keys.sort()
+        for k in keys:
+            del msg[k]
+            msg[k] = Defaults.ADDED_HEADERS_CLIENT[k]
     # Optionally, remove some headers.
     if Defaults.PURGED_HEADERS:
 	for hdr in Defaults.PURGED_HEADERS:

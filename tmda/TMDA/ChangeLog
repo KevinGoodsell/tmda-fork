@@ -1,3 +1,8 @@
+2003-02-26  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* AutoResponse.py (AutoResponse.create): Sort ADDED_HEADERS_SERVER
+	before adding them to the message.
+
 2003-02-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Message.py: New module.

@@ -1,3 +1,8 @@
+2003-02-26  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-inject (inject_message): Sort ADDED_HEADERS_CLIENT before
+	adding them to the message.
+
 2003-02-22  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
 
 	* tmda-inject (inject_message): Bugfix. Remove all tag action

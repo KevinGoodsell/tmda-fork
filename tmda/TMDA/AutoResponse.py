@@ -193,11 +193,13 @@ class AutoResponse:
             self.mimemsg['Auto-Submitted'] = 'auto-generated (failure)'
         self.mimemsg['X-Delivery-Agent'] = 'TMDA/%s (%s)' % (Version.TMDA,
                                                              Version.CODENAME)
-        # Optionally, add some user-specified headers.
+        # Optionally, add some headers.
         if Defaults.ADDED_HEADERS_SERVER:
-            for hdr in Defaults.ADDED_HEADERS_SERVER.keys():
-                del self.mimemsg[hdr]
-                self.mimemsg[hdr] = Defaults.ADDED_HEADERS_SERVER[hdr]
+            keys = Defaults.ADDED_HEADERS_SERVER.keys()
+            keys.sort()
+            for k in keys:
+                del self.mimemsg[k]
+                self.mimemsg[k] = Defaults.ADDED_HEADERS_SERVER[k]
 
 
     def send(self):
