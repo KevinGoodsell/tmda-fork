@@ -211,11 +211,14 @@ def maketext(templatefile, vardict):
     template = fp.read()
     fp.close()
     import Defaults
-    localdict = Defaults.__dict__.copy()
-    localdict.update(vardict)
-    text = template % localdict
-    return text
-
+    try:
+        localdict = Defaults.__dict__.copy()
+        localdict.update(vardict)
+        text = template % localdict
+        return text
+    except KeyError, error_msg:
+        print error_msg,'is not a valid template variable'
+        sys.exit(Defaults.ERR_CONFIG)
 
 def writefile(contents,fullpathname):
     """Simple function to write contents to a file."""

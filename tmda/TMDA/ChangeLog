@@ -1,5 +1,7 @@
 2001-07-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Util.py (maketext): Add error checking for template variables.
+
 	* Defaults.py: Remove BOUNCE_DATED_CC, BOUNCE_SENDER_CC, and add
 	BOUNCE_CONFIRM_CC.
 
