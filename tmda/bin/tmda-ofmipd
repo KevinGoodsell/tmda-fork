@@ -327,11 +327,6 @@ if vhomescript and configdir:
           "         Ignoring --config-dir."
     configdir = None
     warning(msg, exit=0)
-if vdomainspath and not vhomescript:
-    msg = "WARNING: --vdomains-path given but --vhomescript not given." + \
-          "         Ignoring --vdomainspath."
-    vdomainspath = '/var/qmail/control/virtualdomains'
-    warning(msg, exit=0)
 
 
 import asynchat

@@ -1,3 +1,8 @@
+2003-02-03  Tim Legant  <tim@catseye.net>
+
+	* tmda-ofmipd: Remove broken warning about not having a
+	vhome-script when you specify a vdomains-path.
+
 2003-02-03  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-ofmipd (main): Only check the authfile if not doing remote
