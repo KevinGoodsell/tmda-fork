@@ -96,7 +96,7 @@ def Show():
               else:
                 OtherList.append(MsgObj)
                 OtherAction = Form["Action"].value
-          except IOError: pass
+          except (IOError, Errors.MessageError): pass
         # Check for checkboxes (c0 through c%(PagerSize)d)
         elif Form.has_key("c%d" % Count ):
           # Check to make sure they're not trying to access anything other than

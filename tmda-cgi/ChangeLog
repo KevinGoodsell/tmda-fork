@@ -1,3 +1,7 @@
+2003-09-22  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Bugfix to avoid spilling errors if a message is repeatedly deleted.
+
 2003-08-23  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Made sure users can only edit/view files in approved directories.
