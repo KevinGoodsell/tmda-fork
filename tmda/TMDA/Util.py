@@ -23,6 +23,7 @@
 
 
 import cPickle
+import email.Utils
 import fileinput
 import fnmatch
 import os
@@ -203,72 +204,14 @@ def make_msgid(timesecs=None, pid=None):
 def make_date(timesecs=None):
     """Return an RFC 2822 compliant Date: string.  e.g,
 
-    Thu, 16 May 2002 04:23:10 +1200 (NZST)
+    Thu, 16 May 2002 04:23:10 +1200
     
     timesecs is optional, and if not given, the current time is used.
-
-    JRM: Once the email module is included within TMDA, we can use
-    utilize email.Utils.formatdate.
-    
-    Based on code from Python's email package
-    <URL:http://www.python.org/doc/current/lib/module-email.html>
-    Copyright (C) 2001,2002 Python Software Foundation.
     """
-    if not timesecs:
+    if timesecs is None:
         timesecs = time.time()
-    import Defaults
-    localtime = Defaults.LOCALDATE
-    if localtime:
-        now = time.localtime(timesecs)
-        # Calculate timezone offset, based on whether the local zone has
-        # daylight savings time, and whether DST is in effect.
-        if time.daylight and now[-1]:
-            offset = time.altzone
-        else:
-            offset = time.timezone
-        hours, minutes = divmod(abs(offset), 3600)
-        # Remember offset is in seconds west of UTC, but the timezone is in
-        # minutes east of UTC, so the signs differ.
-        if offset > 0:
-            sign = '-'
-        else:
-            sign = '+'
-        zone = '%s%02d%02d' % (sign, hours, minutes / 60)
-        tzname = time.tzname[now[-1]]
-    else:
-        now = time.gmtime(timesecs)
-        # Timezone offset is always -0000
-        zone = '-0000'
-        tzname = 'UTC'
-    return '%s, %02d %s %04d %02d:%02d:%02d %s (%s)' % (
-        ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][now[6]],
-        now[2],
-        ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now[1] - 1],
-        now[0], now[3], now[4], now[5], zone, tzname)
-
-
-def formataddr(pair):
-    """The inverse of parseaddr(), this takes a 2-tuple of the form
-    (realname, email_address) and returns the string value suitable
-    for an RFC 2822 From:, To: or Cc:.
-    
-    If the first element of pair is false, then the second element is
-    returned unmodified.
-
-    JRM: Once the email mod is included within TMDA, we can nuke this
-    function and use email.Utils.formataddr.
-    """
-    specialsre = re.compile(r'[][\()<>@,:;".]')
-    escapesre = re.compile(r'[][\()"]')
-    name, address = pair
-    if name:
-        quotes = ''
-        if specialsre.search(name):
-            quotes = '"'
-        name = escapesre.sub(r'\\\g<0>', name)
-        return '%s%s%s <%s>' % (quotes, name, quotes, address)
-    return address
+    from Defaults import LOCALDATE
+    return email.Utils.formatdate(timesecs, LOCALDATE)
 
 
 def file_to_dict(file, dict):

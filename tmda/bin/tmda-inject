@@ -125,6 +125,7 @@ from TMDA import FilterParser
 from TMDA import Util
 
 
+import email
 import rfc822
 import string
 
@@ -145,9 +146,9 @@ message_size = str(len(message_body))
 def message_format(fsa, ffn, type):
     # "angles" is the default MESSAGE_FROM_STYLE
     if type == 'address':
-        return Util.formataddr((None, fsa))
+        return email.Utils.formataddr((None, fsa))
     else:
-        return Util.formataddr((ffn, fsa))
+        return email.Utils.formataddr((ffn, fsa))
 
 def make_field(cookie_type, cookie_option, from_address, to_address):
     """
