@@ -115,9 +115,9 @@ def unixdate(timesecs=None):
 
 def make_msgid(timesecs=None, pid=None):
     """Return an rfc2822 compliant Message-ID string, composed of
-    date + random integer + process id + 'tmda' + FQDN  e.g:
+    date + process id + random integer + 'TMDA' + FQDN  e.g:
     
-    <20011130190055.12345.1234.tmda@nightshade.la.mastaler.com>
+    <20020204183548.40803.32317.TMDA@nightshade.la.mastaler.com>
 
     timesecs is optional, and if not given, the current time is used.
 
@@ -131,9 +131,9 @@ def make_msgid(timesecs=None, pid=None):
     idhost = os.environ.get('QMAILIDHOST')
     if not idhost:
         idhost = gethostname()
-    date = time.strftime("%Y%m%d%H%M%S", time.gmtime(timesecs))
+    utcdate = time.strftime('%Y%m%d%H%M%S', time.gmtime(timesecs))
     randint = random.randrange(100000)
-    message_id = "<%s.%s.%s.tmda@%s>" % (date, randint, pid, idhost)
+    message_id = '<%s.%s.%s.TMDA@%s>' % (utcdate, pid, randint, idhost)
     return message_id
 
 

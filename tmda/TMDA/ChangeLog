@@ -1,3 +1,8 @@
+2002-02-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (make_msgid): Change the idstring to 'TMDA', and reverse
+	the order of randint and pid.
+
 2002-02-01  Tim Legant  <tim@catseye.net>
 
 	* FilterParser.py: Modified 'tag_action' regular expression to
