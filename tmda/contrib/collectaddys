@@ -47,9 +47,9 @@ for path in os.listdir('.'):
     # If it's a directory, try to guess whether it's a Maildir or an
     # MH folder.
     if os.path.isdir(path):
-        if os.path.exists(os.path.join(path, 'cur')) and \
-           os.path.exists(os.path.join(path, 'new')) and \
-           os.path.exists(os.path.join(path, 'tmp')):
+        if os.path.isdir(os.path.join(path, 'cur')) and \
+           os.path.isdir(os.path.join(path, 'new')) and \
+           os.path.isdir(os.path.join(path, 'tmp')):
             mb = mailbox.Maildir(path)
         else:
             mb = mailbox.MHMailbox(path)

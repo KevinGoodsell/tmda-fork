@@ -1,3 +1,7 @@
+2002-03-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* collectaddys: Do Maildir checking with os.path.isdir().
+	
 2002-03-27  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
 
 	* Add collectaddys.
