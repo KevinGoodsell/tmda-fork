@@ -1,3 +1,8 @@
+2001-08-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (send_bounce): Add a "Precedence: bulk" header to
+	outgoing confirmation request/acceptance messages.
+
 2001-08-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (auto_reply): Don't auto-reply to a message with a

@@ -195,6 +195,7 @@ def send_bounce(bounce_message, **vars):
             message_headers['Reply-To'] = vars['confirm_accept_address']
         message_headers['Return-Path'] = '<' + Defaults.BOUNCE_ENV_SENDER + '>'
         message_headers['To'] = envelope_sender
+        message_headers['Precedence'] = 'bulk'
         message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
         message_body = bounce_message.read()
         inject = []
