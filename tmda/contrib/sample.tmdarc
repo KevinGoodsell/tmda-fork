@@ -53,6 +53,8 @@ import os                                      # don't remove
 
 # INJECT_FLAGS = "f"
 
+# LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
+
 # Optional delivery logging
 # If you uncomment this section, you need to create ~/tmda/log/
 # Logging will be done a file in the form:
@@ -63,6 +65,8 @@ import os                                      # don't remove
 # localtime = time.localtime(time.time())
 # YYYYmm = time.strftime('%Y-%m',localtime) 
 # LOGFILE = os.path.expanduser("~/tmda/log/tmdalog." + YYYYmm)
+
+# MAIL_TRANSFER_AGENT = "qmail"
 
 # TIMEOUT = "5d"
 

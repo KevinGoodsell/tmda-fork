@@ -1,3 +1,18 @@
+2001-10-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py: Replaced ERR_CONFIG and ERR_IO with EX_TEMPFAIL.
+	
+	* Defaults.py: Replace qmail-specific exit status codes with
+	general codes that work under both Postfix and qmail.  An
+	"success" code and a "defer" code were all that were necessary in
+	the modules anyway.
+	
+	(LOCAL_DELIVERY_AGENT): New variable to specify the path to the
+	local delivery agent, which is necessary if not running qmail.
+	
+	(MAIL_TRANSFER_AGENT): New variable to specify which mail transfer
+	agent software we are running.
+	
 2001-10-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (RECIPIENT_DELIMITER): New variable specifing the

@@ -81,8 +81,12 @@ except ImportError:
 
 from TMDA import Cookie
 from TMDA import Defaults
+from TMDA import MTA
 from TMDA import Util
 
+
+# We use this MTA instance to control the fate of the message.
+mta = MTA.init()
 
 # Read sys.stdin into a temporary variable for later access.
 stdin = cStringIO.StringIO(sys.stdin.read())
@@ -182,7 +186,7 @@ def logit(action_msg,date):
             logfile.close()
         except IOError, error_msg:
             print error_msg
-            sys.exit(Defaults.ERR_IO)
+            mta.defer()
 
 
 def send_bounce(bounce_message, **vars):
@@ -255,9 +259,9 @@ def inject_pending(pathname,timestamp,pid):
         pipeline.close()
     except IOError, error_msg:
         print error_msg
-        sys.exit(Defaults.ERR_IO)
+        mta.defer()
     os.unlink(pathname)
-    sys.exit(Defaults.ERR_STOP)
+    mta.stop()
 
 
 def locate_pending(timestamp,pid):
@@ -278,7 +282,7 @@ def locate_pending(timestamp,pid):
         inject_pending(pending_message_pathname,timestamp,pid)
     else:
         print "Sorry, your original message could not be located, please resend."
-        sys.exit(Defaults.ERR_HARD)
+        mta.bounce()
 
 
 def verify_confirm_cookie(confirm_cookie):
@@ -295,7 +299,7 @@ def verify_confirm_cookie(confirm_cookie):
         else:
             logit("BOUNCE confirm_accept",time.time())
             print("Sorry, this confirmation address is invalid.")
-            sys.exit(Defaults.ERR_HARD)
+            mta.bounce()
     # post-confirmation
     elif confirm_action == 'done':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
@@ -303,11 +307,11 @@ def verify_confirm_cookie(confirm_cookie):
         # Accept the message only if the HMAC can be verified.
         if (confirm_hmac == new_confirm_hmac):
             logit("OK good_confirm_cookie", time.time())
-            sys.exit(Defaults.ERR_OK)
+            mta.deliver(message)
         else:
             logit("BOUNCE confirm_done")
             print("Sorry, this confirmation address is invalid.",time.time())
-            sys.exit(Defaults.ERR_HARD)
+            mta.bounce()
 
 
 def verify_dated_cookie(dated_cookie):
@@ -315,13 +319,13 @@ def verify_dated_cookie(dated_cookie):
     # Save some time if the dated_cookie doesn't exist or is bogus.
     if not dated_cookie:
         if discard:
-            sys.exit(Defaults.ERR_STOP)
+            mta.stop()
         else:
             bouncegen('request')
     dated_cookie_split = string.split(dated_cookie,'.')
     if len(dated_cookie_split) != 2:
         if discard:
-            sys.exit(Defaults.ERR_STOP)
+            mta.stop()
         else:
             bouncegen('request')
     cookie_date = dated_cookie_split[0]
@@ -332,9 +336,9 @@ def verify_dated_cookie(dated_cookie):
     now = time.time()
     if ((int(cookie_date) >= int('%d' % now)) and (datemac == newdatemac)):
         logit("OK good_dated_cookie",now)
-        sys.exit(Defaults.ERR_OK)
+        mta.deliver(message)
     elif discard:
-        sys.exit(Defaults.ERR_STOP)
+        mta.stop()
     else:
         bouncegen('request')
 
@@ -345,9 +349,9 @@ def verify_sender_cookie(sender_address,sender_cookie):
     # Accept the message only if the HMAC can be verified.
     if (sender_cookie == sender_address_cookie):
         logit("OK good_sender_cookie", time.time())
-        sys.exit(Defaults.ERR_OK)
+        mta.deliver(message)
     elif discard:
-        sys.exit(Defaults.ERR_STOP)
+        mta.stop()
     else:
         bouncegen('request')
 
@@ -406,7 +410,7 @@ def bouncegen(mode):
                 os.makedirs(pendingdir,0700) # stores the unconfirmed messages
             except IOError, error_msg:
                 print error_msg
-                sys.exit(Defaults.ERR_IO)
+                mta.defer()
         # Write ~/.tmda/pending/TIMESTAMP.PID.msg
         message_headers['Return-Path'] = '<' + envelope_sender + '>'
         pending_contents = str(message_headers) + '\n' + message_body
@@ -428,7 +432,7 @@ def bouncegen(mode):
         if Defaults.BOUNCE_CONFIRM_CC:
             bounce_cc(Defaults.BOUNCE_CONFIRM_CC)
         send_bounce(bounce_message,confirm_accept_address = confirm_accept_address)
-        sys.exit(Defaults.ERR_STOP)  
+        mta.stop()  
 
 
 ######
@@ -438,8 +442,6 @@ def bouncegen(mode):
 def main():
 
     # Get the cookie type and value by parsing the extension address.
-    # This is available in the EXT environment variable under qmail,
-    # and EXTENSION under Postfix.
     ext = (os.environ.get('EXT') or os.environ.get('EXTENSION'))
     if ext:
         ext = string.lower(ext)
@@ -471,7 +473,7 @@ def main():
                 logit("DROP blacklist_match", time.time())
                 if Defaults.BOUNCE_BLACKLIST_CC:
                     bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
-                sys.exit(Defaults.ERR_STOP)
+                mta.stop()
                 pass
 
         # Confirm tag?
@@ -490,7 +492,7 @@ def main():
                                                whitelist_list)
             if Util.findmatch(whitelist_list, EnvelopeSender,From,ReplyTo):
                 logit("OK whitelist_match", time.time())
-                sys.exit(Defaults.ERR_OK)
+                mta.deliver(message)
                 pass
 
         # Is the recipient in the REVOKED_FILE?
@@ -503,7 +505,7 @@ def main():
                 if Defaults.BOUNCE_REVOKED_CC:
                     bounce_cc(Defaults.BOUNCE_REVOKED_CC)
                 print "Sorry, this address has been revoked."
-                sys.exit(Defaults.ERR_HARD)
+                mta.bounce()
                 pass
 
         # Is the message sacred?
@@ -516,7 +518,7 @@ def main():
                     matches = matches+1
             if matches > 0:
                 logit("OK sacred_text_match", time.time())
-                sys.exit(Defaults.ERR_OK)
+                mta.deliver(message)
                 pass
             
         # Dated tag?
@@ -537,10 +539,10 @@ def main():
             cookie_type = 'sender'
         elif Defaults.COOKIE_TYPE == 'bare':
             logit("OK bare", time.time())
-            sys.exit(Defaults.ERR_OK)
+            mta.deliver(message)
         else:
             print "unknown cookie type"
-            sys.exit(Defaults.ERR_CONFIG)
+            mta.defer()
 
 
 # This is the end my friend.

@@ -1,3 +1,8 @@
+2001-10-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter: Instead of raising qmail-specific exit codes to
+	control the behavior of messages, use an MTA instance to do so.
+
 2001-10-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (bounce_cc): Use popen2 for uniformity.
