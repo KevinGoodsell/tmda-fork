@@ -2,6 +2,8 @@
 #
 # Copyright (C) 2001,2002 Jason R. Mastaler <jason@mastaler.com>
 #
+# Author: David Guerizec <david@guerizec.net>
+#
 # This file is part of TMDA.
 #
 # TMDA is free software; you can redistribute it and/or modify it
