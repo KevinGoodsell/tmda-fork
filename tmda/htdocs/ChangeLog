@@ -1,5 +1,8 @@
 2002-05-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* resources.ht: Link to Andrew Wilson's Mail::Address::Tagged perl
+	module.
+
 	* install.ht: Add RPM instructions for systems without a
 	/usr/bin/python2.
 	
