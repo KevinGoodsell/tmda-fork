@@ -1,6 +1,7 @@
-﻿Title: tmda-cgi HOWTO
+Title: tmda-cgi HOWTO
 Links: overview-links.h usage-links.h howto-links.h support-links.h 
-<h1>tmda-cgi</h1>
+
+<h1>tmda-cgi (contributed by <a href="mailto:gre7g@wolfhome.com">Gre7g Luterman</a>)</h1>
 <p><a href="#What">What is it?</a><br>
   <a href="#Require">Requirements</a><br>
   <a href="#Blame">Credit/blame</a><br>
@@ -12,11 +13,13 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   no-su setup</a><br>
   <a href="#Pass">Passwords</a><br>
   <a href="#Config">Configuration</a><br>
-  <a href="#Template">Templates</a></p>
+  <a href="#Template">Templates (URL confirmation)</a></p>
 <hr>
 <h2><a name="What"></a>What is it?</h2>
-<p>tmda-cgi is an alpha-release program for managing your TMDA account over the 
-  web. At the time of this writing, tmda-cgi can:</p>
+
+<p>tmda-cgi is an alpha-release program for managing your
+TMDA account over the web. At the time of this writing, tmda-cgi
+can:</p>
 <ul>
   <li>Page through lists of pending e-mail (mail received by your MTA, but still 
     awaiting confirmation) 
@@ -87,21 +90,14 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
       awry or opens a security hole on your machine, I won't drop dead from the 
       shock.</p>
   </li>
-  <li>This program wouldn't have been possible without the support and contributions 
-    of Jason Mastaler, David Guerizec, Tim Legant, and others on the tmda-cgi 
-    and <a href="lists/listinfo/">tmda-workers</a> lists, but they didn't write 
-    the actual code itself. 
-    <p>When it doesn't work right, be sure you yell out &quot;Damn that <a href="mailto:gre7g@wolfhome.com">Gre7g 
-      Luterman</a>!&quot; because I'm the one responsible for your pain. &lt;winks&gt;</p>
+  <li>tmda-cgi was written by <a href="mailto:gre7g@wolfhome.com">Gre7g Luterman</a>,
+      with support from Jason R. Mastaler, David Guerizec, Tim Legant, and others on 
+      the TMDA lists.
   </li>
 </ul>
 <hr>
 <h2><a name="Install"></a>Installation</h2>
-<p>tmda-cgi is provided in your distribution's <tt>contrib/cgi</tt> directory, 
-  however with this being alpha-revision software, revisions come out quite frequently. 
-  You should consider downloading from <a href="http://sourceforge.net/cvs/?group_id=24680" target="_blank">CVS</a> 
-  and joining the <a href="lists/listinfo/">tmda-workers 
-  mailing list</a> to keep up on the sub-project's current state of development.</p>
+<p>tmda-cgi is provided in your distribution's <tt>contrib/cgi</tt> directory.</p>
 <p>Once you've obtained a copy of tmda-cgi, you need to decide how you want to 
   use tmda-cgi. tmda-cgi has been designed to run three different ways: system-wide, 
   single-user, and in no-su modes.</p>
