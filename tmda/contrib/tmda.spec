@@ -1,5 +1,5 @@
 %define name tmda
-%define version 0.16
+%define version 0.18
 %define release 1
 
 Summary: Tagged Message Delivery Agent
@@ -52,4 +52,4 @@ rm -rf %{buildroot}
 %changelog
 
 * Wed Jun 06 2001 Ron Bickers <rbickers@logicetc.com>
-  - initial RPM of TMDA 0.16
+  - initial RPM of TMDA 0.18
