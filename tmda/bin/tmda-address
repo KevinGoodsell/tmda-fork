@@ -21,28 +21,28 @@
 
 """Generate a tagged e-mail address.
 
-Usage:  Usage:  %(program)s OPTIONS
+Usage:  %(program)s OPTIONS
 
 OPTIONS:
-        -h
-        --help
-           Print this help message and exit.
+	-h
+	--help
+	   Print this help message and exit.
 
-       -V
-        --version
+	-V
+	--version
            Print TMDA version information and exit.
 
 	-c <file>
 	--config-file <file>
-	   Specify a different configuration file other than ~/.tmdarc.
-	   
+	   Specify a configuration file other than the default.
+
 	-a <address>
 	--address <address>
 	   Specify a different address as the basis for the tagged address.
            
 	-n
-        --no-newline
-           Do not print a newline after the address.
+	--no-newline
+	   Do not print a newline after the address.
 
 	-k <keyword>
 	--keyword <keyword>
@@ -58,6 +58,7 @@ OPTIONS:
 	--dated [timeout]
 	   Generate a dated-style tagged address.  timeout is an
 	   optional timeout interval to override your default.
+	   See the output of tmda-pending -h for syntax of timeout.
 """
 
 import getopt
