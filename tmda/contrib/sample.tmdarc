@@ -1,0 +1,54 @@
+# -*- python -*-
+
+# sample.tmdarc - Sample configuration file for TMDA.
+# Copy to ~/.tmdarc and modify to taste.
+#
+# See the "User configurable settings" section of TMDA/Defaults.py for
+# explanations of the possible settings and their default values.
+#
+# Only CRYPT_IV and CRYPT_KEY are REQUIRED in the .tmsrc.
+#
+# NOTE: This file must be mode 600 or 400.
+
+import os                                      # don't remove
+
+BLOCK_CIPHER = "DES3"
+
+COOKIE_TYPE = "dated"
+
+CRYPT_IV  = "abdd4f8b1dd5a9d8"                 # generate your own IV!
+
+CRYPT_KEY = "95b76bbc4b747c963264151a6bfae394" # generate your own KEY!
+
+HASH_FUNCTION = "SHA"
+
+HOSTNAME = "domain.dom" 
+
+INJECT = "/var/qmail/bin/qmail-inject"
+
+INJECT_FLAGS = "f"
+
+# /home/jason/tmda/log/tmdalog.2001-04
+import time
+localtime = time.localtime(time.time())
+YYYYmm = time.strftime('%Y-%m',localtime) 
+LOGFILE = os.path.expanduser("~/tmda/log/tmdalog." + YYYYmm)
+
+TIMEOUT = "5d"
+
+USERNAME = "jdoe" 
+
+BARE_FILE = os.path.expanduser("~/.tmda-bare")
+
+DATED_FILE = os.path.expanduser("~/.tmda-dated")
+
+EXP_FILE = os.path.expanduser("~/.tmda-exp")
+
+EXT_FILE = os.path.expanduser("~/.tmda-ext")
+
+SENDER_FILE = os.path.expanduser("~/.tmda-sender")
+
+WHITELIST = os.path.expanduser("~/.tmda-whitelist")
+
+WHITELIST_TO_BARE = 0
+

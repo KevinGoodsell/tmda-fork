@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+
+from Crypto.Utils import hex2str
+from Crypto.Utils import str2hex
+import os
+import sys
+
+
+def keygen():
+    """Create and return a unique 16-byte key, and an 8-byte IV in hex."""
+    # Use the kernel's random number generator if available.
+    if os.path.exists("/dev/random"):
+        cipher_key = open("/dev/random","rb").read(16)
+        cipher_iv = open("/dev/random","rb").read(8)
+    # Otherwise generate random bytes with sufficient entropy ourselves.
+    else:
+        print "/dev/random not found, using the keyboard instead..\n"
+        from Crypto.Util.randpool import *
+        pool = KeyboardRandomPool()
+        pool.stir()
+        
+        try:
+            pool.randomize()
+        except KeyboardInterrupt:
+            sys.exit()
+
+        pool.stir()
+        cipher_key = pool.getBytes(16)
+        cipher_iv = pool.getBytes(8)
+  
+    hex_key = str2hex(cipher_key)          
+    hex_iv = str2hex(cipher_iv)
+    return hex_key, hex_iv 
+
+print "Generating unique crypto keys, please wait a moment.."
+print
+
+crypt_key, crypt_iv = keygen()
+
+print "CRYPT_IV  =", '"' + crypt_iv + '"'
+print "CRYPT_KEY =", '"' + crypt_key + '"'
+print
+print "Now paste these two lines into your ~/.tmdarc file."
+

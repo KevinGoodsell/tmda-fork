@@ -1,0 +1,195 @@
+#!/usr/bin/env python
+
+######################
+# Sender (client) mode
+######################
+
+
+import os
+import rfc822
+import string
+import sys
+
+import paths
+from TMDA import Cookie
+from TMDA import Defaults
+from TMDA import Util
+
+
+def inject_message(address,message_headers,message_body):
+    """Hand the message off to qmail-inject."""
+    # See qmail-inject(8) for descriptions of these variables.
+    os.environ['QMAILSUSER'] = os.environ['QMAILUSER']
+    inject = Defaults.INJECT + ' ' + address # "qmail-inject recipient"
+    pipeline = os.popen(inject, 'w')
+    pipeline.write(message_headers)
+    pipeline.write(message_body)
+    pipeline.close()
+
+
+def send_bare(address,message_headers,message_body):
+    """Send a message with an untagged address."""
+    os.environ['QMAILUSER'] = Defaults.USERNAME
+    inject_message(address,message_headers,message_body)
+
+
+def send_dated(address,message_headers,message_body):
+    """Send a message with a tagged (dated) address."""
+    dated_address = Cookie.make_dated_address()
+    address_split = string.split(dated_address,'@')
+    username = address_split[0]
+    hostname = address_split[1]
+    os.environ['QMAILUSER'] = username
+    os.environ['QMAILHOST'] = hostname
+    inject_message(address,message_headers,message_body)
+
+
+def send_sender(address,message_headers,message_body):
+    """Send a message with a tagged (sender) address."""
+    sender_address = Cookie.make_sender_address(address)
+    address_split = string.split(sender_address,'@')
+    username = address_split[0]
+    hostname = address_split[1]
+    os.environ['QMAILUSER'] = username
+    os.environ['QMAILHOST'] = hostname
+    inject_message(address,message_headers,message_body)
+
+
+def send_exp(address,from_address,message_headers,message_body):
+    """Send a message with an explicitly defined address."""
+    address_split = string.split(from_address,'@')
+    username = address_split[0]
+    hostname = address_split[1]
+    os.environ['QMAILUSER'] = username
+    os.environ['QMAILHOST'] = hostname
+    inject_message(address,message_headers,message_body)
+
+
+def send_ext(address,extension,message_headers,message_body):
+    """Send a message with a tagged (extension added) address."""
+    os.environ['QMAILUSER'] = Defaults.USERNAME + '-' + extension
+    inject_message(address,message_headers,message_body)
+
+
+######
+# Main
+######
+
+def main():
+
+    message = sys.stdin
+
+    address_cookie = None
+    exp_from_address = None
+    ext_extension = None
+    
+    # qmail-inject variables which are often the same regardless of
+    # how the message will be tagged (unless overwritten later).
+    os.environ['QMAILHOST'] = Defaults.HOSTNAME
+    os.environ['QMAILINJECT'] = Defaults.INJECT_FLAGS
+    os.environ['QMAILNAME'] = Defaults.FULLNAME
+    
+    # Header examination and manipulation.
+    message_headers = rfc822.Message(message)
+
+    header_to = message_headers.getaddrlist("to")
+    header_cc = message_headers.getaddrlist("cc")
+    header_bcc = message_headers.getaddrlist("bcc")
+    # Add custom headers.
+    message_headers['X-Delivery-Agent'] = 'TMDA ' + 'v' + Defaults.TMDA_VERSION\
+                                          + ' ' + Defaults.TMDA_HOMEPAGE
+
+    # Downcase and then combine To:, Cc:, and Bcc: addresses into one list.
+    address_list = []
+    for list in header_to,header_cc,header_bcc:
+        for a in list:
+            address = string.lower(a[1])
+            address_list.append(address)
+
+    # Check for the `X-TMDA' override header.
+    if message_headers.has_key('x-tmda'):
+        x_tmda = message_headers.getheader('x-tmda')
+        fields = string.split(x_tmda)
+        if fields[0] in ('bare','dated','sender'):
+            address_cookie = fields[0]
+        elif fields[0] == 'exp':
+            address_cookie = fields[0]
+            exp_from_address = fields[1]
+        elif fields[0] == 'ext':
+            address_cookie = fields[0]
+            ext_extension = fields[1]
+        else:
+            pass
+        # Delete `X-TMDA' before sending.
+        del message_headers['x-tmda']
+    else:
+        # Collect all the addresses which are to be treated specially.
+        bare_list = []
+        if os.path.exists(Defaults.BARE_FILE):
+            bare_list = Util.file_to_list(Defaults.BARE_FILE,bare_list)
+        if Defaults.WHITELIST_TO_BARE and os.path.exists(Defaults.WHITELIST):
+            bare_list = Util.file_to_list(Defaults.WHITELIST,bare_list)
+
+        dated_list = []
+        if os.path.exists(Defaults.DATED_FILE):
+            dated_list = Util.file_to_list(Defaults.DATED_FILE,dated_list)
+
+        sender_list = []
+        if os.path.exists(Defaults.SENDER_FILE):
+            sender_list = Util.file_to_list(Defaults.SENDER_FILE,sender_list)
+
+        exp_dict = {}
+        if os.path.exists(Defaults.EXP_FILE):
+            exp_dict = Util.file_to_dict(Defaults.EXP_FILE,exp_dict)
+
+        ext_dict = {}
+        if os.path.exists(Defaults.EXT_FILE):
+            ext_dict = Util.file_to_dict(Defaults.EXT_FILE,ext_dict)
+
+    # Read in the message body.
+    message_body = message.read()
+    
+    # If the address is a special case, it gets that special
+    # cookie, otherwise it is tagged with the default cookie type.
+    for address in address_list:
+        if address_cookie:
+            pass                        # `X-TMDA' gets first priority.
+        elif address in bare_list:
+            address_cookie = 'bare'
+        elif address in dated_list:
+            address_cookie = 'dated'
+        elif address in sender_list:
+            address_cookie = 'sender'
+        elif exp_dict.has_key(address):
+            address_cookie = 'exp'
+        elif ext_dict.has_key(address):
+            address_cookie = 'ext'
+        else:
+            address_cookie = Defaults.COOKIE_TYPE
+
+        # The message is sent to each recipient separately so that
+        # everyone gets the correct tag.  Make sure your MUA
+        # generates its own Message-ID: and Date: headers so they
+        # match on multiple recipient messages.
+        if address_cookie == 'bare':
+            send_bare(address,str(message_headers),message_body)
+        elif address_cookie == 'dated':
+            send_dated(address,str(message_headers),message_body)
+        elif address_cookie == 'sender':
+            send_sender(address,str(message_headers),message_body)
+        elif address_cookie == 'exp':
+            if not exp_from_address:exp_from_address = exp_dict[address]
+            send_exp(address,exp_from_address,str(message_headers),message_body)
+        elif address_cookie == 'ext':
+            if not ext_extension:ext_extension = ext_dict[address]
+            send_ext(address,ext_extension,str(message_headers),message_body)
+        else:
+            print "Unknown cookie type:",address_cookie
+            sys.exit(Defaults.ERR_CONFIG)
+
+    sys.exit(Defaults.ERR_OK)
+
+
+# This is the end my friend.
+if __name__ == '__main__':
+    main()

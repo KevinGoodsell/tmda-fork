@@ -1,0 +1,21 @@
+General
+	- Possibly Object-Orientize TMDA with Classes, inheritance,
+	etc.  Are there any benefits to doing this?
+	- Regression testing script.
+	- Move documentation into texinfo format.
+
+tmda-inject
+	- Possibly support regular expression matching for the special
+	case addresses in addition to just matching specific
+	addresses.
+
+tmda-filter
+	- Support reading from DBM/GDBM style databases in addition to
+	textfiles.
+
+Whitelist.py
+	- Support reading from DBM/GDBM style databases in addition to
+	textfiles.  Currently, a 10,000 line whitelist is read in
+	under 15 seconds on a PIII/700, but DB support may be
+	necessary for much larger lists.
+
