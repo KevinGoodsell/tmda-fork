@@ -1,4 +1,4 @@
-FREQUENTLY ASKED QUESTIONS
+TMDA FREQUENTLY ASKED QUESTIONS
 
 ------------------------------------------------------------------------------
 
@@ -70,6 +70,20 @@ A. In addition to explicit e-mail addresses, TMDA supports matching
    NOTE: For incoming mail, tmda-filter compares the address in the
    Envelope-Sender, the "From:" header and the "Reply-To:" header when
    looking for a match.
+
+------------------------------------------------------------------------------
+
+Q. How should I delete old, unconfirmed messages from TMDA's pending queue?
+
+A. TMDA comes with a utility called `tmda-clean' which does this for
+   you.  You can run it by hand, or periodically from cron.  Run
+   `tmda-clean' without any arguments to get a listing of possible
+   options.
+
+   For example, to purge unconfirmed messages older than 14 days each
+   morning at 2AM, add the following crontab entry:
+
+   0 02 * * * /path/to/tmda/bin/tmda-clean 14d
 
 ------------------------------------------------------------------------------
 
