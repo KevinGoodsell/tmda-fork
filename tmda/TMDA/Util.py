@@ -20,10 +20,7 @@ def gethostname():
                os.environ.get('MAILHOST')
     if not hostname:
         import socket
-        try:
-            hostname = socket.getfqdn() # Python2 only
-        except AttributeError:
-            hostname = socket.gethostbyaddr(socket.gethostname())[0]
+        hostname = socket.getfqdn()
     return hostname
 
 
