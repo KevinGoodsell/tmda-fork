@@ -123,8 +123,8 @@ def make_keyword_cookie(keyword):
     """Return a keyword-style cookie (keyword + HMAC)."""
     # Characters outside of an RFC2822 atom token are changed to '?'
     keyword = re.sub("[^a-zA-Z0-9!#$%&'*+-/=?^_`{|}~-]", "?", keyword)
-    # We don't allow the RECIPIENT_DELIMITER in a keyword
-    keyword = re.sub(Defaults.RECIPIENT_DELIMITER, "?", keyword)
+    # We don't allow the RECIPIENT_DELIMITER in a keyword; replace with `?'
+    keyword = keyword.replace(Defaults.RECIPIENT_DELIMITER, '?')
     keywordmac = make_keywordmac(keyword)
     return '%s.%s' % (keyword, keywordmac)
 
