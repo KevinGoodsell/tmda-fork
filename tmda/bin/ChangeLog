@@ -8,6 +8,11 @@
 	* tmda-check-address (main): Bugfix. Print the expired date for
 	old dated addresses.
 
+2003-02-13  Mark Horn  <mark@hornclan.com>
+
+	* tmda-rfilter (logit): added ability to log action to the
+	X-TMDA-Action header
+
 2003-02-04  Tim Legant  <tim@catseye.net>
 
 	* tmda-ofmipd (run_authprog): Fixed problem with -A's interface to

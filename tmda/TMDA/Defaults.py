@@ -752,6 +752,20 @@ if not vars().has_key('FILTER_BOUNCE_CC'):
 if not vars().has_key('FILTER_DROP_CC'):
     FILTER_DROP_CC = None
 
+# ACTION_HEADER_INCOMING
+# Set this variable to 1 if you want TMDA to add an `X-TMDA-Action'
+# header to your delivered incoming messages. The value of this header
+# is the same as the "Actn:" field in a LOGFILE_INCOMING entry. e.g,
+#
+# X-TMDA-Action: OK (from johndoe* ok)
+#
+# NOTE: This will not work if you are running qmail and have not set
+# the DELIVERY variable.
+#
+# Default is 0 (turned off)
+if not vars().has_key('ACTION_HEADER_INCOMING'):
+    ACTION_HEADER_INCOMING = 0
+
 # ACTION_INCOMING
 # Specifies how incoming messages should be disposed of by default if
 # they didn't match FILTER_INCOMING and were not sent to a tagged

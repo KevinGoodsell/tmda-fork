@@ -276,6 +276,9 @@ def logit(action_msg):
                                              msg_size = orig_msgin_size,
                                              action_msg = action_msg)
         logger.write()
+    if Defaults.ACTION_HEADER_INCOMING and recipient_address:
+        del msgin['X-TMDA-Action']
+	msgin['X-TMDA-Action'] = action_msg
 
 
 def autorespond_to_sender(sender):

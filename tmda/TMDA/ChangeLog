@@ -2,6 +2,11 @@
 
 	* Message.py: New module.
 
+2003-02-13  Mark Horn  <mark@hornclan.com>
+	
+	* Defaults.py: Added ACTION_HEADER_INCOMING to enable the logfile
+	stuff to get written in a header message.
+
 2003-01-30  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Deliver.py (Deliver.__deliver_mbox): The UUCP-style From_ line's
