@@ -27,6 +27,7 @@ import os
 import re
 import sys
 import time
+from types import DictType
 
 import CgiUtil
 import Template
@@ -244,12 +245,17 @@ def SetPerms(Anomalies, Files, Backup):
 
 def GetAnomalies(Dir):
   "Find any anomaly instructions."
+  Filename = os.path.join("skel", Dir, "anomalies")
   RetVal = \
   {
     "PERMISSIONS": {}, "VIRTUAL_TEST": "", "REAL_ONLY": [], "VIRTUAL_ONLY": []
   }
   try:
-    execfile(os.path.join("skel", Dir, "anomalies"), RetVal)
+    execfile(Filename, RetVal)
+  except SyntaxError, ErrStr:
+    CgiUtil.TermError("SyntaxError", ErrStr, "read anomalies",
+      CgiUtil.FileDetails("anomalies", Filename),
+      "Contact system administrator.")
   except IOError:
     pass
   return RetVal
@@ -276,6 +282,60 @@ dictionary instead of a module to access the contents.  Ugly, but effective."""
 
   return Defaults
 
+def IgnoreFiles(Anomalies):
+  "Generate a list of files we should ignore during file installation."
+
+  # Peek at the MAIL_TRANSFER_AGENT to help in generating the file list.
+  Mode = os.environ["TMDA_CGI_MODE"]
+  os.environ["TMDA_CGI_MODE"] = "no-su"
+  Mail = ReimportDefaults([], "")["MAIL_TRANSFER_AGENT"]
+  os.environ["TMDA_CGI_MODE"] = Mode
+
+  RetVal = []
+
+  # To generate the ignore list, add everything and then remove the ones we do
+  # want to install.
+
+  # Add everything
+  if type(Anomalies["VIRTUAL_ONLY"]) == DictType:
+    for Mail in Anomalies["VIRTUAL_ONLY"].keys():
+      RetVal += Anomalies["VIRTUAL_ONLY"][Mail]
+  else:
+    RetVal += Anomalies["VIRTUAL_ONLY"]
+  if type(Anomalies["REAL_ONLY"]) == DictType:
+    for Mail in Anomalies["REAL_ONLY"].keys():
+      RetVal += Anomalies["REAL_ONLY"][Mail]
+  else:
+    RetVal += Anomalies["REAL_ONLY"]
+
+  # Remove correct files
+  if re.search(Anomalies["VIRTUAL_TEST"], PVars["HOME"]):
+    Dict["VirtUser"] = 1
+    if type(Anomalies["VIRTUAL_ONLY"]) == DictType:
+      if Anomalies["VIRTUAL_ONLY"].has_key(Mail):
+        ListDiff(RetVal, Anomalies["VIRTUAL_ONLY"][Mail])
+      else:
+        CgiUtil.TermError("Unknown mailtype",
+          "VIRTUAL_ONLY dictionary has no key: %s" % Mail, "locate files",
+          "VIRTUAL_ONLY = %s" % repr(VIRTUAL_ONLY),
+          "Contact system administrator.")
+    else:
+      ListDiff(RetVal, Anomalies["VIRTUAL_ONLY"])
+  else:
+    Dict["VirtUser"] = 0
+    if type(Anomalies["REAL_ONLY"]) == DictType:
+      if Anomalies["REAL_ONLY"].has_key(Mail):
+        ListDiff(RetVal, Anomalies["REAL_ONLY"][Mail])
+      else:
+        CgiUtil.TermError("Unknown mailtype",
+          "REAL_ONLY dictionary has no key: %s" % Mail, "locate files",
+          "REAL_ONLY = %s" % repr(REAL_ONLY),
+          "Contact system administrator.")
+    else:
+      ListDiff(RetVal, Anomalies["REAL_ONLY"])
+
+  return RetVal
+
 def Install():
   "Do the actual installation."
 
@@ -287,12 +347,7 @@ def Install():
   FilesToInstall = FindFiles("", InstallDir)
 
   # Are we supposed to ignore any of those?
-  if re.search(Anomalies["VIRTUAL_TEST"], PVars["HOME"]):
-    Dict["VirtUser"] = 1
-    ListDiff(FilesToInstall, Anomalies["REAL_ONLY"])
-  else:
-    Dict["VirtUser"] = 0
-    ListDiff(FilesToInstall, Anomalies["VIRTUAL_ONLY"])
+  ListDiff(FilesToInstall, IgnoreFiles(Anomalies))
 
   # What files will that clobber?
   FilesClobbered = FindExisting(FilesToInstall, os.environ["HOME"])
@@ -383,10 +438,7 @@ def Uninstall():
   UninstallFiles = FindFiles("", UninstallDir)
 
   # Are we supposed to ignore any of those?
-  if re.search(Anomalies["VIRTUAL_TEST"], PVars["HOME"]):
-    ListDiff(UninstallFiles, Anomalies["REAL_ONLY"])
-  else:
-    ListDiff(UninstallFiles, Anomalies["VIRTUAL_ONLY"])
+  ListDiff(UninstallFiles, IgnoreFiles(Anomalies))
 
   # Don't clobber anything.
   FilesClobbered = FindExisting(UninstallFiles, os.environ["HOME"])
