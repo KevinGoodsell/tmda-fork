@@ -220,7 +220,7 @@ class FilterParser:
 
     most_sources = re.compile(r"""
     ( (?:to|from)-(?:file|cdb|dbm|ezmlm|mailman)
-    | size
+    | size | pipe
     | (?:to|from) (?!-) )
     """, re.VERBOSE | re.IGNORECASE)
 
@@ -274,7 +274,8 @@ class FilterParser:
         'headers'      : ('case',),
         'body-file'    : ('case', 'optional'),
         'headers-file' : ('case', 'optional'),
-        'size'         : None
+        'size'         : None,
+        'pipe'         : None
         }
 
 
@@ -578,7 +579,7 @@ class FilterParser:
 	Parse a single rule from a filter file.  If successful, return a tuple
 	with five fields.  The five fields are:
 	
-	  source    - string: to*, from*, body*, headers*, size
+	  source    - string: to*, from*, body*, headers*, size, pipe
           args      - any arguments that might be specified
 	  match     - string: the email address to be matched against, a
                       filename or a regular expression enclosed within
@@ -918,6 +919,15 @@ class FilterParser:
                             break
                 if found_match:
 		    break
+            # A match is found if the command exits with a zero exit
+            # status.
+            if source == 'pipe' and msg_body and msg_headers:
+                p = os.popen(match, 'w')
+                p.write(msg_headers + '\n' + msg_body)
+                estat = p.close()
+                if estat is None:
+                    found_match = 1
+                    break
             if source in ('body', 'headers'):
                 if source == 'body' and msg_body:
                     content = msg_body

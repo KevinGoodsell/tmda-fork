@@ -1,3 +1,12 @@
+2003-03-04  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* FilterParser.py (_FilterFile.__init__): Add `pipe', a new filter
+	source.
+
+	(_FilterFile.__init__): Ditto.
+
+	(FilterParser.firstmatch): Ditto.
+
 2003-02-26  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* AutoResponse.py (AutoResponse.create): Sort ADDED_HEADERS_SERVER
