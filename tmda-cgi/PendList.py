@@ -282,9 +282,9 @@ width="18" height="18" alt="Last">"""
   ScAllowed = 1 and PVars[("General", "SpamCopAddr")]
   FltAllowed = 1
   RlShow    = RlAllowed and 1
-  DlShow    = DlAllowed and 1
+  DlShow    = DlAllowed and (PVars[("PendingList", "ShowDelete")] == "Yes")
   WhShow    = WhAllowed and 1
-  BlShow    = BlAllowed and 1
+  BlShow    = BlAllowed and (PVars[("PendingList", "ShowBlack")] == "Yes")
   ScShow    = ScAllowed and 1
  
   if not RlAllowed:

@@ -41,7 +41,8 @@ border="0"></a><br>
   PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db:Ymd:BZd:DaysAgo,
   Login:InitPage:pending:gen_addr, PendingList:CropSender,
   PendingList:CropSubject, PendingList:ShowAddr:Name:Address:All,
-  ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr" -->
+  ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr,
+  PendingList:ShowDelete:No:Yes, PendingList:ShowBlack:No:Yes" -->
 <table>
   <form method="post" action="%(Script)s">
     <tr>
@@ -145,6 +146,26 @@ border="0"></a><br>
         value="%(PendingListCropSubject)s" size="2"></td>
       <td>&nbsp;</td>
       <td>Width of subject field in list view</td>
+    </tr>
+    <tr>
+      <td align="center"><select name="PendingListShowDelete">
+          <option %(PendingListShowDeleteNoSelected)s
+            value="No">No</option>
+          <option %(PendingListShowDeleteYesSelected)s
+            value="Yes">Yes</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Show delete column in pending list.</td>
+    </tr>
+    <tr>
+      <td align="center"><select name="PendingListShowBlack">
+          <option %(PendingListShowBlackNoSelected)s
+            value="No">No</option>
+          <option %(PendingListShowBlackYesSelected)s
+            value="Yes">Yes</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Show blacklist column in pending list.</td>
     </tr>
     <tr>
       <td>OK HTML tag</td>

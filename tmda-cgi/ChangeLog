@@ -1,5 +1,10 @@
 2003-11-16  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Added PendingList:ShowDelete and PendingList:ShowBlack (both with
+	  default values of "No") to discourage deleting and blacklisting
+	  from the pending list.  These can be re-enabled in the defaults.ini
+	  or with the settings page.
+
 	* Added a nasty hack to prevent import errors in Python 2.3.
 
 2003-11-15  Gre7g Luterman  <gre7g@wolfhome.com>
