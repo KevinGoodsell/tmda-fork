@@ -1,3 +1,8 @@
+2002-01-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-keygen (keygen): Use binascii.hexlify instead of
+	Util.hexlify.
+	
 2002-01-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* paths.py: Follow symlinks to find the true path.

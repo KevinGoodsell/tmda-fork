@@ -4,6 +4,7 @@
 
 
 import base64
+import binascii
 import os
 import re
 import string
@@ -22,7 +23,7 @@ def confirmationmac(time,pid,keyword=None):
     chmac.update(pid)
     if keyword:
         chmac.update(keyword)
-    return Util.hexlify(chmac.digest()[:Defaults.HMAC_BYTES])
+    return binascii.hexlify(chmac.digest()[:Defaults.HMAC_BYTES])
 
 
 def make_confirm_cookie(time,pid,keyword=None):
@@ -46,7 +47,7 @@ def make_confirm_address(address,time,pid,keyword):
 def datemac(time):
     """Expects time as a string, and returns an HMAC in hex."""
     datemac = HMAC.new(Defaults.CRYPT_KEY,time).digest()[:Defaults.HMAC_BYTES]
-    return Util.hexlify(datemac)
+    return binascii.hexlify(datemac)
 
 
 def make_dated_cookie(time):
@@ -73,7 +74,7 @@ def make_sender_cookie(address):
     address = string.lower(address)
     sender_cookie = HMAC.new(Defaults.CRYPT_KEY,
                              address).digest()[:Defaults.HMAC_BYTES]
-    return Util.hexlify(sender_cookie)
+    return binascii.hexlify(sender_cookie)
 
 
 def make_sender_address(address, sender):
@@ -88,7 +89,7 @@ def make_sender_address(address, sender):
 def make_keywordmac(keyword):
     """Expects a keyword as a string, returns an HMAC in hex."""
     keywordmac = HMAC.new(Defaults.CRYPT_KEY, keyword).digest()[:Defaults.HMAC_BYTES]
-    return Util.hexlify(keywordmac)
+    return binascii.hexlify(keywordmac)
 
 
 def make_keyword_cookie(keyword):

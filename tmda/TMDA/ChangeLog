@@ -1,3 +1,20 @@
+2002-01-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (CRYPT_KEY): Use binascii.unhexlify instead of 
+	Util.unhexlify.
+	
+	* Cookie.py (confirmationmac): Use binascii.hexlify instead of
+	Util.hexlify.
+	
+	(datemac): Ditto.
+
+	(make_sender_cookie): Ditto.
+
+	(make_keywordmac): Ditto.
+
+	* Util.py: Remove hexlify and unhexlify functions; use the
+	binascii module instead.
+
 2002-01-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Add a new variable PARENTDIR that refers to the

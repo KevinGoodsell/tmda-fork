@@ -3,6 +3,7 @@
 """TMDA configuration variable defaults."""
 
 
+import binascii
 import os
 import stat
 import string
@@ -238,8 +239,8 @@ if not vars().has_key('CRYPT_KEY'):
 else:
     # Convert key from hex back into raw binary.
     # Hex has only 4 bits of entropy per byte as opposed to 8.
-    CRYPT_KEY = Util.unhexlify(CRYPT_KEY)
-
+    CRYPT_KEY = binascii.unhexlify(CRYPT_KEY)
+    
 # FILTER_INCOMING
 # Filter file which controls how incoming messages are tagged.
 # Default is ~/.tmda/filters/incoming

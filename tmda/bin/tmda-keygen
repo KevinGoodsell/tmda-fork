@@ -19,6 +19,7 @@ Where:
 """
 
 
+import binascii
 import commands
 import getopt
 import os
@@ -59,8 +60,6 @@ try:
 except ImportError:
     pass
 
-from TMDA import Util
-
 
 def keygen():
     # Use the kernel's random number generator if available.
@@ -96,7 +95,7 @@ def keygen():
             if commands.getstatusoutput(i)[0] == 0:
                 key_data = key_data + os.popen(i).read()
         key = sha.new(key_data + "key").digest()
-    return Util.hexlify(key)
+    return binascii.hexlify(key)
 
 
 def main():
