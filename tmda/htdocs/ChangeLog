@@ -1,5 +1,8 @@
 2001-12-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config-client.ht: Rename `tmda-make-address' to
+	``tmda-address''.
+	
 	* download.ht (Links): Mention that the Debian and FreeBSD
 	packages might be lagging behind the latest release.
 
