@@ -403,7 +403,7 @@ class FilterParser:
         Search a DBM-style database.
         """
         import anydbm
-        dbm = anydbm.open(pathname, 'c')
+        dbm = anydbm.open(pathname, 'r')
         found_match = 0
         for key in keys:
             if key and dbm.has_key(string.lower(key)):
