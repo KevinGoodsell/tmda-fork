@@ -60,6 +60,9 @@ Contributions:
       script. The Address.py module. Also documentation and lots of
       general bugfixes, suggestions and tmda-users support.
 
+    * Gre7g Luterman -- tmda-cgi, a web interface to TMDA's pending
+      queue.
+
     * Adam McKenna -- Debian package.
 
     * Mike Meyer -- FreeBSD port.
