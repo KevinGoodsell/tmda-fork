@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Jan 14 18:49:33 2002 -->
+<!-- Sat Jan 26 11:57:47 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -165,15 +165,21 @@ which can be changed by setting <b>FILTER_INCOMING</b> in your
 
 <u><b>Format of Filter Files</u></b>:
 <br><br>
+Each rule in a filter file is expected to start at the beginning of a
+line.  Additional lines that are part of the same rule must be
+indented by whitespace (spaces or tabs).  The amount of whitespace
+doesn't matter.  A blank line (either empty or containing nothing but
+whitespace) or a line beginning a new rule signifies the end of the
+previous rule.
+<br><br>
 
-Each line of a filter file is expected to be a string containing three
-unquoted fields separated by whitespace.  Everything after
-<code><b>#</b></code> on a line is considered a comment and ignored.
-Blank lines and lines with invalid syntax are also ignored:
-Lines are read sequentially from top to bottom, and the first match
-wins.  The three fields are:
-<br>
+Everything after <code><b>#</b></code> on a line is considered a
+comment and ignored.  Blank lines and lines with invalid syntax are
+also ignored.  Lines are read sequentially from top to bottom, and the
+<strong>first match wins</strong>.
+<br><br>
 
+The three fields in a filter file rule are:
 <blockquote><pre><b>
 source match action
 
@@ -318,11 +324,23 @@ sender (tag with a sender address based on recipient)
 sender=address (tag with a sender address based on address instead)
 dated (tag with a dated address)
 dated=timeout_interval 
+default (tag with your default action as specified in ACTION_OUTGOING)
 exp,explicit,as=full_address (use an explicit address)
 ext,extension=address_extension (add an extension to the address)
 kw,keyword=keyword (tag with a keyword address)
+tag header action (tag specific headers with specific actions)
 
 </blockquote></pre>
+
+<strong>NOTE:</strong>
+The <strong>tag</strong> action is useful when you need more fine
+grained control over how your outgoing message is tagged.  For
+example, you may want to send a message with a dated envelope sender
+and Reply-To, but a sender address in the "From:" header.  This would
+be useful when posting to a "members only" mailing list that checks
+your From header for membership.  Your sender From allows the message
+through to the list, and your dated Reply-To allows members to reply
+to you directly without confirmation.  <br><br>
 
 <u><b>Example Incoming Filter</u></b>:
 
@@ -352,8 +370,8 @@ to jason-stupid-promo.289076@mastaler.com bounce
 to jason-jcrew.832234@mastaler.com confirm
 
 # Examine the message content
-body (viagra|ginseng) confirm
-headers (Precedence:.*junk) reject
+body "(viagra|ginseng)" confirm
+headers "Precedence:.*junk" reject
 
 # Accept all messages smaller than 10KB, but drop messages larger than 1MB
 size <10000 deliver
@@ -378,12 +396,18 @@ to king@grassland.com keyword=elvis_parsley
 to bobby@peru.com dated
 to-dbm /var/dbm/slowpokes.db dated=6M
 
-# Several ways of handling subscriber-only mailing lists
-to *postfix-users*@postfix.org keyword=postfix-users
-to exim-users@exim.org extension=mlist-exim-users
-to-file ~/.lists ext=mlists
-to owner-python-crypto@nic.surfnet.nl sender
-to python-crypto@* sender=owner-python-crypto@nic.surfnet.nl
+## members-only mailing lists
+
+# ezmlm checks the envelope sender address for membership
+to tmda-admin@samstech.net tag
+   envelope ext=mlists-tmda-admin
+   from     dated
+
+# Majordomo and Mailman check the From: header for membership.
+to freebsd-stable@freebsd.org tag
+   envelope dated
+   from     sender=owner-freebsd-stable@freebsd.org
+   reply-to dated=2w
 
 # Use a different username and/or domain
 to *@gnus.org exp=jason@gnus.org

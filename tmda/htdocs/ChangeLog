@@ -1,3 +1,8 @@
+2002-01-26  Jason R. Mastaler  <jason@mastaler.com>
+
+	* config-filter.ht (Links): Document the new filter file syntax,
+	new tag action, and the new default action keyword.
+
 2002-01-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* results.ht (Links): Add freshmeat.net comment from Sven Neuhaus
