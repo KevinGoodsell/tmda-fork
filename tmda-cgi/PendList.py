@@ -418,6 +418,8 @@ def Show():
     Count = 0
     #InProcMsg = ""
     inProcessLine = 0
+
+    nowTime = int(time.time())
     for Msg in Msgs[FirstMsg:LastMsg]:
       T["MsgID"] = Msg
       if Count % 2 == 0 and OddRowColor is not None:
@@ -440,7 +442,7 @@ def Show():
       MsgTime = int(MsgObj.msgid.split('.')[0])
       if DateFormat == "DaysAgo":
         # Special Case!  "n days ago"
-        Today = (int(time.time()) / 86400)
+        Today = (nowTime / 86400)
         MsgDay = (MsgTime / 86400)
         DaysAgo = Today - MsgDay
         if DaysAgo == 0:
