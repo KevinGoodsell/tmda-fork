@@ -165,7 +165,7 @@ to filter the addresses before adding them to the database.
 
 <li><b>
 <a name="8">I'm running Sendmail, and noticed that my user+detail addresses don't
-work if the message is sent to a virtual domain.  What's the problem?
+work if the message is sent to a virtual domain.  What's the problem?</a>
 </b>
 <br><br>
 You need some special entries in the virtusertable (and a modern version
