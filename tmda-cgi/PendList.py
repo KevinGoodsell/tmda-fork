@@ -428,7 +428,7 @@ def Show():
       # Print a single message record inside list loop
       try:
         MsgObj = Pending.Message(Msg)
-      except (IOError, Errors.MessageError), ErrStr:
+      except (IOError, email.Errors.MessageError), ErrStr:
         continue
 
       # Message size
