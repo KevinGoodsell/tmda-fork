@@ -1,3 +1,7 @@
+2002-07-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (X_TMDA_IN_SUBJECT): New variable.
+
 2002-06-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py: New helper functions: getuid, getgid, gethomedir, and

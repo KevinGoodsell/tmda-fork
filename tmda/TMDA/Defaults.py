@@ -1010,7 +1010,31 @@ if not vars().has_key('TIMEOUT'):
 # Defaults to your UNIX username.
 if not vars().has_key('USERNAME'):
     USERNAME = Util.getusername()
-    
+
+# X_TMDA_IN_SUBJECT
+# With this variable set to 1, tmda-inject will parse the Subject
+# header looking for `X-TMDA' actions, and then remove them before
+# sending the message.  This is useful for users that desire the
+# `X-TMDA' override behavior, but don't use an MUA which easily allows
+# addition of arbitrary headers (e.g, Outlook).
+#
+# The Subject header should contain `X-TMDA' followed by whitespace
+# followed by the desired action followed by the real subject.  Case
+# is insensitive.
+#
+# Examples:
+#
+# Subject: X-TMDA dated Re: You're fired!
+# Subject:     X-TMDA dated=5M Re: You're fired!
+# Subject: X-TMDA   sender      Re: You're fired!
+#
+# In all cases, the resulting subject will simply be:
+# Subject: Re: You're fired!
+#
+# Default is 0 (turned off)
+if not vars().has_key('X_TMDA_IN_SUBJECT'):
+    X_TMDA_IN_SUBJECT = 0
+
 ###################################
 # END of user configurable settings
 ###################################

@@ -334,8 +334,19 @@ def main():
 	    actions = { 'from' : FilterParser.splitaction(x_tmda) }
         # Delete `X-TMDA' before sending.
         del message_headers['x-tmda']
-    else:
-        # Without `X-TMDA', we need to parse the outgoing filter file.
+    # Optionally, parse subject for `X-TMDA'.  e.g,
+    # Subject: X-TMDA dated Re: You're fired!
+    if (Defaults.X_TMDA_IN_SUBJECT and message_headers.has_key('subject') and
+        x_tmda_over is None):
+        sub = message_headers.getheader('subject')
+        subsplit = sub.split(None, 2)
+        if subsplit[0].lower() == 'x-tmda':
+            x_tmda_over = 1
+            actions = { 'from' : FilterParser.splitaction(subsplit[1]) }
+        # Fixup Subject: before sending.
+        message_headers['Subject'] = subsplit[2:][0]
+    # Without `X-TMDA', we need to parse the outgoing filter file.
+    if x_tmda_over is None:
         outfilter = FilterParser.FilterParser()
         outfilter.read(Defaults.FILTER_OUTGOING)
 
