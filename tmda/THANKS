@@ -18,7 +18,7 @@ Contributions:
     * Matt Armstrong -- contributed heavily to the Postfix support,
       plus many good suggestions, and bugfixes.
 
-    * Binesh Bannerjee -- SACRED_FILE feature (now depreciated).
+    * Binesh Bannerjee -- SACRED_FILE feature (now deprecated).
     
     * Ron Bickers -- countless suggestions, bugfixes, documentation
       additions, and code patches (too many to list).
@@ -48,10 +48,10 @@ Contributions:
 
     * Mike Meyer -- FreeBSD port.
 
-    * Drew Raines --  Tireless assistance on tmda-users.
+    * Drew Raines -- Tireless assistance on tmda-users.
 
     * Ted Rathkopf -- support for "pre-extension" definitions in
-      /var/qmail/users/assign (now depreciated).
+      /var/qmail/users/assign (now deprecated).
 
     * Amitai Schlair -- NetBSD package.
 
