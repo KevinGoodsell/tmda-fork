@@ -386,11 +386,11 @@ if not vars().has_key('HMAC_BYTES'):
 if not vars().has_key('HOSTNAME'):
     HOSTNAME = Util.gethostname()
 
-# LOGFILE
-# Filename which delivery statistics should be written to.
+# LOGFILE_INCOMING
+# Filename which delivery summaries should be written to.
 # Default is 0 (no logging)
-if not vars().has_key('LOGFILE'):
-    LOGFILE = 0
+if not vars().has_key('LOGFILE_INCOMING'):
+    LOGFILE_INCOMING = 0
 
 # MESSAGE_FROM_STYLE
 # Specifies how `From' headers should look on when tagging outgoing

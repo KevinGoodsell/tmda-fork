@@ -1,3 +1,7 @@
+2002-01-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Rename LOGFILE to LOGFILE_INCOMING.
+
 2002-01-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* list2cdb (cdb): Lowercase keys before they are added to the DB.

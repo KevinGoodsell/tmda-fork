@@ -1,3 +1,7 @@
+2002-01-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (LOGFILE_INCOMING): Replaces LOGFILE.
+
 2001-12-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (unixdate): New function to return a date string in the

@@ -237,12 +237,14 @@ for hdr in list_headers:
 # Functions
 ###########
 
-def logit(action_msg,date):
-    """Write delivery statistics to the LOGFILE if enabled."""
-    if Defaults.LOGFILE and recipient_address:
+def logit(action_msg, timesecs=None):
+    """Write delivery statistics to the logfile if it's enabled."""
+    if Defaults.LOGFILE_INCOMING and recipient_address:
         try:
-            logfile = open(Defaults.LOGFILE, 'a') # append to the file
-            Date = Util.unixdate(date)
+            if not timesecs:
+                timesecs = time.time()
+            logfile = open(Defaults.LOGFILE_INCOMING, 'a') # append to the file
+            Date = Util.unixdate(timesecs)
             From = message_headers.getheader('from')
             EnvelopeSender = envelope_sender
             To = recipient_address
@@ -311,7 +313,7 @@ def send_cc(address):
     except IOError, error_msg:
         print error_msg
         mta.defer()
-    logit(string.join(inject),time.time())
+    logit(string.join(inject))
 
 
 def inject_pending(pathname,timestamp,pid):
@@ -366,7 +368,7 @@ def release_pending(pathname, timestamp, pid):
             print error_msg
             mta.defer()
         if Util.append_to_file(orig_env_sender,Defaults.CONFIRM_APPEND) != 0:
-            logit("APPEND " + orig_env_sender, time.time())
+            logit("APPEND " + orig_env_sender)
     # Optionally generate the confirmation acceptance notice.
     if Defaults.CONFIRM_ACCEPT_NOTIFY:
         bouncegen('accept')
@@ -384,7 +386,7 @@ def verify_confirm_cookie(confirm_cookie):
         (confirm_action, confirm_timestamp,
          confirm_pid, confirm_hmac) = string.split(confirm_cookie,'.')
     except ValueError:
-        logit("BOUNCE invalid_confirmation_address",time.time())
+        logit("BOUNCE invalid_confirmation_address")
         print("Sorry, this confirmation address is invalid.")
         mta.bounce()
     pendingdir = Defaults.DATADIR + 'pending'
@@ -397,15 +399,15 @@ def verify_confirm_cookie(confirm_cookie):
         # Accept the message only if the HMAC can be verified and the
         # message actually exists in the pending queue.
         if not (confirm_hmac == new_confirm_hmac):
-            logit("BOUNCE invalid_confirmation_address",time.time())
+            logit("BOUNCE invalid_confirmation_address")
             print("Sorry, this confirmation address is invalid.")
             mta.bounce()
         elif not (os.path.exists(confirmed_message_pathname)):
-            logit("BOUNCE nonexistent_pending_message",time.time())
+            logit("BOUNCE nonexistent_pending_message")
             print "Sorry, your original message could not be located."
             mta.bounce()
         else:
-            logit("CONFIRM accept " + confirmed_message, time.time())
+            logit("CONFIRM accept " + confirmed_message)
             release_pending(confirmed_message_pathname,
                             confirm_timestamp,confirm_pid)
     # post-confirmation
@@ -415,15 +417,15 @@ def verify_confirm_cookie(confirm_cookie):
         # Accept the message only if the HMAC can be verified and the
         # message has not already been delivered.
         if not (confirm_hmac == new_confirm_hmac):
-            logit("BOUNCE invalid_confirmation_address",time.time())
+            logit("BOUNCE invalid_confirmation_address")
             print("Sorry, this confirmation address is invalid.")
             mta.bounce()
         elif not (os.path.exists(confirmed_message_pathname)):
-            logit("BOUNCE already_confirmed_message",time.time())
+            logit("BOUNCE already_confirmed_message")
             print "Sorry, this message has already been confirmed."
             mta.bounce()
         else:
-            logit("OK good_confirm_cookie", time.time())
+            logit("OK good_confirm_cookie")
             os.unlink(confirmed_message_pathname)
             mta.deliver(message)
 
@@ -452,7 +454,7 @@ def verify_sender_cookie(sender_address,sender_cookie):
     sender_address_cookie = Cookie.make_sender_cookie(sender_address)
     # Accept the message only if the HMAC can be verified.
     if (sender_cookie == sender_address_cookie):
-        logit("OK good_sender_cookie", time.time())
+        logit("OK good_sender_cookie")
         mta.deliver(message)
     else:
         bouncegen('request')
@@ -466,7 +468,7 @@ def verify_keyword_cookie(keyword_cookie):
     newmac = Cookie.make_keywordmac(keyword)
     # Accept the message only if the HMAC can be verified.
     if mac == newmac:
-        logit("OK good_keyword_cookie \"" + keyword + "\"", time.time())
+        logit("OK good_keyword_cookie \"" + keyword + "\"")
         mta.deliver(message)
     else:
         bouncegen('request')
@@ -534,7 +536,7 @@ def bouncegen(mode):
         message_headers['Return-Path'] = '<' + envelope_sender + '>'
         pending_contents = str(message_headers) + '\n' + message_body
         Util.writefile(pending_contents, pendingdir + '/' + pending_message)
-        logit("CONFIRM pending " + pending_message, time.time())
+        logit("CONFIRM pending " + pending_message)
     # Find the right template.
     if env_template and os.path.exists(env_template):
         right_template = env_template

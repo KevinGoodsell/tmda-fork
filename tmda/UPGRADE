@@ -2,6 +2,8 @@
 
 If you are upgrading from a release of TMDA < 0.44:
 
+* LOGFILE has been renamed LOGFILE_INCOMING.
+
 * tmda-address has replaced tmda-dated-address, tmda-keyword-address,
   and tmda-sender-address.  Run `tmda-address -h' to get a list of
   available options.

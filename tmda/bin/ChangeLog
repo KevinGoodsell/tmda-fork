@@ -1,3 +1,10 @@
+2002-01-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (logit): Rename LOGFILE to LOGFILE_INCOMING.  Also
+	make the time value optional.
+
+	(main): Remove time.time() parameter to logit calls.
+
 2002-01-03  Matt Armstrong  <matt@lickey.com>
 
 	* tmda-address: now prints a newline after the address.  New
