@@ -498,19 +498,27 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
 def verify_dated_cookie(dated_cookie):
     """Verify a dated cookie."""
     # Save some time if the cookie is bogus.
-    dated_cookie_split = string.split(dated_cookie,'.')
-    if len(dated_cookie_split) != 2:
+    try:
+        cookie_date, datemac = dated_cookie.split('.')
+    except ValueError:
+        logit("CONFIRM bad_dated_cookie")
         bouncegen('request')
-    cookie_date = dated_cookie_split[0]
-    datemac = dated_cookie_split[1]
-    newdatemac = Cookie.datemac(cookie_date)
-    # Accept the message only if the address has not expired *and* the HMAC
-    # can be verified.
     now = time.time()
-    if ((int(cookie_date) >= int('%d' % now)) and (datemac == newdatemac)):
-        logit("OK good_dated_cookie",now)
-        mta.deliver(message_headers, message_body)
+    newdatemac = Cookie.datemac(cookie_date)
+    # Accept the message only if the address has not expired, and the
+    # HMAC is valid.
+    if int(cookie_date) >= int('%d' % now):
+        if datemac != newdatemac:
+            logit("CONFIRM bad_dated_cookie")
+            bouncegen('request')
+        else:
+            logit("OK good_dated_cookie", now)
+            mta.deliver(message_headers, message_body)
     else:
+        if datemac != newdatemac:
+            logit("CONFIRM bad_dated_cookie")
+        else:
+            logit("CONFIRM expired_dated_cookie")
         bouncegen('request')
 
 
@@ -522,6 +530,7 @@ def verify_sender_cookie(sender_address,sender_cookie):
         logit("OK good_sender_cookie")
         mta.deliver(message_headers, message_body)
     else:
+        logit("CONFIRM bad_sender_cookie")
         bouncegen('request')
 
 
@@ -536,6 +545,7 @@ def verify_keyword_cookie(keyword_cookie):
         logit("OK good_keyword_cookie \"" + keyword + "\"")
         mta.deliver(message_headers, message_body)
     else:
+        logit("CONFIRM bad_keyword_cookie")
         bouncegen('request')
 
 
@@ -688,7 +698,7 @@ def main():
             logit('%s (%s)' % ('OK', matching_line))
             mta.deliver(message_headers, message_body)
     elif action == 'confirm':
-        # bouncegen does logging
+        logit('%s (%s)' % ('CONFIRM', matching_line))
         bouncegen('request')
 
     # The message didn't match the filter file, so check if it was
@@ -718,7 +728,7 @@ def main():
         logit('%s %s' % ('OK', 'action_incoming'))
         mta.deliver(message_headers, message_body)
     else:
-        # bouncegen does logging
+        logit('%s %s' % ('CONFIRM', 'action_incoming'))
         bouncegen('request')
 
 

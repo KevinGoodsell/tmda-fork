@@ -8,6 +8,12 @@
 	(verify_confirm_cookie): Verify the confirmed/reinjected message
 	by recalculating the HMAC contained in the X-TMDA-Confirm-Done
 	field.
+
+	(main): Log the cause of bouncegen('request').
+
+	(verify_dated_cookie): Log the cause of a failed dated cookie
+	verification.  Differentiate between not-expired with bad cookie,
+	expired with good cookie, and expired with bad cookie.
 	
 2002-05-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
