@@ -22,6 +22,14 @@ PID = str(os.getpid())
 EX_OK = 0                               
 EX_TEMPFAIL = 75
 
+# TMDA parent directory.
+program = sys.argv[0]
+try:
+    progpath = os.path.realpath(program)
+except AttributeError:
+    progpath = os.path.abspath(program)
+PARENTDIR = os.path.split(os.path.dirname(progpath))[0] # '../'
+
 # If the file /etc/tmdarc exists, read it before ~/.tmdarc.
 # Make site-wide configuration changes to this file.
 GLOBAL_TMDARC = '/etc/tmdarc'
@@ -200,19 +208,13 @@ if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
 # Full path to a custom template for confirmation acceptance notices.
 # Default is confirm_accept.txt in ../templates/.
 if not vars().has_key('CONFIRM_ACCEPT_TEMPLATE'):
-    ca_template = '/templates/confirm_accept.txt'
-    CONFIRM_ACCEPT_TEMPLATE = os.path.split(os.path.dirname
-                                            (os.path.abspath
-                                             (sys.argv[0])))[0] + ca_template 
-
+    CONFIRM_ACCEPT_TEMPLATE = PARENTDIR + '/templates/confirm_accept.txt'
+    
 # CONFIRM_REQUEST_TEMPLATE
 # Full path to a custom template for confirmation requests.
 # Default is confirm_request.txt in ../templates/.
 if not vars().has_key('CONFIRM_REQUEST_TEMPLATE'):
-    cr_template = '/templates/confirm_request.txt'
-    CONFIRM_REQUEST_TEMPLATE = os.path.split(os.path.dirname
-                                            (os.path.abspath
-                                             (sys.argv[0])))[0] + cr_template 
+    CONFIRM_REQUEST_TEMPLATE = PARENTDIR + '/templates/confirm_request.txt'
 
 # DATED_TEMPLATE_VARS
 # Set this variable to 1 if you want to use 'dated' address variables

@@ -6,5 +6,13 @@
 import os
 import sys
 
-prefix = os.path.split(os.path.dirname(os.path.abspath(sys.argv[0])))[0] # '../'
-sys.path.insert(1,prefix)
+program = sys.argv[0]
+
+try:
+    progpath = os.path.realpath(program)
+except AttributeError:
+    progpath = os.path.abspath(program)
+
+prefix = os.path.split(os.path.dirname(progpath))[0] # '../'
+
+sys.path.insert(1, prefix)

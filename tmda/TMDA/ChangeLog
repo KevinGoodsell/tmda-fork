@@ -1,5 +1,8 @@
 2002-01-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py: Add a new variable PARENTDIR that refers to the
+	TMDA parent directory.  Used internally.
+
 	* FilterParser.py (FilterParser.firstmatch): Add from/to-ezmlm
 	rules to support matching from ezmlm `subscribers' directories
 	which contain hash files of list subscriber addresses.
