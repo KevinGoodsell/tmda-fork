@@ -23,7 +23,6 @@
 
 import os
 import sys
-import string
 import tempfile
 ##from syslog import syslog
 
@@ -117,7 +116,7 @@ class CdbStore(Autobuilder):
     def contains(self, keys):
         if self.db != None:
             for key in keys:
-                if key and self.db.has_key(string.lower(key)):
+                if key and self.db.has_key(key.lower()):
                     return 1
         return 0
 
@@ -169,7 +168,7 @@ class DbmStore(Autobuilder):
     def contains(self, keys):
         if self.db != None:
             for key in keys:
-                if key and self.db.has_key(string.lower(key)):
+                if key and self.db.has_key(key.lower()):
                     return 1
         return 0
 
