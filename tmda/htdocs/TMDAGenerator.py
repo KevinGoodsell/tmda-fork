@@ -42,6 +42,7 @@ sitelinks = [
     mirror ]'),
     ('%(rootdir)s/tmda-cgi', 'tmda-cgi'),
     ('http://sourceforge.net/projects/tmda', 'TMDA @ SourceForge'),
+    ('http://www.cafeshops.com/TMDA/', 'TMDA Store'),
     ]
 
 

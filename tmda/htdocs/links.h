@@ -37,3 +37,4 @@
 <li><a href="resources.html">External Resources</a>
 <li><a href="mirrors.html">Mirrors</a>
 <li><a href="logos.html">Logos</a>
+<li><a href="http://www.cafeshops.com/TMDA/" TARGET="Resource Window">Merchandise</a>
