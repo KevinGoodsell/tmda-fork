@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Oct 24 19:59:45 2002 -->
+<!-- Mon Oct 28 17:05:22 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -249,7 +249,7 @@ taking the defaults for the other templates.
 
 <hr>
 
-<h2>International (I18N) templates</h2>
+<h2>International templates</h2>
 
 The default templates are written entirely in English, and in
 US-ASCII. If your native language is not English, and you frequently
@@ -264,9 +264,9 @@ of the Internet is English, and to insure maximum readability, you
 should adhere to this.  <br><br>
 
 If your language does not use non-ASCII characters, you can safely
-ignore this section. However, if you do wish to use non-ASCII
-characters in your templates such as the cedilla in French or umlauts
-in German, keep reading.
+ignore the rest of this section. However, if you do wish to use
+non-ASCII characters in your templates such as the cedilla in French
+or umlauts in German, keep reading.
 
 <h3>International e-mail primer</h3>
 
@@ -311,8 +311,8 @@ based on the charset you specified.
 <code>BodyCharset</code> only accepts one charset as its value, so you
 should choose a character set that encompasses all the languages you
 plan to use in your template. For example, you can write
-German+Polish+English with Latin-2 or German+Turkish+English with
-Latin-5 but there is no 8bit charset to properly mix
+German+Polish+English with LATIN-2 or German+Turkish+English with
+LATIN-5 but there is no 8-bit charset to properly mix
 German+Russian+English, for instance.
 
 <h3>Internationalized headers</h3>
@@ -331,7 +331,7 @@ Subject.LATIN-1: Please confirm your message / Bitte Bestätigen
 
 </pre></blockquote>
 
-Unlike with template bodies, template headers are not restricted
+Unlike template bodies, template headers are not restricted
 to one character set. Different headers can use different character
 sets. For example, a Japanese From field with German Subject field:
 
@@ -384,24 +384,123 @@ package at this writing is 2.0.5.
 
 Templates must be in the <strong>EUC-KR</strong> charset.
 
-<h3>Alphabet Soup</h3>
+<h3>Choosing the right character set</h3>
 
 The charset value for <code>BodyCharset</code>, and the charset
-suffix for Header.CHARSET can be any ISO standard character set name
+suffix in Header.CHARSET: can be any standard character set name
 (such as ISO-8859-1), or an alias for that charset (such as LATIN-1).
+Charset names and aliases are case-insensitive.
 
 <br><br>
-Insert some sort of charset map or table to help users decide which
-charset they need for their language. Many users will already know
-this information, but many will not. Any suggestions?
-
-The <a href="http://czyborra.com/charsets/iso8859.html" TARGET="Resource Window">ISO-8859-*</a>
-series will cover most user's needs.
+All charsets are supported, but here is a table listing some of
+the more popular ones, along with their alias (if any), and some
+languages covered by that charset.
 
 <br><br>
 
+<table border cellpadding=4 cellspacing=2>
 
- 
+<tr>
+<th>charset</th>
+<th>charset alias(es)</th>
+<th>coverage</th>
+<th>example languages</th>
+</td>
+
+<tr>
+<td>ISO-8859-1</td>
+<td>LATIN-1</td>
+<td>Western Europe</td>
+<td>French, German, Finnish</td>
+</tr>
+
+<tr>
+<td>ISO-8859-2</td>
+<td>LATIN-2</td>
+<td>Central and Eastern Europe</td>
+<td>Czech, Hungarian, Croatian</td>
+</tr>
+
+<tr>
+<td>ISO-8859-6</td>
+<td>ARABIC</td>
+<td>Arabic Alphabet</td>
+<td>Arabic</td>
+</tr>
+
+<tr>
+<td>ISO-8859-7</td>
+<td>GREEK</td>
+<td>Greece</td>
+<td>Greek</td>
+</tr>
+
+<tr>
+<td>ISO-8859-8</td>
+<td>HEBREW</td>
+<td>Hebrew script</td>
+<td>Hebrew, Yiddish</td>
+</tr>
+
+<tr>
+<td>ISO-8859-9</td>
+<td>LATIN-5, TURKISH</td>
+<td>Turkey</td>
+<td>Turkish</td>
+</tr>
+
+<tr>
+<td>ISO-8859-15</td>
+<td>LATIN-9</td>
+<td>Europe</td>
+<td>Estonian, the Euro sign</td>
+</tr>
+<tr>
+
+<td>KOI8-R</td>
+<td>RUSSIAN</td>
+<td>Russian Federation</td>
+<td>Russian</td>
+</tr>
+
+<tr>
+<td>EUC-JP</td>
+<td>JAPANESE</td>
+<td>Japan</td>
+<td>Japanese</td>
+</tr>
+
+<tr>
+<td>EUC-KR</td>
+<td>KOREAN</td>
+<td>Republic of Korea</td>
+<td>Korean</td>
+</tr>
+
+<tr>
+<td>TIS-620</td>
+<td>THAI</td>
+<td>Thailand</td>
+<td>Thai</td>
+</tr>
+
+<tr>
+<td>VISCII</td>
+<td>VIETNAMESE</td>
+<td>Vietnam</td>
+<td>Vietnamese</td>
+</tr>
+
+</tr>
+</table>
+<br>
+
+Also see Roman Czyborra's excellent 
+<a href="http://czyborra.com/charsets/iso8859.html" TARGET="Resource Window">ISO 8859 Alphabet Soup</a>
+for more on the ISO 8859 series (which will cover most user's I18N needs).
+<br><br>
+
+
 </TD><!-- end of body cell -->
 </TR><!-- end of sidebar/body row -->
 </TABLE><!-- end of page table -->
