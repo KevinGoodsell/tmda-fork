@@ -320,7 +320,8 @@ rights.""")
           CgiUtil.TermError("User's IP address has changed.",
             "Your IP address has changed. This is not allowed.",
             "read session data", "%s->%s" %
-            (self.Vars["IP"], os.environ["REMOTE_ADDR"]), "Log back in.")
+            (self.Vars["IP"], os.environ["REMOTE_ADDR"]),
+            '<a href="%s">Log back in</a>.' % os.environ["SCRIPT_NAME"])
 
         # Are they logging out?
         if Form.has_key("cmd") and (Form["cmd"].value == "logout"):
