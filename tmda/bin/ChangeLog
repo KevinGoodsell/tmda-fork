@@ -3,6 +3,11 @@
 	* tmda-ofmipd (TMDAProxy.process_message): Single-quote each
 	recipient on the tmda-inject command line.
 
+	Added `-A, --authprog' option.
+
+	(SMTPChannel.verify_login): Check for authprog before authfile.
+	(SMTPChannel.verify_plain): Ditto.
+	
 2002-07-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-ofmipd: Documentation updates.

@@ -55,6 +55,14 @@ OPTIONS:
 	default is FQDN:8025 (i.e, port 8025 on the fully qualified
 	domain name for the local host).
 
+    -A <program>
+    --authprog <program>
+        checkpassword compatible command used to check username/password. e.g,
+              `-A /usr/sbin/checkpassword-pam -s id --stdin -- /bin/true'
+	The program must be able to receive the username/password pair
+	on its stdin, and in the following format:
+              `username\\0password\\0'
+
     -a <file>
     --authfile <file>
         Path to the file holding authentication information for this
@@ -97,6 +105,7 @@ DEBUGSTREAM = Devnull()
 proxyport = '%s:%s' % (FQDN, 8025)
 program = sys.argv[0]
 configdir = None
+authprog = None
 
 if os.getuid() == 0:
     running_as_root = 1
@@ -142,13 +151,14 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'p:u:a:c:dVh', ['proxyport=',
-                                               'username=',
-                                               'authfile=',
-                                               'configdir=',
-                                               'debug',
-                                               'version',
-                                               'help'])
+			       'p:u:A:a:c:dVh', ['proxyport=',
+                                                 'username=',
+                                                 'authfile=',
+                                                 'authprog=',
+                                                 'configdir=',
+                                                 'debug',
+                                                 'version',
+                                                 'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -167,6 +177,8 @@ for opt, arg in opts:
 	proxyport = arg
     elif opt in ('-u', '--username'):
 	username = arg
+    elif opt in ('-A', '--authprog'):
+	authprog = arg
     elif opt in ('-a', '--authfile'):
 	authfile = arg
     elif opt in ('-c', '--configdir'):
@@ -179,6 +191,7 @@ import base64
 import fileinput
 import hmac
 import md5
+import popen2
 import random
 import time
 
@@ -190,6 +203,31 @@ COMMASPACE = ', '
 
 
 # Utility functions
+def pipecmd(command, *strings):
+    popen2._cleanup()
+    cmd = popen2.Popen3(command, 1, bufsize=-1)
+    cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
+    if strings:
+        # Write to the tochild file object.
+        for s in strings:
+            cmdin.write(s)
+        cmdin.flush()
+        cmdin.close()
+    # Read from the childerr object; command will block until exit.
+    err = cmderr.read().strip()
+    cmderr.close()
+    # Read from the fromchild object.
+    out = cmdout.read().strip()
+    cmdout.close()
+    # Get exit status from the wait() member function.
+    return cmd.wait()
+
+
+def run_authprog(username, password):
+    """authprog should return 0 for auth ok, and a positive integer in
+    case of a problem."""
+    return pipecmd('%s' % authprog, '%s\0%s\0' % (username, password))
+
 
 def quote_rcpts(rcpttos):
     rcpttos_quoted = []
@@ -274,6 +312,11 @@ class SMTPChannel(asynchat.async_chat):
             return 501
         self.__auth_username = username.lower()
         self.__auth_password = password
+        if authprog:
+            # Try first with the authprog
+            if run_authprog(username, password) == 0:
+                return 1
+	    # Now we can fall back on the authfile
         authdict = authfile2dict(authfile)
         if authdict.get(username.lower(), 0) != password:
             return 0
@@ -292,6 +335,11 @@ class SMTPChannel(asynchat.async_chat):
             return 0
         self.__auth_username = username.lower()
         self.__auth_password = password
+        if authprog:
+            # Try first with the authprog
+            if run_authprog(username, password) == 0:
+                return 1
+	    # Now we can fall back on the authfile
         authdict = authfile2dict(authfile)
         if authdict.get(username.lower(), 0) != password:
             return 0

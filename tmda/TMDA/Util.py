@@ -310,6 +310,8 @@ def pipecmd(command, *strings):
 
     *strings are optional pieces of data to write to command.
 
+    return_status will just return the exit status of the command..
+    
     Based on code from getmail
     <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
     Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
