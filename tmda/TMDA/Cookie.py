@@ -20,7 +20,7 @@ def confirmationmac(time,pid,keyword=None):
     chmac.update(pid)
     if keyword:
         chmac.update(keyword)
-    return Util.hexlify(chmac.digest()[:3])
+    return Util.hexlify(chmac.digest()[:Defaults.HMAC_BYTES])
 
 
 def make_confirm_cookie(time,pid,keyword=None):
@@ -42,7 +42,7 @@ def make_confirm_address(address,time,pid,keyword):
 
 def datemac(time):
     """Expects time as a string, and returns an HMAC in hex."""
-    datemac = HMAC.new(Defaults.CRYPT_KEY,time).digest()[:3]
+    datemac = HMAC.new(Defaults.CRYPT_KEY,time).digest()[:Defaults.HMAC_BYTES]
     return Util.hexlify(datemac)
 
 
@@ -66,7 +66,8 @@ def make_dated_address(address):
 
 def make_sender_cookie(address):
     """Return a sender-style cookie based on the given address."""
-    sender_cookie = HMAC.new(Defaults.CRYPT_KEY,address).digest()[:3]
+    sender_cookie = HMAC.new(Defaults.CRYPT_KEY,
+                             address).digest()[:Defaults.HMAC_BYTES]
     return Util.hexlify(sender_cookie)
 
 

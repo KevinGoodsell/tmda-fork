@@ -203,6 +203,14 @@ else:
 if not vars().has_key('FULLNAME'):
     FULLNAME = Util.getfullname()
 
+# HMAC_BYTES
+# An integer which determines the length of the HMACs used in TMDA's
+# "cookies".  Read the `CRYPTO' file for more information.  Changing
+# this value will will invalidate all previously generated HMACs.
+# Default is 3 (24-bit HMACs)
+if not vars().has_key('HMAC_BYTES'):
+    HMAC_BYTES = 3
+
 # HOSTNAME
 # The right-hand side of your email address (after `@').
 # Defaults to the fully qualified domain name of the localhost.

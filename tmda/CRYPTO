@@ -20,7 +20,7 @@ The format for a 'dated' address is:
 
     DATE is seconds since the epoch in UTC, expressed as an integer.
   
-    DATEMAC is a 24-bit HMAC of DATE.
+    DATEMAC is an HMAC of DATE.
 
 Incoming 'dated' messages are accepted if:
 
@@ -42,7 +42,7 @@ The format for a 'sender' address is:
 
     (For example, jason-sender-8c54ac@mastaler.com)
 
-    SENDERMAC is a 24-bit HMAC of the sender's e-mail address.
+    SENDERMAC is an HMAC of the sender's e-mail address.
 
 Incoming 'sender' messages are accepted if:
 
@@ -63,8 +63,8 @@ The format for a confirmation request address is:
 
     PID is the process-id of the current Python process.
 
-    CONFIRMMAC is a 24-bit HMAC as a function of TIMESTAMP, PID, and
-    the string 'accept'.
+    CONFIRMMAC is an HMAC as a function of TIMESTAMP, PID, and the
+    string 'accept'.
 
 Confirmation request acknowledgments are accepted if:
 
@@ -84,8 +84,8 @@ cipher encryption without any loss of security:
   amkCrypto/OpenSSL compilation/installation difficulties proved to be
   the biggest stumbling block for new users of earlier TMDA releases.
 
-* The resultant "cookies" are shorter.  (6 hex characters as compared
-  to 16 for 'dated', and 6 hex characters as compared to 40 for 'sender')
+* The default "cookies" are shorter.  (6 hex characters as compared to
+  16 for 'dated', and 6 hex characters as compared to 40 for 'sender')
 
 * It is the right construction to be using from a cryptographic
   perspective.  (MACs were designed for exactly these type of
@@ -96,15 +96,29 @@ TMDA Security:
 --------------
 
 With HMACs, the length of the key determines how hard it is to "break"
-the system, that is, find the key and be able to forge arbitrary
+the system; that is, find the key and be able to forge arbitrary
 messages (create arbitrary email addresses, in this context).  With
 this in mind, TMDA uses long (160-bit) random private keys.
 
-The length of the HMAC determines the likelihood that a random message
-is a forgery.  If you use n bits in your HMAC, the chance of this is 1
-in 2**n. .  One way to try to sneak messages past TMDA would be to
-simply pick a random string as the HMAC and hope that it verified
-correctly.  TMDA uses 24-bit HMACs (3 bytes, 6 hex characters) which
-means the chance of a successful forgery is 1 in 16,777,216.  Very
-unlikely when you consider that to test a forged HMAC, the attacker
-must actually send you an e-mail message and wait for the result.
+One way to try to sneak messages past TMDA would be to simply pick a
+random string as the HMAC and hope that it verified correctly.  The
+length of the HMAC determines the likelihood that a random message is
+a forgery.  If you use n bits in your HMAC, the chance of this is 1 in
+2**n.  By default, TMDA uses 24-bit HMACs (3 bytes, 6 hex characters).
+Here are some statistics for HMACs of various sizes:
+
+HMAC_BYTES  CHARS  BITS  CHANCE OF FORGERY       EXAMPLE
+----------  -----  ----	 -----------------	 -------
+1	    2      8	 1 in 256		 e9
+2	    4      16    1 in 65,536		 f9c4
+3	    6      24    1 in 16,777,216	 3fd2f2
+4	    8      32    1 in 4,294,967,296	 596b0ba3
+5	    10     40    1 in 1,099,511,627,776	 490e78c8d9
+[...]
+
+You can alter the length of your HMACs (through HMAC_BYTES) if you are
+not comfortable with the default.  However, the default should provide
+sufficient protection when you consider that to test a forged HMAC,
+the attacker must actually send you an e-mail message and wait for the
+result.  Longer HMACs also mean longer e-mail addresses to work with.
+
