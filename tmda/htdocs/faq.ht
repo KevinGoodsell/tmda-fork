@@ -70,7 +70,7 @@ How can I delete old, unconfirmed messages from TMDA's pending queue?
 TMDA comes with a utility called `tmda-clean' which does this for you.
 You can run it by hand, or periodically from cron.  Run `tmda-clean'
 without any arguments to get a listing of possible options.
-tmda-clean should be from from the user account that owns the pending
+tmda-clean should be run from the user account that owns the pending
 queue, not from root (unless root is running TMDA).
 <br><br>
 
