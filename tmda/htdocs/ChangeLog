@@ -1,5 +1,7 @@
 2002-02-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* download.ht (Links): Update Debian package link.
+
 	* features.ht (Links): Mention NetBSD package.
 
 	* download.ht: Link to the NetBSD package.
