@@ -31,14 +31,17 @@ Releases from the <a href="#branches">stable and unstable branches</a> are avail
 <li><a href="http://www.gentoo.org/dyn/pkgs/net-mail/tmda.xml"
 TARGET="Resource Window">Gentoo Linux</a><br>
 
-<li>FreeBSD:<a href="http://www.freshports.org/mail/tmda/"
-TARGET="Resource Window">mail/tmda</a><br>
+<li><a href="http://fink.sourceforge.net/pdb/package.php/tmda"
+TARGET="Resource Window">Mac OS X (fink)</a><br>
 
-<li>NetBSD:<a href="ftp://ftp.NetBSD.org/pub/NetBSD/packages/pkgsrc/mail/tmda/README.html"
-TARGET="Resource Window">mail/tmda</a><br>
+<li><a href="http://www.freshports.org/mail/tmda/"
+TARGET="Resource Window">FreeBSD</a><br>
 
-<li>OpenBSD:<a href="http://www.OpenBSD.org/cgi-bin/cvsweb/ports/mail/tmda/"
-TARGET="Resource Window">mail/tmda</a><br>
+<li><a href="ftp://ftp.NetBSD.org/pub/NetBSD/packages/pkgsrc/mail/tmda/README.html"
+TARGET="Resource Window">NetBSD</a><br>
+
+<li><a href="http://www.OpenBSD.org/cgi-bin/cvsweb/ports/mail/tmda/"
+TARGET="Resource Window">OpenBSD</a><br>
 
 </ul>
 
