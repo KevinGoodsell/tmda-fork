@@ -1,5 +1,10 @@
 2001-11-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (TMDARC): Exit(75) to force a deferral if any
+	exceptions arise when running execfile on TMDARC.  This is
+	necessary for non-qmail MTAs which bounce rather than defer by
+	default.
+
 	* Util.py (findmatch): addrs should now be a list to iterate over.
 	
 	* FilterParser.py: Add support for incoming filter files.

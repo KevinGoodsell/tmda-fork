@@ -35,9 +35,9 @@ GLOBAL_TMDARC = '/etc/tmdarc'
 if os.path.exists(GLOBAL_TMDARC):
     try:
         execfile(GLOBAL_TMDARC)
-    except IOError:
-        pass                            # just skip it if we can't open it
-    
+    except:
+        pass                            # just skip it if there is a problem
+        
 # Look for the user-config-file in the environment first then default
 # to ~/.tmdarc.
 TMDARC = os.environ.get('TMDARC')
@@ -47,8 +47,13 @@ if not TMDARC:TMDARC = os.path.expanduser("~/.tmdarc")
 if not os.path.exists(TMDARC):
     print "Can't open configuration file:",TMDARC
     sys.exit(EX_TEMPFAIL)
-execfile(TMDARC)
-
+else:
+    try:
+        execfile(TMDARC)
+    except Exception, error_msg:
+        print TMDARC, error_msg
+        sys.exit(EX_TEMPFAIL)
+                
 # Check for proper file permissions before proceeding.
 statinfo = os.stat(TMDARC)
 permbits = stat.S_IMODE(statinfo[stat.ST_MODE])
