@@ -1,5 +1,16 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.78:
+
+* The format of confirm_accept_url has changed.  This only affects you
+  if you use tmda-cgi (version 0.08 or earlier) and URL confirmation.
+  
+  Please view the UPGRADE file of tmda-cgi version 0.09 for more
+  information.  tmda-cgi 0.09 can be downloaded from:
+  <URL:http://www.tmda.net/tmda-cgi/releases/>
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.77:
 
 * By default, tmda-filter now performs an automated cleanup of the
