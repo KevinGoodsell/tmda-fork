@@ -188,7 +188,6 @@ for opt, arg in opts:
 import asynchat
 import asyncore
 import base64
-import fileinput
 import hmac
 import md5
 import popen2
@@ -236,15 +235,20 @@ def quote_rcpts(rcpttos):
     return rcpttos_quoted
 
 
-def authfile2dict(file):
-    """Read a tmda-ofmipd authentication file, and return a dictionary
-    containing username:password pairs.  Username returned in
-    lowercase."""
+def authfile2dict(authfile):
+    """Iterate over a tmda-ofmipd authentication file, and return a
+    dictionary containing username:password pairs.  Username is
+    returned in lowercase."""
     authdict = {}
-    for line in fileinput.input(file):
-        fields = line.split(':', 1)
-        authdict[fields[0].lower().strip()] = fields[1].strip()
-    fileinput.close()
+    fp = file(authfile, 'r')
+    for line in fp:
+        line = line.strip()
+        if line == '':
+            continue
+        else:
+            fields = line.split(':', 1)
+            authdict[fields[0].lower().strip()] = fields[1].strip()
+    fp.close()
     return authdict
 
 

@@ -1,3 +1,8 @@
+2002-07-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-ofmipd (authfile2dict): Strip whitespace before processing
+	each line.
+	
 2002-07-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-ofmipd (TMDAProxy.process_message): Single-quote each
