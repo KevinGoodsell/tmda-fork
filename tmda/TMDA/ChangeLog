@@ -1,3 +1,9 @@
+2003-01-27  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Deliver.py (Deliver.__deliver_maildir): Strengthen the
+	uniqueness of maildir filenames based on djb's updated maildir
+	spec.
+	
 2003-01-20  Tim Legant  <tim@catseye.net>
 
 	* MTA.py (MTA.getvdomainprepend): Added this method to abstract

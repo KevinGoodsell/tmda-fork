@@ -211,16 +211,31 @@ class Deliver:
     def __deliver_maildir(self, message, maildir):
         """Reliably deliver a mail message into a Maildir.
 
-        See <URL:http://www.qmail.org/man/man5/maildir.html>
+        See <URL:http://cr.yp.to/proto/maildir.html> and
+            <URL:http://www.qmail.org/man/man5/maildir.html>
 
         Based on code from getmail
         <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
         Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
         General Public License version 2.
         """
-        # e.g, 1014754642.51195.aguirre.la.mastaler.com
-        filename = '%s.%s.%s' % (int(time.time()), str(os.getpid()),
-                                 socket.gethostname())
+        # (same as Postfix)
+        # 1. Create    tmp/time.P<pid>.hostname
+        # 2. Rename to new/time.V<device>I<inode>.hostname
+        #
+        # When creating a file in tmp/ we use the process-ID because
+        # it's still an exclusive resource. When moving the file to
+        # new/ we use the device number and inode number.
+        #
+        # IEEE Std 1003.1-2001 (Open Group Base Specifications Issue
+        # 6, "SUS # v3") claims (in the section on <sys/stat.h>) that
+        # st_ino and st_dev together uniquely identify a file within
+        # a system.
+        #
+        # djb says that inode numbers and device numbers aren't always
+        # available through NFS, but this shouldn't be the case if the
+        # NFS implementation is POSIX compliant.
+        
         # Set a 24-hour alarm for this delivery.
         signal.signal(signal.SIGALRM, alarm_handler)
         signal.alarm(24 * 60 * 60)
@@ -230,15 +245,20 @@ class Deliver:
         if not (os.path.isdir(dir_tmp) and os.path.isdir(dir_new)):
             raise Errors.DeliveryError, 'not a Maildir! (%s)' % maildir
 
-        fname_tmp = os.path.join(dir_tmp, filename)
-        fname_new = os.path.join(dir_new, filename)
+        now = time.time()
+        pid = os.getpid()
 
+        hostname = socket.gethostname()
+        # To deal with invalid host names.
+        hostname = hostname.replace('/', '\\057').replace(':', '\\072')
+        
+        # e.g, 1043715037.P28810.hrothgar.la.mastaler.com
+        filename_tmp = '%lu.P%d.%s' % (now, pid, hostname)
+        fname_tmp = os.path.join(dir_tmp, filename_tmp)
         # File must not already exist.
         if os.path.exists(fname_tmp):
             raise Errors.DeliveryError, fname_tmp + 'already exists!'
-        if os.path.exists(fname_new):
-            raise Errors.DeliveryError, fname_new + 'already exists!'
-
+        
         # Get user & group of maildir.
         s_maildir = os.stat(maildir)
         maildir_owner = s_maildir[stat.ST_UID]
@@ -247,24 +267,37 @@ class Deliver:
         # Open file to write.
         try:
             fp = open(fname_tmp, 'wb')
+            os.chmod(fname_tmp, 0600)
             try:
+                # If root, change the message to be owned by the
+                # Maildir owner
                 os.chown(fname_tmp, maildir_owner, maildir_group)
             except OSError:
                 # Not running as root, can't chown file.
                 pass
-            os.chmod(fname_tmp, 0600)
             fp.write(message)
             fp.flush()
             os.fsync(fp.fileno())
             fp.close()
         except IOError:
+            signal.alarm(0)
             raise Errors.DeliveryError, 'Failure writing file ' + fname_tmp
 
+        fstatus = os.stat(fname_tmp)
+        # e.g, 1043715037.V20d04I18bfb.hrothgar.la.mastaler.com
+        filename_new = '%lu.V%lxI%lx.%s' % (now, fstatus[stat.ST_DEV],
+                                            fstatus[stat.ST_INO], hostname)
+        fname_new = os.path.join(dir_new, filename_new)
+        # File must not already exist.
+        if os.path.exists(fname_new):
+            raise Errors.DeliveryError, fname_new + 'already exists!'
+        
         # Move message file from Maildir/tmp to Maildir/new
         try:
             os.link(fname_tmp, fname_new)
             os.unlink(fname_tmp)
         except OSError:
+            signal.alarm(0)
             try:
                 os.unlink(fname_tmp)
             except:
@@ -272,6 +305,6 @@ class Deliver:
             raise Errors.DeliveryError, 'failure renaming "%s" to "%s"' \
                    % (fname_tmp, fname_new)
 
-        # Cancel the alarm.
+        # Delivery is done, cancel the alarm.
         signal.alarm(0)
         signal.signal(signal.SIGALRM, signal.SIG_DFL)
