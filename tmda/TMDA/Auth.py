@@ -42,7 +42,7 @@ class Auth(Util.Debugable):
     def __init__(self, authtype=None, autharg=None, \
                  configdir = None, vhomescript = None, \
                  vdomainfile = "/var/qmail/control/virtualdomains", \
-                 ipauthmapfile = None ):
+                 ipauthmapfile = None, localip = "127.0.0.1" ):
         """Setup initial values.
         Optional: authtype and autharg initialize the authentication mechanism
                   configdir to set an alternate directory to /home/user
@@ -118,6 +118,7 @@ class Auth(Util.Debugable):
             self.__ipauthmapfile = ipauthmapfile
         else:
             self.__ipauthmapfile = self.__defaultipauth
+        self.__localip = localip
 
         # Initialize virtual users if necessary
         self.__use_confdir = 0
@@ -443,6 +444,20 @@ class Auth(Util.Debugable):
         self.debug( "Trying %s authentication for %s@%s:%s" % \
               (self.__authremote['proto'], username, self.__authremote['host'],
                self.__authremote['port']) )
+        # IPauthmapfile stuff:
+        authhost = self.__authremote['host']
+        authport = self.__authremote['port']
+        if authhost == '0.0.0.0':
+            ipauthmap = self.__ipauthmap2dict( self.__ipauthmapfile )
+            if len( ipauthmap ) == 0:
+                authhost = self.__localip
+            else:
+                authdata = ipauthmap.get(self.__localip, '127.0.0.1').split(':')
+                authhost = authdata[0]
+                if len(authdata) > 1:
+                    authport = authdata[1]
+            self.__authremote['host'] = authhost
+            self.__authremote['port'] = authport
         port = self.__defaultauthports[self.__authremote['proto']]
         if self.__authremote['proto'] == 'imap':
             import imaplib
