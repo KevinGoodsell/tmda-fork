@@ -1,3 +1,10 @@
+2003-07-23  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Caught an extra exception in the configure program.
+
+	* Fixed a weird little bug in Template.py that caused an extra space
+	  to be printed before the Content-Type: string.
+
 2003-07-14  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Fixed some of Jim's type-o's.  Fixed a stub reference I broke.

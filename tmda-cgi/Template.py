@@ -110,6 +110,7 @@
 
 import copy
 import re
+import sys
 from types import StringType
 
 # Module globals
@@ -120,7 +121,7 @@ def Debug(Str):
 
   global SentHeaders
 
-  if not SentHeaders: print "Content-Type: text/html\n\n"
+  if not SentHeaders: sys.stdout.write("Content-Type: text/html\n\n")
   SentHeaders = 1
   print Str
 
@@ -165,7 +166,10 @@ class Template:
     global SentHeaders
 
     if not SentHeaders:
-      print "Content-Type: text/html; charset=%(CharSet)s\n" % self.Dict
+      sys.stdout.write \
+      (
+        "Content-Type: text/html; charset=%(CharSet)s\n\n" % self.Dict
+      )
     SentHeaders = 1
 
     RetVal = ""
