@@ -7,7 +7,6 @@ Filter file syntax documented in htdocs/config-filter.html
 """
 
 
-import anydbm
 import os
 import re
 import string
@@ -135,6 +134,7 @@ class FilterParser:
                         else:           
                             self.action = action
                         break
+            # DBM-style databases.
             if source in ('from-dbm', 'to-dbm'):
                 match = os.path.expanduser(match)
                 if source == 'from-dbm':
@@ -142,6 +142,7 @@ class FilterParser:
                 elif source == 'to-dbm':
                     keys = [recipient]
                 try:
+                    import anydbm
                     dbm = anydbm.open(match,'r')
                     for key in keys:
                         if key and dbm.has_key(string.lower(key)):
@@ -157,6 +158,30 @@ class FilterParser:
                             break
                     if self.action: break
                 except anydbm.error:
+                    pass
+            # DJB's constant databases; see <http://cr.yp.to/cdb.html>.
+            if source in ('from-cdb', 'to-cdb'):
+                match = os.path.expanduser(match)
+                if source == 'from-cdb':
+                    keys = senders
+                elif source == 'to-cdb':
+                    keys = [recipient]
+                try:
+                    import cdb
+                    cdb = cdb.init(match)
+                    for key in keys:
+                        if key and cdb.has_key(string.lower(key)):
+                            cdb_value = cdb[string.lower(key)]
+                            # If there is an entry for this key,
+                            # we consider it an overriding action
+                            # specification.
+                            if cdb_value:
+                                self.action = cdb_value
+                            else:
+                                self.action = action
+                            break
+                    if self.action: break
+                except (ImportError, IOError):
                     pass
             if source in ('body', 'headers'):
                 if source == 'body' and msg_body:

@@ -1,5 +1,10 @@
 2001-11-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* FilterParser.py (FilterParser.firstmatch): Add support for DJB's
+	constant databases via M. J. Pomraning's python-cdb extension
+	module.  The `to-cdb', and `from-cdb' source specifiers were
+	added.
+
 	* Util.py (findmatch): Bugfix for the `@=' handling syntax.  Now
 	split on `@=' using only the last `@'.  This is in case you start
 	getting spammed from "@="@randomdomain.com, you will be able to
