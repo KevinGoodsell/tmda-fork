@@ -2,25 +2,29 @@ TMDA FREQUENTLY ASKED QUESTIONS
 
 ------------------------------------------------------------------------------
 
-Q. What makes TMDA qmail-specific?  I'd like to use it, but my site is
-   running another MTA.
+Q. What makes TMDA qmail-specific?  I'd like to try it, but my mail
+   server is running another MTA.
 
-A. TMDA utilizes qmail's "special features" extensively and so it
-   would take much more work to replicate TMDA's functionality on
-   another MTA such as Sendmail.  For example:
+   TMDA currently utilizes qmail's "special features" extensively and
+   so it would take additional work to replicate much of TMDA's
+   functionality for another MTA such as Sendmail or Postfix.
+   However, the author is interested in supporting alternative MTAs,
+   so if you have any thoughts on this, please contact us.
 
-   tmda-inject uses per-user masquerading to tag outgoing mail with
-   the proper address.  See "ENVIRONMENT VARIABLES" under
-   <http://www.qmail.org/man/man8/qmail-inject.html>
+   Some of the qmail-specific elements of TMDA include:
 
-   tmda-filter uses qmail-specific exit codes to control whether the
-   message is accepted, deferred, bounced, etc.  See "EXIT CODES"
-   under <http://www.qmail.org/man/man8/qmail-command.html>
+   * tmda-inject uses per-user masquerading to tag outgoing mail with
+     the proper address.  See "ENVIRONMENT VARIABLES" under
+     <http://www.qmail.org/man/man8/qmail-inject.html>
 
-   qmail-local supplies several useful environment variables to
-   tmda-filter so that it knows whether the message was sent to a
-   'dated' address, a 'sender' address, or neither.  See "ENVIRONMENT
-   VARIABLES" under <http://www.qmail.org/man/man8/qmail-command.html>
+   * tmda-filter uses qmail-specific exit codes to control whether the
+     message is accepted, deferred, bounced, etc.  See "EXIT CODES"
+     under <http://www.qmail.org/man/man8/qmail-command.html>
+
+   * qmail-local supplies several useful environment variables to
+     tmda-filter so that it knows whether the message was sent to a
+     'dated' address, a 'sender' address, etc.  See "ENVIRONMENT
+     VARIABLES" under <http://www.qmail.org/man/man8/qmail-command.html>
 
 ------------------------------------------------------------------------------
 
@@ -40,10 +44,10 @@ A. Not directly since qmail is only available on UNIX.  However, you
 
 Q. Can you clarify the syntax for the whitelist?  I'd like any
    address in my domain (domain.dom) to be able to send me mail
-   directly without worrying about bounces.
+   directly without worrying about confirmations.
 
 A. In addition to explicit e-mail addresses, TMDA supports matching
-   patterns in the .tmda-* files which use Unix shell-style wildcard
+   patterns in the list files which use Unix shell-style wildcard
    characters.  The special characters are:
 
    Characters(s)    Description
