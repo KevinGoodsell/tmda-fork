@@ -94,7 +94,8 @@ def inject_message(to_address,
         # Send a message with an untagged address.
         envelope_sender_address.append(from_address)
         # Optionally append the recipient address to a file.
-        if string.lower(cookie_option) == 'append' and Defaults.BARE_APPEND:
+        if (cookie_option and string.lower(cookie_option) == 'append'
+            and Defaults.BARE_APPEND):
             Util.append_to_file(to_address, Defaults.BARE_APPEND)
     elif cookie_type == 'dated':
         # Send a message with a tagged (dated) address.
