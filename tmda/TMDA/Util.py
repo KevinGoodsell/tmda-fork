@@ -61,36 +61,43 @@ def getusername():
 
 def seconds(timeout):
     """Translate the defined timeout interval into seconds."""
-    if re.match("^[0-9]+w",timeout):   # weeks --> seconds
-        seconds = int(string.replace(timeout,"w","")) * 60 * 60 * 24 * 7
-    elif re.match("^[0-9]+d",timeout): # days --> seconds
-        seconds = int(string.replace(timeout,"d","")) * 60 * 60 * 24
-    elif re.match("^[0-9]+h",timeout): # hours --> seconds
-        seconds = int(string.replace(timeout,"h","")) * 60 * 60
-    elif re.match("^[0-9]+m",timeout): # minutes --> seconds
-        seconds = int(string.replace(timeout,"m","")) * 60
-    elif re.match("^[0-9]+s",timeout): # just seconds
-        seconds = int(string.replace(timeout,"s",""))
-    else:
+    match = re.match("^([0-9]+)([wdhms])$", timeout)
+    if not match:
         print "Invalid timeout value:", timeout
-        sys.exit(ERR_CONFIG)
+        import Defaults
+        sys.exit(Defaults.ERR_CONFIG)
+    (num, unit) = match.groups()
+    if unit == 'w':                     # weeks --> seconds
+        seconds = int(num) * 60 * 60 * 24 * 7
+    elif unit == 'd':                   # days --> seconds
+        seconds = int(num) * 60 * 60 * 24
+    elif unit == 'h':                   # hours --> seconds
+        seconds = int(num) * 60 * 60
+    elif unit == 'm':                   # minutes --> seconds
+        seconds = int(num) * 60
+    else:                               # just seconds
+        seconds = int(num)
     return seconds
 
 
 def format_timeout(timeout):
     """Return a human readable translation of the timeout interval."""
-    if re.match("^[0-9]+w",timeout):
-        timeout = string.replace(timeout,"w"," weeks")
-    elif re.match("^[0-9]+d",timeout):
-        timeout = string.replace(timeout,"d"," days")
-    elif re.match("^[0-9]+h",timeout):
-        timeout = string.replace(timeout,"h"," hours")
-    elif re.match("^[0-9]+m",timeout):
-        timeout = string.replace(timeout,"m"," minutes")
-    elif re.match("^[0-9]+s",timeout):
-        timeout = string.replace(timeout,"s"," seconds")
+    match = re.match("^([0-9]+)([wdhms])$", timeout)
+    if not match:
+        return timeout
+    (num, unit) = match.groups()
+    if unit == 'w':
+        timeout = num + " weeks"
+    elif unit == 'd':
+        timeout = num + " days"
+    elif unit == 'h':
+        timeout = num + " hours"
+    elif unit == 'm':
+        timeout = num + " minutes"
     else:
-        pass
+        timeout = num + " seconds"
+    if int(num) == 1:
+        timeout = timeout[:-1]
     return timeout
 
 
@@ -161,7 +168,7 @@ def substring_match(substrings, *addrs):
                     line = string.split(line, ' #')[0]
                     line = string.strip(line)
                     sublist.append(re.escape(line))
-        
+                    
         # "address1|address2|address3|addressN"
         regex = string.join(sublist,'|')
         if regex:
