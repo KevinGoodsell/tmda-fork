@@ -170,7 +170,6 @@ its partition is marked "nosuid" in /etc/fstab.""")
 
       # Now that we know who we are, get our defaults
       from TMDA import Defaults
-      self.Vars["CLEANUP"] = Defaults.CGI_CLEANUP_ODDS;
 
       # Test CGI_ACTIVE
       if not Defaults.CGI_ACTIVE:
@@ -182,6 +181,7 @@ its partition is marked "nosuid" in /etc/fstab.""")
           """Add <tt>CGI_ACTIVE = 1</tt> to one of the configuration files or
 modify<br>file permissions to allow them to be read.""")
 
+      self.Vars["CLEANUP"] = Defaults.CGI_CLEANUP_ODDS;
       self.Save() # Save session & set user
 
   def Save(self):
