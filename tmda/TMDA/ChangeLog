@@ -1,3 +1,7 @@
+2001-04-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (TMDA_VERSION): Begin 0.11 development.
+
 2001-04-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (hexlify): New function to convert binary data strings to

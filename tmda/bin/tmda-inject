@@ -96,8 +96,9 @@ def main():
     header_cc = message_headers.getaddrlist("cc")
     header_bcc = message_headers.getaddrlist("bcc")
     # Add custom headers.
+    python_version = string.split(sys.version)[0]
     message_headers['X-Delivery-Agent'] = 'TMDA ' + 'v' + Defaults.TMDA_VERSION\
-                                          + ' ' + Defaults.TMDA_HOMEPAGE
+                                          + '/Python ' + python_version
 
     # Downcase and then combine To:, Cc:, and Bcc: addresses into one list.
     address_list = []

@@ -1,3 +1,8 @@
+2001-04-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (main): Changed X-TMDA to include the Python version
+	instead of the TMDA URL.
+
 2001-04-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-keygen (keygen): Replace /dev/random with /dev/urandom;
