@@ -52,7 +52,7 @@ function Set(Value)
 // -->
 </script>
 <table border="2" cellpadding="0" cellspacing="0"
-  bordercolor="#4E508F">
+  style="border-style: solid; border-color: #7A7AB6; border-width: 2px">
   <tr>
     <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
         <form name="actions" method="post" %(OnSubmit)s action="%(Script)s">
@@ -131,11 +131,12 @@ function Set(Value)
                 </th>
               </tr>
 <!-- var: NumCols="9" --><!-- var: NumBlankCols="3" -->
+<!-- var: EvenRowColor="#DADCEB" --><!-- var: OddRowColor="#DADCEB" -->
 <!-- var: Row -->
       <tr>
         <td colspan="%(NumCols)s" bgcolor="#7A7AB6" height="1"></td>
       </tr>
-      <tr class="%(MsgClass)s">
+      <tr class="%(MsgClass)s" bgcolor="%(RowBgColor)s">
         <td valign="top">
           <input type="hidden" name="%(MsgName)s" value="%(MsgID)s">
           <input type="radio" name="%(RadioName)s" value="pass" checked>

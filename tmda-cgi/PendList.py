@@ -122,6 +122,8 @@ def Show():
     LastMsg = len(Msgs)
   if len(Msgs):
     T["DispRange"] = "%d-%d of %d" % (FirstMsg + 1, LastMsg, len(Msgs))
+    # TODO: page numbering
+    T["PageRange"] = "n of x"
 
     # Grey out the first & prev buttons?
     if FirstMsg == 0:
@@ -153,7 +155,8 @@ width="11" height="18" alt="Next">"""
       T["LastButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c13.gif"
 width="18" height="18" alt="Last">"""
   else:
-    T["DispRange"] = ""
+    T["DispRange"] = "0"
+    T["PageRange"] = "1 of 1"
 
   # Update session
   PVars["Pager"] = FirstMsg
@@ -194,12 +197,18 @@ width="18" height="18" alt="Last">"""
   Row          = T["Row"]
   InProcessRow = T["InProcessRow"]
   InProcess    = T["InProcess"]
+  EvenRowColor = T["EvenRowColor"]
+  OddRowColor  = T["OddRowColor"]
   if len(Msgs):
     # Add rows for messages if there are any
     Count = 0
     InProcMsg = ""
     for Msg in Msgs[FirstMsg:LastMsg]:
       T["MsgID"] = Msg
+      if Count % 2 == 0:
+        T["RowBgColor"] = OddRowColor
+      else:
+        T["RowBgColor"] = EvenRowColor
 
       # Print a single message record inside list loop
       try:
