@@ -1,3 +1,8 @@
+2003-02-03  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-ofmipd (main): Only check the authfile if not doing remote
+	authentication, or if --fallback is specified.
+
 2003-01-27  Tim Legant  <tim@catseye.net>
 
 	* tmda-ofmipd (run_remoteauth): Add capability to authenticate

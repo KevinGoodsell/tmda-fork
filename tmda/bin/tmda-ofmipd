@@ -79,7 +79,7 @@ OPTIONS:
         Examples: -R imaps://myimapserver.net
                   -R pop3://mypopserver.net:2110
                   -R ldap://host.com/cn=%%s,dc=host,dc=com
-
+                  
     -A <program>
     --authprog <program>
         checkpassword compatible command used to check username/password. e.g,
@@ -98,7 +98,7 @@ OPTIONS:
     -F
     --fallback
         When used with -R or -A, fall back to authenticate against
-        /etc/ofmipd if the remote authentication method didn't work.
+        /etc/tofmipd if the remote authentication method didn't work.
         Note: this flag has no effect on -R to -A fallback. If you
         specify both -R and -A methods, then authprog will be tried
         after remoteauth has failed.
@@ -245,7 +245,7 @@ try:
                                                      'authfile=',
                                                      'remoteauth=',
                                                      'authprog=',
-                                                     'fallback=',
+                                                     'fallback',
                                                      'configdir=',
                                                      'connections=',
                                                      'debug',
@@ -592,7 +592,7 @@ class SMTPChannel(asynchat.async_chat):
         self.__sasl_types = ['login', 'cram-md5', 'plain']
         # Remove CRAM-MD5 from the published SASL types if using the
         # `--authprog' or `--remoteauth' options. See FAQ 5.8.
-        if (not fallback) and (remoteauth['enable'] or authprog):
+        if remoteauth['enable'] or authprog:
             self.__sasl_types.remove('cram-md5')
         self.__auth_cram_md5_ticket = '<%s.%s@%s>' % (random.randrange(10000),
                                                       int(time.time()), FQDN)
@@ -1182,11 +1182,13 @@ class TMDAProxy(PureProxy):
 
 
 def main():
-    # check permissions of authfile
-    authfile_mode = Util.getfilemode(authfile)
-    if authfile_mode not in (400, 600):
-        raise IOError, \
-              authfile + ' must be chmod 400 or 600!'
+    # check permissions of authfile if using only remote
+    # authentication.
+    if not (remoteauth['enable'] or authprog) or fallback:
+        authfile_mode = Util.getfilemode(authfile)
+        if authfile_mode not in (400, 600):
+            raise IOError, \
+                  authfile + ' must be chmod 400 or 600!'
     # try binding to the specified host:port
     host, port = proxyport.split(':', 1)
     if vhomescript:
@@ -1197,10 +1199,12 @@ def main():
                           ('localhost', 25))
     if running_as_root:
         pw_uid = Util.getuid(username)
-        # check ownership of authfile
-        if Util.getfileuid(authfile) != pw_uid:
-            raise IOError, \
-                  authfile + ' must be owned by UID ' + str(pw_uid)
+        # check ownership of authfile if using only remote
+        # authentication.
+        if not (remoteauth['enable'] or authprog) or fallback:
+            if Util.getfileuid(authfile) != pw_uid:
+                raise IOError, \
+                      authfile + ' must be owned by UID ' + str(pw_uid)
         # try setegid()
         os.setegid(Util.getgid(username))
         # try setting the supplemental group ids
