@@ -25,10 +25,10 @@ import sys
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.05+"
+tmda_cgi = "0.06"
 
 # tmda-cgi version codename
-Codename = "Boron"
+Codename = "Carbon"
 
 # TMDA version required
 TMDAReqVer = "0.75"

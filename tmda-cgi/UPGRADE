@@ -1,20 +1,11 @@
 ======================================================================
 
-If you are upgrading from a release of tmda-cgi < 0.05:
+If you are upgrading from a release of tmda-cgi < 0.06:
 
 * display directory has been updated again.  You'll need to copy in the new
   one or use a symbolic link.
 
 * If you are upgrading from 0.03 or higher, you shouldn't need to recompile.
-
-======================================================================
-
-If you are upgrading from a release of tmda-cgi < 0.04:
-
-* display directory has been updated again.  You'll need to copy in the new
-  one or use a symbolic link.
-
-* If you are upgrading from 0.03, you shouldn't need to recompile.
 
 ======================================================================
 

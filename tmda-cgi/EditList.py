@@ -23,6 +23,7 @@
 
 import os
 import pickle
+import re
 import CgiUtil
 import Template
 from TMDA import Defaults
@@ -47,14 +48,16 @@ def Show():
   Buttons = {}
   for Filters in [Defaults.FILTER_INCOMING, Defaults.FILTER_OUTGOING]:
     Parser = FilterParser.FilterParser()
-    Parser.read(Filters)
+    Parser.read(CgiUtil.ExpandUser(Filters))
     for Test in Parser.filterlist:
       if Test[0] in ["from-file", "to-file", "body-file", "headers-file"]:
         Filename = os.path.split(Test[2])[1].lower()
         if SysButtons.has_key(Filename):
-          Buttons[Test[2]] = (Filename, SysButtons[Filename])
+          Buttons[CgiUtil.ExpandUser(Test[2])] = \
+            (Filename, SysButtons[Filename])
         else:
-          Buttons[Test[2]] = (Filename, SysButtons["other"])
+          Buttons[CgiUtil.ExpandUser(Test[2])] = \
+            (Filename, SysButtons["other"])
   Files = Buttons.keys()
 
   # Which filter are we editing?
@@ -62,7 +65,7 @@ def Show():
     EditFile = Files[0]
   else:
     EditFile = Files[int(Form["cmd"].value[8:])]
-  
+
   # Generate button HTML
   HTML = ""
   for FileNum in range(len(Files)):
@@ -81,7 +84,7 @@ def Show():
 height="%(height)d" alt=""" % Buttons[File][1]
       HTML += '"%s"></td></tr>\n' % Buttons[File][0]
   T["Lists"] = HTML
-  
+
   # Get file
   T["FilePath"] = EditFile
   try:
@@ -90,7 +93,7 @@ height="%(height)d" alt=""" % Buttons[File][1]
     F.close()
   except IOError:
     T["FileContents"] = ""
-  
+
   # Any subcommand?
   if Form.has_key("subcmd"):
     if Form["subcmd"].value == "sort":
@@ -102,6 +105,12 @@ height="%(height)d" alt=""" % Buttons[File][1]
         List = Form["list"].value
       else:
         List = ""
+
+    # Make sure the list is properly formatted
+    List = re.sub("\r\n", "\n", List)
+    List = re.sub("\n*$", "", List)
+    List += "\n"
+
     try:
       F = open(EditFile, "w")
       F.write(List)

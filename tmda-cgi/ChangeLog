@@ -1,3 +1,18 @@
+2003-04-24  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* tmda-cgi 0.06 is released.
+
+	* Correct line feeds in filter file before saving.
+
+	* Made some of the templates look a little nicer.  Change logo.
+
+	* Fixed a bad path that made the Theme icon a bad link on some
+	  installs.
+
+2003-04-23  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added a custom ExpandUser to CgiUtil that handles virtual users.
+
 2003-04-21  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* tmda-cgi 0.05 is released.

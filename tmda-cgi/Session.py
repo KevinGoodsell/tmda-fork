@@ -228,6 +228,7 @@ rights.""")
     Template.Template.Dict["ThemeDir"] = \
       os.path.join(os.environ["TMDA_CGI_DISP_DIR"], "themes",
         self[("General", "Theme")])
+    MyCgiTb.ErrTemplate = "prog_err.html"
 
     # Replace "NoOverride" variables with the originals
     for Option in self.NoOverride.keys():

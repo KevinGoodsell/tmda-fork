@@ -34,6 +34,7 @@ DispDir        = os.environ["TMDA_CGI_DISP_DIR"]
 ErrTemplate    = "error.html"
 QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*")
 UnquotedString = re.compile(r"^(\S+)\s*")
+HomeDirSearch  = re.compile("^~/")
 
 def Size(MsgObj):
   MsgSize = os.stat(MsgObj.msgfile).st_size
@@ -95,3 +96,6 @@ def ParseString(Str, User):
     else:
       break
   return RetVal
+
+def ExpandUser(Path):
+  return HomeDirSearch.sub(os.environ["HOME"] + "/", Path)

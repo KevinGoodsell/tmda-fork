@@ -35,7 +35,7 @@ from TMDA import Errors
 
 # Prepare the traceback in case of uncaught exception
 MyCgiTb.Content()
-MyCgiTb.ErrTemplate = "prog_err.html"
+MyCgiTb.ErrTemplate = "prog_err2.html"
 
 # Make some global stuff available to all
 Template.Template.BaseDir = "%s/display/themes/Blue/template" % \
@@ -52,6 +52,7 @@ try:
   import Version
   Version.Test()
 except ImportError, ErrStr:
+  CgiUtil.ErrTemplate = "error2.html"
   CgiUtil.TermError("Failed to import TMDA module.", ErrStr, "import TMDA", "",
     "Upgrade to the most recent release of TMDA.")
 
