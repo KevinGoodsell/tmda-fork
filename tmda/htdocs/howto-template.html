@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Feb  5 15:13:58 2004 -->
+<!-- Fri Feb  6 10:55:37 2004 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -145,7 +145,7 @@ Configuration
 <a href="tmda-vdomains.html">Virtual Domains</a>
 </td></tr>
 <tr><td bgcolor="#7FFFD4">
-<a href="tmda-ofmipd.html">TMDA OFMIPD</a>
+<a href="tmda-ofmipd.html">tmda-ofmipd</a>
 </td></tr>
 <tr><td bgcolor="#7FFFD4">
 <a href="http://wiki.tmda.net/index.cgi/TmdaHowtos">User HOWTOs</a>
@@ -419,13 +419,13 @@ a Unicode codec).
 
 You must first install the 
 <a href="http://cjkpython.i18n.org/" TARGET="Resource Window">CJKCodecs</a> 
-Python package.  The latest version of the package at this writing is 1.0.1. 
+Python package.  The latest version of the package at this writing is 1.0.3. 
 
 <ul>
 
-<li>Simplified Chinese: Your templates must be saved in the <strong>GB2312</strong> charset.<br><br>
+<li>Simplified Chinese (China): Your templates must be saved in the <strong>GB2312</strong> charset.<br><br>
 
-<li>Traditional Chinese: Your templates must be saved in the <strong>BIG5</strong> charset.<br><br>
+<li>Traditional Chinese (Taiwan): Your templates must be saved in the <strong>BIG5</strong> charset.<br><br>
 
 <li>Japanese: Your templates must be saved in the <strong>EUC-JP</strong> charset, not
 ISO-2022-JP or Shift_JIS.  When the e-mail message is sent, the text
@@ -454,92 +454,91 @@ languages covered by that charset.
 <tr>
 <th>charset</th>
 <th>charset alias(es)</th>
-<th>coverage</th>
 <th>example languages</th>
 </td>
 
 <tr>
 <td>ISO-8859-1</td>
 <td>LATIN-1</td>
-<td>Western Europe</td>
-<td>French, German, Finnish</td>
+<td>French, German, Finnish, Spanish, Dutch, Portuguese, Italian, Swedish</td>
 </tr>
 
 <tr>
 <td>ISO-8859-2</td>
 <td>LATIN-2</td>
-<td>Central and Eastern Europe</td>
-<td>Czech, Hungarian, Croatian</td>
+<td>Czech, Hungarian, Croatian, Romanian, Polish, Slovenian</td>
 </tr>
 
 <tr>
 <td>ISO-8859-6</td>
 <td>ARABIC</td>
-<td>Arabic Alphabet</td>
 <td>Arabic</td>
 </tr>
 
 <tr>
 <td>ISO-8859-7</td>
 <td>GREEK</td>
-<td>Greece</td>
 <td>Greek</td>
 </tr>
 
 <tr>
 <td>ISO-8859-8</td>
 <td>HEBREW</td>
-<td>Hebrew script</td>
 <td>Hebrew, Yiddish</td>
 </tr>
 
 <tr>
 <td>ISO-8859-9</td>
 <td>LATIN-5, TURKISH</td>
-<td>Turkey</td>
 <td>Turkish</td>
+</tr>
+
+<tr>
+<td>ISO-8859-13</td>
+<td>LATIN-7</td>
+<td>Latvian, Lithuanian</td>
 </tr>
 
 <tr>
 <td>ISO-8859-15</td>
 <td>LATIN-9</td>
-<td>Europe</td>
-<td>Estonian, the Euro sign</td>
+<td>Estonian, Euskara, the Euro sign</td>
 </tr>
 <tr>
 
 <td>KOI8-R</td>
 <td>RUSSIAN</td>
-<td>Russian Federation</td>
 <td>Russian</td>
 </tr>
 
 <tr>
 <td>EUC-JP</td>
 <td>JAPANESE</td>
-<td>Japan</td>
 <td>Japanese</td>
 </tr>
 
 <tr>
 <td>EUC-KR</td>
 <td>KOREAN</td>
-<td>Republic of Korea</td>
 <td>Korean</td>
 </tr>
 
 <tr>
 <td>TIS-620</td>
 <td>THAI</td>
-<td>Thailand</td>
 <td>Thai</td>
 </tr>
 
 <tr>
 <td>VISCII</td>
 <td>VIETNAMESE</td>
-<td>Vietnam</td>
 <td>Vietnamese</td>
+</tr>
+
+<tr>
+<td>UTF-8</td>
+<td>UTF-8</td>
+<td>Serbian, Ukrainian</td>
 </tr>
 
 </tr>
@@ -547,7 +546,7 @@ languages covered by that charset.
 <br>
 
 Also see Roman Czyborra's excellent 
-<a href="http://czyborra.com/charsets/iso8859.html" TARGET="Resource Window">ISO 8859 Alphabet Soup</a>
+<a href="http://wwwwbs.cs.tu-berlin.de/user/czyborra/charsets/" TARGET="Resource Window">ISO 8859 Alphabet Soup</a>
 for more on the ISO 8859 series (which will cover most user's I18N needs).
 <br><br>
 

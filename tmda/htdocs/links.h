@@ -21,7 +21,7 @@
 <li><a href="filter-sources.html">Filter Sources</a>
 <li><a href="howto-template.html">Templates</a>
 <li><a href="tmda-vdomains.html">Virtual Domains</a>
-<li><a href="tmda-ofmipd.html">TMDA OFMIPD</a>
+<li><a href="tmda-ofmipd.html">tmda-ofmipd</a>
 <li><a href="http://wiki.tmda.net/index.cgi/TmdaHowtos">User HOWTOs</a>
 <h3>Support</h3>
 <li><a href="trouble.html">Help</a>
