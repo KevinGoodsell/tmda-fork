@@ -12,6 +12,7 @@ Links: overview-links.h usage-links.h support-links.h
 <li><a href="#7">How can I prevent BBDB from asking about 'dated' addresses?</a><br>
 <li><a href="#8">Why don't my user+detail addresses work with Sendmail virtualdomains?</a><br>
 <li><a href="#9">Why don't my user+detail addresses work with Sendmail /etc/aliases?</a><br>
+<li><a href="#10">Is TMDA planning to support Microsoft Exchange Server?</a><br>
 </ol>
 
 <hr>
@@ -207,4 +208,24 @@ Unfortunately, there is no way to preserve the +detail portion in
 /etc/aliases.  You must use the virtusertable for this (see previous
 question).
 
+<hr>
+
+<li><b>
+
+<a name="10">Is TMDA planning to support Microsoft Exchange Server?  I
+see a real business opportunity here for someone who wanted to take
+TMDA and make it an enterprise solution.</a>
+</b>
+<br><br>
+Support for Exchange Server is not planned primarily because I have no
+access to this software, and no interest in developing in a Microsoft
+environment.  Also, TMDA is an <a href="http://www.opensource.org/"
+TARGET="Resource Window">opensource</a> endeavor, not a profit
+oriented one, and therefore I'm also not interested in turning it into
+an "enterprise solution".  I enjoy my personal freedom too much to
+consider this.<br><br>
+
+However, due to TMDA's liberal BSD-style license, there is nothing
+stopping an enterprising individual or organization from doing either
+of the above.
 <hr>
