@@ -39,7 +39,8 @@ import os                                      # don't remove
 
 #####################################################################
 # Optional variables; the rest may be omitted from the .tmdarc if you
-# wish to take the sensible default values.
+# wish to take their sensible default values.  Random examples, and 
+# not defaults are shown below.  Consult Defaults.py for more info.
 #####################################################################
 
 # ALLOW_MODE_640 = 0
@@ -83,6 +84,8 @@ import os                                      # don't remove
 # MESSAGE_FROM_STYLE = "angles"
 
 # TIMEOUT = "5d"
+
+# TIMEZONE = "Pacific/Auckland"
 
 # USERNAME = "jdoe" 
 

@@ -1,3 +1,8 @@
+2001-11-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (TIMEZONE): New variable specifying the timezone
+	(TZ) other than that of the local host.
+
 2001-10-31  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Add 'exim' as another option for
