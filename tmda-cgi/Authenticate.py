@@ -85,7 +85,7 @@ def Authenticate(User, Password):
     try:
       RetVal = authobj.authenticate_plain( User, Password )
     except Errors.AuthError, error:
-      pass
+      raise error
   else:
     raise Errors.AuthError, "No authentication mechanism initialized."
   # If we made it this far, we're either returning 1 or 0.
