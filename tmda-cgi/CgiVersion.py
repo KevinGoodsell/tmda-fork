@@ -24,7 +24,7 @@
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.11B+"
+tmda_cgi = "0.12B"
 
 # tmda-cgi version codename
 Codename = "Magnesium"

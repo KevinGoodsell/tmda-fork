@@ -1,5 +1,7 @@
 2003-11-16  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Version 0.12B is released.
+
 	* Added PendingList:ShowDelete and PendingList:ShowBlack (both with
 	  default values of "No") to discourage deleting and blacklisting
 	  from the pending list.  These can be re-enabled in the defaults.ini
