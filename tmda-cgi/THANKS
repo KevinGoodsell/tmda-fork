@@ -40,7 +40,7 @@ Contributions:
 
     * Tim Rice -- compiler suggestions so we can work in more environments
 
-    * Jeff Ross -- bug finding
+    * Jeff Ross -- suggested we use readline in configure and bug finding
 
     * David K. Thompson -- suggestion to support spamassassin by adding an
 			   optional message filter
