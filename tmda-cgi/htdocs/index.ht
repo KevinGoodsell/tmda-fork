@@ -81,16 +81,16 @@ can:</p>
 <h2><a name="Screen" id="Screen"></a>Screenshots</h2>
 <p><b><i>Note:</i></b> You may find the default colors ugly. Those can be changed 
   by modifying the CSS file.</p>
-<p><a href="http://tmda.sourceforge.net/screenshots/login.png" target="_blank">Login</a></p>
-<p><a href="http://tmda.sourceforge.net/screenshots/pending.png" target="_blank">Index 
+<p><a href="screenshots/login.png" target="_blank">Login</a></p>
+<p><a href="screenshots/pending.png" target="_blank">Index 
   of pending e-mails (whitelist &amp; blacklist options enabled)</a></p>
-<p><a href="http://tmda.sourceforge.net/screenshots/view1.png" target="_blank">View 
+<p><a href="screenshots/view1.png" target="_blank">View 
   the contents of a pending e-mail with attachements</a></p>
-<p><a href="http://tmda.sourceforge.net/screenshots/confirm.png" target="_blank">Optional 
+<p><a href="screenshots/confirm.png" target="_blank">Optional 
   Javascript confirmation when deleting or blacklisting</a></p>
-<p><a href="http://tmda.sourceforge.net/screenshots/view2.png" target="_blank">Show 
+<p><a href="screenshots/view2.png" target="_blank">Show 
   all headers mode when viewing an e-mail</a></p>
-<p><a href="http://tmda.sourceforge.net/screenshots/confirmed.png" target="_blank">URL confirmation 
+<p><a href="screenshots/confirmed.png" target="_blank">URL confirmation 
   feedback</a></p>
 <hr>
 <h2><a name="Require"></a>Requirements</h2>
@@ -121,6 +121,13 @@ can:</p>
 <hr>
 <h2><a name="Install"></a>Installation</h2>
 <p>Download the <a href="/tmda-cgi/releases/">latest release</a> of tmda-cgi.</p>
+<p>Or, if you like bleeding edge software, pull down the CVS copies either
+from <a href="http://sourceforge.net/cvs/?group_id=24680">the SourceForge
+Repository</a> or <a href="snapshots/">the nighly snapshots</a>.<br>
+If you are using non-released code, you should be reading the
+<a href="http://tmda.net/lists/listinfo/tmda-cvs">tmda-cvs mailing list</a>
+to stay abreast of changes.
+
 <p>Uncompress the archive where you plan to keep tmda-cgi:</p>
 <blockquote> 
   <p><code>$ tar -xzf tmda-cgi-X.XX.tgz<br>
