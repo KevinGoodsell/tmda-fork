@@ -1,3 +1,9 @@
+2003-12-05  Tim Legant  <tim@catseye.net>
+
+	* Pending.py (Message.__init__): Always create message object
+	using Util.msg_from_file.  This prevents email.Parser.Parser bug
+	846938 from manifesting.
+
 2003-12-03  Jason R. Mastaler  <jason@mastaler.com>
 
 	* AutoResponse.py (AutoResponse.create): Add an RFC 2183

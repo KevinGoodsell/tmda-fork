@@ -421,10 +421,7 @@ class Message:
         self.msgfile = os.path.join(Defaults.PENDING_DIR, self.msgid)
         if not os.path.exists(self.msgfile):
             raise Errors.MessageError, '%s not found!' % self.msgid
-        try:
-            self.msgobj = email.message_from_file(open(self.msgfile, 'r'))
-        except email.Errors.BoundaryError:
-            self.msgobj = Util.msg_from_file(open(self.msgfile, 'r'))
+        self.msgobj = Util.msg_from_file(open(self.msgfile, 'r'))
         self.recipient = recipient
 
     def initMessage(self, recipient = None):
