@@ -1,3 +1,6 @@
+Cryptography in TMDA
+--------------------
+
 For crypto-cookie generation and verification, TMDA uses HMAC, which
 is a mechanism for message authentication using cryptographic hash
 functions such as SHA and MD5.
@@ -5,19 +8,19 @@ functions such as SHA and MD5.
 For all the relevant papers and RFCs see:
     <URL:http://www-cse.ucsd.edu/users/mihir/papers/hmac.html>
 
+
 Dated Addresses:
 ----------------
 
-The new format for a 'dated' address is:
+The format for a 'dated' address is:
 
-    USERNAME-dated-DATE.DATEMAC@domain.dom
+    USERNAME-dated-DATE.DATEMAC@DOMAIN.DOM
 
     (For example, jason-dated-988298746.9d619c@mastaler.com)
 
     DATE is seconds since the epoch in UTC, expressed as an integer.
   
-    DATEMAC is a 24-bit HMAC of DATE generated with the user's
-    private key.
+    DATEMAC is a 24-bit HMAC of DATE.
 
 Incoming 'dated' messages are accepted if:
 
@@ -26,26 +29,48 @@ Incoming 'dated' messages are accepted if:
         *AND* 
 
     2.  DATEMAC is verified by matching it with a new HMAC generated
-        against DATE with the user's private key.
+        against DATE.
 
     DATEMAC verification prevents any tampering with DATE.
 
 Sender Addresses:
 -----------------
 
-The new format for a 'sender' address is:
+The format for a 'sender' address is:
     
-    USERNAME-sender-SENDERMAC@domain.dom
+    USERNAME-sender-SENDERMAC@DOMAIN.DOM
 
     (For example, jason-sender-8c54ac@mastaler.com)
 
-    SENDERMAC is a 24-bit HMAC of the sender's e-mail address
-    generated with the user's private key.
+    SENDERMAC is a 24-bit HMAC of the sender's e-mail address.
 
 Incoming 'sender' messages are accepted if:
 
     1.  SENDERMAC is verified by matching it with a new HMAC generated
-        against the sender's e-mail address with the user's private key.
+        against the sender's e-mail address.
+
+Confirmation Requests:
+----------------------
+
+The format for a confirmation request address is:
+
+    USERNAME-confirm-accept.TIMESTAMP.PID.CONFIRMMAC@DOMAIN.DOM
+
+    (For example, jason-confirm-accept.995399954.1345.c08f32@mastaler.com)
+
+    TIMESTAMP the arrival time of the message in seconds since the
+    epoch.
+
+    PID is the process-id of the current Python process.
+
+    CONFIRMMAC is a 24-bit HMAC as a function of TIMESTAMP, PID, and
+    the string 'accept'.
+
+Confirmation request acknowledgments are accepted if:
+
+    1.  CONFIRMMAC is verified by matching it with a new HMAC
+	generated against TIMESTAMP, PID, and 'accept'.
+
 
 HMAC Advantages:
 ----------------
@@ -63,8 +88,9 @@ cipher encryption without any loss of security:
   to 16 for 'dated', and 6 hex characters as compared to 40 for 'sender')
 
 * It is the right construction to be using from a cryptographic
-  perspective.  (i.e, MACs were designed for exactly these type of
+  perspective.  (MACs were designed for exactly these type of
   message authentication tasks)
+
 
 TMDA Security:
 --------------
@@ -74,12 +100,11 @@ the system, that is, find the key and be able to forge arbitrary
 messages (create arbitrary email addresses, in this context).  With
 this in mind, TMDA uses long (160-bit) random private keys.
 
-The length of the MAC determines the likelihood that a random message
-is a forgery.  If you use n bits in your MAC, the chance of this is 1
+The length of the HMAC determines the likelihood that a random message
+is a forgery.  If you use n bits in your HMAC, the chance of this is 1
 in 2**n. .  One way to try to sneak messages past TMDA would be to
-simply pick a random string as the MAC and hope that it verified
-correctly.  TMDA uses 24-bit MACs (3 bytes, 6 hex characters) which
+simply pick a random string as the HMAC and hope that it verified
+correctly.  TMDA uses 24-bit HMACs (3 bytes, 6 hex characters) which
 means the chance of a successful forgery is 1 in 16,777,216.  Very
-unlikely when you consider that to test a forged MAC, the attacker
+unlikely when you consider that to test a forged HMAC, the attacker
 must actually send you an e-mail message and wait for the result.
-
