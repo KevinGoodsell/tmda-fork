@@ -94,15 +94,15 @@ ALIASES = {
 # unicode codec set for Chinese, Japanese and Korean encodings.
 
 CODEC_MAP = {
-    'euc-jp':      'cjkcodecs.euc-jp',
-    'iso-2022-jp': 'cjkcodecs.iso-2022-jp',
-    'shift_jis':   'cjkcodecs.shift_jis',
-    'euc-kr':      'cjkcodecs.euc-kr',
-    'ks_c_5601-1987': 'cjkcodecs.cp949',
-    'iso-2022-kr': 'cjkcodecs.iso-2022-kr',
-    'johab':       'cjkcodecs.johab',
-    'gb2312':      'cjkcodecs.gb2312',
-    'big5':        'cjkcodecs.big5',
+    'euc-jp':      'euc-jp',
+    'iso-2022-jp': 'iso-2022-jp',
+    'shift_jis':   'shift_jis',
+    'euc-kr':      'euc-kr',
+    'ks_c_5601-1987': 'cp949',
+    'iso-2022-kr': 'iso-2022-kr',
+    'johab':       'johab',
+    'gb2312':      'gb2312',
+    'big5':        'big5',
     'utf-8':       'utf-8',
     # Hack: We don't want *any* conversion for stuff marked us-ascii, as all
     # sorts of garbage might be sent to us in the guise of 7-bit us-ascii.

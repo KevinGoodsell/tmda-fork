@@ -5,10 +5,9 @@ this file.
 
 If you are upgrading from a release of TMDA < 0.90:
 
-* If you are using Chinese, Japanese, or Korean in your TMDA
-  templates, you must install the CJKCodecs Python package at
-  http://cjkpython.i18n.org/.  CJKCodecs has replaced the
-  ChineseCodecs, JapaneseCodecs and KoreanCodecs packages.
+* If you are using Chinese in your TMDA templates, you must install
+  the CJKCodecs Python package from http://cjkpython.i18n.org/.
+  CJKCodecs has replaced the ChineseCodecs package.
 
 ======================================================================
 
