@@ -30,6 +30,7 @@ import popen2
 import re
 import string
 import sys
+import tempfile
 import time
 
 
@@ -379,7 +380,6 @@ def build_cdb(filename):
 def build_dbm(filename):
     import anydbm
     import glob
-    import tempfile
 
     try:
         (dbmpath, dbmname) = os.path.split(filename)
@@ -412,9 +412,12 @@ def build_dbm(filename):
 def pickleit(object, file, bin=0):
     """Store object in a pickle file.
     Optional bin specifies whether to use binary or text pickle format."""
-    fp = open(file, 'w')
+    tempfile.tempdir = os.curdir
+    tmpname = tempfile.mktemp()
+    fp = open(tmpname, 'w')
     cPickle.dump(object, fp, bin)
     fp.close()
+    os.rename(tmpname, file)
     return
 
 

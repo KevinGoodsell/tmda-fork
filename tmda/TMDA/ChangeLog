@@ -1,3 +1,8 @@
+2002-04-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (pickleit): Write to a tmpfile, and then rename to the
+	target file.
+
 2002-03-31  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
 
 	* Version.py (ALL): Separate PLATFORM and ARCH with '/'.
