@@ -100,7 +100,7 @@ def CheckPassword(Form):
   except Errors.AuthError, error:
     Except = "\n*** EXCEPTION CAUGHT ***: %s" % error.msg
     RetVal = 0
-    Template.Template.Dict["ErrMsg"] = "Capturing the debug stream...\n" + \
-      DebugStringOutput.__repr__()
+  Template.Template.Dict["ErrMsg"] = "Capturing the debug stream...\n" + \
+    DebugStringOutput.__repr__() + Except
 
   return RetVal
