@@ -1,0 +1,43 @@
+Title: Screenshots
+
+<h2>Screenshots</h2>
+<p>tmda-cgi is now "theme-able". If you don't like the default "Blue" theme, 
+  you can create your own. Submit it back to us and if we like it enough, we 
+  might even add your theme to future releases!</p>
+<p><a href="screenshots/login.png" target="_blank">Login</a></p>
+<blockquote>
+  Login authentication can be done with password files, POP3, IMAP, or even 
+  checkpassword / vchkpw.
+</blockquote>
+<p><a href="screenshots/pending.png" target="_blank">Index
+  of pending e-mails (whitelist &amp; blacklist options enabled)</a></p>
+<blockquote>
+  <p>The whitelist and blacklist columns are optional. If you do not have them 
+    configured, these radio buttons will not appear.</p>
+  <p>Unread messages are shown in bold, previously read messages are shown in 
+    normal text.</p>
+  <p>Navigation buttons grey out when they are not applicable.</p>
+  <p>The number of items per page is configurable (per user).</p>
+</blockquote>
+<p><a href="screenshots/view1.png" target="_blank">View
+  the contents of a pending e-mail with attachements</a></p>
+<blockquote>
+  Again, whitelist and blacklist options are only shown if configured.
+</blockquote>
+<p><a href="screenshots/confirm.png" target="_blank">Optional
+  Javascript confirmation when deleting or blacklisting</a></p>
+<blockquote>
+  Confirmations may be configured per user.
+</blockquote>
+<p><a href="screenshots/view2.png" target="_blank">Show
+  all headers mode when viewing an e-mail</a></p>
+<blockquote>
+  tmda-cgi remembers if you toggle "view all headers" so you don't have to keep 
+  selecting it every time you view an e-mail.
+</blockquote>
+<p><a href="screenshots/confirmed.png" target="_blank">URL confirmation
+  feedback</a></p>
+<blockquote>
+  With tmda-cgi, you can modify your confirmation template and allow the 
+  original sender to confirm either by replying or by clicking an included URL.
+</blockquote>
