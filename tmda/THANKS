@@ -33,8 +33,10 @@ Contributions:
 
     * Brian Lalor -- testing the initial Sendmail support; bugfixes.
 
-    * Tim Legant -- support for multi-line, multi-action filter files,
-      and from/to-autocdb.
+    * Tim Legant -- Improvements to the filter file language such as
+      support for multi-line, multi-action filters, support for
+      arguments, and improved error reporting.  from/to-autocdb,
+      bugfixes.
 
     * Adam McKenna -- Debian package.
 
