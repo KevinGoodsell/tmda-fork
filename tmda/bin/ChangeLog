@@ -1,3 +1,12 @@
+2003-10-16  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-ofmipd (quote_rcpts): Remove.
+
+	(VDomainProxy.process_message): Pass a sequence rather than a
+	string to Util.pipecmd() to avoid the shell.
+
+	(TMDAProxy.process_message): Ditto.
+	
 2003-08-19  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-rfilter (main): Support confirm=template FILTER_INCOMING

@@ -462,17 +462,6 @@ def run_authprog(username, password):
     return pipecmd(cmd, '%s\0%s\0' % (username, password))
 
 
-def quote_rcpts(rcpttos):
-    """Each address should be properly quoted to prevent malicious
-    users from executing code by passing args to tmda-inject."""
-    rcpttos_quoted = []
-    for rcptto in rcpttos:
-        rcpttos_quoted.append("'%s'" %
-                              rcptto.replace
-                              ("\\", "\\\\").replace("'", "'\\\\\\''"))
-    return rcpttos_quoted
-
-
 def run_remoteauth(username, password, localip):
     """Authenticate username/password combination against a remote
     resource.  Return 1 upon successful authentication, and 0
@@ -1120,7 +1109,7 @@ class VDomainProxy(PureProxy):
         os.environ['TCPLOCALIP'] = self._localip
         # Set up partial tmda-inject command line.
         execdir = os.path.dirname(os.path.abspath(program))
-        inject_cmd = os.path.join(execdir, 'tmda-inject')
+        inject_cmd = [os.path.join(execdir, 'tmda-inject')] + rcpttos
         userinfo = auth_username.split('@', 1)
         user = userinfo[0]
         if len(userinfo) > 1:
@@ -1160,9 +1149,7 @@ class VDomainProxy(PureProxy):
         # This is so "~" will work in the .tmda/* files.
         os.environ['HOME'] = vhomedir
         try:
-            Util.pipecmd('%s %s' %
-                         (inject_cmd, ' '.join
-                          (quote_rcpts(rcpttos))), data)
+            Util.pipecmd(inject_cmd, data)
         except Exception, err:
             print >> DEBUGSTREAM, 'Error:', err
             if running_as_root:
@@ -1186,7 +1173,7 @@ class TMDAProxy(PureProxy):
         tmda_configfile = os.path.join(tmda_configdir, 'config')
         execdir = os.path.dirname(os.path.abspath(program))
         inject_path = os.path.join(execdir, 'tmda-inject')
-        inject_cmd = '%s --config-file %s' % (inject_path, tmda_configfile)
+        inject_cmd = [inject_path, '-c', tmda_configfile] + rcpttos
         # This is so "~" will always work in the .tmda/* files.
         os.environ['HOME'] = Util.gethomedir(auth_username)
         # If running as uid 0, fork the tmda-inject process, and
@@ -1199,9 +1186,7 @@ class TMDAProxy(PureProxy):
                 os.setgroups(Util.getgrouplist(auth_username))
                 os.setuid(Util.getuid(auth_username))
                 try:
-                    Util.pipecmd('%s %s' %
-                                 (inject_cmd, ' '.join
-                                  (quote_rcpts(rcpttos))), data)
+                    Util.pipecmd(inject_cmd, data)
                 except Exception, err:
                     print >> DEBUGSTREAM, 'Error:', err
                     os._exit(-1)
@@ -1213,9 +1198,8 @@ class TMDAProxy(PureProxy):
                     raise IOError, 'tmda-inject failed!'
         else:
             # no need to fork
-            Util.pipecmd('%s %s' % (inject_cmd, ' '.join
-                                    (quote_rcpts(rcpttos))), data)
-
+            Util.pipecmd(inject_cmd, data)
+            
 
 def main():
     # check permissions of authfile if using only remote
