@@ -9,7 +9,7 @@ Your message attached below is being held because the address
 <%(envelope_sender)s> has not been verified.
 
 To release your message for delivery, please send an empty message
-to the following address, or use your mailer's `Reply' feature.
+to the following address, or use your mailer's "Reply" feature.
 
    %(confirm_accept_address)s
 
