@@ -50,7 +50,9 @@ from string import whitespace as WHITESPACE
 
 
 def gethostname():
-    hostname = os.environ.get('QMAILHOST') or \
+    """The host name"""
+    hostname = os.environ.get('TMDAHOST') or \
+               os.environ.get('QMAILHOST') or \
                os.environ.get('MAILHOST')
     if not hostname:
         hostname = socket.getfqdn()
@@ -58,18 +60,22 @@ def gethostname():
 
 
 def getfullname():
-    fullname = os.environ.get('QMAILNAME') or \
+    """The user's personal name"""
+    fullname = os.environ.get('TMDANAME') or \
+               os.environ.get('QMAILNAME') or \
                os.environ.get('NAME') or \
                os.environ.get('MAILNAME')
     if not fullname:
         fullname = pwd.getpwuid(os.getuid())[4]
     if not fullname:
-        fullname = ''
+        fullname = 'Jane Doe'
     return fullname
 
 
 def getusername():
-    username = os.environ.get('QMAILUSER') or \
+    """The user name"""
+    username = os.environ.get('TMDAUSER') or \
+               os.environ.get('QMAILUSER') or \
                os.environ.get('USER') or \
                os.environ.get('LOGNAME')
     if not username:
@@ -241,7 +247,9 @@ def make_msgid(timesecs=None, pid=None):
     if not pid:
         import Defaults
         pid = Defaults.PID
-    idhost = os.environ.get('QMAILIDHOST') or gethostname()
+    idhost = os.environ.get('TMDAIDHOST') or \
+             os.environ.get('QMAILIDHOST') or \
+             gethostname()
     msgid = '<%s.%s.TMDA@%s>' % (int(timesecs), pid, idhost)
     return msgid
 

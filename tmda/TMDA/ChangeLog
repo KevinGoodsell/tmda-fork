@@ -1,3 +1,10 @@
+2003-04-23  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Util.py (gethostname): $TMDAHOST takes precedence.
+	(getfullname): $TMDANAME takes precedence.
+	(getusername): $TMDAUSER takes precedence.
+	(make_msgid): $TMDAIDHOST takes precedence.
+
 2003-04-22  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Util.py (msg_as_string): New function.  Replacement for
