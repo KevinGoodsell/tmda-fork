@@ -23,6 +23,7 @@
 
 import cgi
 import email
+import email.Header
 import os
 import re
 import time
@@ -219,7 +220,13 @@ width="18" height="18" alt="Last">"""
       if not MsgObj.msgobj["subject"]:
         Subject = "None"
       else:
-        Subject = MsgObj.msgobj["subject"]
+        # Decode internationalazed headers
+        value = ""
+        for tuple in email.Header.decode_header( MsgObj.msgobj["subject"] ):
+          if tuple[1]:
+            value += "(" + tuple[1] + ") " 
+          value += tuple[0] + " "
+        Subject = value
         if len(Subject) > int(PVars[("PendingList", "CropSubject")]):
           Subject = \
             cgi.escape(Subject[:int(PVars[("PendingList", "CropSubject")])
@@ -232,7 +239,13 @@ width="18" height="18" alt="Last">"""
       if not MsgObj.msgobj["from"]:
         From = ""
       else:
-        From = MsgObj.msgobj["from"]
+        # Decode internationalazed headers
+        value = ""
+        for tuple in email.Header.decode_header( MsgObj.msgobj["from"] ):
+          if tuple[1]:
+            value += "(" + tuple[1] + ") " 
+          value += tuple[0] + " "
+        From = value
         Temp = Address.search(From)
         if Temp:
           if PVars[("PendingList", "ShowAddr")] == "Name":

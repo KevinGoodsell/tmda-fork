@@ -23,6 +23,7 @@
 
 import cgi
 import email
+import email.Header
 import os
 import re
 
@@ -72,7 +73,7 @@ def AddIcon(Part):
 def Show():
   "Show an e-mail in HTML."
 
-  global Allow, Remove, Attachment, Divider, PartTemplate, T
+  global messageCharset, Allow, Remove, Attachment, Divider, PartTemplate, T
 
   # Deal with a particular message?
   if Form.has_key("msgid"):
@@ -223,7 +224,10 @@ width="18" height="18" alt="Last">"""
     Headers = ""
     for Line in CgiUtil.Escape(MsgObj.show()).split("\n"):
       if Line == "": break
-      Headers += Line + "\n"
+      # Decode internationalized headers
+      for tuple in email.Header.decode_header( Line ):
+        Headers += tuple[0] + " "
+      Headers += "\n"
     T["Headers"] = '<pre class="Headers">%s</pre>' % Headers
   else:
     # Remove all header block
@@ -232,7 +236,11 @@ width="18" height="18" alt="Last">"""
     # Generate short headers
     for Header in Defaults.SUMMARY_HEADERS:
       T["Name"]  = Header.capitalize()
-      T["Value"] = CgiUtil.Escape(MsgObj.msgobj[Header])
+      value = ""
+      # Decode internationalazed headers
+      for tuple in email.Header.decode_header( MsgObj.msgobj[Header] ):
+        value += tuple[0] + " "
+      T["Value"] = CgiUtil.Escape(value)
       HeaderRow.Add()
 
   # Go through each part and generate HTML
@@ -241,6 +249,13 @@ width="18" height="18" alt="Last">"""
   Attachment   = T["Attachment"]
   Divider      = T["Divider"]
   PartTemplate = T["Part"]
+
+  # Check if there's a charset defined.
+  messageCharset = None
+  T["charset"] = "us-ascii" # default charset
+  if MsgObj.msgobj.get_content_charset():
+    messageCharset = MsgObj.msgobj.get_content_charset()
+    T["charset"] = messageCharset
   ShowPart(MsgObj.msgobj)
 
   # Remove unneeded bits?
@@ -275,6 +290,13 @@ def ShowPart(Part):
   # text/plain            - escape & display
   # text/html             - sterilize & display
   # other                 - show as an attachment
+
+  # Check if there's a character set for this part.
+  if Part.get_content_charset():
+    messageCharset = Part.get_content_charset()
+    T["charset"] = messageCharset
+
+  # Display this part
   if Part.is_multipart():
     if Part.get_type("multipart/mixed") == "multipart/alternative":
       # Pick preferred alternative
