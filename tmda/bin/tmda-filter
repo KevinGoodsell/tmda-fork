@@ -295,9 +295,9 @@ def bouncegen(mode):
     original_message = globals().get('message')
     # Opional 'dated' address variables.
     if Defaults.DATED_TEMPLATE_VARS:
-        timeout = Util.format_timeout(Defaults.TIMEOUT)
-        expire_date = time.asctime(time.gmtime
-                                   (now + Util.seconds(Defaults.TIMEOUT)))
+        dated_timeout = Util.format_timeout(Defaults.TIMEOUT)
+        dated_expire_date = time.asctime(time.gmtime
+                                         (now + Util.seconds(Defaults.TIMEOUT)))
         dated_cookie = Cookie.make_dated_cookie('%d' % now)
         dated_cookie_address = Defaults.USERNAME + '-dated-' + dated_cookie \
                                + '@' + Defaults.HOSTNAME
