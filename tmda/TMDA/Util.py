@@ -166,13 +166,15 @@ def make_msgid(timesecs=None, pid=None):
 
 
 def make_date(timesecs=None):
-    """Return an RFC 2822 compliant Date: string.
+    """Return an RFC 2822 compliant Date: string.  e.g,
+
+    Thu, 16 May 2002 04:23:10 +1200 (NZST)
     
     timesecs is optional, and if not given, the current time is used.
 
-    JRM: Once the email mod is included within TMDA, we can nuke this
-    function and use email.Utils.formatdate.
-
+    JRM: Once the email module is included within TMDA, we can use
+    utilize email.Utils.formatdate.
+    
     Based on code from Python's email package
     <URL:http://www.python.org/doc/current/lib/module-email.html>
     Copyright (C) 2001,2002 Python Software Foundation.
@@ -197,15 +199,18 @@ def make_date(timesecs=None):
         else:
             sign = '+'
         zone = '%s%02d%02d' % (sign, hours, minutes / 60)
+        tzname = time.tzname[now[-1]]
     else:
         now = time.gmtime(timesecs)
         # Timezone offset is always -0000
         zone = '-0000'
-    return '%02d %s %04d %02d:%02d:%02d %s' % (
-        now[2], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now[1] - 1],
-        now[0], now[3], now[4], now[5],
-        zone)
+        tzname = 'UTC'
+    return '%s, %02d %s %04d %02d:%02d:%02d %s (%s)' % (
+        ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][now[6]],
+        now[2],
+        ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now[1] - 1],
+        now[0], now[3], now[4], now[5], zone, tzname)
 
 
 def formataddr(pair):
