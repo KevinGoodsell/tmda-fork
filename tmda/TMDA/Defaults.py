@@ -1469,13 +1469,13 @@ if not vars().has_key('TMDAINJECT'):
 if not vars().has_key('SUMMARY_HEADERS'):
     SUMMARY_HEADERS = ['date', 'from', 'to', 'subject']
 
-# TIMEOUT
+# DATED_TIMEOUT
 # The timeout interval for 'dated' addresses.  The available units are
 # (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).
 #
 # Default is 5d (5 days).
-if not vars().has_key('TIMEOUT'):
-    TIMEOUT = "5d"
+if not vars().has_key('DATED_TIMEOUT'):
+    DATED_TIMEOUT = "5d"
 
 # USERNAME
 # The left-hand side of your e-mail address (before `@').

@@ -74,7 +74,7 @@ def datemac(time):
 def make_dated_cookie(time, timeout = None):
     """Return a dated-style cookie (expire date + HMAC)."""
     tmda_timeout = timeout or os.environ.get('TMDA_TIMEOUT')
-    if not tmda_timeout:tmda_timeout = Defaults.TIMEOUT
+    if not tmda_timeout:tmda_timeout = Defaults.DATED_TIMEOUT
     expire_time = str(int(time) + Util.seconds(tmda_timeout))
     datedmac = datemac(expire_time)
     return expire_time + '.' + datedmac

@@ -1,5 +1,7 @@
 2004-01-09  Jason R. Mastaler  <jason@mastaler.com>
 
+	* Defaults.py (DATED_TIMEOUT): TIMEOUT renamed.
+
 	* Util.py (confirm_append_address): Return the envelope sender
 	address immediately if either the Return-Path address or
 	X-Primary-Address is not in user@hostname format.

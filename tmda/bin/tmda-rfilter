@@ -701,9 +701,10 @@ def bouncegen(mode, text=None, template=None):
     pending_lifetime = Util.format_timeout(Defaults.PENDING_LIFETIME)
     # Optional 'dated' address variables.
     if Defaults.DATED_TEMPLATE_VARS:
-        dated_timeout = Util.format_timeout(Defaults.TIMEOUT)
+        dated_timeout = Util.format_timeout(Defaults.DATED_TIMEOUT)
         dated_expire_date = time.asctime(time.gmtime
-                                         (now + Util.seconds(Defaults.TIMEOUT)))
+                                         (now +
+                                          Util.seconds(Defaults.DATED_TIMEOUT)))
         dated_recipient_address = Cookie.make_dated_address(recipient_address)
     # Optional 'sender' address variables.
     if Defaults.SENDER_TEMPLATE_VARS:
