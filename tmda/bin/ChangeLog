@@ -1,5 +1,13 @@
 2001-04-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-filter (program): Add support for alternate rcfile.
+
+	* tmda-inject (program): Ditto.
+
+	* tmda-dated-address: Ditto.
+
+	* tmda-sender-address: Ditto 
+
 	* tmda-filter (main): Add support for qmail virtualdomains as
 	described in qmail-send(8).
 

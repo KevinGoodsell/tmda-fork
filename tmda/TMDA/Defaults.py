@@ -18,7 +18,10 @@ import Util
 
 TMDA_HOMEPAGE = "<http://tmda.sourceforge.net/>"
 TMDA_VERSION = "0.11"
-TMDARC = os.path.expanduser("~/.tmdarc")
+
+# Look for the config-file in the environment first then default to ~/.tmdarc.
+TMDARC = os.environ.get('TMDARC')
+if not TMDARC:TMDARC = os.path.expanduser("~/.tmdarc")
 
 # Exit codes: everything except 0, 99 and 100 are soft errors.
 ERR_OK = 0          # Success; look at the next .qmail file instruction.

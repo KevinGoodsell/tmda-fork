@@ -4,11 +4,47 @@
 # Sender (client) mode
 ######################
 
+"""Tag and send outgoing messages.
 
+Usage:  %(program)s [-c <file>] [-h]
+
+Where:
+	-c <file>
+	--config-file <file>
+	   Specify a different configuration file other than ~/.tmdarc.
+
+	--help
+	-h
+	   Print this help message and exit.
+"""
+
+import getopt
 import os
 import rfc822
 import string
 import sys
+
+
+program = sys.argv[0]
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
+    
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                                   'c:h', ['config-file=','help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    elif opt in ('-c', '--config-file'):
+        os.environ['TMDARC'] = arg
+
 
 import paths
 from TMDA import Cookie

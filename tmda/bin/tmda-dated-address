@@ -1,35 +1,53 @@
 #!/usr/bin/env python
 
-"""Generate a tagged (dated) e-mail address.
+"""Generate a tagged (dated-style) e-mail address.
 
-This generates a dated-style tagged e-mail address.
+Usage:  %(program)s [-c <file>] [-h]
 
-Usage: %(program)s 
+Where:
+	-c <file>
+	--config-file <file>
+	   Specify a different configuration file other than ~/.tmdarc.
+
+	--help
+	-h
+	   Print this help message and exit.
 """
 
+import getopt
+import os
 import sys
-
-import paths
-from TMDA import Cookie
-from TMDA import Defaults
 
 
 program = sys.argv[0]
 
-def usage(status, msg=''):
+def usage(code, msg=''):
     print __doc__ % globals()
     if msg:
-        print msg
-    sys.exit(status)
+        print >> sys.stderr, msg
+    sys.exit(code)
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                                   'c:h', ['config-file=','help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    elif opt in ('-c', '--config-file'):
+        os.environ['TMDARC'] = arg
+
+
+import paths
+from TMDA import Cookie
 
 
 def main():
 
-    try:
-        dated_address = Cookie.make_dated_address()
-        sys.stdout.write(dated_address)
-    except IndexError:
-        usage(2)
+    dated_address = Cookie.make_dated_address()
+    sys.stdout.write(dated_address)
 
 
 if __name__ == '__main__':
