@@ -29,9 +29,9 @@ for line in fileinput.input(listfile):
         line = string.expandtabs(line)
         line = string.split(line, ' #')[0]
         line = string.strip(line)
-        line = string.lower(line)
     linef = string.split(line)
     key = linef[0]
+    key = string.lower(key)
     try:
         value = linef[1]
     except IndexError:
