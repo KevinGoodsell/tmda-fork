@@ -529,9 +529,9 @@ def bouncegen(mode):
     if mode == 'request':
         if Defaults.CONFIRM_CC:
             send_cc(Defaults.CONFIRM_CC)
+        logit("CONFIRM pending " + pending_message)
         send_bounce(bounce_message,
                     confirm_accept_address = confirm_accept_address)
-        logit("CONFIRM pending " + pending_message)
         mta.stop()  
 
 
