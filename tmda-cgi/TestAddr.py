@@ -22,9 +22,13 @@
 "Test dynamic addresses for tmda-cgi."
 
 import os
+import time
 import Template
 from TMDA import Address
 from TMDA import Defaults
+
+# Constants
+DateFormat = "%a, %d %b %Y %H:%M:%S UTC"
 
 def Show():
   "Test dynamic addresses."
@@ -66,14 +70,15 @@ def Show():
         Addr.verify(From)
         T["Results"] = "Valid."
         try:
-          T["Results"] = "Valid.<br>Expires: %s" % Addr.timestamp(1, None)
+          T["Results"] = "Valid.<br>Expires: %s" % \
+            time.strftime(DateFormat, time.localtime(int(Addr.timestamp())))
         except AttributeError:
           pass
       except Address.AddressError, Msg:
         T["Results"] = Msg
         try:
           T["Results"] = "Expired or invalid<br>Expiration: %s" % \
-            Addr.timestamp(1, None)
+            time.strftime(DateFormat, time.localtime(int(Addr.timestamp())))
         except AttributeError:
           pass
 

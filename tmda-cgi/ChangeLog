@@ -1,3 +1,10 @@
+2003-11-15  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Changed timestamp call in dynamic address tester for compatibility
+	  with new member function definition introduced in TMDA 0.81.
+
+	* tmda-cgi now requires TMDA 0.81.
+
 2003-10-04  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Caught an extra exception in Session.

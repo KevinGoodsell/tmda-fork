@@ -30,7 +30,7 @@ tmda_cgi = "0.11B+"
 Codename = "Magnesium"
 
 # TMDA version required
-TMDAReqVer = "0.77"
+TMDAReqVer = "0.81"
 
 # Python version
 Python = Version.PYTHON
