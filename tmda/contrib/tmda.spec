@@ -11,8 +11,8 @@ License: GPL
 Group: Utilities/System
 BuildRoot: %{_tmppath}/%{name}-buildroot
 BuildArchitectures: noarch
-Vendor: Jason R. Mastaler <jason@mastaler.com>
-Packager: tmda-workers@tmda.net
+Vendor: TMDA Cabal
+Packager: tmda-users@tmda.net
 Url: http://tmda.net/
 BuildRequires: /usr/bin/python2
 Requires: /usr/bin/python2
@@ -115,6 +115,9 @@ Gnus (and perhaps other Emacs based mail/news readers).
 %{_datadir}/emacs/site-lisp/tmda.el
 
 %changelog
+* Fri Dec 19 2003 Jason R. Mastaler <jason@mastaler.com> 1.0-1
+  - version 1.0 release
+
 * Fri Apr 25 2003 Bernard Johnson <bjohnson@symetrix.com>
   - version 0.76, remove tmda-cgi subpackage (it's not a part of TMDA anymore)
     and remove the multi-arch build it required
