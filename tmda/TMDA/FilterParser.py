@@ -116,8 +116,7 @@ class FilterParser:
         self.__lineno = 0
         self.__rule_lineno = 0
         self.__pushback = None
-        self.__exception = None
-        
+
         if os.path.exists(filename):
             fp = open(filename)
             self.__parse(fp)
@@ -136,19 +135,25 @@ class FilterParser:
 	messages and, after parsing is completed, the exception is
 	raised.
         """
+        exception = ParsingError(self.filename)
+
 	while 1:
-	    rule_line = self.__readrule(fp)
-	    if not rule_line:
-		break
             try:
+                rule_line = self.__readrule(fp)
                 rule = self.__parserule(rule_line)
 		self.filterlist.append(rule)
+            except EOFError:
+                break
             except Error, e:
-                self.__adderror(self.__rule_lineno, e._msg)
+                # A non-fatal parsing error occurred.  Set up the
+                # exception but keep going. The exception will be
+                # raised at the end of the file and will contain a
+                # list of all bogus lines.
+                exception.append(self.__rule_lineno, e._msg)
 
         # If any parsing errors occurred raise an exception.
-        if self.__exception:
-            raise self.__exception
+        if exception.errors:
+            raise exception
 
 
     def __readrule(self, fp):
@@ -162,7 +167,7 @@ class FilterParser:
 
 	    original_line = fp.readline()
 	    if not original_line:            # exit loop if out of lines
-	        break
+	        raise EOFError
 	    self.__lineno = self.__lineno + 1
             # comment at beginning of line, with or without leading whitespace
             if self.bol_comment.match(original_line):
@@ -182,8 +187,9 @@ class FilterParser:
 		if rule:
 		    rule = rule + line
 		else:
-		    # add to ParseError exception
-		    self.__adderror(self.__lineno, original_line)
+		    # line begins with whitespace, meaning a rule continuation,
+                    # but we're not in the middle of a rule.
+                    raise Error, 'line is improperly indented'
             # line without leading whitespace signifies beginning of new rule
 	    #  (and maybe the end of the current rule)
             else:
@@ -276,20 +282,6 @@ class FilterParser:
                 actions = self.__buildactions(action_line, source)
                 rule = (source, args, match, actions, self.__rule_lineno)
 	return rule
-
-
-    def __adderror(self, lineno, errstr):
-        """
-        Create a new exception object if necessary and append the latest
-        error to it.
-        """
-	# A non-fatal parsing error occurred.  Set up the
-	# exception but keep going. The exception will be
-	# raised at the end of the file and will contain a
-	# list of all bogus lines.
-        if not self.__exception:
-            self.__exception = ParsingError(self.filename)
-        self.__exception.append(lineno, errstr)
 
 
     def __buildactions(self, action_line, source):

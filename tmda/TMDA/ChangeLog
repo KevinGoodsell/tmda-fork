@@ -1,3 +1,14 @@
+2002-02-20  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py (FilterParser.__parse): Cleaned up the last of
+	the error handling.  Removed self.__exception and added local
+	variable 'exception'.
+
+	(FilterParser.__adderror): Removed function.  No longer needed.
+
+	(FilterParser.__readrule): Now throws EOFError on end-of-file.
+	Caught in FilterParser.__parse.
+
 2002-02-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* FilterParser.py (FilterParser.read): Partially restore old
