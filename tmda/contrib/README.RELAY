@@ -2,7 +2,7 @@ Contributed by Ron Bickers <rbickers@logicetc.com>
 
 -------------------------------------------------------------------------
 
-This is a draft HOWTO for running tmda-inject on a qmail relay so that
+This is a HOWTO for running tmda-inject on a qmail relay so that
 clients sending e-mail through the relay can have their addresses
 rewritten according to their .tmdarc settings.  This means that those
 running Microsoft Windows clients can take full advantage of TMDA.  In
@@ -15,6 +15,12 @@ are likely others:
   * Netscape Communicator
   * Pegasus Mail
   * Qualcomm Windows Eudora
+
+IMPORTANT NOTE FOR NETSCAPE COMMUNICATOR: For some reason, Netscape
+thinks that because the SMTP server supports authentication, it must
+use authentication.  This means that everyone sending mail with
+Netscape will need to be assigned a username and password even if they
+are not using TMDA.
 
 Note that there as some security questions that have not been fully
 analyzed with this setup.  Although I feel that it's reasonably
