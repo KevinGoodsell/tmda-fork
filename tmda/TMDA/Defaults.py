@@ -63,17 +63,19 @@ PARENTDIR = os.path.split(os.path.dirname(progpath))[0] # '../'
 # If the file /etc/tmdarc exists, read it before ~/.tmdarc.
 # Make site-wide configuration changes to this file.
 GLOBAL_TMDARC = '/etc/tmdarc'
-if os.path.exists(GLOBAL_TMDARC):
+if os.path.isfile(GLOBAL_TMDARC):
     try:
         execfile(GLOBAL_TMDARC)
     except:
         pass                            # just skip it if there is a problem
         
 # Look for the user-config-file in the environment first then default
-# to ~/.tmdarc.
+# to ~/.tmdarc or ~/.tmda/config
 TMDARC = os.environ.get('TMDARC')
 if not TMDARC:
-    TMDARC = os.path.expanduser("~/.tmdarc")
+    TMDARC = os.path.expanduser('~/.tmdarc')
+    if not os.path.isfile(TMDARC):
+        TMDARC = os.path.expanduser('~/.tmda/config')
 
 # Read-in the user's configuration file.
 if os.path.exists(TMDARC):
