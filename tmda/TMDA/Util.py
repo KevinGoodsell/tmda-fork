@@ -452,7 +452,8 @@ def build_cdb(filename):
     import cdb
     try:
         cdbname = filename + '.cdb'
-        cdb = cdb.cdbmake(cdbname, cdbname + '.tmp')
+        tmpname = os.path.split(tempfile.mktemp())[1]
+        cdb = cdb.cdbmake(cdbname, cdbname + '.' + tmpname)
         for line in file_to_list(filename):
             linef = line.split()
             key = linef[0].lower()
@@ -469,16 +470,15 @@ def build_cdb(filename):
 
 
 def build_dbm(filename):
+    """Build a DBM file from a text file."""
     import anydbm
     import glob
-
     try:
-        (dbmpath, dbmname) = os.path.split(filename)
+        dbmpath, dbmname = os.path.split(filename)
         dbmname += '.db'
         tempfile.tempdir = dbmpath
         tmpname = tempfile.mktemp()
-
-        dbm = anydbm.open(tmpname,'n')
+        dbm = anydbm.open(tmpname, 'n')
         for line in file_to_list(filename):
             linef = line.split()
             key = linef[0].lower()
@@ -488,10 +488,9 @@ def build_dbm(filename):
                 value = ''
             dbm[key] = value
         dbm.close()
-
         for f in glob.glob(tmpname + '*'):
             (tmppath, tmpname) = os.path.split(tmpname)
-            newf = f.replace(tmpname,dbmname)
+            newf = f.replace(tmpname, dbmname)
             newf = os.path.join(tmppath, newf)
             os.rename(f, newf)
     except:
