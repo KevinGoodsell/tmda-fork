@@ -273,34 +273,20 @@ def confirm_accept_address(recipient, msg):
 def release(headers, body, msg):
     """Release a message from the pending queue."""
     timestamp, pid, suffix = msg.split('.')
-    return_path = headers.getaddr('return-path')[1]
     # Remove Return-Path: to avoid duplicates.
+    return_path = headers.getaddr('return-path')[1]
     del headers['return-path']
-    recipient = headers.getheader('x-tmda-recipient')
     # Remove X-TMDA-Recipient:
+    recipient = headers.getheader('x-tmda-recipient')
     del headers['x-tmda-recipient']
-    # See if X-TMDA-EnvRecipient is available.
-    envrecipient = headers.getheader('x-tmda-envrecipient', None)
-    # Remove it if so.
-    if envrecipient:
-        del headers['x-tmda-envrecipient']
-    # To avoid a mail loop on re-injection, if the message contains
-    # Delivered-To: line(s), remove all such lines from the top down
-    # to the dtline matching the address in X-TMDA-Recipient or
-    # X-TMDA-EnvRecipient if it's available.
+    # To avoid a mail loop on re-injection, prepend an ``Old-'' prefix
+    # to all existing Delivered-To lines.
     if headers.has_key('delivered-to'):
-        # stripped, lowercased version of the headers to work with
-        slheaders = map(lambda s: s.strip().lower(), headers.headers)
-        if envrecipient:
-            dtindex = slheaders.index('%s: %s' %
-                                      ('delivered-to', envrecipient.lower()))
-        else:
-            dtindex = slheaders.index('%s: %s' %
-                                      ('delivered-to', recipient.lower()))
-        for i in range(len(slheaders[:dtindex+1])):
-            if slheaders[i].split(':')[0] == 'delivered-to':
-                # remove it from the real list of headers
-                del headers.headers[i]
+        headers.headers = map(lambda h: h.replace('Delivered-To:',
+                                                  'Old-Delivered-To:', 1),
+                              headers.headers)
+    # Add an X-TMDA-Confirm-Done: field to the top of the header for
+    # later verification.  This includes a timestamp, pid, and HMAC.
     headers['X-TMDA-Confirm-Done'] = Cookie.make_confirm_cookie(timestamp,
                                                                 pid, 'done')
     # Add the date when confirmed in a header.

@@ -354,34 +354,18 @@ def do_default_action(action, logname, bouncetext):
 
 def release_pending(timestamp, pid, headers, body):
     """Release a confirmed message from the pending queue."""
-    return_path = headers.getaddr('return-path')[1]
     # Remove Return-Path: to avoid duplicates.
+    return_path = headers.getaddr('return-path')[1]
     del headers['return-path']
-    recipient = headers.getheader('x-tmda-recipient')
     # Remove X-TMDA-Recipient:
+    recipient = headers.getheader('x-tmda-recipient')
     del headers['x-tmda-recipient']
-    # See if X-TMDA-EnvRecipient is available.
-    envrecipient = headers.getheader('x-tmda-envrecipient', None)
-    # Remove it if so.
-    if envrecipient:
-        del headers['x-tmda-envrecipient']
-    # To avoid a mail loop on re-injection, if the message contains
-    # Delivered-To: line(s), remove all such lines from the top down
-    # to the dtline matching the address in X-TMDA-Recipient or
-    # X-TMDA-EnvRecipient if it's available.
+    # To avoid a mail loop on re-injection, prepend an ``Old-'' prefix
+    # to all existing Delivered-To lines.
     if headers.has_key('delivered-to'):
-        # stripped, lowercased version of the headers to work with
-        slheaders = map(lambda s: s.strip().lower(), headers.headers)
-        if envrecipient:
-            dtindex = slheaders.index('%s: %s' %
-                                      ('delivered-to', envrecipient.lower()))
-        else:
-            dtindex = slheaders.index('%s: %s' %
-                                      ('delivered-to', recipient.lower()))
-        for i in range(len(slheaders[:dtindex+1])):
-            if slheaders[i].split(':')[0] == 'delivered-to':
-                # remove it from the real list of headers
-                del headers.headers[i]
+        headers.headers = map(lambda h: h.replace('Delivered-To:',
+                                                  'Old-Delivered-To:', 1),
+                              headers.headers)
     # Add an X-TMDA-Confirm-Done: field to the top of the header for
     # later verification.  This includes a timestamp, pid, and HMAC.
     headers['X-TMDA-Confirm-Done'] = Cookie.make_confirm_cookie(timestamp,
@@ -579,7 +563,6 @@ def bouncegen(mode, text=None):
     # Common variables.
     now = time.time()
     recipient_address = globals().get('recipient_address')
-    envelope_recipient = globals().get('envelope_recipient')
     recipient_local, recipient_domain = recipient_address.split('@', 1)
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
@@ -627,10 +610,6 @@ def bouncegen(mode, text=None):
             os.makedirs(pendingdir, 0700) # stores the unconfirmed messages
         # X-TMDA-Recipient is used by release_pending().
         message_headers['X-TMDA-Recipient'] = recipient_address
-        # X-TMDA-EnvRecipient if available is also used by
-        # release_pending() and reflects qmail-send's interpretation.
-        if recipient_address != envelope_recipient:
-            message_headers['X-TMDA-EnvRecipient'] = envelope_recipient
         # Write ~/.tmda/pending/TIMESTAMP.PID.msg
         pending_contents = str(message_headers) + '\n' + message_body
         Util.writefile(pending_contents,
