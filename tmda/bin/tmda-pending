@@ -312,7 +312,6 @@ def main():
             if cache:
                 if msg in msgcache:
                     # skip this message
-                    total = total - 1
                     continue
                 else:
                     msgcache.insert(0, msg)
