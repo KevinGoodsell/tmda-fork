@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.84+"
+TMDA = "0.85"
 
 # TMDA version codename
 CODENAME = "Tomy Lee"
