@@ -19,6 +19,10 @@ If you are upgrading from a release of TMDA < 0.87:
   this to '/var/qmail/bin/sendmail', or simply comment this out and
   take the default value of '/usr/sbin/sendmail'.
 
+  If you are running Exim, please make note of #1 under ``Main
+  Configuration'' at http://tmda.net/config-pre.html#exim, as you may
+  need to adjust your Exim configuration.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.83:
