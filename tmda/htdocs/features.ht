@@ -37,7 +37,7 @@ mail clients through <a href="tmda-ofmipd.html">tmda-ofmipd</a>.<br><br>
 
 <li>Package installation available for Linux, and Free/Net/OpenBSD.<br><br>
 
-<li>Supports vpopmail and vmailmgr.<br><br>
+<li>Supports <a href="tmda-vdomains.html">vpopmail and vmailmgr</a>.<br><br>
 
 <li>Flexible <a href="config-filter.html">filtering language</a>
 allowing fine-grained control over how incoming and outgoing mail is
