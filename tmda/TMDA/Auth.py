@@ -26,12 +26,12 @@ import os
 import sys
 import socket
 import base64
-import hmac
 import md5
 import popen2
 import time
 
 # TMDA imports
+import HMAC
 import Version
 import Util
 import Errors
@@ -130,12 +130,6 @@ class Auth(Util.Debugable):
         elif configdir is not None:
             self.setup_configdir( configdir )
 
-        # check whether we are running a recent enough Python
-        if not Version.PYTHON >= '2.2':
-            msg = 'Python 2.2 or greater is required to run ' + program + \
-                  ' -- Visit http://python.org/download/ to upgrade.'
-            self.warning(msg)
-
     def warning(self, msg='', exit=1):
         delimiter = '*' * 70
         if msg:
@@ -166,7 +160,7 @@ class Auth(Util.Debugable):
             self.debug( "Attribute Error: %s" % err )
             raise ValueError, \
                 "Authentication type '%s' not recognised.\n " % type + \
-                "Must be one of %s" % self.allowed_authtypes.__repr__()
+                "Must be one of %s" % repr(self.allowed_authtypes)
         except ValueError, err:
             raise err
 
@@ -240,7 +234,7 @@ class Auth(Util.Debugable):
             authproto, arg = URI, None
         if authproto not in self.allowed_protocols:
             raise ValueError, "Protocol '%s' not supported.\n" % authproto + \
-                    "Must be one of %s" % self.allowed_protocols.__repr__()
+                    "Must be one of %s" % repr(self.allowed_protocols)
         self.__authremote['proto'] = authproto
         self.__authremote['port'] = self.__defaultauthports[authproto]
         if arg:
@@ -331,7 +325,7 @@ class Auth(Util.Debugable):
             raise Errors.AuthError, \
                  ( "Unknown authentication type '%s'." % self.__authtype, \
                    "Available choices for authentication type are %s" % \
-                    self.allowed_authtypes.__repr__() )
+                    repr(self.allowed_authtypes) )
         except Errors.AuthError, err:
             raise err
         self.debug( "Authentication returned: %d" % retval )
@@ -364,7 +358,7 @@ class Auth(Util.Debugable):
         password = self.__authdict.get(username.lower(), 0)
         if password == 0:
             return 0
-        newhexdigest = hmac.HMAC(password, ticket, digestmod).hexdigest()
+        newhexdigest = HMAC.HMAC(password, ticket, digestmod).hexdigest()
         return newhexdigest == hexdigest
 
     def supports_cram_md5(self):
