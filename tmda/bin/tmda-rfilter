@@ -240,34 +240,30 @@ for hdr in list_headers:
 def logit(action_msg, timesecs=None):
     """Write delivery statistics to the logfile if it's enabled."""
     if Defaults.LOGFILE_INCOMING and recipient_address:
-        try:
-            if not timesecs:
-                timesecs = time.time()
-            logfile = open(Defaults.LOGFILE_INCOMING, 'a') # append to the file
-            Date = Util.unixdate(timesecs)
-            From = message_headers.getheader('from')
-            EnvelopeSender = envelope_sender
-            To = recipient_address
-            Subject = subject
-            Action = action_msg
-            actionstr = 'Actn: ' + Action
-            sizestr = '(' + message_size + ')'
-            wsbuf = 78 - len(actionstr) - len(sizestr)
-            # Write the log entry and then close the log.
-            logfile.write('Date: ' + Date + '\n')
-            if (EnvelopeSender
-                and message_headers.getaddr('from')[1] != EnvelopeSender):
-                logfile.write('Sndr: ' + EnvelopeSender + '\n')
-            if From:
-                logfile.write('From: ' + From + '\n')
-            logfile.write('  To: ' + To + '\n')
-            logfile.write('Subj: ' + Subject + '\n')
-            logfile.write(actionstr + ' '*wsbuf + sizestr + '\n')
-            logfile.write('\n')
-            logfile.close()
-        except IOError, error_msg:
-            print error_msg
-            mta.defer()
+        if not timesecs:
+            timesecs = time.time()
+        logfile = open(Defaults.LOGFILE_INCOMING, 'a') # append to the file
+        Date = Util.unixdate(timesecs)
+        From = message_headers.getheader('from')
+        EnvelopeSender = envelope_sender
+        To = recipient_address
+        Subject = subject
+        Action = action_msg
+        actionstr = 'Actn: ' + Action
+        sizestr = '(' + message_size + ')'
+        wsbuf = 78 - len(actionstr) - len(sizestr)
+        # Write the log entry and then close the log.
+        logfile.write('Date: ' + Date + '\n')
+        if (EnvelopeSender
+            and message_headers.getaddr('from')[1] != EnvelopeSender):
+            logfile.write('Sndr: ' + EnvelopeSender + '\n')
+        if From:
+            logfile.write('From: ' + From + '\n')
+        logfile.write('  To: ' + To + '\n')
+        logfile.write('Subj: ' + Subject + '\n')
+        logfile.write(actionstr + ' '*wsbuf + sizestr + '\n')
+        logfile.write('\n')
+        logfile.close()
 
 
 def send_bounce(bounce_message, **vars):
@@ -290,15 +286,11 @@ def send_bounce(bounce_message, **vars):
         inject.append('-f')
         inject.append(Defaults.BOUNCE_ENV_SENDER)
         inject.append(envelope_sender)
-        try:
-            pipeline = popen2.popen2(inject)[1]
-            pipeline.write(str(message_headers))
-            pipeline.write('\n')
-            pipeline.write(message_body)
-            pipeline.close()
-        except IOError, error_msg:
-            print error_msg
-            mta.defer()
+        pipeline = popen2.popen2(inject)[1]
+        pipeline.write(str(message_headers))
+        pipeline.write('\n')
+        pipeline.write(message_body)
+        pipeline.close()
 
 
 def send_cc(address):
@@ -306,13 +298,9 @@ def send_cc(address):
     inject = []
     inject.append(Defaults.SENDMAIL)
     inject.append(address)
-    try:
-        pipeline = popen2.popen2(inject)[1]
-        pipeline.write(message)
-        pipeline.close()
-    except IOError, error_msg:
-        print error_msg
-        mta.defer()
+    pipeline = popen2.popen2(inject)[1]
+    pipeline.write(message)
+    pipeline.close()
     logit(string.join(inject))
 
 
@@ -329,28 +317,24 @@ def inject_pending(pathname,timestamp,pid):
                                                        timestamp,
                                                        pid,
                                                        'done')
-    try:
-        fileobj = open(pathname,'r')
-        message_headers = rfc822.Message(fileobj)
-        message_body = fileobj.read()
-        fileobj.close()
-        # Add the date when confirmed in a header.
-        message_headers['X-TMDA-Confirmed'] = Util.unixdate()
-        # Collect the envelope sender to pass to sendmail.
-        return_path = message_headers.getaddr('return-path')[1]
-        inject = []
-        inject.append(Defaults.SENDMAIL)
-        inject.append('-f')
-        inject.append(return_path)
-        inject.append(confirm_done_address)
-        pipeline = popen2.popen2(inject)[1]
-        pipeline.write(str(message_headers))
-        pipeline.write('\n')
-        pipeline.write(message_body)
-        pipeline.close()
-    except IOError, error_msg:
-        print error_msg
-        mta.defer()
+    fileobj = open(pathname,'r')
+    message_headers = rfc822.Message(fileobj)
+    message_body = fileobj.read()
+    fileobj.close()
+    # Add the date when confirmed in a header.
+    message_headers['X-TMDA-Confirmed'] = Util.unixdate()
+    # Collect the envelope sender to pass to sendmail.
+    return_path = message_headers.getaddr('return-path')[1]
+    inject = []
+    inject.append(Defaults.SENDMAIL)
+    inject.append('-f')
+    inject.append(return_path)
+    inject.append(confirm_done_address)
+    pipeline = popen2.popen2(inject)[1]
+    pipeline.write(str(message_headers))
+    pipeline.write('\n')
+    pipeline.write(message_body)
+    pipeline.close()
     mta.stop()
 
 
@@ -358,15 +342,11 @@ def release_pending(pathname, timestamp, pid):
     """Release a message from the pending queue."""
     # Optionally append the envelope sender to the whitelist.
     if Defaults.CONFIRM_APPEND:
-        try:
-            # Grab the original envelope sender to append.
-            fileobj = open(pathname,'r')
-            message_headers = rfc822.Message(fileobj)
-            fileobj.close()
-            orig_env_sender = message_headers.getaddr('return-path')[1]
-        except IOError, error_msg:
-            print error_msg
-            mta.defer()
+        # Grab the original envelope sender to append.
+        fileobj = open(pathname,'r')
+        message_headers = rfc822.Message(fileobj)
+        fileobj.close()
+        orig_env_sender = message_headers.getaddr('return-path')[1]
         if Util.append_to_file(orig_env_sender,Defaults.CONFIRM_APPEND) != 0:
             logit("APPEND " + orig_env_sender)
     # Optionally generate the confirmation acceptance notice.
@@ -527,11 +507,7 @@ def bouncegen(mode):
         pending_message = timestamp + '.' + pid + '.msg'
         # Create ~/.tmda/ and friends if necessary.
         if not os.path.exists(pendingdir):
-            try:
-                os.makedirs(pendingdir,0700) # stores the unconfirmed messages
-            except IOError, error_msg:
-                print error_msg
-                mta.defer()
+            os.makedirs(pendingdir,0700) # stores the unconfirmed messages
         # Write ~/.tmda/pending/TIMESTAMP.PID.msg
         message_headers['Return-Path'] = '<' + envelope_sender + '>'
         pending_contents = str(message_headers) + '\n' + message_body

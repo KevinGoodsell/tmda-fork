@@ -1,5 +1,14 @@
 2002-01-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-rfilter (logit): Remove the try/except, tmda-filter will
+	catch the uncaught exception.
+	
+	(send_bounce): Ditto.
+
+	(send_cc): Ditto.
+
+	(inject_pending): Ditto.
+
 	* tmda-filter: Try to look for the user's LOGFILE_DEBUG setting
 	first, and if we can't log to that, fall back to
 	~/TMDA_DELIVERY_FAILURE.
