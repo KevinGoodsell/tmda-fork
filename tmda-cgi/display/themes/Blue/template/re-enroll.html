@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Do you wish to re-enroll?</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="%(ThemeDir)s/styles.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr height="135"> 
+    <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td bgcolor="#7B7CB6" width="194"><img src="%(ThemeDir)s/corner.gif" width="194" height="135" alt=""></td>
+          <td background="%(ThemeDir)s/top_bg.gif" bgcolor="#7B7CB6"><img src="%(ThemeDir)s/title.png" alt="TMDA (http://tmda.net) CGI Interface" width="327" height="135"></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr> 
+    <td valign="top" bgcolor="#FFFFFF"><table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top" class="matte"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+              <tr> 
+                <td width="150" valign="top" background="%(ThemeDir)s/left_bg.gif" bgcolor="#7B7CB6"><img src="%(ThemeDir)s/tail.gif" width="150" height="23"></td>
+                <td valign="top" bgcolor="#FFFFFF" class="body"><h2>Could not 
+        launch TMDA!</h2>
+      <p>It appears that TMDA has been removed from your e-mail account.</p>
+      <p><a href="%(Script)s?cmd=install&SID=%(SID)s">Please re-install it.</a></p>
+      <p><a href="%(Script)s?cmd=logout&SID=%(SID)s">Log me out.</a></p>
+      <p><a href="%(Script)s?cmd=welcome&SID=%(SID)s">What was TMDA again?</a></p>
+                  </td>
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
