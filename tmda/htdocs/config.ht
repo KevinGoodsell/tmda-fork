@@ -15,6 +15,10 @@ section for how to filter incoming messages on your mailserver
 with TMDA.
 <br><br>
 
+<li>If you want to customize your TMDA auto responses, read the
+<a href="howto-template.html">TMDA Template HOWTO</a>.
+<br><br>
+
 <li>If you want to tag outgoing messages from your mail or news client, then
 read the <a href="config-client.html">Client Configuration</a> section.
 <br><br>
