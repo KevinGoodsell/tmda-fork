@@ -102,7 +102,7 @@ def inject_message(to_address,
         # Send a message with a tagged (sender) address
         envelope_sender_address.append(Cookie.make_sender_address
                                        (from_address, to_address))
-    elif cookie_type in ('exp','explicit') and cookie_option:
+    elif cookie_type in ('as','exp','explicit') and cookie_option:
         # Send a message with an explicitly defined address.
         envelope_sender_address.append(cookie_option)
     elif cookie_type in ('ext','extension') and cookie_option:

@@ -1,3 +1,7 @@
+2001-11-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (inject_message): Add 'as' as an aliases for 'exp'.
+	
 2001-11-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject: Parse an single 'outgoing' style filter file to

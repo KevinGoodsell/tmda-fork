@@ -1,3 +1,8 @@
+2001-11-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py: Document outgoing <action> aliases: 'as' and
+	'explicit' for exp, 'extension' for ext, and 'keyword' for kw.
+
 2001-11-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (FILTER_OUTGOING): New variable specifying the

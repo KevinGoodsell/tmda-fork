@@ -46,9 +46,9 @@ separates the action from the action's option.  Possible values for
     sender
     dated
     dated=timeout_interval
-    exp=full_address
-    ext=address_extension
-    kw=keyword
+    exp=full_address (aliases for 'exp' include 'as' and 'explicit')
+    ext=address_extension (aliases for 'ext' include 'extension')
+    kw=keyword (aliases for 'kw' include 'keyword')
 
 Examples:
 
