@@ -112,7 +112,7 @@ def lib_processMessage(msgid, command, **args):
         if type(data) == str:
             return data
         else:
-            print "Debug: type of data in lib_processMessage -> " + string(type(data))
+            print "Debug: type of data in lib_processMessage -> " + str(type(data))
             try:
                 return '\n'.join(data)
             except TypeError:
@@ -452,9 +452,7 @@ class MessageList(Frame):
     def DeleteSelectedMessage(self):
         try:
             processMessage(self.msgs[int(self.curselection()[0])], command='delete')
-            print "Deleted"
         except IndexError:
-            print "No such message"
             return 0
         self.Refresh()
         return 1
@@ -619,8 +617,7 @@ class PendingGUI(Frame):
     def MessageRefresh(self, ev=None):
         self.listbox.Refresh()
         self.message.text.delete(1.0, END)
-        self.status.label['text'] = "%d messages in pending queue" \
-                                    % len(self.listbox.msgs)
+        self.updateStatus()
 
     def MessageShow(self, ev=None):
         self.message.text.delete(1.0, END)
@@ -642,10 +639,12 @@ class PendingGUI(Frame):
     def MessageRelease(self, ev=None):
         self.MessageShow()
         self.listbox.ReleaseSelectedMessage()
+        self.updateStatus()
 
     def MessageDelete(self, ev=None):
         self.message.text.delete(1.0, END)
         self.listbox.DeleteSelectedMessage()
+        self.updateStatus()
 
     def createWidgets(self):
         self.createMenu()
@@ -699,6 +698,10 @@ class PendingGUI(Frame):
         self.status.label.pack(side=LEFT, fill=X)
         self.status.pack(side=BOTTOM, fill=X)
         self.MessageRefresh()
+
+    def updateStatus(self, ev=None):
+        self.status.label['text'] = "%d messages in pending queue" \
+                                    % len(self.listbox.msgs)
 
     def poll(self):
         self.counter += 1
