@@ -8,7 +8,7 @@
 	* tmda-pending (main): Bugfix.  If running in interactive and
 	cache mode, remove the message from the cache after a `show'.
 
-	(main): Add a (-T, --terse) option.
+	(main): Add a (-T, --terse-summary) option.
 
 2002-04-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 

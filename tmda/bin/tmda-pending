@@ -57,7 +57,7 @@ Where:
        Implies --verbose.
 
     -T
-    --terse
+    --terse-summary
        Print a terse (one-line per message) summary of pending messages.
        Customize display with TERSE_SUMMARY_HEADERS in the tmdarc.
        Implies --verbose.
@@ -188,7 +188,7 @@ try:
                                                            'release',
                                                            'delete',
                                                            'summary',
-                                                           'terse',
+                                                           'terse-summary',
                                                            'show',
                                                            'cache',
                                                            'ascending',
@@ -226,7 +226,7 @@ for opt, arg in opts:
         dispose = 'delete'
     elif opt in ('-s', '--summary'):
         summary = 1
-    elif opt in ('-T', '--terse'):
+    elif opt in ('-T', '--terse-summary'):
         terse = 1
     elif opt in ('-S', '--show'):
         dispose = 'show'
