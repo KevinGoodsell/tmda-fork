@@ -1,5 +1,9 @@
 2001-10-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config-client.ht: Add keyword address information, and also
+	information on the various list files.  Also rearrange the page
+	for better organization.
+
 	* faq.ht (Links): New FAQ entry: How do I allow my ezmlm mailing
 	lists to pass through TMDA?
 

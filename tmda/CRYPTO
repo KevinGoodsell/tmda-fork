@@ -49,6 +49,27 @@ Incoming 'sender' messages are accepted if:
     1.  SENDERMAC is verified by matching it with a new HMAC generated
         against the sender's e-mail address.
 
+Keyword Addresses:
+------------------
+
+The format for a 'keyword' address is:
+    
+    USERNAME-KEYWORD.KEYWORDMAC@DOMAIN.DOM
+
+    (For example, jason-promos.8d06eu@mastaler.com
+
+    KEYWORD can be any string.
+
+    KEYWORDMAC is an HMAC of KEYWORD.
+
+Unlike other tagged addresses, 'keyword' addresses are not keyed with
+identifying strings ('-dated-', '-sender-', etc.).
+
+Incoming 'keyword' messages are accepted if:
+
+    1.  KEYWORDMAC is verified by matching it with a new HMAC
+	generated against the KEYWORD.
+
 Confirmation Requests:
 ----------------------
 
