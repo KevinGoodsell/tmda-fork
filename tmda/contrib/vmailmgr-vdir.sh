@@ -30,6 +30,10 @@ if [ $rc -ne 0 ]; then
     exit $rc
 fi
 
+if [ ! "$output" -o -z "$output" ]; then
+    exit 1
+fi
+
 set -- $output
 
 # Reset IFS to a space, tab, newline.

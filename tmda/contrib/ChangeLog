@@ -1,3 +1,9 @@
+2003-07-31  Tim Legant  <tim@catseye.net>
+
+	* vmailmgr-vdir.sh: Apparently the listvdomain program doesn't
+	always return a non-zero error code when the recipient is
+	unknown.  Added extra check for non-null output.
+
 2003-06-17  Tim Legant  <tim@catseye.net>
 
 	* vmailmgr-vdir.sh, vpopmail-vdir.sh: Modified to return error
