@@ -22,6 +22,11 @@
 """TMDA configuration variable defaults."""
 
 
+# NEVER make configuration changes to this file.  ALWAYS make them in
+# /etc/tmdarc or ~/.tmdarc instead.  Settings in ~/.tmdarc override
+# those in /etc/tmdarc.
+
+
 import binascii
 import os
 import stat
@@ -169,6 +174,10 @@ if not vars().has_key('VIRTUALDOMAINS'):
 
 # BOUNCE_ENV_SENDER
 # The envelope sender of the bounce message.
+#
+# Example:
+# BOUNCE_ENV_SENDER = "devnull@domain.dom"
+#
 # Default is an empty envelope sender <>.
 if not vars().has_key('BOUNCE_ENV_SENDER'):
     # Exim and Sendmail don't like -f ''
@@ -202,6 +211,10 @@ if not vars().has_key('BOUNCE_TEXT_NONEXISTENT_PENDING'):
 # Filename to which a recipient's e-mail address should be
 # automatically appended if the outgoing <action> is in the form
 # 'bare=append'.
+#
+# Example:
+# BARE_APPEND = "/full/path/to/whitelist"
+#
 # No default
 if not vars().has_key('BARE_APPEND'):
     BARE_APPEND = None
@@ -213,6 +226,9 @@ if not vars().has_key('BARE_APPEND'):
 # confirmation address be based on a fixed address regardless of the
 # recipient address.
 #
+# Example:
+# CONFIRM_ADDRESS = "webmaster@domain.dom"
+#
 # No default
 if not vars().has_key('CONFIRM_ADDRESS'):
     CONFIRM_ADDRESS = None
@@ -221,6 +237,10 @@ if not vars().has_key('CONFIRM_ADDRESS'):
 # Filename to which a sender's e-mail address should be automatically
 # appended once they confirm a message.  This can be used to implement
 # "auto-whitelisting" functionality.
+#
+# Example:
+# CONFIRM_APPEND = "/full/path/to/whitelist"
+#
 # No default
 if not vars().has_key('CONFIRM_APPEND'):
     CONFIRM_APPEND = None
@@ -228,6 +248,10 @@ if not vars().has_key('CONFIRM_APPEND'):
 # CONFIRM_CC
 # An optional e-mail address which will be sent a copy of any message
 # that triggers a confirmation request.
+#
+# Example:
+# CONFIRM_CC = "jdoe-confirms@domain.dom"
+#
 # No default.
 if not vars().has_key('CONFIRM_CC'):
     CONFIRM_CC = None
@@ -269,6 +293,11 @@ if not vars().has_key('CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED'):
 # CONFIRM_ACCEPT_CC
 # An optional e-mail address which will be sent a copy of the
 # confirmation acceptance messages people send you.
+#
+# Example:
+# CONFIRM_ACCEPT_CC = "jdoe-confirm-replies@domain.dom"
+#
+# No default.
 if not vars().has_key('CONFIRM_ACCEPT_CC'):
     CONFIRM_ACCEPT_CC = None
 
@@ -284,6 +313,10 @@ if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
 # Full path to a directory containing custom TMDA templates.  Any
 # templates found in this directory will be used, otherwise the
 # default templates will be used.
+#
+# Example:
+# TEMPLATE_DIR = "/full/path/to/templates/"
+#
 # No default.
 if not vars().has_key('TEMPLATE_DIR'):
     TEMPLATE_DIR = None
@@ -315,27 +348,31 @@ else:
     
 # FILTER_INCOMING
 # Filter file which controls how incoming messages are tagged.
-# Default is ~/.tmda/filters/incoming
 # Look for the filter-file in the environment first.
+# Default is ~/.tmda/filters/incoming
 env_FILTER_INCOMING = os.environ.get('TMDA_FILTER_INCOMING')
 if env_FILTER_INCOMING:
     FILTER_INCOMING = env_FILTER_INCOMING
 elif not vars().has_key('FILTER_INCOMING'):
-    FILTER_INCOMING = DATADIR + "filters/" + "incoming"
+    FILTER_INCOMING = os.path.join(DATADIR, 'filters', 'incoming')
 
 # FILTER_OUTGOING
 # Filter file which controls how outgoing messages are tagged.
-# Default is ~/.tmda/filters/outgoing
 # Look for the filter-file in the environment first.
+# Default is ~/.tmda/filters/outgoing
 env_FILTER_OUTGOING = os.environ.get('TMDA_FILTER_OUTGOING')
 if env_FILTER_OUTGOING:
     FILTER_OUTGOING = env_FILTER_OUTGOING
 elif not vars().has_key('FILTER_OUTGOING'):
-    FILTER_OUTGOING = DATADIR + "filters/" + "outgoing"
+    FILTER_OUTGOING = os.path.join(DATADIR, 'filters', 'outgoing')
     
 # FILTER_BOUNCE_CC
 # An optional e-mail address which will be sent a copy of any message
 # that bounces because of a match in FILTER_INCOMING.
+#
+# Example:
+# FILTER_BOUNCE_CC = "jdoe-bounces@domain.dom"
+#
 # No default.
 if not vars().has_key('FILTER_BOUNCE_CC'):
     FILTER_BOUNCE_CC = None
@@ -343,6 +380,10 @@ if not vars().has_key('FILTER_BOUNCE_CC'):
 # FILTER_DROP_CC
 # An optional e-mail address which will be sent a copy of any message
 # that is dropped because of a match in FILTER_INCOMING.
+#
+# Example:
+# FILTER_DROP_CC = "jdoe-drops@domain.dom"
+#
 # No default.
 if not vars().has_key('FILTER_DROP_CC'):
     FILTER_DROP_CC = None
@@ -444,6 +485,10 @@ if not vars().has_key('FINGERPRINT'):
     
 # FULLNAME
 # Your full name.
+#
+# Example:
+# FULLNAME = "John Doe"
+#
 # Default comes from your environment or the password file.
 if not vars().has_key('FULLNAME'):
     FULLNAME = Util.getfullname()
@@ -457,19 +502,32 @@ if not vars().has_key('HMAC_BYTES'):
     HMAC_BYTES = 3
 
 # HOSTNAME
-# The right-hand side of your email address (after `@').
+# The right-hand side of your email address (after `@').  Used only in
+# cases where TMDA can't determine this itself.
+#
+# Example:
+# HOSTNAME = "domain.dom"
+#
 # Defaults to the fully qualified domain name of the localhost.
 if not vars().has_key('HOSTNAME'):
     HOSTNAME = Util.gethostname()
     
 # LOGFILE_DEBUG
 # Filename which uncaught exceptions should be written to.
+#
+# Example:
+# LOGFILE_DEBUG = "/path/to/tmda_debug.log"
+#
 # No default.
 if not vars().has_key('LOGFILE_DEBUG'):
     LOGFILE_DEBUG = None
     
 # LOGFILE_INCOMING
 # Filename which delivery summaries should be written to.
+#
+# Example:
+# LOGFILE_INCOMING = "/path/to/tmda_incoming.log"
+#
 # No default.
 if not vars().has_key('LOGFILE_INCOMING'):
     LOGFILE_INCOMING = None
@@ -477,7 +535,7 @@ if not vars().has_key('LOGFILE_INCOMING'):
 # LOCALDATE
 # Set this variable to 0 if you want TMDA to generate ``Date:''
 # headers in UTC instead of the local time zone.
-# Default is 1 (local time zone)
+# Default is 1 (use local time zone)
 if not vars().has_key('LOCALDATE'):
     LOCALDATE = 1
 
@@ -538,6 +596,10 @@ if not vars().has_key('PENDING_CACHE_LEN'):
 # PENDING_DELETE_APPEND
 # Filename to which a sender's e-mail address should be automatically
 # appended when a message is "deleted" by tmda-pending.
+#
+# Example:
+# PENDING_DELETE_APPEND = "/full/path/to/blacklist"
+#
 # No default
 if not vars().has_key('PENDING_DELETE_APPEND'):
     PENDING_DELETE_APPEND = None
@@ -545,6 +607,10 @@ if not vars().has_key('PENDING_DELETE_APPEND'):
 # PENDING_RELEASE_APPEND
 # Filename to which a sender's e-mail address should be automatically
 # appended when a message is "released" by tmda-pending.
+#
+# Example:
+# PENDING_RELEASE_APPEND = "/full/path/to/whitelist"
+#
 # No default
 if not vars().has_key('PENDING_RELEASE_APPEND'):
     PENDING_RELEASE_APPEND = None
@@ -619,6 +685,10 @@ if not vars().has_key('TIMEOUT'):
 
 # USERNAME
 # The left-hand side of your e-mail address (before `@').
+#
+# Example:
+# USERNAME = "jdoe"
+#
 # Defaults to your UNIX username.
 if not vars().has_key('USERNAME'):
     USERNAME = Util.getusername()

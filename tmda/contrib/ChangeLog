@@ -1,3 +1,8 @@
+2002-04-30  Jason R. Mastaler  <jason@mastaler.com>
+
+	* sample.tmdarc: Include example settings for optional variables
+	in Defaults.py instead of here.
+
 2002-04-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda.spec (Requires): Require /usr/bin/python2, not a package

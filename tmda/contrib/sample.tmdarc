@@ -1,119 +1,42 @@
 # -*- python -*-
 
-# sample.tmdarc - Sample configuration file for TMDA.  Uncomment
-# and/or modify to taste.
+# sample.tmdarc - Sample configuration file for TMDA.
 #
-# /etc/tmdarc and ~/.tmdarc are interpreted as a series of Python
-# statements, and as such must follow Python syntax rules.  This file
-# should be enough to get you going, as the examples below demonstrate
-# correct syntax.  The Python Reference Manual is available if you
-# wish to learn more about Python syntax:
-# <URL:http://www.python.org/doc/current/ref/ref.html>
+# /etc/tmdarc and ~/.tmdarc are interpreted as executable Python code.
+# See the Python documentation for more on Python syntax:
+# <URL:http://www.python.org/doc/current/>
 #
-# **** ! IMPORTANT ! ****
-# Read the "User configurable settings" section of Defaults.py for
-# explanations of these variables and their default values.
-#
-#  NOTE: ~/.tmdarc must be chmod 400 or chmod 600
+#  NOTE: ~/.tmdarc must be chmod 400 or chmod 600 !
 
-import os                                      # don't remove
+# See the "User configurable settings" section of TMDA/Defaults.py for
+# more information on all the variables below.
 
 ##########################################################
 # Globally required variables; all users must define these
 ##########################################################
 
-# CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key!
+# generate your own unique CRYPT_KEY using tmda-keygen !
+CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394"
 
 #################################################################
 # Non-qmail required variables; required only for non-qmail users
 #################################################################
 
-# MAIL_TRANSFER_AGENT = "exim"
-# MAIL_TRANSFER_AGENT = "postfix"
-# MAIL_TRANSFER_AGENT = "sendmail"
+MAIL_TRANSFER_AGENT = "exim"
+#MAIL_TRANSFER_AGENT = "postfix"
+#MAIL_TRANSFER_AGENT = "sendmail"
 
-# LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
-# LOCAL_DELIVERY_AGENT = "/full/path/to/bin/maildrop"
+LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
+#LOCAL_DELIVERY_AGENT = "/full/path/to/bin/maildrop"
 
-# RECIPIENT_DELIMITER = "-"
-# RECIPIENT_DELIMITER = "+"
+RECIPIENT_DELIMITER = "-"
+#RECIPIENT_DELIMITER = "+"
 
-#####################################################################
-# Optional variables; the rest may be omitted from the .tmdarc if you
-# wish to take their sensible default values.  Random examples, and 
-# not defaults are shown below.  Consult Defaults.py for more info.
-#####################################################################
+######################################################################
+# No other variables are required, but you may be interested in
+# further customization.  See the "User configurable settings" section
+# of TMDA/Defaults.py for more information on the other available
+# configuration variables.  Any variable set here overrides the
+# default value set in Defaults.py.
+######################################################################
 
-# ACTION_INCOMING = "confirm"
-
-# ACTION_OUTGOING = "dated"
-
-# ALLOW_MODE_640 = 0
-
-# BARE_APPEND = "/full/path/to/whitelist"
-
-# BOUNCE_ENV_SENDER = ""
-
-# CONFIRM_ACCEPT_CC = "jdoe-confirmations@domain.dom"
-
-# CONFIRM_ACCEPT_NOTIFY = 1
-
-# CONFIRM_ADDRESS = "jdoe@domain.dom"
-
-# CONFIRM_APPEND = "/full/path/to/whitelist"
-
-# CONFIRM_CC = "jdoe-confirm@domain.dom"
-
-# CONFIRM_MAX_MESSAGE_SIZE = 50000
-
-# DATADIR = os.path.expanduser("~/.tmda/")
-
-# DATED_TEMPLATE_VARS = 0
-
-# DELIVERED_CACHE = os.path.expanduser("~/.tmda/pending/.delivered_cache")
-
-# DELIVERED_CACHE_LEN = 5000
-
-# FILTER_BOUNCE_CC = "jdoe-bounces@domain.dom"
-
-# FILTER_DROP_CC = "jdoe-drop@domain.dom"
-
-# FILTER_INCOMING = "/full/path/to/incoming"
-
-# FILTER_OUTGOING = "/full/path/to/outgoing"
-
-# FINGERPRINT = []
-
-# FULLNAME = "John Doe"
-
-# HMAC_BYTES = 3
-
-# HOSTNAME = "domain.dom" 
-
-# LOGFILE_DEBUG = os.path.expanduser("~/tmda_debug.log")
-
-# LOGFILE_INCOMING = os.path.expanduser("~/tmda_incoming.log")
-
-# MESSAGE_FROM_STYLE = "angles"
-
-# PENDING_CACHE = os.path.expanduser("~/.tmda/pending/.msgcache")
-
-# PENDING_CACHE_LEN = 5000
-
-# PURGED_HEADERS = []
-
-# RECIPIENT_HEADER = "x-originally-to"
-
-# SENDER_TEMPLATE_VARS = 0
-
-# SENDMAIL = "/usr/sbin/sendmail"
-
-# TEMPLATE_DIR = "/full/path/to/templates/"
-
-# TIMEOUT = "5d"
-
-# USERNAME = "jdoe" 
-
-# USEVIRTUALDOMAINS = 1
-
-# VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
