@@ -26,10 +26,10 @@ import sys
 
 
 # TMDA version
-TMDA = "0.92+"
+TMDA = "1.0"
 
 # TMDA version codename
-CODENAME = "Proud Clarion"
+CODENAME = "Cannonade"
 
 # Python version
 PYTHON = sys.version.split()[0]
