@@ -70,6 +70,7 @@ Title: Pending E-mail
                   Size
                 </th>
               </tr>
+<!-- var: NumCols="7" --><!-- var: NumBlankCols="3" -->
 <!-- var: Row -->
       <tr>
         <td colspan="%(NumCols)s" bgcolor="#7A7AB6" height="1"></td>
