@@ -12,7 +12,7 @@ MTA software depending on which one you are running (in order of ease):
 <br><br>
 <hr>
 
-<a name="qmaill"><h4>MTA Configuration (qmail and Courier)</h4></a>
+<a name="qmail"><h4>MTA Configuration (qmail and Courier)</h4></a>
 
 No changes need to be made to your configuration in order to use TMDA.
 <br><br>
