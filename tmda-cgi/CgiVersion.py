@@ -39,8 +39,8 @@ Python = Version.PYTHON
 Platform = Version.PLATFORM
 
 # Summary of all the version identifiers
-# e.g, tmda-cgi/0.02 "Helium" (Python 2.2.2 on linux-i686)
-All = 'tmda-cgi/%s "%s" (Python %s on %s)' % \
+# e.g, tmda-cgi/0.02 "Helium" (Python/2.2.2 on linux-i686)
+All = 'tmda-cgi/%s "%s" (Python/%s on %s)' % \
   (tmda_cgi, Codename, Python, Platform)
 
 def Test():
