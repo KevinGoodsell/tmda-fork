@@ -21,7 +21,6 @@ Where:
 import getopt
 import os
 import sys
-import string
 
 
 program = sys.argv[0]

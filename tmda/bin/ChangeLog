@@ -1,5 +1,9 @@
 2001-08-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-sender-address: Don't need the string module here.
+
+	* tmda-dated-address: Ditto.
+
 	* tmda-dated-address (address): Bugfix: Don't split the address
 	just yet.
 
