@@ -7,7 +7,7 @@ Links: overview-links.h usage-links.h support-links.h
 <li><a href="#2">Will TMDA run on non-unix clients such as Microsoft Windows?</a> <br>
 <li><a href="#3">Does TMDA have a web interface?</a> <br>
 <li><a href="#4">How do I setup TMDA with vpopmail?</a> <br>
-<li><a href="#5">How can I delete old, unconfirmed messages from TMDA's pending queue?</a> <br>
+<li><a href="#5">How can I manually release / delete / view messages in my pending queue?</a> <br>
 <li><a href="#6">How do I allow my ezmlm mailing lists to pass through TMDA?</a> <br>
 <li><a href="#7">How can I prevent BBDB from asking about 'dated' addresses?</a><br>
 <li><a href="#8">Why don't my user+detail addresses work with Sendmail virtualdomains?</a><br>
@@ -115,22 +115,29 @@ TMDA/vpopmail tutorial</a>
 
 <hr>
 <li><b>
-<a name="5">How can I delete old</a>, unconfirmed messages from TMDA's pending queue?
+<a name="5">How can I manually release / delete / view messages in my pending queue?</a>
 </b>
 <br><br>
 
-TMDA comes with a utility called `tmda-pending' which can do this for
-you.  You can run it by hand, or periodically from cron.  Run
-``tmda-pending -h'' to get a listing of available options.
-tmda-pending should be run by the user account that owns the pending
-queue, not by root (unless root is running TMDA).  <br><br>
+TMDA comes with a utility called `tmda-pending' which can do all of
+this and more for you.  You can run it by hand, or periodically from
+cron.  Run ``tmda-pending -h'' to get a listing of available options
+and usage examples.  tmda-pending should be run by the user account
+that owns the pending queue, not by root (unless root is running
+TMDA).  <br><br>
 
-For example, to purge unconfirmed messages older than 14 days each
-morning at 2AM, add the following crontab entry:
-<blockquote><code>
-0 02 * * * /path/to/tmda/bin/tmda-pending -qbd -O 14d
-</blockquote></code>
+<strong>NOTE:</strong> Use tmda-pending's delete and release options
+with discretion.  If a sender tries to confirm a message which you
+have manually removed, they will get back an error message from TMDA
+about the missing message.  Thus, it is best to only manually remove
+messages which have no (or little) chance of being confirmed by their
+sender such as mailing list messages.  <br><br>
 
+If you want to maintain a copy of pending messages to play with, you
+can set <strong>CONFIRM_CC</strong> in your .tmdarc.  This variable
+takes an e-mail address that will receive a copy of any message that
+triggers a confirmation request.  See your sample.tmdarc for an
+example.
 <hr>
 
 <li><b>

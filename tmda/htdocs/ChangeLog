@@ -1,5 +1,8 @@
 2002-02-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* faq.ht: Generalize the pending queue purge question to include
+	information about releasing and viewing as well.
+
 	* download.ht (Links): Update Debian package link.
 
 	* features.ht (Links): Mention NetBSD package.
