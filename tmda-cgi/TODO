@@ -5,6 +5,9 @@ Things left to do:
 
     * Custom Filter -- action for pending emails (Requested by Lloyd Zusman)
 
+    * Custom Errors -- allow the user and/or sysadmin to customize error
+                       messages returned by Release.py
+
     * FAQ -- should this be made a CGI?  Add help on adding whitelist &
              blacklist options.
 
@@ -26,6 +29,10 @@ Things left to do:
 
     * Sort -- Allow the Pending List to be sorted by other methods than Date:
               Size, subject, etc.
+
+    * SpamAssassin -- Mark every email with a spam score greater than some
+                      threshold as "spam", not unlike "read"/"unread" done 
+		      currently.  (Idea from Jared <xeo@silter.org>)
 
     * Un-ugly Errors -- Samuel Hill writes:
         Those python errors just freak normal people out when there is not
