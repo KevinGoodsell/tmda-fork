@@ -56,9 +56,9 @@
 #                                                                            #
 #   ~vpopmail/bin/vadduser-tmda -n user@example.com                          #
 #                                                                            #
-# This will set up a ~vpopmail/example.com/user/.tmda/ directory with all    #
-# necessary files, as well as the ~vpopmail/example.com/.qmail-user and      #
-# ~vpopmail/example.com/.qmail-user-default files.                           #
+# This will set up a ~vpopmail/domains/example.com/user/.tmda/ directory     #
+# with all necessary files.  In addtion, the example.com/.qmail-user and     #
+# example.com/.qmail-user-default files will be created.                     #
 #                                                                            #
 ##############################################################################
 
@@ -77,7 +77,6 @@ VTMDARC="$VPOPROOT/etc/vtmdarc"
 # to the vadduser program.
 FULLPARAM="$*"
 
-# Determine the email address.  There's probably a better way to do this.
 # Find a valid email address among the command line arguments
 while [ $1 ]; do
     if echo $1 | egrep '^[^@ ]+@[^@ ]+\.[^@ \.]+$' > /dev/null; then
@@ -95,6 +94,9 @@ fi
 # Set up a few variables that we need.  Many of these are useful in vtmdarc
 VUSERNAME=`echo $EMAILADDR | cut -d@ -f1`
 VDOMAIN=`echo $EMAILADDR | cut -d@ -f2`
+VDOMDIR=`vdominfo -d $VDOMAIN`
+VUID=`vdominfo -u $VDOMAIN`
+VGID=`vdominfo -g $VDOMAIN`
 
 # Add the new user if the account does not already exist
 if ! vuserinfo $EMAILADDR > /dev/null 2>&1 ; then
@@ -117,11 +119,8 @@ if ! vuserinfo $EMAILADDR > /dev/null 2>&1 ; then
 fi
 
 VUSERDIR=`vuserinfo -d $EMAILADDR`
-VDOMDIR=`vdominfo -d $VDOMAIN`
-VUID=`vdominfo -u $VDOMAIN`
-VGID=`vdominfo -g $VDOMAIN`
 
-if [ -f $VDOMDIR/.qmail-${VUSERNAME} -o $VDOMDIR/.qmail-${VUSERNAME}-default ]; then
+if [ -f $VDOMDIR/.qmail-${VUSERNAME} -o -f $VDOMDIR/.qmail-${VUSERNAME}-default ]; then
     echo "$0: error: A .qmail file already exists for this user."
     echo "Remove it, then rerun $0 $FULLPARAM"
     exit 1
@@ -136,11 +135,11 @@ if [ $cdbcheckret = "0" ]; then
 fi
 
 # Create all the necessary directories and files.
-mkdir -p $VUSERDIR/.tmda/filters $VUSERDIR/.tmda/lists
-mkdir -p $VUSERDIR/.tmda/pending $VUSERDIR/.tmda/responses
-touch $VUSERDIR/.tmda/filters/incoming $VUSERDIR/.tmda/filters/outgoing
-touch $VUSERDIR/.tmda/lists/whitelist $VUSERDIR/.tmda/lists/blacklist
-touch $VUSERDIR/.tmda/config
+mkdir -p $VUSERDIR/.tmda/filters $VUSERDIR/.tmda/lists \
+	 $VUSERDIR/.tmda/pending $VUSERDIR/.tmda/responses
+touch $VUSERDIR/.tmda/filters/incoming $VUSERDIR/.tmda/filters/outgoing \
+      $VUSERDIR/.tmda/lists/whitelist  $VUSERDIR/.tmda/lists/blacklist \
+      $VUSERDIR/.tmda/config
 echo "from-file $CDB $VUSERDIR/.tmda/lists/whitelist ok"   >> $VUSERDIR/.tmda/filters/incoming
 echo "from-file $CDB $VUSERDIR/.tmda/lists/blacklist drop" >> $VUSERDIR/.tmda/filters/incoming
 cp -R $TMDAROOT/templates $VUSERDIR/.tmda/
