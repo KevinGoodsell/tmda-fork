@@ -32,7 +32,7 @@ except getopt.error, msg:
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
-    elif opt in ('B','p','v','i','x','m','e','o','E','J','b'):
+    elif opt in list('BpvixmeoEJb'):
         pass 
     elif opt == 't':
         # qmail-inject -H
