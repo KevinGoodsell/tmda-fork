@@ -37,7 +37,7 @@ Contributions:
 
     * Tim Legant -- Improvements to the filter file language such as
       support for multi-line, multi-action filters, support for
-      arguments, and improved error reporting.  from/to-autocdb,
+      arguments, and improved error reporting.  -autocdb, -autodbm,
       bugfixes.
 
     * Adam McKenna -- Debian package.
