@@ -127,8 +127,6 @@ def lib_processMessage(msgid, command, **args):
         msg = Pending.Message(msgid)
     except Errors.MessageError:
         raise MessageError
-    if command not in ('terse', 'show',):
-        msg.initMessage()
     try:
         try:
             data = getattr(msg, command)(args)
@@ -200,7 +198,6 @@ def connectToServer(host, auth):
         sin = sock.makefile('r', 0)
         sout = sock.makefile('w', 0)
     # eat up greetings from manager
-    ## FIXME: maybe check the protocol version ?
     cc = sin.read(1)
     while cc != '+':
         l = sin.readline().strip()
@@ -232,7 +229,6 @@ def closeConnection():
 def net_command(command):
     """Send a command to the server, and return the result."""
     data = []
-#    print str(command)
     sout.write(str(command)+'\n')
     cc = sin.read(1)
     # '.' is the end of connection
@@ -256,7 +252,7 @@ def net_command(command):
 
 def net_recover(s="error recovery"):
     s = str(s)
-    r = net_command('nop %s\n' % s)[0]
+    r = net_command('nop %s' % s)[0]
     if r != s:
         raise ProtoError, r
 
@@ -312,7 +308,7 @@ def net_processMessage(msgid, command, **args):
     """Get a pending message."""
     opts = ''
     for a in args.keys():
-        if args[a]:
+        if args[a] != None:
             opts += ' --%s=%s' % (a, args[a])
         else:
             opts += ' --%s' % a
@@ -328,9 +324,7 @@ def net_processPending(command, **args):
     """Get the pending message list."""
     if command == 'list':
         try:
-            ## FIXME: add reverse option pending command
-            data = net_command('pending --only --descending=1')
-#            data.reverse()
+            data = net_command('pending --only --descending')
             return data
         except ProtoError, msg:
             print "%s: %s" % (ProtoError, msg)
@@ -338,7 +332,6 @@ def net_processPending(command, **args):
     return []
 
 # Let's check if we're running locally or through the network
-
 try:
     from TMDA import Version
     from TMDA import Address
@@ -352,7 +345,6 @@ try:
     checkAddress = lib_checkAddress
     processMessage = lib_processMessage
     processPending = lib_processPending
-
 
 # No TMDA library around, we're not on the server
 except ImportError:
@@ -368,7 +360,12 @@ warning = 'NOTE: This is early alpha software, and not yet meant for general ' +
           'use. If you decide to use it anyway, please send your comments to ' + \
           'the tmda-workers@tmda.net mailing list, and not tmda-users.'
 print 'WARNING:\n'
-print wraptext(warning), '\n'
+try:
+    print wraptext(warning), '\n'
+except NameError:
+    ## not TMDA lib around
+    print warning, '\n'
+
 
 try:
     from Tkinter import *
@@ -378,12 +375,17 @@ except ImportError:
             'support. Visit http://python.org/topics/tkinter/trouble.html ' + \
             'for more information.'
     print 'ERROR:\n'
-    print wraptext(no_tk), '\n'
+    try:
+        print wraptext(no_tk), '\n'
+    except NameError:
+        ## not TMDA lib around
+        print no_tk, '\n'
     sys.exit()
 
 def PasswordPrompt(pl):
     """Prompt for a password."""
     def setpw(ev=None):
+        global pl, ask, root
         pl.append(ask.get())
         ask.destroy()
         root.destroy()
@@ -775,13 +777,13 @@ class TMDAMessageList(Frame):
         self._sb = Scrollbar(self, orient=VERTICAL)
         self._sb.config(command=self._yview)
         
-        vars = getVars('TERSE_SUMMARY_HEADERS', 'TERSE_LABEL_HEADERS')
+        vars = getVars('TERSE_SUMMARY_HEADERS', 'TERSE_SUMMARY_LABELS')
         try:
             self._colnames = vars['TERSE_SUMMARY_HEADERS']
             # FIXME: test if the user wants the msgid (config)
             self._colnames.insert(0, 'msgid')
             try:
-                self._collabels = vars['TERSE_LABEL_HEADERS']
+                self._collabels = vars['TERSE_SUMMARY_LABELS']
                 # FIXME: test if the user wants the msgid (config)
                 self._collabels.insert(0, 'msgid')
             except KeyError:
@@ -812,7 +814,7 @@ class TMDAMessageList(Frame):
 
         self.maxmsg = cfg.get('messagelist_maxmsg')
         if not self.maxmsg:
-            self.maxmsg = -1
+            self.maxmsg = 0
             cfg.set('messagelist_maxmsg', self.maxmsg)
     
     def curselection(self):
@@ -891,8 +893,15 @@ class TMDAMessageList(Frame):
             for col in self._cols:
                 col.delete(0, END)
             self.msgs = []
-            lst = processPending('list')[:self.maxmsg]
-            self.statusbar.Set('Please wait, loading message list...')
+            self.totallst = processPending('list')
+            if self.maxmsg > 0:
+                self.statusbar.Set('Please wait, loading message list (%s on %s)...' \
+                                    % (self.maxmsg, len(self.totallst)))
+                lst = self.totallst[:self.maxmsg]
+            else:
+                self.statusbar.Set('Please wait, loading message list (%s)...' \
+                                    % len(self.totallst))
+                lst = self.totallst
             self.statusbar.progress.Show(len(lst))
             x = 0
             for item in lst:
@@ -1066,8 +1075,9 @@ class TMDAPendingGUI(Frame):
 
 
     def updateStatus(self, ev=None):
-        self.statusbar.Set("%d messages in pending queue..." \
-                                    % len(self.listbox.msgs))
+        self.statusbar.Set("Displaying %d out of %d messages in pending queue..." \
+                                    % (len(self.listbox.msgs),
+                                    len(self.listbox.totallst)))
 
     def poll(self):
         self.counter += 1
@@ -1221,7 +1231,7 @@ class TMDASettings(Frame):
 
         self.vars = [
             # Format is: variable name, label, default, type
-            ('messagelist_maxmsg', "Max messages in pending list", -1, int),
+            ('messagelist_maxmsg', "Max messages in pending list", 0, int),
             ('pending_refresh_interval', "Refresh interval (sec)", 600, int),
             ('address_main', 'Main address', getAddress('base'), str)
             ]
@@ -1244,7 +1254,12 @@ class TMDASettings(Frame):
 
     def ApplySettings(self):
         for (var, text, dft, typ) in self.vars:
-            cfg.set(var, typ(self.ent[var].get()))
+            try:
+                cfg.set(var, typ(self.ent[var].get()))
+            except ValueError:
+                self.ent[var].delete(0, END)
+                self.ent[var].insert(END, dft)
+                cfg.set(var, dft)
 
     def SaveSettings(self):
         self.ApplySettings()
@@ -1356,10 +1371,9 @@ cfg = ConfigVar().load()
 
 if __name__ == '__main__':
     main()
+    cfg.save()
 
-cfg.save()
-
-
+"""$Id$"""
 
 
 

@@ -115,6 +115,8 @@ defaultport = 8765
 hostport = '%s:%s' % (FQDN, defaultport)
 program = sys.argv[0]
 daemon_mode = None
+quiet = 0
+debug = 0
 
 def usage(code, msg=''):
     print __doc__ % globals()
@@ -123,16 +125,18 @@ def usage(code, msg=''):
     sys.exit(code)
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:],
-                               'H:u:R:A:a:dDVh', ['hostport=',
-                                                     'username=',
-                                                     'authfile=',
-                                                     'remoteauth=',
-                                                     'authprog=',
-                                                     'daemon',
-                                                     'debug',
-                                                     'version',
-                                                     'help'])
+    opts, args = getopt.getopt(sys.argv[1:], 'H:u:R:A:a:dDqVh',
+                                            ['hostport=',
+                                             'username=',
+                                             'authfile=',
+                                             'remoteauth=',
+                                             'authprog=',
+                                             'daemon',
+                                             'debug',
+                                             'quiet',
+                                             'version',
+                                             'help',
+                                            ])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -146,7 +150,10 @@ for opt, arg in opts:
         print Version.TMDA
         sys.exit()
     elif opt in ('-D', '--debug'):
+        debug = 1
         Auth.DEBUGSTREAM = sys.stderr
+    elif opt in ('-q', '--quiet'):
+        quiet = 1
     elif opt in ('-d', '--daemon'):
         daemon_mode = 1
     elif opt in ('-H', '--hostport'):
@@ -165,6 +172,10 @@ for opt, arg in opts:
 
 Auth.security_disclaimer()
 Auth.init_auth_method()
+
+if daemon_mode and quiet:
+    print >> sys.stderr, "Warning: cannot be quiet in daemon mode."
+    quiet = 0
 
 import asynchat
 import asyncore
@@ -200,19 +211,15 @@ class TMDAShell(Cmd):
         sys.stdin = stdin
         sys.stdout = stdout
         sys.stderr = stderr
-        self.prompt = prompt
+        if quiet:
+            self.prompt = ''
+        else:
+            self.prompt = prompt
         self.authenticated = not Auth.running_as_root
+        if debug:
+            # patch ourself
+            self.precmd = self._precmd
         Cmd.__init__(self)
-
-    def Print(self, *strings):
-        self.stdout.write(' '.join(strings))
-        self.stdout.write('\n')
-
-    def write(self, string):
-        self.stdout.write(string)
-
-    def readline(self):
-        return self.stdin.readline()
 
     def outputData(self, data):
         """Output data."""
@@ -222,7 +229,12 @@ class TMDAShell(Cmd):
         for line in data:
             for subline in line.split('\n'):
                 d.append(subline)
-        sys.stdout.write(' ' + '\n '.join(d) + '\n')
+        if quiet:
+            sys.stdout.write('\n'.join(d) + '\n')
+        else:
+            sys.stdout.write(' ' + '\n '.join(d) + '\n')
+        if debug:
+            self.log('<' + '\n<'.join(d) + '\n')
 
     def parseArgs(self, args, shortopts=[], longopts=[]):
         """Parse command line arguments."""
@@ -238,30 +250,47 @@ class TMDAShell(Cmd):
                                         longopts)
         except getopt.error, msg:
             self.error(0, "ARG", str(msg))
+            ## FIXME: raise an exception here, and
+            ##        catch it in the callers
             return ([], [])
         return (opts, args)
 
         return pargs
 
     def mainLoop(self):
+        greetings = ''
+        if not quiet:
+            greetings = 'TMDA Manager v%s\nProtocol v%s' % \
+                (Version.TMDA, self.ProtoVer)
         try:
-            self.cmdloop('TMDA Manager v%s\nProtocol v%s' % (Version.TMDA, self.ProtoVer))
+            self.cmdloop(greetings)
         except KeyboardInterrupt, msg:
             raise KeyboardInterrupt, msg
 
+    def _precmd(self, line):
+        """Log commands in debug mode."""
+        self.log('>'+line)
+        return line
+
     def log(self, *strings):
+        """Log strings to stderr."""
         for s in strings:
             sys.stderr.write(str(s))
         sys.stderr.write('\n')
 
     def error(self, ret, code, str):
         """Output an error message."""
-        print "-%s: %s" % (code, str.replace('\n', ' '))
+        line = "-%s: %s" % (code, str.replace('\n', ' '))
+        print line
+        if debug:
+            self.log('!' + line)
         return ret
 
     ## Cmd functions
     def do_help(self, args):
-        print "Write me!"
+        self.outputData("Write me!")
+        if args:
+            Cmd.do_help(self, args)
 
     def do_nop(self, args):
         """No-OPeration, do nothing but echo args."""
@@ -388,51 +417,117 @@ class TMDAShell(Cmd):
         return 0
 
     def help_pending(self):
-        print "Write me!"
+        self.outputData([
+            "pending --queue",
+            "pending [--all|--confirmed|--released|--delivered|--only]"+\
+                " [--descending] [--range N[:M]]",
+            "pending [--all|--confirmed|--released|--delivered|--only]"+\
+                " --number",
+            ])
 
     def do_pending(self, args):
         """List pending message ids."""
         if not self.authenticated:
             return self.error(0, "AUTH", "Please authenticate first.")
-        (opts, args) = self.parseArgs(args, 'qacrdoD:',
+        (opts, args) = self.parseArgs(args, 'qacrdopDns:u:R:',
                                             [ 'queue',
                                               'all', 
+                                              'any', 
                                               'confirmed',
                                               'released',
                                               'delivered',
                                               'only',
-                                              'descending=',
+                                              'pending',
+                                              'descending',
+                                              'number',
+                                              'since=',
+                                              'until=',
+                                              'range=',
                                             ] )
-        try:
-            (opt, arg) = opts[0]
-        except IndexError:
-            (opt, arg) = ('-o', '')
         descending = None
-        for (o, a) in opts:
-            if o == '-D' or o == '--descending':
-                if a:
-                    descending = 1 
-                break
-        descending = 1 
+        descending = 1
+        interactive = 0
+        plist = 'only'
+        number = 0
+        since = None
+        until = None
+        range = None
+        for (opt, arg) in opts:
+            if opt in ('-D', '--descending'):
+                descending = 1 
+            elif opt in ('-q', '--queue'):
+                interactive = 1
+            elif opt in ('-a', '--all', '--any'):
+                plist = 'all'
+            elif opt in ('-c', '--confirmed'):
+                plist = 'confirmed'
+            elif opt in ('-r', '--released'):
+                plist = 'released'
+            elif opt in ('-d', '--delivered'):
+                plist = 'delivered'
+            elif opt in ('-o', '--only', '-p', '--pending'):
+                plist = 'only'
+            elif opt in ('-n', '--number'):
+                number = 1
+            elif opt in ('-s', '--since'):
+                since = arg
+            elif opt in ('-u', '--until'):
+                until = arg
+            elif opt in ('-R', '--range'):
+                try:
+                    min, max = arg.split(':', 1)
+                    try:
+                        min = int(min)
+                    except ValueError:
+                        min = 0
+                    try:
+                        max = int(max)
+                    except ValueError:
+                        max = 0
+                    range = (min, max)
+                except ValueError:
+                    # only one value given
+                    try:
+                        min = int(arg)
+                        range = (min, min+1)
+                    except ValueError:
+                        # ignore bogus --range flag
+                        pass
+                    
         from TMDA import Pending
-        if opt == '-q' or opt == '--queue':
+        if interactive:
             Pending.InteractiveQueue().initQueue().mainLoop()
             return 0
         ids = ''
-        if opt == '-a' or opt == '--all':
+        if plist == 'all':
             ids = Pending.Queue(descending=descending).initQueue().listIds()
-        elif opt == '-c' or opt == '--confirmed':
+        elif plist == 'confirmed':
             ids = Pending.Queue(descending=descending).initQueue().listConfirmedIds()
-        elif opt == '-r' or opt == '--released':
+        elif plist == 'released':
             ids = Pending.Queue(descending=descending).initQueue().listReleasedIds()
-        elif opt == '-d' or opt == '--delivered':
+        elif plist == 'delivered':
             ids = Pending.Queue(descending=descending).initQueue().listDeliveredIds()
-        elif opt == '-o' or opt == '--only':
+        elif plist == 'only':
             ids = Pending.Queue(descending=descending).initQueue().listPendingIds()
-        if ids:
-            self.outputData(ids)
-        else:
-            self.outputData('nothing'+opt)
+
+        if since:
+            ids = [ id for id in ids if id > since ]
+
+        if until:
+            ids = [ id for id in ids if id <= until ]
+
+        if number:
+            self.outputData(str(len(ids)))
+#            self.outputData((str(len(ids)),))
+
+        if ids and not number:
+            if range:
+                if range[1]:
+                    self.outputData(ids[range[0]:range[1]])
+                else:
+                    self.outputData(ids[range[0]:])
+            else:
+                self.outputData(ids)
         return 0
 
     def help_message(self):
@@ -452,37 +547,47 @@ class TMDAShell(Cmd):
                                                'blacklist',
                                                'date=',
                                              ] )
-        try:
-            (opt, arg) = opts[0]
-        except IndexError:
-            (opt, arg) = ('-t', '')
+        (opt, arg) = ('-t', '')
         date = 0
         for (o, a) in opts:
             if o == '-D' or o == '--date':
                 if a:
                     date = 1
                 break
+            else:
+                ## FIXME: one action allowed for now
+                (opt, arg) = (o, a)
         from TMDA import Pending
+        from TMDA import Errors
         if not len(args):
             return self.error(0, 'ARG', 'Missing message id.')
-        if opt == '-t' or opt == '--terse':
-            for l in Pending.Message(args[0]).initMessage().terse(tsv=0, date=date):
-                self.outputData(l.replace('\n', r'\n'))
-        elif opt == '-s' or opt == '--summary':
-            self.outputData(Pending.Message(args[0]).initMessage().summary())
-        elif opt == '-S' or opt == '--show':
-            self.outputData(Pending.Message(args[0]).initMessage().show())
-        elif opt == '-r' or opt == '--release':
-            Pending.Message(args[0]).initMessage().release()
-        elif opt == '-d' or opt == '--delete':
-            Pending.Message(args[0]).initMessage().delete()
-        elif opt == '-w' or opt == '--whitelist':
-            Pending.Message(args[0]).initMessage().whitelist()
-        elif opt == '-b' or opt == '--blacklist':
-            Pending.Message(args[0]).initMessage().blacklist()
+        try:
+            if opt == '-t' or opt == '--terse':
+                for l in Pending.Message(args[0]).initMessage().terse(tsv=0, date=date):
+                    self.outputData(l.replace('\n', r'\n'))
+            elif opt == '-s' or opt == '--summary':
+                self.outputData(Pending.Message(args[0]).initMessage().summary())
+            elif opt == '-S' or opt == '--show':
+                self.outputData(Pending.Message(args[0]).initMessage().show())
+            elif opt == '-r' or opt == '--release':
+                Pending.Message(args[0]).initMessage().release()
+            elif opt == '-d' or opt == '--delete':
+                Pending.Message(args[0]).initMessage().delete()
+            elif opt == '-w' or opt == '--whitelist':
+                Pending.Message(args[0]).initMessage().whitelist()
+            elif opt == '-b' or opt == '--blacklist':
+                Pending.Message(args[0]).initMessage().blacklist()
+        except Errors.MessageError:
+            return self.error(0, 'ARG', 'Unknown message id %s.' %
+                                        args[0])
+
         return 0
 
+    def help_get(self):
+        print "Write me!"
+        
     def do_get(self, args):
+        """Get a Default module variable."""
         if not self.authenticated:
             return self.error(0, "AUTH", "Please authenticate first.")
         (opts, args)  = self.parseArgs(args)
@@ -490,16 +595,53 @@ class TMDAShell(Cmd):
         from TMDA import Defaults
         res = []
         if '*' in args:
-            args = dict(Defaults).keys()
+            args = vars(Defaults).keys()
+            args.sort()
         for a in args:
             try:
-                res.append('%s=%s' % (a, getattr(Defaults, a)))
+                val = getattr(Defaults, a)
+                if type(val) in (int, str, list) and \
+                    a[0] >= 'A' and a[0] <= 'Z' and \
+                    a != 'CRYPT_KEY':
+                    res.append('%s=%s' % (a, repr(val)))
             except AttributeError, msg:
                 pass
-                #self.error(0, 'VAR', '%s: %s' % (a, msg))
-        self.outputData('\n'.join(res))
+        self.outputData(res)
         return 0
             
+    def help_getfile(self):
+        print "Write me!"
+        
+    def do_getfile(self, args):
+        """Get a TMDA file (except CRYPT_KEY_FILE)."""
+        if not self.authenticated:
+            return self.error(0, "AUTH", "Please authenticate first.")
+        (opts, args)  = self.parseArgs(args)
+        
+        import os.path
+        from TMDA import Defaults
+        path = os.path.expanduser(args[0])
+
+        # Check if the client wants to peep into our crypt_key file
+        if os.path.expanduser(Defaults.CRYPT_KEY_FILE) == path:
+            return self.error(0, 'ACC', "You can't do that.")
+
+        # Check if the client wants to fetch non-TMDA files
+        if os.path.commonprefix((Defaults.DATADIR,
+                                path)) != Defaults.DATADIR:
+            return self.error(0, 'ACC', "You can't do that.")
+
+        # All seems OK, let's serve the request
+        try:
+            file = open(path)
+            self.outputData([ line[:-1] for line in file.readlines() ])
+            file.close()
+        except IOError:
+            return self.error(0, 'RES', "Resource not found.")
+
+        return 0
+
+
 
     def do_exit(self, args):
         """Exit the shell."""
