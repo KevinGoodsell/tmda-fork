@@ -619,6 +619,7 @@ def bouncegen(mode, text=None):
     original_message_headers = globals().get('orig_msgin_headers_as_raw_string')
     original_message_size = globals().get('orig_msgin_size')
     original_message = globals().get('orig_msgin_as_string')
+    pending_lifetime = Util.format_timeout(Defaults.PENDING_LIFETIME)
     # Optional 'dated' address variables.
     if Defaults.DATED_TEMPLATE_VARS:
         dated_timeout = Util.format_timeout(Defaults.TIMEOUT)
