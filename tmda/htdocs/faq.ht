@@ -70,6 +70,14 @@ for a site-wide TMDA install using smtpd-auth, vpopmail and qmailadmin.
 
 <hr>
 <li><b>
+How do I setup TMDA with <a href="http://inter7.com/vpopmail/" TARGET="Resource Window">vpopmail</a>?
+</b>
+<br><br>
+See Lou Hevly's <a href="http://www.visca.com/tmda/tmda_vpop.html" TARGET="Resource Window">
+TMDA/vpopmail tutorial</a>
+
+<hr>
+<li><b>
 How can I delete old, unconfirmed messages from TMDA's pending queue?
 </b>
 <br><br>

@@ -1,3 +1,10 @@
+2001-11-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht (Links): Added "How do I setup TMDA with vpopmail?"
+
+	* resources.ht (Links): Link to Lou Hevly's TMDA/vpopmail
+	tutorial.
+	
 2001-11-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* features.ht (Links): Add DBM support.

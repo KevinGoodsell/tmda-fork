@@ -15,12 +15,14 @@ Acknowledgements:
 Contributions:
 --------------
 
-    * Matt Armstrong - contributed heavily to the Postfix support.
+    * Matt Armstrong -- contributed heavily to the Postfix support.
 
-    * Binesh Bannerjee - SACRED_FILE feature.
+    * Binesh Bannerjee -- SACRED_FILE feature (now depreciated).
     
     * Ron Bickers -- countless suggestions, bugfixes, documentation
       additions, and code patches (too many to list).
+     
+    * Lou Hevly -- documentation (vpopmail tutorial).
 
     * Adam McKenna -- creator/maintainer of the Debian package.
 
