@@ -1,5 +1,10 @@
 2001-10-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* index.ht (Links): Move historical information into history.ht.
+	
+	* history.ht (Links): New file detailing TMDA's historical
+	progress.
+	
 	* support-links.h: Move External Resources link to the Support
 	subsection from the Overview subsection.
 	

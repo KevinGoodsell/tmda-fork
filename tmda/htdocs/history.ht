@@ -1,0 +1,36 @@
+Title: TMDA History
+Links: overview-links.h usage-links.h support-links.h
+
+<h3>TMDA History</h3>
+
+TMDA was originally modeled after a Perl script written by Thomas
+Erskine called <a href="http://www.DeepEddy.Com/tms.html" TARGET="Resource Window">
+Tagged Message Sender</a> (TMS).  
+After using TMS for a month, I was thrilled with how effective it was
+in reducing my junk mail problem, but the program no longer seemed to
+be maintained or developed. I didn't want to see the software die,
+and also had some new features I wanted to add to it, so I decided to
+rewrite the program from scratch and name the result TMDA.  
+<br><br>
+
+The first release of TMDA in April 2001 was essentially a rewrite of
+TMS in Python, and it grew from there.  TMDA has since evolved into a
+significantly larger and more featureful application.  The two
+applications today share very little except for some core ideas.
+<br><br>
+
+Like TMS, early TMDA was strictly a qmail application.  The decision
+was later made to add support for other MTAs in order to expand usage
+and attract developers.  This in turn would improve the overall
+quality of the software.
+<br><br>
+
+Currently TMDA should be considered "alpha" level software because it
+is evolving rapidly.  Features and functionality are continually being
+added, reevaluated and improved, and subtle changes may appear between
+releases.  That said, TMDA users find the software solid and reliable,
+and a concerted effort is made to maintain this during each release.
+<br><br>
+
+TMDA release 1.0 should be expected sometime during the Spring of 2003
+after approximately two years of hacking.
