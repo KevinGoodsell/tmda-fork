@@ -1,4 +1,6 @@
 General
+	- Investigate whether to distribute TMDA using the Python
+	Distribution Utilities (``Distutils'') system.
 	- Write a LOGFILE statistics/summary script.
 	- Possibly Object-Orientize TMDA with Classes, inheritance,
 	etc.  Are there any real benefits to doing this?
