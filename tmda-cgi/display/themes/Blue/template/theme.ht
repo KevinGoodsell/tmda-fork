@@ -34,8 +34,11 @@ border="0"></a><br>
 </table>
 <hr width="50%">
 <p><b>Customize your theme:</b></p>
-<!-- var: FormVars="General:UseJSConfirm:Yes:No, PendingList:PagerSize,
-  PendingList:CropSender, PendingList:CropSubject" -->
+<!-- var: FormVars="General:UseJSConfirm:Yes:No,
+  ViewPending:AltPref:text/plain:text/html,
+  ViewPending:EmailClass:proportional:fixed, PendingList:PagerSize,
+  PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db, PendingList:CropSender,
+  PendingList:CropSubject, ViewPending:AllowTags, ViewPending:BlockRemove" -->
 <table>
   <form method="post" action="%(Script)s">
     <tr>
@@ -47,10 +50,46 @@ border="0"></a><br>
       <td>Javascript confirmation before deleting or blacklisting</td>
     </tr>
     <tr>
+      <td align="center"><select name="ViewPendingAltPref">
+          <option %(ViewPendingAltPreftextplainSelected)s
+            value="text/plain">Plain</option>
+          <option %(ViewPendingAltPreftexthtmlSelected)s
+            value="text/html">HTML</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Preferred message format if an option exists</td>
+    </tr>
+    <tr>
+      <td align="center"><select name="ViewPendingEmailClass">
+          <option %(ViewPendingEmailClassproportionalSelected)s
+            value="proportional">Proportional</option>
+          <option %(ViewPendingEmailClassfixedSelected)s
+            value="fixed">Fixed</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Font to use when viewing e-mails</td>
+    </tr>
+    <tr>
       <td align="center"><input type="text" name="PendingListPagerSize"
         value="%(PendingListPagerSize)s" size="2"></td>
       <td>&nbsp;</td>
       <td>Number of pending e-mails to show in list form</td>
+    </tr>
+    <tr>
+      <td align="center"><select name="PendingListDateFormat">
+          <option %(PendingListDateFormataZmZdSelected)s
+            value="%a Z-%m/Z-%d">Tue 3/13</option>
+          <option %(PendingListDateFormataZdZmSelected)s
+            value="%a Z-%d/Z-%m">Tue 13/3</option>
+          <option %(PendingListDateFormatZmZdSelected)s
+            value="Z-%m/Z-%d">3/13</option>
+          <option %(PendingListDateFormatZdZmSelected)s
+            value="Z-%d/Z-%m">13/3</option>
+          <option %(PendingListDateFormatdbSelected)s
+            value="%d %b">05 Apr</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Font to use when viewing e-mails</td>
     </tr>
     <tr>
       <td align="center"><input type="text" name="PendingListCropSender"
@@ -63,6 +102,18 @@ border="0"></a><br>
         value="%(PendingListCropSubject)s" size="2"></td>
       <td>&nbsp;</td>
       <td>Width of subject field in list view</td>
+    </tr>
+    <tr>
+      <td>OK HTML tag</td>
+      <td>&nbsp;</td>
+      <td><input type="text" name="ViewPendingAllowTags"
+        value="%(ViewPendingAllowTags)s" size="45"></td>
+    </tr>
+    <tr>
+      <td>Remove HTML</td>
+      <td>&nbsp;</td>
+      <td><input type="text" name="ViewPendingBlockRemove"
+        value="%(ViewPendingBlockRemove)s" size="45"></td>
     </tr>
     <tr>
       <td colspan="3" align="center"><br>

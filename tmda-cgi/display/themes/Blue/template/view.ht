@@ -54,7 +54,7 @@ function ConfirmBlacklist()
             height="18" alt="Last" title="Last"></a><!-- /var --></td>
         </tr>
         <tr bgcolor="#DADCEB">
-          <td colspan="%(Columns)d" class="email">
+          <td colspan="%(Columns)d" class="%(EmailClass)s">
 <!-- var: ShortHeaders -->
             <table class="Headers" border="0" cellspacing="0" cellpadding="0">
 <!-- var: HeaderRow -->
@@ -71,15 +71,16 @@ function ConfirmBlacklist()
 <!-- /var (AllHeaders) -->
 <!-- var: Part -->
 <!-- var: Divider -->
-            <hr width="50%">
+            <hr color="#4E508F">
 <!-- /var (Divider) -->
             %(Content)s
 <!-- /var (Part) -->
 <!-- var: NoAttachments -->
-            <table class=Attachments>
+            <hr color="#4E508F">
+            <table>
               <tr>
 <!-- var: Attachment -->
-                <td>
+                <td align="center">
                   <img src="%(DispDir)s/icons/%(Icon)s.gif" width="32" 
                     height="32"><br>
                   %(Filename)s<br>

@@ -26,7 +26,8 @@ import re
 import Template
 
 # Handy stuff
-ThemesDir = os.path.join(os.getcwd(), "display", "themes")
+ThemesDir     = os.path.join(os.getcwd(), "display", "themes")
+NonWordSearch = re.compile("\W")
 
 def Show():
   "Show all available themes."
@@ -94,9 +95,10 @@ def Show():
     Parts = Var.split(":")
     Value = PVars[Parts[0:2]]
     T["%s%s" % tuple(Parts[0:2])] = Value
+    StripValue = NonWordSearch.sub("", Value)
     for Option in Parts[2:]:
-      Expand = tuple(Parts[0:2] + [Option])
-      if Option == Value:
+      Expand = tuple(Parts[0:2] + [NonWordSearch.sub("", Option)])
+      if Option == StripValue:
         T["%s%s%sSelected" % Expand] = "selected"
         T["%s%s%sChecked" % Expand] = "checked"
       else:

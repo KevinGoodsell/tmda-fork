@@ -1,3 +1,17 @@
+2003-04-30  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added a preference as to which equivilant part of an e-mail you would
+	  prefer to see.
+
+	* Added fixed or proportion font selection in viewing e-mail.
+
+	* Added date format selection.
+
+	* Added HTML crap stripping (Javascript, iframe, etc.) when viewing
+	  e-mails.
+
+	* Added code so preferences may be set on theme selection page.
+
 2003-04-28  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* tmda-cgi 0.07 is released.

@@ -92,7 +92,8 @@ def Show():
 
   # Get e-mail template
   T = Template.Template("view.html")
-  T["MsgID"] = PVars["MsgID"]
+  T["MsgID"]      = PVars["MsgID"]
+  T["EmailClass"] = PVars[("ViewPending", "EmailClass")]
 
   # Locate messages in pending dir
   Msgs = Queue.listPendingIds()
@@ -274,7 +275,7 @@ def ShowPart(Part):
         Rating = PVars[("ViewPending", "AltPref")].find(Type)
         # Is this part preferred?
         if (not PrefPart) or ((PrefRating == -1) and (Rating >= 0)) \
-          or (Rating < PrefRating):
+          or ((Rating >= 0) and (Rating < PrefRating)):
           PrefPart   = SubPart
           PrefRating = Rating
       if PrefPart:
