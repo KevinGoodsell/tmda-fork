@@ -1,0 +1,35 @@
+Sample ~/.tmda/ files.  There is no one-size-fits-all set of files,
+but these examples show common usage, and might help get you started.
+
+You can use them as is without only a few modifications.  Copy them
+with `cp -pR dot-tmda ~/.tmda'
+
+Please make sure to read the documentation at http://tmda.net/unstable
+
+====================================================================
+
+config    You need to edit the required settings section for your
+          environment.
+
+crypt_key You must generate a unique key for yourself with:
+	  tmda-keygen -b >> crypt_key
+
+filters/  Example incoming and outgoing filter files.  They
+          will work as is without modification, though you should
+	  look them over to make sure they jive with your
+	  requirements.
+
+lists/    'whitelist' is a file that you can edit that should
+	  contain sender addresses and domains that should be
+	  accepted.  Is is ok if this file is empty.
+
+	  'confirmed' is another whitelist file that contains
+	  addresses of senders who have sucessfully confirmed a
+	  message.  Since TMDA takes care of populating this list, 
+	  you should not edit it by hand unless the mail system is
+	  stopped.  Is is ok if this file remains empty.
+
+	  'blacklist' contains sender addresses and domains that
+	  should not be accepted.  Is is ok if this file is empty.
+
+====================================================================

@@ -1,0 +1,51 @@
+# -*- text -*-
+
+# ~/.tmda/filters/incoming 
+#
+# TMDA incoming filter file; controls how incoming messages are
+# disposed of.  The first match wins.  Deliveries are logged to
+# ~/.tmda/incoming.log
+
+#####################
+# whitelisted senders
+#####################
+
+# Accept mail from whitelisted senders and domains first.
+from-file ~/.tmda/lists/whitelist ok
+from-file ~/.tmda/lists/confirmed ok
+
+#####################
+# blacklisted senders
+#####################
+
+# Uncomment if you have the hashcash tool installed and want to accept
+# mail containing valid hashcash stamps.  For more information, see
+# http://wiki.tmda.net/TmdaHashCashHowto
+#pipe-headers "hashcash -c -y -X -b20 -r you@yourdomain.dom" ok
+
+# Discard mail from blacklisted senders and domains.
+from-file ~/.tmda/lists/blacklist drop
+
+###################
+# content filtering
+###################
+
+# Accept mail containing the Habeas SWE headers (http://www.habeas.com/)
+headers "^X-Habeas-SWE-3.*like Habeas SWE \(tm\)" ok
+
+# Hold all messages marked by SpamAssassin that score above level 8.
+# See http://wiki.tmda.net/SpamAssassin for more examples.
+headers "X-Spam-Level: \*\*\*\*\*\*\*\*" hold
+
+# Hold messages with Microsoft executable attachments, which may be
+# virus/worm-infected.
+body "filename\=.+\.(pif|scr|exe|bat|com|cmd|vbs|js|rar|zip)" hold
+
+#####################
+# default disposition
+#####################
+
+# Mail that didn't match one of the rules above will be disposed of
+# according to your ACTION_INCOMING setting ('confirm' by default).
+# See http://tmda.net/unstable/config-vars.html#ACTION_INCOMING
+
