@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.86+"
+TMDA = "0.87"
 
 # TMDA version codename
 CODENAME = "Carry Back"
