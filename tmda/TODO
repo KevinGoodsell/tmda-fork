@@ -1,24 +1,38 @@
 General
+	
 	- Investigate whether to distribute TMDA using the Python
 	Distribution Utilities (``Distutils'') system.
+	
 	- Write a LOGFILE statistics/summary script.
+	
 	- Possibly Object-Orientize TMDA with Classes, inheritance,
 	etc.  Are there any real benefits to doing this?
+	
 	- Regression testing script.
+	
 	- Move documentation into texinfo format.
+	
 	- Write a Tkinter based GUI for .tmdarc management.
 
 tmda-inject
+	
 	- Possibly support regular expression matching for the special
 	case addresses in addition to just matching specific
 	addresses.
+	
 	- X-TMDA: bare timeout (to override Defaults.TIMEOUT)
 		
 tmda-filter
+	
+	- Make bounces easier for the user to reply to, by perhaps
+	adding a "Reply-To:" containing the new tagged
+	address to the bounce. (suggested by Reuben Sumner)
+	
 	- Support reading from DBM/GDBM style databases in addition to
 	textfiles.
 
 Whitelist.py
+	
 	- Support reading from DBM/GDBM style databases in addition to
 	textfiles.  Currently, a 10,000 line whitelist is read in
 	under 15 seconds on a PIII/700, but DB support may be

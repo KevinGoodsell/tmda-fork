@@ -38,6 +38,13 @@ ERR_SOFT = 111      # Soft error; defer delivery.
 
 # User settings in ~/.tmdarc will override the defaults set here.
 
+# BLACKLIST
+# Filename which contains a list of e-mail addresses or regular
+# expressions, one per line, which are considered unacceptable and
+# therefore bounced if there is a match.
+# Default is ~/.tmda-blacklist
+BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
+
 # BLOCK_CIPHER
 # The block cipher which will be used for the encryption routines.
 # Possible values are any block cipher supported by the `amkCrypto'

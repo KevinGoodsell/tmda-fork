@@ -73,7 +73,6 @@ def verify_dated_cookie(dated_cookie):
             logit("OK good_dated_cookie",now)
             sys.exit(Defaults.ERR_OK)
         else:
-            print "bounce dated call"
             bounce_dated()
 
 
@@ -184,8 +183,14 @@ def main():
     if ext2:ext2 = string.lower(ext2)
     
     while 1:
+        # Is the sender in the BLACKLIST?
+        if os.path.exists(Defaults.BLACKLIST) and \
+           Whitelist.match(message_headers):
+            logit("BOUNCE blacklist_match", time.time())
+            print "Sorry, your address matches my blacklist."
+            sys.exit(Defaults.ERR_HARD)
         # Dated tag?
-        if ext and (ext == 'dated' or re.match("^dated-\w+",ext)):
+        elif ext and (ext == 'dated' or re.match("^dated-\w+",ext)):
             dated_cookie = ext2
             verify_dated_cookie(dated_cookie)
         # Sender tag?
