@@ -23,7 +23,6 @@
 
 
 from cStringIO import StringIO
-from string import whitespace as WHITESPACE
 import cPickle
 import email
 import email.Utils
@@ -37,17 +36,15 @@ import socket
 import stat
 import sys
 import tempfile
+import textwrap
 import time
 
 import Errors
 
 
-DOT = '.'
-EMPTYSTRING = ''
 MODE_EXEC = 01
 MODE_READ = 04
 MODE_WRITE = 02
-NL = '\n'
 POSIX_NAME_MAX = 255                    # maximum length of a file name
 
 
@@ -799,83 +796,10 @@ def findmatch(list, addrs):
                         return 1
 
 
-def wraptext(text, column=70, honor_leading_ws=1):
-    """Wrap and fill the text to the specified column.
-
-    Wrapping is always in effect, although if it is not possible to
-    wrap a line (because some word is longer than `column' characters)
-    the line is broken at the next available whitespace boundary.
-    Paragraphs are also always filled, unless honor_leading_ws is true
-    and the line begins with whitespace.
-
-    Includes code from Mailman
-    <URL:http://www.gnu.org/software/mailman/mailman.html>
-    Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.,
-    and licensed under the GNU General Public License version 2.
-    """
-    wrapped = ''
-    # first split the text into paragraphs, defined as a blank line
-    paras = re.split('\n\n', text)
-    for para in paras:
-        # fill
-        lines = []
-        fillprev = 0
-        for line in para.split(NL):
-            if not line:
-                lines.append(line)
-                continue
-            if honor_leading_ws and line[0] in WHITESPACE:
-                fillthis = 0
-            else:
-                fillthis = 1
-            if fillprev and fillthis:
-                # if the previous line should be filled, then just append a
-                # single space, and the rest of the current line
-                lines[-1] = lines[-1].rstrip() + ' ' + line
-            else:
-                # no fill, i.e. retain newline
-                lines.append(line)
-            fillprev = fillthis
-        # wrap each line
-        for text in lines:
-            while text:
-                if len(text) <= column:
-                    line = text
-                    text = ''
-                else:
-                    bol = column
-                    # find the last whitespace character
-                    while bol > 0 and text[bol] not in WHITESPACE:
-                        bol = bol - 1
-                    # now find the last non-whitespace character
-                    eol = bol
-                    while eol > 0 and text[eol] in WHITESPACE:
-                        eol = eol - 1
-                    # watch out for text that's longer than the column width
-                    if eol == 0:
-                        # break on whitespace after column
-                        eol = column
-                        while eol < len(text) and \
-                              text[eol] not in WHITESPACE:
-                            eol = eol + 1
-                        bol = eol
-                        while bol < len(text) and \
-                              text[bol] in WHITESPACE:
-                            bol = bol + 1
-                        bol = bol - 1
-                    line = text[:eol+1] + '\n'
-                    # find the next non-whitespace character
-                    bol = bol + 1
-                    while bol < len(text) and text[bol] in WHITESPACE:
-                        bol = bol + 1
-                    text = text[bol:]
-                wrapped = wrapped + line
-            wrapped = wrapped + '\n'
-            # end while text
-        wrapped = wrapped + '\n'
-        # end for text in lines
-    # the last two newlines are bogus
-    return wrapped[:-2]
+def wraptext(text, column=70):
+    """Wrap and fill the text to the specified column width."""
+    wrapper = textwrap.TextWrapper(width=column, break_long_words=False)
+    return wrapper.fill(text)
 
 
 def maketext(templatefile, vardict):

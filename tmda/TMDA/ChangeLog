@@ -1,3 +1,7 @@
+2004-02-17  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Util.py (wraptext): Utilize the new builtin textwrap module.
+	
 2004-02-05  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Defaults.py (_path_vars): New dict to hold variables that
