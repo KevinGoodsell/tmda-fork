@@ -2,9 +2,57 @@ FREQUENTLY ASKED QUESTIONS
 
 ------------------------------------------------------------------------------
 
-Q. 
+Q. What makes TMDA qmail-specific?  I'd like to use it, but my site is
+   running another MTA.
 
-A.
+A. TMDA utilizes qmail's "special features" extensively and so it
+   would take much more work to replicate TMDA's functionality on
+   another MTA such as Sendmail.  For example:
+
+   tmda-inject uses per-user masquerading to tag outgoing mail with
+   the proper address.  See "ENVIRONMENT VARIABLES" under
+   <http://www.qmail.org/man/man8/qmail-inject.html>
+
+   tmda-filter uses qmail-specific exit codes to control whether the
+   message is accepted, deferred, bounced, etc.  See "EXIT CODES"
+   under <http://www.qmail.org/man/man8/qmail-command.html>
+
+   qmail-local supplies several useful environment variables to
+   tmda-filter so that it knows whether the message was sent to a
+   'dated' address, a 'sender' address, or neither.  See "ENVIRONMENT
+   VARIABLES" under <http://www.qmail.org/man/man8/qmail-command.html>
+
+------------------------------------------------------------------------------
+
+Q. Will TMDA run on non-unix clients such as Microsoft Windows?
+
+A. Not directly since qmail is only available on UNIX.  However, you
+   can configure your qmail relay to re-write the address of outgoing
+   messages with tmda-inject, so that those running Microsoft Windows
+   clients can take full advantage of TMDA.  See `README.RELAY' in the
+   contrib/ directory for the full details.
+
+------------------------------------------------------------------------------
+
+Q. Can you clarify the syntax for .tmda-whitelist?  I'd like any
+   address in my domain (domain.dom) to be able to send me mail
+   directly without worrying about bounces.
+
+A. TMDA matches "substrings" when analyzing incoming mail and also
+   when deciding how to tag your outgoing mail.  For both, a pattern
+   in your .tmda-* files must only be contained in the address for a
+   match to occur.  Here are some examples:
+   
+   # match only jdoe@domain.dom
+   jdoe@domain.dom
+   # match anyone@domain.dom, but not anyone@corp.domain.dom
+   @domain.dom 
+   # match anyone@domain.dom AND anyone@corp.domain.dom
+   .domain.dom
+
+   NOTE: For incoming mail, tmda-filter compares the address in the
+   Envelope-Sender, the "From:" header and the "Reply-To:" header when
+   looking for a match.
 
 ------------------------------------------------------------------------------
 
