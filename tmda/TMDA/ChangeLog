@@ -1,5 +1,8 @@
 2001-10-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* MTA.py (Postfix.deliver): Exit the deliver method by the same
+	exit code as that of LOCAL_DELIVERY_AGENT's exit status.
+
 	* Util.py: Replaced ERR_CONFIG and ERR_IO with EX_TEMPFAIL.
 	
 	* Defaults.py: Replace qmail-specific exit status codes with

@@ -35,8 +35,7 @@ class Postfix(MTA):
         self.local_delivery_agent = Defaults.LOCAL_DELIVERY_AGENT
         self.__pipeline = os.popen(self.local_delivery_agent, 'w')
         self.__pipeline.write(message)
-        self.__pipeline.close()
-        sys.exit()
+        sys.exit(self.__pipeline.close())
 
 
 class Qmail(MTA):
