@@ -117,13 +117,7 @@ bar@mastaler.com bounce
 </blockquote></pre>
 In a CDB or DBM, the keys should be the e-mail addresses to match, and
 their corresponding values (or records) should be empty unless you
-want to override the action specified in the filter file.  Example
-scripts are included in the <strong>contrib</strong> directory to
-convert your TMDA-style lists into CDB/DBM files and vice-versa.
-These are <em>list2cdb/list2dbm</em> and <em>printcdb/printdbm</em>.
-For CDB, you can also use the utilities (cdbmake, cdbdump, etc.) from
-DJB's <a href="http://cr.yp.to/cdb.html" TARGET="Resource Window">CDB distribution</a> 
-if you prefer.
+want to override the action specified in the filter file
 
 DBM support comes with your Python interpreter, but CDB support
 currently requires that you first install the
@@ -145,7 +139,11 @@ If the rebuild fails for some reason, TMDA will fall back to matching
 from the sourcefile instead.  Before you try the CDB version of this
 feature, make sure you have the <a
 href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource
-Window">python-cdb</a> extension module installed.  <br><br>
+Window">python-cdb</a> extension module installed.  
+
+The <em>printcdb/printdbm</em> scripts in the <strong>contrib</strong> directory
+can be used to print the contents of CDB/DBM files in TMDA-list format.
+<br><br>
 
 The '-ezmlm' and '-mailman' sources can be used to match the
 subscribers of an <a href="http://cr.yp.to/ezmlm.html" TARGET="Resource Window">ezmlm</a> 
