@@ -1,3 +1,8 @@
+2001-07-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (locate_pending): Send confirmation acceptance
+	notice from bouncegen() instead of here.
+
 2001-07-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: Make confirmation mode the only option.

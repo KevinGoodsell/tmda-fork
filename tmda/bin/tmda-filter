@@ -201,22 +201,9 @@ def locate_pending(timestamp,pid):
     pending_message = timestamp + '.' + pid + '.msg'
     pending_message_pathname = pendingdir + '/' + pending_message
     if os.path.exists(pending_message_pathname):
+        logit("CONFIRM accept " + pending_message, time.time())
         if Defaults.CONFIRM_ACCEPT_NOTIFY:
-            # Find the right template.
-            env_template = os.environ.get('TMDA_CONFIRM_ACCEPT_TEMPLATE')
-            def_template = Defaults.CONFIRM_ACCEPT_TEMPLATE
-            pkg_template = sys.prefix + '/share/tmda/confirm_accept.txt'
-            if env_template and os.path.exists(env_template):
-                right_template = env_template
-            elif def_template and os.path.exists(def_template):
-                right_template = def_template
-            else:
-                # must be installed from a package, so look in ../share/tmda/
-                right_template = pkg_template
-            bounce_message = Util.maketext(right_template,vars())
-            # Send a confirmation accepted notice.
-            logit("CONFIRM accept " + pending_message, time.time())
-            send_bounce(bounce_message,already_confirmed=1)
+            bouncegen('accept')
         # Reinject the original, now confirmed message.
         inject_pending(pending_message_pathname,timestamp,pid)
     else:
@@ -263,13 +250,13 @@ def verify_dated_cookie(dated_cookie):
         if discard:
             sys.exit(Defaults.ERR_STOP)
         else:
-            bouncegen('dated')
+            bouncegen('request')
     dated_cookie_split = string.split(dated_cookie,'.')
     if len(dated_cookie_split) != 2:
         if discard:
             sys.exit(Defaults.ERR_STOP)
         else:
-            bouncegen('dated')
+            bouncegen('request')
     cookie_date = dated_cookie_split[0]
     datemac = dated_cookie_split[1]
     newdatemac = Cookie.datemac(cookie_date)
@@ -282,7 +269,7 @@ def verify_dated_cookie(dated_cookie):
     elif discard:
         sys.exit(Defaults.ERR_STOP)
     else:
-        bouncegen('dated')
+        bouncegen('request')
 
 
 def verify_sender_cookie(sender_address,sender_cookie):
@@ -295,45 +282,45 @@ def verify_sender_cookie(sender_address,sender_cookie):
     elif discard:
         sys.exit(Defaults.ERR_STOP)
     else:
-        bouncegen('sender')
+        bouncegen('request')
 
 
 def bouncegen(mode,passed_cookie=None):
-    """Bounce the message back to sender."""
+    """Bounce a message back to sender."""
     # Common variables.
     now = time.time()
     envelope_recipient = globals().get('envelope_recipient')
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
     original_message = globals().get('message')
-    timestamp = str('%d' %now)
-    pid = str(os.getpid())
-    confirm_cookie = Cookie.make_confirm_cookie(timestamp,pid,'accept')
-    confirm_accept_address = Defaults.USERNAME + '-confirm-accept.' + \
-                             confirm_cookie + '@' + Defaults.HOSTNAME
-    pendingdir = Defaults.DATADIR + 'pending'
-    pending_message = timestamp + '.' + pid + '.msg'
-
-    # Create ~/.tmda/ and friends if necessary.
-    if not os.path.exists(pendingdir):
-        try:
-            os.makedirs(pendingdir,0700) # stores the unconfirmed messages
-        except IOError, error_msg:
-            print error_msg
-            sys.exit(Defaults.ERR_IO)
-
-    # Write ~/.tmda/pending/TIMESTAMP.PID.msg
-    message_headers['Return-Path'] = '<' + envelope_sender + '>'
-    pending_contents = str(message_headers) + '\n' + message_body
-    Util.writefile(pending_contents, pendingdir + '/' + pending_message)
-    logit("CONFIRM pending " + pending_message, time.time())
-    if mode == 'accept':
-        default_template 
-
+    if mode == 'accept':                # confirmation acceptance notices
+        env_template = os.environ.get('TMDA_CONFIRM_ACCEPT_TEMPLATE')
+        def_template = Defaults.CONFIRM_ACCEPT_TEMPLATE
+        pkg_template = sys.prefix + '/share/tmda/confirm_accept..txt'
+    if mode == 'request':               # request confirmations
+        env_template = os.environ.get('TMDA_CONFIRM_REQUEST_TEMPLATE')
+        def_template = Defaults.CONFIRM_REQUEST_TEMPLATE
+        pkg_template = sys.prefix + '/share/tmda/confirm_request..txt'
+        timestamp = str('%d' %now)
+        pid = str(os.getpid())
+        confirm_cookie = Cookie.make_confirm_cookie(timestamp,pid,'accept')
+        confirm_accept_address = Defaults.USERNAME + '-confirm-accept.' + \
+                                 confirm_cookie + '@' + Defaults.HOSTNAME
+        pendingdir = Defaults.DATADIR + 'pending'
+        pending_message = timestamp + '.' + pid + '.msg'
+        # Create ~/.tmda/ and friends if necessary.
+        if not os.path.exists(pendingdir):
+            try:
+                os.makedirs(pendingdir,0700) # stores the unconfirmed messages
+            except IOError, error_msg:
+                print error_msg
+                sys.exit(Defaults.ERR_IO)
+        # Write ~/.tmda/pending/TIMESTAMP.PID.msg
+        message_headers['Return-Path'] = '<' + envelope_sender + '>'
+        pending_contents = str(message_headers) + '\n' + message_body
+        Util.writefile(pending_contents, pendingdir + '/' + pending_message)
+        logit("CONFIRM pending " + pending_message, time.time())
     # Find the right template.
-    env_template = os.environ.get('TMDA_CONFIRM_REQUEST_TEMPLATE')
-    def_template = Defaults.CONFIRM_REQUEST_TEMPLATE
-    pkg_template = sys.prefix + '/share/tmda/confirm_request..txt'
     if env_template and os.path.exists(env_template):
         right_template = env_template
     elif def_template and os.path.exists(def_template):
@@ -341,11 +328,15 @@ def bouncegen(mode,passed_cookie=None):
     else:
         # must be installed from a package, so look in ../share/tmda/
         right_template = pkg_template
-
-    # Create the confirmation request and the send it.
+    # Create the message and the send it.
     bounce_message = Util.maketext(right_template,vars())
-    send_bounce(bounce_message,confirm_accept_address = confirm_accept_address)
-    sys.exit(Defaults.ERR_STOP)  
+    if mode == 'accept':
+        send_bounce(bounce_message,already_confirmed=1)
+    if mode == 'request':
+        if Defaults.BOUNCE_CONFIRM_CC:
+            bounce_cc(Defaults.BOUNCE_CONFIRM_CC)
+        send_bounce(bounce_message,confirm_accept_address = confirm_accept_address)
+        sys.exit(Defaults.ERR_STOP)  
 
 
 ######
