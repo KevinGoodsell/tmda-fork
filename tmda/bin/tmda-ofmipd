@@ -97,8 +97,8 @@ OPTIONS:
 
     -F
     --fallback
-        When used with -R or -A, fall back to authenticate against
-        /etc/tofmipd if the remote authentication method didn't work.
+        When used with -R or -A, fallback to authenticate against
+        the authfile if remote authentication fails.
         Note: this flag has no effect on -R to -A fallback. If you
         specify both -R and -A methods, then authprog will be tried
         after remoteauth has failed.
