@@ -1,5 +1,10 @@
 2003-05-02  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Added buttons on the pending list for set all to "skip", "release",
+	  "delete", "blacklist", and "whitelist".
+
+	* Added a button on the ending list that marks all messages "read".
+
 	* Removed unimplemented change password menu item.  Re-arranged theme
 	  option.
 

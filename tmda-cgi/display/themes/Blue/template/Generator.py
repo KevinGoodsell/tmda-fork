@@ -111,9 +111,11 @@ name="%s"''' % (alt, alt, height, name)
       i = 0
       while 1:
         if (type(sidebar[i]) != StringType) and (sidebar[i][1] == "E-mail"):
-          sidebar[i] = (sidebar[i][0], "   E-mail")
+          #sidebar[i] = (sidebar[i][0], "   E-mail")
           subtopic = self.do_button(sidebar, i, subtopic)
-          if self.html != "view.html":
+          if self.html == "view.html":
+            sidebar[i-1:i] = []
+          else:
             sidebar[i:i+1] = []
         i += 1
     except IndexError:
@@ -164,7 +166,7 @@ name="%s"''' % (alt, alt, height, name)
       }
       button += 1
     pickle.dump(Subtopics, open('subtopics.p', 'w'))
-    os.chdir('..')
+    os.chdir('template')
 
   def make_assoc(self, sidebar):
     self.assoc = {}

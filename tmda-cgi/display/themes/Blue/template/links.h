@@ -3,7 +3,7 @@
 <li><a href="%(Script)s?cmd=gen_addr&SID=%(SID)s">Generate Dynamic/Return Address</a>
 <li><a href="%(Script)s?cmd=test_addr&SID=%(SID)s">Test Dynamic Address</a>
 <h3>Pending</h3>
-<li><a href="%(Script)s?cmd=pending&SID=%(SID)s">Pending E-mails</a>
+<li><a href="%(Script)s?cmd=pending&SID=%(SID)s"></a>
 <li><a href="%(Script)s?cmd=view&SID=%(SID)s">E-mail</a>
 <h3>Filters</h3>
 <li><a href="%(Script)s?cmd=incoming&SID=%(SID)s">Incoming Filter</a>

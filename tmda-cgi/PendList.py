@@ -101,6 +101,10 @@ def Show():
       FirstMsg += int(PVars[("PendingList", "PagerSize")])
     elif Form["subcmd"].value == "last":
       FirstMsg = len(Msgs)
+    elif Form["subcmd"].value == "allread":
+      for Msg in Msgs:
+        Queue._addCache(Msg)
+        Queue._saveCache()
   if FirstMsg >= len(Msgs):
     FirstMsg = len(Msgs) - int(PVars[("PendingList", "PagerSize")])
   if FirstMsg < 0:
@@ -248,7 +252,7 @@ width="18" height="18" alt="Last">"""
           1]) + "&#8230;"
       else:
         To = cgi.escape(To)
-      T["Sender"] = To
+      T["To"] = To
 
       if PVars["InProcess"].has_key(Msg):
         InProcess.Clear()

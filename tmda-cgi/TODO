@@ -1,8 +1,6 @@
 Things left to do:
 ==================
 
-    * Change Password -- figure out a way to do it or remove it from the menu
-
     * FAQ -- should this be made a CGI?  Add help on adding whitelist &
              blacklist options.
 
@@ -11,8 +9,6 @@ Things left to do:
     * Language Support -- code to recognize the language an e-mail is in and
                           include the appropriate language identifiers in the
                           viewer
-
-    * Read -- mark all messages read button perhaps?
 
     * SpamCop -- an option to delete/blacklist/forward to SpamCop
 

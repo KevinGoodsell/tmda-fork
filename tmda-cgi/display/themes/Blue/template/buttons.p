@@ -19,54 +19,52 @@ p9
 asS'subtopics'
 p10
 (lp11
-S'   E-mail'
+S'E-mail'
 p12
 aS'Generate Dynamic/Return Address'
 p13
 aS'Test Dynamic Address'
 p14
-aS'Pending E-mails'
-p15
 aS'Incoming Filter'
-p16
+p15
 aS'Outgoing Filter'
-p17
+p16
 aS'Test Filters'
-p18
+p17
 aS'Theme'
-p19
+p18
 aS'Local Config'
-p20
+p19
 aS'Global Config'
-p21
+p20
 aS'Uninstall'
-p22
+p21
 aS'whitelist'
-p23
+p22
 aS'white'
-p24
+p23
 aS'blacklist'
-p25
+p24
 aS'black'
-p26
+p25
 aS'confirmed'
-p27
+p26
 aS'confirm'
-p28
+p27
 aS'revoked'
-p29
+p28
 aS'work'
-p30
+p29
 aS'family'
-p31
+p30
 aS'friends'
-p32
+p31
 aS'accept'
-p33
+p32
 aS'deny'
-p34
+p33
 aS'whitelist_confirmed'
-p35
+p34
 aS'other'
-p36
+p35
 as.

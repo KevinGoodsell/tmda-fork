@@ -27,6 +27,18 @@ function TestConfirm()
   if (ToDelete) Msg += "\nAny confirmation that follows will fail."
   return confirm(Msg)
 }
+
+function Set(Value)
+{
+  G = 0
+  while (document.forms[0]["a" + G])
+  {
+    Group = document.forms[0]["a" + G]
+    for (i = 0; i < Group.length; i++)
+      if (Group[i].value == Value) Group[i].checked = 1
+    G++
+  }
+}
 // -->
 </script>
 <table border="2" cellpadding="0" cellspacing="0"
@@ -57,34 +69,37 @@ function TestConfirm()
               href="%(Script)s?cmd=pending&subcmd=last&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
               height="18" alt="Last" title="Last"></a><!-- /var --></td>
+            <td align="center"><a 
+              href="%(Script)s?cmd=pending&subcmd=allread&SID=%(SID)s"><img 
+              src="%(ThemeDir)s/buttons/subnav_r1_c15.gif" border="0" 
+              width="61" height="18" alt="All Read" title="All Read"></a></td>
             <td align="center"><font color="#FFFFFF">%(DispRange)s</font></td>
           </tr>
           <tr bgcolor="#DADCEB">
-            <td colspan="6"><table cellspacing="0" width="100%" border=0>
+            <td colspan="7"><table cellspacing="0" width="100%" border=0>
               <tr valign="bottom">
-                <td height="24" width="1%">
-                  <img src="%(ThemeDir)s/buttons/options_r1_c1.gif"
-                   width="20" height="15" alt="Leave" title="Leave">
-                </td>
-                <td width="1%">
-                  <img src="%(ThemeDir)s/buttons/options_r1_c2.gif"
-                   width="20" height="15" alt="Release" title="Release">
-                </td>
-                <td width="1%">
-                  <img src="%(ThemeDir)s/buttons/options_r1_c3.gif"
-                   width="20" height="15" alt="Delete" title="Delete">
-                </td>
+                <td height="24" width="1%"><a 
+                  href="javascript:Set('pass')"><img 
+                  src="%(ThemeDir)s/buttons/options_r1_c1.gif" border="0" 
+                  width="20" height="15" alt="Leave" title="Leave"></a></td>
+                <td width="1%"><a href="javascript:Set('release')"><img 
+                  src="%(ThemeDir)s/buttons/options_r1_c2.gif" border="0" 
+                  width="20" height="15" alt="Release" 
+                  title="Release"></a></td>
+                <td width="1%"><a href="javascript:Set('delete')"><img 
+                  src="%(ThemeDir)s/buttons/options_r1_c3.gif" border="0" 
+                  width="20" height="15" alt="Delete" title="Delete"></a></td>
               <!-- var: WhIcon -->
-                <td width="1%">
-                  <img src="%(ThemeDir)s/buttons/options_r1_c4.gif"
-                   width="20" height="15" alt="Whitelist" title="Whitelist">
-                </td>
+                <td width="1%"><a href="javascript:Set('whitelist')"><img
+                  src="%(ThemeDir)s/buttons/options_r1_c4.gif" border="0" 
+                  width="20" height="15" alt="Whitelist" 
+                  title="Whitelist"></a></td>
               <!-- /var -->
               <!-- var: BlIcon -->
-                <td width="1%">
-                  <img src="%(ThemeDir)s/buttons/options_r1_c5.gif"
-                   width="20" height="15" alt="Blacklist" title="Blacklist">
-                </td>
+                <td width="1%"><a href="javascript:Set('blacklist')"><img
+                  src="%(ThemeDir)s/buttons/options_r1_c5.gif" border="0" 
+                  width="20" height="15" alt="Blacklist" 
+                  title="Blacklist"></a></td>
               <!-- /var -->
                 <th width="150" align="left" style="padding-left: 20px">
                   Sender
@@ -99,7 +114,7 @@ function TestConfirm()
                   Size
                 </th>
               </tr>
-<!-- var: NumCols="7" --><!-- var: NumBlankCols="3" -->
+<!-- var: NumCols="8" --><!-- var: NumBlankCols="3" -->
 <!-- var: Row -->
       <tr>
         <td colspan="%(NumCols)s" bgcolor="#7A7AB6" height="1"></td>
@@ -167,6 +182,10 @@ function TestConfirm()
               href="%(Script)s?cmd=pending&subcmd=last&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
               height="18" alt="Last" title="Last"></a><!-- /var --></td>
+            <td align="center"><a 
+              href="%(Script)s?cmd=pending&subcmd=allread&SID=%(SID)s"><img 
+              src="%(ThemeDir)s/buttons/subnav_r1_c15.gif" border="0" 
+              width="61" height="18" alt="All Read" title="All Read"></a></td>
             <td align="center"><font color="#FFFFFF">%(DispRange)s</font></td>
           </tr>
         </form>

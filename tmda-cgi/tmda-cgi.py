@@ -38,6 +38,15 @@ import MyCgiTb
 import Session
 import Template
 
+def Call(Library, Str = None):
+  "Launch a library with the appropriate globals."
+  Library.Form  = Form
+  Library.PVars = PVars
+  if Str:
+    Library.Show(Str)
+  else:
+    Library.Show()
+
 # Prepare the traceback in case of uncaught exception
 MyCgiTb.Content()
 MyCgiTb.ErrTemplate = "prog_err2.html"
@@ -74,9 +83,7 @@ try:
     if ErrStr[0].find("must be chmod 400 or 600") < 0:
       # Serious error.  Suggest an install
       import Install
-      Install.Form  = Form
-      Install.PVars = PVars
-      Install.Show()
+      Call(Install)
       sys.exit()
     else:
       CgiUtil.TermError("crypt_key permissions.", "Bad permissions.",
@@ -86,6 +93,9 @@ except CgiUtil.JustLoggedIn, (ErrStr, PVars):
   PVars["InProcess"]   = {}
   PVars["LocalConfig"] = "Form"
   PVars.Save()
+
+# Share "globals"
+CgiUtil.PVars = PVars
 
 # First visit to any page?
 if not Form.keys():
@@ -99,50 +109,17 @@ if not Form.keys():
     pass
   # Initial login
   import Login
-  Login.Show()
+  Call(Login)
 
 # Logged in yet?
 elif not PVars.Valid:
   import Login
   if Form.has_key("cmd") and (Form["cmd"].value != "logout"):
-    Login.Show("Wrong password.")
+    Call(Login, "Wrong password.")
   else:
-    Login.Show()
+    Call(Login)
 
 elif Form.has_key("cmd"):
-  import EditFilter
-  import EditList
-  import GenAddr
-  import GlobalConfig
-  import Info
-  import Install
-  import LocalConfig
-  import PendList
-  import TestAddr
-  import Theme
-  import View
-
-  # Share "globals"
-  CgiUtil.PVars     = PVars
-  EditFilter.PVars  = PVars
-  EditFilter.Form   = Form
-  EditList.PVars    = PVars
-  EditList.Form     = Form
-  GenAddr.PVars     = PVars
-  GenAddr.Form      = Form
-  Info.PVars        = PVars
-  Install.PVars     = PVars
-  Install.Form      = Form
-  LocalConfig.PVars = PVars
-  LocalConfig.Form  = Form
-  PendList.PVars    = PVars
-  PendList.Form     = Form
-  TestAddr.PVars    = PVars
-  TestAddr.Form     = Form
-  Theme.PVars       = PVars
-  Theme.Form        = Form
-  View.PVars        = PVars
-  View.Form         = Form
 
   Cmd = Form["cmd"].value
   if Cmd == "init":
@@ -150,34 +127,46 @@ elif Form.has_key("cmd"):
 
   # View?
   if Cmd in ("incoming", "outgoing"):
-    EditFilter.Show()
+    import EditFilter
+    Call(EditFilter)
   elif Cmd[:8] == "editlist":
-    EditList.Show()
+    import EditList
+    Call(EditList)
   elif Cmd == "gen_addr":
-    GenAddr.Show()
+    import GenAddr
+    Call(GenAddr)
   elif Cmd == "globalconfig":
-    GlobalConfig.Show()
+    import GlobalConfig
+    Call(GlobalConfig)
   elif Cmd == "info":
-    Info.Show()
+    import Info
+    Call(Info)
   elif Cmd == "install":
     pass
   elif Cmd == "localconfig":
-    LocalConfig.Show()
+    import LocalConfig
+    Call(LocalConfig)
   elif Cmd == "pending":
-    PendList.Show()
+    import PendList
+    Call(PendList)
   elif Cmd == "restore":
     pass
   elif Cmd == "uninstall":
-    Install.Show()
+    import Install
+    Call(Install)
   elif Cmd == "view":
+    import View
     try:
-      View.Show()
+      Call(View)
     except Errors.MessageError:  # No messages left?
-      PendList.Show()
+      import PendList
+      Call(PendList)
   elif Cmd == "test_addr":
-    TestAddr.Show()
+    import TestAddr
+    Call(TestAddr)
   elif Cmd == "theme":
-    Theme.Show()
+    import Theme
+    Call(Theme)
   else:
     CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
       Cmd, "interpret command", "", "Please be patient while we release newer "

@@ -256,7 +256,7 @@ def Install():
   Backup = os.path.join(os.environ["HOME"],
     PVars[("NoOverride", "InstallBackupTGZ")])
   if len(FilesClobbered):
-    CreateTgz(Backup, FilesClobbered):
+    CreateTgz(Backup, FilesClobbered)
   elif os.path.isfile(Backup):
     os.unlink(Backup)
     Backup = None
@@ -322,7 +322,7 @@ def Uninstall():
   # Archive the files
   Backup = os.path.join(os.environ["HOME"],
     PVars[("NoOverride", "UninstallBackupTGZ")])
-  CreateTgz(Backup, RemoveFiles):
+  CreateTgz(Backup, RemoveFiles)
 
   # Erase files
   for File in RemoveFiles:
@@ -475,7 +475,7 @@ def Restore():
   Backup = os.path.join(os.environ["HOME"],
     PVars[("NoOverride", "InstallBackupTGZ")])
   if len(FilesClobbered):
-    CreateTgz(Backup, FilesClobbered):
+    CreateTgz(Backup, FilesClobbered)
   elif os.path.isfile(Backup):
     os.unlink(Backup)
     Backup = None
