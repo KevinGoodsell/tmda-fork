@@ -302,11 +302,12 @@ If you still read <a href="http://www.usenet.org/" TARGET="Resource Window">USEN
 Simply have your newsreader call <strong>tmda-dated-address</strong> and use the result as your
 posting address.<br><br>
 
-For <a href="http://www.gnus.org/" TARGET="Resource Window">Gnus</a>, this could
+<ul>
+
+<li>For <a href="http://www.gnus.org/" TARGET="Resource Window">Gnus</a>, this could
 be accomplished with the following addition to your .gnus file:
 
-<blockquote>
-<pre>
+<blockquote><pre>
 
 (defun tmda-dated-address () 
   (shell-command-to-string "/path/to/tmda/bin/tmda-dated-address"))
@@ -316,3 +317,28 @@ be accomplished with the following addition to your .gnus file:
        (address tmda-dated-address))) 
 
 </pre></blockquote>
+
+<li>For <a href="http://www.slrn.org/" TARGET="Resource Window">slrn</a>, you can define
+an m4 macro that modifies your .slrnrc each time slrn is invoked:
+
+<ol>
+<li>
+Copy your .slrnrc to .slrnrc.m4, edit .slrnrc.m4 and search for line
+which begins with "set username". Change that line to:
+
+<blockquote><pre>
+
+set username "patsubst(TMDADATED, `@.*$')"
+
+</pre></blockquote>
+
+<li>
+Then make an alias or script for running slrn.  Below is an example
+alias for tcsh.
+
+<blockquote><pre>
+
+alias slrn-dated 'm4 -DTMDADATED=`tmda-dated-address` ~/.slrnrc.m4 > ~/.slrnrc && slrn -h newshost'
+
+</pre></blockquote>
+</ul>

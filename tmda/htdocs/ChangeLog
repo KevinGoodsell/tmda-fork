@@ -1,3 +1,8 @@
+2001-11-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-client.ht: Add tmda-dated-address configuration
+	information for the `slrn' newsreader, courtesy of Hanus Adler.
+
 2001-11-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* results.ht (Links): Add testimonial from Lou Hevly, Message-Id:
