@@ -147,6 +147,16 @@ if Defaults.USEVIRTUALDOMAINS and os.path.exists(Defaults.VIRTUALDOMAINS):
 # Collect the message's Subject: for later use.
 subject = message_headers.getheader('subject', 'None')
 
+# Collect the message's Precedence: header.
+precedence = message_headers.getheader('precedence', None)
+# If its value is "bulk" or "junk", we should not generate any
+# auto-replies.
+auto_reply = 1
+if precedence:
+    precedence = string.lower(precedence)
+    if precedence in ('bulk','junk'):
+        auto_reply = 0
+
 
 def logit(action_msg,date):
     """Write delivery statistics to the LOGFILE if enabled."""
@@ -177,23 +187,24 @@ def logit(action_msg,date):
 
 def send_bounce(bounce_message, **vars):
     """Send a confirmation message back to the sender."""
-    bounce_message = cStringIO.StringIO(bounce_message)
-    message_headers = rfc822.Message(bounce_message)
-    # Add some headers.
-    if not vars.has_key('already_confirmed'):
-        message_headers['Reply-To'] = vars['confirm_accept_address']
-    message_headers['Return-Path'] = '<' + Defaults.BOUNCE_ENV_SENDER + '>'
-    message_headers['To'] = envelope_sender
-    message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
-    message_body = bounce_message.read()
-    inject = []
-    inject.append(Defaults.INJECT)
-    inject.append(envelope_sender)
-    pipeline = popen2.popen2(inject)[1]
-    pipeline.write(str(message_headers))
-    pipeline.write('\n')
-    pipeline.write(message_body)
-    pipeline.close()
+    if auto_reply:
+        bounce_message = cStringIO.StringIO(bounce_message)
+        message_headers = rfc822.Message(bounce_message)
+        # Add some headers.
+        if not vars.has_key('already_confirmed'):
+            message_headers['Reply-To'] = vars['confirm_accept_address']
+        message_headers['Return-Path'] = '<' + Defaults.BOUNCE_ENV_SENDER + '>'
+        message_headers['To'] = envelope_sender
+        message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
+        message_body = bounce_message.read()
+        inject = []
+        inject.append(Defaults.INJECT)
+        inject.append(envelope_sender)
+        pipeline = popen2.popen2(inject)[1]
+        pipeline.write(str(message_headers))
+        pipeline.write('\n')
+        pipeline.write(message_body)
+        pipeline.close()
     
 
 def bounce_cc(address):

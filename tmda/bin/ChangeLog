@@ -3,6 +3,10 @@
 	* tmda-filter (recipient_address): Only parse VIRTUALDOMAINS if
 	support is turned on *and* the file exists.
 
+	(auto_reply): Check for "Precedence: bulk" or "Precedence: junk"
+	headers before sending a confirmation request or acceptance
+	notice.
+
 	(recipient_address): Add support for wildcards and "virtual user"
 	entries in VIRTUALDOMAINS.
 
