@@ -5,6 +5,18 @@ If you are upgrading from a release of tmda-cgi < 0.08:
 * display directory has been updated again.  You'll need to copy in the new
   one or use a symbolic link.
 
+* Compiling is done with configure / make / make install now.  RTFM!
+
+* If you are upgrading from 0.03 or higher, you shouldn't need to recompile,
+  but recompiling is highly recommended.
+
+======================================================================
+
+If you are upgrading from a release of tmda-cgi < 0.07:
+
+* display directory has been updated again.  You'll need to copy in the new
+  one or use a symbolic link.
+
 * If you are upgrading from 0.03 or higher, you shouldn't need to recompile,
   but recompiling is highly recommended.
 
