@@ -1311,6 +1311,28 @@ if not vars().has_key('TAGS_SENDER'):
 if not vars().has_key('TERSE_SUMMARY_HEADERS'):
     TERSE_SUMMARY_HEADERS = ['from_name', 'subject']
 
+# TMDAINJECT
+# A string containing one or more of the following letters which toggle
+# on certain behaviors in tmda-inject (which is used by both
+# tmda-sendmail and tmda-ofmipd):
+#
+# 'd' - Add a new Date field to the message, clobbering any
+#       existing Date fields.  Normally tmda-inject only adds a
+#       Date field if the incoming message lacks one.
+#
+# 'i' - Add a new Message-ID field to the message, clobbering any
+#       existing Message-ID fields.  Normally tmda-inject only adds a
+#       Message-ID field if the incoming message lacks one.
+#
+# Examples:
+#
+# TMDAINJECT = "i"
+# TMDAINJECT = "di"
+#
+# No default.
+if not vars().has_key('TMDAINJECT'):
+    TMDAINJECT = ''
+
 # SUMMARY_HEADERS
 # A list containing one or more message headers that should be
 # displayed by tmda-pending's interactive mode. Listed headers are

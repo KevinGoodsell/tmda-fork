@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Apr 19 14:10:07 2003 -->
+<!-- Wed Apr 23 13:23:24 2003 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -382,14 +382,16 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#TIMEOUT">TIMEOUT</a></td>
+<td><a href="#TMDAINJECT">TMDAINJECT</a></td>
+</tr>
+<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
-<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 <td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
+</tr>
 </table>
 
 <dl>
@@ -1611,6 +1613,31 @@ The timeout interval for 'dated' addresses.  The available units are
 (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).
 <br><br>
 Default is 5d (5 days).
+<dt><hr>
+<a name="TMDAINJECT"><h4>TMDAINJECT</h4></a>
+<dd>
+A string containing one or more of the following letters which toggle
+on certain behaviors in tmda-inject (which is used by both
+tmda-sendmail and tmda-ofmipd):
+<br><br>
+'d' - Add a new Date field to the message, clobbering any
+<blockquote>
+      existing Date fields.  Normally tmda-inject only adds a
+      Date field if the incoming message lacks one.
+</blockquote>
+<br>
+'i' - Add a new Message-ID field to the message, clobbering any
+<blockquote>
+      existing Message-ID fields.  Normally tmda-inject only adds a
+      Message-ID field if the incoming message lacks one.
+</blockquote>
+<br>
+Examples:
+<br><br>
+<code>TMDAINJECT = "i"</code><br>
+<code>TMDAINJECT = "di"</code>
+<br><br>
+No default.
 <dt><hr>
 <a name="USERNAME"><h4>USERNAME</h4></a>
 <dd>

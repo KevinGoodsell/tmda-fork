@@ -1,3 +1,8 @@
+2003-04-23  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-inject (inject_message): Examine Defaults.TMDAINJECT
+	when deciding whether to create Date and Message-ID fields.
+		
 2003-04-22  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-inject (msgout): Use Util.msg_as_string().
