@@ -1,3 +1,9 @@
+2002-06-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (BOUNCE_ENV_SENDER): Set default to '<>' in all
+	cases except where OUTGOINGMAIL = "sendmail" *and*
+	MAIL_TRANSFER_AGENT is qmail or postfix.
+
 2002-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Cookie.py: Refer to the first element of TAGS_* lists for the

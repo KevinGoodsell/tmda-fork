@@ -255,18 +255,19 @@ if not vars().has_key('VIRTUALDOMAINS'):
     VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
 
 # BOUNCE_ENV_SENDER
-# The envelope sender of the bounce message.
+# The envelope sender of a bounce message.
 #
 # Example:
 # BOUNCE_ENV_SENDER = "devnull@domain.dom"
 #
 # Default is an empty envelope sender <>.
 if not vars().has_key('BOUNCE_ENV_SENDER'):
-    # Exim and Sendmail don't like -f ''
-    if MAIL_TRANSFER_AGENT in ('exim', 'sendmail'):
-        BOUNCE_ENV_SENDER = '<>'
-    else:
+    if OUTGOINGMAIL == 'sendmail' and \
+           MAIL_TRANSFER_AGENT in ('qmail', 'postfix'):
+        # qmail/Postfix's /usr/sbin/sendmail doesn't like -f '<>'
         BOUNCE_ENV_SENDER = ''
+    else:
+        BOUNCE_ENV_SENDER = '<>'
 
 # BOUNCE_TEXT_FILTER_INCOMING
 # Text for the failure notice returned to the sender when a 'bounce'
