@@ -1,3 +1,10 @@
+2002-01-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py (FilterParser.firstmatch): For file based
+	sources, no longer just skip the filter line if the file is
+	missing or if an exception occurs.  Let the exception be raised so
+	it will be caught by tmda-filter.
+
 2002-01-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* FilterParser.py (FilterParser.firstmatch): Also pass if

@@ -120,21 +120,20 @@ class FilterParser:
             if source in ('from-file', 'to-file'):
                 match_list = []
                 match = os.path.expanduser(match)
-                if os.path.exists(match):
-                    match_list = Util.file_to_list(match,match_list)
-                    file_match = None
-                    if source == 'from-file' and senders:
-                        file_match = Util.findmatch(match_list,senders)
-                    elif source == 'to-file' and recipient:
-                        file_match = Util.findmatch(match_list,[recipient])
-                    if file_match:
-                        # The second column of the line may contain an
-                        # overriding action specification.
-                        if file_match != 1:
-                            self.action = file_match
-                        else:           
-                            self.action = action
-                        break
+                match_list = Util.file_to_list(match,match_list)
+                file_match = None
+                if source == 'from-file' and senders:
+                    file_match = Util.findmatch(match_list,senders)
+                elif source == 'to-file' and recipient:
+                    file_match = Util.findmatch(match_list,[recipient])
+                if file_match:
+                    # The second column of the line may contain an
+                    # overriding action specification.
+                    if file_match != 1:
+                        self.action = file_match
+                    else:           
+                        self.action = action
+                    break
             # DBM-style databases.
             if source in ('from-dbm', 'to-dbm'):
                 match = os.path.expanduser(match)
@@ -142,24 +141,21 @@ class FilterParser:
                     keys = senders
                 elif source == 'to-dbm':
                     keys = [recipient]
-                try:
-                    import anydbm
-                    dbm = anydbm.open(match,'r')
-                    for key in keys:
-                        if key and dbm.has_key(string.lower(key)):
-                            dbm_value = dbm[string.lower(key)]
-                            # If there is an entry for this key,
-                            # we consider it an overriding action
-                            # specification.
-                            if dbm_value:
-                                self.action = dbm_value
-                            else:
-                                self.action = action
-                            dbm.close()
-                            break
-                    if self.action: break
-                except anydbm.error:
-                    pass
+                import anydbm
+                dbm = anydbm.open(match,'r')
+                for key in keys:
+                    if key and dbm.has_key(string.lower(key)):
+                        dbm_value = dbm[string.lower(key)]
+                        # If there is an entry for this key,
+                        # we consider it an overriding action
+                        # specification.
+                        if dbm_value:
+                            self.action = dbm_value
+                        else:
+                            self.action = action
+                        dbm.close()
+                        break
+                if self.action: break
             # DJB's constant databases; see <http://cr.yp.to/cdb.html>.
             if source in ('from-cdb', 'to-cdb'):
                 match = os.path.expanduser(match)
@@ -167,63 +163,54 @@ class FilterParser:
                     keys = senders
                 elif source == 'to-cdb':
                     keys = [recipient]
-                try:
-                    import cdb
-                    cdb = cdb.init(match)
-                    for key in keys:
-                        if key and cdb.has_key(string.lower(key)):
-                            cdb_value = cdb[string.lower(key)]
-                            # If there is an entry for this key,
-                            # we consider it an overriding action
-                            # specification.
-                            if cdb_value:
-                                self.action = cdb_value
-                            else:
-                                self.action = action
-                            break
-                    if self.action: break
-                except (ImportError, IOError):
-                    pass
-                except cdb.error:
-                    pass
+                import cdb
+                cdb = cdb.init(match)
+                for key in keys:
+                    if key and cdb.has_key(string.lower(key)):
+                        cdb_value = cdb[string.lower(key)]
+                        # If there is an entry for this key,
+                        # we consider it an overriding action
+                        # specification.
+                        if cdb_value:
+                            self.action = cdb_value
+                        else:
+                            self.action = action
+                        break
+                if self.action: break
             # Extract addresses from a Mailman list-configuration `database'.
             if (source[:len('from-mailman')] == 'from-mailman' or
                 source[:len('to-mailman')] == 'to-mailman'):
                 match = os.path.expanduser(match)
-                if os.path.exists(match):
-                    try:
-                        (mm_source, mmdb_key) = string.split(source, '.')
-                        if mm_source == 'from-mailman':
-                            keys = senders
-                        elif mm_source == 'to-mailman':
-                            keys = [recipient]
-                        # The filename is expected to be in the format of
-                        # either 'filename.db', or 'filename.pck'.
-                        dbsuffix = string.split(match, '.')[-1]
-                        # If the filename ends with `.db', then it is
-                        # assumed that the file contains a Python marshal
-                        # (MM 2.0).  If the file ends with `.pck' then it
-                        # is assumed to contain a Python pickle (MM 2.1).
-                        if dbsuffix == 'db':
-                            import marshal
-                            Serializer = marshal
-                        elif dbsuffix == 'pck':
-                            import cPickle
-                            Serializer = cPickle
-                        mmdb_file = open(match, 'r')
-                        mmdb_data = Serializer.load(mmdb_file)
-                        mmdb_file.close()
-                        mmdb_addylist = mmdb_data[mmdb_key]
-                        # Make sure mmdb_addylist is a list of e-mail addresses.
-                        if type(mmdb_addylist) is types.DictType:
-                             mmdb_addylist = mmdb_data[mmdb_key].keys()
-                        for addy in keys:
-                            if string.lower(addy) in mmdb_addylist:
-                                self.action = action
-                                break
-                        if self.action: break
-                    except:
-                        pass
+                (mm_source, mmdb_key) = string.split(source, '.')
+                if mm_source == 'from-mailman':
+                    keys = senders
+                elif mm_source == 'to-mailman':
+                    keys = [recipient]
+                # The filename is expected to be in the format of
+                # either 'filename.db', or 'filename.pck'.
+                dbsuffix = string.split(match, '.')[-1]
+                # If the filename ends with `.db', then it is
+                # assumed that the file contains a Python marshal
+                # (MM 2.0).  If the file ends with `.pck' then it
+                # is assumed to contain a Python pickle (MM 2.1).
+                if dbsuffix == 'db':
+                    import marshal
+                    Serializer = marshal
+                elif dbsuffix == 'pck':
+                    import cPickle
+                    Serializer = cPickle
+                mmdb_file = open(match, 'r')
+                mmdb_data = Serializer.load(mmdb_file)
+                mmdb_file.close()
+                mmdb_addylist = mmdb_data[mmdb_key]
+                # Make sure mmdb_addylist is a list of e-mail addresses.
+                if type(mmdb_addylist) is types.DictType:
+                     mmdb_addylist = mmdb_data[mmdb_key].keys()
+                for addy in keys:
+                    if string.lower(addy) in mmdb_addylist:
+                        self.action = action
+                        break
+                if self.action: break
             if source in ('body', 'headers'):
                 if source == 'body' and msg_body:
                     content = msg_body
@@ -237,19 +224,18 @@ class FilterParser:
             if source in ('body-file','headers-file'):
                 match_list = []
                 match = os.path.expanduser(match)
-                if os.path.exists(match):
-                    match_list = Util.file_to_list(match,match_list)
-                    if source == 'body-file' and msg_body:
-                        content = msg_body
-                    elif source == 'headers-file' and msg_headers:
-                        content = msg_headers
-                    else:
-                        content = None
-                    for expr in match_list:
-                        if content and re.search(expr,content,(re.M|re.I)):
-                            self.action = action
-                            break
-                    if self.action: break
+                match_list = Util.file_to_list(match,match_list)
+                if source == 'body-file' and msg_body:
+                    content = msg_body
+                elif source == 'headers-file' and msg_headers:
+                    content = msg_headers
+                else:
+                    content = None
+                for expr in match_list:
+                    if content and re.search(expr,content,(re.M|re.I)):
+                        self.action = action
+                        break
+                if self.action: break
             if source == 'size' and msg_size:
                 match_list = list(match)
                 operator = match_list[0] # first character should be < or >
