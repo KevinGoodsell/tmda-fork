@@ -832,6 +832,8 @@ Examples:
 <code>DELIVERY = "~/Maildir/"</code><br>
 <code>DELIVERY = "~/Mailbox"</code><br>
 <code>DELIVERY = "/var/mail/jasonrm"</code><br>
+<code>DELIVERY = ":~/Mailbox"</code><br>
+<code>DELIVERY = ":/var/spool/mail/jasonrm"</code><br>
 <code>DELIVERY = "|/usr/bin/maildrop"</code><br>
 <code>DELIVERY = "|/usr/bin/procmail ~/.procmailrc-tmda"</code><br>
 <code>DELIVERY = "me@new.job.com"</code>
@@ -1320,7 +1322,7 @@ No default
 A single character which specifies the separator between user names
 and address extensions (e.g, user-ext).
 The default under qmail is `-', while the default for Sendmail and
-friends is likely `+'.
+friends is likely `+'. The default for MMDF is '='.
 <br><br>
 Default is "-"
 <dt><hr>

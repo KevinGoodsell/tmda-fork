@@ -99,6 +99,8 @@ Contributions:
     * Ted Rathkopf -- support for "pre-extension" definitions in
       /var/qmail/users/assign (now deprecated).
 
+    * Tim Rice -- MMDF support.
+
     * Amitai Schlair -- NetBSD package.
 
     * Michael Schler -- registration of, and secondary nameservice for

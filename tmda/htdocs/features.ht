@@ -28,7 +28,7 @@ a comprehensive web-management facility for TMDA.
 including multi-byte character sets (e.g, Chinese, Japanese, Korean).<br><br>
 
 <li>Local mail delivery, including qmail-style Maildirs, mboxrd-format
-mboxes, program (pipe) delivery, and forward to an e-mail address.<br><br>
+mboxes, MMDF-style mailboxes, program (pipe) delivery, and forward to an e-mail address.<br><br>
 
 <li>Smart auto-responding -- won't reply to a mailing list, bounce
 message, or another auto-response.  Includes auto-response rate limiting

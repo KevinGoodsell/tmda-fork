@@ -147,6 +147,8 @@ if not vars().has_key('MAIL_TRANSFER_AGENT'):
 # DELIVERY = "~/Maildir/"
 # DELIVERY = "~/Mailbox"
 # DELIVERY = "/var/mail/jasonrm"
+# DELIVERY = ":~/Mailbox"
+# DELIVERY = ":/var/spool/mail/jasonrm"
 # DELIVERY = "|/usr/bin/maildrop"
 # DELIVERY = "|/usr/bin/procmail ~/.procmailrc-tmda"
 # DELIVERY = "me@new.job.com"
@@ -163,7 +165,7 @@ if not vars().has_key('DELIVERY'):
 # A single character which specifies the separator between user names
 # and address extensions (e.g, user-ext).
 # The default under qmail is `-', while the default for Sendmail and
-# friends is likely `+'.
+# friends is likely `+'. The default for MMDF is '='.
 #
 # Default is "-"
 if not vars().has_key('RECIPIENT_DELIMITER'):

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Jul  3 14:34:16 2003 -->
+<!-- Wed Jul 23 13:44:07 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -368,6 +368,20 @@ deliver=janedoe@new.isp.net
 </tr>
 
 <tr>
+<td>mmdf</td>
+<td>
+An mmdf instruction begins with a colon.
+Please note the following restrictions below.
+</td>
+<td>
+<code>
+deliver=:/home/jason/Mailbox<br>
+deliver=:~/Mailbox
+</code>
+</td>
+</tr>
+
+<tr>
 <td>mbox</td>
 <td>
 An mbox instruction begins with a slash or tilde, and does not end with a
@@ -398,11 +412,11 @@ deliver=~/Maildir/
 </table>
 <br>
 
-<u>Please note the following restrictions to mbox and Maildir delivery:</u><br>
+<u>Please note the following restrictions to mmdf, mbox and Maildir delivery:</u><br>
 <ul>
 
 <li>
-TMDA will not create Maildirs or mbox files if they do not exist.  You
+TMDA will not create Maildirs, mmdf or mbox files if they do not exist.  You
 must create them prior to having TMDA deliver mail to them with
 commands like 
 <a href="http://www.qmail.org/man/man1/maildirmake.html" TARGET="Resource Window">
@@ -411,17 +425,17 @@ and <em>touch</em>.
 <br><br>
 
 <li>
-TMDA requires write access to any Maildir or mbox file you wish to
+TMDA requires write access to any Maildir, mmdf or mbox file you wish to
 deliver mail to.
 <br><br>
 
 <li>
-TMDA will not deliver to an mbox symlink.  Specify the path to the
+TMDA will not deliver to an mmdf or mbox symlink.  Specify the path to the
 actual mbox file instead.
 <br><br>
 
 <li>
-Do not deliver to mbox files located on an NFS filesystem.  This is
+Do not deliver to mmdf or mbox files located on an NFS filesystem.  This is
 unsafe and can corrupt your mbox file -- this applies to all MDAs, not
 just TMDA.  Use Maildir instead as it is immune to such
 problems.

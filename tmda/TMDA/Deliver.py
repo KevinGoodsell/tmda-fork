@@ -85,6 +85,12 @@ class Deliver:
             self.delivery_dest = self.option
             if firstchar == '&':
                 self.delivery_dest = self.delivery_dest[1:].strip()
+        # An mmdf line begins with a : 
+        elif firstchar == ':':
+            self.delivery_type = 'mmdf'
+            self.delivery_dest = self.option[1:].strip()
+            if self.delivery_dest.startswith('~'):
+                self.delivery_dest = os.path.expanduser(self.delivery_dest)
         # An mbox line begins with a slash or tilde, and does not end
         # with a slash.
         elif (firstchar == '/' or firstchar == '~') and (lastchar != '/'):
@@ -120,6 +126,20 @@ class Deliver:
         elif type == 'forward':
             # don't wrap headers, don't escape From, don't add From_ line
             self.__deliver_forward(Util.msg_as_string(self.msg), dest)
+        elif type == 'mmdf':
+            # Ensure destination path exists.
+            if not os.path.exists(dest):
+                raise Errors.DeliveryError, \
+                      'Destination "%s" does not exist!' % dest
+            # Refuse to deliver to an mmdf if it's a symlink, to
+            # prevent symlink attacks.
+            elif os.path.islink(dest):
+                raise Errors.DeliveryError, \
+                      'Destination "%s" is a symlink!' % dest
+            else:
+                # don't wrap headers, escape From, add From_ line
+                self.__deliver_mmdf(Util.msg_as_string(self.msg, 0, 1, 1),
+                                    dest)
         elif type == 'mbox':
             # Ensure destination path exists.
             if not os.path.exists(dest):
@@ -153,6 +173,61 @@ class Deliver:
         """Forward message to address, preserving the existing Return-Path."""
         Util.sendmail(message, address, self.env_sender)
         
+    def __deliver_mmdf(self, message, mmdf):
+        """Reliably deliver a mail message into an mmdf file.
+
+        Basicly a copy of __deliver_mbox():
+        Just make sure each message is surrounded by "\1\1\1\1\n"
+        """
+        try:
+	    # When orig_length is None, we haven't opened the file yet.
+            orig_length = None
+            # Open the mmdf file.
+            fp = open(mmdf, 'rb+')
+            lock_file(fp)
+            status_old = os.fstat(fp.fileno())
+            # Check if it _is_ an mmdf file; mmdf files must start
+            # with "\1\1\1\1\n" in their first line, or are 0-length files.
+            fp.seek(0, 0)                # seek to start
+            first_line = fp.readline()
+            if first_line != '' and first_line[:5] != '\1\1\1\1\n':
+                # Not an mmdf file; abort here.
+                unlock_file(fp)
+                fp.close()
+                raise Errors.DeliveryError, \
+                      'Destination "%s" is not an mmdf file!' % mmdf
+            fp.seek(0, 2)                # seek to end
+            orig_length = fp.tell()      # save original length
+            fp.write('\1\1\1\1\n')
+            # Add a trailing newline if last line incomplete.
+            if message[-1] != '\n':
+                message = message + '\n'
+            # Write the message.
+            fp.write(message)
+            # Add a trailing blank line.
+            fp.write('\n')
+            fp.write('\1\1\1\1\n')
+            fp.flush()
+            os.fsync(fp.fileno())
+            # Unlock and close the file.
+            status_new = os.fstat(fp.fileno())
+            unlock_file(fp)
+            fp.close()
+            # Reset atime.
+            os.utime(mmdf, (status_old[stat.ST_ATIME], status_new[stat.ST_MTIME]))
+        except IOError, txt:
+            try:
+                if not fp.closed and not orig_length is None:
+		    # If the file was opened and we know how long it was,
+		    # try to truncate it back to that length.
+                    fp.truncate(orig_length)
+                unlock_file(fp)
+                fp.close()
+            except:
+                pass
+            raise Errors.DeliveryError, \
+                  'Failure writing message to mmdf file "%s" (%s)' % (mmdf, txt)
+
     def __deliver_mbox(self, message, mbox):
         """Reliably deliver a mail message into an mboxrd-format mbox file.
 
