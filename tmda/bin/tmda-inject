@@ -33,12 +33,13 @@ OPTIONS:
            Full pathname to your outgoing filter file.  Overrides
            FILTER_OUTGOING in ~/.tmdarc.
 
-        -M <recipient>
-        --filter-match <recipient>
-           Check whether the given e-mail address matches a line in your outgoing
-           filter and then exit.  The address given should be that of the message
-           recipient.  This option will also check for parsing errors in the
-           filter file.
+        -M <recipient> <sender>
+        --filter-match <recipient> <sender>
+           Check whether the given e-mail address matches a line in
+           your outgoing filter and then exit.  The first address
+           given should be the message recipient (you), and the second
+           is the sender.  This option will also check for parsing
+           errors in the filter file.
            
 	recip
 	   If one or more recipients are provided, send the message to
@@ -114,8 +115,9 @@ import string
 # Just check Defaults.FILTER_OUTGOING for syntax errors and possible
 # matches, and then exit.
 if filter_match:
-    recip = sys.argv[-1]
-    Util.filter_match(Defaults.FILTER_OUTGOING, recip)
+    sender = sys.argv[-1]
+    recip = sys.argv[-2]
+    Util.filter_match(Defaults.FILTER_OUTGOING, recip, sender)
     sys.exit()
 
 message = sys.stdin
@@ -186,7 +188,7 @@ def inject_message(resending,
                    actions):
     """Hand the message off to sendmail."""
     # Default, if no From: is specified, is bare.
-    (cookie_type, cookie_option) = actions.get('from', ('bare', from_address))
+    (cookie_type, cookie_option) = actions.get('from', ('bare', None))
     magic_from = make_field(cookie_type, cookie_option,
                             from_address, to_address)
     envelope_sender = resent_from = magic_from
@@ -339,7 +341,8 @@ def main():
         if x_tmda_over:
             pass                        
         else:
-            (actions, matching_line) = outfilter.firstmatch(address)
+            (actions, matching_line) = outfilter.firstmatch(address,
+                                                            [from_address])
         if not actions:
 	    actions = { 'from' : (string.lower(Defaults.ACTION_OUTGOING), None) }
         # The message is sent to each recipient separately so that
