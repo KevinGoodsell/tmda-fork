@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.78+"
+TMDA = "0.79"
 
 # TMDA version codename
 CODENAME = "Dark Star"
