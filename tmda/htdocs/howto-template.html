@@ -1,0 +1,408 @@
+<HTML>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Thu Oct 24 19:59:45 2002 -->
+<!-- USING HT2HTML 1.2 -->
+<!-- SEE http://barry.wooz.org/software/ht2html -->
+<!-- User-specified headers:
+Title: TMDA Template HOWTO
+
+-->
+
+<HEAD>
+<TITLE>TMDA Template HOWTO</TITLE>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff" TEXT="#000000"
+      TOPMARGIN="0" LEFTMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0"
+      LINK="#0000bb"  VLINK="#551a8b"
+      ALINK="#ff0000">
+<!-- start of page table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=0>
+<!-- start of banner row -->
+<TR>
+<!-- start of corner cells -->
+<TD WIDTH=150 VALIGN=CENTER BGCOLOR="#191970">
+
+        <font color="#191970">
+        <h3> T M D A </h3>
+        </font> </TD>
+<TD WIDTH=15 BGCOLOR="#cccccc">&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of corner cells -->
+<!-- start of banner -->
+<TD WIDTH="90%" BGCOLOR="#cccccc">
+<!-- start of site links table -->
+<TABLE WIDTH="100%" BORDER=0
+CELLSPACING=0 CELLPADDING=0
+       COLS=4 ROWS=1 BGCOLOR="#ffffff">
+<TR>
+    <TD BGCOLOR="#cccccc">
+<a href="./index.html">TMDA Homepage</a>
+    </TD>
+    <TD BGCOLOR="#cccccc">
+<a href="http://sourceforge.net/projects/tmda">TMDA @ SourceForge</a>
+    </TD>
+    <TD BGCOLOR="#cccccc">
+&nbsp;&nbsp;</TD>
+    <TD BGCOLOR="#cccccc">
+&nbsp;&nbsp;</TD>
+</TR>
+</TABLE><!-- end of site links table -->
+
+</TD><!-- end of banner -->
+</TR><!-- end of banner row -->
+<TR><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<TD WIDTH=150 VALIGN=TOP BGCOLOR="#cccccc">
+<!-- start of sidebar table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=3
+       BGCOLOR="#ffffff">
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Overview
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="index.html">Introduction</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="history.html">History</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="features.html">Features</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="results.html">Results &amp; Testimonials</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="inuse.html">TMDA In Use</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="press.html">Press Coverage</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Usage
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="requirements.html">Requirements</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="download.html">Download</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="install.html">Installation</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="config.html">Configuration</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="howtos.html">HOWTOs</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+HOWTOs
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="howtos.html">Overview</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<b>Templates</b>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="tmda-ofmipd.html">tmda-ofmipd</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Support
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="trouble.html">Troubleshooting</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<a href="http://tmda.net/faq.cgi" TARGET="Resource Window">FAQ</a>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="bugs.html">Bugs &amp; Patches</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<a href="http://tmda.net/lists/listinfo/" TARGET="Resource Window">Mailing Lists</a>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<a href="http://mla.libertine.org/" TARGET="Resource Window">List Archive</a> 
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="resources.html">External Resources</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Author
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="mailto:jason@mastaler.com">Jason R. Mastaler</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+&nbsp;
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+&copy; 2001-2002
+</TD></TR>
+</TABLE><!-- end of sidebar table -->
+
+</TD>
+<TD WIDTH=15>&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<TD VALIGN=TOP WIDTH="90%"><BR>
+<h1>TMDA Template HOWTO</h1>
+
+<hr>
+
+<h2>Introduction</h2>
+
+TMDA comes with a set of template files which hold the content used in
+its various auto-responses. You can customize this content by editing
+and maintaining your own set of templates, which will be explained
+below.  <br><br>
+
+There are currently three templates:
+
+<ul>
+<li>bounce.txt (for failure notices)<br>
+<li>confirm_accept.txt (for confirmation acceptance notices)<br>
+<li>confirm_request.txt (for confirmation requests)<br>
+</ul>
+
+If you downloaded a TMDA source tarball, these files will be located
+in the <strong>templates/</strong> subdirectory of the
+distribution. If you are using a TMDA package, the template files will
+be in a global directory such as <strong>/etc/tmda/</strong> or
+<strong>/usr/share/tmda/</strong>.
+
+<hr>
+
+<h2>Template structure</h2>
+
+TMDA templates look much like a standard 
+<a href="http://www.faqs.org/rfcs/rfc2822.html" TARGET="Resource Window">RFC 2822</a> 
+e-mail message, consisting of header fields followed by a message body. The body
+is separated from the header by an empty line.
+
+<h3>header</h3>
+
+Header fields are lines composed of a field name, followed by a dot
+("."), followed by the name of the header's character set, followed by
+a colon (":"), followed by a field value, and terminated by CRLF. e.g,
+
+<pre><blockquote>
+Subject.US-ASCII: Please confirm your message
+
+</pre></blockquote>
+
+Header fields and values MUST be composed of printable US-ASCII
+characters. See the International section below if you wish to
+use non-ASCII characters in your template header values.
+
+<h3>body</h3>
+
+The body of a message is simply lines of US-ASCII characters.  See the
+International section below if you wish to use non-ASCII characters in
+your template body.
+
+<h3>composition</h3>
+
+Templates are composed of plain text mixed with variables in
+the form <code>%(variable)s</code>. The values of these variables
+are strings which are filled in when the message is created from the
+template. Variables can come from a variety of places:
+
+<ol>
+<li>Any variables in the Defaults.py namespace (usually shown in all
+caps in the templates).<br><br>
+
+<li>Any variable set in the bouncegen() function of tmda-rfilter
+(usually in all lowercase in the templates).  You'll have to look at
+the source for bouncegen() if you want a full list of these.<br><br>
+
+<li>Any variable set in your ~/.tmda/config or in /etc/tmdarc. For
+example, my config stores a local weather report in the variable
+`la_weather', which I then reference in my custom template as
+<code>%(la_weather)s</code>.
+</ol>
+
+<hr>
+
+<h2>Customizing your templates</h2>
+
+The contents of the default templates will suit the needs of some
+users, but many will want to customize them.  TMDA makes this easy to do.
+<br><br>
+
+If you want to use customized templates, you define <a
+href="http://tmda.net/config-vars.html#TEMPLATE_DIR">TEMPLATE_DIR</a>
+in your ~/.tmda/config, and copy the default templates that you want
+to customize to that directory. Another option is to invoke
+tmda-filter with the <code>-t</code> option. Then edit the template(s)
+to suit your needs.
+<br><br>
+
+If a template is not found in your custom directory, the default template
+will be used. This allows you for example to only customize confirm_request.txt,
+taking the defaults for the other templates.
+
+<hr>
+
+<h2>International (I18N) templates</h2>
+
+The default templates are written entirely in English, and in
+US-ASCII. If your native language is not English, and you frequently
+correspond with other users of that language, you may wish to use
+multilingual templates. TMDA also allows you to do this fairly easily.
+<br><br>
+
+<strong>NOTE:</strong> It's recommended that you not remove the
+English content from your templates, but rather supplement it with a
+native language translation.  For better or worse, the common language
+of the Internet is English, and to insure maximum readability, you
+should adhere to this.  <br><br>
+
+If your language does not use non-ASCII characters, you can safely
+ignore this section. However, if you do wish to use non-ASCII
+characters in your templates such as the cedilla in French or umlauts
+in German, keep reading.
+
+<h3>International e-mail primer</h3>
+
+Internet e-mail was born at a time when most e-mail was composed of
+7-bit ASCII characters only.  Of course, as e-mail has been deployed
+worldwide, it has become internationalized, such that language
+specific character sets can now be used in email messages. The base
+standard still requires e-mail messages to be transfered using only
+7-bit ASCII characters, so a slew of RFCs have been written describing
+how to encode email containing non-ASCII characters into an RFC
+2822-compliant format.
+<br><br>
+
+Luckily, TMDA handles all these gory details for you. This means you
+can write your templates in the character set of your choice, and TMDA
+will make sure the resulting auto-response is RFC-compliant.
+
+<h3>Internationalized bodies</h3>
+
+If you wish to use non-ASCII characters in the body of your template,
+first change the value of the <code>BodyCharset</code> pseudo-header
+field to the character set covering your language.  Refer to the table
+at the bottom of this page for help figuring out which character set
+to use. <br><br>
+
+For example, if you are mixing German+English in your template,
+<code>BodyCharset</code> should be set to the following:
+
+<pre><blockquote>
+BodyCharset: LATIN-1
+
+</pre></blockquote>
+
+The entire <code>BodyCharset</code> field is case-insensitive.
+<br><br>
+
+Then just enter the non-ASCII characters directly into your template
+along with the ASCII characters. TMDA will properly encode the message
+based on the charset you specified.
+<br><br>
+
+<code>BodyCharset</code> only accepts one charset as its value, so you
+should choose a character set that encompasses all the languages you
+plan to use in your template. For example, you can write
+German+Polish+English with Latin-2 or German+Turkish+English with
+Latin-5 but there is no 8bit charset to properly mix
+German+Russian+English, for instance.
+
+<h3>Internationalized headers</h3>
+
+If you wish to use non-ASCII characters in your template header
+values, first change the charset suffix for that header to the
+character set covering your language. Refer to the table at the bottom
+of this page for help figuring out which character set to use.
+<br><br>
+
+For example, if you want to use a German Subject in your template,
+the Subject field might be changed to the following:
+
+<pre><blockquote>
+Subject.LATIN-1: Please confirm your message / Bitte Bestätigen
+
+</pre></blockquote>
+
+Unlike with template bodies, template headers are not restricted
+to one character set. Different headers can use different character
+sets. For example, a Japanese From field with German Subject field:
+
+<pre><blockquote>
+From.EUC-JP: "Kenichi OKADA" <%(recipient_address)s>
+Subject.LATIN-1: Please confirm your message / Bitte Bestätigen
+
+</pre></blockquote>
+
+<h3>CJK (Chinese, Japanese, Korean)</h3>
+
+Multi-byte character sets such as those used in CJK can be used in a
+TMDA template, but requires that the proper Unicode codec be
+installed into your Python first (single-byte 8-bit charsets don't need
+a Unicode codec).
+
+<h4>Chinese</h4>
+
+First install the ChineseCodecs Python package.  This is available in 
+<a href="http://sourceforge.net/projects/python-codecs" TARGET="Resource Window">CVS form</a>,
+or in 
+<a href="ftp://ftp.FreeBSD.org/pub/FreeBSD/ports/local-distfiles/perky/
+"TARGET="Resource Window">tarball form</a>.
+The latest version of the package at this writing is
+1.2.0. Net/Free/OpenBSD packages are also available.
+<br><br>
+
+Simplified Chinese: Templates should be in the <strong>GB2132</strong> charset.<br>
+Traditional Chinese: Templates should be in the <strong>BIG5</strong> charset.<br>
+
+<h4>Japanese</h4>
+
+First install the <a href="http://www.asahi-net.or.jp/~rd6t-kjym/python/" 
+TARGET="Resource Window">JapaneseCodecs</a>
+Python package. Debian and FreeBSD packages are also available. The latest version of the
+package at this writing is 1.4.9.
+<br><br>
+
+Templates must be in the <strong>EUC-JP</strong> charset, not
+ISO-2022-JP or Shift_JIS.  When the e-mail message is sent, the text
+will be automatically be convered into ISO-2022-JP for 7-bit transmission.
+
+<h4>Korean</h4>
+
+First install the <a href="http://sourceforge.net/projects/koco/"
+TARGET="Resource Window">KoreanCodecs</a>
+Python package. FreeBSD and NetBSD packages are also available. The latest version of the
+package at this writing is 2.0.5.
+<br><br>
+
+Templates must be in the <strong>EUC-KR</strong> charset.
+
+<h3>Alphabet Soup</h3>
+
+The charset value for <code>BodyCharset</code>, and the charset
+suffix for Header.CHARSET can be any ISO standard character set name
+(such as ISO-8859-1), or an alias for that charset (such as LATIN-1).
+
+<br><br>
+Insert some sort of charset map or table to help users decide which
+charset they need for their language. Many users will already know
+this information, but many will not. Any suggestions?
+
+The <a href="http://czyborra.com/charsets/iso8859.html" TARGET="Resource Window">ISO-8859-*</a>
+series will cover most user's needs.
+
+<br><br>
+
+
+ 
+</TD><!-- end of body cell -->
+</TR><!-- end of sidebar/body row -->
+</TABLE><!-- end of page table -->
+</BODY></HTML>
