@@ -29,6 +29,12 @@ SOURCES =	$(shell echo *.ht)
 TARGETS =	$(filter-out *.html,$(SOURCES:%.ht=%.html)) $(EXTRA_TARGETS)
 GENERATED_HTML= $(SOURCES:.ht=.html)
 
+DEST =          jason@tmda.net:www/tmda.net/htdocs/
+EXCLUDES =      --exclude "*"
+INCLUDES =	--include "*.html"
+ARGS =          -v -a -z --delete $(INCLUDES) $(EXCLUDES)
+
+
 .SUFFIXES:	.ht .html
 
 .ht.html:
@@ -49,3 +55,6 @@ clean: clean
 	-rm -f config-vars.tmp
 
 remake: clean all
+
+install: 
+	rsync $(ARGS) . $(DEST)
