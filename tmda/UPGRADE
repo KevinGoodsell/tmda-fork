@@ -1,5 +1,20 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.66:
+
+* DELIVERED_CACHE and DELIVERED_CACHE_LEN are no longer used to store
+  delivery status information about pending messages. Instead, a
+  Maildir-like status flag (':3,R' and ':3,C') is appended to the
+  filename to indicate delivery by release or delivery by
+  confirmation.
+
+  No action is required to accommodate this change, but if you use
+  tmda-pending, you'll notice that previously delivered messages will
+  now show up in the output until they are deleted or are cached with
+  the ``--cache'' option.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.65:
 
 * If you are using customized templates, you should replace
