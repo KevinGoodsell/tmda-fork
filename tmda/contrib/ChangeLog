@@ -1,3 +1,9 @@
+2002-01-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* list2cdb (cdb): Lowercase entries before they are added to DB.
+
+	* list2dbm (dbm): Ditto.
+	
 2001-12-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add 'sendmail' as a MAIL_TRANSFER_AGENT option.
