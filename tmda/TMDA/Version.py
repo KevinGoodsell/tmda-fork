@@ -30,22 +30,20 @@ import sys
 TMDA = "0.52+"
 
 # Python version
-# e.g, 2.2 
 PYTHON = sys.version.split()[0]
 
 try:
     # System information (sysname, nodename, release, version, machine)
-    # e.g, ('OSF1', 'spe147', 'V5.1', '1885', 'alpha')
+    # e.g, ('OpenBSD', 'server2', '3.0', 'PE2550_UP#0', 'i386')
     UNAME = os.uname()
-    SYSNAME = UNAME[0].replace(' ', '_').replace('/', '_') # OSF1
-    MACHINE = UNAME[4].replace(' ', '_').replace('/', '_') # alpha
-    PLATFORM = SYSNAME + '/' + MACHINE  # OSF1/alpha
+    ARCH = UNAME[4].replace(' ', '_').replace('/', '_').lower()
+    PLATFORM = ARCH + '-' + sys.platform
 except AttributeError:
     # Fall back to using just sys.platform for PLATFORM if uname isn't
     # available on this host.
-    UNAME = SYSNAME = MACHINE = None
-    PLATFORM = sys.platform             # osf1V5
+    UNAME = ARCH = None
+    PLATFORM = sys.platform
     
 # Summary of all the version identifiers
-# e.g, TMDA/0.49 (Python 2.2 on OSF1/alpha)
+# e.g, TMDA/0.52 (Python 2.2.1 on i386-openbsd3)
 ALL = "TMDA/%s (Python %s on %s)" % (TMDA, PYTHON, PLATFORM)
