@@ -1,3 +1,8 @@
+2002-05-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* install.ht (Links): Clarify that TMDA is meant to be run
+	directly from its source tree.
+
 2002-05-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* resources.ht: Link to Andrew Wilson's Mail::Address::Tagged perl

@@ -27,6 +27,14 @@ installs.
 # ./compileall
 
 </pre></blockquote>
+
+<li>TMDA is designed to run directly from its source directory.  For
+example, if installed in /usr/local/tmda-0.01/, you'd run <b>tmda-keygen</b>
+by invoking <code>/usr/local/tmda-0.01/bin/tmda-keygen</code>.  Do not
+move the bin/* programs outside the source tree, although making
+symlinks from other areas of the filesystem (such as /usr/local/bin)
+into the source tree will work fine.
+
 </ol>
 
 <u>Installation from Linux RPMs</u><br><br>
