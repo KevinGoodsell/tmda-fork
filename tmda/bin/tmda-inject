@@ -171,6 +171,25 @@ def inject_message(resending,
         message_headers['Resent-From'] = message_from_format
     else:
         message_headers['From'] = message_from_format
+    # If the MUA has added a `Mail-Followup-To' header that contains
+    # the untagged address, we need to tag that as well.
+    if message_headers.has_key('mail-followup-to'):
+        mft_list = message_headers.getaddrlist('mail-followup-to')
+        new_mft_list = []
+        for a in mft_list:
+            emaddy = a[1]
+            if emaddy == from_address:
+                new_mft_list.append(final_sender_address)
+            else:
+                new_mft_list.append(emaddy)
+        message_headers['Mail-Followup-To'] = string.join(new_mft_list, ',\n\t')
+    # Add `Date' and `Message-ID' headers only if they don't already exist.
+    if not message_headers.has_key('date'):
+        message_headers['Date'] = Util.make_date()
+    if not message_headers.has_key('message-id'):
+        message_headers['Message-ID'] = Util.make_msgid()
+    # Add `X-Delivery-Agent' header.
+    message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
     # Inject the message.
     inject = []
     inject.append(Defaults.SENDMAIL)
@@ -212,8 +231,6 @@ def main():
     header_to = message_headers.getaddrlist("to")
     header_cc = message_headers.getaddrlist("cc")
     header_bcc = message_headers.getaddrlist("bcc")
-    # Add custom headers.
-    message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
     # Read in the message body.
     message_body = message.read()
     
