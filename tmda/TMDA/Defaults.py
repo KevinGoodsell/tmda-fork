@@ -504,8 +504,14 @@ if not vars().has_key('DELIVERED_CACHE'):
     DELIVERED_CACHE = os.path.join(DATADIR, 'pending', '.delivered_cache')
 
 # DELIVERED_CACHE_LEN
+#
 # An integer which specifies the maximum number of entries held by
 # DELIVERED_CACHE.
+#
+# Make sure this value is larger than the number of messages normally
+# stored in your pending queue.  The default value may not suffice if
+# you run a very high traffic TMDA, and/or have a long pending queue
+# purge interval.
 #
 # Default is 5000
 if not vars().has_key('DELIVERED_CACHE_LEN'):

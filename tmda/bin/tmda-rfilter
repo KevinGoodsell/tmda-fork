@@ -427,6 +427,12 @@ def verify_confirm_cookie(confirm_cookie):
             # buggers and trying to sneak a message through.
             logit("DROP already_delivered_message")
             mta.stop()
+        elif not os.path.exists(confirmed_file):
+            # Shouldn't get here either.  Might mean someone is
+            # sending directly to a 'confirm-done' address after the
+            # message was purged from DELIVERED_CACHE and disk.
+            logit("DROP nonexistent_pending_message")
+            mta.stop()
         else:
             # Cache and deliver the message.
             incoming_headers = globals().get('message_headers')
@@ -434,6 +440,12 @@ def verify_confirm_cookie(confirm_cookie):
                 msgval = 'c'
             elif incoming_headers.has_key('x-tmda-released'):
                 msgval = 'r'
+            else:
+                # Someone must be sending a message directly to a
+                # 'confirm-done' address, possibly in an attempt to
+                # sneak it through.
+                logit("DROP invalid_delivery_method")
+                mta.stop()
             # Record this message in the cache as a dictionary,
             # where the message filename is the key, and how it was
             # delivered is the value. e.g, {'1017186412.798.msg':'c'}
