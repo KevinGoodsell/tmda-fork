@@ -1,3 +1,7 @@
+2001-11-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.41.
+
 2001-11-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add TIMEZONE.
