@@ -255,6 +255,9 @@ rights.""")
 
   def BecomeUser(self):
     "Set up everything to *BE* the user."
+    Match = re.search("(.+)/$", self.Vars["HOME"])
+    if Match:
+      self.Vars["HOME"] = Match.group(1)
     os.environ["HOME"] = self.Vars["HOME"]
     self.__suid__("user")
     self.Valid = 1

@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Aug 18 18:33:37 2003 -->
+<!-- Sat Aug 23 13:51:24 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -169,6 +169,9 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
   <tr>
     <td><a href="#ViewPendingEmailClass">ViewPending:EmailClass</a></td>
     <td><a href="#ViewPendingHeaders">ViewPending:Headers</a></td>
+  </tr>
+  <tr>
+    <td><a href="#AccessPaths">AccessPaths</a></td>
   </tr>
 </table>
 
@@ -601,6 +604,44 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
       </tr>
     </table>
   <p>Default: <tt>short</tt></p>
+</blockquote>
+
+<h4><a name="AccessPaths"></a>AccessPaths</h4>
+<blockquote>
+  <p>tmda-cgi allows users to view and/or edit text files such as filters,
+    lists, configuration files, and templates.  These editors/viewers could be
+    exploited by a devious user.  To minimize your risk, the AccessPaths
+    section allows you to specify where these files may be located.  Unless a
+    full file path matches one of the regular expressions listed, it will not be
+    brought up in an text box.</p>
+  <p><b><i>Note:</i></b> If you do not trust your users, be sure to set
+    either</p>
+  <p><tt>defaults.ini</tt>:
+    <table class="example">
+      <tr>
+        <td>[NoOverride]<br>
+          MayEditLocalConfig = No</td>
+      </tr>
+    </table>
+  <p>or</p>
+  <p><tt>/etc/tmdarc</tt>:
+    <table class="example">
+      <tr>
+        <td>CONFIG_EXEC = 0</td>
+      </tr>
+    </table>
+  <p>A devious user could easily put executable code in their local
+    configuration file which would allow them access to any file not protected
+    by restrictive file permissions.</p>
+
+  <p>Default:
+    <table class="example">
+      <tr>
+        <td>[AccessPaths]<br>
+          A = ^%(Home)s/<br>
+          B = ^/etc/tmdarc$</td>
+      </tr>
+    </table>
 </blockquote>
 </td>
 <!-- end of body cell -->

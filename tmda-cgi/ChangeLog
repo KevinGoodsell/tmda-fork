@@ -1,3 +1,7 @@
+2003-08-23  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Made sure users can only edit/view files in approved directories.
+
 2003-08-22  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Improved virtual-user domain guesser logic.

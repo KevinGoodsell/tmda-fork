@@ -54,12 +54,15 @@ def Show():
 
     # Get file
     T["FilePath"] = Filename
-    try:
-      F = open(Filename)
-      FileContents = F.read()
-      F.close()
-    except IOError:
-      FileContents = ""
+    if CgiUtil.TestTextFilePath(Filename):
+      try:
+        F = open(Filename)
+        FileContents = F.read()
+        F.close()
+      except IOError:
+        FileContents = ""
+    else:
+      FileContents = "(File is not accessible.)"
 
     # Saving?
     if Form.has_key("subcmd") and \
@@ -73,9 +76,10 @@ def Show():
         FileContents = re.sub("\n*$", "", FileContents)
         FileContents += "\n"
 
-        F = open(Filename, "w")
-        F.write(FileContents)
-        F.close()
+        if CgiUtil.TestTextFilePath(Filename):
+          F = open(Filename, "w")
+          F.write(FileContents)
+          F.close()
       except IOError, ErrStr:
         CgiUtil.TermError("Unable to save template file.",
         "Insufficient privileges", "save template", "%s<br>%s" % (ErrStr,

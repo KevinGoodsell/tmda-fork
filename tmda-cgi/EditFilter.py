@@ -41,12 +41,15 @@ def Show():
     T["FilePath"] = Filename = CgiUtil.ExpandUser(Defaults.FILTER_OUTGOING)
 
   # Get file
-  try:
-    F = open(Filename)
-    T["FileContents"] = F.read()
-    F.close()
-  except IOError:
-    T["FileContents"] = ""
+  if CgiUtil.TestTextFilePath(Filename):
+    try:
+      F = open(Filename)
+      T["FileContents"] = F.read()
+      F.close()
+    except IOError:
+      T["FileContents"] = ""
+  else:
+    T["FileContents"] = "(File is not accessible.)"
   
   # Are we allowed to save?
   if PVars[("NoOverride", "MayEditFilters")][0].lower() == "n":
@@ -64,16 +67,19 @@ def Show():
       Contents = re.sub("\n*$", "", Contents)
       Contents += "\n"
 
-      try:
-        F = open(Filename, "w")
-        F.write(Contents)
-        F.close()
-        T["FileContents"] = Contents
-      except IOError, ErrStr:
-        CgiUtil.TermError("Unable to save filter.",
-        "Insufficient privileges", "save filter", "%s<br>%s" % (ErrStr,
-        CgiUtil.FileDetails("Filter", Filename)),
-        "Change file permissions on <tt>%s</tt>" % Filename)
+      if CgiUtil.TestTextFilePath(Filename):
+        try:
+          F = open(Filename, "w")
+          F.write(Contents)
+          F.close()
+          T["FileContents"] = Contents
+        except IOError, ErrStr:
+          CgiUtil.TermError("Unable to save filter.",
+          "Insufficient privileges", "save filter", "%s<br>%s" % (ErrStr,
+          CgiUtil.FileDetails("Filter", Filename)),
+          "Change file permissions on <tt>%s</tt>" % Filename)
+      else:
+        FileContents = "(File is not accessible.)"
 
   # Display template
   print T

@@ -81,12 +81,15 @@ def Show():
 
     # Get file
     T["FilePath"] = EditFile
-    try:
-      F = open(EditFile)
-      T["FileContents"] = List = F.read()
-      F.close()
-    except IOError:
-      T["FileContents"] = ""
+    if CgiUtil.TestTextFilePath(EditFile):
+      try:
+        F = open(EditFile)
+        List = F.read()
+        F.close()
+      except IOError:
+        pass
+    else:
+      List = "(File is not accessible.)"
 
   else:
     # The user has no text-based lists defined in their filters.
@@ -132,15 +135,16 @@ height="%(height)d" alt=""" % Buttons[File][1]
       List = re.sub("^\n*", "", List)
       List += "\n"
 
-      try:
-        F = open(EditFile, "w")
-        F.write(List)
-        F.close()
-      except IOError, ErrStr:
-        CgiUtil.TermError("Unable to save filter list.",
-        "Insufficient privileges", "save list", "%s<br>%s" % (ErrStr,
-        CgiUtil.FileDetails("Filter list", EditFile)),
-        "Change file permissions on <tt>%s</tt>" % EditFile)
+      if CgiUtil.TestTextFilePath(EditFile):
+        try:
+          F = open(EditFile, "w")
+          F.write(List)
+          F.close()
+        except IOError, ErrStr:
+          CgiUtil.TermError("Unable to save filter list.",
+          "Insufficient privileges", "save list", "%s<br>%s" % (ErrStr,
+          CgiUtil.FileDetails("Filter list", EditFile)),
+          "Change file permissions on <tt>%s</tt>" % EditFile)
 
   # Display template
   T["FileContents"] = List

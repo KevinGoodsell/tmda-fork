@@ -183,3 +183,11 @@ def getFilterOptions():
 
   # For now, show nothing.
   return ""
+
+def TestTextFilePath(Path):
+  "Tests Path against regular expressions listed in AccessPaths (defaults.ini)"
+  Dict = {"Home": os.environ["HOME"]}
+  for Var in PVars.ThemeVars.options("AccessPaths"):
+    if re.search(PVars.ThemeVars.get("AccessPaths", Var, 1) % Dict, Path):
+      return 1
+  return None
