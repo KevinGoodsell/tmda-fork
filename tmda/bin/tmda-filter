@@ -25,6 +25,8 @@ try:
         import paths
     except ImportError:
         pass
+
+    from TMDA import Errors
     
     program = sys.argv[0]
     execdir = os.path.dirname(os.path.abspath(program))
@@ -33,7 +35,7 @@ try:
 except KeyboardInterrupt:
     pass
 
-except StandardError:
+except (StandardError, Errors.TMDAError):
     try:
         status = 75
         tb1 = sys.exc_info()
@@ -44,12 +46,12 @@ except StandardError:
             raise NameError, 'LOGFILE_DEBUG is not defined'
         print 'Exception', LOGFILE_DEBUG
         fp = open(LOGFILE_DEBUG, 'a')
-    except StandardError:
+    except (StandardError, Errors.TMDAError):
         try:
             print 'Exception', '~/TMDA_DELIVERY_FAILURE'
             tb2 = sys.exc_info()
             fp = open(os.path.expanduser('~/TMDA_DELIVERY_FAILURE'), 'a')
-        except StandardError:
+        except (StandardError, Errors.TMDAError):
             tb3 = sys.exc_info()
 
 if status:

@@ -5,8 +5,6 @@
 
 import sys
 
-import Defaults
-
 
 # exception classes
 class TMDAError(Exception):
@@ -19,4 +17,3 @@ class MissingEnvironmentVariable(TMDAError):
         TMDAError.__init__(self)
         self.varname = varname
         print 'Missing environment variable:', self.varname
-        sys.exit(Defaults.EX_TEMPFAIL)

@@ -3,6 +3,9 @@
 	* tmda-filter: Try to look for the user's LOGFILE_DEBUG setting
 	first, and if we can't log to that, fall back to
 	~/TMDA_DELIVERY_FAILURE.
+
+	In addition to StandardError derived exceptions, also catch TMDA's
+	own exceptions.
 	
 2002-01-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
