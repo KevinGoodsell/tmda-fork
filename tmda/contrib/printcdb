@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+# Requires the python-cdb extension module from <http://pilcrow.madison.wi.us/>
+#
+# Usage: % printcdb cdbfile.cdb
+#
+# Print the contents of a CDB file with each key and its
+# value seperated by whitespace.
+
+import cdb
+import sys
+
+cdbfile = sys.argv[1]
+
+cdb = cdb.init(cdbfile)
+for key in cdb.keys():
+    print '%s %s' % (key, cdb[key])

@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+#
+# Usage: % printdbm dbmfile.db
+#
+# Print the contents of a DBM db with each key and its
+# value seperated by whitespace.
+
+import anydbm
+import sys
+
+dbmfile = sys.argv[1]
+
+dbm = anydbm.open(dbmfile,'r')
+for key in dbm.keys():
+    print '%s %s' % (key, dbm[key])
+dbm.close()

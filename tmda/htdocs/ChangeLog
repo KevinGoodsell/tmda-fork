@@ -1,5 +1,7 @@
 2001-12-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config-filter.ht: Document CDB support.
+
 	* results.ht (Links): Update personal SPAM statistics.
 
 	* faq.ht (Links): Add cygwin usage information to the Windows

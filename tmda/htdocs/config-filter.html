@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Nov 29 11:43:37 2001 -->
+<!-- Sun Dec  2 20:16:06 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -180,6 +180,7 @@ source match action
 <blockquote><pre>
 to (recipient address)
 to-file
+to-cdb
 to-dbm
 
 </blockquote></pre>
@@ -188,6 +189,7 @@ to-dbm
 <blockquote><pre>
 from (sender address)
 from-file
+from-cdb
 from-dbm
 body (message body)
 body-file
@@ -198,12 +200,12 @@ size (message size)
 </blockquote></pre>
 
 <li><b>match</b>: 
-should be an expression, or the full path to a textfile or
+should be an expression, or the full path to a textfile, CDB database, or
 DBM database containing more expressions if <b>source</b> was suffixed
-with `-file' or `-dbm'.
+with `-file', `-cdb', or `-dbm'.
 <br><br>
 
-The second field within a textfile or DBM is optional, but overrides
+The second field within a textfile, CDB or DBM is optional, but overrides
 action if present.  e.g,
 
 <blockquote><pre>
@@ -211,15 +213,22 @@ foo@mastaler.com
 bar@mastaler.com bounce
 
 </blockquote></pre>
+In a CDB or DBM, the keys should be the e-mail addresses to match, and
+their corresponding values (or records) should be empty unless you
+want to override the action specified in the filter file.  Example
+scripts are included in the <strong>contrib</strong> directory to
+convert your TMDA-style lists into CDB/DBM files and vice-versa.
+These are <em>list2cdb/list2dbm</em> and <em>printcdb/printdbm</em>.
+For CDB, you can also use the utilities (cdbmake, cdbdump, etc.) from
+DJB's <a href="http://cr.yp.to/cdb.html" TARGET="Resource Window">CDB distribution</a> 
+if you prefer.
 
-In a DBM, the keys should be the e-mail addresses to match, and their
-corresponding values should be empty unless you want to override the
-action specified in the filter file.  The scripts 
-<a href="http://mla.libertine.org/tmda-workers/200111/bin00002.bin">list2dbm</a>
-and
-<a href="http://mla.libertine.org/tmda-workers/200111/bin00001.bin">printdbm</a> 
-are available to convert your lists into DBM files and
-vice-versa.  
+DBM support comes with your Python intrepreter, but CDB support
+currently requires that you first install the
+<a href="http://pilcrow.madison.wi.us/" TARGET="Resource Window">python-cdb</a>
+extension module.  Also see
+<a href="http://mla.libertine.org/tmda-workers/200111/msg00181.html" TARGET="Resource Window">
+this message</a> for more on installing python-cdb.  
 <br><br>
 
 The following table shows what the <b>match</b> expression should
@@ -245,7 +254,7 @@ In addition to explicit e-mail addresses, you can use expressions
 based on UNIX shell-style wildcard characters in either the
 <b>match</b> field of a line, or within the textfile in the
 <b>match</b> field.  Wildcard characters are not recognized
-in a DBM file.  The special characters are:
+in a CDB or DBM file.  The special characters are:
 
 <blockquote><pre>
 
@@ -325,7 +334,8 @@ from *@=mycorp.dom ok
 
 # Include my blacklist and whitelist
 from-dbm ~/.tmda/lists/blacklist.db drop
-from-file ~/.tmda/lists/whitelist accept
+from-cdb ~/.tmda/lists/whitelist.cdb accept
+from-file ~/.tmda/lists/whitelist_wildcards accept
 
 # Revoked addresses
 to jason-stupid-promo.289076@mastaler.com bounce
@@ -347,7 +357,8 @@ size >1000000 exit
 #### ~/.tmda/filters/outgoing (first match wins) ###
 
 # All whitelisted contacts receive untagged messages
-to-file ~/.tmda/lists/whitelist bare
+to-cdb ~/.tmda/lists/whitelist.cdb bare
+to-file ~/.tmda/lists/whitelist_wildcards bare
 
 # Keyword Addresses
 to *@myisp.net kw=myisp
