@@ -3,7 +3,7 @@ Links: overview-links.h usage-links.h support-links.h
 
 <h3>TMDA Feature Highlights</h3>
 <ul>
-<li>Free software.<br><br>
+<li>Free (OpenSource) software.<br><br>
 
 <li>Written entirely in <a href="http://www.python.org/" TARGET="Resource Window">
 Python</a>: an interpreted, interactive, object-oriented programming language.
@@ -20,12 +20,20 @@ Python</a>: an interpreted, interactive, object-oriented programming language.
 <li>Optional automatic whitelisting of confirmed senders.
 <br><br>
 
-<li>Smart auto-responding -- won't reply to a mailing list or bounce
-message.  Includes auto-response rate limiting to prevent mail loops.
+<li>Easy customization of auto-responses through a
+<a href="howto-template.html">template system</a> with complete I18N support, 
+including multi-byte character sets (e.g, Chinese, Japanese, Korean).<br><br>
+
+<li>Local mail delivery, including qmail-style Maildirs, mboxrd-format
+mboxes, program (pipe) delivery, and forward to an e-mail address.<br><br>
+
+<li>Smart auto-responding -- won't reply to a mailing list, bounce
+message, or another auto-response.  Includes auto-response rate limiting
+to prevent mail loops.
 <br><br>
 
 <li>Client-side support for both Unix and non-Unix (e.g, Outlook, Eudora, Mozilla)
-mail clients.<br><br>
+mail clients through <a href="tmda-ofmipd.html">tmda-ofmipd</a>.<br><br>
 
 <li>Package installation available for Linux, and Free/Net/OpenBSD.<br><br>
 
@@ -35,15 +43,11 @@ mail clients.<br><br>
 allowing fine-grained control over how incoming and outgoing mail is
 disposed of.<br><br>
 
-<li>Local mail delivery, including qmail-style Maildirs, mboxrd-format
-mboxes, program (pipe) delivery, and forward to an e-mail address.<br><br>
 
 <li>Supports DBM and <a href="http://cr.yp.to/cdb.html" TARGET="Resource Window">
 CDB</a> databases, including on-demand auto-regeneration of DB files.<br><br>
 
 <li>Optional logging of incoming and outgoing messages.<br><br>
-
-<li>Easy customization of confirmation messages through templates.<br><br>
 
 <li>Use of <a href="http://www.faqs.org/rfcs/rfc2104.html" TARGET="Resource Window">
 HMAC</a> (Hashed Message Authentication Codes) for "cookie" generation and verification.
