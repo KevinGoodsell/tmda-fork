@@ -86,7 +86,9 @@ tmdarc:
 * BOUNCE_BLACKLIST_CC, BOUNCE_CONFIRM_CC, and BOUNCE_REVOKED_CC were
   replaced by FILTER_DROP_CC, CONFIRM_CC, and FILTER_BOUNCE_CC.
 
-* WHITELIST_AUTO_APPEND was replaced by CONFIRM_APPEND.
+* WHITELIST_AUTO_APPEND was replaced by CONFIRM_APPEND.  The value for
+  CONFIRM_APPEND should be the path to a filename rather than an
+  integer.
 
 * COOKIE_TYPE was replaced by ACTION_OUTGOING.
 
