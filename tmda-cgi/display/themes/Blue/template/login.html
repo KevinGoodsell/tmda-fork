@@ -16,13 +16,13 @@ Having difficulties logging in?  Here's some details of why you couldn't:
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="%(ThemeDir)s/styles.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor="#A6A6B3">
+<body bgcolor="#A6A6B3" onload="javascript: document.loginform.user.focus();">
 <table width="100%" height="100%">
   <tr>
     <td align="center"><table width="383" height="215" border="0"
       cellpadding="0" cellspacing="0">
         <tr>
-          <form method="post" action="%(Script)s">
+          <form method="post" action="%(Script)s" name="loginform">
             <td valign="top" background="%(ThemeDir)s/login.gif"><table border="0"
               cellpadding="0" cellspacing="0">
                 <tr>
