@@ -160,13 +160,7 @@ Can't find key file:<br>
   won't work because the user I'm compiling as doesn't have the needed
   permissions to put a file in the web tree. Can I do <tt>make install</tt> as
   root?</p>
-<p>No, don't do <tt>make install</tt> as root.  That will put the wrong
-  privileges on the binary.  If the account you are using doesn't have
-  permission to write to the web tree, then select a different place to save
-  the binary (such as <tt>/tmp/</tt>) when you run <tt>configure</tt>.</p>
-<p>Now run <tt>make</tt> and <tt>make install</tt> as normal and use root to
-  move the file from <tt>/tmp/</tt> (or wherever) into the web tree.</p>
-<p>This will make sure that the binary's UID/GID remain intact.</p>
+<p>Yes, you may do <tt>make install</tt> as root.</p>
 
 <h3><a name="International"></a>International Intrigue</h3>
 <p>Instead of Chinese characters in the pending list, the subject lines are

@@ -1,3 +1,9 @@
+2003-05-14  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Changed the configure program so users can do the "make install" as
+	  root if the current user doesn't have permission to write to the
+	  web tree.
+
 2003-05-13  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Replaced standard Python iso-8859-1 decoder with my own that seems

@@ -425,9 +425,9 @@ F.close()
 F = open("Makefile", "w")
 F.write("""%(Target)s: tmda-cgi.h
 \tcc -I . %(Path)stmda-cgi.c -o tmda.cgi
+\tchmod %(Perm)s tmda.cgi
 install:
-\tcp -f tmda.cgi %(Target)s
-\tchmod %(Perm)s %(Target)s
+\tmv -f tmda.cgi %(Target)s
 """ % OptD)
 
 # Compile Python code

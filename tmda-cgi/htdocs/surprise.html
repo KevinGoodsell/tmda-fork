@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed May  7 01:02:35 2003 -->
+<!-- Wed May 14 10:05:14 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -239,12 +239,9 @@ Can't find key file:<br>
   permissions to put a file in the web tree. Can I do <tt>make install</tt> as
   root?</p>
 <p>No, don't do <tt>make install</tt> as root.  That will put the wrong
-  privileges on the binary.  If the account you are using doesn't have
-  permission to write to the web tree, then select a different place to save
-  the binary (such as <tt>/tmp/</tt>) when you run <tt>configure</tt>.</p>
-<p>Now run <tt>make</tt> and <tt>make install</tt> as normal and use root to
-  move the file from <tt>/tmp/</tt> (or wherever) into the web tree.</p>
-<p>This will make sure that the binary's UID/GID remain intact.</p>
+  owner on the binary.  Instead, use the *nix <tt>mv</tt> command to move the
+  <tt>tmda.cgi</tt> file to its final destination.  That will keep the owner
+  and group intact.</p>
 
 <h3><a name="International"></a>International Intrigue</h3>
 <p>Instead of Chinese characters in the pending list, the subject lines are
