@@ -1,0 +1,49 @@
+Title: TMDA Mirrors
+Links: overview-links.h usage-links.h support-links.h
+
+<h3>TMDA Mirrors</h3>
+
+These web pages are mirrored in several locations for your
+convenience. Here are the current list of mirrors: 
+<br><br>
+
+North America
+<ul>
+<li><a href="http://tmda.mirrors.summersault.com/" TARGET="Resource Window">
+tmda.mirrors.summersault.com</a> (United States)<br>
+
+</ul>
+
+<hr>
+<br>
+
+<u>How to mirror the TMDA website:</u><br>
+
+<ol>
+
+<li>Use <a href="http://rsync.samba.org/" TARGET="Resource Window">rsync</a> 
+to synchronize your copy of the website with mine. e.g,
+
+<blockquote><code>
+$ rsync -az --delete tmda.net::tmdaweb/ /local/path/to/mirror/
+</blockquote></code>
+
+You should run this  <strong>at least once per day</strong> from cron or 
+the equivalent.
+<br><br>
+
+<li>Drop me a note if you'd like your mirror listed here.
+<br><br>
+
+<li>If your mirror is located outside the United States, you might
+consider running it on its own virtual host so that I can make a
+<em>www.CountryCode.tmda.net</em> host alias for it. e.g, 
+<em>www.au.tmda.net</em>, <em>www.se.tmda.net</em>.
+In this case, please send me the IP address of your virtual host,
+and of course where you are located.
+
+</ol>
+
+
+
+

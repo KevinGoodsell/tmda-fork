@@ -1,15 +1,15 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Jan 23 17:43:24 2003 -->
+<!-- Thu Jan 23 17:44:26 2003 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
-Title: TMDA Installation
+Title: TMDA Mirrors
 
 -->
 
 <HEAD>
-<TITLE>TMDA Installation</TITLE>
+<TITLE>TMDA Mirrors</TITLE>
 
 </HEAD>
 <BODY BGCOLOR="#ffffff" TEXT="#000000"
@@ -37,7 +37,7 @@ CELLSPACING=0 CELLPADDING=0
 <a href="./index.html">TMDA Homepage</a>
     </TD>
     <TD BGCOLOR="#cccccc">
-<a href="./mirrors.html">TMDA Mirrors</a>
+<b>TMDA Mirrors</b>
     </TD>
     <TD BGCOLOR="#cccccc">
 <a href="http://sourceforge.net/projects/tmda">TMDA @ SourceForge</a>
@@ -87,7 +87,7 @@ Usage
 <A HREF="download.html">Download</A>
 </TD></TR>
 <TR><TD BGCOLOR="#cccccc">
-<b>Installation</b>
+<A HREF="install.html">Installation</A>
 </TD></TR>
 <TR><TD BGCOLOR="#cccccc">
 <A HREF="config.html">Configuration</A>
@@ -140,78 +140,52 @@ Author
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <TD VALIGN=TOP WIDTH="90%"><BR>
-<h3>TMDA Installation</h3>
+<h3>TMDA Mirrors</h3>
 
-<u>Installation from gzipped tarball</u><br><br>
-Choose an installation location which can either be an individual area 
-(such as within your home directory), or a shared area (such as /usr/local) 
-for system-wide use, and change to that directory.<br><br>
+These web pages are mirrored in several locations for your
+convenience. Here are the current list of mirrors: 
+<br><br>
+
+North America
+<ul>
+<li><a href="http://tmda.mirrors.summersault.com/" TARGET="Resource Window">
+tmda.mirrors.summersault.com</a> (United States)<br>
+
+</ul>
+
+<hr>
+<br>
+
+<u>How to mirror the TMDA website:</u><br>
+
 <ol>
-<li>Unpack the TMDA distribution.<br>
-<blockquote><pre>
 
-# gunzip -c tmda-0.01.tgz | tar xvf -
+<li>Use <a href="http://rsync.samba.org/" TARGET="Resource Window">rsync</a> 
+to synchronize your copy of the website with mine. e.g,
 
-</pre></blockquote>
+<blockquote><code>
+$ rsync -az --delete tmda.net::tmdaweb/ /local/path/to/mirror/
+</blockquote></code>
 
-<li>If this is a system-wide install, run the <strong>compileall</strong>
-script to byte-compile all the .py files.  Byte-compilation is
-optional, but will speed TMDA's start-up time.  This will be done
-automatically by Python if you have write permissions in the
-installation directory, which is why it's not necessary for individual
-installs.
-<blockquote><pre>
+You should run this  <strong>at least once per day</strong> from cron or 
+the equivalent.
+<br><br>
 
-# cd tmda-0.01
-# ./compileall
+<li>Drop me a note if you'd like your mirror listed here.
+<br><br>
 
-</pre></blockquote>
-
-<li>TMDA is designed to run directly from its source directory.  For
-example, if installed in /usr/local/tmda-0.01/, you'd run <b>tmda-keygen</b>
-by invoking <code>/usr/local/tmda-0.01/bin/tmda-keygen</code>.  Do not
-move the bin/* programs outside the source tree, although making
-symlinks from other areas of the filesystem (such as /usr/local/bin)
-into the source tree will work fine.
+<li>If your mirror is located outside the United States, you might
+consider running it on its own virtual host so that I can make a
+<em>www.CountryCode.tmda.net</em> host alias for it. e.g, 
+<em>www.au.tmda.net</em>, <em>www.se.tmda.net</em>.
+In this case, please send me the IP address of your virtual host,
+and of course where you are located.
 
 </ol>
 
-<u>Installation from Linux RPMs</u><br><br>
 
-If you are running Linux, you may wish to install TMDA via RPM
-instead.  A binary RPM can be built and installed directly from the source
-tarball:
 
-<blockquote><pre>
 
-# rpmbuild -tb tmda-0.01.tgz 
-# rpm -Uvh /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
-
-</pre></blockquote>
-
-If your system lacks a <b>/usr/bin/python2</b>, you may get a
-dependency warning from RPM.  If you're sure your Python meets the 
-<a href="requirements.html">requirements</a>, then you can override this
-dependency check using the <em>--nodeps</em> option to RPM:
-
-<blockquote><pre>
-
-# rpmbuild -tb --nodeps tmda-0.01.tgz
-# rpm -Uvh --nodeps /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
-
-</pre></blockquote>
-
-<u>Post-Installation</u><br><br>
-
-Report your installation (used only to satisfy my curiosity
-about what platforms are using TMDA):
-
-<blockquote><pre>
-# tmda-keygen -V | mail jason-tmdausage@mastaler.com
-</blockquote></pre>
-
-Then proceed to the <a href="config.html">Configuration</a> section.
-<br><br>
 
 </TD><!-- end of body cell -->
 </TR><!-- end of sidebar/body row -->

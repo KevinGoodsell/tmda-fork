@@ -35,6 +35,7 @@ from LinkFixer import LinkFixer
 
 sitelinks = [
     ('%(rootdir)s/index.html', 'TMDA Homepage'),
+    ('%(rootdir)s/mirrors.html', 'TMDA Mirrors'),
     ('http://sourceforge.net/projects/tmda', 'TMDA @ SourceForge'),
     ]
 
