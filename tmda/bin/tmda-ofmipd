@@ -95,6 +95,14 @@ OPTIONS:
         root/tofmipd, otherwise ~user/.tmda/tofmipd.  Use this option
         to override these defaults.
 
+    -F
+    --fallback
+        When used with -R or -A, fall back to authenticate against
+        /etc/ofmipd if the remote authentication method didn't work.
+        Note: this flag has no effect on -R to -A fallback. If you
+        specify both -R and -A methods, then authprog will be tried
+        after remoteauth has failed.
+
     -C <n>
     --connections <n>
         Do not handle more than n simultaneous connections. If there
@@ -166,6 +174,7 @@ proxyport = '%s:%s' % (FQDN, 8025)
 program = sys.argv[0]
 configdir = None
 authprog = None
+fallback = 0
 foreground = None
 remoteauth = { 'proto': None,
                'host':  'localhost',
@@ -231,11 +240,12 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                         'p:u:R:A:a:c:C:dVhfbS:v:', ['proxyport=',
+                        'p:u:a:R:A:Fc:C:dVhfbS:v:', ['proxyport=',
                                                      'username=',
                                                      'authfile=',
                                                      'remoteauth=',
                                                      'authprog=',
+                                                     'fallback=',
                                                      'configdir=',
                                                      'connections=',
                                                      'debug',
@@ -259,12 +269,14 @@ for opt, arg in opts:
         sys.exit()
     elif opt in ('-d', '--debug'):
         DEBUGSTREAM = sys.stderr
+    elif opt in ('-F', '--fallback'):
+        fallback = 1
     elif opt in ('-f', '--foreground'):
         foreground = 1
     elif opt in ('-b', '--background'):
         foreground = 0
     elif opt in ('-p', '--proxyport'):
-	proxyport = arg
+        proxyport = arg
     elif opt in ('-u', '--username'):
         username = arg
     elif opt in ('-R', '--remoteauth'):
@@ -580,7 +592,7 @@ class SMTPChannel(asynchat.async_chat):
         self.__sasl_types = ['login', 'cram-md5', 'plain']
         # Remove CRAM-MD5 from the published SASL types if using the
         # `--authprog' or `--remoteauth' options. See FAQ 5.8.
-        if remoteauth['enable'] or authprog:
+        if (not fallback) and (remoteauth['enable'] or authprog):
             self.__sasl_types.remove('cram-md5')
         self.__auth_cram_md5_ticket = '<%s.%s@%s>' % (random.randrange(10000),
                                                       int(time.time()), FQDN)
@@ -628,7 +640,9 @@ class SMTPChannel(asynchat.async_chat):
             # Then with the authprog
             if run_authprog(username, password) == 0:
                 return 1
-        # Now we can fall back on the authfile
+        # Now can we fall back on the authfile
+        if (not fallback) and (remoteauth['enable'] or authprog):
+            return 0
         authdict = authfile2dict(authfile)
         if authdict.get(username.lower(), 0) != password:
             return 0
@@ -657,7 +671,9 @@ class SMTPChannel(asynchat.async_chat):
             # Then with the authprog
             if run_authprog(username, password) == 0:
                 return 1
-        # Now we can fall back on the authfile
+        # Now can we fall back on the authfile
+        if (not fallback) and (remoteauth['enable'] or authprog):
+            return 0
         authdict = authfile2dict(authfile)
         if authdict.get(username.lower(), 0) != password:
             return 0
