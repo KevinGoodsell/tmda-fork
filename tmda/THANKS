@@ -40,6 +40,8 @@ Contributions:
     * Mark Horn -- Configurable actions for tagged address
       verification failures.
 
+    * Josh Huber -- tmda.el.
+
     * Brian Lalor -- testing the initial Sendmail support; bugfixes.
 
     * David Lebel -- OpenBSD port.
