@@ -1,6 +1,6 @@
-Starting with TMDA 0.10, the crypto-cookie generation and verification
-scheme was replaced with HMAC, which is a mechanism for message
-authentication using cryptographic hash functions such as SHA and MD5.
+For crypto-cookie generation and verification, TMDA uses HMAC, which
+is a mechanism for message authentication using cryptographic hash
+functions such as SHA and MD5.
 
 For all the relevant papers and RFCs see:
     <URL:http://www-cse.ucsd.edu/users/mihir/papers/hmac.html>
@@ -10,7 +10,7 @@ Dated Addresses:
 
 The new format for a 'dated' address is:
 
-    name-dated-DATE.DATEMAC@domain.dom
+    USERNAME-dated-DATE.DATEMAC@domain.dom
 
     (For example, jason-dated-988298746.9d619c@mastaler.com)
 
@@ -35,7 +35,7 @@ Sender Addresses:
 
 The new format for a 'sender' address is:
     
-    name-sender-SENDERMAC@domain.dom
+    USERNAME-sender-SENDERMAC@domain.dom
 
     (For example, jason-sender-8c54ac@mastaler.com)
 
