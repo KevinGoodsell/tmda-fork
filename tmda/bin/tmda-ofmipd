@@ -120,7 +120,7 @@ try:
                                                'username=',
                                                'authfile=',
                                                'configdir=',
-                                               'debug'
+                                               'debug',
                                                'version',
                                                'help'])
 except getopt.error, msg:
