@@ -36,9 +36,9 @@ A. Not directly since qmail is only available on UNIX.  However, you
    clients can take full advantage of TMDA.  See `README.RELAY' in the
    contrib/ directory for the full details.
 
-   Also see <http://libertine.org/archives/tmda-list/2001-August/000306.html>
-   for one user's configuration details for a site-wide TMDA install
-   using smtpd-auth, vpopmail and qmailadmin.
+   Also, for one user's configuration details for a site-wide TMDA
+   install using smtpd-auth, vpopmail and qmailadmin, see:
+   <http://mla.libertine.org/tmda-users/200108/msg00002.html>
 
 ------------------------------------------------------------------------------
 
