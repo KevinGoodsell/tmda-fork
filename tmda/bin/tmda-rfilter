@@ -419,19 +419,6 @@ def verify_confirm_cookie(confirm_cookie):
         if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address")
             bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
-        # and it hasn't already been delivered.
-        elif delivered:
-            # JRM: shouldn't get here - you are either trying to
-            # re-release a message, or someone is playing silly
-            # buggers and trying to sneak a message through.
-            logit("DROP already_delivered_message")
-            mta.stop()
-        elif not os.path.exists(confirmed_file):
-            # Shouldn't get here either.  Might mean someone is
-            # sending directly to a 'confirm-done' address after the
-            # message was purged from DELIVERED_CACHE and disk.
-            logit("DROP nonexistent_pending_message")
-            mta.stop()
         else:
             # Cache and deliver the message.
             incoming_headers = globals().get('message_headers')
@@ -449,10 +436,11 @@ def verify_confirm_cookie(confirm_cookie):
             # Record this message in the cache as a dictionary,
             # where the message filename is the key, and how it was
             # delivered is the value. e.g, {'1017186412.798.msg':'c'}
-            delcache.insert(0, {confirmed_filename:msgval})
-            # Trim tail entries off if necessary, and then write the cache.
-            delcache = delcache[:Defaults.DELIVERED_CACHE_LEN]
-            Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
+            if not {confirmed_filename:msgval} in delcache:
+                delcache.insert(0, {confirmed_filename:msgval})
+                # Trim tail entries off if necessary, and then write the cache.
+                delcache = delcache[:Defaults.DELIVERED_CACHE_LEN]
+                Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
             logit("OK good_confirm_cookie")
             mta.deliver(incoming_headers, incoming_body)
 
