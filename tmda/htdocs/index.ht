@@ -18,9 +18,9 @@ The technical countermeasures used by TMDA to thwart SPAM include:
 
 <ul>
 
-<li><b>whitelists</b>: for known, trusted senders.<br><br>
+<li><b>whitelists</b>: accept mail from known, trusted senders.<br><br>
 
-<li><b>blacklists</b>: for undesired senders.<br><br>
+<li><b>blacklists</b>: refuse mail from undesired senders.<br><br>
 
 <li><b><a href="challengeresponse.html">challenge/response</a></b>: 
 allows unknown senders which
