@@ -267,7 +267,7 @@ Not safe to proceed in form mode.
   # Saving with text method?
   if (PVars["LocalConfig"] == "Text") and Form.has_key("subcmd") and \
     (Form["subcmd"].value == "save") and \
-    (PVars[("NoOverride", "MayEditLocalConfig")] == "Yes"):
+    (PVars[("NoOverride", "MayEditLocalConfig")][0].lower() == "y"):
     try:
       # Make sure the list is properly formatted
       Config = re.sub("\r\n", "\n", Form["config"].value)
