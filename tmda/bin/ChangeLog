@@ -5,6 +5,9 @@
 	filter's rules might prevent the confirmation acceptance messages
 	from getting through.
 
+	(verify_confirm_cookie): Bounce rather than confirm bogus
+	confirmation cookies.
+
 2001-11-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (usage): Added `-M', `--filter-match' command-line

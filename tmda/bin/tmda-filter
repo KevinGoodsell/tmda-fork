@@ -332,7 +332,9 @@ def verify_confirm_cookie(confirm_cookie):
         (confirm_action, confirm_timestamp,
          confirm_pid, confirm_hmac) = string.split(confirm_cookie,'.')
     except ValueError:
-        bouncegen('request')
+        logit("BOUNCE invalid_confirmation_address",time.time())
+        print("Sorry, this confirmation address is invalid.")
+        mta.bounce()
     # pre-confirmation
     if confirm_action == 'accept':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
