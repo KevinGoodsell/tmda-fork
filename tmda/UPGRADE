@@ -12,6 +12,8 @@ behavior.  Some configuration changes are necessary:
   bounce_sender.txt.  confirm_accept.txt is the template used to
   generate confirmation acceptance notices.
 
+* BOUNCE_CONFIRM_CC replaces both BOUNCE_DATED_CC and BOUNCE_SENDER_CC.
+
 * The copy of the original message is now added through the template
   instead of the code.
 
