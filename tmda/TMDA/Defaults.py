@@ -165,6 +165,7 @@ if not vars().has_key('DELIVERY'):
 # and address extensions (e.g, user-ext).
 # The default under qmail is `-', while the default for Sendmail and
 # friends is likely `+'.
+#
 # Default is "-"
 if not vars().has_key('RECIPIENT_DELIMITER'):
     RECIPIENT_DELIMITER = "-"
@@ -271,6 +272,7 @@ if not vars().has_key('SMTPAUTH_PASSWORD') and OUTGOINGMAIL == 'smtp':
 # Layer Security) mode. All SMTP commands that follow will be
 # encrypted.  Your Python's socket module must be compiled with SSL
 # support.  Requires Python 2.2 or greater.
+#
 # Default is 0 (turned off)
 if not vars().has_key('SMTPSSL') and OUTGOINGMAIL == 'smtp':
     SMTPSSL = 0
@@ -278,6 +280,7 @@ if not vars().has_key('SMTPSSL') and OUTGOINGMAIL == 'smtp':
 # SMTPSSL_KEYFILE
 # When SMTPSSL is enabled, this is the optional name of a PEM
 # formatted file that contains your private key.
+#
 # No default.
 if not vars().has_key('SMTPSSL_KEYFILE') and \
        OUTGOINGMAIL == 'smtp' and SMTPSSL:
@@ -287,6 +290,7 @@ if not vars().has_key('SMTPSSL_KEYFILE') and \
 # When SMTPSSL is enabled, this is the optional name of a PEM
 # formatted certificate chain file.  Warning: This does not do any
 # certificate verification.
+#
 # No default.
 if not vars().has_key('SMTPSSL_CERTFILE') and \
        OUTGOINGMAIL == 'smtp' and SMTPSSL:
@@ -299,6 +303,7 @@ if not vars().has_key('SMTPSSL_CERTFILE') and \
 # as we like (i.e. your MTA has no limits).  Set this to some number
 # great than 0 and TMDA will close the SMTP connection and re-open it
 # after this number of consecutive sessions.
+#
 # Default is 0
 if not vars().has_key('SMTP_MAX_SESSIONS_PER_CONNECTION') and \
        OUTGOINGMAIL == 'smtp':
@@ -318,6 +323,7 @@ if not vars().has_key('SENDMAIL_PROGRAM') and OUTGOINGMAIL == 'sendmail':
 # Set this variable to 0 if want to turn off TMDA's qmail virtualdomains
 # support.  This should obviously only be done if you are not running
 # any qmail virtualdomains, but it will improve performance.
+#
 # Default is 1 (turned on)
 if not vars().has_key('USEVIRTUALDOMAINS'):
     USEVIRTUALDOMAINS = 1
@@ -326,6 +332,8 @@ if not vars().has_key('USEVIRTUALDOMAINS'):
 # virtualdomains defaults to /var/qmail/control/virtualdomains, but
 # this lets you override it in case it is installed elsewhere.  Used
 # for virtualdomain processing in tmda-filter.
+#
+# Default is /var/qmail/control/virtualdomains
 if not vars().has_key('VIRTUALDOMAINS'):
     VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
 
@@ -348,6 +356,8 @@ if not vars().has_key('BOUNCE_ENV_SENDER'):
 # Text for the failure notice returned to the sender when a 'bounce'
 # or 'reject' rule is matched in the incoming filter file.  Set to
 # None to disable notification.
+#
+# Default is "Message rejected by recipient."
 if not vars().has_key('BOUNCE_TEXT_FILTER_INCOMING'):
     BOUNCE_TEXT_FILTER_INCOMING = """Message rejected by recipient."""
 
@@ -355,6 +365,8 @@ if not vars().has_key('BOUNCE_TEXT_FILTER_INCOMING'):
 # Text for the failure notice returned to the sender when a message is
 # sent to an invalid confirmation address.  Set to None to disable
 # notification.
+#
+# Default is "This confirmation address is invalid."
 if not vars().has_key('BOUNCE_TEXT_INVALID_CONFIRMATION'):
     BOUNCE_TEXT_INVALID_CONFIRMATION = """This confirmation address is invalid."""
 
@@ -362,6 +374,8 @@ if not vars().has_key('BOUNCE_TEXT_INVALID_CONFIRMATION'):
 # Text for the failure notice returned to the sender when a
 # confirmation response arrives for a message which could not be
 # located.  Set to None to disable notification.
+#
+# Default is "Your original message could not be located."
 if not vars().has_key('BOUNCE_TEXT_NONEXISTENT_PENDING'):
     BOUNCE_TEXT_NONEXISTENT_PENDING = """Your original message could not be located."""
 
@@ -370,6 +384,8 @@ if not vars().has_key('BOUNCE_TEXT_NONEXISTENT_PENDING'):
 # dated address does not verify with a correct HMAC.  Set to None 
 # to disable notification.  Setting to None will cause the same behavior
 # as setting ACTION_FAIL_DATED to drop
+#
+# Default is "You have sent email to an invalid address."
 if not vars().has_key('BOUNCE_TEXT_FAIL_DATED'):
     BOUNCE_TEXT_FAIL_DATED = """You have sent email to an invalid address."""
 
@@ -378,6 +394,8 @@ if not vars().has_key('BOUNCE_TEXT_FAIL_DATED'):
 # dated address is expired.  Set to None to disable notification.  Setting
 # to None will cause the same behavior as setting ACTION_EXPIRED_DATED to
 # drop
+#
+# Default is "You have sent email to an expired address."
 if not vars().has_key('BOUNCE_TEXT_EXPIRED_DATED'):
     BOUNCE_TEXT_EXPIRED_DATED = """You have sent email to an expired address."""
 
@@ -386,6 +404,8 @@ if not vars().has_key('BOUNCE_TEXT_EXPIRED_DATED'):
 # sender address does not verify with a correct HMAC.  Set to None
 # to disable notification.  Setting to None will cause the same behavior
 # as setting ACTION_FAIL_SENDER to drop
+#
+# Default is "You have sent email to an address you are not authorized to use."
 if not vars().has_key('BOUNCE_TEXT_FAIL_SENDER'):
     BOUNCE_TEXT_FAIL_SENDER = """You have sent email to an address you are not authorized to use."""
 
@@ -394,6 +414,8 @@ if not vars().has_key('BOUNCE_TEXT_FAIL_SENDER'):
 # keyword address does not verify with a correct HMAC. Set to None
 # to disable notification.  Setting to None will cause the same behavior
 # as setting ACTION_FAIL_KEYWORD to drop.
+#
+# Default is "You have sent email to an invalid address."
 if not vars().has_key('BOUNCE_TEXT_FAIL_KEYWORD'):
     BOUNCE_TEXT_FAIL_KEYWORD = """You have sent email to an invalid address."""
         
@@ -449,6 +471,7 @@ if not vars().has_key('CONFIRM_CC'):
 # CONFIRM_ACCEPT_NOTIFY
 # Set this variable to 0 if you do not want to generate any confirmation
 # acceptance notices.
+#
 # Default is 1 (turned on)
 if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
     CONFIRM_ACCEPT_NOTIFY = 1
@@ -457,6 +480,9 @@ if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
 # Text for the confirmation acceptance notice returned to the sender
 # when they initially confirm their original message causing it to
 # be delivered.  Set to None to disable notification.
+#
+# Default is:
+# "Your confirmation was accepted, and so your original message has been delivered."
 if not vars().has_key('CONFIRM_ACCEPT_TEXT_INITIAL'):
     CONFIRM_ACCEPT_TEXT_INITIAL = \
 """Your confirmation was accepted,
@@ -466,6 +492,9 @@ and so your original message has been delivered."""
 # Text for the confirmation acceptance notice returned to the sender
 # when they successfully confirm a message which has already been
 # confirmed.  Set to None to disable notification.
+#
+# Default is:
+# "Your original message has already been confirmed and delivered; you don't need to confirm it again."
 if not vars().has_key('CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED'):
     CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED = \
 """Your original message has already been confirmed and delivered;
@@ -476,6 +505,8 @@ you don't need to confirm it again."""
 # when they successfully confirm a message which has already been
 # manually released with tmda-pending.  Set to None to disable
 # notification.
+#
+# Default is "Your original message has already been released and delivered."
 if not vars().has_key('CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED'):
     CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED = \
 """Your original message has already been released and delivered."""
@@ -495,6 +526,7 @@ if not vars().has_key('CONFIRM_ACCEPT_CC'):
 # This is the largest size (in bytes) that a message can be before the
 # its body is excluded from the confirmation request/acceptance
 # notice.  Set this to None to allow any size message.
+#
 # Default is 50000
 if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
     CONFIRM_MAX_MESSAGE_SIZE = 50000
@@ -514,6 +546,7 @@ if not vars().has_key('TEMPLATE_DIR'):
 # DATED_TEMPLATE_VARS
 # Set this variable to 1 if you want to use 'dated' address variables
 # in your templates.
+#
 # Default is 0 (turned off)
 if not vars().has_key('DATED_TEMPLATE_VARS'):
     DATED_TEMPLATE_VARS = 0
@@ -521,6 +554,7 @@ if not vars().has_key('DATED_TEMPLATE_VARS'):
 # SENDER_TEMPLATE_VARS
 # Set this variable to 1 if you want to use 'sender' address variables
 # in your templates.
+#
 # Default is 0 (turned off)
 if not vars().has_key('SENDER_TEMPLATE_VARS'):
     SENDER_TEMPLATE_VARS = 0
@@ -528,6 +562,7 @@ if not vars().has_key('SENDER_TEMPLATE_VARS'):
 # FILTER_INCOMING
 # Filter file which controls how incoming messages are tagged.
 # Look for the filter-file in the environment first.
+#
 # Default is ~/.tmda/filters/incoming
 env_FILTER_INCOMING = os.environ.get('TMDA_FILTER_INCOMING')
 if env_FILTER_INCOMING:
@@ -538,6 +573,7 @@ elif not vars().has_key('FILTER_INCOMING'):
 # FILTER_OUTGOING
 # Filter file which controls how outgoing messages are tagged.
 # Look for the filter-file in the environment first.
+#
 # Default is ~/.tmda/filters/outgoing
 env_FILTER_OUTGOING = os.environ.get('TMDA_FILTER_OUTGOING')
 if env_FILTER_OUTGOING:
@@ -617,8 +653,8 @@ if not vars().has_key('ACTION_FAIL_DATED'):
     ACTION_FAIL_DATED = "confirm"
 
 # ACTION_EXPIRED_DATED
-# Specifies how incoming messages should be disposed of if they are sent
-# to a dated address that does not properly verify.  
+# Specifies how incoming messages should be disposed of if they are
+# sent to an expired dated address.
 # Possible values include:
 #
 # "bounce"
@@ -748,12 +784,8 @@ if not vars().has_key('ACTION_OUTGOING'):
 # From: "Jason R. Mastaler" <jason-dated-1008901496.5356ec@mastaler.com>
 # Date: Wed, 12 Dec 2001 19:24:55 -0700
 #
-# The strings which are used to create the HMAC digest are the
-# following (in order):
-#
-# <20011212192455.A7060@nightshade.la.mastaler.com>
-# "Jason R. Mastaler" <jason-dated-1008901496.5356ec@mastaler.com>
-# Wed, 12 Dec 2001 19:24:55 -0700
+# The strings which are used to create the HMAC digest are the header
+# values only (right hand side of Header:).
 #
 # The following header would then be added to the outgoing message:
 # X-TMDA-Fingerprint: vDBoOHtIUE6VniJguxJ+w2fR5bU
@@ -776,6 +808,7 @@ if not vars().has_key('FULLNAME'):
 # An integer which determines the length of the HMACs used in TMDA's
 # "cookies".  Read the `CRYPTO' file for more information.  Changing
 # this value will will invalidate all previously generated HMACs.
+#
 # Default is 3 (24-bit HMACs)
 if not vars().has_key('HMAC_BYTES'):
     HMAC_BYTES = 3
@@ -826,6 +859,7 @@ if not vars().has_key('LOGFILE_OUTGOING'):
 # LOCALDATE
 # Set this variable to 0 if you want TMDA to generate ``Date:''
 # headers in UTC instead of the local time zone.
+#
 # Default is 1 (use local time zone)
 if not vars().has_key('LOCALDATE'):
     LOCALDATE = 1
@@ -834,11 +868,11 @@ if not vars().has_key('LOCALDATE'):
 # Specifies how `From' headers should look when tagging outgoing
 # messages with tmda-sendmail.  There are two valid values:
 #
-#     "address"
-#           Just the address - king@grassland.com
+# "address"
+#      Just the address - king@grassland.com
 #
-#     "angles"
-#           Elvis Parsley <king@grassland.com>
+# "angles"
+#      Elvis Parsley <king@grassland.com>
 #
 # Default is "angles".
 if not vars().has_key('MESSAGE_FROM_STYLE'):
@@ -855,6 +889,7 @@ if not vars().has_key('MESSAGE_FROM_STYLE'):
 # any message that looks like a mailing list message or a bounce
 # message.  This is a fallback safety valve so it should be set fairly
 # high.  Set to 0 for no limit.
+#
 # Default is 50
 if not vars().has_key('MAX_AUTORESPONSES_PER_DAY'):
     MAX_AUTORESPONSES_PER_DAY = 50
@@ -1078,7 +1113,6 @@ if not vars().has_key('TAGS_DATED'):
 # TAGS_KEYWORD = ['keyword', 'key', 'kw']
 #
 # Default is 'keyword'
-#
 if not vars().has_key('TAGS_KEYWORD'):
     TAGS_KEYWORD = ['keyword']
 
@@ -1114,6 +1148,7 @@ if not vars().has_key('TERSE_SUMMARY_HEADERS'):
 # TIMEOUT
 # The timeout interval for 'dated' addresses.  The available units are
 # (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).
+#
 # Default is 5d (5 days).
 if not vars().has_key('TIMEOUT'):
     TIMEOUT = "5d"
