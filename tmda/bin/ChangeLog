@@ -1,3 +1,11 @@
+2001-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (bounce_dated): If the template doesn't exist in
+	../templates/, we assume installation from an RPM, so look in
+	sys.prefix/share/tmda/.
+
+	(bounce_sender): Ditto.
+	
 2001-06-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (envelope_sender): The envelope sender is used in

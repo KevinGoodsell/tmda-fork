@@ -73,9 +73,13 @@ for opt, arg in opts:
 	discard = 1
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
-    
 
-import paths
+
+try:
+    import paths
+except ImportError:
+    pass
+
 from TMDA import Cookie
 from TMDA import Defaults
 from TMDA import Util
@@ -208,7 +212,7 @@ def bounce_dated():
     if Defaults.BOUNCE_DATED_CC:
         bounce_cc(Defaults.BOUNCE_DATED_CC)
 
-    # Create the bounce message from a template.
+    # Create the bounce message from the right template.
     TMDA_DATED_TEMPLATE = os.environ.get('TMDA_DATED_TEMPLATE')
     if TMDA_DATED_TEMPLATE and os.path.exists(TMDA_DATED_TEMPLATE):
         bounce_message = Util.maketext(TMDA_DATED_TEMPLATE,vars())
@@ -216,11 +220,8 @@ def bounce_dated():
           os.path.exists(Defaults.BOUNCE_DATED_TEMPLATE)):
         bounce_message = Util.maketext(Defaults.BOUNCE_DATED_TEMPLATE,vars())
     else:
-        # default to ../templates/bounce_dated.txt
-        template_dir = os.path.split(os.path.dirname
-                                     (os.path.abspath
-                                      (sys.argv[0])))[0] + '/templates'
-        dt = os.path.join(template_dir, 'bounce_dated.txt')
+        # must be installed from the RPM, so look in ../share/tmda/
+        dt = sys.prefix + '/share/tmda/bounce_dated.txt'
         bounce_message = Util.maketext(dt,vars())
 
     send_bounce(bounce_message)
@@ -242,13 +243,10 @@ def bounce_sender(sender_address,sender_address_cookie):
           os.path.exists(Defaults.BOUNCE_SENDER_TEMPLATE)):
         bounce_message = Util.maketext(Defaults.BOUNCE_SENDER_TEMPLATE,vars())
     else:
-        # default to ../templates/bounce_sender.txt
-        template_dir = os.path.split(os.path.dirname
-                                     (os.path.abspath
-                                      (sys.argv[0])))[0] + '/templates'
-        st = os.path.join(template_dir, 'bounce_sender.txt')
+        # must be installed from the RPM, so look in ../share/tmda/
+        st = sys.prefix + '/share/tmda/bounce_sender.txt'
         bounce_message = Util.maketext(st,vars())
-        
+            
     send_bounce(bounce_message)
     sys.exit(Defaults.ERR_STOP)
 

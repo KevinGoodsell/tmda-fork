@@ -42,7 +42,11 @@ for opt, arg in opts:
         os.environ['TMDARC'] = arg
 
 
-import paths
+try:
+    import paths
+except ImportError:
+    pass
+    
 from TMDA import Cookie
 
 
