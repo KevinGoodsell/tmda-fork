@@ -585,6 +585,9 @@ def Show():
 
   # No messages to display
   else:
-    T["Row"] = '<tr><td colspan="4" class="InProcess"><i>None.</i></td></tr>'
+    if Searching:
+      T["Row"] = '<tr><td colspan="%s" align="center" class="InProcess"><i>No messages match the search criteria</i></td></tr>' % NumCols
+    else: 
+      T["Row"] = '<tr><td colspan="%s" align="center" class="InProcess"><i>No messages in your pending queue</i></td></tr>' % NumCols
 
   print T
