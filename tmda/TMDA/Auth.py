@@ -132,7 +132,7 @@ class Auth(Util.Debugable):
 
         # check whether we are running a recent enough Python
         if not Version.PYTHON >= '2.2':
-            msg = 'Python 2.2 or greater is required to run ' + 
+            msg = 'Python 2.2 or greater is required to run ' + \
                   self.__program + \
                   ' -- Visit http://python.org/download/ to upgrade.'
             self.warning(msg)
