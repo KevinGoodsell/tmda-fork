@@ -7,3 +7,4 @@
 <li><a href="http://mla.libertine.org/" TARGET="Resource Window">List Archive</a> 
 <li><a href="support-commercial.html">Commercial Support</a>
 <li><a href="resources.html">External Resources</a>
+<li><a href="mirrors.html">Mirrors</a>
