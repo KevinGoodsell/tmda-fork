@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Nov  6 16:55:43 2003 -->
+<!-- Tue Nov 25 16:59:00 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -407,41 +407,29 @@ TMDA template, but requires that the proper Unicode codec be
 installed into your Python first (single-byte 8-bit charsets don't need
 a Unicode codec).
 
-<h4>Chinese</h4>
+<h4>Chinese/Korean</h4>
 
-First install the ChineseCodecs Python package.  This is available in 
-<a href="http://sourceforge.net/projects/python-codecs" TARGET="Resource Window">CVS form</a>,
-or in 
-<a href="ftp://ftp.FreeBSD.org/pub/FreeBSD/ports/local-distfiles/perky/
-"TARGET="Resource Window">tarball form</a>.
-The latest version of the package at this writing is
-1.2.0. Net/Free/OpenBSD packages are also available.
+First install the 
+<a href="http://cjkpython.i18n.org/" TARGET="Resource Window">CJKCodecs</a> 
+Python package.  MacOS X, Debian Linux, and FreeBSD packages are also available.
+The latest version of the package at this writing is 1.0.1. 
 <br><br>
 
-Simplified Chinese: Templates should be in the <strong>GB2132</strong> charset.<br>
-Traditional Chinese: Templates should be in the <strong>BIG5</strong> charset.<br>
+Simplified Chinese: Templates must be in the <strong>GB2312</strong> charset.<br>
+Traditional Chinese: Templates must be in the <strong>BIG5</strong> charset.<br>
+Korean: Templates must be in the <strong>EUC-KR</strong> charset.
 
 <h4>Japanese</h4>
 
 First install the <a href="http://www.asahi-net.or.jp/~rd6t-kjym/python/" 
 TARGET="Resource Window">JapaneseCodecs</a>
-Python package. Debian and FreeBSD packages are also available. The latest version of the
-package at this writing is 1.4.9.
+Python package. Debian Linux and FreeBSD packages are also available. 
+The latest version of the package at this writing is 1.4.9.
 <br><br>
 
 Templates must be in the <strong>EUC-JP</strong> charset, not
 ISO-2022-JP or Shift_JIS.  When the e-mail message is sent, the text
 will be automatically be convered into ISO-2022-JP for 7-bit transmission.
-
-<h4>Korean</h4>
-
-First install the <a href="http://sourceforge.net/projects/koco/"
-TARGET="Resource Window">KoreanCodecs</a>
-Python package. FreeBSD and NetBSD packages are also available. The latest version of the
-package at this writing is 2.0.5.
-<br><br>
-
-Templates must be in the <strong>EUC-KR</strong> charset.
 
 <h3>Choosing the right character set</h3>
 

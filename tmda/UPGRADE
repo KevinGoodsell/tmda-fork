@@ -3,6 +3,15 @@ this file.
 
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.90:
+
+* If you are using Chinese or Korean in your TMDA templates, you must
+  install the CJKCodecs Python package at http://cjkpython.i18n.org/.
+  CJKCodecs has replaced both the ChineseCodecs and KoreanCodecs
+  packages.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.87:
 
 * The OUTGOINGMAIL variable has been renamed MAIL_TRANSPORT, and its
