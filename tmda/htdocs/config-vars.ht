@@ -361,7 +361,7 @@ Default is confirm
 <dt><hr>
 <a name="ACTION_HEADER_INCOMING"><h4>ACTION_HEADER_INCOMING</h4></a>
 <dd>
-Set this variable to 1 if you want TMDA to add an `X-TMDA-Action'
+Set this variable to True if you want TMDA to add an `X-TMDA-Action'
 header to your delivered incoming messages. The value of this header
 is the same as the "Actn:" field in a LOGFILE_INCOMING entry. e.g,
 <br>
@@ -371,7 +371,7 @@ X-TMDA-Action: OK (from johndoe* ok)
 NOTE: This will not work if you are running qmail and have not set
 the DELIVERY variable.
 <br><br>
-Default is 0 (turned off)
+Default is False (turned off)
 <dt><hr>
 <a name="ACTION_INCOMING"><h4>ACTION_INCOMING</h4></a>
 <dd>
@@ -483,9 +483,9 @@ No default
 <dt><hr>
 <a name="ALLOW_MODE_640"><h4>ALLOW_MODE_640</h4></a>
 <dd>
-Set this variable to 1 if you want to allow a mode 640 CRYPT_KEY_FILE.
+Set this variable to True if you want to allow a mode 640 CRYPT_KEY_FILE.
 <br><br>
-Default is 0 (turned off)
+Default is False (turned off)
 <dt><hr>
 <a name="AUTORESPONSE_INCLUDE_SENDER_COPY"><h4>AUTORESPONSE_INCLUDE_SENDER_COPY</h4></a>
 <dd>
@@ -608,10 +608,10 @@ No default.
 <dt><hr>
 <a name="CGI_VIRTUALUSER"><h4>CGI_VIRTUALUSER</h4></a>
 <dd>
-Set this variable to 1 if you wish to enable tmda-cgi's "virtual
+Set this variable to True if you wish to enable tmda-cgi's "virtual
 user" support (http://tmda.net/tmda-cgi/virtual.html).
 <br><br>
-Default is 0 (disabled)
+Default is False (disabled)
 <dt><hr>
 <a name="CONFIG_EXEC"><h4>CONFIG_EXEC</h4></a>
 <dd>
@@ -634,10 +634,10 @@ No default.
 <dt><hr>
 <a name="CONFIRM_ACCEPT_NOTIFY"><h4>CONFIRM_ACCEPT_NOTIFY</h4></a>
 <dd>
-Set this variable to 0 if you do not want to generate any confirmation
+Set this variable to False if you do not want to generate any confirmation
 acceptance notices.
 <br><br>
-Default is 1 (turned on)
+Default is True (turned on)
 <dt><hr>
 <a name="CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED"><h4>CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED</h4></a>
 <dd>
@@ -729,10 +729,10 @@ Default is ~/.tmda/
 <dt><hr>
 <a name="DATED_TEMPLATE_VARS"><h4>DATED_TEMPLATE_VARS</h4></a>
 <dd>
-Set this variable to 1 if you want to use 'dated' address variables
+Set this variable to True if you want to use 'dated' address variables
 in your templates.
 <br><br>
-Default is 0 (turned off)
+Default is False (turned off)
 <dt><hr>
 <a name="DATED_TIMEOUT"><h4>DATED_TIMEOUT</h4></a>
 <dd>
@@ -1322,10 +1322,10 @@ Default is ~/.tmda/responses
 <dt><hr>
 <a name="SENDER_TEMPLATE_VARS"><h4>SENDER_TEMPLATE_VARS</h4></a>
 <dd>
-Set this variable to 1 if you want to use 'sender' address variables
+Set this variable to True if you want to use 'sender' address variables
 in your templates.
 <br><br>
-Default is 0 (turned off)
+Default is False (turned off)
 <dt><hr>
 <a name="SENDMAIL_PROGRAM"><h4>SENDMAIL_PROGRAM</h4></a>
 <dd>
@@ -1377,12 +1377,12 @@ Default is "localhost" (port 25 on the local host)
 <dt><hr>
 <a name="SMTPSSL"><h4>SMTPSSL</h4></a>
 <dd>
-Set this variable to 1 to put the SMTP connection in TLS (Transport
+Set this variable to True to put the SMTP connection in TLS (Transport
 Layer Security) mode. All SMTP commands that follow will be
 encrypted.  Your Python's socket module must be compiled with SSL
 support.  Requires Python 2.2 or greater.
 <br><br>
-Default is 0 (turned off)
+Default is False (turned off)
 <dt><hr>
 <a name="SMTPSSL_CERTFILE"><h4>SMTPSSL_CERTFILE</h4></a>
 <dd>
@@ -1485,7 +1485,7 @@ No default.
 <dt><hr>
 <a name="TEMPLATE_DIR_MATCH_RECIPIENT"><h4>TEMPLATE_DIR_MATCH_RECIPIENT</h4></a>
 <dd>
-Set this variable to 1 if you want to use specific templates for
+Set this variable to True if you want to use specific templates for
 different recipient addresses.  Be sure to set TEMPLATE_DIR as well.
 <br><br>
 The TEMPLATE_DIR_MATCH_RECIPIENT feature enables TMDA to search for
@@ -1515,11 +1515,11 @@ When both TEMPLATE_DIR_MATCH_RECIPIENT and TEMPLATE_DIR_MATCH_SENDER
 are enabled, the TEMPLATE_DIR_MATCH_RECIPIENT directories are searched
 after the sender directories.
 <br><br>
-Default is 0 (turned off)
+Default is False (turned off)
 <dt><hr>
 <a name="TEMPLATE_DIR_MATCH_SENDER"><h4>TEMPLATE_DIR_MATCH_SENDER</h4></a>
 <dd>
-Set this variable to 1 if you want to use sender specific template
+Set this variable to True if you want to use sender specific template
 directory matching. Make sure you also have TEMPLATE_DIR set.
 <br><br>
 With this feature enabled, TMDA will look for templates in a
@@ -1542,7 +1542,7 @@ templates in these subdirectories of TEMPLATE_DIR, in this order:
 If no sender based templates can be found, TEMPLATE_DIR itself and
 then the default locations will be tried.
 <br><br>
-Default is 0 (turned off)
+Default is False (turned off)
 <dt><hr>
 <a name="TEMPLATE_EMAIL_HEADERS"><h4>TEMPLATE_EMAIL_HEADERS</h4></a>
 <dd>
@@ -1623,11 +1623,11 @@ Defaults to your UNIX username.
 <dt><hr>
 <a name="USEVIRTUALDOMAINS"><h4>USEVIRTUALDOMAINS</h4></a>
 <dd>
-Set this variable to 0 if want to turn off TMDA's qmail virtualdomains
+Set this variable to False if want to turn off TMDA's qmail virtualdomains
 support.  This should obviously only be done if you are not running
 any qmail virtualdomains, but it will improve performance.
 <br><br>
-Default is 1 (turned on)
+Default is True (turned on)
 <dt><hr>
 <a name="VIRTUALDOMAINS"><h4>VIRTUALDOMAINS</h4></a>
 <dd>
@@ -1639,7 +1639,7 @@ Default is /var/qmail/control/virtualdomains
 <dt><hr>
 <a name="X_TMDA_IN_SUBJECT"><h4>X_TMDA_IN_SUBJECT</h4></a>
 <dd>
-With this variable set to 1, tmda-inject will parse the Subject
+With this variable set to True, tmda-inject will parse the Subject
 header looking for `X-TMDA' actions, and then remove them before
 sending the message.  This is useful for users that desire the
 `X-TMDA' override behavior, but don't use an MUA which easily allows
@@ -1659,5 +1659,5 @@ In all cases, the resulting subject will simply be:
 <br>
 Subject: Re: You're fired!
 <br><br>
-Default is 0 (turned off)
+Default is False (turned off)
 </dl>
