@@ -1,3 +1,11 @@
+2002-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Cookie.py: Refer to the first element of TAGS_* lists for the
+	identifying string when creating an address.
+
+	* Defaults.py: New variables: TAGS_CONFIRM, TAGS_DATED,
+	TAGS_KEYWORD, TAGS_SENDER.
+
 2002-05-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Cookie.py: Replace all uses of the string module with string

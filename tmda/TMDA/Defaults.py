@@ -762,6 +762,59 @@ if not vars().has_key('PURGED_HEADERS'):
 if not vars().has_key('RECIPIENT_HEADER'):
     RECIPIENT_HEADER = None
 
+# TAGS_CONFIRM
+# A list of one or more strings used to identify a confirmation
+# address.  The first element in the list will be used when
+# generating a new confirmation address.
+#
+# Example:
+#
+# TAGS_CONFIRM = ['confirm', 'c']
+#
+# Default is 'confirm'
+if not vars().has_key('TAGS_CONFIRM'):
+    TAGS_CONFIRM = ['confirm']
+
+# TAGS_DATED
+# A list of one or more strings used to identify a dated address.  The
+# first element in the list will be used by `tmda-address' when
+# generating a new dated address.
+#
+# Example:
+#
+# TAGS_DATED = ['dated', 'd', 'exp', 'expires']
+#
+# Default is 'dated'
+if not vars().has_key('TAGS_DATED'):
+    TAGS_DATED = ['dated']
+
+# TAGS_KEYWORD
+# A list of one or more strings used to identify a keyword address.
+# The first element in the list will be used by `tmda-address' when
+# generating a new keyword address.
+#
+# Example:
+#
+# TAGS_KEYWORD = ['keyword', 'key', 'kw']
+#
+# Default is 'keyword'
+#
+if not vars().has_key('TAGS_KEYWORD'):
+    TAGS_KEYWORD = ['keyword']
+
+# TAGS_SENDER
+# A list of one or more strings to identify a sender address.  The
+# first element in the list will be used by `tmda-address' when
+# generating a new sender address.
+#
+# Example:
+#
+# TAGS_SENDER = ['sender', 's']
+#
+# Default is 'sender'
+if not vars().has_key('TAGS_SENDER'):
+    TAGS_SENDER = ['sender']
+
 # TERSE_SUMMARY_HEADERS
 # A list containing one or more message headers that should be
 # displayed by tmda-pending's `--terse option'.  Listed headers are

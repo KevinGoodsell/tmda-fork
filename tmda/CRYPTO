@@ -53,16 +53,13 @@ Keyword Addresses:
 
 The format for a 'keyword' address is:
     
-    USERNAME-KEYWORD.KEYWORDMAC@DOMAIN.DOM
+    USERNAME-keyword-KEYWORD.KEYWORDMAC@DOMAIN.DOM
 
-    (For example, jason-promos.8d06eu@mastaler.com
+    (For example, jason-keyword-promos.8w06e8@mastaler.com)
 
     KEYWORD can be any string.
 
     KEYWORDMAC is an HMAC of KEYWORD.
-
-Unlike other tagged addresses, 'keyword' addresses are not keyed with
-identifying strings ('-dated-', '-sender-', etc.).
 
 Incoming 'keyword' messages are accepted if:
 

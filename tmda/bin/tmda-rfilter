@@ -611,21 +611,13 @@ def main():
     # Get the cookie type and value by parsing the extension address.
     ext = address_extension
     if ext:
-        ext = string.lower(ext)
-        ext_split = string.split(ext, Defaults.RECIPIENT_DELIMITER)
+        ext = ext.lower()
+        ext_split = ext.split(Defaults.RECIPIENT_DELIMITER)
         cookie_value = ext_split[-1]
         try:
-            cookie_type = ext_split[-2]
+            cookie_type = ext_split[-2].lower()
         except IndexError:
             cookie_type = None
-        if cookie_type not in ('confirm','dated','sender'):
-            # make sure cookie_value contains KEYWORD.HMAC
-            if len(string.split(cookie_value, '.', 1)) > 1:
-                cookie_type = 'keyword'
-                cookie_value = ext
-            else:
-                # just a normal extension address, not a keyword address
-                cookie_type = cookie_value = None
     else:
         cookie_type = cookie_value = None
 
@@ -643,7 +635,7 @@ def main():
     confirm_done_hdr = message_headers.getheader('x-tmda-confirm-done', None)
     if confirm_done_hdr:
         verify_confirm_cookie(confirm_done_hdr, 'done')
-    if cookie_type == 'confirm' and cookie_value:
+    if (cookie_type in Defaults.TAGS_CONFIRM) and cookie_value:
         verify_confirm_cookie(cookie_value, 'accept')
 
     # Parse the incoming filter file.
@@ -682,14 +674,17 @@ def main():
     # The message didn't match the filter file, so check if it was
     # sent to a 'tagged' address.
     # Dated tag?
-    if cookie_type == 'dated' and cookie_value:
+    if (cookie_type in map(lambda s: s.lower(), Defaults.TAGS_DATED)) \
+           and cookie_value:
         verify_dated_cookie(cookie_value)
     # Sender tag?
-    elif cookie_type == 'sender' and cookie_value:
+    elif (cookie_type in map(lambda s: s.lower(), Defaults.TAGS_SENDER)) \
+             and cookie_value:
         sender_address = globals().get('envelope_sender')
         verify_sender_cookie(sender_address,cookie_value)
     # Keyword tag?
-    elif cookie_type == 'keyword' and cookie_value:
+    elif (cookie_type in map(lambda s: s.lower(), Defaults.TAGS_KEYWORD)) \
+             and cookie_value:
         verify_keyword_cookie(cookie_value)
         
     # If the message gets this far (i.e, was not sent to a tagged

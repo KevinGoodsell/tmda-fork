@@ -1,5 +1,23 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.57:
+
+* 'keyword' addresses now use an identifying string like 'dated' and
+  'sender' addresses do.  'keyword' by default, and customizable via
+  TAGS_KEYWORD.  This means you'll need to generate new addresses
+  using `tmda-address', as your old ones will no longer work.
+
+  If you want your old keyword addresses to be accepted until you can
+  transition to the new format, you can add entries for them in your
+  FILTER_INCOMING.  e.g,
+
+  to jason-promos.8d06eu@mastaler.com ok
+  to jason-stupid-promo.289j76@mastaler.com ok
+
+* 
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.56:
 
 * The format for a confirmation request address is now:

@@ -48,7 +48,8 @@ Contributions:
 
     * Mike Meyer -- FreeBSD port.
 
-    * Drew Raines -- Tireless assistance on tmda-users.
+    * Drew Raines -- Tireless assistance on tmda-users; custom address
+      type identifiers feature.
 
     * Ted Rathkopf -- support for "pre-extension" definitions in
       /var/qmail/users/assign (now deprecated).

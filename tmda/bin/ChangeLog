@@ -1,3 +1,10 @@
+2002-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (main): Identify tagged address types using each
+	element in the TAGS_* lists.
+
+	* tmda-check-address: Ditto.
+	
 2002-06-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter: Bugfix.  Specify maxcount so only the first

@@ -143,7 +143,7 @@ def main():
     local_part = string.split(address,'@')[0]
     address_split = string.split(local_part, Defaults.RECIPIENT_DELIMITER, 1)
     if len(address_split) <= 1:
-        print 'STATUS: Not a tagged address.'
+        print 'ERROR: Not a tagged address. (1)'
         sys.exit()
     address_split = string.split(address_split[1],
                                  Defaults.RECIPIENT_DELIMITER)
@@ -153,9 +153,10 @@ def main():
     try:
 	ext = address_split[-2]
     except IndexError:
-        ext = 'keyword'
+        print 'ERROR: Not a tagged address. (2)'
+        sys.exit()
 
-    if ext == 'dated':
+    if ext in map(lambda s: s.lower(), Defaults.TAGS_DATED):
 	expires = valid_dated_cookie(cookie)
 	if not expires:
 	    print 'STATUS: INVALID COOKIE'
@@ -176,7 +177,7 @@ def main():
 	    print 'STATUS:  VALID'
 	    print 'EXPIRES: %s' % (expires_str)
 
-    elif ext == 'sender':
+    elif ext in map(lambda s: s.lower(), Defaults.TAGS_SENDER):
 	try:
 	    sender_address = args[1]
 	except IndexError:
@@ -187,14 +188,14 @@ def main():
 	else:
 	    print 'STATUS: INVALID COOKIE'
 
-    elif ext == 'keyword':
+    elif ext in map(lambda s: s.lower(), Defaults.TAGS_KEYWORD):
         if valid_keyword_cookie(cookie):
             print 'STATUS: VALID'
         else:
             print 'STATUS: INVALID COOKIE'
         
     else:
-	print 'ERROR: Not a tagged address.'
+	print 'ERROR: Not a tagged address. (3)'
     
 
 if __name__ == '__main__':

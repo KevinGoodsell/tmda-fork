@@ -67,7 +67,7 @@ can be used as the keyword.
 Here is an example keyword address using the keyword `promos':
 
 <blockquote><pre>
-jason-promos.8d06eu@mastaler.com
+jason-keyword-promos.8w06e8@mastaler.com
 </pre></blockquote>
 
 Keyword addresses are appropriate when you need to hand-out
@@ -81,7 +81,7 @@ The caveat of course is that since keyword addresses are essentially
 keys to your inbox, you must manually intervene if the address starts
 getting spammed.  An easy way to do this is to add an entry for the
 harvested keyword address to your <b>~/.tmda/filters/incoming</b>
-file.  e.g, <code>to jason-promos.8d06eu@mastaler.com confirm</code>
+file.  e.g, <code>to jason-keyword-promos.8w06e8@mastaler.com confirm</code>
 </ul><br>
 </ul>
 
