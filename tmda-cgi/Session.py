@@ -170,7 +170,8 @@ we save Vars or PVars."""
     except IOError:
       CgiUtil.TermError("Unable to save session data.",
         "Insufficient privileges.", "write session file",
-        CgiUtil.FileDetails("Session file", Filename),
+        "%s<br>%s" % (CgiUtil.FileDetails("Session file", Filename),
+        CgiUtil.FileDetails("CWD", os.getcwd())),
         """Either grant the session user sufficient privileges to write the
 session file,<br>or recompile the CGI and specify a CGI_USER with more
 rights.""")
@@ -228,9 +229,12 @@ rights.""")
             "open file",
             CgiUtil.FileDetails("Session data", Filename),
             "No recommendation.")
-        F = open(Filename)
-        self.Vars = pickle.load(F)
-        F.close()
+        try:
+          F = open(Filename)
+          self.Vars = pickle.load(F)
+          F.close()
+        except (IOError, EOFError):
+          self.Vars = {}
 
         # Make sure the session has not been hijacked
         if os.environ["REMOTE_ADDR"] != self.Vars["IP"]:
@@ -261,9 +265,12 @@ rights.""")
         from TMDA import Defaults
         CWD = os.getcwd()
         os.chdir(os.path.split(Defaults.TMDARC)[0])
-        F = open(Defaults.CGI_SETTINGS)
-        self.PVars = pickle.load(F)
-        F.close()
+        try:
+          F = open(Defaults.CGI_SETTINGS)
+          self.PVars = pickle.load(F)
+          F.close()
+        except (IOError, EOFError):
+          self.PVars = {}
         os.chdir(CWD)
 
         # Load our theme
@@ -398,9 +405,12 @@ user modes if its partition is marked "nosuid" in /etc/fstab.""")
       CWD = os.getcwd()
       os.chdir(os.path.split(Defaults.TMDARC)[0])
       Filename = Defaults.CGI_SETTINGS
-      F = open(Filename)
-      self.PVars = pickle.load(F)
-      F.close()
+      try:
+        F = open(Filename)
+        self.PVars = pickle.load(F)
+        F.close()
+      except (IOError, EOFError):
+        self.PVars = {}
     except IOError:
       self.PVars = {}
     os.chdir(CWD)
