@@ -1,6 +1,9 @@
 Things left to do:
 ==================
 
+    * Administrator Disable -- allow the administrator to globally disable any
+                               command in the GUI
+
     * Blacklist -- optionally blacklist when you report to spamcop
 
     * Custom Filter -- action for pending emails (Requested by Lloyd Zusman)
