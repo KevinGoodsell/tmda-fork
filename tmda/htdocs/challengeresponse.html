@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Aug  5 14:10:07 2003 -->
+<!-- Tue Aug  5 14:15:55 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
-Title: TMDA Commercial Support
+Title: TMDA Challenge/Response
 
 -->
 
 <head>
-<title>TMDA Commercial Support</title>
+<title>TMDA Challenge/Response</title>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="HT2HTML/2.0">
 <style type="text/css">
@@ -73,7 +73,7 @@ Overview
 <a href="features.html">Features</a>
 </td></tr>
 <tr><td bgcolor="#cccccc">
-<a href="challengeresponse.html">Challenge/Response</a>
+<b>Challenge/Response</b>
 </td></tr>
 <tr><td bgcolor="#cccccc">
 <a href="results.html">Results &amp; Testimonials</a>
@@ -161,7 +161,7 @@ Support
 <a href="http://mla.libertine.org/" TARGET="Resource Window">List Archive</a> 
 </td></tr>
 <tr><td bgcolor="#cccccc">
-<b>Commercial Support</b>
+<a href="support-commercial.html">Commercial Support</a>
 </td></tr>
 <tr><td bgcolor="#cccccc">
 <a href="resources.html">External Resources</a>
@@ -189,85 +189,65 @@ Author
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <td valign="top" width="90%" class="body"><br>
-<h3>TMDA Commercial Support</h3>
+<h3>TMDA's Challenge/Response system</h3>
 
-TMDA has a <a href="trouble.html">free support</a> infastructure 
-including documentation, public mailing lists, and searchable mailing 
-list archives. These services are supported by the spare time of other
-TMDA users.
-<br><br>
+Challenge/Response is an old idea, and one which has been
+used by mailing list management software for years, but it's
+surprisingly effective against SPAM.<br><br>
 
-If these resources aren't able to satisfy your needs, and you are
-willing to pay for additional help, third-party commercial support
-is available from the list of vendors below.
-<br>
-
+<u>TMDA's Whitelist-centric Strategy</u>&nbsp;&nbsp;
+<strong>``Deny everything that is not <em>explicitly allowed</em>''</strong><br>
 <ul>
+With TMDA, unrestricted access to your mailbox can no longer be
+assumed, a premise which spammers rely heavily upon.<br><br>
 
-<li>
-<a href="http://www.standblue.net/" TARGET="Resource Window">Stand Blue Technology</a> 
-provides service and support for TMDA, Postfix, qmail, djbdns, qmail-scanner, Clam Antivirus, 
-vpopmail, ezmlm, and SpamAssassin from Richmond, Virginia.
+The way TMDA thwarts incoming junk-mail is simple yet extremely
+effective.  You maintain a "whitelist" of trusted contacts which are
+allowed directly into your mailbox.  Messages from unknown senders are
+held in a pending queue until they respond to a one-time confirmation request
+or "challenge" sent by TMDA.  Once they respond to the confirmation, their original
+message is deemed legitimate and is delivered to you.  TMDA then adds
+their address to your whitelist so they won't have to confirm future messages.
+To see what the confirmation process looks like, 
+<a href="mailto:jason-tmdatest@mastaler.com">send me a test message</a>,
+and then reply to the confirmation request.
 <br><br>
 
-<li>
-<a href="http://www.summersault.com/services/email.html" TARGET="Resource Window">Summersault</a>
-provides professional consulting services for organizations
-wanting to upgrade, secure, fix or replace their e-mail infrastructure.
-We have expert experience with qmail-related spam prevention/reduction
-strategies, including TMDA.
+This methodology has the advantage of being very selective about what
+it allows in, while at the same time permitting legitimate, but
+previously unknown senders to reach you.  
 <br><br>
 
-<li>
-<a href="http://poured.net/drew/consult.html" TARGET="Resource Window">Drew Raines</a>
-provides low cost, enterprise-level support for qmail and TMDA,
-as well as IMAP/POP/web-mail integration.
-<br><br>
-
-<li>
-<a href="http://www.symetrix.com/" TARGET="Resource Window">Symetrix Consulting</a>
-supports companies and organizations that wish to use opensource
-software to reduce operating expenses and increase productivity.
-Current support includes Anti-SPAM provisions (sendmail RBLs, milters,
-and TMDA integration), RedHat Linux, OpenOffice.org office suite, mySQL
-database, integration with current commercial infrastructures,
-network, and firewall support.  Support contracts are available.
-Accepts purchase orders, personal and company checks, and Paypal for
-credit cards.
-<br><br>
-
-<li>
-<a href="http://www.mired.org/consulting.html" TARGET="Resource Window">Mike Meyer</a> 
-commercially supports TMDA, qmail, and many other software packages.
-Remote admin work, as well as e-mail and phone support is available.
-He accepts purchase orders.  
-<br><br>
-
-<li>
-<a href="http://www.dungog.net/sme" TARGET="Resource Window">Dungog Networks</a>
-builds rpms for the 
-<a href="http://www.mitel.com/products/product.cfm?p_id=98" TARGET="Resource Window">Mitel SME</a>
-Linux distribution that make configuring and using other packages such as TMDA a trivial task. 
-Payment via online credit card.
-<br><br>
-
-<li>
-<a href="http://www.advantive.com/" TARGET="Resource Window">Advantive Associates</a>
-<br><br>
-
-<li>
-<a href="mailto:ljz@asfast.com">Lloyd Zusman</a>
-<br><br>
-
-<li>
-<a href="mailto:gre7g@wolfhome.com">Gre7g Luterman</a>, the author of
-<a href="tmda-cgi/" TARGET="Resource Window">tmda-cgi</a>, offers commercial
-support and customization for organizations interested in making TMDA more
-accessible to users with limited computer knowledge and/or access.<br>
-
+Optional use of TMDA's <a href="config-client.html">tagged addresses</a> 
+will greatly reduce the number of unknown senders who are actually sent a 
+confirmation request.
 </ul>
 
-If you'd like to be listed on this page, please let me know.
+<u>Traditional Blacklist-centric Strategy</u>&nbsp;&nbsp;
+<strong>``Allow everything that is not <em>explicitly denied</em>''</strong><br>
+<ul>
+Traditional anti-spam technical countermeasures are based upon
+maintaining a "blacklist" containing e-mail addresses, domains,
+and/or network subnets of known junk-mailers.  Or worse, a "profile" of
+message headers and message body text that fits the software's idea of
+what a piece of SPAM looks like.<br><br>
+
+The problem with this approach is that spammer's intrusion techniques
+are evolving as fast as your prevention techniques are, so the battle
+is never ending.  Maintaining the blacklist or spam "corpus" is often just as
+time-consuming as pressing the `Delete' key on the easily recognized
+junk messages.  If wasted time is your biggest complaint with junk
+e-mail, you can see why these traditional methodologies are flawed.  
+<br><br>
+
+The chance of accidental "false positives" is also significantly
+higher with this more complex approach.  If you really want effective
+and reliable UCE control, you need something like TMDA that doesn't rely on
+heuristics that spammers can work around.
+</ul>
+
+
+
 
 </td><!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->

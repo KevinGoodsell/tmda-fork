@@ -515,8 +515,7 @@ No default
 <dt><hr>
 <a name="BOUNCE_ENV_SENDER"><h4>BOUNCE_ENV_SENDER</h4></a>
 <dd>
-The envelope sender address of a TMDA auto-response.  This is used
-for all auto-responses TMDA sends out, not just "bounces".
+The envelope sender of a bounce message.
 <br><br>
 Example:
 <br><br>

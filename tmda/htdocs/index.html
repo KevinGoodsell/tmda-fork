@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Aug  5 13:23:05 2003 -->
+<!-- Tue Aug  5 14:16:38 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -71,6 +71,9 @@ Overview
 </td></tr>
 <tr><td bgcolor="#cccccc">
 <a href="features.html">Features</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="challengeresponse.html">Challenge/Response</a>
 </td></tr>
 <tr><td bgcolor="#cccccc">
 <a href="results.html">Results &amp; Testimonials</a>
@@ -189,93 +192,52 @@ Author
 <h2>Tagged Message Delivery Agent (TMDA)</h2>
 
 TMDA is an 
-<a href="http://www.opensource.org/docs/certification_mark.html" TARGET="Resource Window">
-OSI certified</a> software application designed to significantly
+<a href="http://www.opensource.org/" TARGET="Resource Window">
+open source</a> software application designed to significantly
 reduce the amount of 
-<a href="http://spam.abuse.net/" TARGET="Resource Window">SPAM/UCE</a>
-(junk-mail) you receive.  As a SPAM filter, TMDA combines a "whitelist"
-(for known/trusted senders), a "blacklist" (for undesired senders),
-and a cryptographically enhanced confirmation system (for unknown, but
-legitimate senders).  TMDA strives to be more effective, yet less
-time-consuming than traditional filters.
+<a href="http://spam.abuse.net/" TARGET="Resource Window">SPAM</a>
+(Internet junk-mail) you receive.  TMDA strives to be more effective, 
+yet less time-consuming than traditional SPAM filters. 
+TMDA can also be used as a general purpose 
+<a href="config-filter.html">local mail delivery agent</a> 
+to filter, sort, deliver and dispose of incoming mail.
 <br><br>
 
-TMDA also supports special-purpose addresses called 
-<a href="config-client.html">"tagged addresses"</a> which increases 
-the transparency of the process for unknown senders by
-allowing them to safely circumvent the whitelist.
-<br><br>
+The technical countermeasures used by TMDA to thwart SPAM include:
 
-TMDA is also a local mail delivery agent, with a flexible 
-<a href="config-filter.html">filtering language</a> that allows fine-grained
-control over how incoming and outgoing mail is delivered and sent.
-<br><br>
-
-<u>TMDA's Whitelist-centric Strategy</u>&nbsp;&nbsp;
-<strong>``Deny everything that is not <em>explicitly allowed</em>''</strong><br>
-<br>
 <ul>
-With TMDA, unrestricted access to your mailbox can no longer be
-assumed, a premise which spammers rely heavily upon.<br><br>
 
-The way TMDA thwarts incoming junk-mail is simple yet extremely
-effective.  You maintain a "whitelist" of trusted contacts which are
-allowed directly into your mailbox.  Messages from unknown senders are
-held in a pending queue until they respond to a one-time confirmation request
-sent by TMDA.  Once they respond to the confirmation, their original
-message is deemed legitimate and is delivered to you.  TMDA then adds
-their address to your whitelist so they won't have to confirm future messages.
-To see what the confirmation process looks like, 
-<a href="mailto:jason-tmdatest@mastaler.com">send me a test message</a>,
-and then reply to the confirmation request.
-<br><br>
+<li><b>whitelists</b>: for known, trusted senders.<br><br>
 
-This methodology has the advantage of being very selective about what
-it allows in, while at the same time permitting legitimate, but
-previously unknown senders to reach you.  
-<br><br>
+<li><b>blacklists</b>: for undesired senders.<br><br>
 
-Optional use of TMDA's <a href="config-client.html">tagged addresses</a> 
-will greatly reduce the number of unknown senders who are actually sent a 
-confirmation request (only ~6% in my case).
-<br><br>
+<li><b><a href="challengeresponse.html">challenge/response</a></b>: 
+allows unknown senders which
+aren't on the whitelist or blacklist the chance to confirm that their message 
+is legitimate (non-SPAM).<br><br>
+
+<li<b><a href="config-client.html">tagged addresses</a></b>: 
+special-purposes e-mail addresses such as temporary addresses, or
+addresses which only accept certain kinds of communication.  These
+increase the transparency of TMDA for unknown senders by allowing them
+to safely circumvent the challenge/response system.
 </ul>
 
-<u>Traditional Blacklist-centric Strategy</u>&nbsp;&nbsp;
-<strong>``Allow everything that is not <em>explicitly denied</em>''</strong><br>
-<br>
-<ul>
-Traditional anti-spam technical countermeasures are based upon
-maintaining a "blacklist" containing e-mail addresses, domains,
-and/or network subnets of known junk-mailers.  Or worse, a "profile" of
-message headers and message body text that fits the software's idea of
-what a piece of SPAM looks like.<br><br>
+These tactics were chosen based on the following assumptions about the
+current state of SPAM on the Internet:<br>
 
-The problem with this approach is that spammer's intrusion techniques
-are evolving as fast as your prevention techniques are, so the battle
-is never ending.  Maintaining the blacklist or spam "corpus" is often just as
-time-consuming as pressing the `Delete' key on the easily recognized
-junk messages.  If wasted time is your biggest complaint with junk
-e-mail, you can see why these traditional methodologies are flawed.  
-<br><br>
-
-The chance of accidental "false positives" is also significantly
-higher with this more complex approach.  If you really want effective
-and reliable UCE control, you need something like TMDA that doesn't rely on
-heuristics that spammers can work around.  <br><br>
-</ul>
-
-TMDA's functionality is based upon the following assumptions about the
-current Internet infrastructure:<br>
 <ol>
-<li>You cannot keep your email address secret from spammers.<br>
-<li>Content-based filters can't distinguish spam from legitimate mail with sufficient accuracy.<br>
+<li>You cannot keep your email address secret from spammers.<br><br>
+
+<li>Content-based filters can't distinguish SPAM from legitimate mail with sufficient accuracy.<br><br>
+
 <li>To maintain economies of scale, bulk-mailing is generally:
 <ul>
-    <li>An impersonal process where the recipient is not distinguished<br>
-    <li>A one-way communication channel (from spammer to victim)<br>
+    <li>An impersonal process where the recipient is not distinguished.<br>
+    <li>A one-way communication channel (from spammer to victim).<br><br>
 </ul>
-<li>Spam will not cease until it becomes prohibitively expensive for spammers to operate.<br><br>
+
+<li>SPAM will not cease until it becomes prohibitively expensive for spammers to operate.
 </ol>
 
 
