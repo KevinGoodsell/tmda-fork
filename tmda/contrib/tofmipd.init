@@ -1,6 +1,17 @@
 #!/bin/bash
 #
-# Startup script for the TMDA ofmipd server
+# Startup script for the TMDA ofmipd server (SysV/RedHat style)
+#
+# If you are installing the init files by hand, you should copy the these
+# files to the following locations:
+#   contrib/tofmipd.init      -> /etc/rc.d/init.d/tofmipd
+#   contrib/tofmipd.sysconfig -> /etc/sysconfig/tofmipd
+#
+# Then you must install the service by issuing the following command:
+#   chkconfig --add tofmipd
+#
+# You can then start the service with the following command:
+#   service tofmipd start
 #
 # chkconfig: 2345 87 13
 # description: tofmipd is a server that allows tagging of outgoing mail \
