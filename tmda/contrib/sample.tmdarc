@@ -1,18 +1,49 @@
 # -*- python -*-
 
-# sample.tmdarc - Sample configuration file for TMDA.
-# Copy to /etc/tmdarc or ~/.tmdarc, uncomment, and modify to taste.
+# sample.tmdarc - Sample configuration file for TMDA.  Uncomment and
+# modify to taste.
 #
-# See the "User configurable settings" section of TMDA/Defaults.py for
-# explanations of the possible settings and their default values.
+# /etc/tmdarc and ~/.tmdarc are interpreted as a series of Python
+# statements, and as such must follow Python syntax rules.  This file
+# should be enough to get you going, as the examples below demonstrate
+# correct syntax.  The Python Reference Manual is available if you
+# wish to learn more about Python syntax:
+# <URL:http://www.python.org/doc/current/ref/ref.html>
 #
-# Only CRYPT_KEY is required in the .tmdarc.
+# **** ! IMPORTANT ! ****
+# Read the "User configurable settings" section of Defaults.py for
+# explanations of these variables and their default values.
 #
-# NOTE: ~/.tmdarc must be chmod 600 or 400.
+#  NOTE: ~/.tmdarc must be chmod 400 or chmod 600
 
 import os                                      # don't remove
 
+##########################################################
+# Globally required variables; all users must define these
+##########################################################
+
+# CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key!
+
+############################################################
+# Posfix required variables; required only for Postfix users
+############################################################
+
+# MAIL_TRANSFER_AGENT = "postfix"
+
+# LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
+
+# RECIPIENT_DELIMITER = "+"
+
+#####################################################################
+# Optional variables; the rest may be omitted from the .tmdarc if you
+# wish to take their default values.
+#####################################################################
+
 # ALLOW_MODE_640 = 0
+
+# DATADIR = os.path.expanduser("~/.tmda/")
+
+# SENDMAIL = "/usr/sbin/sendmail"
 
 # BLACKLIST = "/full/path/to/blacklist"
 
@@ -38,35 +69,13 @@ import os                                      # don't remove
 
 # COOKIE_TYPE = "dated"
 
-# CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key
-#                                                    # with tmda-keygen!
-
-# DATADIR = os.path.expanduser("~/.tmda/")
-
 # FULLNAME = "John Doe"
 
 # HMAC_BYTES = 3
 
 # HOSTNAME = "domain.dom" 
 
-# LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
-
-# Optional delivery logging
-# If you uncomment this section, you need to create ~/tmda/log/
-# Logging will be done a file in the form:
-#
-# /home/jason/tmda/log/tmdalog.2001-04
-#
-# import time
-# localtime = time.localtime(time.time())
-# YYYYmm = time.strftime('%Y-%m',localtime) 
-# LOGFILE = os.path.expanduser("~/tmda/log/tmdalog." + YYYYmm)
-
-# MAIL_TRANSFER_AGENT = "qmail"
-
-# RECIPIENT_DELIMITER = "-"
-
-# SENDMAIL = "/usr/sbin/sendmail"
+# LOGFILE = os.path.expanduser("~/tmda.log")
 
 # TIMEOUT = "5d"
 
