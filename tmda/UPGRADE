@@ -1,5 +1,13 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.44:
+
+* tmda-make-address has replaced tmda-dated-address,
+  tmda-keyword-address, and tmda-sender-address.  Run
+  `tmda-make-address -h' to get a list of available options.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.43:
 
 * The TIMEZONE configuration setting has been removed.  If you need to

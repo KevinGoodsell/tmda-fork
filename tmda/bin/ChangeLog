@@ -1,3 +1,8 @@
+2001-12-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-make-address: New program that replaces tmda-dated-address,
+	tmda-keyword-address, and tmda-sender-address.
+
 2001-12-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: If SENDER or RECIPIENT is not in the environment,

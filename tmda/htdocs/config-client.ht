@@ -85,11 +85,10 @@ file.  e.g, <code>to jason-promos.8d06eu@mastaler.com confirm</code>
 </ul><br>
 </ul>
 
-The utilities <b>tmda-dated-address</b>, <b>tmda-sender-address</b> and 
-<b>tmda-keyword-address</b> are included to generate the various types
-of addresses from the command line.  Run the utility with the <b>-h</b> flag
-to get usage information (e.g, <code>tmda-dated-address -h</code>).
-<br><br> 
+The <b>tmda-make-address</b> program is included to generate the
+various types of tagged addresses from the command line.  Run the
+utility with the <b>-h</b> flag to get usage information.  
+<br><br>
 
 <li>outgoing filter file:<br><br>
 
@@ -316,9 +315,11 @@ add the following line to your .gnus file:<br>
 <li>USENET News Client configuration:<br><br>
 
 If you still read <a href="http://www.usenet.org/" TARGET="Resource Window">USENET</a> 
-(a notorious source of SPAM), you might find it useful to post using a dated address.  
-Simply have your newsreader call <strong>tmda-dated-address</strong> and use the result as your
-posting address.<br><br>
+(a notorious source of SPAM), you might find it useful to post using a
+dated address.  Simply have your newsreader call
+<strong>tmda-make-address -d</strong> and use the result as your
+posting address.
+<br><br>
 
 <ul>
 
@@ -328,7 +329,7 @@ be accomplished with the following addition to your .gnus file:
 <blockquote><pre>
 
 (defun tmda-dated-address () 
-  (shell-command-to-string "/path/to/tmda/bin/tmda-dated-address"))
+  (shell-command-to-string "/path/to/tmda/bin/tmda-make-address -d"))
  
 (setq gnus-posting-styles 
       (message-this-is-news           
@@ -356,7 +357,7 @@ alias for tcsh.
 
 <blockquote><pre>
 
-alias slrn-dated 'm4 -DTMDADATED=`tmda-dated-address` ~/.slrnrc.m4 > ~/.slrnrc && slrn -h newshost'
+alias slrn-dated 'm4 -DTMDADATED=`tmda-make-address -d` ~/.slrnrc.m4 > ~/.slrnrc && slrn -h newshost'
 
 </pre></blockquote>
 </ul>

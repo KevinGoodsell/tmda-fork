@@ -1,0 +1,109 @@
+#!/usr/bin/env python
+
+"""Generate a tagged e-mail address.
+
+Usage:  Usage:  %(program)s OPTIONS
+
+OPTIONS:
+        -h
+        --help
+           Print this help message and exit.
+
+	-c <file>
+	--config-file <file>
+	   Specify a different configuration file other than ~/.tmdarc.
+	   
+	-a <address>
+	--address <address>
+	   Specify a different address as the basis for the tagged address.
+
+	-d [timeout]
+	--dated [timeout]
+	   Generate a dated-style tagged address.  timeout is an
+	   optional timeout interval to override your default.
+
+	-k <keyword>
+	--keyword <keyword>
+	   Generate a keyword-style tagged address.  keyword is
+	   a required keyword string.
+
+	-s <address>
+	--sender <address>
+	   Generate a sender-style tagged address.  address is
+	   a required sender e-mail address.
+"""
+
+import getopt
+import os
+import sys
+
+
+program = sys.argv[0]
+tag = None
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                                   'c:a:dk:s:h', ['config-file=',
+                                                  'address=',
+                                                  'dated',
+                                                  'keyword=',
+                                                  'sender=',
+                                                  'help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+address = None
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    elif opt in ('-c', '--config-file'):
+        os.environ['TMDARC'] = arg
+    elif opt in ('-a', '--address'):
+	address = arg
+    elif opt in ('-d', '--dated'):
+        tag = 'dated'
+        try:                            # check for timeout override
+            os.environ['TMDA_TIMEOUT'] = args[0]
+        except IndexError:
+            pass
+    elif opt in ('-k', '--keyword'):
+        tag = 'keyword'
+        keyword = arg
+    elif opt in ('-s', '--sender'):
+        tag = 'sender'
+        sender = arg
+        
+
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Cookie
+from TMDA import Defaults
+
+
+def main():
+    global address
+    if not address:
+	address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
+    if tag == 'dated':
+        tagged_address = Cookie.make_dated_address(address)
+    elif tag == 'keyword':
+        tagged_address = Cookie.make_keyword_address(address, keyword)
+    elif tag == 'sender':
+        tagged_address = Cookie.make_sender_address(address, sender)
+    else:
+        usage(0)
+    sys.stdout.write(tagged_address)
+
+
+# This is the end my friend.
+if __name__ == '__main__':
+    main()
