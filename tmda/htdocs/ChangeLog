@@ -3,6 +3,9 @@
 	* config-server.ht (Links): Mention that you should add your own
 	e-mail address to the whitelist to facilitate initial testing.
 
+	(Postfix): Instruct the user to setup LOCAL_DELIVERY_AGENT before
+	setting up .forward.
+
 	* config.ht (Links): Emphasize the left sidebar.
 
 	* features.ht (Links): Changed wording, third-party delivery agent

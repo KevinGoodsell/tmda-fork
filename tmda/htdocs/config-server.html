@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Oct 16 13:45:19 2001 -->
+<!-- Tue Oct 16 13:55:43 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -293,7 +293,17 @@ program as well, e.g,:
 <li>If you already filter your mail with procmail and wish to continue
 doing so, you can invoke tmda-filter from your <b>.procmailrc</b> instead.<br><br>
 
-First, make sure your <b>~/.forward</b> calls procmail with the <b>-p</b> option:
+First, modify <b>LOCAL_DELIVERY_AGENT</b> in your <b>~/.tmdarc</b> so
+that it runs procmail with an separate rcfile (to avoid an infinite
+loop):
+
+<blockquote><pre>
+
+LOCAL_DELIVERY_AGENT = "/path/to/bin/procmail ~/.procmailrc-tmda"
+
+</blockquote></pre>
+
+Next, make sure your <b>~/.forward</b> calls procmail with the <b>-p</b> option:
 
 <blockquote><pre>
 
@@ -301,7 +311,7 @@ First, make sure your <b>~/.forward</b> calls procmail with the <b>-p</b> option
 
 </blockquote></pre>
 
-Next, add the following snippet to the end of your existing <b>.procmailrc</b>
+Finally, add the following snippet to the end of your existing <b>.procmailrc</b>
 to do final delivery:
 
 <blockquote><pre>
@@ -315,15 +325,6 @@ EXITCODE=$?
 
 # TMDA takes care of final delivery
 DEFAULT=/dev/null
-
-</blockquote></pre>
-				      
-Finally, modify <b>LOCAL_DELIVERY_AGENT</b> in your <b>~/.tmdarc</b> so that it
-runs procmail with an separate rcfile (to avoid an infinite loop):
-
-<blockquote><pre>
-
-LOCAL_DELIVERY_AGENT = "/path/to/bin/procmail ~/.procmailrc-tmda"
 
 </blockquote></pre>
 
