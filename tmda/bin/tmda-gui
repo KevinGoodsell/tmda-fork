@@ -1,0 +1,1361 @@
+#!/usr/bin/env python
+#
+# Copyright (C) 2001,2002 Jason R. Mastaler <jason@mastaler.com>
+#
+# Author: David Guerizec <david@guerizec.net>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+"""Tkinter interface to TMDA.
+
+Usage: %(program)s [OPTIONS]
+
+Where:
+   <none>
+   <none>
+       Gives a functional (but yet to finish) Address generator interface.
+
+   -p
+   --pending
+       Gives a functionnal (but yet to finish) Pending queue graphical
+       interface.
+
+        Until I do the Help dialog, here are some tips:
+        . you can resize the list columns width
+        . you can resize the height of the list
+        . double-click on a message and you'll see it's content
+        . the list is refreshed every 5 mins by default but you can
+          change it in Edit/Settings... (not memorized between runs yet)
+
+   -H hostname[:port]
+   --host hostname[:port]
+      Specify a hostname and a port to connect to.
+      This is mandatory if you don't have a local installation of TMDA.
+
+   -U username:password
+   -user username:password
+      Specify a username and a password to authenticate against on the
+      remote host.
+      See the NOTE below for security advisory.
+      This is mandatory if you don't have a local installation of TMDA.
+
+   -s
+   --ssl
+      Connect to the server with SSL.
+
+NOTE: This is early alpha software, so please try it, and send your
+comments to the tmda-workers@tmda.net mailing list.
+
+Please note that the options will be visible by any other local user on
+your machine with the 'ps' command, so don't use the -U option if you don't
+want to expose your password.
+"""
+
+import getopt
+import os
+import sys
+
+try:
+    import paths
+except ImportError:
+    # Prepend /usr/lib/python2.x/site-packages/TMDA/pythonlib
+    sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
+                           'site-packages', 'TMDA', 'pythonlib')
+    sys.path.insert(0, sitedir)
+
+## Lib access functions
+def lib_getVars(*vars):
+    """Get a configuration variable from TMDA.Defaults."""
+    ret = {}
+    from TMDA import Defaults
+    import copy
+    if '*' in vars:
+        vars = dict(Defaults).keys()
+    for var in vars:
+        try:
+            ret[var] = copy.copy(getattr(Defaults, var))
+        except AttributeError:
+            pass
+    return ret
+
+def lib_getAddress(tag, option=None, address=None):
+    """Get a tagged address."""
+    try:
+        tagged_address = Address.Factory(tag = tag).create(address, option).address
+    except ValueError, msg:
+        return ''
+
+    return tagged_address
+
+def lib_checkAddress(address, sender_address=None):
+    """Check a tagged address."""
+    #FIXME: Add localtime support
+    localtime = None
+    status = []
+    try:
+        addr = Address.Factory(address)
+        addr.verify(sender_address)
+        status.append("STATUS: VALID")
+        try:
+            status.append("EXPIRES: %s" % addr.timestamp(1, localtime))
+        except AttributeError:
+            pass
+    except Address.AddressError, msg:
+        status.append("STATUS: " + str(msg))
+
+    return '\n'.join(status)
+
+MessageError = "Message Error"
+def lib_processMessage(msgid, command, **args):
+    """Get a pending message."""
+    try:
+        msg = Pending.Message(msgid)
+    except Errors.MessageError:
+        raise MessageError
+    if command not in ('terse', 'show',):
+        msg.initMessage()
+    try:
+        try:
+            data = getattr(msg, command)(args)
+        except TypeError:
+            # if command takes no argument
+            data = getattr(msg, command)()
+        if type(data) == str:
+            return data
+        else:
+            if command == 'show':
+                print "Debug: type of data in lib_processMessage -> " + str(type(data))
+            try:
+                return '\n'.join(data)
+            except TypeError:
+                return str(data)
+    except AttributeError:
+        raise MessageError
+
+def lib_processPending(command, **args):
+    """Get the pending message list."""
+    Q = Pending.Queue(descending=1).initQueue()
+    if command == 'list':
+        return Q.listPendingIds()
+    return None
+
+## Net access functions
+import socket
+sock = None
+sin = None
+sout = None
+
+protocol_version = "0.2"
+ProtoError = "Protocol Error"
+AuthError = "Authentication Error"
+
+class SSL_socket:
+    """Wrapper class to socket.ssl to add readline method."""
+    def __init__(self, sock):
+        self._sock = sock
+        self._ssock = socket.ssl(sock)
+
+    def close(self):
+        self._sock.close()
+
+    def __getattr__(self, attr):
+        return getattr(self._ssock, attr)
+
+    def readline(self):
+        line = []
+        c = self._ssock.read(1)
+        while c:
+            line.append(c)
+            if c == '\n':
+                return ''.join(line)
+            c = self._ssock.read(1)
+        raise IOError, "Broken pipe"
+
+def connectToServer(host, auth):
+    """Establish a connection to the server."""
+    global sock, sin, sout
+    if sock:
+        print "Already connected"
+        return 0
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(host)
+    if use_ssl:
+        sin = sout = SSL_socket(sock)
+    else:
+        sin = sock.makefile('r', 0)
+        sout = sock.makefile('w', 0)
+    # eat up greetings from manager
+    ## FIXME: maybe check the protocol version ?
+    cc = sin.read(1)
+    while cc != '+':
+        l = sin.readline().strip()
+        if cc == 'T':
+            (dummy, tmdaver) = l.split(' v', 1)
+        if cc == 'P':
+            (dummy, protover) = l.split(' v', 1)
+        cc = sin.read(1)
+
+    print 'TMDA: %s (proto %s)' % (tmdaver, protover)
+    if protover != protocol_version:
+        msg = "Protocol %s is not supported," % protover \
+            + " current supported version is %s" % protocol_version
+        raise ProtoError, msg
+    sout.write('auth %s %s\n' % auth)
+    if sin.read(1) != '+':
+        raise AuthError, sin.readline()[:-1]
+    return 1
+
+def closeConnection():
+    """Close the connection to the server."""
+    if sin:
+        sin.close()
+    if sout:
+        sout.close()
+    if sock:
+        sock.close()
+
+def net_command(command):
+    """Send a command to the server, and return the result."""
+    data = []
+#    print str(command)
+    sout.write(str(command)+'\n')
+    cc = sin.read(1)
+    # '.' is the end of connection
+    if cc == '.':
+        closeConnection()
+        return ''
+    # ' ' is the data-transmit control char
+    while cc == ' ':
+        data.append(sin.readline()[:-1])
+        cc = sin.read(1)
+    # '-' is the standard error prompt
+    # '*' is the command unknown prompt (from cmd module)
+    if cc == '-' or cc == '*':
+        # '+' is the OK prompt
+        while cc != '+':
+            msg = sin.readline()[:-1]
+            print msg
+            cc = sin.read(1)
+        raise ProtoError, msg
+    return data
+
+def net_recover(s="error recovery"):
+    s = str(s)
+    r = net_command('nop %s\n' % s)[0]
+    if r != s:
+        raise ProtoError, r
+
+def parse_pyvar(str):
+    """Parse a python variable."""
+    try:
+        result=eval('%s' % str)
+    except (NameError, SyntaxError):
+        result = str
+    return result
+
+
+def net_getVars(*vars):
+    """Get a configuration variable from TMDA.Defaults."""
+    vars = net_command('get %s' % ' '.join(vars))
+    res = {}
+    for var in vars:
+        (k, v) = var.split('=', 1)
+        res[k] = parse_pyvar(v)
+    return res
+
+def net_getAddress(tag, option=None, address=None):
+    """Get a tagged address."""
+    try:
+        if option:
+            option = '=' + option
+        else:
+            option = ''
+        if not address:
+            address = ''
+        tagged_address = '\n'.join(
+                    net_command(
+                        'address --%s%s %s' \
+                        % (tag, option, address)))
+    except ProtoError, msg:
+        print "%s: %s" % (ProtoError, msg)
+        return ''
+    return tagged_address
+
+def net_checkAddress(address, sender_address=None):
+    """Check a tagged address."""
+    try:
+        status = '\n'.join(
+                    net_command(
+                        'checkaddress %s %s' \
+                        % (address, sender_address)))
+    except ProtoError, msg:
+        print "%s: %s" % (ProtoError, msg)
+        return ''
+    return status
+
+def net_processMessage(msgid, command, **args):
+    """Get a pending message."""
+    opts = ''
+    for a in args.keys():
+        if args[a]:
+            opts += ' --%s=%s' % (a, args[a])
+        else:
+            opts += ' --%s' % a
+    try:
+        data = net_command('message --%s%s %s' % (command, opts, msgid))
+        return '\n'.join(data)
+    except ProtoError, msg:
+        print "%s: %s" % (ProtoError, msg)
+        
+    raise MessageError
+
+def net_processPending(command, **args):
+    """Get the pending message list."""
+    if command == 'list':
+        try:
+            ## FIXME: add reverse option pending command
+            data = net_command('pending --only --descending=1')
+#            data.reverse()
+            return data
+        except ProtoError, msg:
+            print "%s: %s" % (ProtoError, msg)
+
+    return []
+
+# Let's check if we're running locally or through the network
+
+try:
+    from TMDA import Version
+    from TMDA import Address
+    from TMDA import Pending
+    from TMDA import Errors
+
+    using_network = 0
+    getVars = lib_getVars
+    getAddress = lib_getAddress
+    checkAddress = lib_checkAddress
+    processMessage = lib_processMessage
+    processPending = lib_processPending
+
+
+# No TMDA library around, we're not on the server
+except ImportError:
+    using_network = 1
+    # Hack to have the --version flag
+    class VersionObject:
+        ALL = 'unknown'
+        TMDA = 'unknown'
+    Version = VersionObject()
+
+
+
+
+try:
+    from Tkinter import *
+except ImportError:
+    ## FIXME: what to do if we don't have TMDA ?
+    from TMDA.Util import wraptext
+    no_tk = 'It appears your Python is not configured with Tkinter ' + \
+            'support. Visit http://python.org/topics/tkinter/trouble.html ' + \
+            'for more information.'
+    print 'ERROR:\n'
+    print wraptext(no_tk), '\n'
+    sys.exit()
+
+def PasswordPrompt(pl):
+    """Prompt for a password."""
+    def setpw(ev=None):
+        pl.append(ask.get())
+        ask.destroy()
+        root.destroy()
+    root = Tk()
+    Label(root, text="Please enter your password").pack(side=TOP, fill=X)
+    ask = Entry(root, show="*")
+    ask.pack(side=TOP, fill=X)
+    Button(root, text="OK", command=setpw).pack(side=TOP, fill=X)
+    root.mainloop()
+
+
+program = sys.argv[0]
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                               'H:U:spVhab',
+                                        ['host=',
+                                         'user=',
+                                         'ssl',
+                                         'pending',
+                                         'address',
+                                         'both',
+                                         'version',
+                                         'help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+pending_only = 0
+address_only = 0
+two_in_one = 0
+host = None
+port = 8765
+use_ssl = None
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    if opt == '-V':
+        print Version.ALL
+        sys.exit()
+    if opt == '--version':
+        print Version.TMDA
+        sys.exit()
+    if opt in ('-b', '--both'):
+        two_in_one = 1
+    if opt in ('-a', '--address'):
+        address_only = 1
+    if opt in ('-p', '--pending'):
+        pending_only = 1
+    if opt in ('-s', '--ssl'):
+        use_ssl = 1
+    elif opt in ('-H', '--host'):
+        using_network=1
+        try:
+            (host, port) = arg.split(':', 1)
+            port = int(port)
+        except ValueError:
+            (host, port) = (arg, 8765)
+    elif opt in ('-U', '--user'):
+        try:
+            (user, passwd) = arg.split(':', 1)
+        except ValueError:
+            p = []
+            PasswordPrompt(p)
+            user = arg
+            passwd = p[0]
+            del(p)
+#            print "Error: missing the password"
+#            sys.exit()
+
+if using_network:
+    if not host:
+        print "Error: no TMDA library available and no host to connect to."
+        sys.exit()
+    if not user or not passwd:
+        print "Error: please provide a user:password pair to connect to remote host."
+        sys.exit()
+
+    # map the accessors to the net_* functions
+    getVars = net_getVars
+    getAddress = net_getAddress
+    checkAddress = net_checkAddress
+    processMessage = net_processMessage
+    processPending = net_processPending
+
+
+##############################################
+##  Some helper widgets                     ##
+##############################################
+
+class ConfigVar:
+    def __init__(self, file='~/.tmdaguirc'):
+        self._var = {}
+        self._file = file
+
+#    def __getattr__(self, attr):
+#        return self._var[attr]
+
+    def get(self, attr):
+        from copy import copy
+        if self._var.has_key(attr):
+            return copy(self._var[attr])
+        else:
+            return None
+
+    def default(self, attr, value):
+        if not self.get(attr):
+            self.set(attr, value);
+
+#    def __setattr__(self, attr, value):
+#        return self.set(attr, value)
+
+    def set(self, attr, value):
+        from copy import copy
+        self._var[attr] = copy(value)
+
+    def save(self):
+        import os.path
+        file=open(os.path.expanduser(self._file), "w")
+        file.write("# Auto-generated by tmda-gui. Please do not edit by hand\n")
+        file.write("# unless you know what you do. Delete this file if\n")
+        file.write("# something goes wrong.\n\n")
+        keys = self._var.keys()
+        keys.sort()
+        for k in keys:
+            file.write("%s=%s\n" % (k, repr(self._var[k])))
+        file.write("\n")
+        return self
+
+    def load(self):
+        def execnamespace(__file):
+            execfile(__file)
+            del __file
+            return locals()
+
+        import os.path
+        if os.path.exists(os.path.expanduser(self._file)):
+            self._var = execnamespace(os.path.expanduser(self._file))
+        else:
+            self._var = {}
+        return self
+
+    def dict(self):
+        from copy import copy
+        return copy(self._var)
+
+
+
+class ProgressBar(Frame):
+    """Progress bar widget."""
+    def __init__(self, master=None, **args):
+        Frame.__init__(self, master, args)
+        self.pack(fill=BOTH, expand=YES)
+        self.cursor = None
+    
+    def Show(self, max=100, step=1):
+        """Show the widget, set the max value and the increment step."""
+        self.Hide()
+        self.cursor = Scale(self, showvalue=NO, orient=HORIZONTAL)
+        self.cursor.pack(fill=BOTH, expand=YES)
+        self.value = 0
+        self.max = max
+        self.cursor.configure(to=max)
+        self.step = step
+        self.update()
+
+    def Inc(self):
+        """Increment the widget value."""
+        self.Update(self.value + self.step)
+        
+    def Update(self, value=-1):
+        """Update the widget with the given value."""
+        if value < 0:
+            value = (self.value + self.step)
+            print value
+            if value > self.max or value < 0:
+                self.step *= -1
+                print self.step
+                value = (value + 2 * self.step)
+
+        self.value = value
+        self.cursor.set(value)
+        self.update()
+        
+    def Hide(self):
+        """Destroy the widget."""
+        if self.cursor:
+            self.cursor.destroy()
+
+class StatusBar(Frame):
+    """Status bar widget."""
+    def __init__(self, master, **args):
+        Frame.__init__(self, master, args)
+        self.message = Label(self, bd=1, relief=SUNKEN)
+        self.message.pack(side=LEFT, fill=X)
+
+        self.progress = ProgressBar(self)
+        self.progress.pack(side=RIGHT, fill=X)
+
+    def Set(self, text, **args):
+        """Set the status message."""
+        args['text'] = ' ' + str(text) + ' '
+        self.message.configure(args)
+        self.update()
+
+
+class HMultiSplitter(Frame):
+    """Horizontaly splitted frame widget."""
+    def __init__(self, master, number, **args):
+        Frame.__init__(self, master, args)
+
+        self.frames = [ Frame(self, bd=0, relief=SUNKEN) for x in range(number) ]
+        
+        max = len(self.frames)
+        if not self.splitpos or len(self.splitpos) != max+1:
+            self.splitpos = [ n * (1.0 / max) for n in range(max+1) ]
+        
+        step = 0
+        y = 0
+        for f in self.frames:
+            y = self.splitpos[step]
+            f.place(rely=y, relheight=(self.splitpos[step + 1] - self.splitpos[step]), relwidth=1)
+            if y > 0:
+                sep = Frame(self, bd=2, relief=RAISED, width=8, height=2,
+                                  cursor="sb_v_double_arrow")
+                sep.place(relx=0, rely=y, anchor=W, relwidth=1)
+                sep.bind('<ButtonPress>', self.Start)
+                sep.bind('<ButtonRelease>', self.Stop)
+                sep.split = y
+                sep.step = step
+                sep.fprev = fprev
+                fprev.snext = sep
+                sep.fnext = f
+                f.sprev = sep
+            step += 1
+            fprev = f
+
+    def Start(self, ev):
+        """Start to move a splitter."""
+        s = ev.widget
+        s.splitpx = int(s.split * self.winfo_height())
+        s.rsz = s.splitpx
+        s.bind('<B1-Motion>', self.Move)
+        s.place(relx=2) # hide the splitter during the move
+        
+    def Move(self, ev):
+        """Move a splitter."""
+        s = ev.widget
+        s.splitpx = s.rsz + ev.y
+        s.split = (1.0 * s.splitpx) / self.winfo_height()
+        try:
+            if s.split < s.fprev.sprev.split:
+                s.split = s.fprev.sprev.split
+        except AttributeError:
+            pass
+        try:
+            if s.split > s.fnext.snext.split:
+                s.split = s.fnext.snext.split
+        except AttributeError:
+            pass
+        try:
+            s.fprev.place(relheight=s.split - s.fprev.sprev.split)
+        except AttributeError:
+            s.fprev.place(relheight=s.split)
+        try:
+            s.fnext.place(rely=s.split, relheight=s.fnext.snext.split-s.split)
+        except AttributeError:
+            s.fnext.place(rely=s.split, relheight=1.0-s.split)
+
+    def Stop(self, ev):
+        """Stop to move a splitter."""
+        s = ev.widget
+        s.bind('<B1-Motion>', lambda e: "break")
+        s.place(relx=0, rely=s.split, anchor=W)
+        self.splitpos[s.step] = s.split
+
+
+class VMultiSplitter(Frame):
+    """Verticaly splitted frame widget."""
+    def __init__(self, master, number, **args):
+
+        Frame.__init__(self, master, args)
+            
+        self.frames = [ Frame(self, bd=0, relief=SUNKEN) for x in range(number) ]
+        
+        max = len(self.frames)
+        if not self.splitpos or len(self.splitpos) != max+1:
+            self.splitpos = [ n * (1.0 / max) for n in range(max+1) ]
+        
+        step = 0
+        x = 0
+        for f in self.frames:
+            x = self.splitpos[step]
+            f.place(relx=x, relwidth=(self.splitpos[step + 1] - self.splitpos[step]), relheight=1)
+            if x > 0:
+                sep = Frame(self, bd=2, relief=RAISED, height=8, width=2,
+                                  cursor="sb_h_double_arrow")
+                sep.place(rely=0, relx=x, anchor=N, relheight=1)
+                sep.bind('<ButtonPress>', self.Start)
+                sep.bind('<ButtonRelease>', self.Stop)
+                sep.split = x
+                sep.step = step
+                sep.fprev = fprev
+                fprev.snext = sep
+                sep.fnext = f
+                f.sprev = sep
+            step += 1
+            fprev = f
+
+    def Start(self, ev):
+        """Start to move a splitter."""
+        s = ev.widget
+        s.splitpx = int(s.split * self.winfo_width())
+        s.rsz = s.splitpx
+        s.bind('<B1-Motion>', self.Move)
+        s.place(rely=2) # hide the splitter during the move
+        
+    def Move(self, ev):
+        """Move a splitter."""
+        s = ev.widget
+        s.splitpx = s.rsz + ev.x
+        s.split = (1.0 * s.splitpx) / self.winfo_width()
+        try:
+            if s.split < s.fprev.sprev.split:
+                s.split = s.fprev.sprev.split
+        except AttributeError:
+            pass
+        try:
+            if s.split > s.fnext.snext.split:
+                s.split = s.fnext.snext.split
+        except AttributeError:
+            pass
+        try:
+            s.fprev.place(relwidth=s.split - s.fprev.sprev.split)
+        except AttributeError:
+            s.fprev.place(relwidth=s.split)
+        try:
+            s.fnext.place(relx=s.split, relwidth=s.fnext.snext.split-s.split)
+        except AttributeError:
+            s.fnext.place(relx=s.split, relwidth=1.0-s.split)
+
+    def Stop(self, ev):
+        """Stop to move a splitter."""
+        s = ev.widget
+        s.bind('<B1-Motion>', lambda e: "break")
+        s.place(rely=0, relx=s.split, anchor=N)
+        self.splitpos[s.step] = s.split
+
+class TMDAHSplitter(HMultiSplitter):
+    def __init__(self, master, number, **args):
+        try:
+            self.splitpos = args['splitpos']
+            del args['splitpos']
+        except KeyError:
+            self.splitpos = cfg.get('DO_NOT_TOUCH_hmultisplitter_splitpos')
+        HMultiSplitter.__init__(self, master, number, **args)
+        cfg.set('DO_NOT_TOUCH_hmultisplitter_splitpos', self.splitpos)
+
+    def Stop(self, ev):
+        HMultiSplitter.Stop(self, ev)
+        cfg.set('DO_NOT_TOUCH_hmultisplitter_splitpos', self.splitpos)
+
+class TMDAVSplitter(VMultiSplitter):
+    def __init__(self, master, number, **args):
+        try:
+            self.splitpos = args['splitpos']
+            del args['splitpos']
+        except KeyError:
+            self.splitpos = cfg.get('DO_NOT_TOUCH_vmultisplitter_splitpos')
+        VMultiSplitter.__init__(self, master, number, **args)
+        cfg.set('DO_NOT_TOUCH_vmultisplitter_splitpos', self.splitpos)
+
+    def Stop(self, ev):
+        VMultiSplitter.Stop(self, ev)
+        cfg.set('DO_NOT_TOUCH_vmultisplitter_splitpos', self.splitpos)
+
+
+
+class TMDAMessageList(Frame):
+    """Message list widget."""
+    def __init__(self, master, statusbar=None, **args):
+        Frame.__init__(self, master, args)
+        self.statusbar = statusbar
+        self._sb = Scrollbar(self, orient=VERTICAL)
+        self._sb.config(command=self._yview)
+        
+        vars = getVars('TERSE_SUMMARY_HEADERS', 'TERSE_LABEL_HEADERS')
+        try:
+            self._colnames = vars['TERSE_SUMMARY_HEADERS']
+            # FIXME: test if the user wants the msgid (config)
+            self._colnames.insert(0, 'msgid')
+            try:
+                self._collabels = vars['TERSE_LABEL_HEADERS']
+                # FIXME: test if the user wants the msgid (config)
+                self._collabels.insert(0, 'msgid')
+            except KeyError:
+                # set some reasonable default
+                self._collabels = self._colnames
+    
+        except KeyError:
+            # set some reasonable default
+            self._colnames = [ 'date', 'from_name', 'subject' ]
+            self._collabels = [ 'Date', 'From', 'Subject' ] 
+            # FIXME: test if the user wants the msgid (config)
+            self._colnames.insert(0, 'msgid')
+            self._collabels.insert(0, 'msgid')
+
+        self._cols = []
+
+#        f = VMultiSplitter(self, len(self._colnames))
+        f = TMDAVSplitter(self, len(self._colnames))
+        f.pack(side=LEFT, fill=BOTH, expand=YES)
+    
+        for i in range(len(self._colnames)):
+            Label(f.frames[i], text=self._collabels[i],
+                      bd=1, relief=RAISED).pack(side=TOP, fill=X)
+            l = Listbox(f.frames[i], yscrollcommand=self._set, bd=0)
+            l.pack(side=LEFT, fill=BOTH, expand=YES)
+            self._cols.append(l)
+        self._sb.pack(side=RIGHT, fill=Y)
+
+        self.maxmsg = cfg.get('messagelist_maxmsg')
+        if not self.maxmsg:
+            self.maxmsg = -1
+            cfg.set('messagelist_maxmsg', self.maxmsg)
+    
+    def curselection(self):
+        """Get selected index."""
+        for col in self._cols:
+            selindex = col.curselection()
+            if selindex:
+                break
+        return selindex
+
+    def bind(self, key, action):
+        """Bind a key to each subframe."""
+        for col in self._cols:
+            col.bind(key, action)
+        return None
+
+    def _set(self, *args):
+        for col in self._cols:
+            col.yview(MOVETO, args[0])
+        apply(self._sb.set, args)
+        return None
+        
+    def _yview(self, *args):
+        for col in self._cols:
+            apply(col.yview, args)
+        return None
+
+    def WhitelistSelectedMessage(self):
+        try:
+            processMessage(self.msgs[int(self.curselection()[0])], command='whitelist')
+        except IndexError:
+            return 0
+        self.Refresh()
+        return 1
+
+    def BlacklistSelectedMessage(self):
+        try:
+            processMessage(self.msgs[int(self.curselection()[0])], command='blacklist')
+        except IndexError:
+            return 0
+        self.Refresh()
+        return 1
+
+    def ReleaseSelectedMessage(self):
+        try:
+            processMessage(self.msgs[int(self.curselection()[0])], command='release')
+        except IndexError:
+            return 0
+        self.Refresh()
+        return 1
+
+    def DeleteSelectedMessage(self):
+        try:
+            processMessage(self.msgs[int(self.curselection()[0])], command='delete')
+        except IndexError:
+            return 0
+        self.Refresh()
+        return 1
+
+    def GetSelectedMsgId(self):
+        try:
+            return self.msgs[int(self.curselection()[0])]
+        except IndexError:
+            return ''
+        
+    def GetSelectedMsgContent(self):
+        try:
+            return processMessage(self.msgs[int(self.curselection()[0])],
+                                  command='show').split('\n\n', 1)
+        except IndexError:
+            return ('', '')
+        
+    def Refresh(self):
+        """Refresh the pending message list."""
+        try:
+            for col in self._cols:
+                col.delete(0, END)
+            self.msgs = []
+            lst = processPending('list')[:self.maxmsg]
+            self.statusbar.Set('Please wait, loading message list...')
+            self.statusbar.progress.Show(len(lst))
+            x = 0
+            for item in lst:
+                self.statusbar.progress.Inc()
+                try:
+                    msg = processMessage(item, command='terse', date=1).split('\n')
+                except MessageError:
+                    # no such message
+                    continue
+                self.msgs.append(item)
+                i = 0
+                #print repr(msg)
+                for col in self._cols:
+                    col.insert(END, msg[i])
+                    i = i + 1
+            self.statusbar.progress.Hide()
+        except TclError: # Refresh is probably aborted by user
+            pass
+
+class TMDAPendingGUI(Frame):
+    """Pending message viewer widget."""
+    AppName = "tmda-gui"
+    def __init__(self, master=None, statusbar=None, **args):
+        if 0 and master:
+            master.title(self.AppName)
+            master.protocol("WM_DELETE_WINDOW", self.FileQuit)
+
+        Frame.__init__(self, master, args)
+        self.statusbar = statusbar
+
+        self.refresh_interval = cfg.get('pending_refresh_interval')
+        if self.refresh_interval is None:
+            # default refresh interval is 10 minutes
+            self.refresh_interval = 600
+            cfg.set('pending_refresh_interval', self.refresh_interval)
+        self.master=master
+        self.createWidgets()
+        # let's wait 1 second, otherwise the message list doesn't
+        # show during the first refresh
+        self.counter = self.refresh_interval - 1
+        self.poll()
+
+    def FileOpen(self):
+        print "opening file"
+        from FileDialog import LoadFileDialog
+        fd = LoadFileDialog(self)
+        self.filename = fd.go(key="FIXME")
+    
+    def FileSave(self):
+        print "saving file",
+        try:
+            print self.filename
+        except AttributeError:
+            self.FileSaveAs()
+    
+    def FileSaveAs(self):
+        from FileDialog import SaveFileDialog
+        fd = SaveFileDialog(self)
+        self.filename = fd.go(key="FIXME")
+        print "saved file as", self.filename
+    
+    def FileQuit(self):
+        print "Exiting..."
+        self.master.destroy()
+    
+    def EditUndo(self):
+        print "undoing stuff"
+    
+    def HelpHelp(self):
+        print "Help: blah blah blah..."
+    
+    def HelpAbout(self):
+        abouttxt = """Copyright 2002 David Guerizec <david@guerizec.net>\n""" + \
+                   """Copyright 2002 TMDA Project http://www.tmda.net/"""
+        print abouttxt
+        about = Toplevel()
+        about.title("About %s" % self.AppName)
+        f = Frame(about, bd=15, relief=FLAT)
+        f.pack(side=TOP, fill=BOTH, expand=1)
+        about.txt = Label(f, text=abouttxt, relief=GROOVE, padx=15, pady=15)
+        about.txt.pack(side=TOP, fill=BOTH, expand=1)
+        f = Frame(about, bd=10, relief=FLAT)
+        f.pack(side=TOP, fill=BOTH, expand=1)
+        about.ok = Button(f, text="OK", command=about.destroy, relief=GROOVE)
+        about.ok.pack(side=TOP)
+    
+    def MessageRefresh(self, ev=None):
+        try:
+            self.message.text.delete(1.0, END)
+            self.listbox.Refresh()
+            self.updateStatus()
+        except TclError: # Refresh is probably aborted by user
+            pass
+
+    def MessageShow(self, ev=None):
+        self.message.text.delete(1.0, END)
+        (hdr, bdy) = self.listbox.GetSelectedMsgContent()
+        self.message.text.tag_configure('header', font=('Courier', 10, 'bold'),
+                                        foreground='blue', background='#CCCCCC')
+        self.message.text.tag_configure('body', font=('Courier', 10))
+        self.message.text.insert(END, hdr+'\n', ('header',))
+        self.message.text.insert(END, '\n'+bdy, ('body',))
+
+    def MessageWhitelist(self, ev=None):
+        self.MessageShow()
+        self.listbox.WhitelistSelectedMessage()
+
+    def MessageBlacklist(self, ev=None):
+        self.MessageShow()
+        self.listbox.BlacklistSelectedMessage()
+
+    def MessageRelease(self, ev=None):
+        self.message.text.delete(1.0, END)
+        self.listbox.ReleaseSelectedMessage()
+        self.updateStatus()
+
+    def MessageDelete(self, ev=None):
+        self.message.text.delete(1.0, END)
+        self.listbox.DeleteSelectedMessage()
+        self.updateStatus()
+
+    def createWidgets(self):
+        self.toolbar = Frame(self, relief=GROOVE)
+
+        b = Button(self.toolbar, text="Refresh", bd=1,
+                   command=self.MessageRefresh)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="Show", bd=1,
+                   command=self.MessageShow)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="Whitelist", bd=1,
+                   command=self.MessageWhitelist)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="Release", bd=1,
+                   command=self.MessageRelease)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="Blacklist", bd=1,
+                   command=self.MessageBlacklist)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="Delete", bd=1,
+                   command=self.MessageDelete)
+        b.pack(side=LEFT, padx=0, pady=0)
+
+        self.toolbar.pack(side=TOP, fill=X)
+        
+        self.split = TMDAHSplitter(self, 2, width=600, height=400,
+                                    relief=GROOVE)
+
+        self.split.one = self.split.frames[0]
+        self.split.two = self.split.frames[1]
+    
+        self.split.pack(fill=BOTH, expand=YES)
+
+        if not self.statusbar:
+            self.statusbar = StatusBar(self)
+            self.statusbar.pack(side=BOTTOM, fill=X)
+
+        self.listbox = TMDAMessageList(self.split.one, statusbar=self.statusbar)
+        self.listbox.bind("<Double-Button-1>", self.MessageShow)
+        self.listbox.pack(fill=BOTH, expand=YES)
+
+        self.message = self.split.two
+        self.message.text = Text(self.message, bd=1, relief=GROOVE)#, anchor=W)
+        scrollbar = Scrollbar(self.message, orient=VERTICAL)
+        self.message.text.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=self.message.text.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
+        self.message.text.scrollbar=scrollbar
+        self.message.text.bind('<Key>', lambda ev: 'break')
+        self.message.text.pack(fill=BOTH, expand=YES)
+
+
+    def updateStatus(self, ev=None):
+        self.statusbar.Set("%d messages in pending queue..." \
+                                    % len(self.listbox.msgs))
+
+    def poll(self):
+        self.counter += 1
+        if self.counter > self.refresh_interval:
+            self.counter = 0
+            self.MessageRefresh()
+        self.master.after(1000, self.poll)
+
+
+class TMDAAddressGUI(Frame):
+    """Address generator/checker widget."""
+    def __init__(self, master=None, **args):
+        R = 0
+        Frame.__init__(self, master, args)
+
+        R += 1
+        Label(self, text="Keyword:").grid(row=R, sticky=W)
+        self.e_keyword = Entry(self)
+        self.e_keyword.grid(row=R, column=1, sticky=W)
+        self.r_keyword = Entry(self, state=DISABLED)
+        self.r_keyword.grid(row=R, column=2, sticky=NW)
+        
+        R += 1
+        Label(self, text="Sender:").grid(row=R, sticky=W)
+        self.e_sender = Entry(self)
+        self.e_sender.grid(row=R, column=1, sticky=W)
+        self.r_sender = Entry(self, state=DISABLED)
+        self.r_sender.grid(row=R, column=2, sticky=NW)
+        
+        R += 1
+        Label(self, text="Dated:").grid(row=R, sticky=NW)
+        f = Frame(self)
+        f.grid(row=R, column=1, sticky=NW)
+        self.e_dated = Entry(f, width=4)
+        self.e_dated.insert(END, "5")
+        self.e_dated.grid(row=0, column=0, sticky=NW)
+
+        self.units = [
+            ("years",  "Y"),
+            ("months", "M"),
+            ("weeks",  "w"),
+            ("days",   "d"),
+            ("hours",  "h"),
+            ("mins",   "i"),
+            ("secs",   "s"),
+        ]
+        self.uidx = 3 # default to days
+        self.e_dated_unit = StringVar()
+        self.e_dated_unit.set('d')
+
+        f = Frame(f)
+        f.grid(row=0, column=1)
+        self.m_du = Button(f, text=self.units[self.uidx][0], relief=RAISED, command=self.LClick)
+        self.m_du.bind('<Button-3>', self.RClick)
+        self.m_du.pack(fill=BOTH, expand=1)
+
+        self.r_dated = Entry(self, state=DISABLED)
+        self.r_dated.grid(row=R, column=2, sticky=NW)
+        
+        R += 1
+        f = Frame(self)
+        f.grid(row=R, columnspan=3)
+        Button(f, text="Create / Check Address", command=self.Calc).grid(row=0, column=0, columnspan=3)
+
+        R += 1
+        Label(self, text="Check:").grid(row=R, sticky=W)
+        self.e_check = Entry(self)
+        self.e_check.grid(row=R, column=1, sticky=NW)
+        self.e_check_sa = Entry(self)
+        self.e_check_sa.grid(row=R, column=2, sticky=NW)
+        R += 1
+        self.r_check = Label(self, text="Enter an address to check")
+        self.r_check.grid(row=R, column=1, columnspan=2, sticky=NW)
+        
+        self.Calc()
+
+    def RClick(self, ev=None):
+        self.uidx = (len(self.units) + self.uidx - 1) % len(self.units)
+        self.m_du.configure(text=self.units[self.uidx][0])
+
+    def LClick(self, ev=None):
+        self.uidx = (len(self.units) + self.uidx + 1) % len(self.units)
+        self.m_du.configure(text=self.units[self.uidx][0])
+
+    def Calc(self, ev=None):
+        address = cfg.get('address_main')
+        self.r_dated['state'] = NORMAL
+        self.r_dated.delete(0, END)
+        date = self.e_dated.get().strip()
+        if date:
+            self.r_dated.insert(END, getAddress('dated', date + self.units[self.uidx][1], address=address))
+        self.r_dated['state'] = DISABLED
+
+        self.r_keyword['state'] = NORMAL
+        self.r_keyword.delete(0, END)
+        keyword = self.e_keyword.get().strip()
+        if keyword:
+            self.r_keyword.insert(END, getAddress('keyword', keyword, address=address))
+        self.r_keyword['state'] = DISABLED
+
+        self.r_sender['state'] = NORMAL
+        self.r_sender.delete(0, END)
+        sender = self.e_sender.get().strip()
+        if sender:
+            self.r_sender.insert(END, getAddress('sender', sender, address=address))
+        self.r_sender['state'] = DISABLED
+
+        tagged_addr = self.e_check.get().strip()
+        if tagged_addr:
+            sender_addr = self.e_check_sa.get().strip()
+            if not sender_addr:
+                sender_addr = None
+            status = checkAddress(tagged_addr, sender_addr)
+        else:
+            status = "Enter an address to check"
+        self.r_check.configure(text=status)
+
+class About(Frame):
+    """About widget."""
+    def __init__(self, master, AppName, **args):
+        if not master:
+            master = Toplevel()
+        Frame.__init__(self, master, args)
+
+        abouttxt = """Copyright 2002 David Guerizec <david@guerizec.net>\n""" + \
+                   """Copyright 2002 TMDA Project http://www.tmda.net/"""
+        print abouttxt
+        try:
+            self.title("About %s" % AppName)
+            self.ok = Button(f, text="OK", command=self.destroy, relief=GROOVE)
+            self.ok.pack(side=TOP)
+        except AttributeError:
+            pass
+        f = Frame(self, bd=15, relief=FLAT)
+        f.pack(side=TOP, fill=BOTH, expand=1)
+        self.txt = Label(f, text=abouttxt, relief=GROOVE, padx=15, pady=15)
+        self.txt.pack(side=TOP, fill=BOTH, expand=1)
+        f = Frame(self, bd=10, relief=FLAT)
+        f.pack(side=TOP, fill=BOTH, expand=1)
+        
+class TMDASettings(Frame):
+    def __init__(self, master, AppName, **args):
+        if not master:
+            master = Toplevel()
+        Frame.__init__(self, master, args)
+
+        try:
+            self.title("Configure %s" % AppName)
+        except AttributeError:
+            pass
+
+        self.vars = [
+            # Format is: variable name, label, default, type
+            ('messagelist_maxmsg', "Max messages in pending list", -1, int),
+            ('pending_refresh_interval', "Refresh interval (sec)", 600, int),
+            ('address_main', 'Main address', getAddress('base'), str)
+            ]
+
+        r=0
+        self.ent = {}
+        for (var, text, dft, typ) in self.vars:
+            Label(self, text=text).grid(row=r, column=0)
+            self.ent[var] = Entry(self)
+            cfg.default(var, dft)
+            self.ent[var].insert(END, str(cfg.get(var)))
+            self.ent[var].grid(row=r, column=1)
+            r += 1
+
+        Button(self, text="Apply", command=self.ApplySettings,
+               bd=2, relief=GROOVE).grid(row=r, column=0)
+
+        Button(self, text="Save", command=self.SaveSettings,
+               bd=2, relief=GROOVE).grid(row=r, column=1)
+
+    def ApplySettings(self):
+        for (var, text, dft, typ) in self.vars:
+            cfg.set(var, typ(self.ent[var].get()))
+
+    def SaveSettings(self):
+        self.ApplySettings()
+        cfg.save()
+
+
+class TMDAGUI(Frame):
+    """The main application frame."""
+    AppName = "tmda-gui"
+    def __init__(self, master=None, **args):
+        if master:
+            master.title(self.AppName)
+            master.protocol("WM_DELETE_WINDOW", self.Quit)
+        self.master = master
+        Frame.__init__(self, master, args)
+        self.tabs = Frame(master=self, bd=5, relief=GROOVE)
+        self.tabs.pack(side=TOP, fill=X)
+        self.baddress = Button(self.tabs, bd=1, text='Address', command=self.displayAddress)
+        self.baddress.pack(side=LEFT)
+        self.bpending = Button(self.tabs, bd=1, text='Pending', command=self.displayPending)
+        self.bpending.pack(side=LEFT)
+        self.bquit = Button(self.tabs, bd=1, text='Quit', command=self.Quit)
+        self.bquit.pack(side=RIGHT)
+        self.babout = Button(self.tabs, bd=1, text='About', command=self.displayAbout)
+        self.babout.pack(side=RIGHT)
+        self.bconfig = Button(self.tabs, bd=1, text='Settings', command=self.displaySettings)
+        self.bconfig.pack(side=RIGHT)
+        self.statusbar = StatusBar(self)
+        self.statusbar.pack(side=BOTTOM, fill=X)
+        self.displayAddress()
+        
+    def displayAddress(self):
+        try:
+            self.panel.destroy()
+        except AttributeError:
+            pass
+        self.statusbar.Set('Tagged address center')
+        self.panel = TMDAAddressGUI(master=self)
+        self.panel.pack(fill=BOTH, expand=YES)
+        self.statusbar.progress.Hide()
+
+    def displayPending(self):
+        try:
+            self.panel.destroy()
+        except AttributeError:
+            pass
+        self.bpending.update()
+        self.statusbar.Set('Pending messages center')
+        self.panel = TMDAPendingGUI(master=self, statusbar=self.statusbar)
+        self.panel.pack(fill=BOTH, expand=YES)
+        self.statusbar.progress.Hide()
+
+    def displayAbout(self):
+        try:
+            self.panel.destroy()
+        except AttributeError:
+            pass
+        self.statusbar.Set('Welcome to a SPAM free world!', anchor=CENTER)
+        self.panel = About(master=self, AppName=self.AppName)
+        self.panel.pack(fill=BOTH, expand=YES)
+        self.statusbar.progress.Hide()
+
+    def displaySettings(self):
+        try:
+            self.panel.destroy()
+        except AttributeError:
+            pass
+        self.statusbar.Set('Local configuration', anchor=CENTER)
+        self.panel = TMDASettings(master=self, AppName=self.AppName)
+        self.panel.pack(fill=BOTH, expand=YES)
+        self.statusbar.progress.Hide()
+
+    def Quit(self):
+        self.master.destroy()
+
+def main():
+    root = Tk()
+    if using_network:
+        try:
+            connectToServer(host=(host, port), auth=(user, passwd))
+        except ProtoError, msg:
+            print msg
+            # try to exit cleanly
+            net_command("exit")
+            sys.exit(1)
+        except AuthError, msg:
+            print "Couldn't connect to server %s:%s (reason: %s)" % (host, port, msg)
+            sys.exit(1)
+    if pending_only:
+        P = TMDAPendingGUI(root)
+        P.pack(fill=BOTH, expand=YES)
+        P.refresh_interval = cfg.get('pending_refresh_interval')
+    elif address_only:
+        TMDAAddressGUI(root).pack(fill=BOTH, expand=YES)
+    elif two_in_one:
+        TMDAAddressGUI(root).pack(fill=BOTH, expand=YES)
+        P = TMDAPendingGUI(root)
+        P.pack(fill=BOTH, expand=YES)
+        P.refresh_interval = cfg.get('pending_refresh_interval')
+    else:
+        TMDAGUI(root).pack(fill=BOTH, expand=YES)
+
+    root.mainloop()
+    if using_network:
+        net_command('exit')
+#        sys.exit(0)
+
+cfg = ConfigVar().load()
+
+if __name__ == '__main__':
+    main()
+
+cfg.save()
+
+
+
+
+
