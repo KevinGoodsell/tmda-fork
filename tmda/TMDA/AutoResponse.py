@@ -23,6 +23,7 @@
 
 
 from email import message_from_string
+from email.Charset import add_alias
 from email.Header import Header, decode_header
 from email.MIMEMessage import MIMEMessage
 from email.MIMEMultipart import MIMEMultipart
@@ -38,6 +39,19 @@ import Version
 
 
 DEFAULT_CHARSET = 'US-ASCII'
+
+# Extend Charset.ALIASES with some charsets which don't already have
+# convenient aliases.
+add_alias('arabic', 'iso-8859-6')
+add_alias('cyrillic', 'iso-8859-5')
+add_alias('greek', 'iso-8859-7')
+add_alias('hebrew', 'iso-8859-8')
+add_alias('japanese', 'euc-jp')
+add_alias('korean', 'euc-kr')
+add_alias('russian', 'koi8-r')
+add_alias('thai', 'tis-620')
+add_alias('turkish', 'iso-8859-9')
+add_alias('vietnamese', 'viscii')
 
 
 class AutoResponse:
