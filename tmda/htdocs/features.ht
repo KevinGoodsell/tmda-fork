@@ -11,7 +11,7 @@ an interpreted, interactive, object-oriented programming language.
 
 <li>Active and open development.<br><br>
 
-<li>MTA independent (supports Postfix and qmail currently).
+<li>MTA independent (supports Exim, Postfix and qmail currently).
 <br><br>
 
 <li>Integrated "blacklist" and "whitelist" functionality.

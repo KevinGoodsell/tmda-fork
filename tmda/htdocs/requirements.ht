@@ -23,12 +23,11 @@ Type "copyright", "credits" or "license" for more information.
 
 <li>An SMTP server (a.k.a. mail transport agent or MTA) for mail reception.
 Currently supported MTAs include 
-<a href="http://www.qmail.org/" TARGET="Resource Window">qmail</a> 
-and <a href="http://www.postfix.org/" TARGET="Resource Window">Postfix</a>.
-Support for 
-<a href="http://www.sendmail.org/" TARGET="Resource Window">Sendmail</a>
-and <a href="http://www.exim.org/" TARGET="Resource Window">Exim</a>
-are in process.
+<a href="http://www.qmail.org/" TARGET="Resource Window">qmail</a>, 
+<a href="http://www.postfix.org/" TARGET="Resource Window">Postfix</a>,
+and <a href="http://www.exim.org/" TARGET="Resource Window">Exim</a>.
+Support for <a href="http://www.sendmail.org/" TARGET="Resource Window">Sendmail</a>
+is in process.
 <br><br>
 
 <li>If you are using an MTA other than qmail, a local delivery agent

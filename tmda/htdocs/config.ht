@@ -3,7 +3,12 @@ Links: overview-links.h usage-links.h config-links.h support-links.h
 
 <h3>TMDA Configuration Overview</h3>
 
-Read the <a href="config-server.html">Server Configuration</a>
+First read the <a href="config-pre.html">Pre-Configuration</a> section
+for changes you might need to make to non-TMDA software such as your
+SMTP-server.
+<br><br>
+
+Next read the <a href="config-server.html">Server Configuration</a>
 section for how to filter incoming messages on your mailserver
 with TMDA.
 <br><br>

@@ -1,3 +1,10 @@
+2001-11-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-pre.ht: New file describing configuration changes needed
+	for supporting software such as the MTA.  Exim info is new.
+
+	* config-server.ht: Sections are now just qmail and non-qmail.
+
 2001-10-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-client.ht: Add configuration information for XFMail and

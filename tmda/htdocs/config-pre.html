@@ -1,15 +1,15 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Nov  1 16:51:53 2001 -->
+<!-- Thu Nov  1 16:56:36 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
-Title: TMDA Configuration Overview
+Title: TMDA Pre-Configuration
 
 -->
 
 <HEAD>
-<TITLE>TMDA Configuration Overview</TITLE>
+<TITLE>TMDA Pre-Configuration</TITLE>
 
 </HEAD>
 <BODY BGCOLOR="#ffffff" TEXT="#000000"
@@ -88,17 +88,17 @@ Usage
 <A HREF="install.html">Installation</A>
 </TD></TR>
 <TR><TD BGCOLOR="#cccccc">
-<b>Configuration</b>
+<A HREF="config.html">Configuration</A>
 </TD></TR>
 <TR><TD BGCOLOR="#cccccc">&nbsp;
 <TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
 Configuration
 </FONT></B></TD></TR>
 <TR><TD BGCOLOR="#cccccc">
-<b>Overview</b>
+<A HREF="config.html">Overview</A>
 </TD></TR>
 <TR><TD BGCOLOR="#cccccc">
-<A HREF="config-pre.html">Pre-Configuration</A>
+<b>Pre-Configuration</b>
 </TD></TR>
 <TR><TD BGCOLOR="#cccccc">
 <A HREF="config-server.html">Server Configuration</A>
@@ -142,26 +142,116 @@ Author
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <TD VALIGN=TOP WIDTH="90%"><BR>
-<h3>TMDA Configuration Overview</h3>
+<h3>TMDA Pre-Configuration</h3>
 
-First read the <a href="config-pre.html">Pre-Configuration</a> section
-for changes you might need to make to non-TMDA software such as your
-SMTP-server.
+You may need to make some system-wide configuration changes to your
+MTA software depending on which one you are running.
 <br><br>
 
-Next read the <a href="config-server.html">Server Configuration</a>
-section for how to filter incoming messages on your mailserver
-with TMDA.
+[ <A HREF="#qmail">qmail</a> | <A HREF="#postfix">Postfix</a> | <A HREF="#exim">Exim</a> ]
+<br><br>
+<hr>
+
+<a name="qmaill"><h4>MTA Configuration (qmail)</h4></a>
+
+No changes need to be made to your qmail configuration in order to use TMDA.
+<br><br>
+<hr>
+
+<a name="postfix"><h4>MTA Configuration (Postfix)</h4></a>
+
+<ol>
+
+<li>Enable the <strong>recipient_delimiter</strong> parameter in
+Postfix's <em>main.cf</em> if it isn't already.  The Postfix default is
+<code><b>+</b></code> but <code><b>-</b></code> is an acceptable value as
+well.  Just make sure it matches <b>RECIPIENT_DELIMITER</b> in your
+<b>tmdarc</b>.
+
+</ol>
+<hr>
+
+<a name="exim"><h4>MTA Configuration (Exim)</h4></a>
+
+Edit your Exim run time configuration file as follows:
+
+<h5>MAIN CONFIGURATION</h5>
+
+<ol>
+<li>
+TMDA uses sendmail's `-f' option to set the envelope sender
+address on outgoing messages.  By default this option is only
+available to Exim's "trusted users".  
 <br><br>
 
-If you want to tag outgoing messages from your mail or news client, then
-read the <a href="config-client.html">Client Configuration</a> section.
+From the Exim Specification:<br><br>
+
+<blockquote>
+"A trusted user is root or the Exim user or any user listed in the
+trusted_users configuration option, or any user for whom the
+currently set group is the Exim group (if defined) or whose current
+group or any supplementary group is one of those listed in the
+trusted_groups configuration option."
+</blockquote>
+
+It is recommended that you become a trusted-user, or else the
+client side of TMDA becomes much less functional.
+<br><br>
+</ol>
+
+<h5>DIRECTORS CONFIGURATION</h5>
+
+<ol>
+
+<li>
+TMDA is heavily based on user "extension addresses" (e.g,
+username+extension@domain.dom), and your Exim must be able
+to understand them.  It doesn't by default.  Both
+<code><b>+</b></code> and <code><b>-</b></code> are an acceptable
+values for the suffix, just make sure it matches
+<b>RECIPIENT_DELIMITER</b> in your <b>tmdarc</b>.
 <br><br>
 
-If you are upgrading from an earlier release of TMDA, make sure to
-consult the <strong>UPGRADE</strong> file that came with your TMDA
-distribution.
+Add the following two lines to both the <b>userforward</b> and 
+the <b>localuser</b> directors if they are not there already:
+<br><br>
 
+<blockquote><pre>
+suffix = +* or suffix = -*
+suffix_optional
+</blockquote></pre>
+
+</ol>
+
+<h5>TRANSPORTS CONFIGURATION</h5>
+<ol>
+
+<li>
+TMDA receives much of it's information about the envelope of
+an incoming message from environment variables set by the MTA.  Most
+importantly, <strong>SENDER</strong> (the full envelope sender address),
+<strong>RECIPIENT</strong> (the full envelope recipient address), and
+<strong>EXT</strong> or <strong>EXTENSION</strong> (the recipient
+address extension).  Exim currently sets only the first, so you
+must set the other two using the <em>environment</em> 
+pipe option.
+<br><br>
+
+Set <em>environment</em> as follows under the
+<strong>address_pipe</strong> transport:
+<br><br>
+
+<blockquote><pre>
+address_pipe: 
+  driver = pipe 
+  return_fail_output 
+  environment = EXTENSION=${sg{$local_part_suffix}{(^\\-|^\\+)}{}}:\ 
+                RECIPIENT=$local_part$local_part_suffix@$domain 
+</blockquote></pre>
+
+</ol>
+
+<hr>
 </TD><!-- end of body cell -->
 </TR><!-- end of sidebar/body row -->
 </TABLE><!-- end of page table -->
