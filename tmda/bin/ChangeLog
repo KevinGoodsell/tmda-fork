@@ -1,3 +1,8 @@
+2002-06-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-pending (main): Add PENDING_WHITELIST_APPEND and
+	PENDING_BLACKLIST_APPEND features.
+
 2002-06-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-ofmipd: New file.

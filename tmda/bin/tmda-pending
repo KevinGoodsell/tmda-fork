@@ -415,9 +415,13 @@ def main():
                 print '\t'.join(terse_hdrs)
             if interactive:
                 try:
-                    inp = raw_input(
-                        '([p]ass / [s]how / [r]elease / [d]elete / [q]uit) [%s]: '
-                        % dispose_def)
+		    message = '([p]ass / [s]how / [r]el / [d]el'
+                    if Defaults.PENDING_WHITELIST_APPEND:
+			message = message + ' / [w]hite'
+                    if Defaults.PENDING_BLACKLIST_APPEND:
+			message = message + ' / [b]lack'
+		    message = message + ' / [q]uit) [%s]: '
+                    inp = raw_input(message % dispose_def)
                     ans = inp[0:1].lower()
                     if ans == "":
                         dispose = dispose_def
@@ -429,6 +433,10 @@ def main():
                         dispose = 'release'
                     elif ans == 'd':
                         dispose = 'delete'
+                    elif ans == 'w' and Defaults.PENDING_WHITELIST_APPEND:
+                        dispose = 'whitelist'
+                    elif ans == 'b' and Defaults.PENDING_BLACKLIST_APPEND:
+                        dispose = 'blacklist'
                     elif ans == "q":
                         break
                     else:
@@ -444,32 +452,37 @@ def main():
             if dispose:
                 cprint(verbose, '\n', message)
             if not pretend:
+                if dispose in ('release', 'delete', 'whitelist', 'blacklist'):
+                    return_path = headers.getaddr('return-path')[1]
                 if dispose == 'release':
-                    # Optionally append the envelope sender to a file.
                     if Defaults.PENDING_RELEASE_APPEND:
-                        return_path = headers.getaddr('return-path')[1]
                         Util.append_to_file(return_path,
                                             Defaults.PENDING_RELEASE_APPEND)
-                    
                     release(headers, body, msg)
                 elif dispose == 'delete':
-                    # Optionally append the envelope sender to a file.
                     if Defaults.PENDING_DELETE_APPEND:
-                        return_path = headers.getaddr('return-path')[1]
                         Util.append_to_file(return_path,
                                             Defaults.PENDING_DELETE_APPEND)
                     os.unlink(msg)
+		elif dispose == 'whitelist':
+                    if Defaults.PENDING_WHITELIST_APPEND:
+                        Util.append_to_file(return_path,
+                                            Defaults.PENDING_WHITELIST_APPEND)
+		elif dispose == 'blacklist':
+                    if Defaults.PENDING_BLACKLIST_APPEND:
+                        Util.append_to_file(return_path,
+                                            Defaults.PENDING_BLACKLIST_APPEND)
                 elif dispose == 'pass':
                     continue
                 elif dispose == 'show':
                     Util.pager(msg)
-                    if interactive:
-                        count = count - 1
-                        msgs.insert(msgs.index(msg), msg)
-                        if cache:
-                            # remove message from cache, or else we
-                            # won't be prompted for it again
-                            msgcache.remove(msg)
+                if interactive and dispose in ('show', 'whitelist', 'blacklist'):
+                    count = count - 1
+                    msgs.insert(msgs.index(msg), msg)
+                    if cache:
+                        # remove message from cache, or else we
+                        # won't be prompted for it again
+                        msgcache.remove(msg)
                         
     if cache:
         # Trim tail entries off if necessary, and then save the cache.

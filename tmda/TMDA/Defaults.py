@@ -782,6 +782,17 @@ if not vars().has_key('PENDING_CACHE'):
 if not vars().has_key('PENDING_CACHE_LEN'):
     PENDING_CACHE_LEN = 5000
 
+# PENDING_BLACKLIST_APPEND
+# Filename to which a sender's e-mail address should be appended
+# when a message is "blacklisted" by tmda-pending.
+#
+# Example:
+# PENDING_BLACKLIST_APPEND = "/full/path/to/blacklist"
+#
+# No default
+if not vars().has_key('PENDING_BLACKLIST_APPEND'):
+    PENDING_BLACKLIST_APPEND = None
+
 # PENDING_DELETE_APPEND
 # Filename to which a sender's e-mail address should be automatically
 # appended when a message is "deleted" by tmda-pending.
@@ -803,6 +814,17 @@ if not vars().has_key('PENDING_DELETE_APPEND'):
 # No default
 if not vars().has_key('PENDING_RELEASE_APPEND'):
     PENDING_RELEASE_APPEND = None
+
+# PENDING_WHITELIST_APPEND
+# Filename to which a sender's e-mail address should be appended
+# when a message is "whitelisted" by tmda-pending.
+#
+# Example:
+# PENDING_WHITELIST_APPEND = "/full/path/to/whitelist"
+#
+# No default
+if not vars().has_key('PENDING_WHITELIST_APPEND'):
+    PENDING_WHITELIST_APPEND = None
 
 # ADDED_HEADERS
 # A Python dictionary containing one or more header:value string pairs

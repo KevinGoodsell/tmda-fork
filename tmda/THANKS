@@ -66,6 +66,9 @@ Contributions:
 
     * Mate Wierdl -- tmda4ezmlm script.
 
+    * Lloyd Zusman -- "whitelist" and "blacklist" commands for
+      tmda-pending.
+
 --------------
 ^L
 Local Variables:
