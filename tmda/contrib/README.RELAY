@@ -48,9 +48,9 @@ Once that's working, proceed with the following steps:
 1. Setup TMDA as per the install instructions with the following
    additional notes:
 
-   * .tmdarc needs to be chmod 640 and chown username.nofiles so that
-     qmail can read it. (is this safe?) You also need to set
-     "ALLOW_MODE_640 = 1" in your .tmdarc.
+   * .tmdarc, .tmda-whitelist, etc. needs to be chmod 640 and chown
+     username.nofiles so that qmail can read them. (is this safe?) You
+     also need to set "ALLOW_MODE_640 = 1" in your .tmdarc.
 
    * References to os.path.expanduser may need to be expanded manually
      since the user that will be running this won't be yours.  For
@@ -83,7 +83,7 @@ Once that's working, proceed with the following steps:
    address, you could modify tcprules as follows and there would be no
    need for authentication:
 
-   1.2.3.4:allow,RELAYCLIENT="",TCPREMOTEINFO="rbickers",QMAILQUEUE="/usr/local/bin/qfilter-tmda"
+   1.2.3.4:allow,RELAYCLIENT="",TCPREMOTEINFO="username",QMAILQUEUE="/usr/local/bin/qfilter-tmda"
 
 4. Recompile the tcprules .cdb and it's ready to go.
 

@@ -1,3 +1,9 @@
+2001-05-28  Jason R. Mastaler  <jason@mastaler.com>
+
+	* README.RELAY: Change `rbickers' to `username' in step 3 and
+	clarify that all .tmda-* files should be chmod 640 so qmail can
+	read them.
+
 2001-05-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc (ALLOW_MODE_640): New variable to support mode 640
