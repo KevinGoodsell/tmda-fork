@@ -1,3 +1,7 @@
+2002-02-25  Tim Legant  <tim@catseye.net>
+
+	* Defaults.py: Documented additional options for ACTION_OUTGOING.
+
 2002-02-25  Tim Legant  <webmaster@catseye.net>
 
 	* FilterParser.py (FilterParser): Fixed in_action regexp to allow

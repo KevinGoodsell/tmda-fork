@@ -300,14 +300,20 @@ if not vars().has_key('ACTION_INCOMING'):
 # are no matches in FILTER_OUTGOING and no X-TMDA header.
 # Possible values include:
 #
-# "bare"
+# "bare[=append]"
 #    don't tag
 #
-# "dated"
+# "dated[=timeout_interval]"
 #    tag with a dated address
 #
-# "sender"
+# "sender[=sender_address]"
 #    tag with a sender address
+#
+# "exp=full_address"
+#    tag with explicit address
+#
+# "kw=keyword"
+#    tag with a keyword address
 #
 # Default is dated
 if not vars().has_key('ACTION_OUTGOING'):
