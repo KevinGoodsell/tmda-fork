@@ -1,6 +1,6 @@
 # -*- python -*-
 
-"""Distributed default settings for significant TMDA config variables."""
+"""TMDA configuration variable defaults."""
 
 
 # Make site-wide configuration changes to this file.  
@@ -21,7 +21,7 @@ TMDA_VERSION = "0.35"
 TMDA_HOMEPAGE = "<http://tmda.sf.net/>"
 
 PYTHON_VERSION = string.split(sys.version)[0]
-# e.g, "TMDA v0.12/Python 2.1 (linux2)"
+# e.g, "TMDA v0.35/Python 2.1.1 (irix646)"
 DELIVERY_AGENT = 'TMDA ' + 'v' + TMDA_VERSION + '/Python ' + PYTHON_VERSION \
                  + ' (' + sys.platform + ')'
 
@@ -73,9 +73,10 @@ else:
 
 # DATADIR
 # Top-level directory which TMDA uses to store its files and
-# directories.  TMDA should be free to create subdirectories under
-# DATADIR if need be.  Make sure to include a trailing "/".
+# directories.  TMDA should be free to create files and directories
+# under DATADIR if need be.  Make sure to include a trailing "/".
 # Default is ~/.tmda/
+
 if not vars().has_key('DATADIR'):
     DATADIR = os.path.expanduser("~/.tmda/")
 
@@ -88,7 +89,7 @@ if not vars().has_key('USEVIRTUALDOMAINS'):
     USEVIRTUALDOMAINS = 1
 
 # VIRTUALDOMAINS
-# virtualdomains defaults to /var/qmail/crontrol/virtualdomains, but
+# virtualdomains defaults to /var/qmail/control/virtualdomains, but
 # this lets you override it in case it is installed elsewhere.  Used
 # for virtualdomain processing in tmda-filter.
 if not vars().has_key('VIRTUALDOMAINS'):
@@ -132,7 +133,7 @@ if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
 # CONFIRM_MAX_MESSAGE_SIZE
 # This is the largest size (in bytes) that a message can be before the
 # its body is excluded from the confirmation request/acceptance
-# notices.  Set this to None to allow any size message.
+# notice.  Set this to None to allow any size message.
 # Default is 50000
 if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
     CONFIRM_MAX_MESSAGE_SIZE = 50000
@@ -170,10 +171,10 @@ if not vars().has_key('SENDER_TEMPLATE_VARS'):
     SENDER_TEMPLATE_VARS = 0
 
 # COOKIE_TYPE
-# The default cookie type is dated.  It could be:
-#       dated   can only be replied to for TIMEOUT
-#       sender  can only be replied to by address
-#       bare    untagged
+# The default cookie type is dated.  Possible values are:
+#       dated   (can only be replied to for TIMEOUT)
+#       sender  (can only be replied to by address)
+#       bare    (untagged)
 if not vars().has_key('COOKIE_TYPE'):
     COOKIE_TYPE = "dated"
 
@@ -274,7 +275,7 @@ if not vars().has_key('EXT_FILE'):
     EXT_FILE = DATADIR + "lists/" + "ext"
 
 # SACRED_FILE
-# Filename which contains a list of sacred keywords, the prescence
+# Filename which contains a list of sacred keywords, the presence
 # of which automatically zaps the mail into your mailbox.
 # Default is ~/.tmda/lists/sacred
 if not vars().has_key('SACRED_FILE'):
@@ -297,7 +298,7 @@ if not vars().has_key('WHITELIST'):
     WHITELIST = DATADIR + "lists/" + "whitelist"
 
 # WHITELIST_AUTO_APPEND
-# If you set this variable to 1, once a sender confirms a message, their
+# If you set this variable to 1, once a sender confirms a message their
 # e-mail address will be automatically appended to WHITELIST.
 # Default is 0 (turned off)
 if not vars().has_key('WHITELIST_AUTO_APPEND'):
