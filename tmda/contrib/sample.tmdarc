@@ -16,6 +16,12 @@ BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
 
 BLOCK_CIPHER = "DES3"
 
+BOUNCE_BLACKLIST_CC = "jdoe-bounces-blacklist@domain.dom"
+
+BOUNCE_DATED_CC = "jdoe-bounces-dated@domain.dom"
+
+BOUNCE_SENDER_CC = "jdoe-bounces-sender@domain.dom"
+
 COOKIE_TYPE = "dated"
 
 CRYPT_IV  = "abdd4f8b1dd5a9d8"                 # generate your own IV!

@@ -1,0 +1,4 @@
+2001-04-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Added BOUNCE_BLACKLIST_CC, BOUNCE_DATED_CC,
+	BOUNCE_SENDER_CC.

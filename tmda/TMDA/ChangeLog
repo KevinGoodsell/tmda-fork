@@ -1,6 +1,7 @@
 2001-04-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (TMDA_VERSION): Release v0.02.
+	Added BOUNCE_BLACKLIST_CC, BOUNCE_DATED_CC, BOUNCE_SENDER_CC
 
 2001-04-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 

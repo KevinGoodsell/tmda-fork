@@ -4,6 +4,9 @@
 	bounce message to make it easier to reply to.  Thanks to Paul
 	English for the suggestion.
 
+	(bounce_cc): New function to send a copy of a bounced message for
+	each of 'blacklist', 'dated', and 'sender'.
+
 	(main): tmda-filter now consults the "whitelist" no matter what
 	the destination address is.
 

@@ -55,6 +55,24 @@ BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
 # Default is DES3 (Triple DES).
 BLOCK_CIPHER = "DES3"
 
+# BOUNCE_BLACKLIST_CC
+# An optional e-mail address which will be sent a copy of any message
+# that bounces because of a BLACKLIST match.
+# No default.
+BOUNCE_BLACKLIST_CC = None
+
+# BOUNCE_DATED_CC
+# An optional e-mail address which will be sent a copy of any message
+# that triggers a 'dated' bounce.
+# No default.
+BOUNCE_DATED_CC = None
+
+# BOUNCE_SENDER_CC
+# An optional e-mail address which will be sent a copy of any message
+# that triggers a 'sender' bounce.
+# No default.
+BOUNCE_SENDER_CC = None
+
 # COOKIE_TYPE
 # The default cookie type is dated.  It could be:
 #       dated   can only be replied to for TIMEOUT
