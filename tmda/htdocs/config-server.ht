@@ -78,7 +78,7 @@ delivery of mail messages.
 <tr>
 <td>.qmail</td>
 <td><code>
-|preline /path/to/bin/tmda-filter<br>
+|preline&nbsp;/path/to/bin/tmda-filter<br>
 ./Mailbox
 </code>
 </td>
@@ -128,7 +128,7 @@ there to <b>.qmail-tmda-default</b>.<br><br>
 <tr>
 <td>.qmail-tmda</td>
 <td><code>
-|preline /path/to/bin/tmda-filter<br>
+|preline&nbsp;/path/to/bin/tmda-filter<br>
 ./Mailbox
 </code>
 </td>
