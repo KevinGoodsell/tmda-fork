@@ -8,7 +8,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.43"
+TMDA = "0.43+"
 
 # Python version
 PYTHON = string.split(sys.version)[0]
