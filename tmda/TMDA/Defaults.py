@@ -94,13 +94,6 @@ if not vars().has_key('USEVIRTUALDOMAINS'):
 if not vars().has_key('VIRTUALDOMAINS'):
     VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
 
-# CONFIRM_ACCEPT_NOTIFY
-# Set this variable to 0 if you do not want to generate confirmation
-# acceptance notices.
-# Default is 1 (turned on)
-if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
-    CONFIRM_ACCEPT_NOTIFY = 1
-
 # BLACKLIST
 # Filename which contains a list of e-mail addresses and/or
 # substrings, one per line, which are considered unacceptable and
@@ -128,6 +121,21 @@ if not vars().has_key('BOUNCE_CONFIRM_CC'):
 # should be an empty string.
 if not vars().has_key('BOUNCE_ENV_SENDER'):
     BOUNCE_ENV_SENDER = ''
+
+# CONFIRM_ACCEPT_NOTIFY
+# Set this variable to 0 if you do not want to generate confirmation
+# acceptance notices.
+# Default is 1 (turned on)
+if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
+    CONFIRM_ACCEPT_NOTIFY = 1
+
+# CONFIRM_MAX_MESSAGE_SIZE
+# This is the largest size (in bytes) that a message can be before the
+# its body is excluded from the confirmation request/acceptance
+# notices.  Set this to None to allow any size message.
+# Default is 500000
+if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
+    CONFIRM_MAX_MESSAGE_SIZE = 500000
 
 # CONFIRM_ACCEPT_TEMPLATE
 # Full path to a custom template for confirmation acceptance notices.

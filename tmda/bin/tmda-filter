@@ -348,8 +348,16 @@ def bouncegen(mode):
     recipient_address = globals().get('recipient_address')
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
-    original_message = globals().get('message')
     original_message_headers = globals().get('message_headers')
+
+    if (Defaults.CONFIRM_MAX_MESSAGE_SIZE and
+        int(Defaults.CONFIRM_MAX_MESSAGE_SIZE) < int(globals().get('message_size'))):
+        original_message = str(original_message_headers) + "\n" + \
+                           "[ Message body suppressed (exceeded " + \
+                           str(Defaults.CONFIRM_MAX_MESSAGE_SIZE) + " bytes) ]"
+    else:
+        original_message = globals().get('message')
+
     pkg_template_dir = '/etc/tmda/'    # Debian
     if not os.path.exists(pkg_template_dir):
         pkg_template_dir = sys.prefix + '/share/tmda/' # Redhat

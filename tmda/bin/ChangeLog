@@ -3,6 +3,10 @@
 	* tmda-filter (bouncegen): Add `original_message_headers' as an
 	additional variable to be optionally used in templates.
 
+	(bouncegen): If the message's size is greater than
+	CONFIRM_MAX_MESSAGE_SIZE, exclude the message body from
+	`original_message'.
+
 2001-09-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (usage): Accept an `-f' option, but don't do

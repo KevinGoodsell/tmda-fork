@@ -24,6 +24,8 @@ import os                                      # don't remove
 
 # CONFIRM_ACCEPT_NOTIFY = 1
 
+# CONFIRM_MAX_MESSAGE_SIZE = 500000
+
 # CONFIRM_ACCEPT_TEMPLATE = "/full/path/to/confirm_accept.txt"
 
 # CONFIRM_REQUEST_TEMPLATE = "/full/path/to/confirm_request.txt"
