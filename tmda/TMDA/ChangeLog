@@ -1,3 +1,7 @@
+2002-11-25  David Guerizec  <david@guerizec.net>
+
+    * Pending.py: new module
+
 2002-11-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Defaults.py: Removed DELIVERED_CACHE and DELIVERED_CACHE_LEN.
