@@ -1,4 +1,4 @@
-From: %(recipient_address)s
+From: "%(FULLNAME)s" <%(recipient_address)s>
 Subject: failure notice
 
 Hi. This is the TMDA program at %(recipient_domain)s.

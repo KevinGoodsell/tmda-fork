@@ -1,4 +1,4 @@
-From: %(recipient_address)s
+From: "%(FULLNAME)s" <%(recipient_address)s>
 Subject: Please confirm your message
 
 Your e-mail message with the subject of "%(subject)s"

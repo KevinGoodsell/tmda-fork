@@ -1,5 +1,18 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.59:
+
+* TMDA's auto-replies now include your FULLNAME in the From: header
+  instead of just the e-mail address.  e.g,
+
+  From: "Jason R. Mastaler" <jasonrm@nightshade.la.mastaler.com>
+  Subject: Please confirm your message
+
+  Set FULLNAME in your tmda config to override the default value
+  (taken from the password file).
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.57:
 
 * 'keyword' addresses now use an identifying string like 'dated' and

@@ -1,4 +1,4 @@
-From: %(recipient_address)s
+From: "%(FULLNAME)s" <%(recipient_address)s>
 Subject: Confirmation accepted
 
 %(confirm_accept_text)s
