@@ -75,24 +75,32 @@ Title: Pending E-mail
         <td colspan="%(NumCols)s" bgcolor="#7A7AB6" height="1"></td>
       </tr>
       <tr class="%(MsgClass)s">
-        <td>
+        <td valign="top">
           <input type="hidden" name="%(MsgName)s" value="%(MsgID)s">
           <input type="radio" name="%(RadioName)s" value="pass" checked>
         </td>
-        <td><input type="radio" name="%(RadioName)s" value="release"></td>
-        <td><input type="radio" name="%(RadioName)s" value="delete"></td>
+        <td valign="top">
+          <input type="radio" name="%(RadioName)s" value="release">
+        </td>
+        <td valign="top">
+          <input type="radio" name="%(RadioName)s" value="delete">
+        </td>
        <!-- var: WhRadio -->
-        <td><input type="radio" name="%(RadioName)s" value="white"></td>
+        <td valign="top">
+          <input type="radio" name="%(RadioName)s" value="white">
+        </td>
        <!-- /var -->
        <!-- var: BlRadio -->
-        <td><input type="radio" name="%(RadioName)s" value="black"></td>
+        <td valign="top">
+          <input type="radio" name="%(RadioName)s" value="black">
+        </td>
        <!-- /var -->
-        <td style="padding-left: 8px">%(Sender)s</td>
-        <td style="padding-left: 8px">
+        <td valign="top" style="padding-left: 8px">%(Sender)s</td>
+        <td valign="top" style="padding-left: 8px">
           <a href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s">%(Subject)s</a>
         </td>
-        <td nowrap style="padding-left: 8px">%(Date)s</td>
-        <td align="right" style="padding-right: 5px">%(Size)s</td>
+        <td nowrap valign="top" style="padding-left: 8px">%(Date)s</td>
+        <td align="right" valign="top" style="padding-right: 5px">%(Size)s</td>
       </tr>
 <!-- /var -->
 <!-- var: InProcessRow -->
