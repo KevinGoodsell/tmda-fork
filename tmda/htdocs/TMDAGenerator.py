@@ -43,7 +43,7 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
         self.__linkfixer.massage(p.sidebar, self.__d)
         Sidebar.__init__(self, p.sidebar)
         #p.sidebar.append(BLANKCELL)
-        copyright = self.__parser.get('copyright', '2001')
+        copyright = self.__parser.get('copyright', '2002')
         p.sidebar.append((None, '&copy; ' + copyright))
         #last_modified = self.__parser.get('last_modified', '%s' %
         #                              time.asctime(time.gmtime(time.time())))

@@ -1,3 +1,8 @@
+2002-01-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* TMDAGenerator.py (TMDAGenerator.__init__): Update copyright for
+	2002.
+	
 2002-01-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* results.ht (Links): Add testimonial from Robin Lynn Frank.
