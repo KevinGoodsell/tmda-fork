@@ -615,6 +615,8 @@ class SMTPChannel(asynchat.async_chat):
         self.__data = ''
         self.__fqdn = FQDN
         self.__peer = conn.getpeername()
+        self.__peername = socket.getfqdn(self.__peer[0])
+        self.__sockip = conn.getsockname()[0]
         print >> DEBUGSTREAM, 'Peer:', repr(self.__peer)
         self.push('220 %s ESMTP tmda-ofmipd' % (self.__fqdn))
         self.set_terminator('\r\n')
@@ -859,6 +861,17 @@ class SMTPChannel(asynchat.async_chat):
         self.push('250-%s' % self.__fqdn)
         self.push('250 AUTH %s' % (' '.join(map(lambda s: s.upper(),
                                                 self.__sasl_types))))
+        # Put a Received header string in the environment for tmda-inject
+        # to add later.
+        rh = []
+        rh.append('from %s' % (arg))
+        if arg.lower() != self.__peername.lower():
+            rh.append('(%s [%s])' % (self.__peername, self.__sockip))
+        else:
+            rh.append('(%s)' % (self.__sockip))
+        rh.append('by %s (tmda-ofmipd) with ESMTP;' % (self.__fqdn))
+        rh.append(Util.make_date())
+        os.environ['TMDA_OFMIPD_RECEIVED'] = ' '.join(rh)
 
     def smtp_NOOP(self, arg):
         if arg:

@@ -1,3 +1,11 @@
+2003-03-05  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-ofmipd (SMTPChannel.smtp_EHLO): Add a Received header
+	string to $TMDA_OFMIPD_RECEIVED for tmda-inject.
+
+	* tmda-inject (inject_message): Prepend a Received header if
+	injecting via tmda-ofmipd.
+
 2003-03-04  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (address_extension): Extract address_extension from
