@@ -1,3 +1,7 @@
+2004-03-05    <jason@mastaler.com>
+
+	* tmda-keygen (keygen): /dev/urandom or equivalent is now required.
+	
 2004-03-04  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (autorespond_to_sender): Look for 'X-List'.

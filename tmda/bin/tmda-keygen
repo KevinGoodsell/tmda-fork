@@ -43,7 +43,6 @@ Where:
 
 
 import binascii
-import commands
 import getopt
 import os
 import sys
@@ -59,7 +58,7 @@ except ImportError:
 from TMDA import Version
 
 
-batch = None
+batch = False
 randomdev = '/dev/urandom'
 
 program = sys.argv[0]
@@ -91,46 +90,23 @@ for opt, arg in opts:
     if opt in ('-d', '--device'):
         randomdev = arg
     elif opt in ('-b', '--batch'):
-        batch = 1
+        batch = True
 
 
 def keygen():
-    # Use the kernel's random number generator if available.
+    # Use the kernel's random number generator.
     if os.path.exists(randomdev):
         key = open(randomdev,'rb').read(20)
+        return binascii.hexlify(key)
+    #elif sys.platform == 'win32':
+        # The Windows equivalent of polling /dev/urandom is to call
+        # the Windows Crypto/API function "CryptGenRandom"
+        # (http://tinyurl.com/4z0q).  At present there is no wrapper
+        # for this in the Python standard library on Windows so we
+        # can't utilize it.
     else:
-        # Otherwise generate some pseudo-random data from the system
-        # and use the SHA of resulting key as the key.
-        import sha
-        if not batch:
-            # Warn user that use of a cryptographic random number
-            # generator is preferred.
-            warning = ("key generation on a system without a "
-                       + randomdev + " device is not recommended!")
-            print "WARNING:"
-            print '*' * len(warning)
-            print warning
-            print '*' * len(warning)
-            print
-        unpredictable = ( "date",
-                          "fstat",
-                          "iostat",
-                          "vmstat",
-                          "finger",
-                          "ps -la",
-                          "netstat",
-                          "uname -a",
-                          "cat /etc/passwd",
-                          "cat /etc/aliases",
-                          "cat /proc/interrupts" )
-        key_data = ''
-        for i in unpredictable:
-            if commands.getstatusoutput(i)[0] == 0:
-                key_data = key_data + os.popen(i).read()
-        key = sha.new(key_data + "key").digest()
-    return binascii.hexlify(key)
-
-
+        return None
+    
 def main():
     
     if not batch:
@@ -139,6 +115,20 @@ def main():
 
     key = keygen()
 
+    if key is None:
+        # Use of a cryptographic random number generator is required.
+        warning = ("key generation on a system without a "
+                   + randomdev + " device is not supported!")
+        print "WARNING:"
+        print '*' * len(warning)
+        print warning
+        print
+        print "specify a different random number device with the '-d' option,"
+        print "or use http://tmda.net/cgi-bin/tmda-keygen if your system lacks one."
+        print '*' * len(warning)
+        print "exiting!"
+        sys.exit()
+        
     if len(key) != 40:
         print "Oops, generated key is not 40-characters long, exiting!"
         sys.exit()
