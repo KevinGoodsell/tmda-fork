@@ -160,7 +160,10 @@ def CheckDir(Filename):
   while len(Dirs):
     os.mkdir(Dirs.pop())
 
-def Revert(Files, Backup, ErrStr):
+def Revert \
+(
+  Files, Backup, ErrStr, Recommend = "Check file permissions in home directory."
+):
   "Revert back to system before install."
 
   for File in Files: os.unlink(File)
@@ -170,8 +173,7 @@ def Revert(Files, Backup, ErrStr):
     os.unlink(Backup)
   except OSError:
     pass
-  CgiUtil.TermError("Install aborted.", ErrStr, "install TMDA",
-    "", "Check file permissions in home directory.")
+  CgiUtil.TermError("Install aborted.", ErrStr, "install TMDA", "", Recommend)
 
 def ListDiff(a, b, Dict = None):
   "Take all items in b out of a."
@@ -195,36 +197,35 @@ files will be removed."""
 
   # Keep track of files copied so we can kill them on a failure
   Copied = []
-  Failed = []
 
   # Copy each file
   for File in FilesToCopy:
     # Get file
-    Filename = os.path.join(SrcDir, File)
-    F = open(Filename)
+    SrcFilename = os.path.join(SrcDir, File)
+    F = open(SrcFilename)
     Contents = F.read()
     F.close()
 
     # Put file
-    Filename = os.path.join(os.environ["HOME"], File) % Dict
+    DstFilename = os.path.join(os.environ["HOME"], File) % Dict
     try:
-      CheckDir(Filename)
-      F = open(Filename, "w")
+      CheckDir(DstFilename)
+      F = open(DstFilename, "w")
       F.write(Contents % Dict)
       F.close()
-      Copied.append(Filename)
+      Copied.append(DstFilename)
     except IOError, (ErrStr):
-      # Don't freak out over writes to parent directory
-      if (File[:3] == "../") or (File[:11] == "%(Parent)s/"):
-        Failed.append(File % Dict)
-      else:
-        # Install failed, revert!
-        Revert(Copied, Backup, "Saving file: %s<br>%s" % (Filename, ErrStr))
-    except (ValueError, TypeError), (ErrStr):
       # Install failed, revert!
-      Revert(Copied, Backup, "Expanding %%'s in: %s<br>%s" % (Filename,
-        ErrStr))
-  ListDiff(FilesToCopy, Failed, Dict)
+      Revert(Copied, Backup, "Saving file: %s<br>%s" % (DstFilename, ErrStr))
+    except (ValueError, TypeError, KeyError), (ErrStr):
+      # Install failed, revert!
+      Revert \
+      (
+        Copied, Backup, "Expanding %%'s in: %s<br>%s" % (SrcFilename, ErrStr),
+        """Fix errors in skel file(s).<br>
+Any "%" that should not be expanded during install <b><i>must</i></b> be
+replaced with a "%%"!"""
+      )
 
 def SetPerms(Anomalies, Files, Backup):
   "Set permissions as listed in anomalies"
@@ -369,8 +370,7 @@ def Uninstall():
       Filename = os.path.join(os.environ["HOME"], File)
       os.unlink(Filename)
     except OSError, (ErrStr):
-      if File[:3] != "../":
-        Revert([], Backup, "Erasing: %s<br>%s" % (Filename, ErrStr))
+      Revert([], Backup, "Erasing: %s<br>%s" % (Filename, ErrStr))
 
   # What files do we need to install?
   UninstallDir = os.path.join(os.getcwd(), "skel", "uninstall")

@@ -3,15 +3,14 @@ Things left to do:
 
     * Custom Filter -- action for pending emails (Requested by Lloyd Zusman)
 
-    * Install -- catch failure if bad %(__)s in skel file
-
     * FAQ -- should this be made a CGI?  Add help on adding whitelist &
              blacklist options.
 
     * Filter Viewer -- graphic view of your filters
 
+    * List Editor -- current editor is fine for short lists, but lacking for
+                     long lists
+
     * Search -- for pending list and/or lists and filters
 
     * Tutorial -- finish section on mailing lists
-
-    * URL Confirmation -- virtual user support untested
