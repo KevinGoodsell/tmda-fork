@@ -1,3 +1,8 @@
+2002-06-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter: Bugfix.  Specify maxcount so only the first
+	occurance of prepend is stripped from the recipient address.
+
 2002-05-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (verify_dated_cookie): When a dated address is

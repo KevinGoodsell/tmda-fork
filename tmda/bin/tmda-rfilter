@@ -197,41 +197,39 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
     # Parse the virtualdomains control file; see qmail-send(8) for
     # syntax rules.  All this because qmail doesn't store the original
     # envelope recipient in the environment.
-    (ousername, odomain) = string.split(envelope_recipient,'@')
+    ousername, odomain = envelope_recipient.split('@', 1)
     for line in fileinput.input(Defaults.VIRTUALDOMAINS):
         vdomain_match = 0
-        line = string.lower(string.strip(line))
+        line = line.strip().lower()
         # Comment or blank line?
         if line == '' or line[0] in '#':
             continue
         else:
-            (vdomain, prepend) = string.split(line, ':', 1)
+            vdomain, prepend = line.split(':', 1)
             # domain:prepend
-            if vdomain == string.lower(odomain):
+            if vdomain == odomain.lower():
                 vdomain_match = 1
             # .domain:prepend (wildcard)
-            elif not string.split(vdomain,'.',1)[0]:
-                if string.find(string.lower(odomain), vdomain) != -1:
+            elif not vdomain.split('.', 1)[0]:
+                if odomain.lower().find(vdomain) != 1:
                     vdomain_match = 1
             # user@domain:prepend
             else:
                 try:
-                    if string.split(vdomain,'@')[1] == string.lower(odomain):
+                    if vdomain.split('@', 1)[1] == odomain.lower():
                         vdomain_match = 1
                 except IndexError:
                     pass
             if vdomain_match:
                 # strip off the prepend
                 if prepend:
-                    nusername = string.replace(ousername,prepend + '-','')
+                    nusername = ousername.replace(prepend + '-', '', 1)
                     recipient_address = nusername + '@' + odomain
                     # also strip off the prepend and the virtual
                     # username from address_extension
-                    address_extension = (
-                        string.join(string.split
-                                    (nusername,
-                                     Defaults.RECIPIENT_DELIMITER)[1:],
-                                    Defaults.RECIPIENT_DELIMITER))
+                    address_extension = (Defaults.RECIPIENT_DELIMITER.join
+                                         (nusername.split
+                                          (Defaults.RECIPIENT_DELIMITER, 1)[1:]))
                     fileinput.close()
                     break
 
