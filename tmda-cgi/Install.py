@@ -639,6 +639,8 @@ def Show():
     "VPopBin":   PVars[("NoOverride", "VPopBin")]
   }
   Dict["ShortUrlDom"] = re.sub("^www.", "", Dict["UrlDomain"], re.I)
+  Match = re.search(".*/domains?/([^\./]+\.[^/]+)/", Dict["Home"])
+  if Match: Dict["Domain"] = Match.group(1)
 
   # Load the display template
   if Form["cmd"].value == "conf-example":
