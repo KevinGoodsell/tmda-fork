@@ -1,5 +1,5 @@
 %define name tmda
-%define version 1.0
+%define version 1.1.1
 %define release 1
 
 Summary: Tagged Message Delivery Agent
@@ -12,14 +12,13 @@ Group: Utilities/System
 BuildRoot: %{_tmppath}/%{name}-buildroot
 BuildArchitectures: noarch
 Vendor: TMDA Cabal
-Packager: tmda-users@tmda.net
-Url: http://tmda.net/
+Packager: tmda-workers@tmda.net
+Url: http://www.tmda.net/
 BuildRequires: /usr/bin/python2
 Requires: /usr/bin/python2
 
 %description
-TMDA is an OSI certified local mail delivery agent and spam
-reduction system.
+TMDA is an open source anti-spam system and local mail delivery agent.
 
 %prep
 %setup -q
@@ -115,6 +114,10 @@ Gnus (and perhaps other Emacs based mail/news readers).
 %{_datadir}/emacs/site-lisp/tmda.el
 
 %changelog
+
+* Mon Feb  9 2004 Jason R. Mastaler <jason@mastaler.com>
+  - version 1.1.x start
+
 * Fri Dec 19 2003 Jason R. Mastaler <jason@mastaler.com> 1.0-1
   - version 1.0 release
 
