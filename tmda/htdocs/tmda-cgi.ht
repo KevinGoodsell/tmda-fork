@@ -3,7 +3,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 <h1>tmda-cgi</h1>
 <p><a href="#What">What is it?</a><br>
   <a href="#Require">Requirements</a><br>
-  <a href="#Blame">Credit, blame, and getting help</a><br>
+  <a href="#Blame">Credit/blame</a><br>
   <a href="#Install">Installation</a><br>
   &nbsp;&nbsp;&nbsp;&nbsp;<a href="#SystemWide">System-wide mode</a><br>
   &nbsp;&nbsp;&nbsp;&nbsp;<a href="#SingleUser">Single-user mode</a><br>
@@ -77,7 +77,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 <p>TBD. Until we do more testing it isn't clear what systems have problems with 
   tmda-cgi.</p>
 <hr>
-<h2><a name="Blame" id="Blame"></a>Credit, blame, and getting help</h2>
+<h2><a name="Blame" id="Blame"></a>Credit/blame</h2>
 <p>As already mentioned, this is contributed software at an alpha-level release. 
   That means:</p>
 <ul>
@@ -93,12 +93,6 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
     the actual code itself. 
     <p>When it doesn't work right, be sure you yell out &quot;Damn that <a href="mailto:gre7g@wolfhome.com">Gre7g 
       Luterman</a>!&quot; because I'm the one responsible for your pain. &lt;winks&gt;</p>
-  </li>
-  <li>tmda-cgi is discussed on the <a href="lists/listinfo/">tmda-workers</a> 
-    list. If you experience problems with it, please post there first. 
-    <p><a href="lists/listinfo/">tmda-workers</a> is replicated on <a href="http://gmane.org">Gmane</a>. 
-      Check out <a href="news://news.gmane.org/gmane.mail.spam.tmda.devel">gmane.mail.spam.tmda.devel</a> 
-      if you prefer using a newsreader over mailing lists.</p>
   </li>
 </ul>
 <hr>
