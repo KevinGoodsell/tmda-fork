@@ -61,7 +61,8 @@ OPTIONS:
     --proxyport <host:port>
         The host:port to listen for incoming connections on.  The
         default is FQDN:8025 (i.e, port 8025 on the fully qualified
-        domain name for the local host).
+        domain name for the local host).  Use 0.0.0.0:8025 to listen
+        on all available interfaces.
 
     -R proto[://host[:port]]
     --remoteauth proto[://host[:port]][/dn]
