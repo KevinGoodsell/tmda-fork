@@ -610,7 +610,7 @@ class FilterParser:
 	if found_match:
 	    line = _rulestr(source, args, match, actions)
 	else:
-	    actions = None
+	    actions = {}
 	return actions, line
 
 

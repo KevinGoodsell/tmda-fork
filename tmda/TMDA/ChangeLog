@@ -1,5 +1,8 @@
 2002-02-22  Tim Legant  <tim@catseye.net>
 
+	* FilterParser.py (FilterParser.firstmatch): If no rule is found,
+	return an empty dictionary instead of None.
+
 	* FilterParser.py (FilterParser.__autobuild_db): New function.
 
 	(FilterParser.firstmatch): Factored above function out of
