@@ -306,18 +306,24 @@ def main():
     else:
         dispose_def = dispose
 
+    if os.path.exists(Defaults.DELIVERED_CACHE):
+        delcache = Util.unpickle(Defaults.DELIVERED_CACHE)
+    else:
+        delcache = []
     if cache:
-        cache_file = Defaults.PENDING_CACHE
-        if os.path.exists(cache_file):
-            msgcache = Util.unpickle(cache_file)
+        if os.path.exists(Defaults.PENDING_CACHE):
+            msgcache = Util.unpickle(Defaults.PENDING_CACHE)
         else:
             msgcache = []
-    
+        
     for msg in msgs:
         count = count + 1
         if not os.path.exists(msg):
             cprint(verbose, msg, 'not found!')
         else:
+            if msg in delcache:
+                # skip delivered messages
+                continue
             if threshold:
                 threshold_secs = Util.seconds(threshold)
                 now = '%d' % time.time()
@@ -410,7 +416,7 @@ def main():
     if cache:
         # Trim tail entries off if necessary, and then save the cache.
         msgcache = msgcache[:Defaults.PENDING_CACHE_LEN]
-        Util.pickleit(msgcache, cache_file)
+        Util.pickleit(msgcache, Defaults.PENDING_CACHE)
 
 
 # This is the end my friend.

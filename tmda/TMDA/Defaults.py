@@ -177,13 +177,6 @@ if not vars().has_key('BOUNCE_ENV_SENDER'):
     else:
         BOUNCE_ENV_SENDER = ''
 
-# BOUNCE_TEXT_ALREADY_CONFIRMED
-# Text for the failure notice returned to the sender when a
-# confirmation response arrives for a message which has already been
-# confirmed.
-if not vars().has_key('BOUNCE_TEXT_ALREADY_CONFIRMED'):
-    BOUNCE_TEXT_ALREADY_CONFIRMED = """This message has already been confirmed."""
-
 # BOUNCE_TEXT_FILTER_INCOMING
 # Text for the failure notice returned to the sender when a 'bounce'
 # or 'reject' rule is matched in the incoming filter file.
@@ -465,14 +458,30 @@ if not vars().has_key('LOGFILE_INCOMING'):
 if not vars().has_key('MESSAGE_FROM_STYLE'):
     MESSAGE_FROM_STYLE = "angles"
 
+# DELIVERED_CACHE
+# Path to the cache file used to keep track of which messages have
+# already been delivered.
+#
+# Default is ~/.tmda/pending/.delivered_cache
+if not vars().has_key('DELIVERED_CACHE'):
+    DELIVERED_CACHE = os.path.join(DATADIR, 'pending', '.delivered_cache')
+
+# DELIVERED_CACHE_LEN
+# An integer which specifies the maximum number of entries held by
+# DELIVERED_CACHE.
+#
+# Default is 5000
+if not vars().has_key('DELIVERED_CACHE_LEN'):
+    DELIVERED_CACHE_LEN = 5000
+
 # PENDING_CACHE
 # Path to the cache file used when tmda-pending is invoked with the
 # --cache option.
 #
 # Default is ~/.tmda/pending/.msgcache
 if not vars().has_key('PENDING_CACHE'):
-    PENDING_CACHE = DATADIR + 'pending/.msgcache'
-
+    PENDING_CACHE = os.path.join(DATADIR, 'pending', '.msgcache')
+    
 # PENDING_CACHE_LEN
 # An integer which specifies the maximum number of entries held by
 # PENDING_CACHE.  Make sure this is greater than the number of

@@ -70,6 +70,10 @@ import os                                      # don't remove
 
 # DATED_TEMPLATE_VARS = 0
 
+# DELIVERED_CACHE = os.path.expanduser("~/.tmda/pending/.delivered_cache")
+
+# DELIVERED_CACHE_LEN = 5000
+
 # FILTER_BOUNCE_CC = "jdoe-bounces@domain.dom"
 
 # FILTER_DROP_CC = "jdoe-drop@domain.dom"

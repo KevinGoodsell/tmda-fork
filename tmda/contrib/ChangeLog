@@ -1,3 +1,7 @@
+2002-03-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add DELIVERED_CACHE & DELIVERED_CACHE_LEN.
+
 2002-03-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add TEMPLATE_DIR, remove CONFIRM_ACCEPT_TEMPLATE

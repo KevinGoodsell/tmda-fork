@@ -239,6 +239,9 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
 # Collect the message's Subject: for later use.
 subject = message_headers.getheader('subject', 'None')
 
+# The directory of pending messages.
+pendingdir = os.path.join(Defaults.DATADIR, 'pending')
+
 # Collect the message's Precedence: header.
 precedence = message_headers.getheader('precedence', None)
 # If its value is "bulk", "junk", or "list" we should not generate any
@@ -352,44 +355,64 @@ def verify_confirm_cookie(confirm_cookie):
     # Save some time if the cookie is bogus.
     try:
         (confirm_action, confirm_timestamp,
-         confirm_pid, confirm_hmac) = string.split(confirm_cookie,'.')
+         confirm_pid, confirm_hmac) = confirm_cookie.split('.')
     except ValueError:
         logit("BOUNCE invalid_confirmation_address")
         bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
-    pendingdir = Defaults.DATADIR + 'pending'
-    confirmed_message = confirm_timestamp + '.' + confirm_pid + '.msg'
-    confirmed_message_pathname = pendingdir + '/' + confirmed_message
+    confirmed_filename = '%s.%s.msg' % (confirm_timestamp, confirm_pid)
+    confirmed_file = os.path.join(pendingdir, confirmed_filename)
+    if os.path.exists(Defaults.DELIVERED_CACHE):
+        delcache = Util.unpickle(Defaults.DELIVERED_CACHE)
+    else:
+        delcache = []
     # pre-confirmation
     if confirm_action == 'accept':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
-                                                  confirm_pid,'accept')
-        # Accept the message only if the HMAC can be verified and the
-        # message actually exists in the pending queue.
+                                                  confirm_pid, 'accept')
+        # Accept the message only if the HMAC can be verified,
         if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address")
             bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
-        elif not (os.path.exists(confirmed_message_pathname)):
+        # and it hasn't already been delivered,
+        elif confirmed_filename in delcache:
+            if Defaults.CONFIRM_ACCEPT_NOTIFY:
+                bouncegen('accept')
+                logit("CONFIRM_ACCEPT_NOTIFY already_delivered_message")
+            else:
+                logit("NONE already_delivered_message")
+            mta.stop()
+        # and it actually exists.
+        elif not (os.path.exists(confirmed_file)):
             logit("BOUNCE nonexistent_pending_message")
             bouncegen('bounce', Defaults.BOUNCE_TEXT_NONEXISTENT_PENDING)
+        # Release the message.
         else:
-            logit("CONFIRM accept " + confirmed_message)
-            release_pending(confirmed_message_pathname,
+            logit("CONFIRM accept " + confirmed_filename)
+            release_pending(confirmed_file,
                             confirm_timestamp,confirm_pid)
     # post-confirmation
     elif confirm_action == 'done':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
-                                                  confirm_pid,'done')
-        # Accept the message only if the HMAC can be verified and the
-        # message has not already been delivered.
+                                                  confirm_pid, 'done')
+        # Accept the message only if the HMAC can be verified,
         if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address")
             bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
-        elif not (os.path.exists(confirmed_message_pathname)):
-            logit("BOUNCE already_confirmed_message")
-            bouncegen('bounce', Defaults.BOUNCE_TEXT_ALREADY_CONFIRMED)
+        # and it hasn't already been delivered.
+        elif confirmed_filename in delcache:
+            # JRM: shouldn't get here - you are either trying to
+            # re-release a message, or someone is playing silly
+            # buggers.
+            logit("NONE already_delivered_message")
+            mta.stop()
         else:
+            # Add message to the start of the cache.
+            if confirmed_filename not in delcache:
+                delcache.insert(0, confirmed_filename)
+            # Trim tail entries off if necessary, and then write the cache.
+            delcache = delcache[:Defaults.DELIVERED_CACHE_LEN]
+            Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
             logit("OK good_confirm_cookie")
-            os.unlink(confirmed_message_pathname)
             mta.deliver(message)
 
 
@@ -486,7 +509,6 @@ def bouncegen(mode, text=None):
                                                              timestamp,
                                                              pid,
                                                              'accept')
-        pendingdir = Defaults.DATADIR + 'pending'
         pending_message = "%s.%s.msg" % (timestamp, pid)
         # Create ~/.tmda/ and friends if necessary.
         if not os.path.exists(pendingdir):
