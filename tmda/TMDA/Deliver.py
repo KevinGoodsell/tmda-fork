@@ -253,7 +253,7 @@ class Deliver:
             except OSError:
                 # Not running as root, can't chown file.
                 pass
-            os.chmod(fname_tmp, Defaults.PENDING_FILE_PERM)
+            os.chmod(fname_tmp, 0600)
             fp.write(message)
             fp.flush()
             os.fsync(fp.fileno())
