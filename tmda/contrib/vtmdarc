@@ -1,0 +1,2 @@
+CRYPT_KEY_FILE = "$VUSERDIR/.tmda/crypt_key"
+DATADIR = "$VUSERDIR/.tmda/"
