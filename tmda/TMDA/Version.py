@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.66+"
+TMDA = "0.67"
 
 # TMDA version codename
 CODENAME = "Whirlaway"
