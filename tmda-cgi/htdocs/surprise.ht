@@ -8,7 +8,8 @@ Title: Surprises & Gotcha's
 <p><a href="#Whitelist">Whitelist Woes</a><br>
 <a href="#Python">Python Problems</a><br>
 <a href="#Confirm">URL Confirmation Catastrophes</a><br>
-<a href="#Authentication">Authentication Ailments</a></p>
+<a href="#Authentication">Authentication Ailments</a><br>
+<a href="#Attach">Attachment Anxiety</a></p>
 
 <h3><a name="Whitelist"></a>Whitelist Woes</h3>
 <p>tmda-cgi's whitelist feature does not update the list pointed to by
@@ -83,3 +84,11 @@ Authentication returned: 0<br>
   instructions on the <a href="contact.html">Contact</a> page to get some 
   assistance.  Be sure to copy and paste the debug information you are getting, 
   to make it easier for the developers to help you.</p>
+
+<h3><a name="Attach"></a>Attachment Anxiety</h3>
+<p>tmda-cgi does not let you view the attachments on a pending e-mail.</p>
+<p>If you need one of the attachments in an e-mail, simply release the e-mail 
+  by clicking on the checkmark button. You can then download the e-mail as if 
+  the sender had confirmed the message, and view the attachment. Remember, 
+  tmda-cgi lets you manage your pending messages.  It is not a web-based mail 
+  client.</p>
