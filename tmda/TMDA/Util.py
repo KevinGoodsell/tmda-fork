@@ -558,12 +558,7 @@ def sendmail(msgstr, envrecip, envsender):
     envsender is the envelope sender address.
     """
     import Defaults
-    if Defaults.MAIL_TRANSPORT == 'smtp':
-        import SMTP
-        server = SMTP.Connection()
-        server.sendmail(envsender, envrecip, msgstr)
-        server.quit()
-    elif Defaults.MAIL_TRANSPORT == 'sendmail':
+    if Defaults.MAIL_TRANSPORT == 'sendmail':
         # You can avoid the shell by passing a tuple of arguments as
         # the command instead of a string.  This will cause the
         # popen2.Popen3() code to execvp() "/usr/bin/sendmail" with
@@ -571,6 +566,11 @@ def sendmail(msgstr, envrecip, envsender):
         cmd = (Defaults.SENDMAIL_PROGRAM, '-i',
                '-f', envsender, '--', envrecip)
         pipecmd(cmd, msgstr)
+    elif Defaults.MAIL_TRANSPORT == 'smtp':
+        import SMTP
+        server = SMTP.Connection()
+        server.sendmail(envsender, envrecip, msgstr)
+        server.quit()
     else:
         raise Errors.ConfigError, \
               "Invalid MAIL_TRANSPORT method: " + Defaults.MAIL_TRANSPORT
