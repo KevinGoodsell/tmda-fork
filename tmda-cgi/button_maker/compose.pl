@@ -27,6 +27,10 @@ use Clone qw(clone);
 use Image::Magick;
 use Getopt::Std;
 
+# Get my dir
+if ($0 =~ /^(.*)\/[^\/]+$/) { $MyDir = $1; }
+else { $MyDir = "."; }
+
 # Find characters in image
 sub FindIndex($font)
 {
@@ -46,8 +50,8 @@ $font18 =
   "chars" =>
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&.0123456789' ",
   "space" => 25, "linespacing" => 18,
-  "font" => "../../../button_maker/normal.png",
-  "mask" => "../../../button_maker/mask.png", "index" => {},
+  "font" => "$MyDir/normal.png",
+  "mask" => "$MyDir/mask.png", "index" => {},
   "width" =>
     [
       # A-M
@@ -64,15 +68,15 @@ $font18 =
 };
 &FindIndex($font18);
 $hi18 = clone($font18);
-$hi18->{"font"} = "../../../button_maker/highlighted.png";
+$hi18->{"font"} = "$MyDir/highlighted.png";
 
 $font14 =
 {
   "chars" =>
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&.0123456789'-© ",
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&.0123456789'-©? ",
   "space" => 25, "linespacing" => 14,
-  "font" => "../../../button_maker/normal14.png",
-  "mask" => "../../../button_maker/mask14.png", "index" => {},
+  "font" => "$MyDir/normal14.png",
+  "mask" => "$MyDir/mask14.png", "index" => {},
   "width" =>
     [
       # A-M
@@ -83,25 +87,25 @@ $font14 =
       8, 9, 8, 8, 9, 5, 8, 8, 4, 4, 9, 4, 13,
       # n-z
       8, 9, 9, 8, 6, 8, 6, 9, 9, 13, 9, 8, 8,
-      # &.0-9'-©(space)
-      12, 6, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 4, 4, 13, 5
+      # &.0-9'-©?(space)
+      12, 6, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 4, 4, 13, 8, 5
     ]
 };
 &FindIndex($font14);
 $hi14 = clone($font14);
-$hi14->{"font"} = "../../../button_maker/highlighted14.png";
+$hi14->{"font"} = "$MyDir/highlighted14.png";
 
 $small =
 {
   "chars" => "ABCDEFGHIJKLMNOPQRSTUVWXYZ ",
   "space" => 15, "linespacing" => 10,
-  "font" => "../../../button_maker/smfont.png",
-  "mask" => "../../../button_maker/smmask.png", "index" => {},
+  "font" => "$MyDir/smfont.png",
+  "mask" => "$MyDir/smmask.png", "index" => {},
   "width" =>
     [
       # A-M
       9, 9, 9, 9, 9, 8, 10, 10, 5, 8, 10, 9, 11,
-      # N-Z
+      # N-Z?
       10, 10, 9, 10, 10, 9, 9, 10, 10, 12, 10, 10, 10
     ]
 };
