@@ -1097,6 +1097,62 @@ if not vars().has_key('RESPONSE_DIR') and MAX_AUTORESPONSES_PER_DAY != 0:
 if not vars().has_key('AUTORESPONSE_INCLUDE_SENDER_COPY'):
     AUTORESPONSE_INCLUDE_SENDER_COPY = 2
 
+# MYSQL_ENABLED
+# All defaults beginning with "MYSQL_" configure the use of a MySQL
+# database in the filtering process.  To use a MySQL database, you
+# must have the _mysql library loaded.  See:
+# http://sourceforge.net/projects/mysql-python/
+#
+# MYSQL_ENABLED must be set to 1 if you wish to use a MySQL database
+# in your filters.
+#
+# Example:
+# MYSQL_ENABLED = 1
+#
+# Default is 0 (disabled)
+if not vars().has_key('MYSQL_ENABLED'):
+    MYSQL_ENABLED = 0
+
+# MYSQL_HOST
+# MySQL host to connect to.
+#
+# Example:
+# MYSQL_HOST = "db.my.server"
+#
+# Default is "localhost".
+if MYSQL_ENABLED and not vars().has_key('MYSQL_HOST'):
+    MYSQL_HOST = "localhost"
+
+# MYSQL_DATABASE
+# MySQL database containing any lists used in filter.
+#
+# Example:
+# MYSQL_DATABASE = "JimsTMDA"
+#
+# Default is "TMDA".
+if MYSQL_ENABLED and not vars().has_key('MYSQL_DATABASE'):
+    MYSQL_DATABASE = "TMDA"
+
+# MYSQL_USER
+# MySQL user to use when connecting to database.
+#
+# Example:
+# MYSQL_USER = "Jim"
+#
+# Default is "TMDA".
+if MYSQL_ENABLED and not vars().has_key('MYSQL_USER'):
+    MYSQL_USER = "TMDA"
+
+# MYSQL_PASSWORD
+# MySQL password to use when connecting to database.
+#
+# Example:
+# MYSQL_USER = "G@rfi31d"
+#
+# Default is "".
+if MYSQL_ENABLED and not vars().has_key('MYSQL_PASSWORD'):
+    MYSQL_PASSWORD = ""
+
 # PENDING_CACHE
 # Path to the cache file used when tmda-pending is invoked with the
 # --cache option.

@@ -221,7 +221,7 @@ class FilterParser:
     bol_comment = re.compile(r'\s*#')
 
     most_sources = re.compile(r"""
-    ( (?:to|from)-(?:file|cdb|dbm|ezmlm|mailman)
+    ( (?:to|from)-(?:file|cdb|dbm|ezmlm|mailman|mysql)
     | size | pipe
     | (?:to|from) (?!-) )
     """, re.VERBOSE | re.IGNORECASE)
@@ -272,6 +272,8 @@ class FilterParser:
         'to-ezmlm'     : ('optional',),
         'from-mailman' : ('attr', 'optional' ),
         'to-mailman'   : ('attr', 'optional' ),
+        'from-mysql'   : ('like', 'rlike'),
+        'to-mysql'     : ('like', 'rlike'),
         'body'         : ('case',),
         'headers'      : ('case',),
         'body-file'    : ('case', 'optional'),
@@ -279,6 +281,9 @@ class FilterParser:
         'size'         : None,
         'pipe'         : None
         }
+
+    # MySQL connection
+    MySQL = None
 
 
     def __init__(self):
@@ -709,6 +714,44 @@ class FilterParser:
         return found_match
 
 
+    def __search_mysql(self, Table, Args, Keys, Actions, Source):
+        "Search MySQL table."
+        if not self.MySQL:
+            # Connect to the database if we have not yet connected
+            import Defaults, _mysql
+            self.MySQL = _mysql.connect \
+            (
+                host = Defaults.MYSQL_HOST,
+                db = Defaults.MYSQL_DATABASE,
+                user = Defaults.MYSQL_USER,
+                passwd = Defaults.MYSQL_PASSWORD
+            )
+        # Searches can be for records that are "=", "like", or "rlike" the
+        # keys.  "=" is the fastest and the default, but it does not allow any
+        # wildcarding.  "like" allows "_" to mean any character and "%" to
+        # mean any string.  "rlike" allows regular expressions.
+        Compare = "="
+        if Args.has_key('like'): Compare = "LIKE"
+        elif Args.has_key('rlike'): Compare = "RLIKE"
+        Test = ""
+        for Key in Keys:
+            if Test: Test += "OR "
+            Test += "('%s' %s ADDRESS) " % (Key, Compare)
+        # Perform the query
+        self.MySQL.query("SELECT * FROM %s WHERE %s LIMIT 1" % (Table, Test))
+        # Fetch the result
+        Result = self.MySQL.store_result().fetch_row(0, 1)
+        found_match = len(Result)
+
+        # If there is an entry for this key, we consider it an overriding
+        # action specification.
+        if found_match and Result[0]["ACTION"]:
+            Actions.clear()
+            Actions.update(self.__buildactions(Result[0]["ACTION"], Source))
+
+        return found_match
+
+
     def __search_cdb(self, pathname, keys, actions, source):
         """
         Search DJB's constant databases; see <http:/cr.yp.to/cdb.html>.
@@ -938,6 +981,14 @@ class FilterParser:
                         if addy and addy.lower() in mmdb_addylist:
                             found_match = 1
                             break
+                if found_match:
+		    break
+            # MySQL-style databases.
+            if source in ('from-mysql', 'to-mysql'):
+                found_match = self.__search_mysql \
+                (
+                    match, args, keys, actions, source
+                )
                 if found_match:
 		    break
             # A match is found if the command exits with a zero exit
