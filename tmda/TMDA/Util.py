@@ -143,7 +143,16 @@ def findmatch(list, *addrs):
         if address:
             for p in list:
                 stringparts = string.split(p)
-                if fnmatch.fnmatch(address,stringparts[0]):
+                p = stringparts[0]
+                # Handle special @=domain.dom syntax.
+                if string.find(p, '@=') >= 0:
+                    p1 = string.replace(p, '@=', '@')
+                    p2 = string.replace(p, '@=', '@*.')
+                    match = (fnmatch.fnmatch(address,p1)
+                             or fnmatch.fnmatch(address,p2))
+                else:
+                    match = fnmatch.fnmatch(address,p)
+                if match:
                     try:
                         return stringparts[1]
                     except IndexError:
@@ -152,7 +161,8 @@ def findmatch(list, *addrs):
 
 def substring_match(substrings, *addrs):
     """Determine whether any of the passed e-mail addresses match a
-    substring contained in substrings which might be a list or a file."""
+    substring contained in substrings which might be a list or a file.
+    Currently unused."""
     try:
         regex = None
         sublist = []

@@ -1,3 +1,9 @@
+2001-06-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (main): Lowercase the env sender, From and Reply-to
+	before sending them into Util.findmatch because fnmatch does
+	case-sensitive comparison on Unix.
+
 2001-06-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (main): Use Util.findmatch instead of

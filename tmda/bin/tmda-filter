@@ -320,15 +320,18 @@ def main():
             ext3 = ext4
             
     # Extract the e-mail address from From:, and Reply-To:
+    EnvelopeSender = string.lower(envelope_sender)
     From = message_headers.getaddr('from')[1]
+    if From:From = string.lower(From)
     ReplyTo = message_headers.getaddr('reply-to')[1]
+    if ReplyTo:ReplyTo = string.lower(ReplyTo)
     
     while 1:
         # Is the sender in the BLACKLIST?
         if os.path.exists(Defaults.BLACKLIST):
             blacklist_list = []
             blacklist_list = Util.file_to_list(Defaults.BLACKLIST,blacklist_list)
-            if Util.findmatch(blacklist_list, envelope_sender,From,ReplyTo):
+            if Util.findmatch(blacklist_list, EnvelopeSender,From,ReplyTo):
                 logit("BOUNCE blacklist_match", time.time())
                 if Defaults.BOUNCE_BLACKLIST_CC:
                     bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
@@ -340,7 +343,7 @@ def main():
         if os.path.exists(Defaults.WHITELIST):
             whitelist_list = []
             whitelist_list = Util.file_to_list(Defaults.WHITELIST,whitelist_list)
-            if Util.findmatch(whitelist_list, envelope_sender,From,ReplyTo):
+            if Util.findmatch(whitelist_list, EnvelopeSender,From,ReplyTo):
                 logit("OK whitelist_match", time.time())
                 sys.exit(Defaults.ERR_OK)
                 pass

@@ -1,3 +1,10 @@
+2001-06-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (findmatch): Add support for custom matching syntax.
+	@=domain.dom matches both @domain.dom and @*.domain.dom.  The
+	rationale is that this situation is common enough to justify the
+	special syntax.
+
 2001-06-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (findmatch): Function re-written to support patterns
