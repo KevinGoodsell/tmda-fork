@@ -22,7 +22,8 @@ applications today share very little except for some core ideas.
 Like TMS, early TMDA was strictly a qmail application.  The decision
 was later made to add support for other MTAs in order to expand usage
 and attract developers.  This in turn would improve the overall
-quality of the software.
+quality of the software.  Postfix support was added in October, Exim
+in November, and Sendmail in December of that same year.
 <br><br>
 
 Currently TMDA should be considered "alpha" level software because it
@@ -32,5 +33,5 @@ releases.  That said, TMDA users find the software solid and reliable,
 and a concerted effort is made to maintain this during each release.
 <br><br>
 
-TMDA release 1.0 should be expected sometime during the Spring of 2003
-after approximately two years of hacking.
+TMDA release 1.0 should be expected sometime during the Spring of 2003;
+the fruits of approximately two years of hacking.
