@@ -545,6 +545,32 @@ if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
 if not vars().has_key('TEMPLATE_DIR'):
     TEMPLATE_DIR = None
 
+# TEMPLATE_DIR_MATCH_SENDER
+# Set this variable to 1 if you want to use sender specific template
+# directory matching. Make sure you also have TEMPLATE_DIR set.
+#
+# With this feature enabled, TMDA will look for templates in a
+# subdirectory of TEMPLATE_DIR that matches the sender address, and
+# then increasingly general portions of the domain part of the address.
+#
+# For example, if mail arrives from foo@bar.baz.de, TMDA will look for
+# templates in these subdirectories of TEMPLATE_DIR, in this order:
+#
+#  foo@bar.baz.de/
+#
+#  bar.baz.de/
+#
+#  baz.de/
+#
+#  de/
+#
+# If no sender based templates can be found, TEMPLATE_DIR itself and
+# then the default locations will be tried.
+#
+# Default is 0 (turned off)
+if not vars().has_key('TEMPLATE_DIR_MATCH_SENDER'):
+    TEMPLATE_DIR_MATCH_SENDER = 0
+
 # TEMPLATE_EMAIL_HEADERS
 # A list containing the names of headers in your templates that
 # contain an e-mail address.  This is necessary so that the e-mail

@@ -635,9 +635,10 @@ def maketext(templatefile, vardict):
 
      Several locations are scanned for templatefile, in the following order:
      1. The directory specified by tmda-filter's `-t' option.
-     2. Defaults.TEMPLATE_DIR
-     3. ../templates/
-     4. The package/RPM template directory.
+     2. Defaults.TEMPLATE_DIR_MATCH_SENDER (if true)
+     3. Defaults.TEMPLATE_DIR
+     4. ../templates/
+     5. The package/RPM template directories.
 
     The first match found stops the search.  In this way, you can
     specialize templates at the desired level, or, if you use only the
@@ -655,9 +656,17 @@ def maketext(templatefile, vardict):
     # Calculate the locations to scan.
     searchdirs = []
     searchdirs.append(os.environ.get('TMDA_TEMPLATE_DIR'))
+    if Defaults.TEMPLATE_DIR_MATCH_SENDER and Defaults.TEMPLATE_DIR:
+        sender = os.environ.get('SENDER').lower()
+        searchdirs.append(os.path.join(Defaults.TEMPLATE_DIR, sender))
+        domainparts = sender.split('@', 1)[1].split('.')
+        for i in range(len(domainparts)):
+            searchdirs.append(os.path.join
+                              (Defaults.TEMPLATE_DIR, '.'.join(domainparts)))
+            del domainparts[0]
     searchdirs.append(Defaults.TEMPLATE_DIR)
-    searchdirs.append(Defaults.PARENTDIR + '/templates/')
-    searchdirs.append(sys.prefix + '/share/tmda/')
+    searchdirs.append(os.path.join(Defaults.PARENTDIR, 'templates'))
+    searchdirs.append(os.path.join(sys.prefix, 'share/tmda'))
     searchdirs.append('/etc/tmda/')
     # Start scanning.
     foundit = None

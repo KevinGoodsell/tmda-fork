@@ -1,3 +1,9 @@
+2002-11-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Util.py (maketext): Recognize TEMPLATE_DIR_MATCH_SENDER.
+	
+	* Defaults.py (TEMPLATE_DIR_MATCH_SENDER): New variable.
+
 2002-10-18  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Util.py (normalize_sender): New fuction, moved from

@@ -175,22 +175,24 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
+<td><a href="#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_EMAIL_HEADERS">TEMPLATE_EMAIL_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_ENCODED_HEADERS">TEMPLATE_ENCODED_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TIMEOUT">TIMEOUT</a></td>
+</tr>
+<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
-<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 <td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
+</tr>
 </table>
 
 <dl>
@@ -1208,6 +1210,33 @@ Example:
 <code>TEMPLATE_DIR = "/full/path/to/templates/"</code>
 <br><br>
 No default.
+<dt><hr>
+<a name="TEMPLATE_DIR_MATCH_SENDER"><h4>TEMPLATE_DIR_MATCH_SENDER</h4></a>
+<dd>
+Set this variable to 1 if you want to use sender specific template
+directory matching. Make sure you also have TEMPLATE_DIR set.
+<br><br>
+With this feature enabled, TMDA will look for templates in a
+subdirectory of TEMPLATE_DIR that matches the sender address, and
+then increasingly general portions of the domain part of the address.
+<br><br>
+For example, if mail arrives from foo@bar.baz.de, TMDA will look for
+templates in these subdirectories of TEMPLATE_DIR, in this order:
+<br><br>
+<blockquote>
+ foo@bar.baz.de/
+<br><br>
+ bar.baz.de/
+<br><br>
+ baz.de/
+<br><br>
+ de/
+</blockquote>
+<br>
+If no sender based templates can be found, TEMPLATE_DIR itself and
+then the default locations will be tried.
+<br><br>
+Default is 0 (turned off)
 <dt><hr>
 <a name="TEMPLATE_EMAIL_HEADERS"><h4>TEMPLATE_EMAIL_HEADERS</h4></a>
 <dd>
