@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Apr 14 15:55:53 2003 -->
+<!-- Mon Apr 14 15:20:10 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -106,12 +106,26 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x549" height="35" width="
           <tr bgcolor="#DADCEB">
             <td colspan="6"><table cellpadding="0">
                 <tr valign="bottom">
-                  <td height="24"><img src="%(ThemeDir)s/buttons/options_r1_c1.gif"
-                    width="58" height="15" alt="Leave/Release/Delete"><!--
-                    var: WhIcon --><img src="%(ThemeDir)s/buttons/options_r1_c2.gif"
-                    width="19" height="15" alt="/Whitelist"><!-- /var --><!--
-                    var: BlIcon --><img src="%(ThemeDir)s/buttons/options_r1_c3.gif"
-                    width="20" height="15" alt="/Blacklist"><!-- /var --></td>
+                  <td height="24">
+                    <img src="%(ThemeDir)s/buttons/options_r1_c1.gif"
+                    width="19" height="15" alt="Leave">
+                  </td>
+                  <td><img src="%(ThemeDir)s/buttons/options_r1_c2.gif"
+                    width="19" height="15" alt="/ Release">
+                  </td>
+                  <td><img src="%(ThemeDir)s/buttons/options_r1_c3.gif"
+                    width="19" height="15" alt="/ Delete">
+                  </td>
+                <!-- var: WhIcon -->
+                  <td><img src="%(ThemeDir)s/buttons/options_r1_c4.gif"
+                    width="19" height="15" alt="/ Whitelist">
+                  </td>
+                <!-- /var -->
+                <!-- var: BlIcon -->
+                  <td><img src="%(ThemeDir)s/buttons/options_r1_c5.gif"
+                    width="20" height="15" alt="/ Blacklist">
+                  </td>
+                <!-- /var -->
                   <th width="150">Sender</th>
                   <th width="250">Subject</th>
                   <th width="80">Date</th>
@@ -119,28 +133,40 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x549" height="35" width="
                 </tr>
 <!-- var: Row -->
                 <tr>
-                  <td colspan="5" bgcolor="#7A7AB6" height="1"></td>
+                  <td colspan="7" bgcolor="#7A7AB6" height="1"></td>
                 </tr>
                 <tr class="%(MsgClass)s">
-                  <td nowrap><input type="radio" name="%(RadioName)s" 
-                    value="pass" checked><input type="radio" 
-                    name="%(RadioName)s" value="release"><input type="radio" 
-                    name="%(RadioName)s" value="delete"><!-- var: WhRadio
-                    --><input type="radio" name="%(RadioName)s"
-                    value="whitelist"><!-- /var --><!-- var: BlRadio --><input
-                    type="radio" name="%(RadioName)s" value="blacklist"><!--
-                    /var --><input type="hidden" name="%(MsgName)s" 
-                    value="%(MsgID)s"></td>
+                  <td>
+                    <input type="hidden" name="%(MsgName)s" value="%(MsgID)s">
+                    <input type="radio" name="%(RadioName)s" value="pass" checked>
+                  </td>
+                  <td>
+                    <input type="radio" name="%(RadioName)s" value="release">
+                  </td>
+                  <td>
+                    <input type="radio" name="%(RadioName)s" value="delete">
+                  </td>
+                <!-- var: WhRadio -->
+                  <td>
+                    <input type="radio" name="%(RadioName)s" value="white">
+                  </td>
+                <!-- /var -->
+                <!-- var: BlRadio -->
+                  <td>
+                    <input type="radio" name="%(RadioName)s" value="black">
+                  </td>
+                <!-- /var -->
                   <td>%(Sender)s</td>
-                  <td><a
-href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s">%(Subject)s</a></td>
+                  <td>
+                    <a href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s">%(Subject)s</a>
+                  </td>
                   <td nowrap>%(Date)s</td>
                   <td>%(Size)s</td>
                 </tr>
 <!-- /var -->
 <!-- var: InProcessRow -->
                 <tr>
-                  <td colspan="5" bgcolor="#7A7AB6" height="1"></td>
+                  <td colspan="7" bgcolor="#7A7AB6" height="1"></td>
                 </tr>
                 <tr class="InProcess">
                   <td></td>
