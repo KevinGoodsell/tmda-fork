@@ -1464,19 +1464,14 @@ if not vars().has_key('TERSE_SUMMARY_HEADERS'):
 #       existing Message-ID fields.  Normally tmda-inject only adds a
 #       Message-ID field if the incoming message lacks one.
 #
-# TMDAINJECT is looked for in the environment first.
-#
 # Examples:
 #
 # TMDAINJECT = "i"
 # TMDAINJECT = "di"
 #
 # No default.
-env_TMDAINJECT = os.environ.get('TMDAINJECT')
-if env_TMDAINJECT:
-    TMDAINJECT = env_TMDAINJECT
-elif not vars().has_key('TMDAINJECT'):
-    TMDAINJECT = ''
+if not vars().has_key('TMDAINJECT'):
+    TMDAINJECT = None
 
 # MAIL_FOLLOWUP_TO
 # Inspired by qmail-inject's QMAILMFTFILE feature, MAIL_FOLLOWUP_TO

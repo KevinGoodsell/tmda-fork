@@ -22,9 +22,6 @@
 	* Pending.py (Message.release): Use Util.make_date() for
 	X-TMDA-Released.
 	
-	* Defaults.py (TMDAINJECT): Look for $TMDAINJECT in the
-	environment first.
-	
 2004-01-09  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Defaults.py (DATED_TIMEOUT): TIMEOUT renamed.

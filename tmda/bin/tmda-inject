@@ -280,11 +280,13 @@ def inject_message(resending,
         del msg['Mail-Followup-To']
 	msg['Mail-Followup-To'] = ', '.join(new_mft_list)
     # Possibly add a `Date' field.
-    if 'd' in Defaults.TMDAINJECT or not msg.has_key('date'):
+    if ((Defaults.TMDAINJECT and 'd' in list(Defaults.TMDAINJECT))
+        or not msg.has_key('date')):
         del msg['Date']
 	msg['Date'] = Util.make_date()
     # Possibly add a `Message-ID' field.
-    if 'i' in Defaults.TMDAINJECT or not msg.has_key('message-id'):
+    if ((Defaults.TMDAINJECT and 'i' in list(Defaults.TMDAINJECT))
+        or not msg.has_key('message-id')):
         del msg['Message-ID']
 	msg['Message-ID'] = Util.make_msgid()
     # Add `X-Delivery-Agent' header.
