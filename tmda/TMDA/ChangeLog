@@ -1,3 +1,7 @@
+2001-12-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (TMDA_VERSION): Begin 0.43 development.
+
 2001-11-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (make_msgid): New function to create and return an
