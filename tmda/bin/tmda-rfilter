@@ -360,7 +360,7 @@ def release_pending(pathname, timestamp, pid):
     if Defaults.CONFIRM_APPEND:
         try:
             # Grab the original envelope sender to append.
-            fileobj = open(pending_message_pathname,'r')
+            fileobj = open(pathname,'r')
             message_headers = rfc822.Message(fileobj)
             fileobj.close()
             orig_env_sender = message_headers.getaddr('return-path')[1]
