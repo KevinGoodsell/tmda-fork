@@ -1,4 +1,4 @@
-TMDA 0.02
+TMDA 0.002
 20010425
 Copyright 2001
 Jason R. Mastaler <jason@mastaler.com>
@@ -18,3 +18,7 @@ For more information, visit the TMDA homepage:
 INSTALL says how to install and configure TMDA.
 
 COPYRIGHT contains licensing information.
+
+CRYPTO explains the cryptography functions used in TMDA.
+
+UPGRADE contains upgrade instructions for users of TMDA < 0.10.
