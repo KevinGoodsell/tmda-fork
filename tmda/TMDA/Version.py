@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.64+"
+TMDA = "0.65"
 
 # TMDA version codename
 CODENAME = "Johnstown"
