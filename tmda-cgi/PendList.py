@@ -112,7 +112,8 @@ def Show():
         Queue._addCache(Msg)
         Queue._saveCache()
   if FirstMsg >= len(Msgs):
-    FirstMsg = len(Msgs) - int(PVars[("PendingList", "PagerSize")])
+    FirstMsg = len(Msgs) - \
+               (len(Msgs) % int(PVars[("PendingList", "PagerSize")]) )
   if FirstMsg < 0:
     FirstMsg = 0
   if len(Msgs) <= int(PVars[("PendingList", "PagerSize")]):
@@ -122,8 +123,11 @@ def Show():
     LastMsg = len(Msgs)
   if len(Msgs):
     T["DispRange"] = "%d-%d of %d" % (FirstMsg + 1, LastMsg, len(Msgs))
-    # TODO: page numbering
-    T["PageRange"] = "n of x"
+    numPages = len(Msgs) / int(PVars[("PendingList", "PagerSize")])
+    if len(Msgs) % int(PVars[("PendingList", "PagerSize")]) > 0:
+      numPages += 1
+    pageNum = ( FirstMsg / int(PVars[("PendingList", "PagerSize")]) ) + 1
+    T["PageRange"] = "%d of %d" % ( pageNum, numPages )
 
     # Grey out the first & prev buttons?
     if FirstMsg == 0:
