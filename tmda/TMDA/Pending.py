@@ -241,7 +241,7 @@ class Queue:
         for msgid in self.msgs:
             self.count = self.count + 1
             try:
-                M = Message(msgid, self.command_recipient)
+                M = Message(msgid, self.command_recipient).initMessage()
             except Errors.MessageError, obj:
                 self.cPrint(obj)
                 continue
@@ -385,12 +385,16 @@ class Message:
             raise Errors.MessageError, '%s not found!' % self.msgid
 
         self.msgobj = email.message_from_file(open(self.msgfile, 'r'))
+        self.recipient = recipient
+
+    def initMessage(self, recipient = None):
         self.return_path = email.Utils.parseaddr(
                                         self.msgobj.get('return-path'))[1]
-        if not recipient:
+        if not recipient and not self.recipient:
             self.recipient = self.msgobj.get('x-tmda-recipient')
         else:
             self.recipient = recipient
+        return self
 
     def release(self):
         """Release a message from the pending queue."""

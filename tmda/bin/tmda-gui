@@ -39,7 +39,6 @@ Where:
         . you can resize the list columns width
         . you can resize the height of the list
         . double-click on a message and you'll see it's content
-        . W & B buttons are resp. whilelist and blacklist (need some icons...)
         . the list is refreshed every 5 mins by default but you can
           change it in Edit/Settings... (not memorized between runs yet)
 
@@ -101,8 +100,14 @@ def lib_checkAddress(address, sender_address=None):
 
     return '\n'.join(status)
 
+MessageError = "Message Error"
 def lib_processMessage(msgid, command, **args):
-    msg = Pending.Message(msgid)
+    try:
+        msg = Pending.Message(msgid)
+    except Errors.MessageError:
+        raise MessageError
+    if command not in ('terse', 'show'):
+        msg.initMessage()
     try:
         try:
             data = getattr(msg, command)(args)
@@ -112,13 +117,14 @@ def lib_processMessage(msgid, command, **args):
         if type(data) == str:
             return data
         else:
-            print "Debug: type of data in lib_processMessage -> " + str(type(data))
+            if command == 'show':
+                print "Debug: type of data in lib_processMessage -> " + str(type(data))
             try:
                 return '\n'.join(data)
             except TypeError:
                 return str(data)
     except AttributeError:
-        return None
+        raise MessageError
 
 def lib_processPending(command, **args):
     Q = Pending.Queue(descending=1).initQueue()
@@ -131,6 +137,8 @@ import socket
 sock = None
 sin = None
 sout = None
+
+ProtoError = "Protocole Error"
 
 def connectToServer(host, auth):
     global sock, sin, sout
@@ -179,9 +187,7 @@ def net_processMessage(msgid, command, **args):
     except ProtoError, msg:
         print "%s: %s" % (ProtoError, msg)
         
-    return ''
-
-ProtoError = "Protocole Error"
+    raise MessageError
 
 def net_processPending(command, **args):
     if command == 'list':
@@ -201,6 +207,7 @@ try:
     from TMDA import Version
     from TMDA import Address
     from TMDA import Pending
+    from TMDA import Errors
 
     using_network = 0
     getAddress = lib_getAddress
@@ -295,42 +302,124 @@ if using_network:
     processPending = net_processPending
 
 
+##############################################
+##  Some helper widgets                     ##
+##############################################
 
-class HSplitterFrame(Frame):
+class ProgressBar(Frame):
+    def __init__(self, master=None, **args):
+        Frame.__init__(self, master, args)
+        self.pack(fill=BOTH, expand=YES)
+        self.cursor = None
+    
+    def Show(self, max=100, step=1):
+        self.Hide()
+        self.cursor = Scale(self, showvalue=NO, orient=HORIZONTAL)
+        self.cursor.pack(fill=BOTH, expand=YES)
+        self.value = 0
+        self.max = max
+        self.cursor.configure(to=max)
+        self.step = step
+        self.update()
+
+    def Inc(self):
+        self.Update(self.value + self.step)
+        
+    def Update(self, value=-1):
+        if value < 0:
+            value = (self.value + self.step)
+            print value
+            if value > self.max or value < 0:
+                self.step *= -1
+                print self.step
+                value = (value + 2 * self.step)
+
+        self.value = value
+        self.cursor.set(value)
+        self.update()
+        
+    def Hide(self):
+        if self.cursor:
+            self.cursor.destroy()
+
+class StatusBar(Frame):
     def __init__(self, master, **args):
         Frame.__init__(self, master, args)
+        self.message = Label(self, bd=1, relief=SUNKEN)
+        self.message.pack(side=LEFT, fill=X)
 
-        self.one = Frame(self, bd=1, relief=SUNKEN)
-        self.two = Frame(self, bd=1, relief=SUNKEN)
-        self.split = 0.5
-        self.one.place(rely=0, relheight=self.split, relwidth=1)
-        self.two.place(rely=self.split, relheight=1.0-self.split, relwidth=1)
+        self.progress = ProgressBar(self)
+        self.progress.pack(side=RIGHT, fill=X)
 
-        self.sep = Frame(self, bd=2, relief=RAISED, width=8, height=2,
-                         cursor="sb_v_double_arrow")
-        self.sep.place(relx=0, rely=self.split, anchor=W, relwidth=1)
-        self.sep.bind('<ButtonPress>', self.Start)
-        self.sep.bind('<ButtonRelease>', self.Stop)
+    def Set(self, text, **args):
+        args['text'] = ' ' + str(text) + ' '
+        self.message.configure(args)
+        self.update()
+
+
+class HMultiSplitter(Frame):
+    def __init__(self, master, number, **args):
+        Frame.__init__(self, master, args)
+
+        self.frames = [ Frame(self, bd=0, relief=SUNKEN) for x in range(number) ]
+        
+        max = len(self.frames)
+        step = 1.0 / max
+        y = 0
+        for f in self.frames:
+            f.place(rely=y, relheight=step, relwidth=1)
+            if y > 0:
+                sep = Frame(self, bd=2, relief=RAISED, width=8, height=2,
+                                  cursor="sb_v_double_arrow")
+                sep.place(relx=0, rely=y, anchor=W, relwidth=1)
+                sep.bind('<ButtonPress>', self.Start)
+                sep.bind('<ButtonRelease>', self.Stop)
+                sep.split = y
+                sep.fprev = fprev
+                fprev.snext = sep
+                sep.fnext = f
+                f.sprev = sep
+            y += step
+            fprev = f
 
     def Start(self, ev):
-        self.splitpx = int(self.split * self.winfo_height())
-        self.rsz = self.splitpx
-        self.sep.bind('<B1-Motion>', self.Move)
-        self.sep.place(relx=2) # hide the splitter during the move
+        s = ev.widget
+        s.splitpx = int(s.split * self.winfo_height())
+        s.rsz = s.splitpx
+        s.bind('<B1-Motion>', self.Move)
+        s.place(relx=2) # hide the splitter during the move
         
     def Move(self, ev):
-        self.splitpx = self.rsz + ev.y
-        self.split = (1.0 * self.splitpx) / self.winfo_height()
-        self.one.place(relheight=self.split)
-        self.two.place(rely=self.split, relheight=1.0-self.split)
+        s = ev.widget
+        s.splitpx = s.rsz + ev.y
+        s.split = (1.0 * s.splitpx) / self.winfo_height()
+        try:
+            if s.split < s.fprev.sprev.split:
+                s.split = s.fprev.sprev.split
+        except AttributeError:
+            pass
+        try:
+            if s.split > s.fnext.snext.split:
+                s.split = s.fnext.snext.split
+        except AttributeError:
+            pass
+        try:
+            s.fprev.place(relheight=s.split - s.fprev.sprev.split)
+        except AttributeError:
+            s.fprev.place(relheight=s.split)
+        try:
+            s.fnext.place(rely=s.split, relheight=s.fnext.snext.split-s.split)
+        except AttributeError:
+            s.fnext.place(rely=s.split, relheight=1.0-s.split)
 
     def Stop(self, ev):
-        self.bind('<B1-Motion>', lambda e: "break")
-        self.sep.place(relx=0, rely=self.split, anchor=W)
+        s = ev.widget
+        s.bind('<B1-Motion>', lambda e: "break")
+        s.place(relx=0, rely=s.split, anchor=W)
 
 
-class VSplitterFrame(Frame):
-    def __init__(self, master, **args):
+class VMultiSplitter(Frame):
+    def __init__(self, master, number, **args):
         try:
             self.split = args['split']
             del args['split']
@@ -338,70 +427,87 @@ class VSplitterFrame(Frame):
             self.split = 0.5
         
         Frame.__init__(self, master, args)
-        self.one = Frame(self, bd=1, relief=SUNKEN)
-        self.two = Frame(self, bd=1, relief=SUNKEN)
-        self.one.place(relx=0, relwidth=self.split, relheight=1)
-        self.two.place(relx=self.split, relwidth=1.0-self.split, relheight=1)
 
-        self.sep = Frame(self, bd=2, relief=RAISED, height=8, width=2,
-                         cursor="sb_h_double_arrow")
-        self.sep.place(rely=0, relx=self.split, anchor=N, relheight=1)
-        self.sep.bind('<ButtonPress>', self.Start)
-        self.sep.bind('<ButtonRelease>', self.Stop)
+        self.frames = [ Frame(self, bd=0, relief=SUNKEN) for x in range(number) ]
+        
+        max = len(self.frames)
+        step = 1.0 / max
+        x = 0
+        for f in self.frames:
+            f.place(relx=x, relwidth=step, relheight=1)
+            if x > 0:
+                sep = Frame(self, bd=2, relief=RAISED, height=8, width=2,
+                                  cursor="sb_h_double_arrow")
+                sep.place(rely=0, relx=x, anchor=N, relheight=1)
+                sep.bind('<ButtonPress>', self.Start)
+                sep.bind('<ButtonRelease>', self.Stop)
+                sep.split = x
+                sep.fprev = fprev
+                fprev.snext = sep
+                sep.fnext = f
+                f.sprev = sep
+            x += step
+            fprev = f
 
     def Start(self, ev):
-        self.splitpx = int(self.split * self.winfo_width())
-        self.rsz = self.splitpx
-        self.sep.bind('<B1-Motion>', self.Move)
-        self.sep.place(rely=2) # hide the splitter during the move
+        s = ev.widget
+        s.splitpx = int(s.split * self.winfo_width())
+        s.rsz = s.splitpx
+        s.bind('<B1-Motion>', self.Move)
+        s.place(rely=2) # hide the splitter during the move
         
     def Move(self, ev):
-        self.splitpx = self.rsz + ev.x
-        self.split = (1.0 * self.splitpx) / self.winfo_width()
-        self.one.place(relwidth=self.split)
-        self.two.place(relx=self.split, relwidth=1.0-self.split)
+        s = ev.widget
+        s.splitpx = s.rsz + ev.x
+        s.split = (1.0 * s.splitpx) / self.winfo_width()
+        try:
+            if s.split < s.fprev.sprev.split:
+                s.split = s.fprev.sprev.split
+        except AttributeError:
+            pass
+        try:
+            if s.split > s.fnext.snext.split:
+                s.split = s.fnext.snext.split
+        except AttributeError:
+            pass
+        try:
+            s.fprev.place(relwidth=s.split - s.fprev.sprev.split)
+        except AttributeError:
+            s.fprev.place(relwidth=s.split)
+        try:
+            s.fnext.place(relx=s.split, relwidth=s.fnext.snext.split-s.split)
+        except AttributeError:
+            s.fnext.place(relx=s.split, relwidth=1.0-s.split)
 
     def Stop(self, ev):
-        self.bind('<B1-Motion>', lambda e: "break")
-        self.sep.place(rely=0, relx=self.split, anchor=N)
+        s = ev.widget
+        s.bind('<B1-Motion>', lambda e: "break")
+        s.place(rely=0, relx=s.split, anchor=N)
 
 
 class MessageList(Frame):
-    def __init__(self, master, **args):
+    def __init__(self, master, statusbar=None, **args):
         Frame.__init__(self, master, args)
+        self.statusbar = statusbar
         self._sb = Scrollbar(self, orient=VERTICAL)
         self._sb.config(command=self._yview)
         
         self._colnames = [ 'msgid', 'from_name', 'subject' ]
+        self._collabels = { 'msgid': 'Date', 'from_name': 'From', 'subject': 'Subject', } 
 
         self._cols = []
 
-        fo = VSplitterFrame(self, split=0.25)
-        fi = VSplitterFrame(fo.two, split=0.33)
-        
-        f = Label(fo.one, text="Date", bd=1, relief=RAISED)
-        f.pack(side=TOP, fill=X)
-        l = Listbox(fo.one, yscrollcommand=self._set, bd=0)
-        l.pack(side=LEFT, fill=BOTH, expand=YES)
-        self._cols.append(l)
-
-        f = Label(fi.one, text="From", bd=1, relief=RAISED)
-        f.pack(side=TOP, fill=X)
-        l = Listbox(fi.one, yscrollcommand=self._set, bd=0)
-        l.pack(side=LEFT, fill=BOTH, expand=YES)
-        self._cols.append(l)
-
-        f = Label(fi.two, text="Subject", bd=1, relief=RAISED)
-        f.pack(side=TOP, fill=X)
-        l = Listbox(fi.two, yscrollcommand=self._set, bd=0)
-        l.pack(side=LEFT, fill=BOTH, expand=YES)
-        self._cols.append(l)
-
-        fi.pack(fill=BOTH, expand=YES)
-        fo.pack(side=LEFT, fill=BOTH, expand=YES)
+        f = VMultiSplitter(self, len(self._colnames))
+        f.pack(side=LEFT, fill=BOTH, expand=YES)
+    
+        for i in range(len(self._colnames)):
+            Label(f.frames[i], text=self._collabels[self._colnames[i]],
+                      bd=1, relief=RAISED).pack(side=TOP, fill=X)
+            l = Listbox(f.frames[i], yscrollcommand=self._set, bd=0)
+            l.pack(side=LEFT, fill=BOTH, expand=YES)
+            self._cols.append(l)
         self._sb.pack(side=RIGHT, fill=Y)
-
-        
+    
     def curselection(self):
         for col in self._cols:
             selindex = col.curselection()
@@ -471,25 +577,40 @@ class MessageList(Frame):
             return ('', '')
         
     def Refresh(self):
-        for col in self._cols:
-            col.delete(0, END)
-        self.msgs = []
-        lst = processPending('list')
-        for item in lst:
-            self.msgs.append(item)
-            msg = processMessage(item, command='terse', date=1).split('\n')
-            i = 0
+        try:
             for col in self._cols:
-                col.insert(END, msg[i])
-                i = i + 1
+                col.delete(0, END)
+            self.msgs = []
+            lst = processPending('list')
+            self.statusbar.Set('Please wait, loading message list...')
+            self.statusbar.progress.Show(len(lst))
+            x = 0
+            for item in lst:
+                self.statusbar.progress.Inc()
+                try:
+                    msg = processMessage(item, command='terse', date=1).split('\n')
+                except MessageError:
+                    # no such message
+                    continue
+                self.msgs.append(item)
+                i = 0
+                for col in self._cols:
+                    col.insert(END, msg[i])
+                    i = i + 1
+            self.statusbar.progress.Hide()
+        except TclError: # Refresh is probably aborted by user
+            pass
 
 class PendingGUI(Frame):
     AppName = "tmda-gui"
     refresh_interval = 300
-    def __init__(self, master=None, **args):
-        if master:
+    def __init__(self, master=None, statusbar=None, **args):
+        if 0 and master:
             master.title(self.AppName)
             master.protocol("WM_DELETE_WINDOW", self.FileQuit)
+
+        Frame.__init__(self, master, args)
+        self.statusbar = statusbar
 
         self.menudef = [
             [
@@ -534,9 +655,8 @@ class PendingGUI(Frame):
             ],
         ]
         self.master=master
-        Frame.__init__(self, master, args)
         self.createWidgets()
-        self.counter = 0
+        self.counter = self.refresh_interval - 1
         self.poll()
 
     def FileOpen(self):
@@ -615,8 +735,8 @@ class PendingGUI(Frame):
             self.menu.buttons.append(m)
 
     def MessageRefresh(self, ev=None):
-        self.listbox.Refresh()
         self.message.text.delete(1.0, END)
+        self.listbox.Refresh()
         self.updateStatus()
 
     def MessageShow(self, ev=None):
@@ -637,7 +757,7 @@ class PendingGUI(Frame):
         self.listbox.BlacklistSelectedMessage()
 
     def MessageRelease(self, ev=None):
-        self.MessageShow()
+        self.message.text.delete(1.0, END)
         self.listbox.ReleaseSelectedMessage()
         self.updateStatus()
 
@@ -647,7 +767,7 @@ class PendingGUI(Frame):
         self.updateStatus()
 
     def createWidgets(self):
-        self.createMenu()
+        #self.createMenu()
 
         self.toolbar = Frame(self, relief=GROOVE)
 
@@ -669,19 +789,26 @@ class PendingGUI(Frame):
         b = Button(self.toolbar, text="Delete", bd=1,
                    command=self.MessageDelete)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="Quit", bd=1,
-                   command=self.FileQuit)
-        b.pack(side=RIGHT, padx=0, pady=0)
+#        b = Button(self.toolbar, text="Quit", bd=1,
+#                   command=self.FileQuit)
+#        b.pack(side=RIGHT, padx=0, pady=0)
         self.toolbar.pack(side=TOP, fill=X)
         
-        self.split = HSplitterFrame(self, width=600, height=400,
+        self.split = HMultiSplitter(self, 2, width=600, height=400,
                                     relief=GROOVE)
+
+        self.split.one = self.split.frames[0]
+        self.split.two = self.split.frames[1]
+    
         self.split.pack(fill=BOTH, expand=YES)
 
-        self.listbox = MessageList(self.split.one)
+        if not self.statusbar:
+            self.statusbar = StatusBar(self)
+            self.statusbar.pack(side=BOTTOM, fill=X)
+
+        self.listbox = MessageList(self.split.one, statusbar=self.statusbar)
         self.listbox.bind("<Double-Button-1>", self.MessageShow)
         self.listbox.pack(fill=BOTH, expand=YES)
-
 
         self.message = self.split.two
         self.message.text = Text(self.message, bd=1, relief=GROOVE)#, anchor=W)
@@ -693,15 +820,10 @@ class PendingGUI(Frame):
         self.message.text.bind('<Key>', lambda ev: 'break')
         self.message.text.pack(fill=BOTH, expand=YES)
 
-        self.status = Frame(self)
-        self.status.label = Label(self.status, bd=1, relief=SUNKEN)#, anchor=W)
-        self.status.label.pack(side=LEFT, fill=X)
-        self.status.pack(side=BOTTOM, fill=X)
-        self.MessageRefresh()
 
     def updateStatus(self, ev=None):
-        self.status.label['text'] = "%d messages in pending queue" \
-                                    % len(self.listbox.msgs)
+        self.statusbar.Set("%d messages in pending queue..." \
+                                    % len(self.listbox.msgs))
 
     def poll(self):
         self.counter += 1
@@ -763,10 +885,7 @@ class AddressGUI(Frame):
         R += 1
         f = Frame(self)
         f.grid(row=R, columnspan=3)
-        Button(f, text="Calc", command=self.Calc).grid(row=0, column=0)
-        Button(f, text="Pending",
-               command=self.LaunchPending).grid(row=0, column=1)
-        Button(f, text="Exit", command=master.destroy).grid(row=0, column=2)
+        Button(f, text="Create / Check Address", command=self.Calc).grid(row=0, column=0, columnspan=3)
 
         R += 1
         Label(self, text="Check:").grid(row=R, sticky=W)
@@ -820,10 +939,84 @@ class AddressGUI(Frame):
             status = "Enter an address to check"
         self.r_check.configure(text=status)
 
+class About(Frame):
+    def __init__(self, master, AppName, **args):
+        if not master:
+            master = Toplevel()
+        Frame.__init__(self, master, args)
 
-    def LaunchPending(self):
-        p = PendingGUI(Toplevel(self)).pack(fill=BOTH, expand=YES)
+        abouttxt = """Copyright 2002 David Guerizec <david@guerizec.net>\n""" + \
+                   """Copyright 2002 TMDA Project http://www.tmda.net/"""
+        print abouttxt
+        try:
+            self.title("About %s" % AppName)
+            self.ok = Button(f, text="OK", command=self.destroy, relief=GROOVE)
+            self.ok.pack(side=TOP)
+        except AttributeError:
+            pass
+        f = Frame(self, bd=15, relief=FLAT)
+        f.pack(side=TOP, fill=BOTH, expand=1)
+        self.txt = Label(f, text=abouttxt, relief=GROOVE, padx=15, pady=15)
+        self.txt.pack(side=TOP, fill=BOTH, expand=1)
+        f = Frame(self, bd=10, relief=FLAT)
+        f.pack(side=TOP, fill=BOTH, expand=1)
         
+
+class TMDAGUI(Frame):
+    AppName = "tmda-gui"
+    def __init__(self, master=None, **args):
+        if master:
+            master.title(self.AppName)
+            master.protocol("WM_DELETE_WINDOW", self.Quit)
+        self.master = master
+        Frame.__init__(self, master, args)
+        self.tabs = Frame(master=self)
+        self.tabs.pack(side=TOP, fill=X)
+        self.baddress = Button(self.tabs, text='Address', command=self.displayAddress)
+        self.baddress.pack(side=LEFT)
+        self.bpending = Button(self.tabs, text='Pending', command=self.displayPending)
+        self.bpending.pack(side=LEFT)
+        self.bquit = Button(self.tabs, text='Quit', command=self.Quit)
+        self.bquit.pack(side=RIGHT)
+        self.babout = Button(self.tabs, text='About', command=self.displayAbout)
+        self.babout.pack(side=RIGHT)
+        self.statusbar = StatusBar(self)
+        self.statusbar.pack(side=BOTTOM, fill=X)
+        self.displayAddress()
+        
+    def displayAddress(self):
+        try:
+            self.panel.destroy()
+        except AttributeError:
+            pass
+        self.statusbar.Set('Tagged address center')
+        self.panel = AddressGUI(master=self)
+        self.panel.pack(fill=BOTH, expand=YES)
+        self.statusbar.progress.Hide()
+
+    def displayPending(self):
+        try:
+            self.panel.destroy()
+        except AttributeError:
+            pass
+        self.bpending.update()
+        self.statusbar.Set('Pending messages center')
+        self.panel = PendingGUI(master=self, statusbar=self.statusbar)
+        self.panel.pack(fill=BOTH, expand=YES)
+        self.statusbar.progress.Hide()
+
+    def displayAbout(self):
+        try:
+            self.panel.destroy()
+        except AttributeError:
+            pass
+        self.statusbar.Set('Welcome to a SPAM free world!', anchor=CENTER)
+        self.panel = About(master=self, AppName=self.AppName)
+        self.panel.pack(fill=BOTH, expand=YES)
+        self.statusbar.progress.Hide()
+
+    def Quit(self):
+        self.master.destroy()
 
 def main():
     root = Tk()
@@ -834,7 +1027,7 @@ def main():
     if pending_first:
         PendingGUI(root).pack(fill=BOTH, expand=YES)
     else:
-        AddressGUI(root).pack(fill=BOTH, expand=YES)
+        TMDAGUI(root, width=800, height=600).pack(fill=BOTH, expand=YES)
     root.mainloop()
 
 if __name__ == '__main__':
