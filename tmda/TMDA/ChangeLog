@@ -1,3 +1,21 @@
+2002-01-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py: Remove the trailing space in the matches regex.
+
+	(FilterParser.firstmatch): If the regex in headers-file or
+	body-file includes quotes, extract the regex from the quotes
+	before matching.  This is so the -file methods are consistent with
+	headers and body.
+
+2002-01-24  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py: Changed 'matches' regular expression to expect
+	either single or double quotes as the delimiters for the 'headers'
+	or 'body' filter sources.
+
+	* (FilterParser.__parserule): Text matched by 'matches' now
+	appears in either group 2 or group 3.
+	
 2002-01-24  Tim Legant  <tim@catseye.net>
 
 	* FilterParser.py (FilterParser): Removed 'whitespace' and

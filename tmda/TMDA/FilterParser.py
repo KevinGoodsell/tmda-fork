@@ -51,11 +51,10 @@ class FilterParser:
     """, re.VERBOSE | re.IGNORECASE)
 
     matches = re.compile(r"""
-    (?: \( ( (?: \\\) | [^)] )+ ) \)
+    (?: ([\'\"]) ( (?: \\\1 | [^\1] )+ ) \1
     | ( \S+ ) )
-    \ (?# NOTE: preceding character must be an actual space)
     """, re.VERBOSE)
-    
+        
     tag_action = re.compile(r'([A-Za-z][-\w]+)\s+(\S+)')
 
     in_action = re.compile(r'(bounce|reject|drop|exit|stop|ok|accept|deliver|confirm)',
@@ -199,7 +198,7 @@ class FilterParser:
                 # missing match
                 self.__adderror(self.__rule_lineno, match_line)
             else:
-                match = mo.group(1) or mo.group(2)
+                match = mo.group(2) or mo.group(3)
                 action_line = string.lstrip(match_line[mo.end():])
                 actions = self.__buildactions(action_line, rule_line)
                 if actions:
@@ -398,10 +397,13 @@ class FilterParser:
                     content = msg_headers
                 else:
                     content = None
-                for expr in match_list:
-                    if content and re.search(expr,content,(re.M|re.I)):
-                        found_match = 1
-                        break
+                for line in match_list:
+                    mo = self.matches.match(line)
+                    if mo:
+                        expr = mo.group(2) or mo.group(3)
+                        if content and re.search(expr,content,(re.M|re.I)):
+                            found_match = 1
+                            break
                 if found_match:
 		    break
             if source == 'size' and msg_size:
