@@ -82,12 +82,11 @@ def usage(code, msg=''):
         print msg
     sys.exit(code)
 
-# getopt crud here
+# getopt crud goes here
 
+# end getopt crud
 
 from TMDA import Pending
-
-import email
 
 
 class HSplitterFrame(Frame):
