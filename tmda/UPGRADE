@@ -1,5 +1,28 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.56:
+
+* CRYPT_KEY should be removed from ~/.tmdarc or ~/.tmda/config.  Your
+  secret key is now read from CRYPT_KEY_FILE, which defaults to
+  ~/.tmda/crypt_key.  To make this conversion, move your existing
+  CRYPT_KEY to ~/.tmda/crypt_key, but without the double-quotes.  e.g,
+
+  if CRYPT_KEY = "df7a18a8d95f02ff94bf6463a8ec214cf20cb9e8"
+
+  ~/.tmda/crypt_key should contain:
+  df7a18a8d95f02ff94bf6463a8ec214cf20cb9e8
+
+* ~/.tmdarc and ~/.tmda/config are no longer checked for file
+  permissions.  Instead, make sure ~/.tmda/crypt_key is chmod 400 or
+  600 (or 640 if ALLOW_MODE_640 = 1).
+
+* An exception is no longer be raised if ~/.tmdarc or ~/.tmda/config
+  is missing.  However, a ~/.tmda/crypt_key file is required.
+
+* tmda-keygen now outputs an unquoted key instead of a CRYPT_KEY line.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.55:
 
 * DELIVERY has replaced LOCAL_DELIVERY_AGENT.  If you wish to retain

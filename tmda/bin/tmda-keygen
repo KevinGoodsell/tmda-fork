@@ -140,12 +140,12 @@ def main():
         print "Oops, generated key is not 40-characters long, exiting!"
         sys.exit()
 
-    print "CRYPT_KEY =", '"' + key + '"'
-
+    print key
+    
     if not batch:
         print
-        print "Now paste the above line into your ~/.tmdarc file,"
-        print "and make sure to keep your key secret!"
+        print "Now paste the above key into ~/.tmda/crypt_key"
+        print "and make sure to keep your key secret! (chmod 600 ~/.tmda/crypt_key)"
 
 
 # This is the end my friend.

@@ -28,6 +28,7 @@ import fnmatch
 import os
 import popen2
 import re
+import stat
 import string
 import sys
 import tempfile
@@ -71,6 +72,13 @@ def getusername():
     if not username:
         username = '<unknown>'
     return username
+
+
+def getfilemode(path):
+    statinfo = os.stat(path)
+    permbits = stat.S_IMODE(statinfo[stat.ST_MODE])
+    mode = int(oct(permbits))
+    return mode
 
 
 def seconds(timeout):

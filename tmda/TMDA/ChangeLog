@@ -1,3 +1,12 @@
+2002-05-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (getfilemode): New utility function which takes a file
+	and returns its octal number representing the file permissions bit
+	pattern.
+		
+	* Defaults.py (CRYPT_KEY_FILE): Read CRYPT_KEY from CRYPT_KEY_FILE
+	which defaults to ~/.tmda/crypt_key.
+
 2002-05-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* FilterParser.py (FilterParser.firstmatch): *-ezmlm sources now
