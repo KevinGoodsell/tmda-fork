@@ -371,14 +371,8 @@ def autorespond_to_sender(sender):
         if auto_submitted.lower().strip().startswith('auto-generated') or \
                auto_submitted.lower().strip().startswith('auto-replied'):
             guilty_header = 'Auto-Submitted: %s' % auto_submitted
-    # Try and detect a mailing list message.
-    #   - header "List-ID:" (as per RFC 2919)
-    #   - header "Mailing-List:"
-    #   - header "X-Mailing-List:"
-    #   - header "X-ML-Name:"
-    #   - header "X-List:" (ecartis)
-    #   - header "List-(Help|Unsubscribe|Subscribe|Post|Owner|Archive):"
-    #     (as per RFC 2369)
+    # Try and detect a mailing list message by looking for
+    # characteristic header fields.
     if guilty_header is None:
         list_headers = ['List-Id', 'List-Help', 'List-Subscribe',
                         'List-Unsubscribe', 'List-Post', 'List-Owner',
@@ -388,7 +382,7 @@ def autorespond_to_sender(sender):
             if msgin.has_key(hdr):
                 guilty_header = '%s: %s' % (hdr, msgin.get(hdr))
                 break
-    #   - header "Precedence:" value junk, bulk, or list
+    # "Precedence:" value junk, bulk, or list
     if guilty_header is None:
         precedence = msgin.get('precedence')
         if precedence and precedence.lower() in ('bulk', 'junk', 'list'):
@@ -396,6 +390,13 @@ def autorespond_to_sender(sender):
     if guilty_header:
         logit ('NOREPLY', '(%s)' % guilty_header)
         return 0
+    # The above methods have been verified to detect list messages
+    # from the following mailing list management packages/services:
+    #
+    # communigate pro, ecartis, ezmlm, fml, listar, listbox.com,
+    # listguru, listproc, lyris, mailman, majordomo, minimalist,
+    # smartlist, sympa, topica, yahoogroups
+    #
     # Auto-response rate limiting.  Algorithm based on Bruce Guenter's
     # qmail-autoresponder (http://untroubled.org/qmail-autoresponder/).
     # See qmail-autoresponder(1) for more details.
