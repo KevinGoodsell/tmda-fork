@@ -56,9 +56,9 @@ Contributions:
       multi-action filters, support for arguments, new delivery
       actions, improved error reporting, macros, variable
       interpolation, sub-filters, and assorted new arguments such as
-      `-autocdb', `-autodbm', and `-optional'.  The def2html script.
-      Also documentation and lots of general bugfixes, suggestions and
-      tmda-users support.
+      `-autocdb', `-autodbm', and `-optional'. The def2html
+      script. The Address.py module. Also documentation and lots of
+      general bugfixes, suggestions and tmda-users support.
 
     * Adam McKenna -- Debian package.
 
