@@ -6,7 +6,7 @@
 
 """Filter incoming messages on standard input.
 
-Usage:  %(program)s [-c <file>] [-d] [-A <file>] [-R <file>] [-h]
+Usage:  %(program)s [-c <file>] [-d] [-A <file>] [-R <file>] [-I <file>] [-h]
 
 Where:
 	-c <file>
@@ -24,6 +24,11 @@ Where:
         -R
 	--confirm-request-template <file>
 	   Full pathname to a custom template for confirmation requests.
+
+        -I <file>
+        --filter-incoming-file <file>
+           Full pathname to your incoming filter file.  Overrides FILTER_INCOMING
+           in ~/.tmdarc.
            
 	--help
 	-h
@@ -52,17 +57,20 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:dA:R:h',['config-file=',
-                                           'discard',
-                                           'confirm-accept-template='
-                                           'confirm-request-template='
-                                           'help'])
+                               'c:dA:R:I:h',['config-file=',
+                                             'discard',
+                                             'confirm-accept-template=',
+                                             'confirm-request-template=',
+                                             'filter-incoming-file=',
+                                             'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
+    elif opt in ('I', '--filter-incoming-file'):
+	os.environ['TMDA_FILTER_INCOMING'] = arg
     elif opt in ('-R', '--confirm-request-template'):
         os.environ['TMDA_CONFIRM_REQUEST_TEMPLATE'] = arg
     elif opt in ('-A', '--confirm-accept-template'):

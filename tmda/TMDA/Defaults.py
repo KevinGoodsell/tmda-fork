@@ -242,15 +242,23 @@ else:
 # FILTER_INCOMING
 # Filter file which controls how incoming messages are tagged.
 # Default is ~/.tmda/filters/incoming
-if not vars().has_key('FILTER_INCOMING'):
+# Look for the filter-file in the environment first.
+env_FILTER_INCOMING = os.environ.get('TMDA_FILTER_INCOMING')
+if env_FILTER_INCOMING:
+    FILTER_INCOMING = env_FILTER_INCOMING
+elif not vars().has_key('FILTER_INCOMING'):
     FILTER_INCOMING = DATADIR + "filters/" + "incoming"
 
 # FILTER_OUTGOING
 # Filter file which controls how outgoing messages are tagged.
 # Default is ~/.tmda/filters/outgoing
-if not vars().has_key('FILTER_OUTGOING'):
+# Look for the filter-file in the environment first.
+env_FILTER_OUTGOING = os.environ.get('TMDA_FILTER_OUTGOING')
+if env_FILTER_OUTGOING:
+    FILTER_OUTGOING = env_FILTER_OUTGOING
+elif not vars().has_key('FILTER_OUTGOING'):
     FILTER_OUTGOING = DATADIR + "filters/" + "outgoing"
-
+    
 # FILTER_BOUNCE_CC
 # An optional e-mail address which will be sent a copy of any message
 # that bounces because of a match in FILTER_INCOMING.

@@ -1,3 +1,11 @@
+2001-11-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (usage): Add `-O' to name the outgoing filter file.
+	Overrides all other locations.
+
+	* tmda-filter (usage): Add `-I' to name the incoming filter
+	file.  Overrides all other locations.
+
 2001-11-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject: Bugfix.  "Bouncing" a message from the MUA caused

@@ -1,5 +1,9 @@
 2001-11-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py: Look for FILTER_INCOMING and FILTER_OUTGOING in the
+	environment first, which are set via tmda-inject/tmda-filter
+	command-line options.
+
 	* FilterParser.py: Moved filter file documentation into
 	config-filter.html.
 	
