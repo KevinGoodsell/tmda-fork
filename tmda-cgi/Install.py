@@ -299,13 +299,13 @@ def IgnoreFiles(Anomalies):
 
   # Add everything
   if type(Anomalies["VIRTUAL_ONLY"]) == DictType:
-    for Mail in Anomalies["VIRTUAL_ONLY"].keys():
-      RetVal += Anomalies["VIRTUAL_ONLY"][Mail]
+    for i in Anomalies["VIRTUAL_ONLY"].keys():
+      RetVal += Anomalies["VIRTUAL_ONLY"][i]
   else:
     RetVal += Anomalies["VIRTUAL_ONLY"]
   if type(Anomalies["REAL_ONLY"]) == DictType:
-    for Mail in Anomalies["REAL_ONLY"].keys():
-      RetVal += Anomalies["REAL_ONLY"][Mail]
+    for i in Anomalies["REAL_ONLY"].keys():
+      RetVal += Anomalies["REAL_ONLY"][i]
   else:
     RetVal += Anomalies["REAL_ONLY"]
 
