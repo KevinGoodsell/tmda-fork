@@ -13,7 +13,6 @@
 
 import os
 import sys
-import time
 import traceback
 
 
@@ -28,9 +27,8 @@ except StandardError:
     try:
         print 'TMDA_DELIVERY_FAILURE'
         fp = open(os.path.expanduser('~/TMDA_DELIVERY_FAILURE'), 'a')
-        fp.write('%s (%s):%s' % ('\n' + 'uncaught exception',
-                                 time.asctime(time.localtime(time.time())),
-                                 '\n' + '-' * 60 + '\n'))
+        fp.write('%s %s' % ('\n' + 'uncaught exception:',
+                            '\n' + '-' * 60 + '\n'))
         traceback.print_exc(file=fp)
         fp.close()
         sys.exit(75)
