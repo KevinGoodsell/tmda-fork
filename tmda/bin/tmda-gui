@@ -139,6 +139,7 @@ sin = None
 sout = None
 
 ProtoError = "Protocole Error"
+AuthError = "Authentication Error"
 
 def connectToServer(host, auth):
     global sock, sin, sout
@@ -151,33 +152,62 @@ def connectToServer(host, auth):
     sout = sock.makefile('w', 0)
     # eat up greetings from manager
     ## FIXME: maybe check the protocol version ?
-    while sin.readline() and sin.read(1) != '+':
-        pass
+    cc = sin.read(1)
+    while cc != '+':
+        l = sin.readline().strip()
+        if cc == 'T':
+            (dummy, tmdaver) = l.split(' v', 1)
+        if cc == 'P':
+            (dummy, protover) = l.split(' v', 1)
+        cc = sin.read(1)
+
+    ## FIXME: check the version at some point
+    print 'TMDA: %s' % tmdaver
+    print 'Protocole: %s' % protover
     sout.write('auth %s %s\n' % auth)
     if sin.read(1) != '+':
-        return 0
+        raise AuthError, sin.readline()[:-1]
     return 1
 
 def net_command(command):
     data = []
     sout.write(str(command)+'\n')
     cc = sin.read(1)
+    # ' ' is the data-transmit control char
     while cc == ' ':
         data.append(sin.readline()[:-1])
         cc = sin.read(1)
-    if cc == '-':
-        msg = sin.readline()[:-1]
-        ## FIXME: think about error recovery (check the '+')
+    # '-' is the standard error prompt
+    # '*' is the command unknown prompt (from cmd module)
+    if cc == '-' or cc == '*':
+        # '+' is the OK prompt
+        while cc != '+':
+            msg = sin.readline()[:-1]
+            print msg
+            cc = sin.read(1)
         raise ProtoError, msg
     return data
 
+def net_recover(s="error recovery"):
+    s = str(s)
+    r = net_command('nop %s\n' % s)[0]
+    if r != s:
+        raise ProtoError, r
+
 def net_getAddress(tag, option=None, address=None):
-    tagged_address = '\n'.join(net_command('address %s %s' % (tag, option)))
+    try:
+        tagged_address = '\n'.join(net_command('address %s %s' % (tag, option)))
+    except ProtoError, msg:
+        print "%s: %s" % (ProtoError, msg)
+        return ''
     return tagged_address
 
 def net_checkAddress(address, sender_address=None):
-    status = '\n'.join(net_command('checkaddress %s %s' % (address, sender_address)))
-    print status
+    try:
+        status = '\n'.join(net_command('checkaddress %s %s' % (address, sender_address)))
+    except ProtoError, msg:
+        print "%s: %s" % (ProtoError, msg)
+        return ''
     return status
 
 def net_processMessage(msgid, command, **args):
@@ -240,6 +270,18 @@ except ImportError:
     print wraptext(no_tk), '\n'
     sys.exit()
 
+def PasswordPrompt(pl):
+    def setpw(ev=None):
+        pl.append(ask.get())
+        ask.destroy()
+        root.destroy()
+    root = Tk()
+    Label(root, text="Please enter your password").pack(side=TOP, fill=X)
+    ask = Entry(root, show="*")
+    ask.pack(side=TOP, fill=X)
+    Button(root, text="OK", command=setpw).pack(side=TOP, fill=X)
+    root.mainloop()
+
 
 program = sys.argv[0]
 
@@ -278,14 +320,20 @@ for opt, arg in opts:
         using_network=1
         try:
             (host, port) = arg.split(':', 1)
+            port = int(port)
         except ValueError:
             (host, port) = (arg, 8765)
     elif opt in ('-U', '--user'):
         try:
             (user, passwd) = arg.split(':', 1)
         except ValueError:
-            print "Error: missing the password"
-            sys.exit()
+            p = []
+            PasswordPrompt(p)
+            user = arg
+            passwd = p[0]
+            del(p)
+#            print "Error: missing the password"
+#            sys.exit()
 
 if using_network:
     if not host:
@@ -735,9 +783,12 @@ class PendingGUI(Frame):
             self.menu.buttons.append(m)
 
     def MessageRefresh(self, ev=None):
-        self.message.text.delete(1.0, END)
-        self.listbox.Refresh()
-        self.updateStatus()
+        try:
+            self.message.text.delete(1.0, END)
+            self.listbox.Refresh()
+            self.updateStatus()
+        except TclError: # Refresh is probably aborted by user
+            pass
 
     def MessageShow(self, ev=None):
         self.message.text.delete(1.0, END)
@@ -1021,9 +1072,12 @@ class TMDAGUI(Frame):
 def main():
     root = Tk()
     if using_network:
-        r = connectToServer(host=(host, port), auth=(user, passwd))
-        if not r:
-            raise
+        try:
+            connectToServer(host=(host, port), auth=(user, passwd))
+        except AuthError, msg:
+            print "Couldn't connect to server %s:%s (reason: %s)" % (host, port, msg)
+            net_command("exit")
+            sys.exit(1)
     if pending_first:
         PendingGUI(root).pack(fill=BOTH, expand=YES)
     else:
