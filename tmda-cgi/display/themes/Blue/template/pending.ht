@@ -60,7 +60,7 @@ Title: Pending E-mail
                 </tr>
 <!-- var: Row -->
                 <tr>
-                  <td colspan="7" bgcolor="#7A7AB6" height="1"></td>
+                  <td colspan="%(NumCols)s" bgcolor="#7A7AB6" height="1"></td>
                 </tr>
                 <tr class="%(MsgClass)s">
                   <td>
@@ -93,10 +93,10 @@ Title: Pending E-mail
 <!-- /var -->
 <!-- var: InProcessRow -->
                 <tr>
-                  <td colspan="7" bgcolor="#7A7AB6" height="1"></td>
+                  <td colspan="%(NumCols)s" bgcolor="#7A7AB6" height="1"></td>
                 </tr>
                 <tr class="InProcess">
-                  <td></td>
+                  <td colspan="%(NumBlankCols)s"></td>
                   <td>%(Sender)s</td>
                   <td>%(Subject)s</td>
                   <td nowrap>%(Date)s</td>

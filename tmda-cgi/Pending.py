@@ -108,10 +108,22 @@ def Show():
   PVars.Save()
 
   # Capture extra radio buttons. If not present, remove icon
+  NumCols = 7
+  NumBlankCols = 3
   WhRadio = T["WhRadio"]
   BlRadio = T["BlRadio"]
-  if not Defaults.PENDING_WHITELIST_APPEND: T["WhIcon"]
-  if not Defaults.PENDING_BLACKLIST_APPEND: T["BlIcon"]
+  if not Defaults.PENDING_WHITELIST_APPEND:
+    T["WhIcon"]
+  else:
+    NumCols += 1
+    NumBlankCols += 1
+  if not Defaults.PENDING_BLACKLIST_APPEND:
+    T["BlIcon"]
+  else:
+    NumCols += 1
+    NumBlankCols += 1
+  T["NumCols"] = NumCols
+  T["NumBlankCols"] = NumBlankCols
 
   # Javascript confirmation?
   if Defaults.CGI_USE_JS_CONFIRM:
