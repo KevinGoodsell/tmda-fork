@@ -1,3 +1,8 @@
+2003-02-17  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
+
+	* tmda-check-address (main): Bugfix. Print the expired date for
+	old dated addresses.
+
 2003-02-04  Tim Legant  <tim@catseye.net>
 
 	* tmda-ofmipd (run_authprog): Fixed problem with -A's interface to

@@ -118,6 +118,10 @@ def main():
             pass
     except Address.AddressError, msg:
         print "STATUS:", msg
+        try:
+            print "EXPIRED: %s" % addr.timestamp(1, localtime)
+        except AttributeError:
+            pass
         
 if __name__ == '__main__':
     main()
