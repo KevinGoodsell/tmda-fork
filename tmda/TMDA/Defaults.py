@@ -361,6 +361,11 @@ if not vars().has_key('LOGFILE'):
 #     "angles"
 #           "Elvis Parsley" <king@grassland.com>
 #
+#     "unquoted"
+#           Elvis Parsley <king@grassland.com>
+#           (only use if you know your fullname doesn't need
+#           double-quotes; see rfc2822 for clarification)
+#
 # Default is "angles".
 if not vars().has_key('MESSAGE_FROM_STYLE'):
     MESSAGE_FROM_STYLE = "angles"

@@ -162,6 +162,8 @@ def inject_message(resending,
         message_from_format = '%s (%s)' % (final_sender_address,final_full_name)
     elif Defaults.MESSAGE_FROM_STYLE == 'address':
         message_from_format = '%s' % (final_sender_address)
+    elif Defaults.MESSAGE_FROM_STYLE == 'unquoted':
+        message_from_format = '%s <%s>' % (final_full_name,final_sender_address)
     else:
         message_from_format = '"%s" <%s>' % (final_full_name,final_sender_address)
     # Set From: or Resent-From: to match the envelope sender address.

@@ -1,3 +1,8 @@
+2001-12-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (inject_message): Support the `unquoted'
+	MESSAGE_FROM_STYLE option.
+
 2001-12-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (auto_reply): Consolidate the Precedence checking
