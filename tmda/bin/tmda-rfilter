@@ -283,7 +283,7 @@ def autorespond_to_sender(sender):
     if envelope_sender == '<>' or \
            envelope_sender == '#@[]' or \
            envelope_sender.lower().startswith('mailer-daemon'):
-        logit ('DROP (envelope sender = %s)' % envelope_sender)
+        logit ('NOREPLY (envelope sender = %s)' % envelope_sender)
         return 0
     # Try and detect an auto-response.
     guilty_header = None
