@@ -1,3 +1,7 @@
+2001-10-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (inject_message): Support MESSAGE_FROM_STYLE.
+	
 2001-10-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (verify_confirm_cookie): Make sure the cookie

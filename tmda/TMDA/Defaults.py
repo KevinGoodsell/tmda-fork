@@ -270,6 +270,23 @@ if not vars().has_key('HOSTNAME'):
 if not vars().has_key('LOGFILE'):
     LOGFILE = 0
 
+# MESSAGE_FROM_STYLE
+# Specifies how `From' headers should look on when tagging outgoing
+# messages with tmda-inject.  There are three valid values:
+#
+#     "address"
+#           Just the address - king@grassland.com
+#
+#     "parens"
+#           king@grassland.com (Elvis Parsley)
+#
+#     "angles"
+#           "Elvis Parsley" <king@grassland.com>
+#
+# Default is "angles".
+if not vars().has_key('MESSAGE_FROM_STYLE'):
+    MESSAGE_FROM_STYLE = "angles"
+
 # TIMEOUT
 # The timeout interval for 'dated' addresses.  The available units are
 # (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).

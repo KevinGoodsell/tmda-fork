@@ -105,19 +105,27 @@ def inject_message(to_address,
     elif cookie_type == 'ext':
         # Send a message with a tagged (extension added) address.
         (username, hostname) = string.split(from_address,'@')
-        envelope_sender_address.append(username + Defaults.RECIPIENT_DELIMITER  
+        envelope_sender_address.append(username + Defaults.RECIPIENT_DELIMITER
                                        + extension + '@' + hostname)
     elif cookie_type == 'keyword':
         # Send a message with a tagged (keyword) address.
         envelope_sender_address.append(Cookie.make_keyword_address
                                        (from_address, extension))
     # Set From: to match the envelope sender address.
-    message_headers['From'] = '"%s" <%s>' % (sender_full_name[0],
-                                             envelope_sender_address[-1:][0])
+    final_sender_address = envelope_sender_address[-1:][0]
+    final_full_name = sender_full_name[0]
+    if Defaults.MESSAGE_FROM_STYLE == 'angles':
+        message_from_format = '"%s" <%s>' % (final_full_name,final_sender_address)
+    elif Defaults.MESSAGE_FROM_STYLE == 'parens':
+        message_from_format = '%s (%s)' % (final_sender_address,final_full_name)
+    elif Defaults.MESSAGE_FROM_STYLE == 'address':
+         message_from_format = '%s' % (final_sender_address)
+    message_headers['From'] = message_from_format
+    # Inject the message.
     inject = []
     inject.append(Defaults.SENDMAIL)
     inject.append('-f')
-    inject.append(envelope_sender_address[-1:][0])
+    inject.append(final_sender_address)
     inject.append(to_address)
     pipeline = popen2.popen2(inject)[1]
     pipeline.write(str(message_headers))

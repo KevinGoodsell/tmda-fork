@@ -77,6 +77,8 @@ import os                                      # don't remove
 
 # LOGFILE = os.path.expanduser("~/tmda.log")
 
+# MESSAGE_FROM_STYLE = "angles"
+
 # TIMEOUT = "5d"
 
 # USERNAME = "jdoe" 
