@@ -138,6 +138,8 @@ def Show():
     else:
       if Form.has_key("list"):
         List = Form["list"].value
+      elif Form["subcmd"].value == "save":
+        List = ""
 
       # Make sure the list is properly formatted
       List = re.sub("\r\n", "\n", List)
