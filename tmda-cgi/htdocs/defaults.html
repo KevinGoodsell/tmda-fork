@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sun Nov 16 12:40:37 2003 -->
+<!-- Tue Dec  9 12:05:08 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -115,66 +115,67 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
     <td><a href="#NoOverrideMayInstall">NoOverride:MayInstall</a></td>
   </tr>
   <tr>
+    <td><a href="#NoOverrideMaySearchPendList">NoOverride:MaySearchPendList</A></td>
     <td><a href="#NoOverrideSendmail">NoOverride:Sendmail</a></td>
+  </tr>
+  <tr>
     <td><a href="#NoOverrideSpamCopFilter">NoOverride:SpamCopFilter</a></td>
-  </tr>
-  <tr>
     <td><a href="#NoOverrideUninstallBackupTGZ">NoOverride:UninstallBackupTGZ</a></td>
+  </tr>
+  <tr>
     <td><a href="#NoOverrideUninstallInstruct">NoOverride:UninstallInstruct</a></td>
-  </tr>
-  <tr>
     <td><a href="#NoOverrideUserSplit">NoOverride:UserSplit</a></td>
+  </tr>
+  <tr>
     <td><a href="#NoOverrideVPop">NoOverride:VPop</a></td>
-  </tr>
-  <tr>
     <td><a href="#NoOverrideVPopBin">NoOverride:VPopBin</a></td>
+  </tr>
+  <tr>
     <td><a href="#NoOverrideWhichTar">NoOverride:WhichTar</a></td>
-  </tr>
-  <tr>
     <td><a href="#GeneralCSEncoding">General:CSEncoding</a></td>
+  </tr>
+  <tr>
     <td><a href="#GeneralSpamCopAddr">General:SpamCopAddr</a></td>
-  </tr>
-  <tr>
     <td><a href="#GeneralTheme">General:Theme</a></td>
+  </tr>
+  <tr>
     <td><a href="#GeneralUseJSConfirm">General:UseJSConfirm</a></td>
-  </tr>
-  <tr>
     <td><a href="#GenAddrExpireNum">GenAddr:ExpireNum</a></td>
+  </tr>
+  <tr>
     <td><a href="#GenAddrExpireUnit">GenAddr:ExpireUnit</a></td>
-  </tr>
-  <tr>
     <td><a href="#GenAddrKeyword">GenAddr:Keyword</a></td>
+  </tr>
+  <tr>
     <td><a href="#GenAddrSender">GenAddr:Sender</a></td>
-  </tr>
-  <tr>
     <td><a href="#LoginInitPage">Login:InitPage</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListCropDest">PendingList:CropDest</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListCropSender">PendingList:CropSender</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListCropSubject">PendingList:CropSubject</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListDateFormat">PendingList:DateFormat</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListPagerSize">PendingList:PagerSize</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListShowAddr">PendingList:ShowAddr</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListShowDelete">PendingList:ShowDelete</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListShowBlack">PendingList:ShowBlack</a></td>
+  </tr>
+  <tr>
     <td><a href="#ViewPendingAltPref">ViewPending:AltPref</a></td>
-  </tr>
-  <tr>
     <td><a href="#ViewPendingAllowTags">ViewPending:AllowTags</a></td>
+  </tr>
+  <tr>
     <td><a href="#ViewPendingBlockRemove">ViewPending:BlockRemove</a></td>
-  </tr>
-  <tr>
     <td><a href="#ViewPendingEmailClass">ViewPending:EmailClass</a></td>
-    <td><a href="#ViewPendingHeaders">ViewPending:Headers</a></td>
   </tr>
   <tr>
+    <td><a href="#ViewPendingHeaders">ViewPending:Headers</a></td>
     <td><a href="#AccessPaths">AccessPaths</a></td>
   </tr>
 </table>
@@ -260,6 +261,22 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
       <tr>
         <td>[NoOverride]<br>
           MayInstall = No</td>
+      </tr>
+    </table>
+  <p>Default: <tt>Yes</tt></p>
+</blockquote>
+
+<h4><a name="NoOverrideMaySearchPendList"></a>NoOverride:MaySearchPendList</h4>
+<blockquote>
+  <p>Allow users to search their pending lists.</p>
+  <p>Note, due to the average large pending list size, searches may take
+     great amounts of CPU time.  Administrators of systems with limited
+     resources may want to disable this.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[NoOverride]<br>
+          MaySearchPendList = No</td>
       </tr>
     </table>
   <p>Default: <tt>Yes</tt></p>
