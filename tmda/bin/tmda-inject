@@ -44,11 +44,7 @@ OPTIONS:
 
 import getopt
 import os
-import popen2
-import rfc822
-import string
 import sys
-
 
 # The contents of these two lists will be used to tag the message.
 envelope_sender_address = []
@@ -94,10 +90,14 @@ try:
 except ImportError:
     pass
 
-from TMDA import Cookie
 from TMDA import Defaults
+from TMDA import Cookie
 from TMDA import FilterParser
 from TMDA import Util
+
+import popen2
+import rfc822
+import string
 
 
 # Just check Defaults.FILTER_OUTGOING for syntax errors and possible

@@ -10,6 +10,10 @@
 	(inject_message): Add `Message-ID' and `Date' headers only if they
 	don't already exist.
 
+	(usage): Rearrange order of module imports so that TMDA.Defaults
+	is imported before time is.  This is so the user's TZ environment
+	variable setting is globally respected.
+	
 2001-12-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (inject_message): Support the `unquoted'
