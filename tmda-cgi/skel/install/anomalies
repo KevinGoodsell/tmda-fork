@@ -8,7 +8,7 @@ PERMISSIONS = {".tmda/crypt_key": 0600}
 # VIRT_TEST is a regular expression test which can be applied to a user's HOME
 # directory.  If the test matches, then the user is assumed to be a virtual
 # user.
-VIRTUAL_TEST = "^/home/vpopmail/domains/"
+VIRTUAL_TEST = "^" + VPop
 
 # REAL_ONLY is a list of files or a dictionary of lists of files which should
 # only be copied if the user logging in is "real" (i.e. VIRTUAL_TEST did not

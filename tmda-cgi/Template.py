@@ -164,12 +164,11 @@ class Template:
 
     global SentHeaders
 
-    if SentHeaders:
-      RetVal = ""
-    else:
-      RetVal = "Content-Type: text/html; charset=%(CharSet)s\n\n" % self.Dict
+    if not SentHeaders:
+      print "Content-Type: text/html; charset=%(CharSet)s\n" % self.Dict
     SentHeaders = 1
 
+    RetVal = ""
     for HTML in self.HTML:
       if type(HTML) == StringType:
         if self.BeenExpanded:

@@ -60,7 +60,7 @@ Title: Virtual Users
 <ul>
   <li><a href="defaults.html#NoOverrideVPop">NoOverride:VPop</a></li>
   <li><a href="defaults.html#NoOverrideVPopBin">NoOverride:VPopBin</a></li>
-  <li><a href="autoinstall.html#VIRTUAL_TEST">VIRTUAL_TEST</a></li>
+  <li><a href="auth.html">Authentication method</a></li>
 </ul>
 <p>There are a few other virtual user specific settings, but these are the ones
   most likely to need adjusting.</p>

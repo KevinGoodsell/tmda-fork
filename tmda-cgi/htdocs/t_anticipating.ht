@@ -21,7 +21,9 @@ insure that no important messages will ever be lost.
 <a href="#Auctions">Online Shopping - auctions and individuals</a><br>
 <a href="#TechSupport">Technical Support</a><br>
 <a href="#Announcements">Announcements</a><br>
-<a href="#MailingLists">Mailing Lists</a><p>
+<a href="#MailingLists">Mailing Lists</a><br>
+&nbsp;&nbsp;&nbsp;<a href="#Webpage">Subscribing via a webpage</a><br>
+&nbsp;&nbsp;&nbsp;<a href="#email">Subscribing via e-mail</a><p>
 
 <h2><a name="Quick"></a>Online Shopping - quick resolution</h2>
 
@@ -159,4 +161,101 @@ insure that no important messages will ever be lost.
 
 <h2><a name="MailingLists"></a>Mailing Lists</h2>
 
-Still need to write this.
+<p>Using a keyword address is a good way to receive mailing list mail.
+  Essentially, this issues out a key to your inbox to anyone who sends mail to
+  the list. Keyword addresses are risky (in the sense that they open you up to
+  being spammed) but it is the simplest way to make sure TMDA accepts mail from
+  everyone on the list, since you can't anticipate the e-mail addresses of
+  other subscribers.</p>
+
+<p>Keyword addresses contain a short piece of text that will help you remember
+  why you generated the key in the first place. So if you are signing up to a
+  mailing list for quilters (see the <a href="t_faq.html#Automated">FAQ</a>),
+  you might choose a keyword of "quilters".</p>
+
+<p>If a spammer "harvests" your keyword address from the quilters mailing list,
+  then their spam will have the key it needs to make it into your inbox.
+  To stop them from spamming you, you'll have to revoke the quilters key by
+  adding the keyword address (not just the keyword itself) to your "revoked"
+  list.  This essentially "changes the lock" so the old keyword won't work.
+  You can sign up for the quilters mailing list again with a new key, but you
+  are still at risk of having your keyword address harvested again.</p>
+
+<p>I've found that some lists get harvested regularly while other lists do not
+  get harvested at all.  If you find yourself making keywords of "quilters",
+  "quilters2", "quilters3", etc.; then you should probably give up on the list.
+  Perhaps there is another quilters mailing list without such active spammers
+  trolling the archives?</p>
+
+<p><b><i>Note:</i></b> I recommend that you unsubscribe from any lists you
+  subscribed to before installing TMDA on your account. Then re-subscribe with
+  a keyword address, as explained below.</p>
+
+<p>How you get the keyword address to the list depends on how the list is set
+  up.</p>
+
+<h3><a name="Webpage"></a>Subscribing via a webpage</h3>
+
+<p>More and more often, mailing list signups are being done with webpage forms.
+  You enter your e-mail address into an input box on a webpage, the mailing
+  list sends you a confirmation e-mail, you then reply to the list's
+  confirmation to verify that you want to be on the list.</p>
+
+<p>Instead of typing in your regular, filtered e-mail address (let's say your
+  address is <tt>joe@ilovequilts.com</tt> and you're signing up for a mailing
+  list run by <tt>quiltingfanatic.com</tt>), log into tmda-cgi and click on the
+  "Addresses" menu. Enter in "quilters" into the first input box (labelled
+  "Keyword") and click "Generate". tmda-cgi will generate a new keyword address
+  (it will be something like
+  <tt>joe-keyword-quilters.092a48@ilovequilts.com</tt>) and place it in the
+  second input box (labelled "Use address").</p>
+
+<p>By default, keyword addresses will be accepted by TMDA, so you should not
+  need to copy this address to any of your lists.</p>
+
+<p>Using your mouse, select the <b><i>entire</i></b> keyword address. Hit
+  control-C to copy the address, then return to the mailing list's signup page
+  and paste (control-V) the address into the form. Your confirmation e-mail
+  will be sent to the keyword address, so if you have done everything
+  correctly, you should receive the confirmation message into your inbox
+  without having to use tmda-cgi to release it.</p>
+
+<p><b><i>Note:</i></b> Some mailing lists only allow subscribed users to post
+  to the list. Although you are a subscribed user, it will appear that your
+  posts are coming from a different e-mail address than the one you used to
+  subscribe (<tt>joe@ilovequilts.com</tt> instead of
+  <tt>joe-keyword-quilters.092a48@ilovequilts.com</tt>). If your posts do not
+  go through or you receive an e-mail about "only subscribed users are
+  permitted to post", then you will need to add the following line to your
+  outgoing filter:</p>
+
+<blockquote><code>to *@quiltingfanatic.com keyword=quilters</code></blockquote>
+
+<p>This tells TMDA to use the keyword address "quilters" whenever you send mail
+  at an address at <tt>quiltingfanatic.com</tt>.</p>
+
+<h3><a name="email"></a>Subscribing via e-mail</h3>
+
+<p>Some mailing lists still handle subscribing and unsubscribing by e-mail.
+  They either expect you to send a blank e-mail to a special "subscribe"
+  address or send an e-mail to a configuration address and put "SUBSCRIBE" in
+  either your e-mail's subject or the beginning of the body. The mailing list
+  manager then captures your e-mail address from the message, possibly sends
+  you a confirmation message to which you'll have to reply, and then adds to
+  the list.</p>
+
+<p>Do <b><i>not</i></b> do this just yet! If you do, you will be subscribing
+  with your filtered e-mail address.</p>
+
+<p>Instead, log into tmda-cgi and click on "Filters" and then "Outgoing
+  Filter". If you are subscribing to a list at <tt>quiltingfanatic.com</tt> and
+  wish to use a keyword of "quilters" (see the <a href="#Webpage">previous</a>
+  example), then add the following to your filter:</p>
+
+<blockquote><code>to *@quiltingfanatic.com keyword=quilters</code></blockquote>
+
+<p>Save your filter, and <b><i>then</i></b> send off your subscription e-mail.
+  The new filter instruction will make sure that your subscription request (and
+  any posts you make) all come from a keyword address. The mailing list manager
+  will then capture <b><i>this</i></b> address and use it instead of your
+  regular, filtered address.</p>

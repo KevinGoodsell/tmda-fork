@@ -251,6 +251,7 @@ def GetAnomalies(Dir):
   {
     "PERMISSIONS": {}, "VIRTUAL_TEST": "", "REAL_ONLY": [], "VIRTUAL_ONLY": []
   }
+  RetVal.update(Dict)
   try:
     execfile(Filename, RetVal)
   except SyntaxError, ErrStr:

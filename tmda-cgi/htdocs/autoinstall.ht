@@ -142,7 +142,7 @@ Title: Auto-installation & Auto-uninstallation
   <p>Example:
     <table class="example">
       <tr>
-        <td>VIRTUAL_TEST = "^/home/vpopmail/domains/"</td>
+        <td>VIRTUAL_TEST = "^" + VPop</td>
       </tr>
     </table>
 </blockquote>
