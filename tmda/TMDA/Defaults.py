@@ -37,8 +37,8 @@ ERR_SOFT = 111      # Soft error; defer delivery.
 # User settings in ~/.tmdarc will override the defaults set here.
 
 # BLACKLIST
-# Filename which contains a list of e-mail addresses or regular
-# expressions, one per line, which are considered unacceptable and
+# Filename which contains a list of e-mail addresses and/or
+# substrings, one per line, which are considered unacceptable and
 # therefore bounced if there is a match.
 # Default is ~/.tmda-blacklist
 BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
@@ -152,8 +152,8 @@ EXT_FILE = os.path.expanduser("~/.tmda-ext")
 SENDER_FILE = os.path.expanduser("~/.tmda-sender")
 
 # WHITELIST
-# Filename which contains a list of e-mail addresses or regular
-# expressions, one per line, which are considered trusted contacts and
+# Filename which contains a list of e-mail addresses and/or
+# substrings, one per line, which are considered trusted contacts and
 # therefore allowed directly into your mailbox if there is a match.
 # Default is ~/.tmda-whitelist
 WHITELIST = os.path.expanduser("~/.tmda-whitelist")

@@ -16,7 +16,7 @@ General
 
 tmda-inject
 	
-	- Possibly support regular expression matching for the special
+	- Possibly support substring matching for the special
 	case addresses in addition to just matching specific
 	addresses.
 	
