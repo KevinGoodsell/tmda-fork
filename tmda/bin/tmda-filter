@@ -392,7 +392,7 @@ def main():
             blacklist_list = []
             blacklist_list = Util.file_to_list(Defaults.BLACKLIST,blacklist_list)
             if Util.findmatch(blacklist_list, EnvelopeSender,From,ReplyTo):
-                logit("BOUNCE blacklist_match", time.time())
+                logit("DROP blacklist_match", time.time())
                 if Defaults.BOUNCE_BLACKLIST_CC:
                     bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
                 sys.exit(Defaults.ERR_STOP)
