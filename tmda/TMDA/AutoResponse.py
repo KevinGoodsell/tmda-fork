@@ -152,7 +152,7 @@ class AutoResponse:
                                 Defaults.TEMPLATE_EMAIL_HEADERS):
                 name, addr = parseaddr(v)
                 if name and hdrcharset.lower() not in ('ascii', 'us-ascii'):
-                    h = Header(name, hdrcharset)
+                    h = Header(name, hdrcharset, errors='replace')
                     name = h.encode()
                 self.mimemsg[k] = formataddr((name, addr))
             # headers like `Subject:' might contain an encoded string,
@@ -161,13 +161,14 @@ class AutoResponse:
             elif hdrcharset.lower() not in ('ascii', 'us-ascii') and \
                      k.lower() in map(lambda s: s.lower(),
                                       Defaults.TEMPLATE_ENCODED_HEADERS):
-                h = Header(charset=hdrcharset, header_name=k)
+                h = Header(charset=hdrcharset, header_name=k, errors='replace')
                 decoded_seq = decode_header(v)
                 for s, charset in decoded_seq:
                     h.append(s, charset)
                 self.mimemsg[k] = h
             else:
-                self.mimemsg[k] = Header(v, hdrcharset, header_name=k)
+                self.mimemsg[k] = Header(v, hdrcharset, header_name=k,
+                                         errors='replace')
         # Add some new headers to the main entity.
         timesecs = time.time()
         self.mimemsg['Date'] = Util.make_date(timesecs) # required by RFC 2822

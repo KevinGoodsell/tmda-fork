@@ -6,6 +6,17 @@ Lifted directly from rfc822.py.  This should eventually be rewritten.
 """
 
 import time
+from types import TupleType
+
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
+SPACE = ' '
+EMPTYSTRING = ''
+COMMASPACE = ', '
 
 # Parse a date field
 _monthnames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
@@ -36,9 +47,16 @@ def parsedate_tz(data):
     Accounts for military timezones.
     """
     data = data.split()
-    if data[0][-1] in (',', '.') or data[0].lower() in _daynames:
+    # The FWS after the comma after the day-of-week is optional, so search and
+    # adjust for this.
+    if data[0].endswith(',') or data[0].lower() in _daynames:
         # There's a dayname here. Skip it
         del data[0]
+    else:
+        i = data[0].rfind(',')
+        if i < 0:
+            return None
+        data[0] = data[0][i+1:]
     if len(data) == 3: # RFC 850 date, deprecated
         stuff = data[0].split('-')
         if len(stuff) == 3:
@@ -55,12 +73,13 @@ def parsedate_tz(data):
     data = data[:5]
     [dd, mm, yy, tm, tz] = data
     mm = mm.lower()
-    if not mm in _monthnames:
+    if mm not in _monthnames:
         dd, mm = mm, dd.lower()
-        if not mm in _monthnames:
+        if mm not in _monthnames:
             return None
-    mm = _monthnames.index(mm)+1
-    if mm > 12: mm = mm - 12
+    mm = _monthnames.index(mm) + 1
+    if mm > 12:
+        mm -= 12
     if dd[-1] == ',':
         dd = dd[:-1]
     i = yy.find(':')
@@ -112,9 +131,10 @@ def parsedate_tz(data):
 def parsedate(data):
     """Convert a time string to a time tuple."""
     t = parsedate_tz(data)
-    if type(t) == type( () ):
+    if isinstance(t, TupleType):
         return t[:9]
-    else: return t
+    else:
+        return t
 
 
 def mktime_tz(data):
@@ -135,8 +155,8 @@ def quote(str):
 class AddrlistClass:
     """Address parser class by Ben Escoto.
 
-    To understand what this class does, it helps to have a copy of
-    RFC-822 in front of you.
+    To understand what this class does, it helps to have a copy of RFC 2822 in
+    front of you.
 
     Note: this class interface is deprecated and may be removed in the future.
     Use rfc822.AddressList instead.
@@ -153,6 +173,10 @@ class AddrlistClass:
         self.LWS = ' \t'
         self.CR = '\r\n'
         self.atomends = self.specials + self.LWS + self.CR
+        # Note that RFC 2822 now specifies `.' as obs-phrase, meaning that it
+        # is obsolete syntax.  RFC 2822 requires that we recognize obsolete
+        # syntax, so allow dots in phrases.
+        self.phraseends = self.atomends.replace('.', '')
         self.field = field
         self.commentlist = []
 
@@ -160,20 +184,25 @@ class AddrlistClass:
         """Parse up to the start of the next address."""
         while self.pos < len(self.field):
             if self.field[self.pos] in self.LWS + '\n\r':
-                self.pos = self.pos + 1
+                self.pos += 1
             elif self.field[self.pos] == '(':
                 self.commentlist.append(self.getcomment())
-            else: break
+            else:
+                break
 
     def getaddrlist(self):
         """Parse all addresses.
 
         Returns a list containing all of the addresses.
         """
-        ad = self.getaddress()
-        if ad:
-            return ad + self.getaddrlist()
-        else: return []
+        result = []
+        while True:
+            ad = self.getaddress()
+            if ad:
+                result += ad
+            else:
+                break
+        return result
 
     def getaddress(self):
         """Parse the next address."""
@@ -190,7 +219,7 @@ class AddrlistClass:
         if self.pos >= len(self.field):
             # Bad email address technically, no domain.
             if plist:
-                returnlist = [(' '.join(self.commentlist), plist[0])]
+                returnlist = [(SPACE.join(self.commentlist), plist[0])]
 
         elif self.field[self.pos] in '.@':
             # email address is just an addrspec
@@ -198,18 +227,18 @@ class AddrlistClass:
             self.pos = oldpos
             self.commentlist = oldcl
             addrspec = self.getaddrspec()
-            returnlist = [(' '.join(self.commentlist), addrspec)]
+            returnlist = [(SPACE.join(self.commentlist), addrspec)]
 
         elif self.field[self.pos] == ':':
             # address is a group
             returnlist = []
 
             fieldlen = len(self.field)
-            self.pos = self.pos + 1
+            self.pos += 1
             while self.pos < len(self.field):
                 self.gotonext()
                 if self.pos < fieldlen and self.field[self.pos] == ';':
-                    self.pos = self.pos + 1
+                    self.pos += 1
                     break
                 returnlist = returnlist + self.getaddress()
 
@@ -218,19 +247,20 @@ class AddrlistClass:
             routeaddr = self.getrouteaddr()
 
             if self.commentlist:
-                returnlist = [(' '.join(plist) + ' (' + \
-                         ' '.join(self.commentlist) + ')', routeaddr)]
-            else: returnlist = [(' '.join(plist), routeaddr)]
+                returnlist = [(SPACE.join(plist) + ' (' +
+                               ' '.join(self.commentlist) + ')', routeaddr)]
+            else:
+                returnlist = [(SPACE.join(plist), routeaddr)]
 
         else:
             if plist:
-                returnlist = [(' '.join(self.commentlist), plist[0])]
+                returnlist = [(SPACE.join(self.commentlist), plist[0])]
             elif self.field[self.pos] in self.specials:
-                self.pos = self.pos + 1
+                self.pos += 1
 
         self.gotonext()
         if self.pos < len(self.field) and self.field[self.pos] == ',':
-            self.pos = self.pos + 1
+            self.pos += 1
         return returnlist
 
     def getrouteaddr(self):
@@ -241,74 +271,75 @@ class AddrlistClass:
         if self.field[self.pos] != '<':
             return
 
-        expectroute = 0
-        self.pos = self.pos + 1
+        expectroute = False
+        self.pos += 1
         self.gotonext()
-        adlist = ""
+        adlist = ''
         while self.pos < len(self.field):
             if expectroute:
                 self.getdomain()
-                expectroute = 0
+                expectroute = False
             elif self.field[self.pos] == '>':
-                self.pos = self.pos + 1
+                self.pos += 1
                 break
             elif self.field[self.pos] == '@':
-                self.pos = self.pos + 1
-                expectroute = 1
+                self.pos += 1
+                expectroute = True
             elif self.field[self.pos] == ':':
-                self.pos = self.pos + 1
-                expectaddrspec = 1
+                self.pos += 1
             else:
                 adlist = self.getaddrspec()
-                self.pos = self.pos + 1
+                self.pos += 1
                 break
             self.gotonext()
 
         return adlist
 
     def getaddrspec(self):
-        """Parse an RFC-822 addr-spec."""
+        """Parse an RFC 2822 addr-spec."""
         aslist = []
 
         self.gotonext()
         while self.pos < len(self.field):
             if self.field[self.pos] == '.':
                 aslist.append('.')
-                self.pos = self.pos + 1
+                self.pos += 1
             elif self.field[self.pos] == '"':
                 aslist.append('"%s"' % self.getquote())
             elif self.field[self.pos] in self.atomends:
                 break
-            else: aslist.append(self.getatom())
+            else:
+                aslist.append(self.getatom())
             self.gotonext()
 
         if self.pos >= len(self.field) or self.field[self.pos] != '@':
-            return ''.join(aslist)
+            return EMPTYSTRING.join(aslist)
 
         aslist.append('@')
-        self.pos = self.pos + 1
+        self.pos += 1
         self.gotonext()
-        return ''.join(aslist) + self.getdomain()
+        return EMPTYSTRING.join(aslist) + self.getdomain()
 
     def getdomain(self):
         """Get the complete domain name from an address."""
         sdlist = []
         while self.pos < len(self.field):
             if self.field[self.pos] in self.LWS:
-                self.pos = self.pos + 1
+                self.pos += 1
             elif self.field[self.pos] == '(':
                 self.commentlist.append(self.getcomment())
             elif self.field[self.pos] == '[':
                 sdlist.append(self.getdomainliteral())
             elif self.field[self.pos] == '.':
-                self.pos = self.pos + 1
+                self.pos += 1
                 sdlist.append('.')
             elif self.field[self.pos] in self.atomends:
                 break
-            else: sdlist.append(self.getatom())
-        return ''.join(sdlist)
+            else:
+                sdlist.append(self.getatom())
+        return EMPTYSTRING.join(sdlist)
 
-    def getdelimited(self, beginchar, endchars, allowcomments = 1):
+    def getdelimited(self, beginchar, endchars, allowcomments=True):
         """Parse a header fragment delimited by special characters.
 
         `beginchar' is the start character for the fragment.
@@ -318,80 +349,89 @@ class AddrlistClass:
         `endchars' is a sequence of allowable end-delimiting characters.
         Parsing stops when one of these is encountered.
 
-        If `allowcomments' is non-zero, embedded RFC-822 comments
-        are allowed within the parsed fragment.
+        If `allowcomments' is non-zero, embedded RFC 2822 comments are allowed
+        within the parsed fragment.
         """
         if self.field[self.pos] != beginchar:
             return ''
 
         slist = ['']
-        quote = 0
-        self.pos = self.pos + 1
+        quote = False
+        self.pos += 1
         while self.pos < len(self.field):
-            if quote == 1:
+            if quote:
                 slist.append(self.field[self.pos])
-                quote = 0
+                quote = False
             elif self.field[self.pos] in endchars:
-                self.pos = self.pos + 1
+                self.pos += 1
                 break
             elif allowcomments and self.field[self.pos] == '(':
                 slist.append(self.getcomment())
             elif self.field[self.pos] == '\\':
-                quote = 1
+                quote = True
             else:
                 slist.append(self.field[self.pos])
-            self.pos = self.pos + 1
+            self.pos += 1
 
-        return ''.join(slist)
+        return EMPTYSTRING.join(slist)
 
     def getquote(self):
         """Get a quote-delimited fragment from self's field."""
-        return self.getdelimited('"', '"\r', 0)
+        return self.getdelimited('"', '"\r', False)
 
     def getcomment(self):
         """Get a parenthesis-delimited fragment from self's field."""
-        return self.getdelimited('(', ')\r', 1)
+        return self.getdelimited('(', ')\r', True)
 
     def getdomainliteral(self):
-        """Parse an RFC-822 domain-literal."""
-        return '[%s]' % self.getdelimited('[', ']\r', 0)
+        """Parse an RFC 2822 domain-literal."""
+        return '[%s]' % self.getdelimited('[', ']\r', False)
 
-    def getatom(self):
-        """Parse an RFC-822 atom."""
+    def getatom(self, atomends=None):
+        """Parse an RFC 2822 atom.
+
+        Optional atomends specifies a different set of end token delimiters
+        (the default is to use self.atomends).  This is used e.g. in
+        getphraselist() since phrase endings must not include the `.' (which
+        is legal in phrases)."""
         atomlist = ['']
+        if atomends is None:
+            atomends = self.atomends
 
         while self.pos < len(self.field):
-            if self.field[self.pos] in self.atomends:
+            if self.field[self.pos] in atomends:
                 break
-            else: atomlist.append(self.field[self.pos])
-            self.pos = self.pos + 1
+            else:
+                atomlist.append(self.field[self.pos])
+            self.pos += 1
 
-        return ''.join(atomlist)
+        return EMPTYSTRING.join(atomlist)
 
     def getphraselist(self):
-        """Parse a sequence of RFC-822 phrases.
+        """Parse a sequence of RFC 2822 phrases.
 
-        A phrase is a sequence of words, which are in turn either
-        RFC-822 atoms or quoted-strings.  Phrases are canonicalized
-        by squeezing all runs of continuous whitespace into one space.
+        A phrase is a sequence of words, which are in turn either RFC 2822
+        atoms or quoted-strings.  Phrases are canonicalized by squeezing all
+        runs of continuous whitespace into one space.
         """
         plist = []
 
         while self.pos < len(self.field):
             if self.field[self.pos] in self.LWS:
-                self.pos = self.pos + 1
+                self.pos += 1
             elif self.field[self.pos] == '"':
                 plist.append(self.getquote())
             elif self.field[self.pos] == '(':
                 self.commentlist.append(self.getcomment())
-            elif self.field[self.pos] in self.atomends:
+            elif self.field[self.pos] in self.phraseends:
                 break
-            else: plist.append(self.getatom())
+            else:
+                plist.append(self.getatom(self.phraseends))
 
         return plist
 
 class AddressList(AddrlistClass):
-    """An AddressList encapsulates a list of parsed RFC822 addresses."""
+    """An AddressList encapsulates a list of parsed RFC 2822 addresses."""
     def __init__(self, field):
         AddrlistClass.__init__(self, field)
         if field:
@@ -403,7 +443,7 @@ class AddressList(AddrlistClass):
         return len(self.addresslist)
 
     def __str__(self):
-        return ", ".join(map(dump_address_pair, self.addresslist))
+        return COMMASPACE.join(map(dump_address_pair, self.addresslist))
 
     def __add__(self, other):
         # Set union

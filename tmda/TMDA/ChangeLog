@@ -1,3 +1,9 @@
+2003-01-06  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* AutoResponse.py (AutoResponse.create): Replace input characters
+	in header values which can not be decoded with ``U+FFFD'', which
+	is the official Unicode replacement character.
+
 2002-12-09  Tim Legant  <tim@catseye.net>
 
 	* Pending.py (Queue.__init__): Saved value of dispose as
