@@ -47,29 +47,7 @@ TARGET="Resource Window">(mail/tmda)</a>
 TARGET="Resource Window">(mail/tmda)</a>
 <br>
 
-<br>
-
 </ul>
-</ul>
-
-<u>Old Releases:</u><br>
-<a href="releases/old/" TARGET="Resource Window">
-Past releases</a> are available for download as well.<br><br>
-
-<u>Development Sources:</u><br>
-For those who prefer the bleeding edge.  If you are using non-released code, you should be
-reading the <a href="http://tmda.net/lists/listinfo/tmda-cvs" TARGET="Resource Window">
-tmda-cvs mailing list</a> to stay abreast of changes.<br><br>
-
-<ul>
-<li><a href="http://sourceforge.net/cvs/?group_id=24680" TARGET="Resource Window">CVS Access:</a><br>
-The TMDA development sources can be accessed via anonymous (pserver)
-CVS through module <b>tmda</b>.<br><br>
-
-<li><a href="snapshots/" TARGET="Resource Window">
-Nightly Snapshots:</a><br> Snapshots of the current development sources are checked out from CVS
-and tarballed each morning at 05:00 UTC.
-
 </ul>
 
 <u>rsync access:</u><br>
@@ -78,6 +56,6 @@ and tarballed each morning at 05:00 UTC.
 <li>The TMDA web site is available via anonymous rsync at 
 <em>rsync://tmda.net/tmdaweb/</em><br>
 This includes all the HTML pages as well as the <em>releases/</em> 
-and <em>snapshots/</em> directories.
+directory.
 <br><br>
 </ul>
