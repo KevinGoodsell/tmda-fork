@@ -47,21 +47,6 @@ class MessageError(QueueError):
 
 class Queue:
     """A simple pending queue."""
-    msgs = []
-    cache = None
-    command_recipient = None
-    descending = None
-    dispose = None
-    dispose_def = None
-    older = None
-    summary = None
-    terse = None
-    threshold = None
-    verbose = 1
-    younger = None
-    pretend = None 
-
-    stdout = None
 
     def __init__( self,
                   msgs = [],
