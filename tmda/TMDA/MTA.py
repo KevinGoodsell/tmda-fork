@@ -57,9 +57,6 @@ class MTA:
         msg.deliver()
         self.stop()
 
-    def getvdomainprepend(self, address, vdomainsfile):
-        raise NotImplementedError
-
 
 class Exim(MTA):
     """Exim-specific methods and instance variables."""
@@ -102,42 +99,6 @@ class Qmail(MTA):
             msg = Deliver.Deliver(msg, instruction)
             msg.deliver()
             self.stop()
-
-    def getvdomainprepend(self, address, vdomainsfile):
-        ret_prepend = ''
-        if os.path.exists(vdomainsfile):
-            fp = open(vdomainsfile, 'r')
-            # Parse the virtualdomains control file; see qmail-send(8) for
-            # syntax rules.  All this because qmail doesn't store the original
-            # envelope recipient in the environment.
-            u, d = address.split('@', 1)
-            ousername = u.lower()
-            odomain = d.lower()
-            for line in fp.readlines():
-                vdomain_match = 0
-                line = line.strip().lower()
-                # Comment or blank line?
-                if line == '' or line[0] in '#':
-                    continue
-                vdomain, prepend = line.split(':', 1)
-                # domain:prepend
-                if vdomain == odomain:
-                    vdomain_match = 1
-                # .domain:prepend (wildcard)
-                elif vdomain[:1] == '.' and odomain.find(vdomain) != -1:
-                    vdomain_match = 1
-                # user@domain:prepend
-                else:
-                    try:
-                        if vdomain.split('@', 1)[1] == odomain:
-                            vdomain_match = 1
-                    except IndexError:
-                        pass
-                if vdomain_match:
-                    ret_prepend = prepend
-                    break
-            fp.close()
-        return ret_prepend
 
 
 class Sendmail(MTA):

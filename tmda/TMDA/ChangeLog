@@ -1,3 +1,12 @@
+2003-05-24  Tim Legant  <tim@catseye.net>
+
+	* MTA.py (MTA.getvdomainprepend): Removed function.
+	(Qmail.getvdomainprepend): Moved function to Util.py.
+
+	* Util.py (getvdomainprepend): New function, moved from MTA.py.
+	(add_headers): New function.
+	(purge_headers): New function.
+
 2003-05-22  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Version.py (ALL): Add CODENAME.

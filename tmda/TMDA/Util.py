@@ -128,6 +128,43 @@ def getfileuid(path):
     return statinfo[stat.ST_UID]
 
 
+def getvdomainprepend(address, vdomainsfile):
+    ret_prepend = ''
+    if os.path.exists(vdomainsfile):
+        fp = open(vdomainsfile, 'r')
+        # Parse the virtualdomains control file; see qmail-send(8) for
+        # syntax rules.  All this because qmail doesn't store the original
+        # envelope recipient in the environment.
+        u, d = address.split('@', 1)
+        ousername = u.lower()
+        odomain = d.lower()
+        for line in fp.readlines():
+            vdomain_match = 0
+            line = line.strip().lower()
+            # Comment or blank line?
+            if line == '' or line[0] in '#':
+                continue
+            vdomain, prepend = line.split(':', 1)
+            # domain:prepend
+            if vdomain == odomain:
+                vdomain_match = 1
+            # .domain:prepend (wildcard)
+            elif vdomain[:1] == '.' and odomain.find(vdomain) != -1:
+                vdomain_match = 1
+            # user@domain:prepend
+            else:
+                try:
+                    if vdomain.split('@', 1)[1] == odomain:
+                        vdomain_match = 1
+                except IndexError:
+                    pass
+            if vdomain_match:
+                ret_prepend = prepend
+                break
+        fp.close()
+    return ret_prepend
+
+
 def getvuserhomedir(user, domain, script):
     """Return the home directory of a qmail virtual domain user."""
     cmd = "%s %s %s" % (script, user, domain)
@@ -594,6 +631,33 @@ def rename_headers(msg, old, new):
             if pair[0].lower() == old.lower():
                 index = msg._headers.index(pair)
                 msg._headers[index] = (new, '%s' % pair[1])
+
+
+def add_headers(msg, headers):
+    """Add headers to a Message object.
+
+       msg is an email.Message.Message object.
+
+       headers is a dictionary of headers and values.
+       """
+    if headers:
+        keys = headers.keys()
+        keys.sort()
+        for k in keys:
+            del msg[k]
+            msg[k] = headers[k]
+
+
+def purge_headers(msg, headers):
+    """Purge headers from a Message object.
+
+       msg is an email.Message.Message object.
+
+       headers is a list of headers.
+       """
+    if headers:
+        for h in headers:
+            del msg[h]
 
 
 def build_cdb(filename):
