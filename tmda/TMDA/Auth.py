@@ -26,12 +26,12 @@ import os
 import sys
 import socket
 import base64
+import hmac
 import md5
 import popen2
 import time
 
 # TMDA imports
-import HMAC
 import Version
 import Util
 import Errors
@@ -129,6 +129,13 @@ class Auth(Util.Debugable):
             self.setup_vuser( vlookupscript, vdomainfile )
         elif configdir is not None:
             self.setup_configdir( configdir )
+
+        # check whether we are running a recent enough Python
+        if not Version.PYTHON >= '2.2':
+            msg = 'Python 2.2 or greater is required to run ' + 
+                  self.__program + \
+                  ' -- Visit http://python.org/download/ to upgrade.'
+            self.warning(msg)
 
     def warning(self, msg='', exit=1):
         delimiter = '*' * 70
@@ -358,7 +365,7 @@ class Auth(Util.Debugable):
         password = self.__authdict.get(username.lower(), 0)
         if password == 0:
             return 0
-        newhexdigest = HMAC.HMAC(password, ticket, digestmod).hexdigest()
+        newhexdigest = hmac.HMAC(password, ticket, digestmod).hexdigest()
         return newhexdigest == hexdigest
 
     def supports_cram_md5(self):
