@@ -76,6 +76,8 @@ import os                                      # don't remove
 
 # EXT_FILE = "/full/path/to/ext.txt"
 
+# SACRED_FILE = "/full/path/to/sacred.txt"
+
 # SENDER_FILE = "/full/path/to/sender.txt"
 
 # WHITELIST = "/full/path/to/whitelist.txt"
