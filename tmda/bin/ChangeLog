@@ -1,3 +1,8 @@
+2002-06-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-ofmipd (TMDAProxy.process_message): Only fork the
+	tmda-inject process if it's necessary.
+
 2002-06-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-pending (release): Be more intelligent about removing
