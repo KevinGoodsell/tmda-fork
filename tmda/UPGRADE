@@ -1,5 +1,11 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.38:
+
+* The `X-Confirmed' header is now `X-TMDA-Confirmed'.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.36:
 
 * The `setup' script was renamed `compileall'.

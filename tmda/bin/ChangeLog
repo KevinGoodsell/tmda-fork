@@ -1,3 +1,10 @@
+2001-09-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (inject_pending): Change `X-Confirmed' header to
+	`X-TMDA-Confirmed' to avoid potential clashes with other headers
+	of that name.  Modify the format of the header contents
+	accordingly.
+	
 2001-09-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (verify_confirm_cookie): Compactify string.split
