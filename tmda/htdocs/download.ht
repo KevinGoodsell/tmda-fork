@@ -5,86 +5,96 @@ Title: TMDA Download
 Please make sure you've read the <a href="requirements.html">Requirements</a> page first!
 <br><br>
 
-<!-- <u>Latest Release:</u><br> -->
-<!-- Download the <a href="releases/" TARGET="Resource Window"> -->
-<!-- latest release</a> as a gzipped tarball. -->
-<!-- <br><br> -->
+Releases from the <a href="#branches">stable and unstable branches</a> are available.
+<br>
+<hr>
 
-<!-- <u>Packages:</u><br> -->
-<!-- (<strong>NOTE:</strong> Packages maintained by extraneous parties may not be caught up -->
-<!-- with the latest release)<br> -->
-<!-- <ul> -->
-<!-- <li>Linux RPM: See the <a href="install.html">installation</a> page for how to  -->
-<!-- easily build an RPM directly from the source tarball.<br><br> -->
-
-<!-- <li><a href="http://packages.debian.org/tmda" TARGET="Resource Window"> -->
-<!-- Debian Linux Package</a> <strong>NOTE:</strong> Please use the most -->
-<!-- recent TMDA package available; the <i>unstable</i> package should  -->
-<!-- install and work fine under <i>testing</i> and <i>stable</i>. -->
-<!-- <br><br> -->
-
-<!-- <li>TMDA is part of <a href="http://www.mandrakelinux.com/"  -->
-<!-- TARGET="Resource Window">Mandrake Linux</a> Contribs<br><br> -->
-
-<!-- <li><a href="http://www.gentoo.org/dyn/pkgs/net-mail/tmda.xml" -->
-<!-- TARGET="Resource Window">Gentoo Linux Package</a><br><br> -->
-
-<!-- <li>*BSD ports/packages:<br><br> -->
-<!-- <ul> -->
-
-<!-- <li>FreeBSD -->
-<!-- <a href="http://www.freshports.org/mail/tmda/" -->
-<!-- TARGET="Resource Window">(mail/tmda)</a> -->
-<!-- <br> -->
-
-<!-- <li>NetBSD  -->
-<!-- <a href="ftp://ftp.NetBSD.org/pub/NetBSD/packages/pkgsrc/mail/tmda/README.html" -->
-<!-- TARGET="Resource Window">(mail/tmda)</a> -->
-<!-- <br> -->
-
-<!-- <li>OpenBSD -->
-<!-- <a href="http://www.OpenBSD.org/cgi-bin/cvsweb/ports/mail/tmda/" -->
-<!-- TARGET="Resource Window">(mail/tmda)</a> -->
-<!-- <br> -->
-
-<!-- <br> -->
-
-<!-- </ul> -->
-<!-- </ul> -->
-
-<!-- <u>Old Releases:</u><br> -->
-<!-- <a href="releases/old/" TARGET="Resource Window"> -->
-<!-- Past releases</a> are available for download as well.<br><br> -->
-
-<u>Development Sources:</u><br><br>
-
-The development branch of TMDA is currently available only through CVS,
-and nightly snapshot tarballs made from CVS.  If you are using development
-code you should probably also be reading the
-<a href="http://tmda.net/lists/listinfo/tmda-workers" TARGET="Resource Window">tmda-workers</a> 
-and
-<a href="http://tmda.net/lists/listinfo/tmda-cvs" TARGET="Resource Window">tmda-cvs</a> lists
-to stay abreast of changes.   
-Please note that what you're getting is probably not even a bleeding-edge TMDA, 
-but a severly hemorrhaging one.
+<u>Sources:</u><br>
 
 <ul>
-<li><a href="http://sourceforge.net/cvs/?group_id=24680" TARGET="Resource Window">CVS Access:</a><br>
-The TMDA development sources can be accessed via anonymous (pserver)
-CVS through module <b>tmda</b>.<br><br>
 
-<li><a href="snapshots/" TARGET="Resource Window">
-Nightly Snapshots:</a><br> Snapshots of the current development sources are checked out from CVS
-and tarballed each morning at 05:00 UTC.
+<li><a href="../releases/stable/tmda.tgz">Latest stable release</a> (Source tarball in gzip)<br>
+<li><a href="../releases/unstable/tmda.tgz">Latest unstable release</a> (Source tarball in gzip)<br>
+<li><a href="../releases/unstable/snapshots/tmda.tgz">Nightly unstable snapshot</a> (Source tarball in gzip)<br>
+<li><a href="http://sourceforge.net/cvs/?group_id=24680">CVS repository</a>
 
 </ul>
 
-<u>rsync access:</u><br>
+<u>Packages:</u><br>
+
+<ul>
+
+<li><a href="install.html">Red Hat Linux RPM</a><br>
+
+<li><a href="http://packages.debian.org/tmda" TARGET="Resource Window">Debian GNU/Linux</a><br>
+
+<li><a href="http://www.gentoo.org/dyn/pkgs/net-mail/tmda.xml"
+TARGET="Resource Window">Gentoo Linux</a><br>
+
+<li>FreeBSD:<a href="http://www.freshports.org/mail/tmda/"
+TARGET="Resource Window">mail/tmda</a><br>
+
+<li>NetBSD:<a href="ftp://ftp.NetBSD.org/pub/NetBSD/packages/pkgsrc/mail/tmda/README.html"
+TARGET="Resource Window">mail/tmda</a><br>
+
+<li>OpenBSD:<a href="http://www.OpenBSD.org/cgi-bin/cvsweb/ports/mail/tmda/"
+TARGET="Resource Window">mail/tmda</a><br>
+
+</ul>
+
+<u>rsync:</u><br>
 
 <ul>
 <li>The TMDA web site is available via anonymous rsync at 
 <em>rsync://tmda.net/tmdaweb/</em><br>
 This includes all the HTML pages as well as the <em>releases/</em> 
-and <em>snapshots/</em> directories.
-<br><br>
+directory.
+<br>
 </ul>
+
+<hr>
+<h3><a name="branches">TMDA 'stable' vs. 'unstable'</a></h3>
+
+Because TMDA follows the open source development model, all new
+versions will be released to the public, whether or not they are
+considered ``production quality''.  Two branches are maintained
+simultaneously to balance user preference between stability vs. rapid
+development and new features.
+<br><br>
+
+<u>TMDA stable branch</u>:<br><br>
+
+Stable, well-tested, production quality releases.  The feature set is
+frozen, and only bugfixes are applied.  New point releases are made
+only when enough bugfixes have accumulated to warrant one.
+<br><br>
+
+Stable releases have version numbers in which the second digit is even
+(e.g, 1.0.3).
+<br><br>
+
+[ <a href="../index.html">Stable homepage</a>
+| <a href="../releases/stable">Stable download</a>
+| Stable discussion: <a href="http://wiki.tmda.net/index.cgi/TmdaMailingListsAndNewsgroups">
+tmda-USERS mailing list</a> ]
+
+<br><br>
+
+<u>TMDA unstable branch</u>:<br><br>
+
+Beta-quality releases with a continually evolving and fluctuating code
+base.  This is where all new TMDA features are added and tested.
+Because unstable code is subject to change at any time, it is
+generally not considered ``production quality'', but many users find
+it reliable in their daily use, and a concerted effort is made to
+maintain this during each release.
+<br><br>
+
+Unstable releases have version numbers in which the second digit is
+odd (e.g, 1.1.28).
+<br><br>
+
+[ <a href="index.html">Unstable homepage</a>
+| <a href="../releases/unstable">Unstable download</a>
+| Unstable discussion: <a href="http://wiki.tmda.net/index.cgi/TmdaMailingListsAndNewsgroups">
+tmda-WORKERS mailing list</a> ]
