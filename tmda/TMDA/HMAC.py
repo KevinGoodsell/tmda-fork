@@ -20,60 +20,53 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 """
-HMAC (Keyed-Hashing for Message Authentication) Python module.
+HMAC (Keyed-Hashing for Message Authentication) in Python.
 
-Written by Reuben Sumner <rasumner@iname.com>
-Modified by Jason R. Mastaler <jason@mastaler.com> for use with TMDA.
+Implements the HMAC algorithm for SHA-1 as described by
+RFC 2104 (http://www.faqs.org/rfcs/rfc2104.html).
 
-Implements the HMAC algorithm for either SHA-1 or MD5 as described by
-RFC 2104.
-
-For all the relevant papers and RFCs see:
-<http://www-cse.ucsd.edu/users/mihir/papers/hmac.html>
+Python >= 2.2 includes a more general purpose HMAC module
+(http://www.python.org/doc/current/lib/module-hmac.html).
 """
 
-# For MD5         #  For SHA-1
-####################################
-# import md5      #  import sha
-# _L=16           #  _L=20
-# newh = md5.new  # newh = sha.new
+from array import array
+import sha
 
-import sha # choose md5 or sha, update B,L as necessary
+
+_ipad="\x36"*64
+_opad="\x5C"*64
+
+_itrans = array('B', [0]*256) 
+_otrans = array('B', [0]*256)     
+for i in xrange(256): 
+    _itrans[i] = i ^ 0x36 
+    _otrans[i] = i ^ 0x5c 
+_itrans = _itrans.tostring() 
+_otrans = _otrans.tostring() 
+
 newh = sha.new
 
-_B=64 # byte length of basic compression block (SHA & MD5)
-_L=20 # byte length of digest size (SHA=20, MD5=16)
-
-_ipad="\x36"*_B
-_opad="\x5C"*_B
-
-def _strxor(a,b):
-    return "".join(map(lambda x,y: chr(ord(x) ^ ord(y)),a,b))
-        
 class hmac:
-    "RFC2104 HMAC class"
-    def __init__(self,k,m=None):
-        if isinstance(k,hmac): # for cloning
+    def __init__(self, k, m=None):
+        if isinstance(k, hmac):
             self.inner = k.inner.copy()
             self.outer = k.outer.copy()
         else:
             self.outer = newh()
             self.inner = newh()
-            if len(k) > _B:
+            if len(k) > 64:
                 k=newh(k).digest()
-            k = k + chr(0)*(_B-len(k))
-            self.outer.update(_strxor(k,_opad))
-            self.inner.update(_strxor(k,_ipad))
+            k = k + chr(0)*(64-len(k))
+            self.inner.update((k.translate(_itrans)+_ipad)[:64])
+            self.outer.update((k.translate(_otrans)+_opad)[:64])
             if (m):
                 self.update(m)
-    def update(self,m):
+    def update(self, m):
         self.inner.update(m)
     def digest(self):
         h=self.outer.copy()
         h.update(self.inner.digest())
         return h.digest()
-    def copy(self):
-        return hmac(self)
 
-def new(k,m=None): return hmac(k,m)
-
+def new(k, m=None):
+    return hmac(k, m)
