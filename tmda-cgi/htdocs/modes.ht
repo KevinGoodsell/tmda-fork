@@ -1,0 +1,71 @@
+Title: Modes
+
+<h2>Modes</h2>
+
+<p>One of the biggest hurdles tmda-cgi has to overcome is gaining access to a 
+  user's personal files. Webservers typically run as an unprivileged user such 
+  as nobody, apache, or www. This unprivileged user (intentionally) has very 
+  little access to system files. When the web server launches the CGI code, it 
+  inherits this unprivileged user, so important steps have to be taken gain file 
+  access.</p>
+
+<p>File access may be gained in one of three ways, which we call tmda-cgi's 
+  "modes". Before compiling the code, you must select the mode that is best for 
+  you: system-wide, single-user, and no-su.</p>
+
+<h3>system-wide mode</h3>
+
+<p>In system-wide mode, multiple users can use tmda-cgi to access their TMDA
+  system. The program launches as root and then performs a <tt>seteuid</tt>
+  to run as the requested user once password authentication has been 
+  accomplished.</p>
+  
+<p>This is the best solution for system administrators who wish to set up their 
+  TMDA system for use by multiple users, but it requires a the sysadmin to have 
+  a certain level of trust in the code itself. We believe the latest released 
+  version of tmda-cgi to be free of security holes, but if it turns out we are 
+  wrong, it might be possible for a malicious user to exploit such a security 
+  hole and possibly do great harm.</p>
+
+<p>system-wide mode is <b><i>not</i></b> recommended for sysadmins with real 
+  users who they do not fully trust. Our analysis indicates that if there are 
+  any security holes in tmda-cgi, then they will be most easily exploitable by 
+  users with real user logins.</p>
+
+<h3>single-user mode</h3>
+
+<p>In single-user mode, tmda-cgi is compiled so that only one user can access 
+  tmda-cgi (unless that user happens to be the system's virtual user, see <a 
+  href="virtual.html">Virtual Users</a>). That user will still need to 
+  authenticate their access with a password, but the program runs as the user 
+  who compiled it and therefore cannot access anyone else's personal data.</p>
+
+<p>If multiple users wish to install tmda-cgi in single-user mode (strange, but 
+  not absurd) then each user can use <tt>compile</tt> to create a different 14k 
+  shell that launches the Python code. This method is less convenient than the 
+  system-wide installation (since each user must compile their own copy of 
+  tmda-cgi and then surf a different URL to access the system), but it is the 
+  best solution for:</p>
+
+<ul>
+  <li>users without root access to their server<p></li>
+  <li>users who don't trust any program running as root that does not absolutely 
+    have to run as root<p></li>
+  <li>systems with only virtual e-mail users.</li> 
+</ul>
+
+<p>single-user mode is probably the best combination of safety and simplicity, 
+  unless you are trying to support multiple real users.</p>
+
+<h3>no-su mode</h3>
+
+<p>no-su mode runs the program with no special privileges of any sort. The 
+  downside of such an installation is that to allow the program access to your 
+  personal files (such as pending e-mails) you will have to make some of your 
+  files and directories group or world readable and writable.<p>
+
+<p>no-su mode is the best multi-user solution for the sysadmin who doesn't trust 
+  the tmda-cgi code, but does trust the users with real logins. Real users have 
+  far more access to each other's e-mail files than desired, but the system 
+  itself is substantially safer from any security holes that may exist in the 
+  tmda-cgi code.

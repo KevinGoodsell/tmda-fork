@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="display/styles.css" type="text/css"?>
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Wed Apr 16 12:40:05 2003 -->
+<!-- USING HT2HTML 2.1 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Modes
+
+-->
+
+<head>
+<title>Modes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.1">
+<link rel="STYLESHEET" href="display/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000"
+      onload="Preloader()"
+      link="#0000bb"  vlink="#551a8b"
+      alink="#ff0000">
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="700" height="100%" border="0"
+cellspacing="0" cellpadding="0"><tr><td valign="top"><table class="matte"
+width="100%" height="100%" border="0" cellspacing="0" cellpadding="0"><tr>
+<td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="194" height="135" valign="middle" bgcolor="#7B7CB6" class="corner"><img src="display/corner.gif" width="194" height="135" alt=""></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="top" background="display/top_bg.gif" bgcolor="#7B7CB6" class="banner"><img src="display/title.png" width="341" height="135"
+alt="TMDA (http://tmda.net) CGI Interface"></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="194" background="display/left_bg.gif" bgcolor="#7B7CB6" valign="top" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><a href="index.html"
+onmouseover="document.images.x37.src='display/dyn_buttons/layout1_r1_c1_h.png'"
+onmouseout="document.images.x37.src='display/dyn_buttons/layout1_r1_c1.png'"><img
+src="display/dyn_buttons/layout1_r1_c1.png" name="x37" height="50" width="194" border="0" alt="Overview"></a></td></tr>
+<tr><td><a href="virtual.html"
+onmouseover="document.images.x115.src='display/dyn_buttons/layout1_r2_c1_h.png'"
+onmouseout="document.images.x115.src='display/dyn_buttons/layout1_r2_c1.png'"><img
+src="display/dyn_buttons/layout1_r2_c1.png" name="x115" height="35" width="194" border="0" alt="Virtual Users"></a></td></tr>
+<tr><td><img src="display/dyn_buttons/layout1_r3_c1_h.png"
+height="35" width="194" border="0" alt="Install"></td></tr>
+<tr><td><a href="download.html" onmouseover="document.images.subtopic5.src='display/dyn_buttons/h-subtopic5.png'"
+onmouseout="document.images.subtopic5.src='display/dyn_buttons/subtopic5.png'"><img src="display/dyn_buttons/subtopic5.png" border="0" alt=" - Download" width="194" height="14"
+name="subtopic5"></a></td></tr>
+<tr><td><img src="display/dyn_buttons/h-subtopic6.png" border="0" alt=" - Modes" width="194" height="14"
+name="subtopic6"></td></tr>
+<tr><td><a href="compile.html" onmouseover="document.images.subtopic7.src='display/dyn_buttons/h-subtopic7.png'"
+onmouseout="document.images.subtopic7.src='display/dyn_buttons/subtopic7.png'"><img src="display/dyn_buttons/subtopic7.png" border="0" alt=" - Compilation" width="194" height="14"
+name="subtopic7"></a></td></tr>
+<tr><td><a href="nosu.html" onmouseover="document.images.subtopic8.src='display/dyn_buttons/h-subtopic8.png'"
+onmouseout="document.images.subtopic8.src='display/dyn_buttons/subtopic8.png'"><img src="display/dyn_buttons/subtopic8.png" border="0" alt=" - Centralized no-su" width="194" height="14"
+name="subtopic8"></a></td></tr>
+<tr><td><a href="auth.html"
+onmouseover="document.images.x447.src='display/dyn_buttons/layout1_r4_c1_h.png'"
+onmouseout="document.images.x447.src='display/dyn_buttons/layout1_r4_c1.png'"><img
+src="display/dyn_buttons/layout1_r4_c1.png" name="x447" height="35" width="194" border="0" alt="Passwords"></a></td></tr>
+<tr><td><a href="config.html"
+onmouseover="document.images.x527.src='display/dyn_buttons/layout1_r5_c1_h.png'"
+onmouseout="document.images.x527.src='display/dyn_buttons/layout1_r5_c1.png'"><img
+src="display/dyn_buttons/layout1_r5_c1.png" name="x527" height="35" width="194" border="0" alt="Config."></a></td></tr>
+<tr><td><a href="surprise.html"
+onmouseover="document.images.x607.src='display/dyn_buttons/layout1_r6_c1_h.png'"
+onmouseout="document.images.x607.src='display/dyn_buttons/layout1_r6_c1.png'"><img
+src="display/dyn_buttons/layout1_r6_c1.png" name="x607" height="35" width="194" border="0" alt="Support"></a></td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" class="body"><h2>Modes</h2>
+
+<p>One of the biggest hurdles tmda-cgi has to overcome is gaining access to a 
+  user's personal files. Webservers typically run as an unprivileged user such 
+  as nobody, apache, or www. This unprivileged user (intentionally) has very 
+  little access to system files. When the web server launches the CGI code, it 
+  inherits this unprivileged user, so important steps have to be taken gain file 
+  access.</p>
+
+<p>File access may be gained in one of three ways, which we call tmda-cgi's 
+  "modes". Before compiling the code, you must select the mode that is best for 
+  you: system-wide, single-user, and no-su.</p>
+
+<h3>system-wide mode</h3>
+
+<p>In system-wide mode, multiple users can use tmda-cgi to access their TMDA
+  system. The program launches as root and then performs a <tt>seteuid</tt>
+  to run as the requested user once password authentication has been 
+  accomplished.</p>
+  
+<p>This is the best solution for system administrators who wish to set up their 
+  TMDA system for use by multiple users, but it requires a the sysadmin to have 
+  a certain level of trust in the code itself. We believe the latest released 
+  version of tmda-cgi to be free of security holes, but if it turns out we are 
+  wrong, it might be possible for a malicious user to exploit such a security 
+  hole and possibly do great harm.</p>
+
+<p>system-wide mode is <b><i>not</i></b> recommended for sysadmins with real 
+  users who they do not fully trust. Our analysis indicates that if there are 
+  any security holes in tmda-cgi, then they will be most easily exploitable by 
+  users with real user logins.</p>
+
+<h3>single-user mode</h3>
+
+<p>In single-user mode, tmda-cgi is compiled so that only one user can access 
+  tmda-cgi (unless that user happens to be the system's virtual user, see <a 
+  href="virtual.html">Virtual Users</a>). That user will still need to 
+  authenticate their access with a password, but the program runs as the user 
+  who compiled it and therefore cannot access anyone else's personal data.</p>
+
+<p>If multiple users wish to install tmda-cgi in single-user mode (strange, but 
+  not absurd) then each user can use <tt>compile</tt> to create a different 14k 
+  shell that launches the Python code. This method is less convenient than the 
+  system-wide installation (since each user must compile their own copy of 
+  tmda-cgi and then surf a different URL to access the system), but it is the 
+  best solution for:</p>
+
+<ul>
+  <li>users without root access to their server<p></li>
+  <li>users who don't trust any program running as root that does not absolutely 
+    have to run as root<p></li>
+  <li>systems with only virtual e-mail users.</li> 
+</ul>
+
+<p>single-user mode is probably the best combination of safety and simplicity, 
+  unless you are trying to support multiple real users.</p>
+
+<h3>no-su mode</h3>
+
+<p>no-su mode runs the program with no special privileges of any sort. The 
+  downside of such an installation is that to allow the program access to your 
+  personal files (such as pending e-mails) you will have to make some of your 
+  files and directories group or world readable and writable.<p>
+
+<p>no-su mode is the best multi-user solution for the sysadmin who doesn't trust 
+  the tmda-cgi code, but does trust the users with real logins. Real users have 
+  far more access to each other's e-mail files than desired, but the system 
+  itself is substantially safer from any security holes that may exist in the 
+  tmda-cgi code.
+</td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table></td></tr></table></td></tr></table><!-- end of page table -->
+<script>
+<!--
+function Preloader()
+{
+  var x37 = new Image();
+x37.src = "display/dyn_buttons/layout1_r1_c1_h.png";
+  var x115 = new Image();
+x115.src = "display/dyn_buttons/layout1_r2_c1_h.png";
+var subtopic5 = new Image();
+subtopic5.src = "display/dyn_buttons/h-subtopic5.png";
+var subtopic7 = new Image();
+subtopic7.src = "display/dyn_buttons/h-subtopic7.png";
+var subtopic8 = new Image();
+subtopic8.src = "display/dyn_buttons/h-subtopic8.png";
+  var x447 = new Image();
+x447.src = "display/dyn_buttons/layout1_r4_c1_h.png";
+  var x527 = new Image();
+x527.src = "display/dyn_buttons/layout1_r5_c1_h.png";
+  var x607 = new Image();
+x607.src = "display/dyn_buttons/layout1_r6_c1_h.png";
+}
+//-->
+</script>
+</body></html>

@@ -1,0 +1,60 @@
+Title: Downloads
+
+<h2>Downloads</h2>
+
+<h3>Released versions</h3>
+
+<p>The latest releases of tmda-cgi may be found in the <a 
+  href="releases/">download directory</a>.</p>
+
+<p>Releases are named <tt>tmda-cgi-X.XX.tgz</tt> where X.XX is the release 
+  number. Typically you will want to download the most recent release (the one 
+  with the largest X.XX). I am keeping a couple older releases around during 
+  this period of rapid development, but these will most likely disappear once we 
+  stabilize the code.</p>
+
+<p>Release tgz's should be uncompressed into the directory where you plan to 
+  keep tmda-cgi, typically in a directory parallel to your TMDA installation. In 
+  other words, if you installed TMDA to <tt>/usr/local/src/tmda-Y.YY</tt>, then 
+  I'd recommend you put tmda-cgi at <tt>/usr/local/src/tmda-cgi-X.XX</tt>:</p>
+
+<blockquote>
+  <code>$ cd /usr/local/src<br>
+    $ tar -xzf tmda-cgi-X.XX.tgz</code>
+</blockquote>
+
+<h3>Patches</h3>
+
+<p>Before proceeding with the install, check the <a href="releases/">release</a> 
+  directory for any patches.</p>
+
+<p>Patches are named <tt>patch-X.XX-YYYYMMDD</tt> where X.XX is the tmda-cgi 
+release number and YYYYMMDD is the date we created the patch.</p>
+
+<p><b><i>Make sure you only apply patches with the same revision number as your 
+tmda-cgi release.</i></b></p>
+
+<p>Typically, patches must be applied to files in tmda-cgi's root directory 
+  (/usr/local/src/tmda-cgi-X.XX in the example above), however it is possible 
+  that the patch is for code in another directory or even for a certain version 
+  of TMDA to make it compatible with this tmda-cgi release. <b><i>Always</i></b> 
+  read the comments at the top of a patch file before installing it. The 
+  comments may give you more information about what the patch does, under what 
+  conditions you may need it, and how it should be installed.<p>
+
+<p>Patches are typically installed as such:</p>
+
+<blockquote>
+  <code>$ cd /usr/local/src/tmda-cgi-X.XX<br>
+    $ patch < patch-X.XX-YYYYMMDD</code>
+</blockquote>
+
+<h3>CVS</h3>
+
+<p>If you like bleeding edge software, you can pull down the CVS copies either 
+  from <a href="http://sourceforge.net/cvs/?group_id=24680">the SourceForge 
+  Repository</a> or <a href="snapshots/">the nighly snapshots</a>.</p>
+
+<p>If you are using non-released code, you should be reading the
+  <a href="http://tmda.net/lists/listinfo/tmda-cvs">tmda-cvs mailing list</a>
+  to stay abreast of changes.</p>
