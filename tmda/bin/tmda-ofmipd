@@ -58,9 +58,13 @@ OPTIONS:
     -R proto[://host[:port]]
     --remoteauth proto[://host[:port]]
         Host to connect to to check username and password.
-        - proto can be one of imap, imaps (ssl) or pop3
+        - proto can be one of the following:
+	  `imap' (IMAP4 server)
+	  'imaps' (IMAP4 server over SSL)
+	  `pop3' (POP3 server)
+	  `apop' (POP3 server with APOP authentication)
         - host defaults to localhost
-        - port defaults to 143 (imap), 993 (imaps) or 110 (pop3)
+        - port defaults to 143 (imap), 993 (imaps) or 110 (pop3/apop)
         Example: -R imaps://myimapserver.net
 
     -A <program>
@@ -127,6 +131,7 @@ remoteauth = { 'proto': None,
                }
 defaultauthports = { 'imap':  143,
                      'imaps': 993,
+                     'apop': 110,
                      'pop3':  110,
                      #                     'pop3s': 995,
                      }
@@ -213,7 +218,7 @@ for opt, arg in opts:
         remoteauth['proto'] = authproto
         remoteauth['port'] = defaultauthports[authproto]
         if authproto not in defaultauthports.keys():
-            raise ValueError, 'Protocole not supported: ' + authproto + \
+            raise ValueError, 'Protocol not supported: ' + authproto + \
                     '\nPlease pick one of ' + repr(defaultauthports.keys())
         if arg:
             try:
@@ -356,21 +361,7 @@ def run_remoteauth(username, password):
             return 1
         except:
             print >> DEBUGSTREAM, "imap connection to %s@%s failed" % \
-                    (username, remoteauth['host'])
-            return 0
-    elif remoteauth['proto'] == 'pop3':
-        import poplib
-        if remoteauth['port']:
-            port = int(remoteauth['port'])
-        M = poplib.POP3(remoteauth['host'], port)
-        try:
-            M.user(username)
-            M.pass_(password)
-            M.quit()
-            return 1
-        except:
-            print >> DEBUGSTREAM, "pop3 connection to %s@%s failed" % \
-                    (username, remoteauth['host'])
+                  (username, remoteauth['host'])
             return 0
     elif remoteauth['proto'] == 'imaps':
         import imaplib
@@ -383,7 +374,26 @@ def run_remoteauth(username, password):
             return 1
         except:
             print >> DEBUGSTREAM, "imaps connection to %s@%s failed" % \
-                    (username, remoteauth['host'])
+                  (username, remoteauth['host'])
+            return 0
+    elif remoteauth['proto'] in ('pop3', 'apop'):
+        import poplib
+        if remoteauth['port']:
+            port = int(remoteauth['port'])
+        M = poplib.POP3(remoteauth['host'], port)
+        try:
+            if remoteauth['proto'] == 'pop3':
+                M.user(username)
+                M.pass_(password)
+                M.quit()
+                return 1
+            else:
+                M.apop(username, password)
+                M.quit()
+                return 1
+        except:
+            print >> DEBUGSTREAM, "pop3 connection to %s@%s failed" % \
+                  (username, remoteauth['host'])
             return 0
     # proto not implemented
     print >> DEBUGSTREAM, "Error: protocole %s not implemented" % \

@@ -1,3 +1,8 @@
+2002-09-03  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-ofmipd (run_remoteauth): Add support for APOP
+	authentication over pop3.
+
 2002-09-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-ofmipd: Add -R option for authentication against a pop3,
