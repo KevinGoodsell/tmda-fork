@@ -1,5 +1,4 @@
 Title: TMDA Configuration Variables
-Links: overview-links.h usage-links.h config-links.h support-links.h
 
 <h3>TMDA Configuration Variables</h3>
 
