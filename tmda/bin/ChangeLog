@@ -1,3 +1,10 @@
+2004-03-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (verify_confirm_cookie): Don't distinguish between
+	released, confirmed, and "still pending" messages.  Just unlink
+	the message after it's released or confirmed.  Messages that
+	remain in the pending queue are "still pending".
+
 2004-02-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (do_default_action): last parameter now takes an

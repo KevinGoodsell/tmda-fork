@@ -62,158 +62,152 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#CONFIG_EXEC">CONFIG_EXEC</a></td>
-<td><a href="#CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY">CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY</a></td>
-</tr>
-<tr>
-<td><a href="#CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY">CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY</a></td>
 <td><a href="#CONFIRM_ACCEPT_CC">CONFIRM_ACCEPT_CC</a></td>
 </tr>
 <tr>
-<td><a href="#CONFIRM_ACCEPT_INITIAL_NOTIFY">CONFIRM_ACCEPT_INITIAL_NOTIFY</a></td>
 <td><a href="#CONFIRM_ACCEPT_NOTIFY">CONFIRM_ACCEPT_NOTIFY</a></td>
-</tr>
-<tr>
 <td><a href="#CONFIRM_ADDRESS">CONFIRM_ADDRESS</a></td>
+</tr>
+<tr>
 <td><a href="#CONFIRM_APPEND">CONFIRM_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#CONFIRM_CC">CONFIRM_CC</a></td>
+</tr>
+<tr>
 <td><a href="#CONFIRM_MAX_MESSAGE_SIZE">CONFIRM_MAX_MESSAGE_SIZE</a></td>
-</tr>
-<tr>
 <td><a href="#CRYPT_KEY_FILE">CRYPT_KEY_FILE</a></td>
+</tr>
+<tr>
 <td><a href="#DATADIR">DATADIR</a></td>
-</tr>
-<tr>
 <td><a href="#DATED_TEMPLATE_VARS">DATED_TEMPLATE_VARS</a></td>
+</tr>
+<tr>
 <td><a href="#DATED_TIMEOUT">DATED_TIMEOUT</a></td>
-</tr>
-<tr>
 <td><a href="#DB_BARE_APPEND">DB_BARE_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#DB_CONFIRM_APPEND">DB_CONFIRM_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#DB_CONNECTION">DB_CONNECTION</a></td>
+</tr>
+<tr>
 <td><a href="#DELIVERY">DELIVERY</a></td>
-</tr>
-<tr>
 <td><a href="#FILTER_BOUNCE_CC">FILTER_BOUNCE_CC</a></td>
+</tr>
+<tr>
 <td><a href="#FILTER_DROP_CC">FILTER_DROP_CC</a></td>
-</tr>
-<tr>
 <td><a href="#FILTER_INCOMING">FILTER_INCOMING</a></td>
+</tr>
+<tr>
 <td><a href="#FILTER_OUTGOING">FILTER_OUTGOING</a></td>
-</tr>
-<tr>
 <td><a href="#FINGERPRINT">FINGERPRINT</a></td>
+</tr>
+<tr>
 <td><a href="#FULLNAME">FULLNAME</a></td>
-</tr>
-<tr>
 <td><a href="#HMAC_BYTES">HMAC_BYTES</a></td>
+</tr>
+<tr>
 <td><a href="#HOSTNAME">HOSTNAME</a></td>
-</tr>
-<tr>
 <td><a href="#LOGFILE_DEBUG">LOGFILE_DEBUG</a></td>
+</tr>
+<tr>
 <td><a href="#LOGFILE_INCOMING">LOGFILE_INCOMING</a></td>
-</tr>
-<tr>
 <td><a href="#LOGFILE_OUTGOING">LOGFILE_OUTGOING</a></td>
+</tr>
+<tr>
 <td><a href="#MAIL_FOLLOWUP_TO">MAIL_FOLLOWUP_TO</a></td>
-</tr>
-<tr>
 <td><a href="#MAIL_TRANSFER_AGENT">MAIL_TRANSFER_AGENT</a></td>
+</tr>
+<tr>
 <td><a href="#MAIL_TRANSPORT">MAIL_TRANSPORT</a></td>
-</tr>
-<tr>
 <td><a href="#MAX_AUTORESPONSES_PER_DAY">MAX_AUTORESPONSES_PER_DAY</a></td>
+</tr>
+<tr>
 <td><a href="#MESSAGE_FROM_STYLE">MESSAGE_FROM_STYLE</a></td>
-</tr>
-<tr>
 <td><a href="#MESSAGE_TAG_HEADER_STYLE">MESSAGE_TAG_HEADER_STYLE</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_BLACKLIST_APPEND">PENDING_BLACKLIST_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_CACHE">PENDING_CACHE</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_CACHE_LEN">PENDING_CACHE_LEN</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_CLEANUP_ODDS">PENDING_CLEANUP_ODDS</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_DELETE_APPEND">PENDING_DELETE_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_DIR">PENDING_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_LIFETIME">PENDING_LIFETIME</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_RELEASE_APPEND">PENDING_RELEASE_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_WHITELIST_APPEND">PENDING_WHITELIST_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_WHITELIST_RELEASE">PENDING_WHITELIST_RELEASE</a></td>
+</tr>
+<tr>
 <td><a href="#PRIMARY_ADDRESS_MATCH">PRIMARY_ADDRESS_MATCH</a></td>
-</tr>
-<tr>
 <td><a href="#PURGED_HEADERS_CLIENT">PURGED_HEADERS_CLIENT</a></td>
+</tr>
+<tr>
 <td><a href="#PURGED_HEADERS_DELIVERY">PURGED_HEADERS_DELIVERY</a></td>
-</tr>
-<tr>
 <td><a href="#PURGED_HEADERS_SERVER">PURGED_HEADERS_SERVER</a></td>
+</tr>
+<tr>
 <td><a href="#RECIPIENT_DELIMITER">RECIPIENT_DELIMITER</a></td>
-</tr>
-<tr>
 <td><a href="#RECIPIENT_HEADER">RECIPIENT_HEADER</a></td>
+</tr>
+<tr>
 <td><a href="#RESPONSE_DIR">RESPONSE_DIR</a></td>
-</tr>
-<tr>
 <td><a href="#SENDER_TEMPLATE_VARS">SENDER_TEMPLATE_VARS</a></td>
+</tr>
+<tr>
 <td><a href="#SENDMAIL_PROGRAM">SENDMAIL_PROGRAM</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPAUTH_PASSWORD">SMTPAUTH_PASSWORD</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPAUTH_USERNAME">SMTPAUTH_USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPHOST">SMTPHOST</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPSSL">SMTPSSL</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL_CERTFILE">SMTPSSL_CERTFILE</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPSSL_KEYFILE">SMTPSSL_KEYFILE</a></td>
-</tr>
-<tr>
 <td><a href="#SMTP_MAX_SESSIONS_PER_CONNECTION">SMTP_MAX_SESSIONS_PER_CONNECTION</a></td>
+</tr>
+<tr>
 <td><a href="#SUMMARY_HEADERS">SUMMARY_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_CONFIRM">TAGS_CONFIRM</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_DATED">TAGS_DATED</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_KEYWORD">TAGS_KEYWORD</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_SENDER">TAGS_SENDER</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_DIR_MATCH_RECIPIENT">TEMPLATE_DIR_MATCH_RECIPIENT</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_EMAIL_HEADERS">TEMPLATE_EMAIL_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_ENCODED_HEADERS">TEMPLATE_ENCODED_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TMDAINJECT">TMDAINJECT</a></td>
+</tr>
+<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
-<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 <td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
+</tr>
 </table>
 
 <dl>
@@ -435,7 +429,10 @@ Default is bounce
 <a name="ACTION_MISSING_PENDING"><h4>ACTION_MISSING_PENDING</h4></a>
 <dd>
 Specifies how confirmation messages should be disposed of if the
-message to be confirmed can not be located.
+message to be confirmed can not be located on disk.  This might be
+the case if you hand-released the message before the sender tried to
+confirm it by e-mail, or if the sender sent multiple confirmation
+replies.
 Possible values include:
 <br><br>
 "<code>bounce</code>"
@@ -621,26 +618,6 @@ Python statements using execfile().
 <br><br>
 Default is True (use execfile())
 <dt><hr>
-<a name="CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY"><h4>CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY</h4></a>
-<dd>
-Set this variable to False if you do not want to generate already
-confirmed notices.  These are the notices returned to senders when
-they successfully confirm a message which has already been
-confirmed.  Their content is based on the
-confirm_accept_already_confirmed.txt template.
-<br><br>
-Default is True (turned on)
-<dt><hr>
-<a name="CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY"><h4>CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY</h4></a>
-<dd>
-Set this variable to False if you do not want to generate already
-released notices.  These are the notices returned to senders when
-they successfully confirm a message which has already been released
-by tmda-pending or tmda-cgi.  Their content is based on the
-confirm_accept_already_released.txt template.
-<br><br>
-Default is True (turned on)
-<dt><hr>
 <a name="CONFIRM_ACCEPT_CC"><h4>CONFIRM_ACCEPT_CC</h4></a>
 <dd>
 An optional e-mail address which will be sent a copy of the
@@ -652,20 +629,12 @@ Example:
 <br><br>
 No default.
 <dt><hr>
-<a name="CONFIRM_ACCEPT_INITIAL_NOTIFY"><h4>CONFIRM_ACCEPT_INITIAL_NOTIFY</h4></a>
-<dd>
-Set this variable to False if you do not want to generate initial
-confirmation acceptance notices.  These are the notices returned to
-senders when they initially confirm their original message causing
-it to be delivered.  Their content is based on the
-confirm_accept_initial.txt template.
-<br><br>
-Default is True (turned on)
-<dt><hr>
 <a name="CONFIRM_ACCEPT_NOTIFY"><h4>CONFIRM_ACCEPT_NOTIFY</h4></a>
 <dd>
-Set this variable to False if you do not want to generate any confirmation
-acceptance notices at all.
+Set this variable to False if you do not want to generate any
+confirmation acceptance notices.  These are the notices returned to
+senders when they confirm their original message by e-mail.  Their
+content is based on the confirm_accept.txt template.
 <br><br>
 Default is True (turned on)
 <dt><hr>

@@ -7,15 +7,20 @@ If you are upgrading from a release of TMDA < 1.1.3:
 
 * The template system has been reorganized.  In particular, the
   BOUNCE_TEXT_* and CONFIRM_ACCEPT_TEXT_* configuration variables have
-  been removed.  bounce.txt and confirm_accept.txt have also been
-  removed.  In their place are multiple bounce_*.txt and
-  confirm_accept_*.txt templates which are described in the TMDA
-  template HOWTO (howto-template.html).
+  been removed.  The bounce.txt template has also been removed in
+  favor of multiple bounce_*.txt templates which are described in the
+  TMDA template HOWTO (howto-template.html).
 
-  If you have not customized bounce.txt or confirm_accept.txt and
-  have not set BOUNCE_TEXT_* and CONFIRM_ACCEPT_TEXT_* variables in
-  your configuration, you can ignore this.  Otherwise, please read
-  howto-template.html for how to migrate your custom templates.
+  If you have not customized bounce.txt and have not set BOUNCE_TEXT_*
+  and CONFIRM_ACCEPT_TEXT_* variables in your configuration, you can
+  ignore this.  Otherwise, please read howto-template.html for how to
+  migrate your custom templates.
+
+* Messages are now simply deleted from your pending queue once they
+  are confirmed or released rather than being renamed with a '3,C' or
+  '3,R' suffix.  If you are in the habit of hand-releasing pending
+  messages that might be subsequently confirmed by e-mail, see the
+  ACTION_MISSING_PENDING variable.
 
 ======================================================================
 

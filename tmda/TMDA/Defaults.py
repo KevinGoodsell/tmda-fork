@@ -82,7 +82,7 @@ if _tmdarc:
     TMDARC = _tmdarc
 elif not vars().has_key('TMDARC'):
     TMDARC = os.path.expanduser('~/.tmda/config')
-    
+
 # CONFIG_EXEC
 # If set to False in GLOBAL_TMDARC, the user's TMDARC file will be parsed
 # using ConfigParser, otherwise it will evaluated as a sequence of
@@ -420,46 +420,15 @@ if not vars().has_key('CONFIRM_CC'):
     CONFIRM_CC = None
 
 # CONFIRM_ACCEPT_NOTIFY
-# Set this variable to False if you do not want to generate any confirmation
-# acceptance notices at all.
+# Set this variable to False if you do not want to generate any
+# confirmation acceptance notices.  These are the notices returned to
+# senders when they confirm their original message by e-mail.  Their
+# content is based on the confirm_accept.txt template.
 #
 # Default is True (turned on)
 if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
     CONFIRM_ACCEPT_NOTIFY = True
 
-# CONFIRM_ACCEPT_INITIAL_NOTIFY
-# Set this variable to False if you do not want to generate initial
-# confirmation acceptance notices.  These are the notices returned to
-# senders when they initially confirm their original message causing
-# it to be delivered.  Their content is based on the
-# confirm_accept_initial.txt template.
-#
-# Default is True (turned on)
-if not vars().has_key('CONFIRM_ACCEPT_INITIAL_NOTIFY'):
-    CONFIRM_ACCEPT_INITIAL_NOTIFY = True
-
-# CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY
-# Set this variable to False if you do not want to generate already
-# confirmed notices.  These are the notices returned to senders when
-# they successfully confirm a message which has already been
-# confirmed.  Their content is based on the
-# confirm_accept_already_confirmed.txt template.
-#
-# Default is True (turned on)
-if not vars().has_key('CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY'):
-    CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY = True
-
-# CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY
-# Set this variable to False if you do not want to generate already
-# released notices.  These are the notices returned to senders when
-# they successfully confirm a message which has already been released
-# by tmda-pending or tmda-cgi.  Their content is based on the
-# confirm_accept_already_released.txt template.
-#
-# Default is True (turned on)
-if not vars().has_key('CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY'):
-    CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY = True
-    
 # CONFIRM_ACCEPT_CC
 # An optional e-mail address which will be sent a copy of the
 # confirmation acceptance messages people send you.
@@ -777,7 +746,10 @@ if not vars().has_key('ACTION_INVALID_CONFIRMATION'):
 
 # ACTION_MISSING_PENDING
 # Specifies how confirmation messages should be disposed of if the
-# message to be confirmed can not be located.
+# message to be confirmed can not be located on disk.  This might be
+# the case if you hand-released the message before the sender tried to
+# confirm it by e-mail, or if the sender sent multiple confirmation
+# replies.
 # Possible values include:
 #
 # "bounce"

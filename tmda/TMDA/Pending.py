@@ -117,29 +117,13 @@ class Queue:
             return
 
     def listIds(self):
-        """Return the full list of message identifiers (both pending
-        and delivered)."""
+        """Return the full list of message identifiers."""
         return self.msgs
 
-    def listConfirmedIds(self):
-        """Return the list of messages delivered by confirmation."""
-        return filter(lambda x: x.endswith(',C'), self.listIds())
-
-    def listReleasedIds(self):
-        """Return the list of messages delivered by release."""
-        return filter(lambda x: x.endswith(',R'), self.listIds())
-
-    def listDeliveredIds(self):
-        """Return the list of delivered (i.e, confirmed or released)
-        messages."""
-        return self.listConfirmedIds() + self.listReleasedIds()
-
     def listPendingIds(self):
-        """Return the list of still pending (i.e, not yet confirmed or
-        released) messages."""
-        return [i for i in self.listIds()
-                if not (i.endswith(',C') or i.endswith(',R'))]
-        
+        """Return the list of still pending messages."""
+        return self.listIds()
+                       
     
     ## Cache related functions (-C option)
     def _loadCache(self):
@@ -219,17 +203,6 @@ class Queue:
                 # in case of concurrent cleanups
                 pass
 
-    def checkDelivered(self, M):
-        """Check if the message has already been delivered."""
-        if M.wasDelivered():
-            if self.dispose == 'delete':
-                # pretend it isn't delivered if we want to delete
-                # old message, else delivered messages will never
-                # be removed from disk
-                return 0
-            return 1
-        return 0
-
     def disposeMessage(self, M):
         """Dispose the message."""
         if self.dispose is None or self.dispose == 'pass':
@@ -282,8 +255,6 @@ class Queue:
                 self.cPrint(obj)
                 continue
 
-            if self.checkDelivered(M):
-                continue
             if not self.checkTreshold(M.msgid):
                 continue
             if not self._addCache(M.msgid):
@@ -350,11 +321,6 @@ class InteractiveQueue(Queue):
         else:
             self.dispose_def = self.dispose
         return self
-
-    def checkDelivered(self, M):
-        if M.wasDelivered():
-            return 1
-        return 0
 
     def processMessage(self, M):
         if self.terse:
@@ -561,11 +527,4 @@ class Message:
         if mailto and self.getConfirmAddress():
             str+= '<mailto:%s>' % self.confirm_accept_address
         return str
-
-    def wasDelivered(self):
-        """Check if the message has already been delivered, and how."""
-        if self.msgid.endswith(',R') or self.msgid.endswith(',C'):
-            return self.msgid[-1]
-        else:
-            return None
 

@@ -507,34 +507,24 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                           'bounce_invalid_confirmation.txt')
     confirmed_filename = '%s.%s.msg' % (confirm_timestamp, confirm_pid)
     confirmed_filepath = os.path.join(pendingdir, confirmed_filename)
+    # pre-confirmation
     if confirm_action == 'accept':
-        # Determine whether this message has already been delivered, and
-        # if by manual release (:3,R), or confirmation (:3,C).
-        if os.path.exists(confirmed_filepath + ':3,R'):
-            delivery_status = 'r'
-        elif os.path.exists(confirmed_filepath + ':3,C'):
-            delivery_status = 'c'
-        else:
-            delivery_status = None
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
                                                   confirm_pid, confirm_action)
-        # Accept the message only if the HMAC can be verified.
+        # Accept the message only if the HMAC can be verified and the
+        # message exists in the pending queue.
         if not (confirm_hmac == new_confirm_hmac):
             do_default_action(Defaults.ACTION_INVALID_CONFIRMATION.lower(),
                               'action_invalid_confirmation',
                               'bounce_invalid_confirmation.txt')
-        # If the message isn't recorded as delivered and doesn't exist.
-        if not delivery_status and not (os.path.exists(confirmed_filepath)):
+        elif not (os.path.exists(confirmed_filepath)):
             do_default_action(Defaults.ACTION_MISSING_PENDING.lower(),
                               'action_missing_pending',
                               'bounce_missing_pending.txt')
-        logit("CONFIRM", "accept " + confirmed_filename)
-        # Optionally carbon copy the confirmation to another address.
-        if Defaults.CONFIRM_ACCEPT_CC:
-            send_cc(Defaults.CONFIRM_ACCEPT_CC)
-        if os.path.exists(confirmed_filepath):
+        else:
             msg = Util.msg_from_file(open(confirmed_filepath, 'r'))
-            # Optionally append the sender's address to a file.
+            logit("CONFIRM", "accept " + confirmed_filename)
+            # Optionally append the sender's address to a file and/or DB.
             if Defaults.CONFIRM_APPEND or Defaults.DB_CONFIRM_APPEND:
                 confirm_append_addr = Util.confirm_append_address(
                     parseaddr(msg.get('x-primary-address'))[1],
@@ -542,42 +532,29 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                 if not confirm_append_addr:
                     raise IOError, \
                           confirmed_filepath + ' has no Return-Path header!'
-            if Defaults.CONFIRM_APPEND:
-                if Util.append_to_file(confirm_append_addr,
-                                       Defaults.CONFIRM_APPEND) != 0:
-                    logit('CONFIRM_APPEND', Defaults.CONFIRM_APPEND)
-            if Defaults.DB_CONFIRM_APPEND and Defaults.DB_CONNECTION:
-                _username = Defaults.USERNAME.lower()
-                _hostname = Defaults.HOSTNAME.lower()
-                _recipient = _username + '@' + _hostname
-                params = FilterParser.create_sql_params(
-                    recipient=_recipient, username=_username,
-                    hostname=_hostname, sender=confirm_append_addr)
-                Util.db_insert(Defaults.DB_CONNECTION,
-                               Defaults.DB_CONFIRM_APPEND,
-                               params)
-                logit('DB_CONFIRM_APPEND', '')
-        # Optionally generate a confirmation acceptance notice.
-        if Defaults.CONFIRM_ACCEPT_NOTIFY:
-            if (delivery_status == 'c' and
-                Defaults.CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY):
-                bouncegen('accept', template='confirm_accept_already_confirmed.txt')
-            elif (delivery_status == 'r' and
-                  Defaults.CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY):
-                bouncegen('accept', template='confirm_accept_already_released.txt')
-            elif ((not delivery_status) and
-                  (Defaults.CONFIRM_ACCEPT_INITIAL_NOTIFY)):
-                bouncegen('accept', template='confirm_accept_initial.txt')
-        # Just stop if the message has already been delivered.  Also,
-        # change the release mark from 'R' to 'C' to note that this
-        # message has had a confirmation attempt.
-        if delivery_status:
-            if delivery_status == 'r':
-                os.rename(confirmed_filepath + ':3,R',
-                          confirmed_filepath + ':3,C')
-            mta.stop()
-        # Release the message for delivery if we get this far.
-        release_pending(confirm_timestamp, confirm_pid, msg)
+                if Defaults.CONFIRM_APPEND:
+                    if Util.append_to_file(confirm_append_addr,
+                                           Defaults.CONFIRM_APPEND) != 0:
+                        logit('CONFIRM_APPEND', Defaults.CONFIRM_APPEND)
+                if Defaults.DB_CONFIRM_APPEND and Defaults.DB_CONNECTION:
+                    _username = Defaults.USERNAME.lower()
+                    _hostname = Defaults.HOSTNAME.lower()
+                    _recipient = _username + '@' + _hostname
+                    params = FilterParser.create_sql_params(
+                        recipient=_recipient, username=_username,
+                        hostname=_hostname, sender=confirm_append_addr)
+                    Util.db_insert(Defaults.DB_CONNECTION,
+                                   Defaults.DB_CONFIRM_APPEND,
+                                   params)
+                    logit('DB_CONFIRM_APPEND', '')
+            # Optionally carbon copy the confirmation to another address.
+            if Defaults.CONFIRM_ACCEPT_CC:
+                send_cc(Defaults.CONFIRM_ACCEPT_CC)
+            # Optionally generate a confirmation acceptance notice.
+            if Defaults.CONFIRM_ACCEPT_NOTIFY:
+                bouncegen('accept', template='confirm_accept.txt')
+            # Release the message for delivery if we get this far.
+            release_pending(confirm_timestamp, confirm_pid, msg)
     # post-confirmation
     elif confirm_action == 'done':
         # Regenerate the HMAC for comparison.
@@ -585,25 +562,22 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                                                   confirm_pid, 'done')
         # Accept the message only if the HMAC can be verified.
         if not (confirm_hmac == new_confirm_hmac):
-            logit("CONFIRM", "bad_confirm_done_cookie")
             # Ask for confirmation instead of bouncing or dropping the
             # message in case the sender inadvertently had an
             # X-TMDA-Confirm-Done field in this message, such as when
             # redirecting a previously confirmed message.
+            logit("CONFIRM", "bad_confirm_done_cookie")
             bouncegen('request')
         else:
-            # Update the delivery status flag and deliver the message.
-            if msgin.has_key('x-tmda-confirmed'):
-                status_flag = ':3,C'
-            elif msgin.has_key('x-tmda-released'):
-                status_flag = ':3,R'
-            if os.path.exists(confirmed_filepath):
-                os.rename(confirmed_filepath, confirmed_filepath + status_flag)
             logit("OK", "good_confirm_done_cookie")
+            try:
+                os.unlink(confirmed_filepath)
+            except OSError:
+                pass
             # Remove X-TMDA-Confirm-Done: since it's only used
             # internally.  This won't work when delivering '_qok_',
             # since another program (qmail-local) is doing the actual
-            # writing of the message.
+            # writing of the message but we try anyway.
             del msgin['x-tmda-confirm-done']
             mta.deliver(msgin)
 

@@ -10,4 +10,6 @@ failed:
 
 <%(recipient_address)s>:
 
-Your original message could not be located, please resend.
+Your original message could not be located.  This may be because the
+recipient has already delivered your message by hand.  If in doubt,
+you might want to resend your message.

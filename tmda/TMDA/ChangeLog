@@ -1,5 +1,19 @@
 2004-03-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
+	* Pending.py (Queue.listDeliveredIds): Removed.
+	(Queue.listConfirmedIds): Ditto.
+	(Queue.listReleasedIds): Ditto.
+	(Queue.checkDelivered): Ditto.
+	(Message.wasDelivered): Ditto.
+	
+2004-03-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Defaults.py: Removed CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY,
+	CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY
+	CONFIRM_ACCEPT_INITIAL_NOTIFY.  Restored CONFIRM_ACCEPT_NOTIFY.
+
+2004-03-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
 	* Defaults.py (TMDARC): Allow TMDARC to be specified by
 	GLOBAL_TMDARC if $TMDARC is not set.
 
