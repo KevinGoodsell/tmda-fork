@@ -114,9 +114,10 @@ Use tmda-ofmipd's `-A' flag to specify the program and arguments.  The help outp
 contains such an example.
 <br><br>
 
-<li>Against a pop3, imap and imaps server.
+<li>Against a remote resource such as POP3, IMAP, or LDAP server.
 Use tmda-ofmipd's `-R' flag to specify the protocol, and optionally
-the hostname and port of the server.  See the help output for example usage.
+the hostname and port of the server.  See the help output for supported
+protocols and example usage.
 
 </ol>
 <hr>

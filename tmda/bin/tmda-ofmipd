@@ -56,16 +56,21 @@ OPTIONS:
 	domain name for the local host).
 
     -R proto[://host[:port]]
-    --remoteauth proto[://host[:port]]
+    --remoteauth proto[://host[:port]][/dn]
         Host to connect to to check username and password.
         - proto can be one of the following:
 	  `imap' (IMAP4 server)
 	  'imaps' (IMAP4 server over SSL)
 	  `pop3' (POP3 server)
 	  `apop' (POP3 server with APOP authentication)
+	  `ldap' (LDAP server)
         - host defaults to localhost
-        - port defaults to 143 (imap), 993 (imaps) or 110 (pop3/apop)
-        Example: -R imaps://myimapserver.net
+        - port defaults to 143 (imap), 993 (imaps), 110 (pop3/apop), 389 (ldap)
+        - dn is mandatory for ldap and should contain a `%%s' identifying
+          the username
+        Examples: -R imaps://myimapserver.net
+                  -R pop3://mypopserver.net:2110
+                  -R ldap://host.com/cn=%%s,dc=host,dc=com
 
     -A <program>
     --authprog <program>
@@ -127,12 +132,14 @@ authprog = None
 remoteauth = { 'proto': None,
                'host':  'localhost',
                'port':  None,
+               'dn':  '',
                'enable': 0,
                }
 defaultauthports = { 'imap':  143,
                      'imaps': 993,
                      'apop': 110,
                      'pop3':  110,
+                     'ldap':  389,
                      #                     'pop3s': 995,
                      }
 connections = 20
@@ -222,6 +229,11 @@ for opt, arg in opts:
                     '\nPlease pick one of ' + repr(defaultauthports.keys())
         if arg:
             try:
+                arg, dn = arg.split('/', 1)
+                remoteauth['dn'] = dn
+            except ValueError:
+                dn = ''
+            try:
                 authhost, authport = arg.split(':', 1)
             except ValueError:
                 authhost = arg
@@ -230,8 +242,9 @@ for opt, arg in opts:
                 remoteauth['host'] = authhost
             if authport:
                 remoteauth['port'] = authport
-        print >> DEBUGSTREAM, "auth method: %s://%s:%s" % \
-              (remoteauth['proto'], remoteauth['host'], remoteauth['port'])
+        print >> DEBUGSTREAM, "auth method: %s://%s:%s/%s" % \
+              (remoteauth['proto'], remoteauth['host'],
+               remoteauth['port'], remoteauth['dn'])
         remoteauth['enable'] = 1
     elif opt in ('-A', '--authprog'):
 	authprog = arg
@@ -258,44 +271,6 @@ NEWLINE = '\n'
 EMPTYSTRING = ''
 COMMASPACE = ', '
 
-
-# Utility functions
-def pipecmd(command, *strings):
-    popen2._cleanup()
-    cmd = popen2.Popen3(command, 1, bufsize=-1)
-    cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
-    if strings:
-        # Write to the tochild file object.
-        for s in strings:
-            cmdin.write(s)
-        cmdin.flush()
-        cmdin.close()
-    # Read from the childerr object; command will block until exit.
-    err = cmderr.read().strip()
-    cmderr.close()
-    # Read from the fromchild object.
-    out = cmdout.read().strip()
-    cmdout.close()
-    # Get exit status from the wait() member function.
-    return cmd.wait()
-
-
-def run_authprog(username, password):
-    """authprog should return 0 for auth ok, and a positive integer in
-    case of a problem."""
-    print >> DEBUGSTREAM, "Trying authprog method"
-    return pipecmd('%s' % authprog, '%s\0%s\0' % (username, password))
-
-
-def quote_rcpts(rcpttos):
-    """Each address should be properly quoted to prevent malicious
-    users from executing code by passing args to tmda-inject."""
-    rcpttos_quoted = []
-    for rcptto in rcpttos:
-        rcpttos_quoted.append("'%s'" %
-                              rcptto.replace
-                              ("\\", "\\\\").replace("'", "'\\\\\\''"))
-    return rcpttos_quoted
 
 if remoteauth['proto'] == 'imaps':
     vmaj, vmin = sys.version_info[:2]
@@ -344,11 +319,68 @@ if remoteauth['proto'] == 'imaps':
     else:
         IMAP4_SSL = imaplib.IMAP4_SSL
 
+if remoteauth['proto'] == 'ldap':
+    try:
+        import ldap
+    except ImportError:
+        raise ImportError, \
+              'python-ldap (http://python-ldap.sf.net/) required.'
+    if remoteauth['dn'] == '':
+        print >> DEBUGSTREAM, "Error: Missing ldap dn\n"
+        raise ValueError
+    try:
+        remoteauth['dn'].index('%s')
+    except:
+        print >> DEBUGSTREAM, "Error: Invalid ldap dn\n"
+        raise ValueError
+
+
+# Utility functions
+def pipecmd(command, *strings):
+    popen2._cleanup()
+    cmd = popen2.Popen3(command, 1, bufsize=-1)
+    cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
+    if strings:
+        # Write to the tochild file object.
+        for s in strings:
+            cmdin.write(s)
+        cmdin.flush()
+        cmdin.close()
+    # Read from the childerr object; command will block until exit.
+    err = cmderr.read().strip()
+    cmderr.close()
+    # Read from the fromchild object.
+    out = cmdout.read().strip()
+    cmdout.close()
+    # Get exit status from the wait() member function.
+    return cmd.wait()
+
+
+def run_authprog(username, password):
+    """authprog should return 0 for auth ok, and a positive integer in
+    case of a problem."""
+    print >> DEBUGSTREAM, "Trying authprog method"
+    return pipecmd('%s' % authprog, '%s\0%s\0' % (username, password))
+
+
+def quote_rcpts(rcpttos):
+    """Each address should be properly quoted to prevent malicious
+    users from executing code by passing args to tmda-inject."""
+    rcpttos_quoted = []
+    for rcptto in rcpttos:
+        rcpttos_quoted.append("'%s'" %
+                              rcptto.replace
+                              ("\\", "\\\\").replace("'", "'\\\\\\''"))
+    return rcpttos_quoted
+
 
 def run_remoteauth(username, password):
-    print >> DEBUGSTREAM, "trying %s connection to %s@%s:%s" % \
-            (remoteauth['proto'], username, remoteauth['host'],
-             remoteauth['port'])
+    """Authenticate username/password combination against a remote
+    resource.  Return 1 upon successful authentication, and 0
+    otherwise."""
+    print >> DEBUGSTREAM, "trying %s authentication for %s@%s:%s" % \
+          (remoteauth['proto'], username, remoteauth['host'],
+           remoteauth['port'])
     port = defaultauthports[remoteauth['proto']]
     if remoteauth['proto'] == 'imap':
         import imaplib
@@ -360,7 +392,7 @@ def run_remoteauth(username, password):
             M.logout()
             return 1
         except:
-            print >> DEBUGSTREAM, "imap connection to %s@%s failed" % \
+            print >> DEBUGSTREAM, "imap authentication for %s@%s failed" % \
                   (username, remoteauth['host'])
             return 0
     elif remoteauth['proto'] == 'imaps':
@@ -373,7 +405,7 @@ def run_remoteauth(username, password):
             M.logout()
             return 1
         except:
-            print >> DEBUGSTREAM, "imaps connection to %s@%s failed" % \
+            print >> DEBUGSTREAM, "imaps authentication for %s@%s failed" % \
                   (username, remoteauth['host'])
             return 0
     elif remoteauth['proto'] in ('pop3', 'apop'):
@@ -392,11 +424,25 @@ def run_remoteauth(username, password):
                 M.quit()
                 return 1
         except:
-            print >> DEBUGSTREAM, "pop3 connection to %s@%s failed" % \
+            print >> DEBUGSTREAM, "%s authentication for %s@%s failed" % \
+                  (remoteauth['proto'], username, remoteauth['host'])
+            return 0
+    elif remoteauth['proto'] == 'ldap':
+        import ldap
+        if remoteauth['port']:
+            port = int(remoteauth['port'])
+        try:
+            M = ldap.initialize("ldap://%s:%s" % (remoteauth['host'],
+                                                  remoteauth['port']))
+            M.simple_bind_s(remoteauth['dn'] % username, password)
+            M.unbind_s()
+            return 1
+        except:
+            print >> DEBUGSTREAM, "ldap authentication for %s@%s failed" % \
                   (username, remoteauth['host'])
             return 0
     # proto not implemented
-    print >> DEBUGSTREAM, "Error: protocole %s not implemented" % \
+    print >> DEBUGSTREAM, "Error: protocol %s not implemented" % \
             remoteauth['proto']
     return 0
 
