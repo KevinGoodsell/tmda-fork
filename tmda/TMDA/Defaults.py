@@ -23,15 +23,11 @@ PYTHON_VERSION = string.split(sys.version)[0]
 DELIVERY_AGENT = 'TMDA ' + 'v' + TMDA_VERSION + '/Python ' + PYTHON_VERSION \
                  + ' (' + sys.platform + ')'
 
-# qmail exit codes: everything except 0, 99 and 100 are soft errors.
-ERR_OK = 0          # Success; look at the next .qmail file instruction.
-ERR_INTERNAL = 93   # This program has a bug!  How did that happen?
-ERR_CONFIG = 94     # Something wrong with the config-file; defer delivery.
-ERR_REMOTE = 95     # Remote user error.
-ERR_IO = 96         # Problem with open, read, write, or close; defer delivery.
-ERR_STOP = 99       # Success, but don't look further in the .qmail file.
-ERR_HARD = 100      # Hard error; bounce message back to sender.
-ERR_SOFT = 111      # Soft error; defer delivery.
+# General exit status codes which should be understood by all MTAs.
+# Defined so we can raise exit codes within TMDA modules without
+# having to create an MTA instance.
+EX_OK = 0                               
+EX_TEMPFAIL = 75
 
 # If the file /etc/tmdarc exists, read it before ~/.tmdarc.
 # Make site-wide configuration changes to this file.
@@ -50,7 +46,7 @@ if not TMDARC:TMDARC = os.path.expanduser("~/.tmdarc")
 # Read-in the user's configuration file.
 if not os.path.exists(TMDARC):
     print "Can't open configuration file:",TMDARC
-    sys.exit(ERR_CONFIG)
+    sys.exit(EX_TEMPFAIL)
 execfile(TMDARC)
 
 # Check for proper file permissions before proceeding.
@@ -68,7 +64,7 @@ if ALLOW_MODE_640 and mode in (400, 600, 640):
     pass
 elif mode not in (400, 600):
     print TMDARC,"must be permission mode 400 or 600!"
-    sys.exit(ERR_CONFIG)
+    sys.exit(EX_TEMPFAIL)
 else:
     pass
 
@@ -86,6 +82,38 @@ else:
 if not vars().has_key('DATADIR'):
     DATADIR = os.path.expanduser("~/.tmda/")
 
+# MAIL_TRANSFER_AGENT
+# Defines which mail transfer agent (MTA) software you are running.
+# Possible choices are "postfix" or "qmail"
+# Default is qmail
+if not vars().has_key('MAIL_TRANSFER_AGENT'):
+    MAIL_TRANSFER_AGENT = "qmail"
+
+# RECIPIENT_DELIMITER
+# A single character which specifies the separator between user names
+# and address extensions (e.g, user-ext).
+# The default under qmail is `-', while the default for Sendmail and
+# friends is likely `+'.  Postfix has a config variable named
+# `recipient_delimiter' that defines this character.
+if not vars().has_key('RECIPIENT_DELIMITER'):
+    RECIPIENT_DELIMITER = "-"
+
+# LOCAL_DELIVERY_AGENT
+# The full path to the program used to deliver a sucessful message to
+# your mailbox.  Only necessary if you are NOT running qmail!
+# Tested LDAs include maildrop and procmail.
+# e.g, LOCAL_DELIVERY_AGENT = "/usr/bin/procmail"
+# No default
+if not vars().has_key('LOCAL_DELIVERY_AGENT'):
+    LOCAL_DELIVERY_AGENT = None
+if MAIL_TRANSFER_AGENT != 'qmail':
+    if not LOCAL_DELIVERY_AGENT:
+        print "Not running qmail: you must define LOCAL_DELIVERY_AGENT"
+        sys.exit(EX_TEMPFAIL)
+    elif not os.path.exists(LOCAL_DELIVERY_AGENT):
+        print "Invalid LOCAL_DELIVERY_AGENT path:",LOCAL_DELIVERY_AGENT
+        sys.exit(EX_TEMPFAIL)
+    
 # SENDMAIL
 # The path to the sendmail program, or sendmail compatibility
 # interface.  Defaults to one of the two standard locations, but you
@@ -97,20 +125,10 @@ if not vars().has_key('SENDMAIL'):
         SENDMAIL = "/usr/lib/sendmail"
     else:
         print "Can't find your sendmail program!"
-        sys.exit(ERR_CONFIG)
-else:
-    if not os.path.exists(SENDMAIL):
-        print "invalid sendmail program path:",SENDMAIL
-        sys.exit(ERR_CONFIG)
-
-# RECIPIENT_DELIMITER
-# A single character which specifies the separator between user names
-# and address extensions (e.g, user-ext).
-# The default under qmail is `-', while the default for Sendmail and
-# friends is likely `+'.  Postfix has a config variable named
-# `recipient_delimiter' that defines this character.
-if not vars().has_key('RECIPIENT_DELIMITER'):
-    RECIPIENT_DELIMITER = "-"
+        sys.exit(EX_TEMPFAIL)
+elif not os.path.exists(SENDMAIL):
+    print "Invalid SENDMAIL path:",SENDMAIL
+    sys.exit(EX_TEMPFAIL)
 
 # USEVIRTUALDOMAINS
 # Set this variable to 0 if want to turn off TMDA's virtualdomains
@@ -223,7 +241,7 @@ if not vars().has_key('COOKIE_TYPE'):
 # No default.
 if not vars().has_key('CRYPT_KEY'):
     print "Encryption key not found!"
-    sys.exit(ERR_CONFIG)
+    sys.exit(EX_TEMPFAIL)
 else:
     # Convert key from hex back into raw binary.
     # Hex has only 4 bits of entropy per byte as opposed to 8.
@@ -256,7 +274,7 @@ if not vars().has_key('INJECT'):
      INJECT = "/var/qmail/bin/qmail-inject"
 if not os.path.exists(INJECT):
     print "Injection mechanism not found:",INJECT
-    sys.exit(ERR_CONFIG)
+    sys.exit(EX_TEMPFAIL)
 
 # INJECT_FLAGS
 # inject_flags defaults to `f' (see qmail-inject(8) for flag descriptions)

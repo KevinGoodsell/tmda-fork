@@ -66,7 +66,7 @@ def seconds(timeout):
     if not match:
         print "Invalid timeout value:", timeout
         import Defaults
-        sys.exit(Defaults.ERR_CONFIG)
+        sys.exit(Defaults.EX_TEMPFAIL)
     (num, unit) = match.groups()
     if unit == 'Y':                     # years --> seconds
         seconds = int(num) * 60 * 60 * 24 * 365
@@ -205,7 +205,7 @@ def substring_match(substrings, *addrs):
     except IOError, error_msg:
         import Defaults
         print error_msg
-        sys.exit(Defaults.ERR_IO)
+        sys.exit(Defaults.EX_TEMPFAIL)
 
 
 def maketext(templatefile, vardict):
@@ -226,7 +226,7 @@ def maketext(templatefile, vardict):
         return text
     except KeyError, error_msg:
         print error_msg,'is not a valid template variable'
-        sys.exit(Defaults.ERR_CONFIG)
+        sys.exit(Defaults.EX_TEMPFAIL)
 
 
 def writefile(contents,fullpathname):
@@ -234,7 +234,7 @@ def writefile(contents,fullpathname):
     if os.path.exists(fullpathname):
         import Defaults
         print fullpathname,"already exists"
-        sys.exit(Defaults.ERR_IO)
+        sys.exit(Defaults.EX_TEMPFAIL)
     else:
         try:
             file = open(fullpathname,'w')
@@ -243,7 +243,7 @@ def writefile(contents,fullpathname):
         except IOError, error_msg:
             import Defaults
             print error_msg
-            sys.exit(Defaults.ERR_IO)
+            sys.exit(Defaults.EX_TEMPFAIL)
 
 
 def append_to_file(str,fullpathname):
@@ -265,4 +265,4 @@ def append_to_file(str,fullpathname):
     except IOError, error_msg:
         import Defaults
         print error_msg
-        sys.exit(Defaults.ERR_IO)
+        sys.exit(Defaults.EX_TEMPFAIL)
