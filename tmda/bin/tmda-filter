@@ -229,7 +229,7 @@ def bounce_dated():
           os.path.exists(Defaults.BOUNCE_DATED_TEMPLATE)):
         bounce_message = Util.maketext(Defaults.BOUNCE_DATED_TEMPLATE,vars())
     else:
-        # must be installed from the RPM, so look in ../share/tmda/
+        # must be installed from a package, so look in ../share/tmda/
         dt = sys.prefix + '/share/tmda/bounce_dated.txt'
         bounce_message = Util.maketext(dt,vars())
 
@@ -254,7 +254,7 @@ def bounce_sender(sender_address,sender_address_cookie):
           os.path.exists(Defaults.BOUNCE_SENDER_TEMPLATE)):
         bounce_message = Util.maketext(Defaults.BOUNCE_SENDER_TEMPLATE,vars())
     else:
-        # must be installed from the RPM, so look in ../share/tmda/
+        # must be installed from a package, so look in ../share/tmda/
         st = sys.prefix + '/share/tmda/bounce_sender.txt'
         bounce_message = Util.maketext(st,vars())
             
