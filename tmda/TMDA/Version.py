@@ -19,10 +19,9 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-""" Various versioning information."""
+"""Various versioning information."""
 
 
-import os
 import sys
 
 
@@ -32,18 +31,13 @@ TMDA = "0.52+"
 # Python version
 PYTHON = sys.version.split()[0]
 
+# Platform identifier
 try:
-    # System information (sysname, nodename, release, version, machine)
-    # e.g, ('OpenBSD', 'server2', '3.0', 'PE2550_UP#0', 'i386')
-    UNAME = os.uname()
-    ARCH = UNAME[4].replace(' ', '_').replace('/', '_').lower()
-    PLATFORM = ARCH + '-' + sys.platform
-except AttributeError:
-    # Fall back to using just sys.platform for PLATFORM if uname isn't
-    # available on this host.
-    UNAME = ARCH = None
+    from distutils.util import get_platform
+    PLATFORM = get_platform()
+except ImportError:
     PLATFORM = sys.platform
-    
+
 # Summary of all the version identifiers
-# e.g, TMDA/0.52 (Python 2.2.1 on i386-openbsd3)
+# e.g, TMDA/0.52 (Python 2.2.1 on osf1-V5.1-alpha)
 ALL = "TMDA/%s (Python %s on %s)" % (TMDA, PYTHON, PLATFORM)
