@@ -20,6 +20,7 @@ Where:
 
 import getopt
 import os
+import popen2
 import rfc822
 import string
 import sys
@@ -56,9 +57,13 @@ def inject_message(address,message_headers,message_body):
     """Hand the message off to qmail-inject."""
     # See qmail-inject(8) for descriptions of these variables.
     os.environ['QMAILSUSER'] = os.environ['QMAILUSER']
-    inject = Defaults.INJECT + ' ' + address # "qmail-inject recipient"
-    pipeline = os.popen(inject, 'w')
+    # popen2 avoids /bin/sh if you pass it a list.
+    inject = []
+    inject.append(Defaults.INJECT)
+    inject.append(address)
+    pipeline = popen2.popen2(inject)[1]
     pipeline.write(message_headers)
+    pipeline.write('\n')
     pipeline.write(message_body)
     pipeline.close()
 
