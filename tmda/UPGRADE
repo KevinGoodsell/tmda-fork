@@ -1,0 +1,20 @@
+Starting with version 0.10, TMDA's crypto-cookie generation and
+verification scheme switched to using HMACs instead of block cipher
+encryption, which invalidated all previous tagged addresses.  For the
+motivations behind this, see `CRYPTO'.
+
+If you are upgrading from a release of TMDA < 0.10:
+
+* The amkCrypto package is no longer necessary as HMAC uses Python's
+  built-in `sha' module for hashing.
+
+* You need to generate a new CRYPT_KEY by running bin/tmda-keygen and
+  replace your current key in ~/.tmdarc.
+
+* You can remove BLOCK_CIPHER, CRYPT_IV, and HASH_FUNCTION from your
+  ~/.tmdarc as they are no longer used.
+
+* Again, the new 'dated' and 'sender' addresses are not compatible
+  with those generated prior to v0.10, so re-issue addresses as
+  necessary with bin/tmda-dated-address and bin/tmda-sender-address.
+
