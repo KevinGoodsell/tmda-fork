@@ -26,10 +26,10 @@ import sys
 
 
 # TMDA version
-TMDA = "0.76"
+TMDA = "0.76+"
 
 # TMDA version codename
-CODENAME = "Middleground"
+CODENAME = "Count Turf"
 
 # Python version
 PYTHON = sys.version.split()[0]
