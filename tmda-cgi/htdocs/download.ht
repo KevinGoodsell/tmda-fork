@@ -23,7 +23,7 @@ Title: Downloads
     $ tar -xzf tmda-cgi-X.XX.tgz</code>
 </blockquote>
 
-<h3>Patches</h3>
+<h3><a name="Patches"></a>Patches</h3>
 
 <p>Before proceeding with the install, check the <a href="releases/">release</a> 
   directory for any patches.</p>

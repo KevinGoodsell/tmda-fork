@@ -2,16 +2,16 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Apr 16 16:32:46 2003 -->
+<!-- Wed Apr 16 16:42:36 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
-Title: Surprises & Gotcha's
+Title: Contact
 
 -->
 
 <head>
-<title>Surprises & Gotcha's</title>
+<title>Contact</title>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="HT2HTML/2.1">
 <link rel="STYLESHEET" href="display/styles.css" type="text/css">
@@ -61,51 +61,40 @@ onmouseout="document.images.x355.src='display/dyn_buttons/layout1_r5_c1.png'"><i
 src="display/dyn_buttons/layout1_r5_c1.png" name="x355" height="35" width="194" border="0" alt="Config."></a></td></tr>
 <tr><td><img src="display/dyn_buttons/layout1_r6_c1_h.png"
 height="35" width="194" border="0" alt="Support"></td></tr>
-<tr><td><img src="display/dyn_buttons/h-subtopic11.png" border="0" alt=" - Surprises & Gotchas" width="194" height="14"
-name="subtopic11"></td></tr>
-<tr><td><a href="contact.html" onmouseover="document.images.subtopic12.src='display/dyn_buttons/h-subtopic12.png'"
-onmouseout="document.images.subtopic12.src='display/dyn_buttons/subtopic12.png'"><img src="display/dyn_buttons/subtopic12.png" border="0" alt=" - Contact" width="194" height="14"
-name="subtopic12"></a></td></tr>
+<tr><td><a href="surprise.html" onmouseover="document.images.subtopic11.src='display/dyn_buttons/h-subtopic11.png'"
+onmouseout="document.images.subtopic11.src='display/dyn_buttons/subtopic11.png'"><img src="display/dyn_buttons/subtopic11.png" border="0" alt=" - Surprises & Gotchas" width="194" height="14"
+name="subtopic11"></a></td></tr>
+<tr><td><img src="display/dyn_buttons/h-subtopic12.png" border="0" alt=" - Contact" width="194" height="14"
+name="subtopic12"></td></tr>
 </table><!-- end of sidebar table -->
 
 </td>
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
-<td valign="top" class="body"><h2>Surprises &amp; Gotcha's</h2>
-<p>This section of the documentation is reserved for functionality and quirks
-  that, although not erroneous, may not be what you expect. Check this list for
-  help if you experience problems with tmda-cgi.</p>
-<ol>
-  <li>tmda-cgi's whitelist feature does not update the list pointed to by
-    configuration variable
-    <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a></tt><tt>.</tt>
-    <p>tmda-cgi uses configuration variable
-      <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
-      instead of
-      <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a>.</tt>
-      To use the whitelist feature, you must set
-      <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
-      to a list that is handled by your incoming filter.<p></li>
-  <li>TMDA requires Python version 2.1 but some flavors of Linux (such as <a
-    href="http://redhat.com">RedHat</a>) come with two different versions of
-    Python installed, one older and one newer.
-    <p>If tmda-cgi tries to run using the wrong version of Python, then you
-      must specify the correct version at compile time. Instead of typing:
-    <blockquote>
-	  <pre>$ ./compile &lt;options&gt;</pre>
-	</blockquote>
-    <p>Type:</p>
-	<blockquote>
-	  <pre>$ /usr/bin/python2 compile &lt;options&gt;</pre>
-	</blockquote>
-    <p>(Assuming that your Python 2.1+ can be found at
-      <tt>/usr/bin/python2</tt>.) The compiler will save the correct version of
-      the Python interpreter and use it when tmda-cgi is run.</p>
-	</li>
-  <li>
-    <p>URL confirmation does not work for virtual users.</p>
-    <p>We hope to add support for this soon.</p>
-</ol>
+<td valign="top" class="body"><h2>Contact</h2>
+
+<p>If you're having difficulty with tmda-cgi, the first place to look is the <a 
+  href="releases/">download directory</a>. Check to make sure you have the 
+  latest version of tmda-cgi and that you've applied any <a 
+  href="download.html#Patches">patches</a> that may be listed.<p>
+
+<p>If your problem persists, check the <a 
+  href="http://mla.libertine.org/tmda-users">tmda-user mailing list 
+  archives</a>. Someone else may have experienced this problem and already 
+  posted a solution.</p>
+
+<p>If you can't find any relevant postings, try <a 
+  href="http://tmda.net/lists/listinfo/tmda-users">posting to the list 
+  yourself</a>. Those of us supporting tmda-cgi prefer to handle questions this 
+  way.</p>
+
+<p>If you still can't get the help you need, you might try e-mailing us 
+  directly:</p>
+
+<blockquote>
+  <p><a href="mailto:gre7g@wolfhome.com">Gre7g Luterman</a><p>
+  <p><a href="mailto:i.am@jimramsay.com">Jim Ramsay</a><p>
+</blockquote>
 </td>
 <!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
@@ -124,8 +113,8 @@ x195.src = "display/dyn_buttons/layout1_r3_c1_h.png";
 x275.src = "display/dyn_buttons/layout1_r4_c1_h.png";
   var x355 = new Image();
 x355.src = "display/dyn_buttons/layout1_r5_c1_h.png";
-var subtopic12 = new Image();
-subtopic12.src = "display/dyn_buttons/h-subtopic12.png";
+var subtopic11 = new Image();
+subtopic11.src = "display/dyn_buttons/h-subtopic11.png";
 }
 //-->
 </script>
