@@ -57,7 +57,7 @@ def escape(text):
     return text
 
 def looks_like_term(text):
-    if re.match(r'^\w+$', text):
+    if re.match(r'^[A-Z][A-Z0-9_]+$', text):
         return 1
     return 0
 
