@@ -329,7 +329,7 @@ def verify_confirm_cookie(confirm_cookie):
 
 def verify_dated_cookie(dated_cookie):
     """Verify a dated cookie."""
-    # Save some time if the dated_cookie is bogus.
+    # Save some time if the cookie is bogus.
     dated_cookie_split = string.split(dated_cookie,'.')
     if len(dated_cookie_split) != 2:
         bouncegen('request')
@@ -352,6 +352,23 @@ def verify_sender_cookie(sender_address,sender_cookie):
     # Accept the message only if the HMAC can be verified.
     if (sender_cookie == sender_address_cookie):
         logit("OK good_sender_cookie", time.time())
+        mta.deliver(message)
+    else:
+        bouncegen('request')
+
+
+def verify_keyword_cookie(keyword_cookie):
+    """Verify a keyword cookie."""
+    # Save some time if the cookie is bogus.
+    parts = string.split(keyword_cookie, '.')
+    if len(parts) != 2:
+        bouncegen('request')
+    keyword = parts[0]
+    mac = parts[1]
+    newmac = Cookie.make_keywordmac(keyword)
+    # Accept the message only if the HMAC can be verified.
+    if mac == newmac:
+        logit("OK good_keyword_cookie \"" + keyword + "\"", time.time())
         mta.deliver(message)
     else:
         bouncegen('request')
@@ -456,8 +473,10 @@ def main():
         try:
             cookie_type = ext_split[-2]
         except IndexError:
-            cookie_type = ext_split[-1]
-            cookie_value = None
+            cookie_type = None
+        if cookie_type not in ('confirm','dated','sender'):
+            cookie_type = 'keyword'
+            cookie_value = ext
     else:
         cookie_type = None
         cookie_value = None
@@ -519,6 +538,9 @@ def main():
     if cookie_type == 'sender' and cookie_value:
         sender_address = globals().get('envelope_sender')
         verify_sender_cookie(sender_address,cookie_value)
+    # Keyword tag?
+    if cookie_type == 'keyword' and cookie_value:
+        verify_keyword_cookie(cookie_value)
     # If the message gets this far (i.e, was not sent to a tagged
     # address and it didn't match any list files), then we bounce it
     # for confirmation.

@@ -81,3 +81,24 @@ def make_sender_address(address, sender):
     sender_address = username + Defaults.RECIPIENT_DELIMITER + 'sender' + \
                      Defaults.RECIPIENT_DELIMITER + sender_cookie + '@' + hostname
     return sender_address
+
+
+def make_keywordmac(keyword):
+    """Expects a keyword as a string, returns an HMAC in hex."""
+    keywordmac = HMAC.new(Defaults.CRYPT_KEY, keyword).digest()[:Defaults.HMAC_BYTES]
+    return Util.hexlify(keywordmac)
+
+
+def make_keyword_cookie(keyword):
+    """Return a keyword-style cookie (keyword + HMAC)."""
+    keywordmac = make_keywordmac(keyword)
+    return keyword + '.' + keywordmac
+
+
+def make_keyword_address(address, keyword):
+    """Return a full keyword-style e-mail address."""
+    keyword_cookie = make_keyword_cookie(keyword)
+    (username, hostname) = string.split(address,'@')
+    keyword_address = username + Defaults.RECIPIENT_DELIMITER + \
+                     keyword_cookie + '@' + hostname
+    return keyword_address

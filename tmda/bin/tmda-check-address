@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Check a tagged (dated or sender style) e-mail address.
+"""Check a tagged (dated, keyword or sender style) e-mail address.
 
 Usage:  %(program)s [-c <file>] [-h] address [senderaddr]
 
@@ -28,6 +28,14 @@ import sys
 import string
 import time
 
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Defaults
+from TMDA import Cookie
+
 
 program = sys.argv[0]
 localtime = None
@@ -51,14 +59,6 @@ for opt, arg in opts:
         os.environ['TMDARC'] = arg
     elif opt in ('-l', '--localtime'):
         localtime = 1
-
-
-try:
-    import paths
-except ImportError:
-    pass
-    
-from TMDA import Cookie
 
 
 def valid_dated_cookie(cookie):
@@ -87,6 +87,17 @@ def valid_sender_cookie(cookie, sender_address):
     return cookie == sender_address_cookie
 
 
+def valid_keyword_cookie(cookie):
+    """Check a keyword cookie"""
+    parts = string.split(cookie, '.')
+    if len(parts) != 2:
+        None
+    keyword = parts[0]
+    mac = parts[1]
+    newmac = Cookie.keywordmac(keyword)
+    return mac == newmac
+
+
 def main():
 
     # Address to check is required
@@ -97,16 +108,20 @@ def main():
 
     # Get cookie part of address
     local_part = string.split(address,'@')[0]
-    address_split = string.split(local_part,'-')
+    address_split = string.split(local_part, Defaults.RECIPIENT_DELIMITER, 1)
+    if len(address_split) <= 1:
+        print 'STATUS: Not a tagged address.'
+        sys.exit()
+    address_split = string.split(address_split[1],
+                                 Defaults.RECIPIENT_DELIMITER)
     cookie = address_split[-1]
-
-    # Get address tag style (dated, sender, etc.)
+    
+    # Get address tag style
     try:
 	ext = address_split[-2]
     except IndexError:
-	print 'ERROR: Not a tagged address.'
-	sys.exit()
-    
+        ext = 'keyword'
+
     if ext == 'dated':
 	expires = valid_dated_cookie(cookie)
 	if not expires:
@@ -139,6 +154,12 @@ def main():
 	else:
 	    print 'STATUS: INVALID COOKIE'
 
+    elif ext == 'keyword':
+        if valid_keyword_cookie(cookie):
+            print 'STATUS: VAILD'
+        else:
+            print 'STATUS: INVALID COOKIE'
+        
     else:
 	print 'ERROR: Not a tagged address.'
     

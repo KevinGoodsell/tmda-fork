@@ -1,3 +1,18 @@
+2001-10-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (verify_keyword_cookie): New function.
+
+	(main): If cookie_type is neither of 'confirm', 'dated', or
+	'sender', we assume it's a 'keyword' cookie with a cookie_value
+	that's the same as ext.
+
+	(main): Verify the cookie if cookie_type is 'keyword'.
+	
+	* tmda-check-address: Add support for verifying keyword addresses.
+	
+	* tmda-keyword-address: New program to generate a tagged
+	(keyword-style) e-mail address from the command-line.
+
 2001-10-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (send_bounce): For good measure, wrap the popen2
