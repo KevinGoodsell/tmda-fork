@@ -68,6 +68,8 @@ def getfullname():
                os.environ.get('MAILNAME')
     if not fullname:
         fullname = pwd.getpwuid(os.getuid())[4]
+        if fullname:
+            fullname = fullname.split(',')[0]
     if not fullname:
         fullname = 'Jane Doe'
     return fullname
