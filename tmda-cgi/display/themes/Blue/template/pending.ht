@@ -57,10 +57,18 @@ Title: Pending E-mail
                    width="20" height="15" alt="Blacklist">
                 </td>
               <!-- /var -->
-                <th width="150">Sender</th>
-                <th width="250">Subject</th>
-                <th width="80">Date</th>
-                <th width="50">Size</th>
+                <th width="150" align="left" style="padding-left: 20px">
+                  Sender
+                </th>
+                <th width="250" align="left" style="padding-left: 20px">
+                  Subject
+                </th>
+                <th width="80" align="left" style="padding-left: 20px">
+                  Date
+                </th>
+                <th width="50" align="right" style="padding-right: 10px">
+                  Size
+                </th>
               </tr>
 <!-- var: Row -->
       <tr>
@@ -80,11 +88,11 @@ Title: Pending E-mail
         <td><input type="radio" name="%(RadioName)s" value="black"></td>
        <!-- /var -->
         <td style="padding-left: 8px">%(Sender)s</td>
-        <td>
+        <td style="padding-left: 8px">
           <a href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s">%(Subject)s</a>
         </td>
-        <td nowrap>%(Date)s</td>
-        <td>%(Size)s</td>
+        <td nowrap style="padding-left: 8px">%(Date)s</td>
+        <td align="right" style="padding-right: 5px">%(Size)s</td>
       </tr>
 <!-- /var -->
 <!-- var: InProcessRow -->
