@@ -6,3 +6,8 @@ Links: overview-links.h usage-links.h config-links.h support-links.h
 Read the <a href="config-server.html">Server Configuration</a>
 section, and then optionally 
 <a href="config-client.html">Client Configuration</a>.
+<br><br>
+
+If you are upgrading from an earlier release of TMDA, make sure to
+consult the <strong>UPGRADE</strong> file that came with your TMDA
+distribution.
