@@ -10,7 +10,8 @@ tmda-inject
 	- Possibly support regular expression matching for the special
 	case addresses in addition to just matching specific
 	addresses.
-
+	- X-TMDA: bare timeout (to override Defaults.TIMEOUT)
+		
 tmda-filter
 	- Support reading from DBM/GDBM style databases in addition to
 	textfiles.
