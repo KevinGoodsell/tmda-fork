@@ -24,10 +24,10 @@
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.10B+"
+tmda_cgi = "0.11B"
 
 # tmda-cgi version codename
-Codename = "Neon"
+Codename = "Sodium"
 
 # TMDA version required
 TMDAReqVer = "0.77"
