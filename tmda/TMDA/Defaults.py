@@ -385,12 +385,18 @@ if not vars().has_key('HMAC_BYTES'):
 # Defaults to the fully qualified domain name of the localhost.
 if not vars().has_key('HOSTNAME'):
     HOSTNAME = Util.gethostname()
+    
+# LOGFILE_DEBUG
+# Filename which uncaught exceptions should be written to.
+# No default.
+if not vars().has_key('LOGFILE_DEBUG'):
+    LOGFILE_DEBUG = None
 
 # LOGFILE_INCOMING
 # Filename which delivery summaries should be written to.
-# Default is 0 (no logging)
+# No default.
 if not vars().has_key('LOGFILE_INCOMING'):
-    LOGFILE_INCOMING = 0
+    LOGFILE_INCOMING = None
 
 # MESSAGE_FROM_STYLE
 # Specifies how `From' headers should look on when tagging outgoing

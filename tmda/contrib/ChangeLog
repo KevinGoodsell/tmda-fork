@@ -1,6 +1,7 @@
 2002-01-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Rename LOGFILE to LOGFILE_INCOMING.
+	Add LOGFILE_DEBUG.
 
 2002-01-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 

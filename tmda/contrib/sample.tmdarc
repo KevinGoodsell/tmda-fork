@@ -88,6 +88,8 @@ import os                                      # don't remove
 
 # HOSTNAME = "domain.dom" 
 
+# LOGFILE_DEBUG = os.path.expanduser("~/tmda_debug.log")
+
 # LOGFILE_INCOMING = os.path.expanduser("~/tmda_incoming.log")
 
 # MESSAGE_FROM_STYLE = "angles"
