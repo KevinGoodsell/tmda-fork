@@ -6,15 +6,13 @@
 # See the "User configurable settings" section of TMDA/Defaults.py for
 # explanations of the possible settings and their default values.
 #
-# Only CRYPT_IV and CRYPT_KEY are REQUIRED in the .tmsrc.
+# Only CRYPT_KEY is REQUIRED in the .tmsrc.
 #
 # NOTE: This file must be mode 600 or 400.
 
 import os                                      # don't remove
 
 BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
-
-BLOCK_CIPHER = "DES3"
 
 BOUNCE_BLACKLIST_CC = "jdoe-bounces-blacklist@domain.dom"
 
@@ -24,12 +22,9 @@ BOUNCE_SENDER_CC = "jdoe-bounces-sender@domain.dom"
 
 COOKIE_TYPE = "dated"
 
-CRYPT_IV  = "abdd4f8b1dd5a9d8"                 # generate your own IV!
-
-CRYPT_KEY = "95b76bbc4b747c963264151a6bfae394" # generate your own KEY!
-
-HASH_FUNCTION = "SHA"
-
+CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key
+                                                   # with tmda-keygen!
+ 
 HOSTNAME = "domain.dom" 
 
 INJECT = "/var/qmail/bin/qmail-inject"

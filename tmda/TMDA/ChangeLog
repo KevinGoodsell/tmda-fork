@@ -1,3 +1,20 @@
+2001-04-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Cookie.py (datemac): New function to compute HMAC for a given
+	date in time.
+	
+	* Defaults.py (BLOCK_CIPHER): Now obsolete.
+	(CRYPT_IV): Ditto.
+	(HASH_FUNCTION): Ditto.
+	
+	* Cookie.py (make_cipher_object): Function now obsolete.
+	(make_sender_cookie): Generate cookies with HMACs.
+	(make_dated_cookie): Generate cookies with HMACs.
+	(get_cookie_date): Function now obsolete.
+	(make_dated_address): New HMAC format.
+
+	* HMAC.py: New module for HMAC implementation.
+
 2001-04-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (TMDA_VERSION): Release v0.02.

@@ -1,3 +1,8 @@
+2001-04-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc (BLOCK_CIPHER): Obsolete.
+	(HASH_FUNCTION): Ditto.
+
 2001-04-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Added BOUNCE_BLACKLIST_CC, BOUNCE_DATED_CC,

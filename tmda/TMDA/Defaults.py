@@ -5,8 +5,7 @@
 
 # Make site-wide configuration changes to this file.  
 
-from Crypto.Utils import hex2str
-from Crypto.Utils import str2hex
+import binascii
 import os
 import stat
 import sys
@@ -45,16 +44,6 @@ ERR_SOFT = 111      # Soft error; defer delivery.
 # Default is ~/.tmda-blacklist
 BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
 
-# BLOCK_CIPHER
-# The block cipher which will be used for the encryption routines.
-# Possible values are any block cipher supported by the `amkCrypto'
-# package, which currently includes "ARC2", "Blowfish", "CAST", "DES",
-# "DES3", "IDEA", and "RC5".  Whatever you choose, make sure not to
-# mix ciphers (i.e, do use the same cipher on your client as you do on
-# your server).
-# Default is DES3 (Triple DES).
-BLOCK_CIPHER = "DES3"
-
 # BOUNCE_BLACKLIST_CC
 # An optional e-mail address which will be sent a copy of any message
 # that bounces because of a BLACKLIST match.
@@ -80,13 +69,6 @@ BOUNCE_SENDER_CC = None
 #       bare    untagged
 COOKIE_TYPE = "dated"
 
-# CRYPT_IV
-# Your encryption IV should be unique and kept secret.  It is used by
-# the block cipher to strengthen encryption.  Use the included
-# "bin/tmda-keygen" program to generate your IV.
-# No default.
-CRYPT_IV = None
-
 # CRYPT_KEY
 # Your encryption key should be unique and kept secret.
 # Use the included "bin/tmda-keygen" program to generate your key.
@@ -97,16 +79,6 @@ CRYPT_KEY = None
 # Your full name.
 # Default comes from your environment or the password file.
 FULLNAME = Util.getfullname()
-
-# HASH_FUNCTION
-# The hash function which is used to generate hash values for the
-# 'sender' style tags.  Possible values are any hash function
-# supported by the `amkCrypto' package, which currently includes
-# "MD2", "MD4", "MD5", "HAVAL", "RIPEMD", and "SHA".  Whatever you
-# choose, make sure not to mix hash functions (i.e, do use the same
-# function on your client as you do on your server).
-# Default is SHA (Secure Hash Algorithm).
-HASH_FUNCTION = "SHA"
 
 # HOSTNAME
 # The right-hand side of your email address (after `@').
@@ -213,22 +185,14 @@ if mode not in (400, 600):
 
 execfile(TMDARC)
 
-# Convert key and IV from hex back into raw binary.
-# Hex has only 4 bits of entropy per byte (as opposed to 8).
+# Convert key from hex back into raw binary.
+# Hex has only 4 bits of entropy per byte as opposed to 8.
 if CRYPT_KEY:
-    HEX_KEY = CRYPT_KEY
-    CRYPT_KEY = hex2str(CRYPT_KEY)
+    CRYPT_KEY = binascii.unhexlify(CRYPT_KEY)
 else:
     print "Encryption key not found!"
     sys.exit(ERR_CONFIG)
 
-if CRYPT_IV:
-    HEX_IV = CRYPT_IV
-    CRYPT_IV = hex2str(CRYPT_IV)
-else:
-    print "Encryption IV not found!"
-    sys.exit(ERR_CONFIG)
-    
 if not os.path.exists(INJECT):
     print "Injection mechanism not found:",INJECT
     sys.exit(ERR_CONFIG)

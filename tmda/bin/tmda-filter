@@ -72,26 +72,32 @@ def bounce_cc(address):
 
 def verify_dated_cookie(dated_cookie):
     """Verify a dated cookie."""
-    try:
-        cookie_date = Cookie.get_cookie_date(dated_cookie)
-    # Something went wrong; probably an invalid cookie.
-    except:
+    # Save some time if the dated_cookie doesn't exist or is bogus.
+    if not dated_cookie:
         bounce_dated()
-    # Cookie is valid, now lets check whether it has expired.
+    dated_cookie_split = string.split(dated_cookie,'.')
+    if len(dated_cookie_split) != 2:
+        bounce_dated()
+
+    cookie_date = dated_cookie_split[0]
+    datemac = dated_cookie_split[1]
+    newdatemac = Cookie.datemac(cookie_date)
+
+    # Accept the message only if the address has not expired AND the HMAC
+    # can be verified.
+    now = time.time()
+    if ((int(cookie_date) >= int('%d' % now)) and (datemac == newdatemac)):
+        logit("OK good_dated_cookie",now)
+        sys.exit(Defaults.ERR_OK)
     else:
-        now = time.time()
-        current_date = '%d' % now
-        if (cookie_date >= current_date):
-            logit("OK good_dated_cookie",now)
-            sys.exit(Defaults.ERR_OK)
-        else:
-            bounce_dated()
+        bounce_dated()
 
 
 def verify_sender_cookie(sender_address,sender_cookie):
     """Verify a sender cookie."""
     sender_address_cookie = Cookie.make_sender_cookie(sender_address)
 
+    # Accept the message only if the HMAC can be verified.
     if (sender_cookie == sender_address_cookie):
         logit("OK good_sender_cookie", time.time())
         sys.exit(Defaults.ERR_OK)
@@ -101,12 +107,12 @@ def verify_sender_cookie(sender_address,sender_cookie):
 
 def bounce_dated():
     """Bounce the message back to sender with a new dated cookie."""
-    current_date = time.time()
-    expire_date = current_date + Util.seconds(Defaults.TIMEOUT)
+    now = time.time()
+    expire_date = now + Util.seconds(Defaults.TIMEOUT)
     expire_utc_tuple = time.gmtime(expire_date)
-    dated_cookie = Cookie.make_dated_cookie(current_date)
+    dated_cookie = Cookie.make_dated_cookie('%d' % now)
     bounce_message = make_dated_bounce(expire_utc_tuple,dated_cookie)
-    logit("BOUNCE dated",current_date)
+    logit("BOUNCE dated",now)
 
     if Defaults.BOUNCE_DATED_CC:
         bounce_cc(Defaults.BOUNCE_DATED_CC)
@@ -201,7 +207,7 @@ def main():
     # EXT2 is the portion of EXT following the first dash.
     ext2 = os.environ.get('EXT2') 
     if ext2:ext2 = string.lower(ext2)
-    
+        
     while 1:
         # Is the sender in the BLACKLIST?
         if os.path.exists(Defaults.BLACKLIST) and \
