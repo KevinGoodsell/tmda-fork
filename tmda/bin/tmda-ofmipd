@@ -868,7 +868,8 @@ class SMTPChannel(asynchat.async_chat):
         # to add later.
         rh = []
         rh.append('from %s' % (arg))
-        if arg.lower() != self.__peername.lower():
+        if ((arg.lower() != self.__peername.lower()) and
+            (self.__peername.lower() != self.__peerip)):
             rh.append('(%s [%s])' % (self.__peername, self.__peerip))
         else:
             rh.append('(%s)' % (self.__peerip))
