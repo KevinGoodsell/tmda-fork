@@ -374,7 +374,7 @@ if remoteauth['proto'] == 'imaps':
     vmaj, vmin = sys.version_info[:2]
     # Python version 2.2 and before don't have IMAP4_SSL
     import imaplib
-    if vmaj <= 2 or (vmaj == 2 and vmin <= 2):
+    if vmaj < 2 or (vmaj == 2 and vmin <= 2):
         class IMAP4_SSL(imaplib.IMAP4):
             # extends IMAP4 class to talk SSL cause it's not yet
             # implemented in python 2.2
@@ -384,7 +384,7 @@ if remoteauth['proto'] == 'imaps':
                 read, readline, send, shutdown.
                 """
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.sock.connect((self.host, self.port))
+                self.sock.connect((host, port))
                 self.sslsock = socket.ssl(self.sock)
                 self.file = self.sock.makefile('rb')
         

@@ -1,3 +1,14 @@
+2003-11-13  Tim Legant  <tim@catseye.net>
+
+	* tmda-ofmipd (class IMAP4_SSL): This local class is only
+	necessary before Python version 2.3.  The test to define this
+	class (or not) was wrong, so any Python version 2.x ended up
+	adding the class.
+
+	* (IMAP4_SSL.open): The implementation changed with
+	2.3, pointing out that we should be using the 'host' and 'port'
+	parameters of open() rather than 'self.host' and 'self.port'.
+
 2003-10-30  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-ofmipd (SMTPChannel.auth_notify_succeed): Add the
