@@ -265,7 +265,7 @@ class MessageList(Frame):
         Q = Pending.Queue(descending=1).initQueue()
         for item in Q.listPendingIds():
             self.msgs.append(item)
-            msg = Pending.Message(item).terse()
+            msg = Pending.Message(item).terse(date=1)
             i = 0
             for col in self._cols:
                 col.insert(END, msg[i])

@@ -114,14 +114,14 @@ class Queue:
     def Print(self, *strings):
         """Print one or more strings on self.stdout."""
         for s in strings:
-            self.stdout.write(s)
+            self.stdout.write(str(s))
         self.stdout.write('\n')
 
     def cPrint(self, *strings):
         """Conditionally print one or more strings."""
         if self.verbose:
             for s in strings:
-                self.stdout.write(s)
+                self.stdout.write(str(s))
             self.stdout.write('\n')
         else:
             return
@@ -455,7 +455,11 @@ class Message:
         """Return the string representation of a message."""
         return self.msgobj.as_string()
 
-    def terse(self):
+    def getDate(self):
+        timestamp = self.msgid.split('.')[0]
+        return Util.unixdate(int(timestamp))
+
+    def terse(self, date=0):
         """Return terse header information."""
         terse_hdrs = []
         for hdr in Defaults.TERSE_SUMMARY_HEADERS:
@@ -469,7 +473,11 @@ class Message:
                     terse_hdrs.append(from_address or 'None')
             else:
                 terse_hdrs.append(self.msgobj.get(hdr))
-        terse_hdrs.insert(0, self.msgid)
+
+        if date:
+            terse_hdrs.insert(0,self.getDate())
+        else:
+            terse_hdrs.insert(0, self.msgid)
         return [Util.decode_header(hdr) for hdr in terse_hdrs]
         
     def getConfirmAddress(self):
