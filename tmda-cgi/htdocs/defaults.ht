@@ -35,42 +35,45 @@ Title: Default Settings
   </tr>
   <tr>
     <td><a href="#NoOverrideWhichTar">NoOverride:WhichTar</a></td>
+    <td><a href="#GeneralCSEncoding">General:CSEncoding</a></td>
+  </tr>
+  <tr>
     <td><a href="#GeneralSpamCopAddr">General:SpamCopAddr</a></td>
-  </tr>
-  <tr>
     <td><a href="#GeneralTheme">General:Theme</a></td>
+  </tr>
+  <tr>
     <td><a href="#GeneralUseJSConfirm">General:UseJSConfirm</a></td>
-  </tr>
-  <tr>
     <td><a href="#GenAddrExpireNum">GenAddr:ExpireNum</a></td>
+  </tr>
+  <tr>
     <td><a href="#GenAddrExpireUnit">GenAddr:ExpireUnit</a></td>
-  </tr>
-  <tr>
     <td><a href="#GenAddrKeyword">GenAddr:Keyword</a></td>
+  </tr>
+  <tr>
     <td><a href="#GenAddrSender">GenAddr:Sender</a></td>
-  </tr>
-  <tr>
     <td><a href="#LoginInitPage">Login:InitPage</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListCropDest">PendingList:CropDest</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListCropSender">PendingList:CropSender</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListCropSubject">PendingList:CropSubject</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListDateFormat">PendingList:DateFormat</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListPagerSize">PendingList:PagerSize</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListShowAddr">PendingList:ShowAddr</a></td>
+  </tr>
+  <tr>
     <td><a href="#ViewPendingAltPref">ViewPending:AltPref</a></td>
-  </tr>
-  <tr>
     <td><a href="#ViewPendingAllowTags">ViewPending:AllowTags</a></td>
-    <td><a href="#ViewPendingBlockRemove">ViewPending:BlockRemove</a></td>
   </tr>
   <tr>
+    <td><a href="#ViewPendingBlockRemove">ViewPending:BlockRemove</a></td>
     <td><a href="#ViewPendingEmailClass">ViewPending:EmailClass</a></td>
+  </tr>
+  <tr>
     <td><a href="#ViewPendingHeaders">ViewPending:Headers</a></td>
   </tr>
 </table>
@@ -192,7 +195,7 @@ Title: Default Settings
 <h4><a name="NoOverrideUninstallInstruct"></a>NoOverride:UninstallInstruct</h4>
 <blockquote>
   <p>Any special instructions your users will need after uninstalling TMDA. If
-    left blank, no special instructions will be given</p>
+    left blank, no special instructions will be given.</p>
   <p>Example:
     <table class="example">
       <tr>
@@ -229,6 +232,24 @@ Title: Default Settings
 <blockquote>
   <p>Path to <tt>tar</tt> program.</p>
   <p>Default: <tt>/bin/tar</tt></p>
+</blockquote>
+
+<h4><a name="GeneralCSEncoding"></a>General:CSEncoding</h4>
+<blockquote>
+  <p>Set the default encoding for all tmda-cgi pages. It's generally safe to
+    leave this one set to the defaults.  Internationally encoded e-mails which
+    do not identify their codeset will not render correctly unless this setting
+    matches the content.</p>
+  <p>If many international e-mails are not rendering correctly, try resetting
+    this to match their character set.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[General]<br>
+          CSEncoding = big5</td>
+      </tr>
+    </table>
+  <p>Default: <tt>iso-8859-1</tt></p>
 </blockquote>
 
 <h4><a name="GeneralSpamCopAddr"></a>General:SpamCopAddr</h4>

@@ -37,3 +37,10 @@ Contributions:
     * Cory Wright -- providing insight into how to use vpopmail and gently
                      pointing out the obvious when I miss it, fixing my alt
 		     tags so they are not browser specific
+
+Includes:
+---------
+
+    * Alan Eldridge -- SpamCop Reporting Program (reporter.py)
+    
+    * Barry Warsaw -- Templated Webpage Generator (ht2html)

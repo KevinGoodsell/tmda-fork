@@ -31,13 +31,14 @@ from TMDA import Version
 AckSearch     = re.compile("^Acknowledgements:")
 ContribSearch = re.compile("^Contributions:")
 ToDoSearch    = re.compile("^Things left to do:")
+IncludeSearch = re.compile("^Includes:")
 ItemSearch    = re.compile("^\s+\*\s+(.+)\s+--\s+(.+)")
 ContdSearch   = re.compile("^\s+(\s.+)")
 
 def Add(Name, Detail):
   "Add an entry."
 
-  global T, BugCell, BugRow, BugCol, BugCols, Section
+  global BugCol
 
   if Name:
     T["Name"] = Name
@@ -56,7 +57,7 @@ def Add(Name, Detail):
 def AddFile(Filename):
   "Add a file to template."
 
-  global T, AckRow, ContRow, ToDoRow, BugCell, BugRow, BugCol, BugCols, Section
+  global BugCol, Section
 
   # Read file
   F = open(Filename)
@@ -72,6 +73,7 @@ def AddFile(Filename):
     AckMatch     = AckSearch.search(Line)
     ContribMatch = ContribSearch.search(Line)
     ToDoMatch    = ToDoSearch.search(Line)
+    IncludeMatch = IncludeSearch.search(Line)
     ItemMatch    = ItemSearch.search(Line)
     ContdMatch   = ContdSearch.search(Line)
     if AckMatch:
@@ -85,6 +87,10 @@ def AddFile(Filename):
     elif ToDoMatch:
       Add(Name, Detail)
       Section = ToDoRow
+      Name = None
+    elif IncludeMatch:
+      Add(Name, Detail)
+      Section = IncludeRow
       Name = None
     elif ItemMatch:
       Add(Name, Detail)
@@ -100,7 +106,7 @@ def AddFile(Filename):
 def Show():
   "Show info."
 
-  global T, AckRow, ContRow, ToDoRow, BugCell, BugRow, BugCols
+  global T, AckRow, ContRow, ToDoRow, BugCell, BugRow, BugCols, IncludeRow
 
   # Load the display template
   T = Template.Template("info.html")
@@ -110,15 +116,18 @@ def Show():
   T["TmdaVersion"] = Version.ALL
 
   # Get rows
-  ParamRow = T["Params"]
-  AckRow   = T["AckRow"]
-  ContRow  = T["ContRow"]
-  ToDoRow  = T["ToDoRow"]
-  BugCell  = T["BugCell"]
-  BugRow   = T["BugRow"]
-  BugCols  = int(T["BugCols"])
+  ParamRow   = T["Params"]
+  AckRow     = T["AckRow"]
+  ContRow    = T["ContRow"]
+  ToDoRow    = T["ToDoRow"]
+  BugCell    = T["BugCell"]
+  BugRow     = T["BugRow"]
+  BugCols    = int(T["BugCols"])
+  IncludeRow = T["IncludeRow"]
 
   # Add compile parameters
+  os.environ["TMDA_IDs"] = "UID: %d (%d) GID: %d (%d)" % (os.getuid(),
+    os.geteuid(), os.getgid(), os.getegid())
   Keys = os.environ.keys()
   Keys.sort()
   for Param in Keys:

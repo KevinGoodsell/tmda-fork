@@ -143,11 +143,21 @@ be able to."""
       except OSError:
         CgiUtil.TermError("Cannot SUID.", "File permissions on the CGI have "
           "been changed or the CGI is located in a nosuid partition.",
-          "set euid", CgiUtil.FileDetails("CGI", sys.argv[0]),
-          """Recheck the CGI's permissions and owner.  The file permissions
-should be 4755 (-rwsr-xr-x) and the owner should be root.<br>Also check in which
-partition you placed the CGI.  You cannot run the CGI in system-wide mode if
-its partition is marked "nosuid" in /etc/fstab.""")
+          "set euid", "", """Recheck the CGI's permissions and owner.  The file
+permissions should be 6711 (-rws--s--x) and the owner should be root.<br>Also
+check in which partition you placed the CGI.  You cannot run the CGI in
+system-wide mode if its partition is marked "nosuid" in /etc/fstab.""")
+
+    else:
+      if not os.geteuid():
+        if os.environ["TMDA_CGI_MODE"] == "single-user":
+          Detail = """The file permissions should be 6711 (-rws--s--x) and the
+owner should <b><i>not</i></b> be root."""
+        else:
+          Detail = "The file permissions should be 711 (-rwx--x--x)."
+        CgiUtil.TermError("Running as root.", "CGI should not be running as "
+          "root. This is unsafe.", "set euid", "",
+          "Recheck the CGI's permissions and owner.  %s" % Detail)
 
   def Save(self):
     """Save all session variables to disk.  Global RealUser determines whether

@@ -9,6 +9,7 @@ Title: About tmda-cgi
 <a href="#Ack">Acknowledgements</a></br>
 <a href="#Contrib">Contributions</a></br>
 <a href="#Bug">Bug Finders</a></br>
+<a href="#Include">Included Software</a></br>
 <a href="#ToDo">Still To Do</a><p>
 
 <h2><a name="Tutorial"></a>Tutorial</h2>
@@ -82,6 +83,16 @@ Title: About tmda-cgi
 <!-- /var -->
 </table><p>
 <!-- var: BugCols="3" -->
+
+<h2><a name="Include"></a>Included Software</h2>
+<table cellspacing="7" width="100%">
+<!-- var: IncludeRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td>%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
 
 <h2><a name="ToDo"></a>Still To Do</h2>
 <table cellspacing="7">

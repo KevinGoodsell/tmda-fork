@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sun May  4 18:44:52 2003 -->
+<!-- Wed May  7 01:02:35 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -90,7 +90,9 @@ name="subtopic25"></a></td></tr>
 <a href="#Attach">Attachment Anxiety</a><br>
 <a href="#WhiteBlack">Whitelist, Blacklist... where are the options?</a><br>
 <a href="#Base">Bad Base</a><br>
-<a href="#Install">Install Again?</a></p>
+<a href="#Install">Install Again?</a><br>
+<a href="#NoInstall">Can't Install!</a><br>
+<a href="#International">International Intrigue</a></p>
 
 <h3><a name="Whitelist"></a>Whitelist Woes</h3>
 <p>tmda-cgi's whitelist feature does not update the list pointed to by
@@ -126,12 +128,12 @@ name="subtopic25"></a></td></tr>
 <p>We hope to add support for this soon.</p>
 
 <h3><a name="Authentication"></a>Authentication Ailments</h3>
-<p>If no username/password combination lets you log in, your problem may be due 
-  to a misconfigured authentication method. To aid in finding out precisely 
-  what is misconfigured, we have added a variety of debugging messages to 
+<p>If no username/password combination lets you log in, your problem may be due
+  to a misconfigured authentication method. To aid in finding out precisely
+  what is misconfigured, we have added a variety of debugging messages to
   various parts of the authentication code.</p>
-<p>The debugging messages are embedded in comments in the login page. Try 
-  logging in and when you get the "Wrong password." message, do a "View/Source" 
+<p>The debugging messages are embedded in comments in the login page. Try
+  logging in and when you get the "Wrong password." message, do a "View/Source"
   of the HTML page. At the top of the page, you should see something like:</p>
 <table class="example">
   <tr>
@@ -159,40 +161,40 @@ Authentication returned: 0<br>
 ...</td>
   </tr>
 </table>
-<p>If you do not wish for these messages to be embedded, modify the template 
+<p>If you do not wish for these messages to be embedded, modify the template
   file <tt>login.html</tt> and remove the <tt>%(ErrMsg)s</tt> string.</p>
-<p>If the messages do not help you get to the root of the problem, refer to the 
-  instructions on the <a href="contact.html">Contact</a> page to get some 
-  assistance.  Be sure to copy and paste the debug information you are getting, 
+<p>If the messages do not help you get to the root of the problem, refer to the
+  instructions on the <a href="contact.html">Contact</a> page to get some
+  assistance.  Be sure to copy and paste the debug information you are getting,
   to make it easier for the developers to help you.</p>
 
 <h3><a name="Attach"></a>Attachment Anxiety</h3>
 <p>tmda-cgi does not let you view the attachments on a pending e-mail.</p>
-<p>If you need one of the attachments in an e-mail, simply release the e-mail 
-  by clicking on the checkmark button. You can then download the e-mail as if 
-  the sender had confirmed the message, and view the attachment. Remember, 
-  tmda-cgi lets you manage your pending messages.  It is not a web-based mail 
+<p>If you need one of the attachments in an e-mail, simply release the e-mail
+  by clicking on the checkmark button. You can then download the e-mail as if
+  the sender had confirmed the message, and view the attachment. Remember,
+  tmda-cgi lets you manage your pending messages.  It is not a web-based mail
   client.</p>
 
 <h3><a name="WhiteBlack"></a>Whitelist, Blacklist... where are the options?</h3>
-<p>The screenshots show whitelist and blacklist options, but I don't see 
+<p>The screenshots show whitelist and blacklist options, but I don't see
   these!</p>
-<p>The whitelist and blacklist options are only available if you have 
+<p>The whitelist and blacklist options are only available if you have
   configured them in your config file. Try setting <a
   href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
   and <a
-  href="/config-vars.html#PENDING_BLACKLIST_APPEND"><tt>PENDING_BLACKLIST_APPEND</tt></a>. 
-  The radio buttons and option buttons should appear on the pending list and 
+  href="/config-vars.html#PENDING_BLACKLIST_APPEND"><tt>PENDING_BLACKLIST_APPEND</tt></a>.
+  The radio buttons and option buttons should appear on the pending list and
   pending e-mail viewer once you do.</p>
 
 <h3><a name="Base"></a>Bad Base</h3>
 <p>My <tt>skel</tt> files use <tt>%(Base)s/bin/</tt> to refer to TMDA's
   <tt>bin/</tt> directory, but when my users install, the files created point
   to the wrong directory.</p>
-<p>The variable <tt>%(Base)s</tt> asssumes you have installed TMDA from source. 
-  If you installed TMDA from RPM or FreeBSD port, then the assumed relationship 
+<p>The variable <tt>%(Base)s</tt> asssumes you have installed TMDA from source.
+  If you installed TMDA from RPM or FreeBSD port, then the assumed relationship
   between library files and executables is no longer valid.</p>
-<p>Simply modify the <tt>skel</tt> files, remove <tt>%(Base)s/bin/</tt> and 
+<p>Simply modify the <tt>skel</tt> files, remove <tt>%(Base)s/bin/</tt> and
   replace it with the correct path to TMDA's executables.</p>
 
 <h3><a name="Install"></a>Install Again?</h3>
@@ -224,12 +226,31 @@ Can't find key file:<br>
 ...</td>
   </tr>
 </table>
-<p>If you do not wish for these messages to be embedded, modify the template 
+<p>If you do not wish for these messages to be embedded, modify the template
   file <tt>welcome.html</tt> and remove the <tt>%(ErrMsg)s</tt> string.</p>
-<p>If the messages do not help you get to the root of the problem, refer to the 
-  instructions on the <a href="contact.html">Contact</a> page to get some 
-  assistance.  Be sure to copy and paste the debug information you are getting, 
+<p>If the messages do not help you get to the root of the problem, refer to the
+  instructions on the <a href="contact.html">Contact</a> page to get some
+  assistance.  Be sure to copy and paste the debug information you are getting,
   to make it easier for the developers to help you.</p>
+
+<h3><a name="NoInstall"></a>Can't Install!</h3>
+<p>I've run <tt>configure</tt> and <tt>make</tt>, but <tt>make install</tt>
+  won't work because the user I'm compiling as doesn't have the needed
+  permissions to put a file in the web tree. Can I do <tt>make install</tt> as
+  root?</p>
+<p>No, don't do <tt>make install</tt> as root.  That will put the wrong
+  privileges on the binary.  If the account you are using doesn't have
+  permission to write to the web tree, then select a different place to save
+  the binary (such as <tt>/tmp/</tt>) when you run <tt>configure</tt>.</p>
+<p>Now run <tt>make</tt> and <tt>make install</tt> as normal and use root to
+  move the file from <tt>/tmp/</tt> (or wherever) into the web tree.</p>
+<p>This will make sure that the binary's UID/GID remain intact.</p>
+
+<h3><a name="International"></a>International Intrigue</h3>
+<p>Instead of Chinese characters in the pending list, the subject lines are
+  showing up as random English characters!</p>
+<p>Did you remember to install the <a href="compile.html#International">Chinese
+  codec</a>? tmda-cgi can't translate Chinese without it.</p>
 </td>
 <!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->

@@ -3,15 +3,15 @@ Title: Compiling tmda-cgi
 <h2>Compilation</h2>
 
 <p>Once you have unzipped the source files into the directory where you plan
-  to keep tmda-cgi and selected your mode, you will need to compile tmda-cgi. 
-  Compiling creates a binary executable which gives the program the rights to 
-  access the files it will need. This also saves certain pieces of information 
+  to keep tmda-cgi and selected your mode, you will need to compile tmda-cgi.
+  Compiling creates a binary executable which gives the program the rights to
+  access the files it will need. This also saves certain pieces of information
   which it will need accessible before authentication.<p>
 
 <p>You will need to recompile if:</p>
 <ul>
   <li>you move your configuration files</li>
-  <li>you move your supplimental display files (icons, images, and style 
+  <li>you move your supplimental display files (icons, images, and style
     sheet)</li>
   <li>you move your tmda-cgi or TMDA source trees</li>
   <li>you change the tmda-cgi mode</li>
@@ -28,22 +28,23 @@ Title: Compiling tmda-cgi
 
 <a href="#Running">Running <tt>configure</tt></a><br>
 <a href="#Display"><tt>display</tt> Directory</a><br>
+<a href="#International">International Character Sets</a><br>
 <a href="#NoSu">Additional no-su Setup</a><p>
 
 <h3><a name="Running"></a>Running <tt>configure</tt></h3>
 
-<p>Although <tt>configure</tt> may be run with a large variety of command line 
+<p>Although <tt>configure</tt> may be run with a large variety of command line
   switches (see <tt><nobr>./configure -h | more</nobr></tt>), I think you'll
-  find it far easier to run in interactive mode (by not specifying any 
-  options). Interactive mode will ask you a series of questions and provide 
-  "best guess" answers as the defaults. Once you have answered all the 
+  find it far easier to run in interactive mode (by not specifying any
+  options). Interactive mode will ask you a series of questions and provide
+  "best guess" answers as the defaults. Once you have answered all the
   questions, you'll be all ready to compile and install.</p>
 
-<p>If you do not know the answer to one of the interactive questions, don't 
-  panic. Simply hit control-C and the program will save the responses you have 
+<p>If you do not know the answer to one of the interactive questions, don't
+  panic. Simply hit control-C and the program will save the responses you have
   given. These will be used as the defaults when you re-run <tt>configure</tt>.
 
-<p>Depending on the mode you have chosen, you may need to be logged in as a 
+<p>Depending on the mode you have chosen, you may need to be logged in as a
   specific user when you compile tmda-cgi. Consult the following chart:<p>
 
 <table>
@@ -77,44 +78,44 @@ Title: Compiling tmda-cgi
 <ol>
   <li>The location of your Python interpreter</li>
   <li>Where to save the CGI</li>
-  <li>The path to TMDA's root directory</li> 
-  <li>An optional path or &quot;formula&quot; to find the user <tt>config</tt> 
+  <li>The path to TMDA's root directory</li>
+  <li>An optional path or &quot;formula&quot; to find the user <tt>config</tt>
     files</li>
   <li>The <a href="auth.html">authentication mechanism</a> (file / program /
     remote)
   <li>The web path from the CGI to the <a href="#Display"><tt>display</tt>
-    directory</a></li> 
+    directory</a></li>
   <li>Mode</li>
   <li><a href="virtual.html">Virtual user stub and parameters</a></li>
-  <li>Real user to use when someone logs in with a virtual e-mail account</li> 
-  <li>Path and prefix to use for temporary, session files</li> 
-  <li>How old session files may get before they can be cleaned</li> 
-  <li>The odds of cleaning up session files</li> 
+  <li>Real user to use when someone logs in with a virtual e-mail account</li>
+  <li>Path and prefix to use for temporary, session files</li>
+  <li>How old session files may get before they can be cleaned</li>
+  <li>The odds of cleaning up session files</li>
 </ol>
 
-<p>The <tt>configure</tt> program will provide additional information and 
-  its best-guess anwers as defaults.  Most of these defaults will probably be 
-  just fine for your system, but check them all carefully before hitting 
+<p>The <tt>configure</tt> program will provide additional information and
+  its best-guess anwers as defaults.  Most of these defaults will probably be
+  just fine for your system, but check them all carefully before hitting
   return.</p>
 
 <h3><a name="Display"></a><tt>display</tt> Directory</h3>
 
 <p>Finally, tmda-cgi requires a variety of visual elements saved in a
-  <tt>display</tt> directory (see #6, above). This directory comes with the 
-  tmda-cgi source and will need to be manually copied or symbolically linked 
-  (make sure your web server is configured to follow links!) into the 
+  <tt>display</tt> directory (see #6, above). This directory comes with the
+  tmda-cgi source and will need to be manually copied or symbolically linked
+  (make sure your web server is configured to follow links!) into the
   appropriate web directory.</p>
-<p>Please note that #6 specifies the relative <i>web path</i> from the CGI to 
-  the <tt>display</tt> directory, which may be different than the actual path. 
+<p>Please note that #6 specifies the relative <i>web path</i> from the CGI to
+  the <tt>display</tt> directory, which may be different than the actual path.
   For example:</p>
 <table border="0" cellspacing="0" cellpadding="0">
-  <tr> 
+  <tr>
     <td width="35">&nbsp;</td>
     <th>Web path</th>
     <td width="15">&nbsp;</td>
     <th>Actual path</th>
   </tr>
-  <tr> 
+  <tr>
     <td>&nbsp;</td>
     <td>http://your.domain/cgi-bin/tmda.cgi</td>
     <td>&nbsp;</td>
@@ -127,39 +128,51 @@ Title: Compiling tmda-cgi
     <td>/www/tmda/htdocs/display</td>
   </tr>
 </table>
-<p>In the above example, the actual path from the CGI to the display directory 
-  is <tt>../htdocs/display/</tt> but the web path is <tt>../display/</tt>. The 
-  web path (<tt>../display/</tt>) is the one that should be entered in question 
+<p>In the above example, the actual path from the CGI to the display directory
+  is <tt>../htdocs/display/</tt> but the web path is <tt>../display/</tt>. The
+  web path (<tt>../display/</tt>) is the one that should be entered in question
   #6.</p>
+
+<h3><a name="International"></a>International Character Sets</h3>
+
+<p>tmda-cgi supports the following international character set:</p>
+
+<blockquote>
+  <a href="http://sourceforge.net/cvs/?group_id=22022">Chinese</a>
+</blockquote>
+
+<p>To be able to use a given character set, you must first install the
+  appropriate codec from the link above. Download and install as per the
+  instructions on the appropriate web page and README files.</p>
 
 <h3><a name="NoSu"></a>Additional no-su Setup</h3>
 
 <p>If you compile in no-su mode, you will need to change permissions on any
-  existing pending mail and configuration files so that they can be read by the 
+  existing pending mail and configuration files so that they can be read by the
   CGI. You can either make these files world accessible or group accessible.</p>
 
-<p>Group accessible is a little more secure than world accessible. World 
-  accessible files are easily read by accident. Users actually have to take 
+<p>Group accessible is a little more secure than world accessible. World
+  accessible files are easily read by accident. Users actually have to take
   intentional steps to mess with files in another group.</p>
 
-<p>We recommend you assign permissions of 660 to files and 2660 to directories 
-  to make them group accessible. Don't forget to <tt>chgrp</tt> then into the 
-  appropriate group! Look in your Apache (or other web server) configuration 
-  file to find out which group you should use. For Apache, this directive will 
+<p>We recommend you assign permissions of 660 to files and 2660 to directories
+  to make them group accessible. Don't forget to <tt>chgrp</tt> then into the
+  appropriate group! Look in your Apache (or other web server) configuration
+  file to find out which group you should use. For Apache, this directive will
   look like:</p>
 
 <blockquote>
   <pre>Group nobody</pre>
 </blockquote>
 
-<p>You will also need to add in code to make sure new e-mails are group 
+<p>You will also need to add in code to make sure new e-mails are group
   accessible. We recommend adding the following to your <tt>/etc/tmdarc</tt>:
 
 <blockquote>
   <pre>os.umask(027)</pre>
 </blockquote>
 
-<p>If you have many users who use tmda-cgi in no-su mode, you may find it 
-  advantageous to put all of the TMDA files in one central location, such as 
-  <tt>/var/tmda</tt>. If this sounds appealing, check out the <a 
+<p>If you have many users who use tmda-cgi in no-su mode, you may find it
+  advantageous to put all of the TMDA files in one central location, such as
+  <tt>/var/tmda</tt>. If this sounds appealing, check out the <a
   href="nosu.html">centralized no-su</a> example.
