@@ -49,7 +49,7 @@ from TMDA import Cookie
 
 def main():
 
-    address = sys.argv[1]
+    address = sys.argv[-1]
     sender_address = Cookie.make_sender_address(address)
     sys.stdout.write(sender_address)
 

@@ -1,3 +1,10 @@
+2001-05-28  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-sender-address (main): Bugfix.  When you provide arguments
+	to tmda-sender-address (e.g. -c /other/.tmdarc), the address is
+	incorrectly read as sys.argv[1] (which would be '-c') and thus
+	returns an invalid address.
+
 2001-05-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (qfilter): tmda-inject will exit 99 when run with
