@@ -46,10 +46,6 @@ import getopt
 import os
 import sys
 
-# The contents of these two lists will be used to tag the message.
-envelope_sender_address = []
-sender_full_name = []
-
 filter_match = None
 qfilter = None
 program = sys.argv[0]
@@ -112,104 +108,136 @@ message = sys.stdin
 message_headers = rfc822.Message(message)
 
 
+def message_format(fsa, ffn, type):
+    # "angles" is the default MESSAGE_FROM_STYLE
+    if type == 'parens':
+        return '%s (%s)' % (fsa, ffn)
+    elif type == 'address':
+        return '%s' % (fsa)
+    elif type == 'unquoted':
+        return '%s <%s>' % (ffn, fsa)
+    else:
+        return '"%s" <%s>' % (ffn, fsa)
+
+
+def make_field(cookie_type, cookie_option, from_address, to_address):
+    """
+    Create an email address based on a cookie type and one or more addresses.
+    """
+    if cookie_type == 'default':
+	cookie_type = Defaults.ACTION_OUTGOING
+
+    if cookie_type == 'bare':
+	# Use an untagged address.
+	field = from_address
+	# Optionally append the recipient address to a file.
+	if (cookie_option and string.lower(cookie_option) == 'append'
+	    and Defaults.BARE_APPEND):
+	    Util.append_to_file(to_address, Defaults.BARE_APPEND)
+    elif cookie_type == 'dated':
+	# Send a message with a tagged (dated) address.
+	if cookie_option:               # check for timeout override
+	    os.environ['TMDA_TIMEOUT'] =  cookie_option
+	field = Cookie.make_dated_address(from_address)
+    elif cookie_type == 'sender':
+	# Send a message with a tagged (sender) address
+	sender_cookie_address = cookie_option or to_address
+	field = Cookie.make_sender_address (from_address, sender_cookie_address)
+    elif cookie_type in ('as','exp','explicit') and cookie_option:
+	# Send a message with an explicitly defined address.
+	field = cookie_option
+    elif cookie_type in ('ext','extension') and cookie_option:
+	# Send a message with a tagged (extension added) address.
+	(username, hostname) = string.split(from_address,'@')
+	field = username + Defaults.RECIPIENT_DELIMITER + \
+                cookie_option + '@' + hostname
+    elif cookie_type in ('kw','keyword') and cookie_option:
+	# Send a message with a tagged (keyword) address.
+	field = Cookie.make_keyword_address(from_address, cookie_option)
+    else:
+	# If cookie_type is invalid, punt and use an untagged address.
+	field = from_address
+    return field
+
+
 def inject_message(resending,
                    to_address,
                    from_address,
+		   full_name,
                    message_headers,
                    message_body,
-                   cookie_type,
-                   cookie_option=None):
+                   actions):
     """Hand the message off to sendmail."""
-    if cookie_type == 'bare':
-        # Send a message with an untagged address.
-        envelope_sender_address.append(from_address)
-        # Optionally append the recipient address to a file.
-        if (cookie_option and string.lower(cookie_option) == 'append'
-            and Defaults.BARE_APPEND):
-            Util.append_to_file(to_address, Defaults.BARE_APPEND)
-    elif cookie_type == 'dated':
-        # Send a message with a tagged (dated) address.
-        if cookie_option:               # check for timeout override
-            os.environ['TMDA_TIMEOUT'] =  cookie_option
-        envelope_sender_address.append(Cookie.make_dated_address(from_address))
-    elif cookie_type == 'sender':
-        # Send a message with a tagged (sender) address
-        if cookie_option:               # base sender cookie on this address
-            sender_cookie_address = cookie_option
-        else:
-            sender_cookie_address = to_address
-        envelope_sender_address.append(Cookie.make_sender_address
-                                       (from_address, sender_cookie_address))
-    elif cookie_type in ('as','exp','explicit') and cookie_option:
-        # Send a message with an explicitly defined address.
-        envelope_sender_address.append(cookie_option)
-    elif cookie_type in ('ext','extension') and cookie_option:
-        # Send a message with a tagged (extension added) address.
-        (username, hostname) = string.split(from_address,'@')
-        envelope_sender_address.append(username + Defaults.RECIPIENT_DELIMITER
-                                       + cookie_option + '@' + hostname)
-    elif cookie_type in ('kw','keyword') and cookie_option:
-        # Send a message with a tagged (keyword) address.
-        envelope_sender_address.append(Cookie.make_keyword_address
-                                       (from_address, cookie_option))
-    else:
-        # If cookie_type is invalid, punt and use an untagged address.
-        envelope_sender_address.append(from_address)
-    
-    final_sender_address = envelope_sender_address[-1:][0]
-    final_full_name = sender_full_name[0]
-    # "angles" is the default MESSAGE_FROM_STYLE
-    if Defaults.MESSAGE_FROM_STYLE == 'parens':
-        message_from_format = '%s (%s)' % (final_sender_address,final_full_name)
-    elif Defaults.MESSAGE_FROM_STYLE == 'address':
-        message_from_format = '%s' % (final_sender_address)
-    elif Defaults.MESSAGE_FROM_STYLE == 'unquoted':
-        message_from_format = '%s <%s>' % (final_full_name,final_sender_address)
-    else:
-        message_from_format = '"%s" <%s>' % (final_full_name,final_sender_address)
+    # Default, if no From: is specified, is bare.
+    (cookie_type, cookie_option) = actions.get('from', ('bare', from_address))
+    magic_from = make_field(cookie_type, cookie_option,
+                            from_address, to_address)
+    envelope_sender = resent_from = magic_from
+    # Update envelope_sender with user-specified header
+    (cookie_type, cookie_option) = actions.get('envelope', (None, None))
+    if cookie_type:
+	envelope_sender = make_field(cookie_type, cookie_option,
+                                     from_address, to_address)
+    # Update resent_from with user-specified header
+    (cookie_type, cookie_option) = actions.get('resent-from', (None, None))
+    if cookie_type:
+	resent_from = make_field(cookie_type, cookie_option,
+                                 from_address, to_address)
     # Set From: or Resent-From: to match the envelope sender address.
     if resending:
-        message_headers['Resent-From'] = message_from_format
+	message_headers['Resent-From'] = message_format(resent_from, full_name,
+                                                        Defaults.MESSAGE_FROM_STYLE)
     else:
-        message_headers['From'] = message_from_format
+	message_headers['From'] = message_format(magic_from, full_name,
+                                                 Defaults.MESSAGE_FROM_STYLE)
+    # Add in any custom headers
+    for header in actions.keys():
+	if header in ('from', 'envelope', 'resent-from'):
+	    continue
+	(cookie_type, cookie_option) = actions[header]
+	field = make_field(cookie_type, cookie_option, from_address, to_address)
+	nice_header = string.replace(string.capwords(
+            string.replace(header, '-', ' ')), ' ', '-')
+        message_headers[nice_header] = message_format(field, full_name,
+                                                      Defaults.MESSAGE_FROM_STYLE)
     # If the MUA has added a `Mail-Followup-To' header that contains
     # the untagged address, we need to tag that as well.
     if message_headers.has_key('mail-followup-to'):
-        mft_list = message_headers.getaddrlist('mail-followup-to')
-        new_mft_list = []
-        for a in mft_list:
-            emaddy = a[1]
-            if emaddy == from_address:
-                new_mft_list.append(final_sender_address)
-            else:
-                new_mft_list.append(emaddy)
-        message_headers['Mail-Followup-To'] = string.join(new_mft_list, ',\n\t')
+	mft_list = message_headers.getaddrlist('mail-followup-to')
+	new_mft_list = []
+	for a in mft_list:
+	    emaddy = a[1]
+	    if emaddy == from_address:
+		new_mft_list.append(magic_from)
+	    else:
+		new_mft_list.append(emaddy)
+	message_headers['Mail-Followup-To'] = string.join(new_mft_list, ',\n\t')
     # Add `Date' and `Message-ID' headers only if they don't already exist.
     if not message_headers.has_key('date'):
-        message_headers['Date'] = Util.make_date()
+	message_headers['Date'] = Util.make_date()
     if not message_headers.has_key('message-id'):
-        message_headers['Message-ID'] = Util.make_msgid()
+	message_headers['Message-ID'] = Util.make_msgid()
     # Add `X-Delivery-Agent' header.
     message_headers['X-Delivery-Agent'] = Version.ALL
     # Optionally, add an `X-TMDA-Fingerprint' header.
     if Defaults.FINGERPRINT:
-        hdrlist = []
-        for hdr in Defaults.FINGERPRINT:
-            hdrval = message_headers.getheader(hdr, None)
-            if hdrval:
-                hdrlist.append(hdrval)
-        if hdrlist:
-            message_headers['X-TMDA-Fingerprint'] = (
-                Cookie.make_fingerprint(hdrlist))
+	hdrlist = []
+	for hdr in Defaults.FINGERPRINT:
+	    hdrval = message_headers.getheader(hdr, None)
+	    if hdrval:
+		hdrlist.append(hdrval)
+	if hdrlist:
+	    message_headers['X-TMDA-Fingerprint'] = (
+		Cookie.make_fingerprint(hdrlist))
     # Optionally, remove some headers.
     if Defaults.PURGED_HEADERS:
-        for hdr in Defaults.PURGED_HEADERS:
-            del message_headers[hdr]
+	for hdr in Defaults.PURGED_HEADERS:
+	    del message_headers[hdr]
     # Inject the message.
     inject = []
     inject.append(Defaults.SENDMAIL)
     inject.append('-f')
-    inject.append(final_sender_address)
+    inject.append(envelope_sender)
     inject.append(to_address)
     pipeline = popen2.popen2(inject)[1]
     pipeline.write(str(message_headers))
@@ -225,8 +253,7 @@ def inject_message(resending,
 def main():
 
     x_tmda_over = None
-    action = None
-    action_option = None
+    actions = None
 
     if message_headers.has_key('resent-from'):
         # We must be resending (bouncing) the message.
@@ -236,10 +263,8 @@ def main():
         # Use the existing From: header if possible.
         (fullname, from_address) = message_headers.getaddr("from")
         resending = None
-    if fullname:
-        sender_full_name.append(fullname)
-    else:
-        sender_full_name.append(Defaults.FULLNAME)
+    if not fullname:
+        fullname = Defaults.FULLNAME
     if not from_address or len(string.split(from_address,'@')) != 2:
         from_address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
     
@@ -270,13 +295,7 @@ def main():
         x_tmda = message_headers.getheader('x-tmda')
         # X-TMDA should only have one field.
         if len(string.split(x_tmda)) == 1:
-            fields = string.split(x_tmda,'=')
-            action = string.strip(string.lower(fields[0]))
-            # Test for an action option.
-            try:
-                action_option = string.strip(fields[1])
-            except IndexError:
-                pass
+	    actions = { 'from' : FilterParser.splitaction(x_tmda) }
         # Delete `X-TMDA' before sending.
         del message_headers['x-tmda']
     else:
@@ -292,8 +311,9 @@ def main():
         if x_tmda_over:
             pass                        
         else:
-            (action, action_option, matching_line) = outfilter.firstmatch(address)
-        if not action:action = string.lower(Defaults.ACTION_OUTGOING)
+            (actions, matching_line) = outfilter.firstmatch(address)
+        if not actions:
+	    actions = { 'from' : (string.lower(Defaults.ACTION_OUTGOING), None) }
         # The message is sent to each recipient separately so that
         # everyone gets the correct tag.  Make sure your MUA
         # generates its own Message-ID: and Date: headers so they
@@ -301,10 +321,10 @@ def main():
         inject_message(resending,
                        address,
                        from_address,
+		       fullname,
                        message_headers,
                        message_body,
-                       action,
-                       action_option)
+                       actions)
     if qfilter:
         sys.exit(qfilter)
     else:

@@ -575,11 +575,14 @@ def main():
     # Parse the incoming filter file.
     infilter = FilterParser.FilterParser()
     infilter.read(Defaults.FILTER_INCOMING)
-    (action,action_option,matching_line) = infilter.firstmatch(recipient_address,
-                                                               sender_list,
-                                                               message_body,
-                                                               str(message_headers),
-                                                               message_size)
+    (actions,matching_line) = infilter.firstmatch(recipient_address,
+                                                  sender_list,
+                                                  message_body,
+                                                  str(message_headers),
+                                                  message_size)
+    action = None
+    if actions:
+        action = actions.keys()[0]
     # Dispose of the message now if there was a filter file match.
     # Log the action along with and the matching line in the filter
     # file that caused it.

@@ -1,3 +1,18 @@
+2002-01-19  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py: Rewrite to support multiline,
+	whitespace-delimited, multi-action filter files.  The only
+	function that didn't change much is FilterParser.firstmatch.
+
+	(FilterParser.firstmatch): Return value changed to a 2-tuple
+	(dictionary of actions, string describing matching rule).  The
+	string is not necessarily the exact string from the file because
+	it's reconstructed when needed.  All callers needed to be
+	changed.  These were Util.filter_match, tmda-inject and
+	tmda-rfilter.
+
+	* Util.py (filter_match): FilterParser.firstmatch return value changed.
+
 2002-01-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* FilterParser.py (FilterParser.firstmatch): For file based

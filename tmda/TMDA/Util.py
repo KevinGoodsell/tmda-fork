@@ -377,7 +377,7 @@ def filter_match(filename, recip, sender=None):
     import FilterParser 
     filter = FilterParser.FilterParser(checking=1)
     filter.read(filename)
-    (action,action_option,matchline) = filter.firstmatch(recip, [sender])
+    (actions, matchline) = filter.firstmatch(recip, [sender])
     # print the results
     checking_msg = 'Checking ' + filename
     print checking_msg
@@ -387,7 +387,7 @@ def filter_match(filename, recip, sender=None):
     if sender:
         print 'From:',sender
     print '-' * len(checking_msg)
-    if action:
+    if actions:
         print 'MATCH:', matchline
     else:
         print 'Sorry, no matching lines.'

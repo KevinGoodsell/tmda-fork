@@ -29,6 +29,8 @@ Contributions:
 
     * Brian Lalor -- testing the initial Sendmail support; bugfixes.
 
+    * Tim Legant -- support for multi-line, multi-action filter files.
+
     * Adam McKenna -- creator/maintainer of the Debian package.
 
     * Ted Rathkopf -- support for "pre-extension" definitions in

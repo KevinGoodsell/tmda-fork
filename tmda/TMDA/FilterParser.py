@@ -37,102 +37,253 @@ class ParsingError(Error):
 
 
 class FilterParser:
+    bol_comment = re.compile(r'\s*#')
+
+    whitespace = re.compile(r'\s+')
+
+    source_match = re.compile(r"""
+    (?:( (?:(?:to|from)(?:-(?:file|cdb|dbm|mailman\.\S+))?)
+    | (?:(?:body|headers)(?:-file)?)
+    | size )
+    \ (?# NOTE: preceding character must be an actual space)
+    )? ( \S+ )""", re.VERBOSE | re.IGNORECASE)
+    
+    tag_action = re.compile(r'([A-Za-z][-\w]+) (\S+)')
+
+    in_action = re.compile(r'(bounce|reject|drop|exit|stop|ok|accept|deliver|confirm)',
+                           re.IGNORECASE)
+    
+    out_action = re.compile(r"""
+    ( (?:(?:bare|sender|dated)(?:=\S+)?)
+    | (?:(?:exp(?:licit)?|as|ext(?:ension)?|kw|keyword)=\S+)
+    | default )""", re.VERBOSE | re.IGNORECASE)
+    
+    action_option = re.compile(r'(\w+)(?:=(\S+))?')
+
+
     def __init__(self, checking=None):
-        self.action = None
-        self.action_option = None
         self.checking = checking
         
 
     def read(self, filename):
         """Open and read the named filter file.  Files that cannot be opened
         are silently ignored."""
+	self.filename = filename
         self.filterlist = []
+	self.__lineno = 0
+	self.__rule_lineno = 0
+	self.__pushback = None
+        self.__exception = None
+
         if os.path.exists(filename):
             try:
                 fp = open(filename)
+                self.__parse(fp)
+                fp.close()
             except IOError:
                 pass
-            self.__parse(fp, filename)
-            fp.close()
 
 
-    def __parse(self, fp, fpname):
+    def __parse(self, fp):
         """
         Parse the filter file.  Comment lines, blank lines, and lines
-        with invalid syntax are ignored.  The rest are appended to a
-        list (self.filterlist) which is where the actual matching will
-        take place.
+        with invalid syntax are ignored.  Each rule is parsed and, if
+	successful, a tuple describing the rule is added to a list
+	(self.filterlist) which is where the actual matching will
+        take place.  [See __parserule()]
+
+	Errors are silently ignored unless self.checking is true.  If
+	self.checking is true, a ParsingError exception is built up,
+	with detailed error messages and, after parsing is completed,
+	the exception is raised.
         """
-        lineno = 0
-        e = None                        # None, or an exception
-        while 1:
-            line = fp.readline()
-            if not line:                # exit loop if out of lines
-                break
-            lineno = lineno + 1
-            line = string.strip(line)
-            # comment or blank line?
-            if line == '' or line[0] in '#':
-                continue
-            else:
-                line = string.expandtabs(line)
-                line = string.split(line, ' #')[0]
-                line = string.strip(line)
-            # Skip line if it's not composed of exactly 3 elements.
-            if len(string.split(line,None)) == 3:
-                self.filterlist.append(line)
-            else:
-                # A non-fatal parsing error occurred.  Set up the
-                # exception but keep going. The exception will be
-                # raised at the end of the file and will contain a
-                # list of all bogus lines.
-                if not e and self.checking:
-                    e = ParsingError(fpname)
-                if self.checking:
-                    e.append(lineno, `line`)
+	while 1:
+	    rule_line = self.__readrule(fp)
+	    if not rule_line:
+		break
+	    rule = self.__parserule(rule_line)
+	    if rule:
+		self.filterlist.append(rule)
+
         # If any parsing errors occurred and we are running in check
         # mode, raise an exception.
-        if e:
-            raise e
+        if self.__exception:
+            raise self.__exception
 
+
+    def __readrule(self, fp):
+        rule = None
+
+        while 1:
+	    if self.__pushback:
+		rule = self.__pushback
+		self.__pushback = None
+		self.__rule_lineno = self.__lineno
+
+	    original_line = fp.readline()
+	    if not original_line:            # exit loop if out of lines
+	        break
+	    self.__lineno = self.__lineno + 1
+            # comment at beginning of line, with or without leading whitespace
+            if self.bol_comment.match(original_line):
+                continue
+	    # collapse any sequence of whitespace to a single space
+	    line = self.whitespace.sub(' ', original_line)
+            # lose end-of-line comments and trailing whitespace
+            line = string.split(line, ' #')[0]
+            line = string.rstrip(line)
+            # empty line may signify end of current rule
+            if line == '':
+                if rule:
+		    break
+                continue
+            # may be a line with leading whitespace - a rule continuation
+            elif line[0] == ' ':
+		if rule:
+		    rule = rule + line
+		else:
+		    # add to ParseError exception
+		    self.__adderror(self.__lineno, original_line)
+            # line without leading whitespace signifies beginning of new rule
+	    #  (and maybe the end of the current rule)
+            else:
+		if rule:
+		    self.__pushback = line
+		    break
+		else:
+		    rule = line
+		    self.__rule_lineno = self.__lineno
+	return rule
+
+
+    def __parserule(self, rule_line):
+	"""
+	Parse a single rule from a filter file.  If successful, return a tuple
+	with three fields.  The three fields are:
+	
+	  source    - string: to*, from*, body, headers, size, default
+	  match     - string: the email address to be matched against
+	  actions   - dictionary: a dictionary with a key of 'action' and
+                      a value that is a tuple. The value tuple contains
+                      the 'cookie' type and the 'cookie' option. Ex:
+                        { 'accept' : ( None, None ) }           # incoming
+                        { 'from' : ( 'exp', 'tim@catseye.net' ) # outgoing
+                      In the case of the outgoing filter, the dictionary may have
+                      more than one entry. In fact, that's the reason we use a
+                      dictionary. The rather silly looking incoming entry is a
+                      usable, but unfortunate consequence of providing a useful
+                      data structure for tmda-inject.
+	"""
+	rule = None
+	# first, get the source and the match
+	mo = self.source_match.match(rule_line)
+	if not mo:
+	    self.__adderror(self.__rule_lineno, rule_line)
+	else:
+	    (source, match) = mo.groups()
+	    if not source:
+		# missing source!
+		self.__adderror(self.__rule_lineno, rule_line)
+	    else:
+		action_line = rule_line[mo.end()+1:]
+                actions = self.__buildactions(action_line, rule_line)
+		if actions:
+		    rule = (source, match, actions)
+		else:
+		    # missing action!
+		    self.__adderror(self.__rule_lineno, action_line)
+	return rule
+
+
+    def __adderror(self, lineno, line, error=''):
+        """
+        Create a new exception object if necessary and append the latest
+        error to it. This only takes place if self.checking is true.
+        """
+	# A non-fatal parsing error occurred.  Set up the
+	# exception but keep going. The exception will be
+	# raised at the end of the file and will contain a
+	# list of all bogus lines.
+	if self.checking:
+	    if not self.exception:
+		self.exception = ParsingError(self.filename)
+	    self.exception.append(lineno, `line`)
+
+
+    def __buildactions(self, action_line, rule_line=None):
+	"""
+	Build and return a dictionary of actions. The dictionary structure is
+        described in the documentation for the __parserule function.
+	"""
+	actions = None
+	if action_line[:len('tag ')] == 'tag ':
+	    action_line = action_line[len('tag '):]
+	    while len(action_line) > 0:
+		mo = self.tag_action.match(action_line)
+                if not mo:
+                    # must not be two fields
+                    self.__adderror(self.__rule_lineno, rule_line)
+		    break
+		header = string.lower(mo.group(1))
+		action = mo.group(2)
+		if self.out_action.match(action):
+                    if not actions:
+                        actions = {}
+		    actions[header] = splitaction(action)
+		else:
+		    # malformed action
+		    self.__adderror(self.__rule_lineno, action)
+		action_line = action_line[mo.end()+1:]
+	else:
+	    mo = self.in_action.match(action_line)
+	    if mo:
+		if len(action_line) == len(mo.group(1)):
+                    actions = { action_line : (None, None) }
+		else:
+		    # invalid incoming action (extra stuff on line)
+		    self.__adderror(self.__rule_lineno, rule_line)
+	    else:
+		mo = self.out_action.match(action_line)
+		if mo:
+		    if len(action_line) == len(mo.group(1)):
+                        actions = { 'from' : splitaction(action_line) }
+		    else:
+			# invalid outgoing action
+			self.__adderror(self.__rule_lineno, rule_line)
+	return actions
+	
 
     def firstmatch(self, recipient, senders=None,
                    msg_body=None, msg_headers=None, msg_size=None):
-        """Iterate over each line in the list looking for a match.  As
+        """Iterate over each rule in the list looking for a match.  As
         soon as a match is found exit, returning the corresponding
-        action, action option, and matching line.  Expects each line
-        to have valid syntax."""
+        action dictionary and matching line.
+        """
         line = None
-        for line in self.filterlist:
-            self.action = None
-            self.action_option = None
-            (source,match,action) = string.split(line,None)
+	found_match = None
+        for (source, match, actions) in self.filterlist:
             source = string.lower(source)
             if source in ('from', 'to'):
-                findmatch = None
                 if source == 'from' and senders:
-                    findmatch = Util.findmatch([string.lower(match)],senders)
+		    found_match = Util.findmatch([string.lower(match)],senders)
                 elif source == 'to' and recipient:
-                    findmatch = Util.findmatch([string.lower(match)],[recipient])
-                if findmatch:
-                    self.action = action
-                    break
+		    found_match = Util.findmatch([string.lower(match)],[recipient])
+		if found_match:
+		    break
             if source in ('from-file', 'to-file'):
                 match_list = []
                 match = os.path.expanduser(match)
                 match_list = Util.file_to_list(match,match_list)
-                file_match = None
                 if source == 'from-file' and senders:
-                    file_match = Util.findmatch(match_list,senders)
+                    found_match = Util.findmatch(match_list,senders)
                 elif source == 'to-file' and recipient:
-                    file_match = Util.findmatch(match_list,[recipient])
-                if file_match:
+                    found_match = Util.findmatch(match_list,[recipient])
+                if found_match:
                     # The second column of the line may contain an
                     # overriding action specification.
-                    if file_match != 1:
-                        self.action = file_match
-                    else:           
-                        self.action = action
+                    if found_match != 1:
+			actions = self.__buildactions(found_match)
+			found_match = 1 # it's already true, but everywhere else it's 1
                     break
             # DBM-style databases.
             if source in ('from-dbm', 'to-dbm'):
@@ -145,17 +296,17 @@ class FilterParser:
                 dbm = anydbm.open(match,'r')
                 for key in keys:
                     if key and dbm.has_key(string.lower(key)):
+			found_match = 1
                         dbm_value = dbm[string.lower(key)]
                         # If there is an entry for this key,
                         # we consider it an overriding action
                         # specification.
                         if dbm_value:
-                            self.action = dbm_value
-                        else:
-                            self.action = action
+                            actions = self.__buildactions(dbm_value)
                         dbm.close()
                         break
-                if self.action: break
+                if found_match:
+		    break
             # DJB's constant databases; see <http://cr.yp.to/cdb.html>.
             if source in ('from-cdb', 'to-cdb'):
                 match = os.path.expanduser(match)
@@ -167,17 +318,17 @@ class FilterParser:
                 cdb = cdb.init(match)
                 for key in keys:
                     if key and cdb.has_key(string.lower(key)):
+			found_match = 1
                         cdb_value = cdb[string.lower(key)]
                         # If there is an entry for this key,
                         # we consider it an overriding action
                         # specification.
                         if cdb_value:
-                            self.action = cdb_value
-                        else:
-                            self.action = action
+                            actions = self.__buildactions(cdb_value)
                         break
-                if self.action: break
-            # Extract addresses from a Mailman list-configuration `database'.
+                if found_match:
+		    break
+            # Mailman list-configuration databases.
             if (source[:len('from-mailman')] == 'from-mailman' or
                 source[:len('to-mailman')] == 'to-mailman'):
                 match = os.path.expanduser(match)
@@ -208,9 +359,10 @@ class FilterParser:
                      mmdb_addylist = mmdb_data[mmdb_key].keys()
                 for addy in keys:
                     if string.lower(addy) in mmdb_addylist:
-                        self.action = action
+                        found_match = 1
                         break
-                if self.action: break
+                if found_match:
+		    break
             if source in ('body', 'headers'):
                 if source == 'body' and msg_body:
                     content = msg_body
@@ -219,7 +371,7 @@ class FilterParser:
                 else:
                     content = None
                 if content and re.search(match,content,(re.M|re.I)):
-                    self.action = action
+		    found_match = 1
                     break
             if source in ('body-file','headers-file'):
                 match_list = []
@@ -233,30 +385,64 @@ class FilterParser:
                     content = None
                 for expr in match_list:
                     if content and re.search(expr,content,(re.M|re.I)):
-                        self.action = action
+                        found_match = 1
                         break
-                if self.action: break
+                if found_match:
+		    break
             if source == 'size' and msg_size:
                 match_list = list(match)
                 operator = match_list[0] # first character should be < or >
                 bytes = string.join(match_list,'')[1:] # rest is the size
-                comparison = None
+                found_match = None
                 if operator == '<':
-                    comparison = int(msg_size) < int(bytes)
+                    found_match = int(msg_size) < int(bytes)
                 elif operator == '>':
-                    comparison = int(msg_size) > int(bytes)
-                if comparison:
-                    self.action = action
+                    found_match = int(msg_size) > int(bytes)
+                if found_match:
                     break
-        # Split the action=option apart if possible.
-        try:
-            (self.action, self.action_option) = string.split(self.action, '=')
-        except AttributeError:          # empty action (no matches)
-            pass
-        except TypeError:               # Python 1.x returns TypeError for above
-            pass
-        except ValueError:              # empty action_option
-            pass
-        # Make sure action is all lowercase.
-        if self.action:self.action = string.lower(self.action)
-        return self.action, self.action_option, line
+	if found_match:
+	    line = str(source) + ' ' + str(match) + ' ' + _actionstr(actions)
+	else:
+	    actions = None
+	return actions, line
+
+
+def _actionstr(actions):
+    """
+    Build string from action dictionary.
+    """
+    line = ''
+    if actions:
+	for header, action in actions.items():
+	    mo = FilterParser.in_action.match(header)
+	    if mo:
+		line = line + header
+	    else:
+		action_line = _cookiestr(action)
+		mo = FilterParser.out_action.match(action_line)
+		if mo:
+		    if len(line) == 0:
+			line = line + 'tag'
+		    line = line + ' ' + header + ' ' + action_line
+    return line
+
+
+def _cookiestr(action):
+    line = str(action[0])
+    if action[1]:
+	line = line + '=' + str(action[1])
+    return line
+
+
+def splitaction(action):
+    """
+    Split the action at the '=' and return a tuple of the two
+    parts. If there is no '=', the second field in the tuple will
+    be None. If the first part of the action cannot be matched,
+    the returned tuple will be (None, None).
+    """
+    # Split the action=option apart if possible.
+    mo = FilterParser.action_option.match(action)
+    if mo:
+        return string.lower(mo.group(1)), mo.group(2)
+    return None, None
