@@ -185,6 +185,17 @@ if not vars().has_key('BOUNCE_ENV_SENDER'):
 if not vars().has_key('BARE_APPEND'):
     BARE_APPEND = None
 
+# CONFIRM_ADDRESS
+# An optional e-mail address to use for creating confirmation
+# addresses.  Normally, the recipient address is used, but in some
+# virtual domain or forwarding scenarios, you may wish to have
+# confirmation address be based on a fixed address regardless of the
+# recipient address.
+#
+# No default
+if not vars().has_key('CONFIRM_ADDRESS'):
+    CONFIRM_ADDRESS = None
+
 # CONFIRM_APPEND
 # Filename to which a sender's e-mail address should be automatically
 # appended once they confirm a message.  This can be used to implement
@@ -192,7 +203,7 @@ if not vars().has_key('BARE_APPEND'):
 # No default
 if not vars().has_key('CONFIRM_APPEND'):
     CONFIRM_APPEND = None
-
+    
 # CONFIRM_CC
 # An optional e-mail address which will be sent a copy of any message
 # that triggers a confirmation request.

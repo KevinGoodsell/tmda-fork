@@ -60,6 +60,8 @@ import os                                      # don't remove
 
 # CONFIRM_ACCEPT_TEMPLATE = "/full/path/to/confirm_accept.txt"
 
+# CONFIRM_ADDRESS = "jdoe@domain.dom"
+
 # CONFIRM_APPEND = "/full/path/to/whitelist"
 
 # CONFIRM_CC = "jdoe-confirm@domain.dom"

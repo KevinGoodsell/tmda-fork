@@ -55,6 +55,8 @@ def make_confirm_cookie(time,pid,keyword=None):
 def make_confirm_address(address,time,pid,keyword):
     """Return a full confirmation-style e-mail address."""
     confirm_cookie = make_confirm_cookie(time,pid,keyword)
+    if Defaults.CONFIRM_ADDRESS:
+        address = Defaults.CONFIRM_ADDRESS
     (username, hostname) = string.split(address,'@')
     confirm_address = username + Defaults.RECIPIENT_DELIMITER + 'confirm' \
                       + Defaults.RECIPIENT_DELIMITER + keyword + '.' \

@@ -1,5 +1,10 @@
 2002-02-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Cookie.py (make_confirm_address): Use Defaults.CONFIRM_ADDRESS
+	if set.
+
+	* Defaults.py (CONFIRM_ADDRESS): New variable.
+
 	* Deliver.py (Deliver.__deliver_mbox): New method to reliably
 	deliver a message into an mboxrd-format mbox.
 
