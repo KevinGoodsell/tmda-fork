@@ -38,9 +38,13 @@ QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*")
 UnquotedString = re.compile(r"^(\S+)\s*")
 HomeDirSearch  = re.compile("^~/")
 
-# CGI error classes
+# CGI exception classes
 class NotInstalled(Errors.TMDAError):
   "TMDA won't run because the user has not installed it."
+  pass
+
+class JustLoggedIn(Errors.TMDAError):
+  "Not really an error, but used to trigger a setting of initial variables."
   pass
 
 def Size(MsgObj):

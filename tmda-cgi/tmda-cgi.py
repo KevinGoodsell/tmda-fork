@@ -25,13 +25,18 @@ import cgi
 import os
 import sys
 
+# Pick up the TMDA and TMDA/pythonlib directories to get any overrides of
+# standard modules and packages.  Note that these must go at the very front of
+# the path for this reason.
 sys.path.insert(0, os.environ["TMDA_BASE_DIR"])
+sys.path.insert(0, os.path.join(os.environ["TMDA_BASE_DIR"], "TMDA",
+  "pythonlib"))
+from TMDA import Errors
+
 import CgiUtil
 import MyCgiTb
 import Session
 import Template
-
-from TMDA import Errors
 
 # Prepare the traceback in case of uncaught exception
 MyCgiTb.Content()
@@ -60,16 +65,26 @@ Form = cgi.FieldStorage()
 
 # Get any persistent variables
 try:
-  PVars = Session.Session(Form)
-  CgiUtil.ErrTemplate = "error.html"
-except CgiUtil.NotInstalled, (ErrStr, PVars):
-  Template.Template.Dict["ErrMsg"] = ErrStr
-  # Can log in but TMDA is not installed
-  import Install
-  Install.Form  = Form
-  Install.PVars = PVars
-  Install.Show()
-  sys.exit()
+  try:
+    PVars = Session.Session(Form)
+    CgiUtil.ErrTemplate = "error.html"
+  except CgiUtil.NotInstalled, (ErrStr, PVars):
+    Template.Template.Dict["ErrMsg"] = ErrStr
+    # Can log in but TMDA is not installed correctly
+    if ErrStr[0].find("must be chmod 400 or 600") < 0:
+      # Serious error.  Suggest an install
+      import Install
+      Install.Form  = Form
+      Install.PVars = PVars
+      Install.Show()
+      sys.exit()
+    else:
+      CgiUtil.TermError("crypt_key permissions.", "Bad permissions.",
+        "reading crypt_key", ErrStr, "Fix permissions on crypt_key.")
+except CgiUtil.JustLoggedIn, (ErrStr, PVars):
+  PVars["Pager"]     = 0
+  PVars["InProcess"] = {}
+  PVars.Save()
 
 # First visit to any page?
 if not Form.keys():
@@ -94,17 +109,12 @@ elif not PVars.Valid:
     Login.Show()
 
 elif Form.has_key("cmd"):
-  # Just log in?
-  if Form.has_key("user"):
-    PVars["Pager"]     = 0
-    PVars["InProcess"] = {}
-    PVars.Save()
-    
   import EditFilter
   import EditList
   import GenAddr
   import GlobalConfig
   import Info
+  import Install
   import LocalConfig
   import PendList
   import TestAddr
@@ -119,6 +129,7 @@ elif Form.has_key("cmd"):
   EditList.Form     = Form
   GenAddr.PVars     = PVars
   GenAddr.Form      = Form
+  Install.PVars     = PVars
   Install.Form      = Form
   LocalConfig.PVars = PVars
   LocalConfig.Form  = Form
@@ -142,10 +153,16 @@ elif Form.has_key("cmd"):
     GlobalConfig.Show()
   elif Form["cmd"].value == "info":
     Info.Show()
+  elif Form["cmd"].value == "install":
+    pass
   elif Form["cmd"].value == "localconfig":
     LocalConfig.Show()
   elif Form["cmd"].value == "pending":
     PendList.Show()
+  elif Form["cmd"].value == "restore":
+    pass
+  elif Form["cmd"].value == "uninstall":
+    Install.Show()
   elif Form["cmd"].value == "view":
     try:
       View.Show()

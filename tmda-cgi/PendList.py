@@ -29,6 +29,7 @@ import time
 import CgiUtil
 import Template
 from TMDA import Defaults
+from TMDA import Errors
 from TMDA import Pending
 
 # Pre-calc the regular expressions
@@ -45,14 +46,14 @@ def Show():
     if Form["subcmd"].value == "batch":
       for Count in range(int(PVars[("PendingList", "PagerSize")])):
         if Form.has_key("a%d" % Count):
-          # Check to make sure they're not trying to access anything other than 
+          # Check to make sure they're not trying to access anything other than
           # email
           if not GoodFN.search(Form["m%d" % Count].value):
             CgiUtil.TermError("<tt>%s</tt> is not a valid message ID." %
               Form["m%d" % Count].value, "Program error / corrupted link.",
               "retrieve pending e-mail", "",
               "Recheck link or contact TMDA programmers.")
-          
+
           if Form["a%d" % Count].value == "pass": continue
           try:
             MsgObj = Pending.Message(Form["m%d" % Count].value)
@@ -72,10 +73,13 @@ def Show():
 
   # Locate messages in pending dir
   Queue = Pending.Queue(descending = 1, cache = 1)
-  Queue.initQueue()
-  Queue._loadCache()
-  Msgs = Queue.listPendingIds()
-  
+  try:
+    Queue.initQueue()
+    Queue._loadCache()
+    Msgs = Queue.listPendingIds()
+  except Errors.QueueError:
+    Msgs = []
+
   # Any messages no longer "in process"?
   for PMsg in PVars["InProcess"].keys()[:]:
     try:
@@ -85,7 +89,7 @@ def Show():
 
   # Load the display template
   T = Template.Template("pending.html")
-  
+
   # Find the message numbers we'll display
   FirstMsg = PVars["Pager"]
   if Form.has_key("subcmd"):
@@ -140,7 +144,7 @@ width="11" height="18" alt="Next">"""
 width="18" height="18" alt="Last">"""
   else:
     T["DispRange"] = ""
-  
+
   # Update session
   PVars["Pager"] = FirstMsg
   PVars.Save()
@@ -204,16 +208,16 @@ function TestConfirm()
     InProcMsg = ""
     for Msg in Msgs[FirstMsg:LastMsg]:
       T["MsgID"] = Msg
-      
+
       # Print a single message record inside list loop
       try:
         MsgObj = Pending.Message(Msg)
       except IOError:
         pass
-  
+
       # Message size
       T["Size"] = CgiUtil.Size(MsgObj)
-  
+
       # Find preferred date
       Date = time.strftime \
       (
@@ -221,7 +225,7 @@ function TestConfirm()
         time.localtime(int(MsgObj.msgid.split('.')[0]))
       )
       T["Date"] = ZeroSearch.sub(ZeroSub, Date)
-  
+
       # Subject:
       if not MsgObj.msgobj["subject"]:
         Subject = "None"
@@ -233,7 +237,7 @@ function TestConfirm()
         else:
           Subject = cgi.escape(Subject)
       T["Subject"] = Subject
-      
+
       # From:
       if not MsgObj.msgobj["from"]:
         From = ""
@@ -248,7 +252,7 @@ function TestConfirm()
       else:
         From = cgi.escape(From)
       T["Sender"] = From
-      
+
       if PVars["InProcess"].has_key(Msg):
         InProcess.Clear()
         InProcess.Add()
@@ -274,7 +278,7 @@ function TestConfirm()
 
         Row.Add()
         Count = Count + 1
-  
+
   # No messages to display
   else:
     T["Row"] = '<tr><td colspan="4" class="InProcess"><i>None.</i></td></tr>'

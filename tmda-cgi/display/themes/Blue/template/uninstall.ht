@@ -1,0 +1,30 @@
+Title: Uninstall TMDA?
+
+<h2>Uninstall</h2>
+<p>Would you like to uninstall TMDA from your e-mail account? Doing this will 
+  open you up to being spammed.</p>
+<p>If you would like to proceed, you must decide how you would like to handle 
+  any e-mails still in your pending directory. You may choose to release or 
+  delete them based on how long they have been sitting in your pending 
+  directory.</p>
+<form method="post" action="%(Script)s">
+<table border="1" align="center" cellpadding="20">
+  <tr>
+    <td align="center"><p>Yes, I would like to uninstall TMDA.</p>
+      <p><select name="release">
+<option value="0">Don't release anything. Delete it all.</option>
+<option value="1">Release all mail pending for less than a day.</option>
+<option value="3">Release all mail pending for less than three days.</option>
+<option value="7" selected>Release all mail pending for less than a week.</option>
+<option value="14">Release all mail pending for less than two weeks.</option>
+<option value="30">Release all mail pending for less than a month.</option>
+<option value="-1">Release all mail, regardless of age.</option>
+          </select></p>
+      <p>I understand that all messages not released will be deleted.</p>
+      <p><input type="submit" value="Uninstall"></p>
+      <input type="hidden" name="SID" value="%(SID)s">
+      <input type="hidden" name="cmd" value="uninstall">
+      <input type="hidden" name="subcmd" value="go">
+    </td>
+  </tr>
+</table></form>

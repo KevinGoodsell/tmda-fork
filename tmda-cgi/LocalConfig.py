@@ -22,8 +22,11 @@
 "Local config file editor for tmda-cgi."
 
 import os
+import re
+
 import CgiUtil
 import Template
+
 from TMDA import Defaults
 
 def Show():
@@ -48,10 +51,16 @@ def Show():
     # Did they try to save?
     if Form.has_key("subcmd"):
       try:
+
+        # Make sure the list is properly formatted
+        Config = re.sub("\r\n", "\n", Form["config"].value)
+        Config = re.sub("\n*$", "", Config)
+        Config += "\n"
+
         F = open(Defaults.TMDARC, "w")
-        F.write(Form["config"].value)
+        F.write(Config)
         F.close()
-        T["FileContents"] = Form["config"].value
+        T["FileContents"] = Config
       except IOError, ErrStr:
         CgiUtil.TermError("Unable to save config file.",
         "Insufficient privileges", "save config", "%s<br>%s" % (ErrStr,

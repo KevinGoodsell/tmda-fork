@@ -22,8 +22,11 @@
 "Filter editor for tmda-cgi."
 
 import os
+import re
+
 import CgiUtil
 import Template
+
 from TMDA import Defaults
 
 def Show():
@@ -51,11 +54,21 @@ def Show():
   else:
     # Did they try to save?
     if Form.has_key("subcmd"):
+
+      # Make sure the list is properly formatted
+      if Form.has_key("filter"):
+        Contents = Form["filter"].value
+      else:
+        Contents = ""
+      Contents = re.sub("\r\n", "\n", Contents)
+      Contents = re.sub("\n*$", "", Contents)
+      Contents += "\n"
+
       try:
         F = open(Filename, "w")
-        F.write(Form["filter"].value)
+        F.write(Contents)
         F.close()
-        T["FileContents"] = Form["filter"].value
+        T["FileContents"] = Contents
       except IOError, ErrStr:
         CgiUtil.TermError("Unable to save filter.",
         "Insufficient privileges", "save filter", "%s<br>%s" % (ErrStr,

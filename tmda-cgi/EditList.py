@@ -34,6 +34,7 @@ def Show():
 
   # Load the display template
   T = Template.Template("editlist.html")
+  NoneList = T["NoneList"]
 
   # Find pre-calculated buttons
   Filename = os.path.join \
@@ -60,11 +61,26 @@ def Show():
             (Filename, SysButtons["other"])
   Files = Buttons.keys()
 
-  # Which filter are we editing?
-  if Form["cmd"].value == "editlist":
-    EditFile = Files[0]
+  if len(Files):
+    # Which filter are we editing?
+    if Form["cmd"].value == "editlist":
+      EditFile = Files[0]
+    else:
+      EditFile = Files[int(Form["cmd"].value[8:])]
+
+    # Get file
+    T["FilePath"] = EditFile
+    try:
+      F = open(EditFile)
+      T["FileContents"] = List = F.read()
+      F.close()
+    except IOError:
+      T["FileContents"] = ""
+
   else:
-    EditFile = Files[int(Form["cmd"].value[8:])]
+    # The user has no text-based lists defined in their filters.
+    T["NoLists"]
+    NoneList.Add()
 
   # Generate button HTML
   HTML = ""
@@ -84,15 +100,6 @@ def Show():
 height="%(height)d" alt=""" % Buttons[File][1]
       HTML += '"%s"></td></tr>\n' % Buttons[File][0]
   T["Lists"] = HTML
-
-  # Get file
-  T["FilePath"] = EditFile
-  try:
-    F = open(EditFile)
-    T["FileContents"] = List = F.read()
-    F.close()
-  except IOError:
-    T["FileContents"] = ""
 
   # Any subcommand?
   if Form.has_key("subcmd"):

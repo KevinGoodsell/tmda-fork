@@ -440,6 +440,9 @@ rights.""")
     # Become the user
     self.BecomeUser()
 
+    # Signal main program
+    raise CgiUtil.JustLoggedIn, ("Successful login", self)
+
   def CleanUp(self):
     if self.Rands.random() < float(os.environ["TMDA_SESSION_ODDS"]):
       # Go through all sessions and check a-times
