@@ -1,5 +1,8 @@
 2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-rfilter (bouncegen): Add original_message_body, a
+	variable containing the message body text.
+
 	* tmda-pending: Add --cache option to operate only on messages
 	which aren't stored in Defaults.PENDING_CACHE.
 
