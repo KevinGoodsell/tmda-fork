@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Nov 17 11:02:58 2001 -->
+<!-- Tue Dec  4 18:39:14 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -246,13 +246,58 @@ otherwise it goes through the confirmation process.
 <tr>
 <td>.qmail-default</td>
 <td><code>symbolic link<br> ($ ln -s ~/.qmail ~/.qmail-default)</code></td>
-<td>Catches jason-* as long as another dot-qmail file does not take priority.</td>
+<td>Catches jason-*@ as long as another dot-qmail file does not take priority.</td>
+</tr>
+
+</table>
+<br>
+
+You may decide that you don't want to use TMDA on your primary
+address, but would still like to set aside a secondary address which does.
+This would be useful not only for testing purposes, but also
+for using in public forums such as newgroups and mailing lists where
+the "harvesting" potential is high.
+<br><br>
+
+This can easily be accomplished with the dot-qmail interface.  For
+example, if I wanted only <em>jason-tmda@mastaler.com</em> to be
+processed by TMDA, I'd edit <b>.qmail-tmda</b> and make a link from
+there to <b>.qmail-tmda-default</b>.<br><br>
+
+<table border cellpadding=4 cellspacing=2>
+
+<tr>
+<th>dot-qmail file:</th>
+<th>file contents:</th>
+<th>action:</th>
+</td>
+
+<tr>
+<td>.qmail-tmda</td>
+<td><code>
+| /path/to/tmda/bin/tmda-filter<br>
+./Mailbox
+</code>
+</td>
+<td>
+
+Catches jason-tmda@.  If the message is legitimate, it
+will pass-through to the second line and get saved to "~/Mailbox",
+otherwise it goes through the confirmation process.
+
+</td>
+</tr>
+
+
+<tr>
+<td>.qmail-tmda-default</td>
+<td><code>symbolic link<br> ($ ln -s ~/.qmail-tmda ~/.qmail-tmda-default)</code></td>
+<td>Catches jason-tmda-*@</td>
 </tr>
 
 </table>
 </ol>
 <br>
-
 <hr>
 
 <a name="non-qmail"><h4>TMDA Server Configuration (non-qmail-only)</h4></a>

@@ -1,5 +1,7 @@
 2001-12-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config-server.ht (HREF): Add jason-tmda example.
+
 	* index.ht (Links): Move philosophical bit to the end of the page,
 	and also add bulk-mail characteristics to the assumptions section.
 	
