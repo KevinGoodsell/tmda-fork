@@ -1,3 +1,8 @@
+2002-05-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py (FilterParser.firstmatch): *-ezmlm sources now
+	match the parent directory DIR rather than DIR/subscribers.
+
 2002-05-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* MTA.py (MTA.deliver): Deliver the message according to

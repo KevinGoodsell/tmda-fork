@@ -532,9 +532,9 @@ class FilterParser:
                     raise MatchError(lineno, e._msg)
                 if found_match:
                     break
-            # ezmlm `subscribers' directories.
+            # ezmlm subscriber directories.
             if source in ('from-ezmlm', 'to-ezmlm'):
-                match = os.path.expanduser(match)
+                match = os.path.join(os.path.expanduser(match), 'subscribers')
                 ezmlm_list = []
                 # See ezmlm(5) for dir/subscribers format.
                 for file in os.listdir(match):

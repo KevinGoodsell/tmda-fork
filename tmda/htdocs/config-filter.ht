@@ -151,7 +151,7 @@ or <a href="http://list.org/" TARGET="Resource Window">Mailman</a> mailing list.
 <br><br>
 
 '-ezmlm' sources match addresses contained in ezmlm `subscribers' directories.
-The match field of an -ezmlm line should be the full path to the directory.
+The match field of an -ezmlm line should be the full path to the parent directory.
 <br><br>
 
 '-mailman' sources match addresses contained in a Mailman
@@ -488,8 +488,8 @@ from-mailman -attr=members ~mailman/lists/viewnet-news/config.db ok
 from-mailman -attr=digest_members ~mailman/lists/viewnet-news/config.db ok
 
 # ezmlm mailing list subscribers and digest subscribers
-from-ezmlm ~alias/all-acl-users/subscribers ok
-from-ezmlm ~alias/all-acl-users/digest/subscribers ok
+from-ezmlm ~alias/all-acl-users ok
+from-ezmlm ~alias/all-acl-users/digest ok
 
 # Revoked addresses
 to jason-stupid-promo.289076@mastaler.com bounce

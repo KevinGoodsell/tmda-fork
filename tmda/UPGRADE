@@ -21,6 +21,14 @@ If you are upgrading from a release of TMDA < 0.55:
 
   DELIVERY = "/var/mail/jasonrm"
 
+* You should no longer specify 'subscribers' when using a from-ezmlm
+  or to-ezmlm source.  Specify the parent directory instead, and
+  'subscribers' will automatically be appended.  e.g,
+
+  from-ezmlm ~alias/all-acl-users ok
+  from-ezmlm ~alias/all-acl-users/mod ok
+  from-ezmlm ~alias/all-acl-users/digest ok
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.52:
