@@ -1,18 +1,24 @@
 Title: Frequently Asked Questions
 
-<h2>Frequently Asked Questions</h2>
+<table width="100%">
+  <tr>
+    <td><h2>Frequently Asked Questions</h2></td>
+    <td valign="top" align="center">Would you prefer to read
+      <a href="http://tmda.net/faq.cgi">the official TMDA FAQ</a>?</td>
+  </tr>
+</table>
 
-<p><a href="#Free">Is it really free?</a><br>
-  <a href="#Annoy">Won't this challenge/response thing annoy people
-  who send me mail?</a><br>
-  <a href="#Quarantine">Can I look at the messages in quarantine to make
-  sure I'm not missing something important?</a><br>
-  <a href="#Automated">What about my mailing list and joke of the day?
-  How will that get past TMDA?</a><br>
-  <a href="#Replies">What about people I send mail to, do they get
-  challenged as well?</a><br>
-  <a href="#Uninstall">What if I change my mind? Can I get rid of TMDA
-  easily?</a></p>
+<a href="#Free">Is it really free?</a><br>
+<a href="#Annoy">Won't this challenge/response thing annoy people
+who send me mail?</a><br>
+<a href="#Quarantine">Can I look at the messages in quarantine to make
+sure I'm not missing something important?</a><br>
+<a href="#Automated">What about my mailing list and joke of the day?
+How will that get past TMDA?</a><br>
+<a href="#Replies">What about people I send mail to, do they get
+challenged as well?</a><br>
+<a href="#Uninstall">What if I change my mind? Can I get rid of TMDA
+easily?</a>
 
 <h3><a name="Free"></a>Is it really free?</h3>
 
