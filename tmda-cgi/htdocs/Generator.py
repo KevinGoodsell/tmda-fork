@@ -188,8 +188,8 @@ name="%s"''' % (alt, height, name)
     return Sidebar.get_sidebar(self)
 
   def get_banner(self):
-    return '''<img src="display/title.png" width="341" height="135"
-alt="TMDA (http://tmda.net) CGI Interface">'''
+    return '''<a href="/"><img src="display/title.png" width="341" height="135"
+border="0" alt="TMDA (http://tmda.net) CGI Interface"></a>'''
 
   def get_corner(self):
     # It is important not to have newlines between the img tag and the end
