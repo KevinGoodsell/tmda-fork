@@ -1,0 +1,23 @@
+Title: List Editor
+
+<table align="center">
+  <form method="post" action="%(Script)s">
+    <tr align="center" valign="top">
+      <td height="30" colspan="2"><b>%(FilePath)s:</b></td>
+    </tr>
+    <tr>
+      <td colspan="2"><textarea name="textarea" cols="30"
+        rows="15">%(FileContents)s</textarea></td>
+    </tr>
+    <tr align="center">
+      <td height="30" valign="bottom">
+        <a href="%(Script)s?cmd=blacklist&subcmd=sort&SID=%(SID)s">Sort</a>
+      </td>
+      <td valign="bottom">
+        <input type="submit" value="Save">
+        <input type="hidden" name="cmd" value="blacklist">
+        <input type="hidden" name="SID" value="%(SID)s">
+      </td>
+    </tr>
+  </form>
+</table>

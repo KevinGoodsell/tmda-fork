@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Sun Apr 13 22:43:41 2003 -->
+<!-- USING HT2HTML 2.1 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Generate Dynamic E-mail Addresses
+
+-->
+
+<head>
+<title>Generate Dynamic E-mail Addresses</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.1">
+<link rel="STYLESHEET" href="%(ThemeDir)s/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000"
+      onload="Preloader()"
+      link="#0000bb"  vlink="#551a8b"
+      alink="#ff0000">
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="700" height="100%" border="0"
+cellspacing="0" cellpadding="0"><tr><td valign="top"><table class="matte"
+width="100%" height="100%" border="0" cellspacing="0" cellpadding="0"><tr>
+<td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="194" height="135" valign="middle" bgcolor="#7B7CB6" class="corner"><img src="%(ThemeDir)s/corner.gif" width="194" height="135" alt=""></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="top" background="%(ThemeDir)s/top_bg.gif" bgcolor="#7B7CB6" class="banner"><img src="%(ThemeDir)s/title.png" width="327" height="135"
+alt="TMDA (http://tmda.net) CGI Interface"></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="194" background="%(ThemeDir)s/left_bg.gif" bgcolor="#7B7CB6" valign="top" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><a href="%(Script)s?cmd=gen_addr"
+onmouseover="document.images.x37.src='%(ThemeDir)s/dyn_buttons/layout1_r1_c1_h.png'"
+onmouseout="document.images.x37.src='%(ThemeDir)s/dyn_buttons/layout1_r1_c1.png'"><img
+src="%(ThemeDir)s/dyn_buttons/layout1_r1_c1.png" name="x37" height="50" width="194" border="0" alt="Addresses"></a></td></tr>
+<tr><td><img src="%(ThemeDir)s/dyn_buttons/h-subtopic2.png" border="0" alt=" - Generate Dynamic Return Address" width="194" height="28"
+name="subtopic2"></td></tr>
+<tr><td><a href="%(Script)s?cmd=test_addr" onmouseover="document.images.subtopic3.src='%(ThemeDir)s/dyn_buttons/h-subtopic3.png'"
+onmouseout="document.images.subtopic3.src='%(ThemeDir)s/dyn_buttons/subtopic3.png'"><img src="%(ThemeDir)s/dyn_buttons/subtopic3.png" border="0" alt=" - Test Dynamic Address" width="194" height="14"
+name="subtopic3"></a></td></tr>
+<tr><td><a href="%(Script)s?cmd=pending"
+onmouseover="document.images.x209.src='%(ThemeDir)s/dyn_buttons/layout1_r2_c1_h.png'"
+onmouseout="document.images.x209.src='%(ThemeDir)s/dyn_buttons/layout1_r2_c1.png'"><img
+src="%(ThemeDir)s/dyn_buttons/layout1_r2_c1.png" name="x209" height="35" width="194" border="0" alt="Pending"></a></td></tr>
+<tr><td><a href="%(Script)s?cmd=incoming"
+onmouseover="document.images.x294.src='%(ThemeDir)s/dyn_buttons/layout1_r3_c1_h.png'"
+onmouseout="document.images.x294.src='%(ThemeDir)s/dyn_buttons/layout1_r3_c1.png'"><img
+src="%(ThemeDir)s/dyn_buttons/layout1_r3_c1.png" name="x294" height="35" width="194" border="0" alt="Filters"></a></td></tr>
+<tr><td><a href="%(Script)s?cmd=editlist"
+onmouseover="document.images.x379.src='%(ThemeDir)s/dyn_buttons/layout1_r4_c1_h.png'"
+onmouseout="document.images.x379.src='%(ThemeDir)s/dyn_buttons/layout1_r4_c1.png'"><img
+src="%(ThemeDir)s/dyn_buttons/layout1_r4_c1.png" name="x379" height="35" width="194" border="0" alt="Lists"></a></td></tr>
+<tr><td><a href="%(Script)s?cmd=localconfig"
+onmouseover="document.images.x464.src='%(ThemeDir)s/dyn_buttons/layout1_r5_c1_h.png'"
+onmouseout="document.images.x464.src='%(ThemeDir)s/dyn_buttons/layout1_r5_c1.png'"><img
+src="%(ThemeDir)s/dyn_buttons/layout1_r5_c1.png" name="x464" height="35" width="194" border="0" alt="Settings"></a></td></tr>
+<tr><td><a href="%(Script)s?cmd=logout"
+onmouseover="document.images.x549.src='%(ThemeDir)s/dyn_buttons/layout1_r6_c1_h.png'"
+onmouseout="document.images.x549.src='%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png'"><img
+src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x549" height="35" width="194" border="0" alt="Logout"></a></td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" class="body"><p><b>Use this page to generate dynamic return addresses.</b></p>
+<p>Copy the addresss you want and paste it into any web forms that will
+  send you automated mailings. By using a generated address you won't have
+  to modify your filters to receive your mail.</p>
+<table>
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td>&nbsp;</td>
+      <td><b>Generate a &quot;keyword&quot; address.</b>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="90">Keyword:</td>
+            <td><input name="textfield" type="text" value="%(Keyword)s"
+              size="10">
+              <input type="submit" name="Submit" value="Generate">
+              <input type="hidden" name="cmd" value="gen_keyword">
+              <input type="hidden" name="SID" value="%(SID)s">
+            </td>
+          </tr>
+          <tr>
+            <td>Use address:</td>
+            <td><input name="textfield" type="text" value="%(KeywordAddr)s"
+              size="45"></td>
+          </tr>
+        </table>
+        You may have to revoke a keyword address if a spammer starts using
+        one.</td>
+    </tr>
+  </form>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td width="20">&nbsp;</td>
+      <td><b>Generate a &quot;dated&quot; address.</b>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="90">Expires in:</td>
+            <td><input name="exp_amt" type="text" value="%(ExpAmt)d" size="2">
+              <select name="exp_units">
+                <option%(MinutesSel)s>minutes</option>
+                <option%(HoursSel)s>hours</option>
+                <option%(DaysSel)s>days</option>
+                <option%(WeeksSel)s>weeks</option>
+                <option%(MonthsSel)s>months</option>
+                <option%(YearsSel)s>years</option>
+              </select>
+              <input type="submit" value="Generate">
+              <input type="hidden" name="cmd" value="gen_dated">
+              <input type="hidden" name="SID" value="%(SID)s">
+            </td>
+          </tr>
+          <tr>
+            <td>Use address:</td>
+            <td><input type="text" value="%(DatedAddr)s" size="45"></td>
+          </tr>
+        </table>
+        Users will typically have to confirm once a dated address expires.</td>
+    </tr>
+  </form>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td>&nbsp;</td>
+      <td><b>Generate a &quot;sender&quot; address.</b>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="90">Valid if from:</td>
+            <td><input name="textfield" type="text" value="%(Sender)s"
+              size="32">
+              <input type="submit" name="Submit" value="Generate">
+              <input type="hidden" name="cmd" value="gen_sender">
+              <input type="hidden" name="SID" value="%(SID)s">
+            </td>
+          </tr>
+          <tr>
+            <td>Use address:</td>
+            <td><input name="textfield" type="text" value="%(SenderAddr)s"
+              size="45"></td>
+          </tr>
+        </table>
+        Consult an e-mail's headers for the &quot;Return-Path&quot;
+          address.</td>
+    </tr>
+  </form>
+</table>
+</td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table></td></tr></table></td></tr></table><!-- end of page table -->
+<script>
+<!--
+function Preloader()
+{
+  var x37 = new Image();
+x37.src = "%(ThemeDir)s/dyn_buttons/layout1_r1_c1_h.png";
+var subtopic3 = new Image();
+subtopic3.src = "%(ThemeDir)s/dyn_buttons/h-subtopic3.png";
+  var x209 = new Image();
+x209.src = "%(ThemeDir)s/dyn_buttons/layout1_r2_c1_h.png";
+  var x294 = new Image();
+x294.src = "%(ThemeDir)s/dyn_buttons/layout1_r3_c1_h.png";
+  var x379 = new Image();
+x379.src = "%(ThemeDir)s/dyn_buttons/layout1_r4_c1_h.png";
+  var x464 = new Image();
+x464.src = "%(ThemeDir)s/dyn_buttons/layout1_r5_c1_h.png";
+  var x549 = new Image();
+x549.src = "%(ThemeDir)s/dyn_buttons/layout1_r6_c1_h.png";
+}
+//-->
+</script>
+</body></html>

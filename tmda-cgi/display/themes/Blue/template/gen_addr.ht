@@ -1,0 +1,93 @@
+Title: Generate Dynamic E-mail Addresses
+
+<p><b>Use this page to generate dynamic return addresses.</b></p>
+<p>Copy the addresss you want and paste it into any web forms that will
+  send you automated mailings. By using a generated address you won't have
+  to modify your filters to receive your mail.</p>
+<table>
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td>&nbsp;</td>
+      <td><b>Generate a &quot;keyword&quot; address.</b>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="90">Keyword:</td>
+            <td><input name="textfield" type="text" value="%(Keyword)s"
+              size="10">
+              <input type="submit" name="Submit" value="Generate">
+              <input type="hidden" name="cmd" value="gen_keyword">
+              <input type="hidden" name="SID" value="%(SID)s">
+            </td>
+          </tr>
+          <tr>
+            <td>Use address:</td>
+            <td><input name="textfield" type="text" value="%(KeywordAddr)s"
+              size="45"></td>
+          </tr>
+        </table>
+        You may have to revoke a keyword address if a spammer starts using
+        one.</td>
+    </tr>
+  </form>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td width="20">&nbsp;</td>
+      <td><b>Generate a &quot;dated&quot; address.</b>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="90">Expires in:</td>
+            <td><input name="exp_amt" type="text" value="%(ExpAmt)d" size="2">
+              <select name="exp_units">
+                <option%(MinutesSel)s>minutes</option>
+                <option%(HoursSel)s>hours</option>
+                <option%(DaysSel)s>days</option>
+                <option%(WeeksSel)s>weeks</option>
+                <option%(MonthsSel)s>months</option>
+                <option%(YearsSel)s>years</option>
+              </select>
+              <input type="submit" value="Generate">
+              <input type="hidden" name="cmd" value="gen_dated">
+              <input type="hidden" name="SID" value="%(SID)s">
+            </td>
+          </tr>
+          <tr>
+            <td>Use address:</td>
+            <td><input type="text" value="%(DatedAddr)s" size="45"></td>
+          </tr>
+        </table>
+        Users will typically have to confirm once a dated address expires.</td>
+    </tr>
+  </form>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td>&nbsp;</td>
+      <td><b>Generate a &quot;sender&quot; address.</b>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="90">Valid if from:</td>
+            <td><input name="textfield" type="text" value="%(Sender)s"
+              size="32">
+              <input type="submit" name="Submit" value="Generate">
+              <input type="hidden" name="cmd" value="gen_sender">
+              <input type="hidden" name="SID" value="%(SID)s">
+            </td>
+          </tr>
+          <tr>
+            <td>Use address:</td>
+            <td><input name="textfield" type="text" value="%(SenderAddr)s"
+              size="45"></td>
+          </tr>
+        </table>
+        Consult an e-mail's headers for the &quot;Return-Path&quot;
+          address.</td>
+    </tr>
+  </form>
+</table>

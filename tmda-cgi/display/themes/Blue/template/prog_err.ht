@@ -1,0 +1,7 @@
+Title: tmda-cgi Program Error
+
+%(ErrorMessage)s
+<!-- var: Lavender -->#C1C0DE<!-- /var -->
+<!-- var: Pink -->#AEAEFF<!-- /var -->
+<!-- var: Purple -->#7B7CB6<!-- /var -->
+<!-- var: Grey -->#91A2BD<!-- /var -->

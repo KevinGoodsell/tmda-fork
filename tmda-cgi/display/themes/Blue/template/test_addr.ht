@@ -1,0 +1,35 @@
+Title: Test Dynamic Address
+
+<p><strong>Use this page to test one of your addresses.</strong></p>
+<p>This diagnostic page will verify one of your addresses and answer the 
+  following nagging questions:</p>
+<ul>
+  <li>Is this a properly formed address?</li>
+  <li>When does this dated address expire?</li>
+  <li>Has this keyword been revoked?</li>
+  <li>Does this "sender" address work for this sender?</li>
+</li>
+<table align="center" cellpadding="10">
+  <form action="%(Script)s" method="post">
+    <tr>
+      <td>
+        Address to test:<br>
+        <input name="to" type="text" value="%(To)s" size="46">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Sender's address<br>
+        (leave blank unless you're testing a "sender" address)<br>
+        <input name="from" type="text" value="%(From)s" size="46">
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <input type="submit" value=" Test ">
+        <input name="SID" type="hidden" value="%(SID)s">
+        <input name="cmd" type="hidden" value="test_addr">
+      <td>
+    </tr>
+  </form>
+</table>

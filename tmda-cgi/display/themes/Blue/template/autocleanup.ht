@@ -1,0 +1,29 @@
+Title: Pending Auto-Cleanup Timeout
+
+<p>Pending directories tend to get cluttered over time and take up disk space
+  with spam that will never be confirmed. This wastes space on the server.</p>
+<p>To counter this waste, set up an auto-cleanup time (10 days, for example)
+  in the form below. This will delete all pending messages that have been
+  around for that long.</p>
+<p>Setting this value too short may result in a pending message being deleted
+  before it could be confirmed. Setting it too long will waste more disk
+  space.</p>
+<table align="center">
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td align="center">Delete all pending e-mails over </td>
+      <td align="center"><input name="textfield" type="text"
+        value="%(CleanTimeout)d" size="2"></td>
+      <td align="center"> days old</td>
+    </tr>
+    <tr>
+      <td colspan="3" align="center">
+        <input type="submit" name="Submit" value="Update">
+        <input type="hidden" name="cmd" value="autocleanup">
+        <input type="hidden" name="SID" value="%(SID)s">
+      </td>
+    </tr>
+  </form>
+</table>
+<p>Set this value to 0 if you do not want pending e-mails automatically
+  cleaned up (not recommended).</p>

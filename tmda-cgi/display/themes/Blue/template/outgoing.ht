@@ -1,0 +1,17 @@
+Title: Outgoing Filter
+
+<table align="center">
+  <tr> 
+    <td width="20%" valign="top">&nbsp;</td>
+    <td width="60%" height="30" align="center" valign="top">
+      <b>Outgoing Filter</b>
+    </td>
+    <td width="20%" height="30" align="right" valign="top">
+      <a href="%(Script)s?cmd=outgoing&subcmd=text&SID=%(SID)s">Text</a>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="3"><table border="0" cellspacing="0" cellpadding="0"
+      align="center">%(Diagram)s</table></td>
+  </tr>
+</table>

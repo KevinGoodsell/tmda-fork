@@ -1,0 +1,18 @@
+Title: Local Configuration File
+
+<table align="center">
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td height="30" align="center" valign="top"><b>%(FilePath)s:</b></td>
+    </tr>
+    <tr>
+      <td><textarea name="textarea" cols="64"
+        rows="15">%(FileContents)s</textarea>
+      </td>
+    </tr>
+    <tr align="center">
+      <td height="30" valign="bottom"><!-- var: SaveButton --><input
+        type="submit" value="Save"><!-- /var --></td>
+    </tr>
+  </form>
+</table>

@@ -1,0 +1,21 @@
+Title: tmda-cgi Error
+
+<p>tmda-cgi cannot continue because a terminal error has been encountered.</p>
+<table>
+  <tr> 
+    <td width="100" valign="top"><b>Error:</b></td>
+    <td>%(ErrorName)s</td>
+  </tr>
+  <tr> 
+    <td valign="top"><b>Cause:</b></td>
+    <td>%(Cause)s</td>
+  </tr>
+  <tr> 
+    <td valign="top"><b>Additional:</b></td>
+    <td>%(Additional)s</td>
+  </tr>
+  <tr>
+    <td valign="top"><b>Recommend:</b></td>
+    <td>%(Recommendation)s</td>
+  </tr>
+</table>
