@@ -3,5 +3,20 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 
 <h3>TMDA HOWTOs</h3>
 
-Special topics requiring more in-depth coverage.  See the HOWTOs sidebar 
-for a list of available documents.
+Special topics requiring more in-depth coverage.
+
+<ul>
+
+<li><a href="howto-template.html">Templates</a>: 
+how to customize your TMDA auto responses.
+<br><br>
+
+<li><a href="tmda-ofmipd.html">tmda-ofmipd</a>: 
+how to tag your outgoing mail through SMTP.
+<br><br>
+
+<li><a href="tmda-cgi.html">tmda-cgi</a>: 
+how to access your pending queue over the web.
+<br><br>
+
+</ul>
