@@ -641,7 +641,7 @@ def Show():
   # Make a substitution dictionary
   if os.environ.has_key( "USER" ):
     user = os.environ["USER"]
-  elif os.environ.has_key( "LOGNAME" )  
+  elif os.environ.has_key( "LOGNAME" ):
     user = os.environ["LOGNAME"]
   global Dict
   Dict = \
