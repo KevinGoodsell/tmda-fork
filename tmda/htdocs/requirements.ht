@@ -14,8 +14,8 @@ that offers TMDA as a service to its customers.
 
 <br><br>
 
-<li>TMDA currently runs only on UNIX-like systems, such as GNU/Linux,
-Solaris, *BSD, etc.  It should also work on Mac OS X but not earlier
+<li>TMDA currently runs only on UNIX-based systems, such as GNU/Linux,
+Solaris, *BSD, etc.  It also works on Mac OS X, but not earlier
 versions of Mac OS.  TMDA does not currently run on 
 <a href="http://tmda.net/faq.cgi?req=all#1.3" TARGET="Resource Window">Microsoft Windows</a>.
 
@@ -27,7 +27,7 @@ versions of Mac OS.  TMDA does not currently run on
 <br><br>
 
 <li>If you decide to give TMDA a whirl, make sure you have the necessary
-prerequisite software installed first.
+prerequisite software installed first.<br>
 
 <ol>
 
@@ -39,13 +39,11 @@ you have installed, try typing <strong>python</strong> and/or
 <strong>python2</strong> at your shell's command line:
 
 <blockquote><pre>
-
 % python
-Python 2.2.2 (#1, Oct 17 2002, 03:12:45) 
-[GCC 2.95.4 20020320 [FreeBSD]] on freebsd4
+Python 2.2.3 (#1, 06/02/03, 12:58:43) 
+[GCC Apple cpp-precomp 6.14] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
 >>> ^D
-
 </pre></blockquote>
 
 <li>An SMTP server (a.k.a. mail transport agent or MTA) for mail reception.

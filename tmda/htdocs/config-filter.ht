@@ -7,7 +7,7 @@ out of TMDA.  For incoming, the filter controls how the message is
 disposed of.  For outgoing, it controls how the message is tagged.
 The incoming filter file default is <b>~/.tmda/filters/incoming</b>,
 which can be changed by setting <b>FILTER_INCOMING</b> in your
-<b>tmda/config</b>.  The outgoing filter file default is
+<b>~/.tmda/config</b>.  The outgoing filter file default is
 <b>~/.tmda/filters/outgoing</b>, which can be changed by setting
 <b>FILTER_OUTGOING</b>.  
 <br><br>
@@ -402,7 +402,7 @@ brace (<code><b>}</b></code>), like this: <code>${TMDADIR}</code>.
 <br><br>
 
 A variable name is looked up first in the Defaults namespace (all of
-the configuration variables set in Defaults.py or your .tmda/config) and
+the configuration variables set in Defaults.py or your ~/.tmda/config) and
 then in the environment if it was not found in the Defaults
 namespace.  If it is still not found, the parser generates an error
 and the mail is deferred.  Variable names are case-sensitive.

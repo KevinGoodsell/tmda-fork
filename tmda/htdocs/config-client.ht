@@ -216,7 +216,7 @@ Send the message to all recipients from jason-mlist-xemacs-beta@mastaler.com
 </ul>
 </ul>
 
-<li>.tmda/config configuration:<br><br>
+<li>~/.tmda/config configuration:<br><br>
 
 Make sure that your <b>crypt_key</b> file is the same
 on both your mail server and your mail client -- they must match.

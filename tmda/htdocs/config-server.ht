@@ -37,7 +37,7 @@ filter file, or the sender address doesn't match any lines in your
 filter file, the incoming message will require confirmation.  The
 lines in your filter make exceptions to that rule.  You can also
 change the default by setting <strong>ACTION_INCOMING</strong> in your
-.tmda/config.  <br><br>
+~/.tmda/config.  <br><br>
 
 The most common use for the incoming filter is to create both a 
 "whitelist" (see the FAQ) to allow your trusted contacts
