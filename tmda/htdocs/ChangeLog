@@ -1,3 +1,8 @@
+2001-12-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht (Links): Add cygwin usage information to the Windows
+	client section.
+
 2001-11-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-filter.ht: Document the <> match expression.

@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Nov 28 09:38:32 2001 -->
+<!-- Sun Dec  2 19:33:52 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -189,18 +189,29 @@ when looking for a match.
 <a name="2">Will TMDA run on non-unix clients such as Microsoft Windows?</a>
 </b>
 <br><br>
+You do have a couple of options under Windows on the 
+<a href="config-client.html">client side</a> of TMDA.
 
-Not directly since the supported Mail Transfer Agents are only available for
-UNIX.  However, you can configure a qmail relay to re-write the
-address of outgoing messages with tmda-inject, so that those running
-Microsoft Windows clients can take full advantage of TMDA.  See
-`README.RELAY' in the contrib/ directory for the full details.
 <br><br>
-
-Also, here is one user's 
+You can configure a qmail relay to re-write the address of outgoing
+messages with tmda-inject, so that those running Microsoft Windows
+clients can take full advantage of TMDA.  See `README.RELAY' in the
+contrib/ directory or one user's
 <a href="http://mla.libertine.org/tmda-users/200108/msg00002.html" TARGET="Resource Window">
 configuration details</a> 
 for a site-wide TMDA install using smtpd-auth, vpopmail and qmailadmin.
+<br><br>
+
+TMDA also works perfectly under <a href="http://www.cygwin.com/" TARGET="Resource Window">
+cygwin</a> with the sSMTP sendmail emulation program (which comes with cygwin).
+Just add the following line your tmdarc:
+
+<blockquote><pre>
+SENDMAIL = "/usr/sbin/ssmtp.exe"
+</blockquote></pre>
+
+You'll then be able to tag your outgoing mail with cygwin-compatible
+MUAs (mutt, XEmacs, etc.) just as under UNIX.
 
 <hr>
 <li><b>
