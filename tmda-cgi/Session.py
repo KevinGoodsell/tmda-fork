@@ -383,11 +383,16 @@ rights.""")
           CgiUtil.TermError("Can't load virtual user stub.",
             "Cannot execute %s" % Filename, "execute stub",
             "TMDA_VLOOKUP = %s" % os.environ["TMDA_VLOOKUP"], "Recompile CGI.")
-        self.Vars["HOME"], self.Vars["UID"], self.Vars["GID"] = \
-          Sandbox["getuserparams"](List)
+        Params = Sandbox["getuserparams"](List)
+        self.Vars["HOME"], self.Vars["UID"], self.Vars["GID"] = Params[0:3]
+        if len(Params) > 3:
+          self.Vars["NAME"] = Params[3]
+        else:
+          self.Vars["NAME"] = None
       else:
         self.Vars["HOME"], self.Vars["UID"], self.Vars["GID"] = \
           Util.getuserparams(self.Vars["User"])
+        self.Vars["NAME"] = pwd.getpwuid(self.Vars["UID"])[4]
     except KeyError, str:
       Template.Template.Dict["ErrMsg"] = \
         "Username %s not found in system.\nstr=%s" % (self.Vars["User"], str)
@@ -395,8 +400,8 @@ rights.""")
     # When getuserparams returns a UID of 0 or 1, assume it is a virtual user
     if int(self.Vars["UID"]) < 2:
       PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
-      self.Vars["UID"] = PasswordRecord[2]
-      self.Vars["GID"] = PasswordRecord[3]
+      self.Vars["UID"]  = PasswordRecord[2]
+      self.Vars["GID"]  = PasswordRecord[3]
       if not int(self.Vars["UID"]):
         CgiUtil.TermError("TMDA_VUSER is UID 0.", "It is not safe to run "
           "tmda-cgi as root.", "set euid",

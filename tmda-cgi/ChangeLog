@@ -1,3 +1,12 @@
+2003-06-11  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added %(Name)s as a substitution variable during auto-install.
+
+	* Added login cookie to TODO list.
+
+	* Tweaked pending list code so it won't complain if it can't find a batch
+	  message.
+
 2003-06-06  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Added %(RealHome)s as a substitution variable during auto-install.

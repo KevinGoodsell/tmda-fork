@@ -633,6 +633,7 @@ def Show():
     "CryptKey":  KeyGen(),
     "Domain":    Util.gethostname(),
     "Home":      os.environ["HOME"],
+    "Name":      repr(PVars["NAME"]),
     "Parent":    "..",
     "RealHome":  pwd.getpwuid(os.geteuid())[5],
     "UrlDomain": os.environ["SERVER_NAME"],

@@ -24,15 +24,15 @@
 import re
 
 # Constants
-Matcher = re.compile("^([^:]+):\s*(\S+)")
+Matcher = re.compile("^([^:]+):\s*(\S.+)\s*$")
 
 def getuserparams(List):
   # Convert a list returned by vuserinfo into a dictionary
-  Dict = {}
+  Dict = {"uid": "0", "gid": "0", "gecos": None}
   for Line in List:
     Match = Matcher.search(Line)
     if Match:
       Dict[Match.group(1)] = Match.group(2)
 
   # Return the home directory, UID, and GID
-  return Dict["dir"], Dict["uid"], Dict["gid"]
+  return Dict["dir"], Dict["uid"], Dict["gid"], Dict["gecos"]

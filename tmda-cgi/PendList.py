@@ -219,7 +219,7 @@ width="18" height="18" alt="Last">"""
       # Print a single message record inside list loop
       try:
         MsgObj = Pending.Message(Msg)
-      except IOError, ErrStr:
+      except (IOError, Errors.MessageError), ErrStr:
         continue
 
       # Message size

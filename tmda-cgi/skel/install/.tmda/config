@@ -5,6 +5,7 @@ CONFIRM_APPEND = "%(Home)s/.tmda/lists/confirmed"
 DATADIR = "%(Home)s/.tmda/"
 FILTER_INCOMING = "%(Home)s/.tmda/filters/incoming"
 FILTER_OUTGOING = "%(Home)s/.tmda/filters/outgoing"
+FULLNAME = %(Name)s
 LOGFILE_DEBUG = "%(RealHome)s/tmdadebug.log"
 LOGFILE_INCOMING = "%(RealHome)s/tmdaincoming.log"
 LOGFILE_OUTGOING = "%(RealHome)s/tmdaincoming.log"

@@ -58,20 +58,25 @@ Title: Auto-installation & Auto-uninstallation
     <td>The path to the user's home directory.</td>
   </tr>
   <tr>
-    <td valign="top" nowrap><b><tt>%(Parent)s</tt></b></td>
-    <td>The constant string "<tt>..</tt>".</td>
+    <td valign="top" nowrap><b><tt>%(Name)s</tt></b></td>
+    <td>A quoted string or None, depending on whether user's real name is
+      available.</td>
   </tr>
   <tr>
-    <td valign="top" nowrap><b><tt>%(ShortUrlDom)s</tt></b></td>
-    <td>The domain name portion of the URL the user surfed up, without any
-      "www.", if present.<br>
-      Also see <tt>%(UrlDomain)s</tt>, below.</td>
+    <td valign="top" nowrap><b><tt>%(Parent)s</tt></b></td>
+    <td>The constant string "<tt>..</tt>".</td>
   </tr>
   <tr>
     <td valign="top" nowrap><b><tt>%(RealHome)s</tt></b></td>
     <td>The home directory for the real user in use. If a real user is logging
       in, then this is their home directory. If a virtual user is logging in,
       then this is typically <tt>/home/vpopmail</tt>.</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(ShortUrlDom)s</tt></b></td>
+    <td>The domain name portion of the URL the user surfed up, without any
+      "www.", if present.<br>
+      Also see <tt>%(UrlDomain)s</tt>, below.</td>
   </tr>
   <tr>
     <td valign="top" nowrap><b><tt>%(UrlDomain)s</tt></b></td>
