@@ -234,8 +234,11 @@ def Interactive(OptD):
     Ask("User name to use while accessing session data", OptD, "User")
     Ask("""Real user name to use when login is a virtual user (or "None" if no virtual
 users)""", OptD, "VUser")
-  Ask('Virtual user stub and parameters (or "None" if no virtual users)',
-    OptD, "VLookup")
+  if OptD["VUser"] == "None":
+    OptD["VLookup"] = "None"
+  else:
+    Ask('Virtual user stub and parameters (or "None" if no virtual users)',
+      OptD, "VLookup")
   Ask('Session path/file prefix', OptD, "SessionPrefix")
   Ask('Session expiration (seconds)', OptD, "SessionExp")
   Ask('Session cleanup odds (0.01 = 1%)', OptD, "SessionOdds")
