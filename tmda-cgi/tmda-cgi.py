@@ -46,6 +46,7 @@ import CgiUtil
 import CharSetAlias
 import Session
 import Unicode
+
 def Call(Library, Str = None):
   "Launch a library with the appropriate globals."
   Library.Form  = Form
@@ -57,6 +58,10 @@ def Call(Library, Str = None):
 
 # Capture WebUID
 Session.WebUID = os.getuid()
+
+# Clear out blank TMDARC
+if os.environ["TMDARC"] == "None":
+  del os.environ["TMDARC"]
 
 # Make some global stuff available to all
 Template.Template.Dict["Script"]   = os.environ["SCRIPT_NAME"]

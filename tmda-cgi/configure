@@ -414,7 +414,7 @@ if OptD["Config"] != "None":
 tmda-cgi will look for config files at: %s
 Where <user> will be replaced by the user's login name.
 """ % string.replace(OptD["Config"], "/~/", "/<user>/")
-  F.write('#define TMDARC "TMDARC=%(Config)s"\n' % OptD)
+F.write('#define TMDARC "TMDARC=%(Config)s"\n' % OptD)
 if OptD["AuthArg"] != "None":
   F.write("""#define AUTH_TYPE "TMDA_AUTH_TYPE=%(AuthType)s"
 #define AUTH_ARG "TMDA_AUTH_ARG=%(AuthArg)s"

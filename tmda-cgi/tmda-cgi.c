@@ -26,9 +26,7 @@ along with TMDA; if not, write to the Free Software Foundation, Inc.,
 int main(int argc, char *argv[])
 {
   int fd;
-#ifdef TMDARC
   putenv(TMDARC);
-#endif
 #ifdef AUTH_ARG
   putenv(AUTH_TYPE);
   putenv(AUTH_ARG);

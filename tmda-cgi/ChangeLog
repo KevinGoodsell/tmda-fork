@@ -1,3 +1,8 @@
+2003-05-21  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Closed a security hole.  We strongly recommend that any system using
+	  "default" authentication be upgraded.
+
 2003-05-20  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Removed Python 2.2 dependency.
