@@ -125,10 +125,33 @@ class Queue:
             self.stdout.write('\n')
         else:
             return
-    
+
     def listIds(self):
-        """Retrun the list of message identifiers."""
+        """Return the full list of message identifiers (both pending
+        and delivered)."""
         return self.msgs
+
+    def listConfirmedIds(self):
+        """Return the list of messages delivered by confirmation."""
+        return filter(lambda x: x.endswith(',C'), self.listIds())
+
+    def listReleasedIds(self):
+        """Return the list of messages delivered by release."""
+        return filter(lambda x: x.endswith(',R'), self.listIds())
+
+    def listDeliveredIds(self):
+        """Return the list of delivered (i.e, confirmed or released)
+        messages."""
+        return self.listConfirmedIds() + self.listReleasedIds()
+
+    def listPendingIds(self):
+        """Return the list of still pending (i.e, not yet confirmed or
+        released) messages."""
+        return filter(lambda x:
+                      x not in self.listDeliveredIds(), self.listIds()) + \
+               filter(lambda x:
+                      x not in self.listIds(), self.listDeliveredIds())
+        
     
     ## Cache related functions (-C option)
     def _loadCache(self):
