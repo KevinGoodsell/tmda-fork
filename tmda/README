@@ -21,7 +21,9 @@ Information on the TMDA mailing lists can be found at:
 		
 INSTALL says how to install and configure TMDA.
 
-UPGRADE contains upgrade instructions for users of TMDA < 0.10.
+FAQ contains answers to Frequently Asked Questions about TMDA.
+
+UPGRADE contains upgrade instructions from selected releases.
 
 CRYPTO explains the cryptography used in TMDA.
 
