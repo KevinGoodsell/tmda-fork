@@ -152,8 +152,8 @@ def make_msgid(timesecs=None, pid=None):
         import Defaults
         pid = Defaults.PID
     idhost = os.environ.get('QMAILIDHOST') or gethostname()
-    message_id = '<%s.%s.TMDA@%s>' % (int(timesecs), pid, idhost)
-    return message_id
+    msgid = '<%s.%s.TMDA@%s>' % (int(timesecs), pid, idhost)
+    return msgid
 
 
 def make_date(timesecs=None, localtime=1):
