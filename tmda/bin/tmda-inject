@@ -350,12 +350,15 @@ def main():
         x_tmda_over is None):
         sub = message_headers.getheader('subject')
         subsplit = sub.split(None, 2)
-        if subsplit[0].lower() == 'x-tmda':
+        if subsplit and subsplit[0].lower() == 'x-tmda':
             x_tmda_over = 1
             actions = { 'from' : FilterParser.splitaction(subsplit[1]) }
             log_msg = '%s: %s' % ('X-TMDA', subsplit[1])
             # Fixup Subject: before sending.
-            message_headers['Subject'] = subsplit[2:][0]
+            if subsplit[2:]:
+                message_headers['Subject'] = subsplit[2:][0]
+            else:
+                message_headers['Subject'] = ''
     # Without `X-TMDA', we need to parse the outgoing filter file.
     if x_tmda_over is None:
         outfilter = FilterParser.FilterParser()
