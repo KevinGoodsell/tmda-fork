@@ -186,7 +186,7 @@ def make_date(timesecs=None, localtime=1):
     return rfc2822date_tzname
 
 
-def file_to_dict(file,dict):
+def file_to_dict(file, dict):
     """Process and add then each line of a textfile to a dictionary."""
     for line in fileinput.input(file):
         line = string.strip(line)
@@ -202,7 +202,7 @@ def file_to_dict(file,dict):
     return dict
 
 
-def file_to_list(file,list):
+def file_to_list(file, list):
     """Process and then append each line of file to list."""
     for line in fileinput.input(file):
         line = string.strip(line)
@@ -234,7 +234,7 @@ def writefile(contents, fullpathname):
         file.close()
         
 
-def append_to_file(str,fullpathname):
+def append_to_file(str, fullpathname):
     """Append a string to a text file if it isn't already in there."""
     if os.path.exists(fullpathname):
         for line in fileinput.input(fullpathname):
@@ -302,39 +302,6 @@ def findmatch(list, addrs):
                         return stringparts[1]
                     except IndexError:
                         return 1
-
-
-def substring_match(substrings, *addrs):
-    """Determine whether any of the passed e-mail addresses match a
-    substring contained in substrings which might be a list or a file.
-    Currently unused."""
-    import types
-    regex = None
-    sublist = []
-    if type(substrings) is types.ListType:
-        for sub in substrings:
-            sublist.append(re.escape(sub))
-    # We assume a file if substrings is not a list.
-    else:                          
-        for line in fileinput.input(substrings):
-            line = string.strip(line)
-            # Comment or blank line?
-            if line == '' or line[0] in '#':
-                continue
-            else:
-                line = string.expandtabs(line)
-                line = string.split(line, ' #')[0]
-                line = string.strip(line)
-                sublist.append(re.escape(line))
-    # "address1|address2|address3|addressN"
-    regex = string.join(sublist,'|')
-    if regex:
-        reo = re.compile(regex, re.I)
-    else:
-        return 0
-    for address in addrs:
-        if address and reo.search(address):
-            return 1
 
 
 def maketext(templatefile, vardict):

@@ -9,6 +9,8 @@
 
 	(maketext): Ditto.
 
+	(substring_match): Removed.
+	
 2002-02-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (make_msgid): Change the idstring to 'TMDA', and reverse
