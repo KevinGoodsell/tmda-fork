@@ -1,3 +1,7 @@
+2001-09-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (TMDA_VERSION): Begin 0.37 development.
+
 2001-09-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (REVOKED_FILE): New variable pointing to the file
