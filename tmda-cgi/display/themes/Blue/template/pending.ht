@@ -15,19 +15,19 @@ Title: Pending E-mail
             <td align="center"><!-- var: FirstButt1 --><a
               href="%(Script)s?cmd=pending&subcmd=first&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
-              height="18" alt="First"></a><!-- /var --></td>
+              height="18" alt="First" title="First"></a><!-- /var --></td>
             <td align="center"><!-- var: PrevButt1 --><a
               href="%(Script)s?cmd=pending&subcmd=prev&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19"
-              height="18" alt="Prev"></a><!-- /var --></td>
+              height="18" alt="Prev" title="Prev"></a><!-- /var --></td>
             <td align="center"><!-- var: NextButt1 --><a
               href="%(Script)s?cmd=pending&subcmd=next&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18"
-              height="18" alt="Next"></a><!-- /var --></td>
+              height="18" alt="Next" title="Next"></a><!-- /var --></td>
             <td align="center"><!-- var: LastButt1 --><a
               href="%(Script)s?cmd=pending&subcmd=last&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
-              height="18" alt="Last"></a><!-- /var --></td>
+              height="18" alt="Last" title="Last"></a><!-- /var --></td>
             <td align="center"><font color="#FFFFFF">%(DispRange)s</font></td>
           </tr>
           <tr bgcolor="#DADCEB">
@@ -35,26 +35,26 @@ Title: Pending E-mail
               <tr valign="bottom">
                 <td height="24" width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c1.gif"
-                   width="20" height="15" alt="Leave">
+                   width="20" height="15" alt="Leave" title="Leave">
                 </td>
                 <td width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c2.gif"
-                   width="20" height="15" alt="Release">
+                   width="20" height="15" alt="Release" title="Release">
                 </td>
                 <td width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c3.gif"
-                   width="20" height="15" alt="Delete">
+                   width="20" height="15" alt="Delete" title="Delete">
                 </td>
               <!-- var: WhIcon -->
                 <td width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c4.gif"
-                   width="20" height="15" alt="Whitelist">
+                   width="20" height="15" alt="Whitelist" title="Whitelist">
                 </td>
               <!-- /var -->
               <!-- var: BlIcon -->
                 <td width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c5.gif"
-                   width="20" height="15" alt="Blacklist">
+                   width="20" height="15" alt="Blacklist" title="Blacklist">
                 </td>
               <!-- /var -->
                 <th width="150" align="left" style="padding-left: 20px">
@@ -125,19 +125,19 @@ Title: Pending E-mail
             <td align="center"><!-- var: FirstButt2 --><a
               href="%(Script)s?cmd=pending&subcmd=first&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
-              height="18" alt="First"></a><!-- /var --></td>
+              height="18" alt="First" title="First"></a><!-- /var --></td>
             <td align="center"><!-- var: PrevButt2 --><a
               href="%(Script)s?cmd=pending&subcmd=prev&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19"
-              height="18" alt="Prev"></a><!-- /var --></td>
+              height="18" alt="Prev" title="Prev"></a><!-- /var --></td>
             <td align="center"><!-- var: NextButt2 --><a
               href="%(Script)s?cmd=pending&subcmd=next&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18"
-              height="18" alt="Next"></a><!-- /var --></td>
+              height="18" alt="Next" title="Next"></a><!-- /var --></td>
             <td align="center"><!-- var: LastButt2 --><a
               href="%(Script)s?cmd=pending&subcmd=last&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
-              height="18" alt="Last"></a><!-- /var --></td>
+              height="18" alt="Last" title="Last"></a><!-- /var --></td>
             <td align="center"><font color="#FFFFFF">%(DispRange)s</font></td>
           </tr>
         </form>

@@ -8,38 +8,38 @@ Title: Pending E-mail
           <td><!-- var: FirstButt1 --><a
             href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
-            height="18" alt="First"></a><!-- /var --></td>
+            height="18" alt="First" title="First"></a><!-- /var --></td>
           <td><!-- var: PrevButt1 --><a
             href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19"
-            height="18" alt="Prev"></a><!-- /var --></td>
+            height="18" alt="Prev" title="Prev"></a><!-- /var --></td>
           <td><a href="%(DeleteURL)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c3.gif" border="0" width="21"
-            height="18" alt="Delete"></a></td>
+            height="18" alt="Delete" title="Delete"></a></td>
           <!-- var: BlIcon1 -->
             <td><a href="%(BlacklistURL)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c4.gif" border="0" width="59"
-              height="18" alt="Blacklist & Delete"></a></td>
+              height="18" alt="Blacklist & Delete" title="Blacklist & Delete"></a></td>
           <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=release&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c5.gif" border="0" width="21"
-            height="18" alt="Release"></a></td>
+            height="18" alt="Release" title="Release"></a></td>
           <!-- var: WhIcon1 -->
             <td><a href="%(Script)s?cmd=view&subcmd=white&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59"
-              height="18" alt="Whitelist & Release"></a></td>
+              height="18" alt="Whitelist & Release" title="Whitelist & Release"></a></td>
           <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56"
-            height="18" alt="Toggle Headers"></a></td>
+            height="18" alt="Toggle Headers" title="Toggle Headers"></a></td>
           <td><!-- var: NextButt1 --><a
             href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18"
-            height="18" alt="Next"></a><!-- /var --></td>
+            height="18" alt="Next" title="Next"></a><!-- /var --></td>
           <td><!-- var: LastButt1 --><a
             href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
-            height="18" alt="Last"></a><!-- /var --></td>
+            height="18" alt="Last" title="Last"></a><!-- /var --></td>
         </tr>
         <tr bgcolor="#DADCEB">
           <td colspan="%(Columns)d" class="email"><!-- var: Headers --><table
@@ -58,38 +58,38 @@ Title: Pending E-mail
           <td><!-- var: FirstButt2 --><a
             href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
-            height="18" alt="First"></a><!-- /var --></td>
+            height="18" alt="First" title="First"></a><!-- /var --></td>
           <td><!-- var: PrevButt2 --><a
             href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19"
-            height="18" alt="Prev"></a><!-- /var --></td>
+            height="18" alt="Prev" title="Prev"></a><!-- /var --></td>
           <td><a href="%(DeleteURL)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c3.gif" border="0" width="21"
-            height="18" alt="Delete"></a></td>
+            height="18" alt="Delete" title="Delete"></a></td>
           <!-- var: BlIcon2 -->
             <td><a href="%(BlacklistURL)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c4.gif" border="0" width="59"
-              height="18" alt="Blacklist & Delete"></a></td>
+              height="18" alt="Blacklist & Delete" title="Blacklist & Delete"></a></td>
           <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=release&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c5.gif" border="0" width="21"
-            height="18" alt="Release"></a></td>
+            height="18" alt="Release" title="Release"></a></td>
           <!-- var: WhIcon2 -->
             <td><a href="%(Script)s?cmd=view&subcmd=white&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59"
-              height="18" alt="Whitelist & Release"></a></td>
+              height="18" alt="Whitelist & Release" title="Whitelist & Release"></a></td>
           <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56"
-            height="18" alt="Toggle Headers"></a></td>
+            height="18" alt="Toggle Headers" title="Toggle Headers"></a></td>
           <td><!-- var: NextButt2 --><a
             href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18"
-            height="18" alt="Next"></a><!-- /var --></td>
+            height="18" alt="Next" title="Next"></a><!-- /var --></td>
           <td><!-- var: LastButt2 --><a
             href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
-            height="18" alt="Last"></a><!-- /var --></td>
+            height="18" alt="Last" title="Last"></a><!-- /var --></td>
         </tr>
       </table></td>
   </tr>

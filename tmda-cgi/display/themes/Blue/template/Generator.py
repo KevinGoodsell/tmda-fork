@@ -93,8 +93,8 @@ function Preloader()
     dom_src  = 'document.images.%s.src' % name
     mouse    = '''onmouseover="%s='%s'"
 onmouseout="%s='%s'"''' % (dom_src, high, dom_src, normal)
-    img_attr = '''border="0" alt="%s" width="194" height="%d"
-name="%s"''' % (alt, height, name)
+    img_attr = '''border="0" alt="%s" title="%s" width="194" height="%d"
+name="%s"''' % (alt, alt, height, name)
     img_tag  = '<img src="%s" %s>' % (normal, img_attr)
     hi_tag   = '<img src="%s" %s>' % (high, img_attr)
     preload  = 'var %s = new Image();\n%s.src = "%s";\n' % \
@@ -216,7 +216,7 @@ name="%s"''' % (alt, height, name)
 
   def get_banner(self):
     return '''<img src="%(ThemeDir)s/title.png" width="341" height="135"
-alt="TMDA (http://tmda.net) CGI Interface">'''
+alt="TMDA (http://tmda.net) CGI Interface" title="TMDA (http://tmda.net) CGI Interface">'''
 
   def get_corner(self):
     # It is important not to have newlines between the img tag and the end
@@ -275,7 +275,7 @@ self.assoc[item], temp, itemnum, temp, itemnum, itemnum, temp)
       temp += "50"
     else:
       temp += "35"
-    return temp + ('" width="194" border="0" alt="%s"></a></td>' % item)
+    return temp + ('" width="194" border="0" alt="%s" title="%s"></a></td>' % (item,item))
 
   def get_item(self, url, text, extra):
     if url is None:

@@ -11,7 +11,7 @@ Title: Theme Selection
         <tr>
           <td align="center"><a
 href="%(Script)s?cmd=theme&subcmd=%(Name)s&SID=%(SID)s"><img
-src="%(ThemeDir)s/../%(Name)s/theme.png" alt="%(Name)s" width="200" height="87" 
+src="%(ThemeDir)s/../%(Name)s/theme.png" alt="%(Name)s" title="%(Name)s" width="200" height="87" 
 border="0"></a><br>
 %(Name)s</td>
         </tr>
