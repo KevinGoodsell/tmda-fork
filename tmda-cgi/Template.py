@@ -108,13 +108,22 @@
 #
 # <center>Form may not be submitted.</center>
 
-import copy, re
-import email.Charset
+import copy
+import re
 from types import StringType
+
+# Module globals
+SentHeaders = 0
+
+def Debug(Str):
+  "Output a debugging string."
+  if not SentHeaders: print "Content-Type: text/html\n\n"
+  SentHeaders = 1
+  print Str
 
 class Template:
   # Members global across all instantiations:
-  Dict            = {}
+  Dict            = {"CharSet": "utf-8"}
   BaseDir         = "."
   VarSearchStr    = '<!--\s*var:\s*%s(?:="([^"]+)")?\s*-->'
   VarEndSearch    = re.compile("<!--\s*/var[^-]*-->", re.I)
@@ -122,8 +131,6 @@ class Template:
   LonePctRepl     = r"\1%%\2"
   SearchDict      = {}
   BeenExpanded    = 0
-  FallbackCharset = "utf-8"
-  charset = None
 
   def __init__ \
   (
@@ -142,14 +149,6 @@ class Template:
       F.close()
     self.Items = {}
 
-  def set_charset(self, Charset = None ):
-    "Sets the characterset for this page."
-    if Charset is None: Charset = self.FallbackCharset
-    # If this is an alias, find the "real" charset:
-    chsetObj = email.Charset.Charset( Charset )
-    self.charset = chsetObj.input_charset
-    self["CharSet"] = self.charset
-
   def __setitem__(self, Index, Value):
     "Assign a substitution variable."
     if self.Items.has_key(Index):
@@ -160,16 +159,14 @@ class Template:
   def __str__(self):
     "Convert to string for printing in browser. (Adds content-type header)"
 
-    if not self.charset:
-        self.set_charset()
-    addStr = "; charset=%s" % self.charset
-    RetVal = "Content-Type: text/html%s\n\n" % addStr
-    RetVal += self.__repr__()
-    return RetVal
+    global SentHeaders
 
-  def __repr__(self):
-    "Dump contents of object."
-    RetVal = ""
+    if SentHeaders:
+      RetVal = ""
+    else:
+      RetVal = "Content-Type: text/html; charset=%(CharSet)s\n\n" % self.Dict
+    SentHeaders = 1
+
     for HTML in self.HTML:
       if type(HTML) == StringType:
         if self.BeenExpanded:
@@ -177,7 +174,7 @@ class Template:
         else:
           RetVal += self.LonePctSearch.sub(self.LonePctRepl, HTML) % self.Dict
       else:
-        RetVal += repr(HTML)
+        RetVal += str(HTML)
     return RetVal
 
   def UpdateItems(self, Target):

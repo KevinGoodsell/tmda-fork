@@ -166,7 +166,7 @@ def TranslateToUTF8(CharSet, Str, Errors):
 
   if not CharSet:
     return Str
-  CS = email.Charset.Charset( CharSet )
+  CS = email.Charset.Charset(CharSet)
   CharSet = CS.input_charset
 
   # Find appropriate decoder

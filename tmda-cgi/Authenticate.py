@@ -24,8 +24,6 @@
 import CgiUtil
 import crypt
 import os
-import os.path
-import pwd
 import random
 import sys
 

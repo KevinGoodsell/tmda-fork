@@ -22,7 +22,6 @@
 "Web interface to TMDA tools."
 
 import MyCgiTb
-import CharSetAlias
 
 import cgi
 import os
@@ -36,6 +35,7 @@ sys.path.insert(0, os.path.join(os.environ["TMDA_BASE_DIR"], "TMDA",
   "pythonlib"))
 from TMDA import Errors
 
+import CharSetAlias
 import CgiUtil
 import Session
 import Template
@@ -58,7 +58,6 @@ MyCgiTb.ErrTemplate = "prog_err2.html"
 # Make some global stuff available to all
 Template.Template.BaseDir = "%s/display/themes/Blue/template" % \
   os.path.abspath(os.path.split(sys.argv[0])[0])
-#Template.Template.FallbackCharset  = "iso-8859-1"
 Template.Template.Dict["Script"]   = os.environ["SCRIPT_NAME"]
 Template.Template.Dict["SID"]      = ""
 Template.Template.Dict["DispDir"]  = os.environ["TMDA_CGI_DISP_DIR"]

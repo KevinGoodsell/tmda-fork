@@ -22,7 +22,9 @@
 """A wrapper around cgitb that places errors in our framework and uses our 
 colors."""
 
-import sys, Template
+import sys
+
+import Template
 
 # Customizable colors to look for in prog_err.html
 ColorSwap = \
@@ -32,26 +34,8 @@ ColorSwap = \
 }
 ErrTemplate = None
 
-ContentType = "text/html"
-
-def Content(Type = None):
-  "Print out the content type header (once only!)"
-  global ContentType
-  
-  if ContentType:
-    if Type: ContentType = Type
-    print "Content-Type: %s\n\n" % ContentType
-    ContentType = None
-
 def CgiTbReset():
   "Replacement function for cgitb.reset()"
-
-  global ContentType
-
-  if ContentType:
-    RetVal = "Content-Type: %s\n\n" % ContentType
-    ContentType = None
-    return RetVal
   return ""
 
 def ColorReplacer((etype, evalue, etb), context=5):
@@ -71,7 +55,7 @@ def ColorReplacer((etype, evalue, etb), context=5):
   T["ErrorMessage"] = HTML
 
   # Return new, frameworked page
-  return T.__repr__()
+  return str(T)
 
 # Try to import cgitb (not present in Python before version 2.2)
 try:

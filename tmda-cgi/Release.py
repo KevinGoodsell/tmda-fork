@@ -44,7 +44,6 @@ Where <UID> is the UID of the TMDA account, <HMAC> must be used to validate
 """
 
   # Prepare the traceback in case of uncaught exception
-  MyCgiTb.Content()
   MyCgiTb.ErrTemplate = "prog_err2.html"
   CgiUtil.ErrTemplate = "error2.html"
 

@@ -26,17 +26,20 @@ Contributions:
 
     * Remo Mattei -- bug finding
 
-    * Jim Ramsay -- authentication, brainstorming, user interface feature
-                    plans, and hopefully lots of the programming in the near
-                    future!
+    * Jim Ramsay -- authentication, brainstorming, user interface, feature
+                    plans, alternate character set stuff
 
     * Tim Rice -- compiler suggestions so we can work in more environments
 
     * Jeff Ross -- bug finding
 
+    * Ronald Wiplinger -- providing Chinese spam and feedback on whether
+                          tmda-cgi was rendering it correctly
+
     * Cory Wright -- providing insight into how to use vpopmail and gently
                      pointing out the obvious when I miss it, fixing my alt
-		     tags so they are not browser specific
+                     tags so they are not browser specific, adding in some neat
+                     little things that had been left out
 
 Includes:
 ---------
