@@ -48,6 +48,7 @@ comments on the tmda-gui or tmda-workers list.  Please don't use it
 yet in a production environment.
 """
 
+import getopt
 import os
 import sys
 
@@ -59,7 +60,7 @@ except ImportError:
                            'site-packages', 'TMDA', 'pythonlib')
     sys.path.insert(0, sitedir)
 
-import email
+from TMDA import Version
 
 try:
     from Tkinter import *
@@ -74,6 +75,19 @@ except ImportError:
 
 
 program = sys.argv[0]
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+# getopt crud here
+
+
+from TMDA import Pending
+
+import email
 
 
 class HSplitterFrame(Frame):
@@ -200,7 +214,6 @@ class MessageList(Frame):
         return None
 
     def WhitelistSelectedMessage(self):
-        from TMDA import Pending
         try:
             Pending.Message(self.msgs[int(self.curselection()[0])]).whitelist()
         except IndexError:
@@ -209,7 +222,6 @@ class MessageList(Frame):
         return 1
 
     def BlacklistSelectedMessage(self):
-        from TMDA import Pending
         try:
             Pending.Message(self.msgs[int(self.curselection()[0])]).blacklist()
         except IndexError:
@@ -218,7 +230,6 @@ class MessageList(Frame):
         return 1
 
     def ReleaseSelectedMessage(self):
-        from TMDA import Pending
         try:
             Pending.Message(self.msgs[int(self.curselection()[0])]).release()
         except IndexError:
@@ -227,7 +238,6 @@ class MessageList(Frame):
         return 1
 
     def DeleteSelectedMessage(self):
-        from TMDA import Pending
         try:
             Pending.Message(self.msgs[int(self.curselection()[0])]).delete()
             print "Deleted"
@@ -244,7 +254,6 @@ class MessageList(Frame):
             return ''
         
     def GetSelectedMsgContent(self):
-        from TMDA import Pending
         try:
             return Pending.Message(self.msgs[int(self.curselection()
                                                  [0])]).show().split('\n\n', 1)
@@ -252,12 +261,11 @@ class MessageList(Frame):
             return ('', '')
         
     def Refresh(self):
-        from TMDA import Pending
         for col in self._cols:
             col.delete(0, END)
         self.msgs = []
         Q = Pending.Queue(descending=1).initQueue()
-        for item in Q.listPendingIds() + Q.listReleasedIds() + Q.listConfirmedIds():
+        for item in Q.listPendingIds():
             self.msgs.append(item)
             msg = Pending.Message(item).terse()
             i = 0
