@@ -4,7 +4,9 @@
 #                                                                            #
 # vadduser-tmda -  A TMDA wrapper script for vpopmail's vadduser program     #
 #                                                                            #
-# Version: 0.3                                                               #
+# Version: 0.5                                                               #
+#                                                                            #
+# This file is part of TMDA                                                  #
 #                                                                            #
 # Copyright (C) 2003 Cory Wright - http://www.standblue.net/                 #
 #                                                                            #
@@ -25,19 +27,6 @@
 ##############################################################################
 
 ##############################################################################
-#                              Release History                               #
-#                                                                            #
-# * 0.1 - February 12, 2003 - Initial release as part of TMDA                #
-# * 0.2 - April 2, 2003 - Thanks to Ben Bullock (brb3@pobox.com) the         #
-#         vadduser-tmda script can now add TMDA on existing vpopmail         #
-#         accounts, with other improvements.                                 #
-# * 0.3 - April 7, 2003 - More suggestions (and code) from Ben Bullock.  Now #
-#         the script can be used more like vadduser, with the email address  #
-#         being anywhere on the command line.  Error handling was improved.  #
-#                                                                            #
-##############################################################################
-
-##############################################################################
 #                          Installation and Usage                            #
 #                                                                            #
 # Copy the vadduser-tmda script to the ~vpopmail/bin/ directory.  Copy the   #
@@ -47,8 +36,7 @@
 # can be used in vtmdarc.  See the provided vtmdarc for an example.          #
 #                                                                            #
 # Customize vadduser-tmda by editing the TMDAROOT and VPOPROOT shell         #
-# variables listed in the "Configuration Variables" section of this          #
-# file.                                                                      #
+# variables listed in the "Configuration Variables" section of this file.    #
 #                                                                            #
 # To add a new vpopmail user with TMDA pre-configured simply execute the     #
 # vadduser-tmda script with any options that you would normally pass to the  #
@@ -59,6 +47,15 @@
 # This will set up a ~vpopmail/domains/example.com/user/.tmda/ directory     #
 # with all necessary files.  In addtion, the example.com/.qmail-user and     #
 # example.com/.qmail-user-default files will be created.                     #
+#                                                                            #
+# The vadduser-tmda script can also be used to add TMDA protection to an     #
+# existing vpopmail account.   Usage is identical in this situation.         #
+#                                                                            #
+##############################################################################
+
+##############################################################################
+#                                                                            #
+# Thanks to:  Ben Bullock for many suggestions along with supporting code.   #
 #                                                                            #
 ##############################################################################
 
@@ -98,13 +95,25 @@ VDOMDIR=`vdominfo -d $VDOMAIN`
 VUID=`vdominfo -u $VDOMAIN`
 VGID=`vdominfo -g $VDOMAIN`
 
+# Check for existing .qmail files first
+if [ -f "$VDOMDIR/.qmail-${VUSERNAME}" -o -L "$VDOMDIR/.qmail-${VUSERNAME}-default" ]; then
+    echo "$0: error: One of the following two files (or both) already exists:"
+    echo " * $VDOMDIR/.qmail-${VUSERNAME}"
+    echo " * $VDOMDIR/.qmail-${VUSERNAME}-default"
+    echo "Remove these files and try again."
+    exit 1
+fi
+
 # Add the new user if the account does not already exist
-if ! vuserinfo $EMAILADDR > /dev/null 2>&1 ; then
-    echo "Creating the virtual user account..."
+RES=`vuserinfo $EMAILADDR`
+retval=$?
+if [ $retval != "0" ]; then
 
     # Does the domain directory exist?
-    if ! vdominfo $VDOMDIR > /dev/null 2>&1 ; then
-	echo "$0: error: $VDOMDIR does not exist.  Exiting."
+    RES=`vdominfo $VDOMAIN`
+    retval=$?
+    if [ $retval != "0" ]; then
+	echo "$0: error: Domain $VDOMAIN does not exist.  Exiting."
 	exit 1
     fi
 
@@ -116,15 +125,10 @@ if ! vuserinfo $EMAILADDR > /dev/null 2>&1 ; then
 	echo "$0: error: There was a problem adding the account.  Exiting."
 	exit 1
     fi
+
 fi
 
 VUSERDIR=`vuserinfo -d $EMAILADDR`
-
-if [ -f $VDOMDIR/.qmail-${VUSERNAME} -o -f $VDOMDIR/.qmail-${VUSERNAME}-default ]; then
-    echo "$0: error: A .qmail file already exists for this user."
-    echo "Remove it, then rerun $0 $FULLPARAM"
-    exit 1
-fi
 
 # Check python's cdb support
 CDB=""
