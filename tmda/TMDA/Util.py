@@ -194,29 +194,16 @@ def formataddr(pair):
     JRM: Once the email mod is included within TMDA, we can nuke this
     function and use email.Utils.formataddr.
     """
-    (name, address) = pair
-    newname = []
-    needquotes = 0
-    # special tokens which require name to be double-quoted
-    specials = '()<>@,:;"[].' + '\\'
-    # special tokens which must be escaped with a backslash
-    escapeables = '()[]"' + '\\'
+    specialsre = re.compile(r'[][\()<>@,:;".]')
+    escapesre = re.compile(r'[][\()"]')
+    name, address = pair
     if name:
-        for c in list(name):
-            if c in list(specials):
-                needquotes = 1
-                break
-        if needquotes:
-            for c in list(name):
-                if c in list(escapeables):
-                    c = c.replace(c, '\\' + c)
-                newname.append(c)
-            newname = '"' + ''.join(newname) + '"'
-        else:
-            newname = name
-        return '%s <%s>' % (newname, address)
-    else:
-        return address
+        quotes = ''
+        if specialsre.search(name):
+            quotes = '"'
+        name = escapesre.sub(r'\\\g<0>', name)
+        return '%s%s%s <%s>' % (quotes, name, quotes, address)
+    return address
 
 
 def file_to_dict(file, dict):
