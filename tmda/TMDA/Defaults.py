@@ -101,19 +101,12 @@ if not vars().has_key('BLACKLIST'):
 if not vars().has_key('BOUNCE_BLACKLIST_CC'):
     BOUNCE_BLACKLIST_CC = None
 
-# BOUNCE_DATED_CC
+# BOUNCE_CONFIRM_CC
 # An optional e-mail address which will be sent a copy of any message
-# that triggers a 'dated' bounce.
+# that triggers a confirmation request.
 # No default.
-if not vars().has_key('BOUNCE_DATED_CC'):
-    BOUNCE_DATED_CC = None
-
-# BOUNCE_SENDER_CC
-# An optional e-mail address which will be sent a copy of any message
-# that triggers a 'sender' bounce.
-# No default.
-if not vars().has_key('BOUNCE_SENDER_CC'):
-    BOUNCE_SENDER_CC = None
+if not vars().has_key('BOUNCE_CONFIRM_CC'):
+    BOUNCE_CONFIRM_CC = None
 
 # BOUNCE_ENV_SENDER
 # The envelope sender of the bounce message. For a normal bounce, this

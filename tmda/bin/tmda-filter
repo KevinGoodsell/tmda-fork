@@ -197,7 +197,6 @@ def inject_pending(pathname,timestamp,pid):
 
 def locate_pending(timestamp,pid):
     """Locate the message in the pending queue."""
-    original_message = globals().get('message')
     pendingdir = Defaults.DATADIR + 'pending'
     pending_message = timestamp + '.' + pid + '.msg'
     pending_message_pathname = pendingdir + '/' + pending_message
@@ -314,14 +313,7 @@ def bouncegen(mode,passed_cookie=None):
                              confirm_cookie + '@' + Defaults.HOSTNAME
     pendingdir = Defaults.DATADIR + 'pending'
     pending_message = timestamp + '.' + pid + '.msg'
-    if mode == 'dated':                  # only for 'dated'
-        logit("BOUNCE dated",now)
-        if Defaults.BOUNCE_DATED_CC:
-            bounce_cc(Defaults.BOUNCE_DATED_CC)
-    if mode == 'sender':                 # only for 'sender'
-        logit("BOUNCE sender",time.time())
-        if Defaults.BOUNCE_SENDER_CC:
-            bounce_cc(Defaults.BOUNCE_SENDER_CC)
+
     # Create ~/.tmda/ and friends if necessary.
     if not os.path.exists(pendingdir):
         try:
@@ -329,11 +321,15 @@ def bouncegen(mode,passed_cookie=None):
         except IOError, error_msg:
             print error_msg
             sys.exit(Defaults.ERR_IO)
+
     # Write ~/.tmda/pending/TIMESTAMP.PID.msg
     message_headers['Return-Path'] = '<' + envelope_sender + '>'
     pending_contents = str(message_headers) + '\n' + message_body
     Util.writefile(pending_contents, pendingdir + '/' + pending_message)
     logit("CONFIRM pending " + pending_message, time.time())
+    if mode == 'accept':
+        default_template 
+
     # Find the right template.
     env_template = os.environ.get('TMDA_CONFIRM_REQUEST_TEMPLATE')
     def_template = Defaults.CONFIRM_REQUEST_TEMPLATE
@@ -345,6 +341,7 @@ def bouncegen(mode,passed_cookie=None):
     else:
         # must be installed from a package, so look in ../share/tmda/
         right_template = pkg_template
+
     # Create the confirmation request and the send it.
     bounce_message = Util.maketext(right_template,vars())
     send_bounce(bounce_message,confirm_accept_address = confirm_accept_address)
