@@ -23,7 +23,7 @@
 <li><a href="howto-template.html">Templates</a>
 <li><a href="tmda-ofmipd.html">tmda-ofmipd</a>
 <li><a href="tmda-vdomains.html">Virtual Domains</a>
-<li><a href="tmda-cgi.html">tmda-cgi</a>
+<li><a href="tmda-cgi/htdocs/index.html">tmda-cgi</a>
 <h3>Support</h3>
 <li><a href="trouble.html">Troubleshooting</a>
 <li><a href="http://tmda.net/faq.cgi" TARGET="Resource Window">FAQ</a>
