@@ -16,5 +16,5 @@ to the following address, or use your mailer's "Reply" feature.
 This confirmation verifies that your message is legitimate and not
 junk-mail. You should only have to confirm your address once.
 
-If you do not respond to this confirmation request, your message will
-not be delivered.
+If you do not respond to this confirmation request within %(pending_lifetime)s,
+your message will not be delivered.
