@@ -28,7 +28,7 @@ Fields:
   Login.Show(Msg)
     Form:  None
     PVars: None
-  Pending.Show()
+  PendList.Show()
     Form:  [user, password], cmd=view, [subcmd=first|prev|next|last|batch]
            [a#=X|r|d|w|b, m#]
     PVars: UID, GID, User, HOME, SortDir, Pager
@@ -62,6 +62,7 @@ Template.Template.Dict["SID"]      = ""
 Template.Template.Dict["DispDir"]  = os.environ["TMDA_CGI_DISP_DIR"]
 Template.Template.Dict["ThemeDir"] = "%s/themes/Blue" % \
   os.environ["TMDA_CGI_DISP_DIR"]
+Template.Template.Dict["ErrMsg"]   = "No error message returned.  Sorry!"
 
 # Check version information
 try:
@@ -95,7 +96,7 @@ def main():
     Login.Show()
 
   # Logged in yet?
-  elif not PVars.has_key("UID"):
+  elif not PVars.Valid:
     import Login
     if Form.has_key("cmd"):
       Login.Show("Wrong password.")
@@ -112,24 +113,24 @@ def main():
       PVars["InProcess"] = {}
       PVars.Save()
       
-    import Pending
+    import PendList
     import View
     
     # Share "globals"
-    Pending.PVars = PVars
-    Pending.Form  = Form
-    View.PVars    = PVars
-    View.Form     = Form
-    CgiUtil.PVars = PVars
+    PendList.PVars = PVars
+    PendList.Form  = Form
+    View.PVars     = PVars
+    View.Form      = Form
+    CgiUtil.PVars  = PVars
     
     # View?
     if Form["cmd"].value == "pending":
-      Pending.Show()
+      PendList.Show()
     elif Form["cmd"].value == "view":
       try:
         View.Show()
       except Errors.MessageError:  # No messages left?
-        Pending.Show()
+        PendList.Show()
     else:
       CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
         Form["cmd"].value, "interpret command", "", "Please be patient while "

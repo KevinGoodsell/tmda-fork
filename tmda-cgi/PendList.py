@@ -25,7 +25,6 @@ import cgi
 import email
 import os
 import re
-import Session
 import time
 import CgiUtil
 import Template
@@ -33,8 +32,10 @@ from TMDA import Defaults
 from TMDA import Pending
 
 # Pre-calc the regular expressions
-GoodFN  = re.compile("^\d+\.\d+\.msg$")
-Address = re.compile("^(.+) +<.+>")
+GoodFN     = re.compile("^\d+\.\d+\.msg$")
+Address    = re.compile("^(.+) +<.+>")
+ZeroSearch = re.compile("Z-0*(\d)")
+ZeroSub    = r"\1"
 
 def Show():
   "Show all pending e-mail in an HTML form."
@@ -42,7 +43,7 @@ def Show():
   if Form.has_key("subcmd"):
     # Batch operation
     if Form["subcmd"].value == "batch":
-      for Count in range(Defaults.CGI_PAGER_SIZE):
+      for Count in range(int(PVars[("PendingList", "PagerSize")])):
         if Form.has_key("a%d" % Count):
           # Check to make sure they're not trying to access anything other than 
           # email
@@ -88,15 +89,23 @@ def Show():
   # Find the message numbers we'll display
   FirstMsg = PVars["Pager"]
   if Form.has_key("subcmd"):
-    if Form["subcmd"].value == "first":  FirstMsg = 0
-    elif Form["subcmd"].value == "prev": FirstMsg -= Defaults.CGI_PAGER_SIZE
-    elif Form["subcmd"].value == "next": FirstMsg += Defaults.CGI_PAGER_SIZE
-    elif Form["subcmd"].value == "last": FirstMsg = len(Msgs)
-  if FirstMsg >= len(Msgs): FirstMsg = len(Msgs) - Defaults.CGI_PAGER_SIZE
-  if FirstMsg < 0: FirstMsg = 0
-  if len(Msgs) <= Defaults.CGI_PAGER_SIZE: FirstMsg = 0
-  LastMsg = FirstMsg + Defaults.CGI_PAGER_SIZE
-  if LastMsg > len(Msgs): LastMsg = len(Msgs)
+    if Form["subcmd"].value == "first":
+      FirstMsg = 0
+    elif Form["subcmd"].value == "prev":
+      FirstMsg -= int(PVars[("PendingList", "PagerSize")])
+    elif Form["subcmd"].value == "next":
+      FirstMsg += int(PVars[("PendingList", "PagerSize")])
+    elif Form["subcmd"].value == "last":
+      FirstMsg = len(Msgs)
+  if FirstMsg >= len(Msgs):
+    FirstMsg = len(Msgs) - int(PVars[("PendingList", "PagerSize")])
+  if FirstMsg < 0:
+    FirstMsg = 0
+  if len(Msgs) <= int(PVars[("PendingList", "PagerSize")]):
+    FirstMsg = 0
+  LastMsg = FirstMsg + int(PVars[("PendingList", "PagerSize")])
+  if LastMsg > len(Msgs):
+    LastMsg = len(Msgs)
   if len(Msgs):
     T["DispRange"] = "%d-%d of %d" % (FirstMsg + 1, LastMsg, len(Msgs))
 
@@ -155,7 +164,7 @@ width="18" height="18" alt="Last">"""
   T["NumBlankCols"] = NumBlankCols
 
   # Javascript confirmation?
-  if Defaults.CGI_USE_JS_CONFIRM:
+  if PVars[("General", "UseJSConfirm")]:
     T["OnSubmit"] = 'onSubmit="return TestConfirm()"'
     T["ConfirmScript"] = """<script>
 function TestConfirm()
@@ -183,7 +192,7 @@ function TestConfirm()
   if (ToDelete) Msg += "\\nAny confirmation that follows will fail."
   return confirm(Msg)
 }
-</script>""" % Defaults.CGI_PAGER_SIZE
+</script>""" % PVars[("PendingList", "PagerSize")]
 
   # Parse out embedded variables from template
   Row          = T["Row"]
@@ -206,20 +215,21 @@ function TestConfirm()
       T["Size"] = CgiUtil.Size(MsgObj.msgobj)
   
       # Find preferred date
-      T["Date"] = time.strftime \
+      Date = time.strftime \
       (
-        Defaults.CGI_DATE_FORMAT,
+        PVars[("PendingList", "DateFormat")],
         time.localtime(int(MsgObj.msgid.split('.')[0]))
       )
+      T["Date"] = ZeroSearch.sub(ZeroSub, Date)
   
       # Subject:
       if not MsgObj.msgobj["subject"]:
         Subject = "None"
       else:
         Subject = MsgObj.msgobj["subject"]
-        if len(Subject) > Defaults.CGI_CROP_SUBJECT:
+        if len(Subject) > PVars[("PendingList", "CropSubject")]:
           Subject = \
-            cgi.escape(Subject[:Defaults.CGI_CROP_SUBJECT - 1]) + "&#8230;"
+            cgi.escape(Subject[:PVars[("PendingList", "CropSubject")] - 1]) + "&#8230;"
         else:
           Subject = cgi.escape(Subject)
       T["Subject"] = Subject
@@ -232,9 +242,9 @@ function TestConfirm()
         Temp = Address.search(From)
         if Temp:
           From = Temp.group(1)
-      if len(From) > Defaults.CGI_CROP_SENDER:
+      if len(From) > PVars[("PendingList", "CropSender")]:
         From = \
-          cgi.escape(From[:Defaults.CGI_CROP_SENDER - 1]) + "&#8230;"
+          cgi.escape(From[:PVars[("PendingList", "CropSender")] - 1]) + "&#8230;"
       else:
         From = cgi.escape(From)
       T["Sender"] = From

@@ -29,6 +29,7 @@ import pwd
 import random
 import sys
 
+import Template
 from TMDA import Auth
 from TMDA import Errors
 from TMDA import Util
@@ -94,18 +95,12 @@ def Authenticate(User, Password):
 def CheckPassword(Form):
   "Checks a password from a form."
 
-  errMsg = "Password incorrect for user %s" % Form["user"].value
-  errHelp = "Reset password or correct file permissions"
   try:
-    if Authenticate( Form["user"].value, Form["password"].value ):
-      return 1
+    return Authenticate( Form["user"].value, Form["password"].value )
   except Errors.AuthError, error:
-    errMsg = error.msg
-    if error.help != "":
-      errHelp = error.help
+    Template.Template.Dict["ErrMsg"] = error.msg
 
-  if int(Form["debug"].value):
-    CgiUtil.TermError("Login failed", "Authentication error",
-      "validate password", errMsg, errHelp)
-  else:
-    return 0
+  Template.Template.Dict["ErrMsg"] = "Password incorrect for user %s" % \
+    Form["user"].value
+
+  return 0

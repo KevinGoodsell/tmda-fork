@@ -42,6 +42,11 @@ Where:
        Specify a different directory for supplimental display files (icons and
        stylesheet).
 
+    -e <seconds>
+    --session-exp <seconds>
+       Specify the number of seconds old a session may be before it risk get-
+       ting "cleaned".
+
     -f <authfile>
     --file-auth <authfile>
        Specify a different authentication file than the default.
@@ -70,6 +75,10 @@ Where:
     -n
     --no-su
        Compile a CGI to run in no-su mode.  Forces option "-m no-su".
+
+    -o <odds>
+    --cleanup-odds
+       Specify chance of cleaning up session files.
 
     -p <checkpassword>
     --program-auth <checkpassword>
@@ -108,13 +117,17 @@ Where:
                   -r pop3://mypopserver.net:2110
                   -r ldap://host.com/cn=%%(user)s,dc=host,dc=com
 
+    -s <prefix>
+    --session-prefix <prefix>
+       Path/file prefix for session files.
+
     -t <file>
     --target <file>
        Compile as a file other than ./tmda-cgi.
 
     -u <user>
     --user <user>
-       Overrides the value of CGI_USER found in the configuration files.
+       Specifies user to use when reading and writing session files.
        (Only affects system-wide mode.)
 
     -v <user>
@@ -221,6 +234,9 @@ def Interactive(OptD):
 users)""", OptD, "VUser")
   Ask('Path to a virtual user lookup script (or "None" if no virtual users)',
     OptD, "VLookup")
+  Ask('Session path/file prefix', OptD, "SessionPrefix")
+  Ask('Session expiration (seconds)', OptD, "SessionExp")
+  Ask('Session cleanup odds (0.01 = 1%)', OptD, "SessionOdds")
   print
 
 Program = sys.argv[0]
@@ -229,19 +245,22 @@ Perm = 04755
 
 # Keep options in one handy dictionary
 OptD = {}
-OptD["Python"]   = sys.executable
-OptD["Target"]   = "tmda-cgi"
-OptD["Base"]     = "../tmda/"
-OptD["Path"]     = "./"
-OptD["DispDir"]  = "../display/"
-OptD["User"]     = "nobody"
-OptD["AuthType"] = "default"
-OptD["AuthFile"] = "None"
-OptD["AuthProg"] = "/usr/sbin/checkpassword"
-OptD["AuthURI"]  = "imap://localhost"
-OptD["AuthArg"]  = "None"
-OptD["VUser"]    = "vpopmail"
-OptD["VLookup"]  = "/home/vpopmail/bin/getuserinfo-vpopmail.sh"
+OptD["Python"]        = sys.executable
+OptD["Target"]        = "tmda-cgi"
+OptD["Base"]          = "../tmda/"
+OptD["Path"]          = "./"
+OptD["DispDir"]       = "../display/"
+OptD["User"]          = "nobody"
+OptD["AuthType"]      = "default"
+OptD["AuthFile"]      = "None"
+OptD["AuthProg"]      = "/usr/sbin/checkpassword"
+OptD["AuthURI"]       = "imap://localhost"
+OptD["AuthArg"]       = "None"
+OptD["VUser"]         = "vpopmail"
+OptD["VLookup"]       = "/home/vpopmail/bin/getuserinfo-vpopmail.sh"
+OptD["SessionPrefix"] = "/tmp/TMDASession."
+OptD["SessionExp"]    = "300"
+OptD["SessionOdds"]   = "0.01"
 if os.geteuid():
   OptD["Mode"] = "single-user"
 else:
@@ -258,10 +277,10 @@ def Usage(Code, Msg=""):
   sys.exit(Code)
 
 try:
-  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:f:i:l:m:nhp:r:t:u:",
-    ["base-dir=", "config-file=", "display-dir=", "file-auth=", "help",
-     "install-prefix=", "mode=", "no-su", "program-auth=", "remote-auth=",
-     "target=", "user="])
+  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:e:f:i:l:m:nho:p:r:s:t:u:",
+    ["base-dir=", "config-file=", "display-dir=", "session-exp", "file-auth=", 
+     "help", "install-prefix=", "mode=", "no-su", "cleanup-odds",
+     "program-auth=", "remote-auth=", "session-prefix", "target=", "user="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
@@ -273,6 +292,8 @@ for Opt, Arg in Opts:
     OptD["Config"] = Arg
   elif Opt in ("-d", "--display-dir"):
     OptD["DispDir"] = Arg
+  elif Opt in ("-e", "--session-exp"):
+    OptD["SessionExp"] = Arg
   elif Opt in ("-f", "--file-auth"):
     OptD["AuthType"] = "file"
     OptD["AuthFile"] = Arg
@@ -281,6 +302,8 @@ for Opt, Arg in Opts:
     OptD["Path"] = Arg
   elif Opt in ("-l", "--virtual-lookup"):
     OptD["Base"] = Arg
+  elif Opt in ("-o", "--cleanup-odds"):
+    OptD["SessionOdds"] = Arg
   elif Opt in ("-p", "--program-auth"):
     OptD["AuthType"] = "program"
     OptD["AuthProg"] = Arg
@@ -289,6 +312,8 @@ for Opt, Arg in Opts:
     OptD["AuthType"] = "remote"
     OptD["AuthURI"] = Arg
     OptD["AuthArg"] = Arg
+  elif Opt in ("-s", "--session-prefix"):
+    OptD["SessionPrefix"] = Arg
   elif Opt in ("-t", "--target"):
     OptD["Target"] = Arg
   elif Opt in ("-m", "--mode"):
@@ -372,13 +397,16 @@ if OptD["Mode"] == "no-su": Perm = 0755
 # Create dirs.h
 F = open("dirs.h", "w")
 F.write("""
-#define PYTHON  "%(Python)s"
-#define INSTALL  "%(Path)s"
-#define MODE     "TMDA_CGI_MODE=%(Mode)s"
-#define USER     "TMDA_CGI_USER=%(User)s"
-#define DISP_DIR "TMDA_CGI_DISP_DIR=%(DispDir)s"
-#define BASE_DIR "TMDA_BASE_DIR=%(Base)s"
-#define VUSER    "TMDA_VUSER=%(VUser)s"
+#define PYTHON    "%(Python)s"
+#define INSTALL   "%(Path)s"
+#define MODE      "TMDA_CGI_MODE=%(Mode)s"
+#define USER      "TMDA_CGI_USER=%(User)s"
+#define DISP_DIR  "TMDA_CGI_DISP_DIR=%(DispDir)s"
+#define BASE_DIR  "TMDA_BASE_DIR=%(Base)s"
+#define VUSER     "TMDA_VUSER=%(VUser)s"
+#define SESS_PRE  "TMDA_SESSION_PREFIX=%(SessionPrefix)s"
+#define SESS_EXP  "TMDA_SESSION_EXP=%(SessionExp)s"
+#define SESS_ODDS "TMDA_SESSION_ODDS=%(SessionOdds)s"
 """ % OptD)
 if OptD["VLookup"] != "None":
   F.write("""#define VLOOKUP  "TMDA_VLOOKUP=%(VLookup)s"

@@ -40,6 +40,9 @@ int main(int argc, char *argv[])
 #ifdef VLOOKUP
   putenv(VLOOKUP);
 #endif
+  putenv(SESS_PRE);
+  putenv(SESS_EXP);
+  putenv(SESS_ODDS);
 
   fd = open("/dev/null", O_RDONLY);
 

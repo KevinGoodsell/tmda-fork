@@ -156,7 +156,7 @@ def Show():
     PVars.Save()
 
   # Use Javascript confirmation?
-  if Defaults.CGI_USE_JS_CONFIRM:
+  if PVars[("General", "UseJSConfirm")]:
     T["DeleteURL"]    = "javascript:ConfirmDelete()"
     T["BlacklistURL"] = "javascript:ConfirmBlacklist()"
   else:
@@ -240,7 +240,7 @@ def Show():
   T["Columns"] = Columns
 
   # Javascript confirmation for delete and blacklist?
-  if Defaults.CGI_USE_JS_CONFIRM:
+  if PVars[("General", "UseJSConfirm")]:
     T["ConfirmScript"] = """<script>
 function ConfirmDelete()
 {
