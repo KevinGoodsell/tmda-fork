@@ -21,8 +21,6 @@ along with TMDA; if not, write to the Free Software Foundation, Inc.,
 
 #include <stdlib.h>
 
-#include "dirs.h"
-
 int main(int argc, char *argv[])
 {
 #ifdef TMDARC
@@ -32,10 +30,15 @@ int main(int argc, char *argv[])
   putenv(AUTH_TYPE);
   putenv(AUTH_ARG);
 #endif
+#ifdef AUTH_TRUE
+  putenv(AUTH_TRUE);
+#endif
   putenv(MODE);
   putenv(USER);
   putenv(DISP_DIR);
   putenv(BASE_DIR);
+  putenv(VUSER);
+  putenv(VBIN);
 
   if (!chdir(INSTALL))
   {

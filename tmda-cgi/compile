@@ -33,6 +33,10 @@ Where:
     --base-dir <path>
        Specify a path to TMDA.
 
+    -B <path>
+    --vbin-dir <path>
+       Specify a path to virtual user's bin directory.
+
     -c <file>
     --config-file <file>
        Specify a different configuration file other than ~/.tmda/config.
@@ -106,10 +110,19 @@ Where:
     --target <file>
        Compile as a file other than ./tmda-cgi.
 
+    -T <true>
+    --true-prog <true>
+       Specify the path to the "true" program (which returns 0)
+       Default is '/usr/bin/true'
+
     -u <user>
     --user <user>
        Overrides the value of CGI_USER found in the configuration files.
        (Only affects system-wide mode.)
+
+    -v <user>
+    --virt_user <user>
+       Specify real login name to use when user logs in as a virtual user.
 
 If you specify no options, then the program will run in an interactive mode,
 provide defaults for all values, and remember the new values you give it as
@@ -136,6 +149,9 @@ The -f, -p, and -r options are used to change the default authentication.  Be
 warned that the options -p and -r are EXPERIMENTAL at this point.
 
 When specifying -p, ensure that the value of -T is correct for your system.
+
+The -B and -v options are used if you have virtual users on your system.
+If you don't support virtual users, then leave these to the default settings.
 
 The target may be specified on the command line with the -t option.
 
@@ -192,6 +208,7 @@ def Interactive(OptD):
     Ask('Authentication (checkpassword-style) program (full path)', OptD,
       "AuthProg")
     OptD["AuthArg"] = OptD["AuthProg"]
+    Ask('Full path to "true" program', OptD, "AuthTrue")
   elif OptD["AuthType"] == "remote":
     Ask('Authentication URI (protocol://host.domain.com[:port][/dn])', OptD,
       "AuthURI")
@@ -200,10 +217,11 @@ def Interactive(OptD):
     OptD["AuthArg"] = "None"
   Ask("Relative or absolute web path from CGI to display directory", OptD,
     "DispDir")
-  if OptD["DispDir"][-1] != "/": OptD["DispDir"] += "/"
   Ask("CGI mode [system-wide, single-user, no-su]", OptD, "Mode")
   if OptD["Mode"] == "system-wide":
     Ask("User name to use while accessing session data", OptD, "User")
+    Ask("Real user name to use when login is a virtual user", OptD, "VUser")
+  Ask("Path to virtual user's bin directory", OptD, "VBin")
   print
 
 Program = sys.argv[0]
@@ -215,14 +233,17 @@ OptD = {}
 OptD["Python"]   = sys.executable
 OptD["Target"]   = "tmda-cgi"
 OptD["Base"]     = "../tmda/"
-OptD["Path"]     = "."
+OptD["Path"]     = "./"
 OptD["DispDir"]  = "../display/"
 OptD["User"]     = "nobody"
 OptD["AuthType"] = "default"
 OptD["AuthFile"] = "None"
 OptD["AuthProg"] = "/usr/sbin/checkpassword"
+OptD["AuthTrue"] = "/usr/bin/true"
 OptD["AuthURI"]  = "imap://localhost"
 OptD["AuthArg"]  = "None"
+OptD["VUser"]    = "vpopmail"
+OptD["VBin"]     = "/home/vpopmail/bin/"
 if os.geteuid():
   OptD["Mode"] = "single-user"
 else:
@@ -239,10 +260,10 @@ def Usage(Code, Msg=""):
   sys.exit(Code)
 
 try:
-  Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:f:i:m:nhp:r:t:u:",
+  Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:f:i:m:nhp:r:t:T:u:",
     ["base-dir=", "config-file=", "display-dir=", "file-auth=", "help",
      "install-prefix=", "mode=", "no-su", "program-auth=", "remote-auth=",
-     "target=", "user="])
+     "target=", "true-prog=", "user="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
@@ -255,10 +276,7 @@ for Opt, Arg in Opts:
   elif Opt in ("-c", "--config-file"):
     OptD["Config"] = Arg
   elif Opt in ("-d", "--display-dir"):
-    if Arg[-1] == "/":
-      OptD["DispDir"] = Arg
-    else:
-      OptD["DispDir"] = Arg + "/"
+    OptD["DispDir"] = Arg
   elif Opt in ("-f", "--file-auth"):
     OptD["AuthType"] = "file"
     OptD["AuthFile"] = Arg
@@ -275,6 +293,8 @@ for Opt, Arg in Opts:
     OptD["AuthArg"] = Arg
   elif Opt in ("-t", "--target"):
     OptD["Target"] = Arg
+  elif Opt in ("-T", "--true-prog"):
+    OptD["AuthTrue"] = Arg
   elif Opt in ("-m", "--mode"):
     if not Arg in ("system-wide", "single-user", "no-su"):
       Usage(1, "Valid modes are system-wide, single-user, and no-su")
@@ -339,16 +359,23 @@ privileged user with the -u option."""
 
 OptD["Path"] = os.path.abspath(OptD["Path"])
 
+if OptD["DispDir"][-1] != "/": OptD["DispDir"] += "/"
+if OptD["VBin"][-1] != "/": OptD["VBin"] += "/"
+if OptD["Path"][-1] != "/": OptD["Path"] += "/"
+
 if OptD["Mode"] == "no-su": Perm = 0755
 
 # Create dirs.h
 F = open("dirs.h", "w")
-F.write("""#define PYTHON "%(Python)s"
-#define INSTALL "%(Path)s"
-#define MODE "TMDA_CGI_MODE=%(Mode)s"
-#define USER "TMDA_CGI_USER=%(User)s"
+F.write("""
+#define PYTHON  "%(Python)s"
+#define INSTALL  "%(Path)s"
+#define MODE     "TMDA_CGI_MODE=%(Mode)s"
+#define USER     "TMDA_CGI_USER=%(User)s"
 #define DISP_DIR "TMDA_CGI_DISP_DIR=%(DispDir)s"
 #define BASE_DIR "TMDA_BASE_DIR=%(Base)s"
+#define VUSER    "TMDA_VUSER=%(VUser)s"
+#define VBIN     "TMDA_VBIN=%(VBin)s"
 """ % OptD)
 if OptD["Config"] != "None":
   if OptD["Config"].find("~") >= 0:
@@ -364,6 +391,9 @@ if OptD["AuthArg"] != "None":
   F.write("""#define AUTH_TYPE "TMDA_AUTH_TYPE=%(AuthType)s"
 #define AUTH_ARG "TMDA_AUTH_ARG=%(AuthArg)s"
 """ % OptD)
+  if OptD["AuthType"] == "program":
+    F.write( """#define AUTH_TRUE "TMDA_AUTH_TRUE=%(AuthTrue)s"
+""" % OptD)
 F.close()
 
 print "Compiling..."
@@ -374,7 +404,7 @@ try:
 except: pass
 
 # Compile tmda-cgi
-os.system("gcc tmda-cgi.c -o %s" % OptD["Target"])
+os.system("gcc -include ./dirs.h %(Path)stmda-cgi.c -o %(Target)s" % OptD)
 
 # Remove dirs.h
 os.unlink("dirs.h")
