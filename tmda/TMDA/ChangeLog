@@ -1,3 +1,10 @@
+2001-12-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Cookie.py (make_sender_cookie): Lowercase the address before
+	generating the cookie.  Otherwise, mixed or uppercase sender
+	addresses will fail verification.
+	Patch contributed by Brian Lalor.
+
 2001-12-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Version.py (ALL): Change SUMMARY to ALL.

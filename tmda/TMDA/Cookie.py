@@ -69,6 +69,7 @@ def make_dated_address(address):
 
 def make_sender_cookie(address):
     """Return a sender-style cookie based on the given address."""
+    address = string.lower(address)
     sender_cookie = HMAC.new(Defaults.CRYPT_KEY,
                              address).digest()[:Defaults.HMAC_BYTES]
     return Util.hexlify(sender_cookie)
@@ -76,7 +77,6 @@ def make_sender_cookie(address):
 
 def make_sender_address(address, sender):
     """Return a full sender-style e-mail address."""
-    sender = string.lower(sender)
     sender_cookie = make_sender_cookie(sender)
     (username, hostname) = string.split(address,'@')
     sender_address = username + Defaults.RECIPIENT_DELIMITER + 'sender' + \
