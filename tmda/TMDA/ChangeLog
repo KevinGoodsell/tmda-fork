@@ -1,6 +1,9 @@
 2001-04-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* Cookie.py (datemac): New function to compute HMAC for a given
+	* Defaults.py (TMDA_VERSION): Bump up to a new major release level
+	(0.10) indicating a major functionality change (HMAC).
+
+	* Cookie.py (datemac): New function to compute an HMAC for a given
 	date in time.
 	
 	* Defaults.py (BLOCK_CIPHER): Now obsolete.

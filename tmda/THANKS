@@ -1,7 +1,7 @@
 Acknowledgements:
 -----------------
 
-    * Thomas Erskine -- the author of TMS, the predecessor of TMDA.
+    * Thomas Erskine -- the author of TMS (the predecessor of TMDA).
 
     * Guido van Rossum -- for creating Python, my language of choice.
     Python allowed me to develop a working version of this software in
@@ -9,8 +9,12 @@ Acknowledgements:
     project in C/C++, or a shorter project in Perl, with working but
     ugly and unmaintainable results.
     
-    * Andrew Archibald -- provided much cryptography-related help and
-    insight. Most of the crypto design in TMDA stems from his input.
-    
-    * Reuben Sumner -- for suggesting the addition of the "blacklist"
-    functionality.
+    * Andrew Archibald -- provided lots of cryptography-related help and
+    insight.  Much of the crypto design in TMDA stems from his input.
+
+Contributions:
+--------------
+
+    * Reuben Sumner -- for contributing the HMAC.py module and for
+    suggesting the "blacklist" functionality.
+

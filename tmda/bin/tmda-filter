@@ -24,7 +24,7 @@ from TMDA import Util
 # Read sys.stdin into a temporary variable for later access.
 stdin = cStringIO.StringIO(sys.stdin.read())
 
-# Collect the message's headers.
+# Collect the message headers.
 message_headers = rfc822.Message(stdin)
 
 # Collect the entire message.
