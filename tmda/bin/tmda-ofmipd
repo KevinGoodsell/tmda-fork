@@ -192,9 +192,12 @@ else:
 if running_as_root:
     username = 'tofmipd'
     authfile = '/etc/tofmipd'
+    ipauthmapfile = '/etc/ipauthmap'
 else:
     username = None
-    authfile = os.path.join(os.path.expanduser('~'), '.tmda', 'tofmipd')
+    tmda_path = os.path.join(os.path.expanduser('~'), '.tmda')
+    authfile = os.path.join(tmda_path, 'tofmipd')
+    ipauthmapfile = os.path.join(tmda_path, 'ipauthmap')
 
 
 def warning(msg='', exit=1):
@@ -270,11 +273,11 @@ for opt, arg in opts:
             authproto, arg = arg.split('://', 1)
         except ValueError:
             authproto, arg = arg, None
-        remoteauth['proto'] = authproto
-        remoteauth['port'] = defaultauthports[authproto]
         if authproto not in defaultauthports.keys():
             raise ValueError, 'Protocol not supported: ' + authproto + \
                     '\nPlease pick one of ' + repr(defaultauthports.keys())
+        remoteauth['proto'] = authproto
+        remoteauth['port'] = defaultauthports[authproto]
         if arg:
             try:
                 arg, dn = arg.split('/', 1)
@@ -315,6 +318,8 @@ if vhomescript and configdir:
 if vdomainspath and not vhomescript:
     msg = "WARNING: --vdomains-path given but --vhomescript not given." + \
           "         Ignoring --vdomainspath."
+    vdomainspath = '/var/qmail/control/virtualdomains'
+    warning(msg, exit=0)
 
 
 import asynchat
@@ -435,45 +440,50 @@ def quote_rcpts(rcpttos):
     return rcpttos_quoted
 
 
-def run_remoteauth(username, password):
+def run_remoteauth(username, password, localip):
     """Authenticate username/password combination against a remote
     resource.  Return 1 upon successful authentication, and 0
     otherwise."""
+    authhost = remoteauth['host']
+    authport = remoteauth['port']
+    if authhost == '0.0.0.0':
+        ipauthmap = ipauthmap2dict(ipauthmapfile)
+        if len(ipauthmap) == 0:
+            authhost = localip
+        else:
+            authdata = ipauthmap.get(localip, '127.0.0.1').split(':')
+            authhost = authdata[0]
+            if len(authdata) > 1:
+                authport = authdata[1]
+            else:
+                authport = remoteauth['port']
     print >> DEBUGSTREAM, "trying %s authentication for %s@%s:%s" % \
-          (remoteauth['proto'], username, remoteauth['host'],
-           remoteauth['port'])
-    port = defaultauthports[remoteauth['proto']]
+          (remoteauth['proto'], username, authhost, authport)
     if remoteauth['proto'] == 'imap':
         import imaplib
-        if remoteauth['port']:
-            port = int(remoteauth['port'])
-        M = imaplib.IMAP4(remoteauth['host'], port)
+        M = imaplib.IMAP4(authhost, int(authport))
         try:
             M.login(username, password)
             M.logout()
             return 1
         except:
             print >> DEBUGSTREAM, "imap authentication for %s@%s failed" % \
-                  (username, remoteauth['host'])
+                  (username, authhost)
             return 0
     elif remoteauth['proto'] == 'imaps':
         import imaplib
-        if remoteauth['port']:
-            port = int(remoteauth['port'])
-        M = IMAP4_SSL(remoteauth['host'], port)
+        M = IMAP4_SSL(authhost, int(authport))
         try:
             M.login(username, password)
             M.logout()
             return 1
         except:
             print >> DEBUGSTREAM, "imaps authentication for %s@%s failed" % \
-                  (username, remoteauth['host'])
+                  (username, authhost)
             return 0
     elif remoteauth['proto'] in ('pop3', 'apop'):
         import poplib
-        if remoteauth['port']:
-            port = int(remoteauth['port'])
-        M = poplib.POP3(remoteauth['host'], port)
+        M = poplib.POP3(authhost, int(authport))
         try:
             if remoteauth['proto'] == 'pop3':
                 M.user(username)
@@ -486,21 +496,18 @@ def run_remoteauth(username, password):
                 return 1
         except:
             print >> DEBUGSTREAM, "%s authentication for %s@%s failed" % \
-                  (remoteauth['proto'], username, remoteauth['host'])
+                  (remoteauth['proto'], username, authhost)
             return 0
     elif remoteauth['proto'] == 'ldap':
         import ldap
-        if remoteauth['port']:
-            port = int(remoteauth['port'])
         try:
-            M = ldap.initialize("ldap://%s:%s" % (remoteauth['host'],
-                                                  remoteauth['port']))
+            M = ldap.initialize("ldap://%s:%s" % (authhost, authport))
             M.simple_bind_s(remoteauth['dn'] % username, password)
             M.unbind_s()
             return 1
         except:
             print >> DEBUGSTREAM, "ldap authentication for %s@%s failed" % \
-                  (username, remoteauth['host'])
+                  (username, authhost)
             return 0
     # proto not implemented
     print >> DEBUGSTREAM, "Error: protocol %s not implemented" % \
@@ -523,6 +530,24 @@ def authfile2dict(authfile):
             authdict[fields[0].lower().strip()] = fields[1].strip()
     fp.close()
     return authdict
+
+
+def ipauthmap2dict(ipauthmapfile):
+    """Iterate 'ipauthmapfile' (IP1:IP2:port) and return a dictionary
+    containing IP1 -> IP2:port hashes."""
+    ipauthmap = {}
+    try:
+        fp = file(ipauthmapfile, 'r')
+        for line in fp:
+            line = line.strip()
+            if line == '':
+                continue
+            ipdata = line.split(':', 1)
+            ipauthmap[ipdata[0].strip()] = ipdata[1].strip()
+        fp.close()
+    except IOError:
+        pass
+    return ipauthmap
 
 
 def b64_encode(s):
@@ -594,8 +619,9 @@ class SMTPChannel(asynchat.async_chat):
         self.__auth_username = username.lower()
         self.__auth_password = password
         if remoteauth['enable']:
+            localip = self.__conn.getsockname()[0]
             # Try first with the remote auth
-            if run_remoteauth(username, password):
+            if run_remoteauth(username, password, localip):
                 return 1
         if authprog:
             # Then with the authprog
@@ -621,8 +647,9 @@ class SMTPChannel(asynchat.async_chat):
         self.__auth_username = username.lower()
         self.__auth_password = password
         if remoteauth['enable']:
+            localip = self.__conn.getsockname()[0]
             # Try first with the remote auth
-            if run_remoteauth(username, password):
+            if run_remoteauth(username, password, localip):
                 return 1
         if authprog:
             # Then with the authprog
@@ -1043,6 +1070,8 @@ class VDomainProxy(PureProxy):
         user = userinfo[0]
         if len(userinfo) > 1:
             domain = userinfo[1]
+        else:
+            domain = ''
         # If running as uid 0, fork in preparation for running the tmda-inject
         # process and change UID and GID to the virtual domain user.  This is
         # for VMailMgr, where each virtual domain is a system (/etc/passwd)

@@ -1,3 +1,17 @@
+2003-01-27  Tim Legant  <tim@catseye.net>
+
+	* tmda-ofmipd (run_remoteauth): Add capability to authenticate
+	against servers on different aliases, to support IP-based virtual
+	domains.  Uses mapping file (~/.tmda/ipauthmap) or same IP client
+	connected to, if no file.  If file exists but server IP cannot be
+	found, fall back to localhost.
+
+	(ipauthmap2dict): Helper function to read ipauthmap and return
+	Python dictionary.
+	
+	(VDomainProxy.process_message): Set 'domain' to empty string for
+	IP-based or default domains (VPopMail).
+
 2003-01-22  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-ofmipd (SMTPChannel.__init__): Don't advertise CRAM-MD5
