@@ -273,8 +273,6 @@ auto_reply = 1
 def logit(action_msg):
     """Write delivery statistics to the logfile if it's enabled."""
     if Defaults.LOGFILE_INCOMING and recipient_address:
-        if not globals().get('auto_reply'):
-            action_msg = '%s (no reply)' % action_msg
         from TMDA import MessageLogger
         logger = MessageLogger.MessageLogger(Defaults.LOGFILE_INCOMING,
                                              msgin,
@@ -295,6 +293,11 @@ def autorespond_to_sender(sender):
            envelope_sender == '#@[]' or \
            envelope_sender.lower().startswith('mailer-daemon'):
         logit ('NOREPLY (envelope sender = %s)' % envelope_sender)
+        return 0
+    # Majordomo messages don't give any indication that they are
+    # auto-responses. tsk, tsk.
+    if envelope_sender.lower().startswith('majordomo'):
+        logit ('NOREPLY (Majordomo)')
         return 0
     # Try and detect an auto-response.
     guilty_header = None

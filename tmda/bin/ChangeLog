@@ -1,3 +1,8 @@
+2003-04-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (autorespond_to_sender): Check for Majordomo
+	messages.
+	
 2003-04-18  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-ofmipd (main): Ignore SIGHUP if not in foreground.
