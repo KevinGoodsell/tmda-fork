@@ -1,3 +1,15 @@
+2003-08-01  Tim Legant  <tim@catseye.net>
+
+	* Util.py (msg_from_file): When parsing a message with the
+	HeaderParser, add a "custom" attribute to the Message object
+	called 'header_parsed'.  If it exists and is True (1), then the
+	Message was read and parsed by HeaderParser.
+
+	(msg_as_string): AutoResponse.py and Pending.py use fully parsed
+	MIME messages, so HeaderParsedGenerator won't work for those
+	messages.  Made msg_as_string sensitive to 'header_parsed'
+	attribute of Message, defined in Util.msg_from_file.
+
 2003-07-31  Tim Legant  <tim@catseye.net>
 
 	* Util.py (msg_as_string): Use HeaderParsedGenerator rather than

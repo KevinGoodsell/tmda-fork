@@ -515,7 +515,9 @@ def msg_from_file(fp, strict=0):
     problems trying to parse spam with broken MIME bodies."""
     from email.Message import Message
     from email.Parser import HeaderParser
-    return HeaderParser(Message, strict=strict).parse(fp)
+    msg = HeaderParser(Message, strict=strict).parse(fp)
+    msg.header_parsed = 1
+    return msg
 
 
 def msg_as_string(msg, maxheaderlen=0, mangle_from_=0, unixfrom=0):
@@ -535,11 +537,13 @@ def msg_as_string(msg, maxheaderlen=0, mangle_from_=0, unixfrom=0):
 
     unixfrom forces the printing of the envelope header delimiter.
     Default is False."""
-    from email.Generator import HeaderParsedGenerator
+    from email import Generator
     fp = StringIO()
-    g = HeaderParsedGenerator(fp,
-                              mangle_from_=mangle_from_,
-                              maxheaderlen=maxheaderlen)
+    if hasattr(msg, 'header_parsed') and msg.header_parsed:
+        genclass = Generator.HeaderParsedGenerator
+    else:
+        genclass = Generator.Generator
+    g = genclass(fp, mangle_from_=mangle_from_, maxheaderlen=maxheaderlen)
     g.flatten(msg, unixfrom=unixfrom)
     return fp.getvalue()
 
