@@ -104,7 +104,7 @@ def Show():
   ListEntry = T['ListEntry']
   for FileNum in range(len(Files)):
     File = Files[FileNum]
-    listDict = {}
+    listDict = T.Dict
     listDict['Theme'] = Template.Template.Dict["ThemeDir"]
     if File == EditFile:
       listDict["listGraphicFilename"] = Buttons[File][1]['hfn']

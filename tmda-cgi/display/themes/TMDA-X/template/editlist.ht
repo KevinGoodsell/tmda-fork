@@ -1,8 +1,8 @@
 Title: List Editor
 
-<!-- var: CurrentListEntry="<tr><td class='sidebar'><span class='sidebarActive'><li>%(listName)s</span></td></tr>" -->
+<!-- var: CurrentListEntry="<tr><td class='sidebar'><span class='sidebarActive%(SidebarSize)s'><li>%(listName)s</span></td></tr>" -->
 
-<!-- var: ListEntry="<tr><td class='sidebar'><a href='%(listLink)s' class='sidebarSubLink'><li>%(listName)s</A></td></tr>" -->
+<!-- var: ListEntry="<tr><td class='sidebar'><a href='%(listLink)s' class='sidebarSubLink%(SidebarSize)s'><li>%(listName)s</A></td></tr>" -->
 
 <!-- var: NoLists -->
 <table align="center">
