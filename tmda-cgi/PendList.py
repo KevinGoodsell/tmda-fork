@@ -211,11 +211,26 @@ width="18" height="18" alt="Last">"""
       T["Size"] = CgiUtil.Size(MsgObj)
 
       # Find preferred date
-      Date = time.strftime \
-      (
-        PVars[("PendingList", "DateFormat")],
-        time.localtime(int(MsgObj.msgid.split('.')[0]))
-      )
+      DateFormat = PVars[("PendingList", "DateFormat")]
+      MsgTime = int(MsgObj.msgid.split('.')[0])
+      if DateFormat == "DaysAgo":
+        # Special Case!  "n days ago"
+        Today = (int(time.time()) / 86400)
+        MsgDay = (MsgTime / 86400)
+        DaysAgo = Today - MsgDay
+        if DaysAgo == 0:
+          Date = "Today"
+        elif DaysAgo == 1:
+          Date = "Yesterday"
+        else:
+          Date = "%d days ago" % DaysAgo
+      else:
+        # General case - strftime format
+        Date = time.strftime \
+        (
+          PVars[("PendingList", "DateFormat")],
+          time.localtime(MsgTime)
+        )
       T["Date"] = ZeroSearch.sub(ZeroSub, Date)
 
       # Character set

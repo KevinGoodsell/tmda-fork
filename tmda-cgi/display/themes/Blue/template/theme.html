@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue May  6 18:15:18 2003 -->
+<!-- Tue May 13 16:07:52 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -125,7 +125,7 @@ border="0"></a><br>
   ViewPending:AltPref:textplain:texthtml,
   ViewPending:EmailClass:proportional:fixed,
   General:CSEncoding:iso-8859-1:gb2312:big5, PendingList:PagerSize,
-  PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db,
+  PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db:Ymd:BZd:DaysAgo,
   Login:InitPage:pending:gen_addr, PendingList:CropSender,
   PendingList:CropSubject, PendingList:ShowAddr:Name:Address:All,
   ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr" -->
@@ -191,6 +191,8 @@ border="0"></a><br>
     </tr>
     <tr>
       <td align="center"><select name="PendingListDateFormat">
+          <option %(PendingListDateFormatYmdSelected)s
+            value="%Y-%m-%d">2003-05-13</option>
           <option %(PendingListDateFormataZmZdSelected)s
             value="%a Z-%m/Z-%d">Tue 3/13</option>
           <option %(PendingListDateFormataZdZmSelected)s
@@ -201,6 +203,10 @@ border="0"></a><br>
             value="Z-%d/Z-%m">13/3</option>
           <option %(PendingListDateFormatdbSelected)s
             value="%d %b">05 Apr</option>
+          <option %(PendingListDateFormatBZdSelected)s
+            value="%B Z-%d">April 5</option>
+          <option %(PendingListDateFormatDaysAgoSelected)s
+            value="DaysAgo">3 days ago</option>
         </select></td>
       <td>&nbsp;</td>
       <td>Date format to use in pending list.</td>
@@ -208,12 +214,12 @@ border="0"></a><br>
     <tr>
       <td align="center"><select name="LoginInitPage">
           <option %(LoginInitPagependingSelected)s
-            value="pending">PendList</option>
+            value="pending">Pending</option>
           <option %(LoginInitPagegen_addrSelected)s
-            value="gen_addr">GenAddr</option>
+            value="gen_addr">Addresses</option>
         </select></td>
       <td>&nbsp;</td>
-      <td>Date format to use in pending list.</td>
+      <td>Initial page to show upon login.</td>
     </tr>
     <tr>
       <td align="center"><input type="text" name="PendingListCropSender"
