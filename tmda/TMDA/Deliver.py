@@ -291,7 +291,7 @@ class Deliver:
         See <URL:http://cr.yp.to/proto/maildir.html> and
             <URL:http://www.qmail.org/man/man5/maildir.html>
 
-        Based on code from getmail
+        Uses code from getmail
         <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
         Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
         General Public License version 2.
@@ -318,8 +318,11 @@ class Deliver:
         signal.alarm(24 * 60 * 60)
 
         dir_tmp = os.path.join(maildir, 'tmp')
+        dir_cur = os.path.join(maildir, 'cur')
         dir_new = os.path.join(maildir, 'new')
-        if not (os.path.isdir(dir_tmp) and os.path.isdir(dir_new)):
+        if not (os.path.isdir(dir_tmp) and 
+                os.path.isdir(dir_cur) and
+                os.path.isdir(dir_new)):
             raise Errors.DeliveryError, 'not a Maildir! (%s)' % maildir
 
         now = time.time()
@@ -343,7 +346,8 @@ class Deliver:
 
         # Open file to write.
         try:
-            fp = open(fname_tmp, 'wb')
+            fd = os.open(fname_tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0600)
+            fp = os.fdopen(fd, 'wb', 4096)
             os.chmod(fname_tmp, 0600)
             try:
                 # If root, change the message to be owned by the
@@ -356,9 +360,10 @@ class Deliver:
             fp.flush()
             os.fsync(fp.fileno())
             fp.close()
-        except IOError:
+        except (OSError, IOError), o:
             signal.alarm(0)
-            raise Errors.DeliveryError, 'Failure writing file ' + fname_tmp
+            raise Errors.DeliveryError, \
+                  'Failure writing file %s (%s)' % (fname_tmp, o)
 
         fstatus = os.stat(fname_tmp)
         # e.g, 1043715037.V20d04I18bfb.hrothgar.la.mastaler.com

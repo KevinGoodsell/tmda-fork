@@ -1,3 +1,8 @@
+2003-10-14  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Deliver.py (Deliver.__deliver_maildir): Use os.open() and
+	os.fdopen() in place of __builtins__.open() to create the file.
+	
 2003-10-13  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Defaults.py (OUTGOINGMAIL): Change default to 'sendmail'.
