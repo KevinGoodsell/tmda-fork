@@ -304,9 +304,10 @@ if not vars().has_key('TIMEOUT'):
 # TIMEZONE = "MST7MDT"
 # TIMEZONE = "Pacific/Auckland"
 #
-# This setting might be useful when you want dates represented (in
-# logfiles, mail headers, etc.) in a timezone other than the default
-# timezone of the machine running TMDA.
+# If you define this variable, the `TZ' environment variable will be
+# set to its result.  This might be useful when you want dates
+# represented (in logfiles, mail headers, etc.) in a timezone other
+# than the default timezone of the machine running TMDA.
 # Default is the timezone of the local host.
 if not vars().has_key('TIMEZONE'):
     TIMEZONE = None
