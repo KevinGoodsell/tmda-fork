@@ -1,3 +1,10 @@
+2004-02-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (do_default_action): last parameter now takes an
+	optional template name instead of bounce text.
+	
+	(bouncegen): Remove text parameter.
+
 2004-02-11  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-inject (main): Add Received, Date, Message-ID,

@@ -9,4 +9,5 @@ its recipients. This is a permanent error. The following address(es)
 failed:
 
 <%(recipient_address)s>:
-%(bounce_text)s
+
+You have sent email to an invalid keyword address.

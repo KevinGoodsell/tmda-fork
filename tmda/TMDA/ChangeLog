@@ -1,3 +1,14 @@
+2004-02-20  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Defaults.py: Removed BOUNCE_TEXT_* and CONFIRM_ACCEPT_TEXT_* in
+	favour of bounce_*.txt and confirm_accept_*.txt	templates.
+
+	New variables: ACTION_MISSING_PENDING,
+	ACTION_INVALID_CONFIRMATION,
+	CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY,
+	CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY
+	CONFIRM_ACCEPT_INITIAL_NOTIFY
+
 2004-02-17  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Util.py (wraptext): Utilize the new builtin textwrap module.

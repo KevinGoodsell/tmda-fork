@@ -4,4 +4,5 @@ BodyCharset: US-ASCII
 
 This message was created automatically by mail delivery software (TMDA).
 
-%(confirm_accept_text)s
+Your confirmation was accepted, and so your original message has been
+delivered.

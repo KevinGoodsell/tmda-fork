@@ -329,73 +329,6 @@ if not vars().has_key('VIRTUALDOMAINS'):
 if not vars().has_key('BOUNCE_ENV_SENDER'):
     BOUNCE_ENV_SENDER = '<>'
 
-# BOUNCE_TEXT_FILTER_INCOMING
-# Text for the failure notice returned to the sender when a 'bounce'
-# or 'reject' rule is matched in the incoming filter file.  Set to
-# None to disable notification.
-#
-# Default is "Message rejected by recipient."
-if not vars().has_key('BOUNCE_TEXT_FILTER_INCOMING'):
-    BOUNCE_TEXT_FILTER_INCOMING = """Message rejected by recipient."""
-
-# BOUNCE_TEXT_INVALID_CONFIRMATION
-# Text for the failure notice returned to the sender when a message is
-# sent to an invalid confirmation address.  Set to None to disable
-# notification.
-#
-# Default is "This confirmation address is invalid."
-if not vars().has_key('BOUNCE_TEXT_INVALID_CONFIRMATION'):
-    BOUNCE_TEXT_INVALID_CONFIRMATION = """This confirmation address is invalid."""
-
-# BOUNCE_TEXT_NONEXISTENT_PENDING
-# Text for the failure notice returned to the sender when a
-# confirmation response arrives for a message which could not be
-# located.  Set to None to disable notification.
-#
-# Default is "Your original message could not be located."
-if not vars().has_key('BOUNCE_TEXT_NONEXISTENT_PENDING'):
-    BOUNCE_TEXT_NONEXISTENT_PENDING = """Your original message could not be located."""
-
-# BOUNCE_TEXT_FAIL_DATED
-# Text for the failure notice returned to the sender when a
-# dated address does not verify with a correct HMAC.  Set to None 
-# to disable notification.  Setting to None will cause the same behavior
-# as setting ACTION_FAIL_DATED to drop
-#
-# Default is "You have sent email to an invalid address."
-if not vars().has_key('BOUNCE_TEXT_FAIL_DATED'):
-    BOUNCE_TEXT_FAIL_DATED = """You have sent email to an invalid address."""
-
-# BOUNCE_TEXT_EXPIRED_DATED
-# Text for the failure notice returned to the sender when a
-# dated address is expired.  Set to None to disable notification.  Setting
-# to None will cause the same behavior as setting ACTION_EXPIRED_DATED to
-# drop
-#
-# Default is "You have sent email to an expired address."
-if not vars().has_key('BOUNCE_TEXT_EXPIRED_DATED'):
-    BOUNCE_TEXT_EXPIRED_DATED = """You have sent email to an expired address."""
-
-# BOUNCE_TEXT_FAIL_SENDER
-# Text for the failure notice returned to the sender when a
-# sender address does not verify with a correct HMAC.  Set to None
-# to disable notification.  Setting to None will cause the same behavior
-# as setting ACTION_FAIL_SENDER to drop
-#
-# Default is "You have sent email to an address you are not authorized to use."
-if not vars().has_key('BOUNCE_TEXT_FAIL_SENDER'):
-    BOUNCE_TEXT_FAIL_SENDER = """You have sent email to an address you are not authorized to use."""
-
-# BOUNCE_TEXT_FAIL_KEYWORD
-# Text for the failure notice returned to the sender when a
-# keyword address does not verify with a correct HMAC. Set to None
-# to disable notification.  Setting to None will cause the same behavior
-# as setting ACTION_FAIL_KEYWORD to drop.
-#
-# Default is "You have sent email to an invalid address."
-if not vars().has_key('BOUNCE_TEXT_FAIL_KEYWORD'):
-    BOUNCE_TEXT_FAIL_KEYWORD = """You have sent email to an invalid address."""
-        
 # BARE_APPEND
 # Filename to which a recipient's e-mail address should be
 # automatically appended if the outgoing <action> is in the form
@@ -482,46 +415,44 @@ if not vars().has_key('CONFIRM_CC'):
 
 # CONFIRM_ACCEPT_NOTIFY
 # Set this variable to False if you do not want to generate any confirmation
-# acceptance notices.
+# acceptance notices at all.
 #
 # Default is True (turned on)
 if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
     CONFIRM_ACCEPT_NOTIFY = True
 
-# CONFIRM_ACCEPT_TEXT_INITIAL
-# Text for the confirmation acceptance notice returned to the sender
-# when they initially confirm their original message causing it to
-# be delivered.  Set to None to disable notification.
+# CONFIRM_ACCEPT_INITIAL_NOTIFY
+# Set this variable to False if you do not want to generate initial
+# confirmation acceptance notices.  These are the notices returned to
+# senders when they initially confirm their original message causing
+# it to be delivered.  Their content is based on the
+# confirm_accept_initial.txt template.
 #
-# Default is:
-# "Your confirmation was accepted, and so your original message has been delivered."
-if not vars().has_key('CONFIRM_ACCEPT_TEXT_INITIAL'):
-    CONFIRM_ACCEPT_TEXT_INITIAL = \
-"""Your confirmation was accepted,
-and so your original message has been delivered."""
+# Default is True (turned on)
+if not vars().has_key('CONFIRM_ACCEPT_INITIAL_NOTIFY'):
+    CONFIRM_ACCEPT_INITIAL_NOTIFY = True
 
-# CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED
-# Text for the confirmation acceptance notice returned to the sender
-# when they successfully confirm a message which has already been
-# confirmed.  Set to None to disable notification.
+# CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY
+# Set this variable to False if you do not want to generate already
+# confirmed notices.  These are the notices returned to senders when
+# they successfully confirm a message which has already been
+# confirmed.  Their content is based on the
+# confirm_accept_already_confirmed.txt template.
 #
-# Default is:
-# "Your original message has already been confirmed and delivered; you don't need to confirm it again."
-if not vars().has_key('CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED'):
-    CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED = \
-"""Your original message has already been confirmed and delivered;
-you don't need to confirm it again."""
+# Default is True (turned on)
+if not vars().has_key('CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY'):
+    CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY = True
 
-# CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED
-# Text for the confirmation acceptance notice returned to the sender
-# when they successfully confirm a message which has already been
-# manually released with tmda-pending.  Set to None to disable
-# notification.
+# CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY
+# Set this variable to False if you do not want to generate already
+# released notices.  These are the notices returned to senders when
+# they successfully confirm a message which has already been released
+# by tmda-pending or tmda-cgi.  Their content is based on the
+# confirm_accept_already_released.txt template.
 #
-# Default is "Your original message has already been released and delivered."
-if not vars().has_key('CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED'):
-    CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED = \
-"""Your original message has already been released and delivered."""
+# Default is True (turned on)
+if not vars().has_key('CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY'):
+    CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY = True
     
 # CONFIRM_ACCEPT_CC
 # An optional e-mail address which will be sent a copy of the
@@ -723,17 +654,13 @@ if not vars().has_key('ACTION_HEADER_INCOMING'):
 # Possible values include:
 #
 # "bounce"
-#    bounce the message
-#
+#    bounce the message - uses the bounce_incoming.txt template.
 # "drop"
 #    silently drop the message
-#
 # "ok"
 #    deliver the message
-#
 # "confirm"
 #    request confirmation for the message
-#
 # "hold"
 #    silently hold message in pending queue
 #
@@ -747,17 +674,13 @@ if not vars().has_key('ACTION_INCOMING'):
 # Possible values include:
 #
 # "bounce"
-#    bounce the message - uses BOUNCE_TEXT_FAIL_DATED
-#
+#    bounce the message - uses the bounce_fail_dated.txt template.
 # "drop"
 #    silently drop the message
-#
 # "ok"
 #    deliver the message
-#
 # "confirm"
 #    request confirmation for the message
-#
 # "hold"
 #    silently hold message in pending queue
 #
@@ -771,17 +694,13 @@ if not vars().has_key('ACTION_FAIL_DATED'):
 # Possible values include:
 #
 # "bounce"
-#    bounce the message - uses BOUNCE_TEXT_EXPIRED_DATED
-#
+#    bounce the message - uses the bounce_expired_dated.txt template.
 # "drop"
 #    silently drop the message
-#
 # "ok"
 #    deliver the message
-#
 # "confirm"
 #    request confirmation for the message
-#
 # "hold"
 #    silently hold message in pending queue
 #
@@ -796,17 +715,13 @@ if not vars().has_key('ACTION_EXPIRED_DATED'):
 # Possible values include:
 #
 # "bounce"
-#    bounce the message - uses BOUNCE_TEXT_FAIL_SENDER
-#
+#    bounce the message - uses the bounce_fail_sender.txt template.
 # "drop"
 #    silently drop the message
-#
 # "ok"
 #    deliver the message
-#
 # "confirm"
 #    request confirmation for the message
-#
 # "hold"
 #    silently hold message in pending queue
 #
@@ -820,23 +735,59 @@ if not vars().has_key('ACTION_FAIL_SENDER'):
 # Possible values include:
 #
 # "bounce"
-#    bounce the message - uses BOUNCE_TEXT_FAIL_KEYWORD
-#
+#    bounce the message - uses the bounce_fail_keyword.txt template.
 # "drop"
 #    silently drop the message
-#
 # "ok"
 #    deliver the message
-#
 # "confirm"
 #    request confirmation for the message
-#
 # "hold"
 #    silently hold message in pending queue
 #
 # Default is confirm
 if not vars().has_key('ACTION_FAIL_KEYWORD'):
     ACTION_FAIL_KEYWORD = "confirm"
+
+# ACTION_INVALID_CONFIRMATION
+# Specifies how confirmation messages should be disposed of if they
+# are sent to a confirmation address that fails to verify.
+# Possible values include:
+#
+# "bounce"
+#    bounce the message - uses the bounce_invalid_confirmation.txt template.
+# "drop"
+#    silently drop the message
+# "ok"
+#    deliver the message
+# "confirm"
+#    request confirmation for the message
+# "hold"
+#    silently hold message in pending queue
+#
+# Default is bounce
+if not vars().has_key('ACTION_INVALID_CONFIRMATION'):
+    ACTION_INVALID_CONFIRMATION = "bounce"
+
+# ACTION_MISSING_PENDING
+# Specifies how confirmation messages should be disposed of if the
+# message to be confirmed can not be located.
+# Possible values include:
+#
+# "bounce"
+#    bounce the message - uses the bounce_missing_pending.txt template.
+# "drop"
+#    silently drop the message
+# "ok"
+#    deliver the message
+# "confirm"
+#    request confirmation for the message
+# "hold"
+#    silently hold message in pending queue
+#
+# Default is bounce
+if not vars().has_key('ACTION_MISSING_PENDING'):
+    ACTION_MISSING_PENDING = "bounce"
 
 # ACTION_OUTGOING
 # Specifies how outgoing messages should be tagged by default if there

@@ -1,0 +1,7 @@
+From.US-ASCII: "%(FULLNAME)s" <%(recipient_address)s>
+Subject.US-ASCII: Confirmation accepted
+BodyCharset: US-ASCII
+
+This message was created automatically by mail delivery software (TMDA).
+
+Your original message has already been released and delivered.

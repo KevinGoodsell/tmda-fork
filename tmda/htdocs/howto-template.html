@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Feb  6 10:55:37 2004 -->
+<!-- Fri Feb 20 17:57:14 2004 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -219,19 +219,115 @@ its various auto-responses. You can customize this content by editing
 and maintaining your own set of templates, which will be explained
 below.  <br><br>
 
-There are currently three templates:
-
-<ul>
-<li>bounce.txt (for failure notices)<br>
-<li>confirm_accept.txt (for confirmation acceptance notices)<br>
-<li>confirm_request.txt (for confirmation requests)<br>
-</ul>
-
 If you downloaded a TMDA source tarball, these files will be located
 in the <strong>templates/</strong> subdirectory of the
 distribution. If you are using a TMDA package, the template files will
 be in a global directory such as <strong>/etc/tmda/</strong>,
 <strong>/usr/share/tmda/</strong> or <strong>/usr/local/share/tmda/</strong>.
+<br><br>
+
+There are currently three sets of templates for TMDA's three
+different types of auto-responses -- "bounce" (failure notices), "confirm request"
+(delivery confirmation requests), and "confirm accept" (delivery confirmation notices).
+The table below
+details what each template file is used for.  You'll also get a good sense of what
+each template does by just looking at their contents.
+<br><br>
+
+<table border cellpadding=4 cellspacing=2>
+
+<tr>
+<th>template file</th>
+<th>context used</th>
+</td>
+
+<tr>
+<td>confirm_request.txt
+</td>
+<td>When the the <a href="challengeresponse.html">challenge/response system</a> 
+needs to request delivery confirmation for messages
+</td>
+</tr>
+
+<tr>
+<td>confirm_accept_initial.txt
+</td>
+<td>When <a href="config-vars.html#CONFIRM_ACCEPT_INITIAL_NOTIFY">CONFIRM_ACCEPT_INITIAL_NOTIFY</a> 
+is set to True
+</td>
+</tr>
+
+<tr>
+<td>confirm_accept_already_confirmed.txt
+</td>
+<td>When <a href="config-vars.html#CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY">CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY</a> 
+is set to True
+</td>
+</tr>
+
+<tr>
+<td>confirm_accept_already_released.txt
+</td>
+<td>When <a href="config-vars.html#CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY">CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY</a> 
+is set to True
+</td>
+</tr>
+
+<tr>
+<td>bounce_incoming.txt
+</td>
+<td>When <a href="config-vars.html#ACTION_INCOMING">ACTION_INCOMING</a> is set to "bounce", or
+a "bounce" is triggered by your <a href="config-vars.html#FILTER_INCOMING">FILTER_INCOMING</a> file
+</td>
+</tr>
+
+<tr>
+<td>bounce_fail_sender.txt
+</td>
+<td>When <a href="config-vars.html#ACTION_FAIL_SENDER">ACTION_FAIL_SENDER</a> is set to "bounce"
+</td>
+</tr>
+
+<tr>
+<td>bounce_fail_keyword.txt
+</td>
+<td>When <a href="config-vars.html#ACTION_FAIL_KEYWORD">ACTION_FAIL_KEYWORD</a> is set to "bounce"
+</td>
+</tr>
+
+<tr>
+<td>bounce_fail_dated.txt
+</td>
+<td>When <a href="config-vars.html#ACTION_FAIL_DATED">ACTION_FAIL_DATED</a> is set to "bounce"
+</td>
+</tr>
+
+
+<tr>
+<td>bounce_expired_dated.txt
+</td>
+<td>When <a href="config-vars.html#ACTION_EXPIRED_DATED">ACTION_EXPIRED_DATED</a> is set to "bounce"
+</td>
+</tr>
+
+<tr>
+<td>bounce_missing_pending.txt
+</td>
+<td>When <a href="config-vars.html#ACTION_MISSING_PENDING">ACTION_MISSING_PENDING</a> is set to "bounce"
+</td>
+</tr>
+
+<tr>
+<td>bounce_invalid_confirmation.txt
+</td>
+<td>When <a href="config-vars.html#ACTION_INVALID_CONFIRMATION">ACTION_INVALID_CONFIRMATION</a> is set to "bounce"
+</td>
+</tr>
+
+</tr>
+</table>
+
+<br>
 
 <hr>
 
@@ -309,7 +405,9 @@ If you want to use particular custom templates for a specific sender
 address, or sender addresses in a specific sub-domain or top-level domain, 
 see the 
 <a href="config-vars.html#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a> 
-feature.
+feature.  <a href="config-vars.html#TEMPLATE_DIR_MATCH_RECIPIENT">TEMPLATE_DIR_MATCH_RECIPIENT</a>
+offers a similar feature based on the recipient address.
+<br>
 
 <hr>
 

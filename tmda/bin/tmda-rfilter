@@ -451,12 +451,12 @@ def send_cc(address):
     logit('CC', address)
 
 
-def do_default_action(action, logname, bouncetext):
+def do_default_action(action, logname, template=None):
     """Handle ACTION_* actions"""
     disposal_time = time.time()
     if action in ('bounce', 'reject'):
         logit('BOUNCE', logname)
-        bouncegen('bounce', bouncetext)
+        bouncegen('bounce', template=template)
     elif action in ('drop', 'exit', 'stop'):
         logit('DROP', logname)
         mta.stop()
@@ -502,8 +502,9 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         confirm_timestamp, confirm_pid, confirm_hmac = \
                            confirm_cookie.split('.')
     except ValueError:
-        logit("BOUNCE", "invalid_confirmation_address")
-        bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
+        do_default_action(Defaults.ACTION_INVALID_CONFIRMATION.lower(),
+                          'action_invalid_confirmation',
+                          'bounce_invalid_confirmation.txt')
     confirmed_filename = '%s.%s.msg' % (confirm_timestamp, confirm_pid)
     confirmed_filepath = os.path.join(pendingdir, confirmed_filename)
     if confirm_action == 'accept':
@@ -519,13 +520,14 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                                                   confirm_pid, confirm_action)
         # Accept the message only if the HMAC can be verified.
         if not (confirm_hmac == new_confirm_hmac):
-            logit("BOUNCE", "invalid_confirmation_address")
-            bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
-        # If the message isn't recorded as delivered and doesn't exist,
-        # alert sender that their original is missing.
+            do_default_action(Defaults.ACTION_INVALID_CONFIRMATION.lower(),
+                              'action_invalid_confirmation',
+                              'bounce_invalid_confirmation.txt')
+        # If the message isn't recorded as delivered and doesn't exist.
         if not delivery_status and not (os.path.exists(confirmed_filepath)):
-            logit("BOUNCE", "nonexistent_pending_message")
-            bouncegen('bounce', Defaults.BOUNCE_TEXT_NONEXISTENT_PENDING)
+            do_default_action(Defaults.ACTION_MISSING_PENDING.lower(),
+                              'action_missing_pending',
+                              'bounce_missing_pending.txt')
         logit("CONFIRM", "accept " + confirmed_filename)
         # Optionally carbon copy the confirmation to another address.
         if Defaults.CONFIRM_ACCEPT_CC:
@@ -558,16 +560,14 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         # Optionally generate a confirmation acceptance notice.
         if Defaults.CONFIRM_ACCEPT_NOTIFY:
             if (delivery_status == 'c' and
-                Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED):
-                bouncegen('accept',
-                          Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED)
+                Defaults.CONFIRM_ACCEPT_ALREADY_CONFIRMED_NOTIFY):
+                bouncegen('accept', template='confirm_accept_already_confirmed.txt')
             elif (delivery_status == 'r' and
-                  Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED):
-                bouncegen('accept',
-                          Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED)
+                  Defaults.CONFIRM_ACCEPT_ALREADY_RELEASED_NOTIFY):
+                bouncegen('accept', template='confirm_accept_already_released.txt')
             elif ((not delivery_status) and
-                  (Defaults.CONFIRM_ACCEPT_TEXT_INITIAL)):
-                bouncegen('accept', Defaults.CONFIRM_ACCEPT_TEXT_INITIAL)
+                  (Defaults.CONFIRM_ACCEPT_INITIAL_NOTIFY)):
+                bouncegen('accept', template='confirm_accept_initial.txt')
         # Just stop if the message has already been delivered.  Also,
         # change the release mark from 'R' to 'C' to note that this
         # message has had a confirmation attempt.
@@ -616,13 +616,13 @@ def verify_dated_cookie(dated_cookie):
     except ValueError:
         do_default_action(Defaults.ACTION_FAIL_DATED.lower(),
                           'action_fail_dated',
-                          Defaults.BOUNCE_TEXT_FAIL_DATED)
+                          'bounce_fail_dated.txt')
     # Accept the message only if the address has not expired, and the
     # HMAC is valid.
     if datemac != Cookie.datemac(cookie_date): 
         do_default_action(Defaults.ACTION_FAIL_DATED.lower(),
                           'action_fail_dated',
-                          Defaults.BOUNCE_TEXT_FAIL_DATED)
+                          'bounce_fail_dated.txt')
     else:
         if int(cookie_date) >= int('%d' % time.time()):
             logit("OK", "good_dated_cookie (%s)" % \
@@ -632,7 +632,7 @@ def verify_dated_cookie(dated_cookie):
             logmsg = "action_expired_dated (%s)" % \
                      Util.make_date(int(cookie_date))
             do_default_action(Defaults.ACTION_EXPIRED_DATED.lower(),
-                              logmsg, Defaults.BOUNCE_TEXT_EXPIRED_DATED)
+                              logmsg, 'bounce_expired_dated.txt')
 
 
 def verify_sender_cookie(sender_address,sender_cookie):
@@ -643,9 +643,9 @@ def verify_sender_cookie(sender_address,sender_cookie):
         logit("OK", "good_sender_cookie")
         mta.deliver(msgin)
     except Address.AddressError, msg:
-        defact = Defaults.ACTION_FAIL_SENDER.lower()
-        bouncetext = Defaults.BOUNCE_TEXT_FAIL_SENDER
-        do_default_action(defact, 'action_fail_sender', bouncetext)
+        do_default_action(Defaults.ACTION_FAIL_SENDER.lower(),
+                          'action_fail_sender',
+                          'bounce_fail_sender.txt')
 
 
 def verify_keyword_cookie(keyword_cookie):
@@ -659,9 +659,9 @@ def verify_keyword_cookie(keyword_cookie):
         logit("OK", "good_keyword_cookie \"" + keyword + "\"")
         mta.deliver(msgin)
     else:
-        defact = Defaults.ACTION_FAIL_KEYWORD.lower()
-        bouncetext = Defaults.BOUNCE_TEXT_FAIL_KEYWORD
-        do_default_action(defact, 'action_fail_keyword', bouncetext)
+        do_default_action(Defaults.ACTION_FAIL_KEYWORD.lower(),
+                          'action_fail_keyword',
+                          'bounce_fail_keyword.txt')
 
 
 def create_pending_msg(timestamp, pid):
@@ -680,7 +680,7 @@ def create_pending_msg(timestamp, pid):
     return pending_message
 
 
-def bouncegen(mode, text=None, template=None):
+def bouncegen(mode, template=None):
     """Bounce a message back to sender."""
     # Stop right away if --discard was specified.
     if discard:
@@ -711,17 +711,11 @@ def bouncegen(mode, text=None, template=None):
         sender_recipient_address = Cookie.make_sender_address(recipient_address,
                                                               envelope_sender)
     if mode == 'accept':                # confirmation acceptance notices
-        templatefile = 'confirm_accept.txt'
-        confirm_accept_text = Util.wraptext(text)
+        # assume we are being passed a templatefile
+        templatefile = template
     elif mode == 'bounce':              # failure notices
-        if text is None:
-            mta.stop()
-        else:
-            if template:
-                templatefile = template
-            else:
-                templatefile = 'bounce.txt'
-            bounce_text = Util.wraptext(text)
+        # assume we are being passed a templatefile
+        templatefile = template
     elif mode == 'request':               # confirmation requests
         if template:
             templatefile = template
@@ -838,11 +832,10 @@ def main():
             send_cc(Defaults.FILTER_BOUNCE_CC)
         if option:
             logit('BOUNCE', '(%s)' % (matching_line + '=' + option))
-            bouncegen('bounce', Defaults.BOUNCE_TEXT_FILTER_INCOMING,
-                      template=option)
+            bouncegen('bounce', template=option)
         else:
             logit('BOUNCE', '(%s)' % matching_line)
-            bouncegen('bounce', Defaults.BOUNCE_TEXT_FILTER_INCOMING)
+            bouncegen('bounce', 'bounce_incoming.txt')
     elif action in ('drop','exit','stop'):
         if Defaults.FILTER_DROP_CC:
             send_cc(Defaults.FILTER_DROP_CC)
@@ -883,9 +876,8 @@ def main():
     # If the message gets this far (i.e, was not sent to a tagged
     # address and it didn't match the filter file), then we consult
     # Defaults.ACTION_INCOMING.
-    default_action = Defaults.ACTION_INCOMING.lower()
-    bouncetext = Defaults.BOUNCE_TEXT_FILTER_INCOMING
-    do_default_action(default_action, 'action_incoming', bouncetext)
+    do_default_action(Defaults.ACTION_INCOMING.lower(), 'action_incoming',
+                      'bounce_incoming.txt')
 
 # This is the end my friend.
 if __name__ == '__main__':
