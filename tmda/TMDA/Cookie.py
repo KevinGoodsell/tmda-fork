@@ -3,7 +3,6 @@
 """Crypto-cookie functions."""
 
 
-import base64
 import binascii
 import os
 import re
@@ -116,4 +115,4 @@ def make_fingerprint(hdrlist):
     fp = HMAC.hmac(Defaults.CRYPT_KEY)
     for hdr in hdrlist:
         fp.update(hdr)
-    return base64.encodestring(fp.digest())[:-2]
+    return binascii.b2a_base64(fp.digest())[:-2]

@@ -1,5 +1,9 @@
 2002-02-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Cookie.py (make_fingerprint): Use the binascii module instead of
+	base64 to do the binary to base64 encoding since we already have
+	it imported.
+
 	* Util.py (wraptext): New function to wrap and fill text.
 
 2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
