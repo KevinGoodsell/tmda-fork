@@ -21,6 +21,8 @@
 
 "Utilities for tmda-cgi."
 
+ErrTemplate = "error.html"
+
 import cgi
 import os
 import sys
@@ -62,7 +64,7 @@ def FileDetails(Desc, Filename):
   return "%s file <tt>%s</tt>, permissions %s" % (Desc, Filename, Perm)
 
 def TermError(Err, Cause, Failed, Other, Recommend):
-  T = Template.Template("error.html")
+  T = Template.Template(ErrTemplate)
   T["ErrorName"]  = Err
   T["Cause"]      = Cause
   T["Additional"] = """Running in %s mode.<br>
