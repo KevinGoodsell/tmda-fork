@@ -2,11 +2,20 @@
 
 If you are upgrading from a release of TMDA < 0.55:
 
-* DELIVERY has replaced LOCAL_DELIVERY_AGENT.  You can simply rename
-  (or copy) LOCAL_DELIVERY_AGENT to DELIVERY in your tmdarc to retain
-  current functionality.  However, you should also read about DELIVERY
-  in Defaults.py, as it contains some significant enhancements that
-  may simplify your overall configuration.
+* DELIVERY has replaced LOCAL_DELIVERY_AGENT.  If you wish to retain
+  existing functionality, you can simply rename LOCAL_DELIVERY_AGENT
+  to DELIVERY in your tmdarc, but be sure to add a `|' (pipe) to
+  the front of the path to indicate a program delivery.  e.g,
+
+  LOCAL_DELIVERY_AGENT = "/usr/bin/procmail ~/.procmailrc-tmda"
+
+  becomes
+   
+  DELIVERY = "|/usr/bin/procmail ~/.procmailrc-tmda"
+
+  However, you should also read about DELIVERY in Defaults.py, as it
+  contains some significant enhancements that may simplify your
+  overall configuration.
 
 ======================================================================
 
