@@ -7,7 +7,7 @@ If you decide to give TMDA a whirl, make sure you have the necessary
 prerequisite software installed first.<br><br>
 
 <li>The <a href="http://www.python.org/download/" TARGET="Resource Window">Python</a> 
-programming language.  Versions 1.5.2 and higher are supported, but 2.2 or higher is
+programming language.  Versions 2.0 and higher are supported, but 2.2 or higher is
 highly recommended.  Many UNIX/Linux distributions now come with
 Python pre-installed.  To check whether it is and what version you
 have installed, try typing <strong>python</strong> and/or

@@ -1,5 +1,7 @@
 2002-02-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* requirements.ht (Links): Python >= 2.0 is now required.
+
 	* results.ht (Links): Add freshmeat.net comment from Martin
 	Dougiamas to user testimonials, and updated monthly spam count.
 	
