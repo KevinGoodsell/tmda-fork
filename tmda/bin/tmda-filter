@@ -110,15 +110,33 @@ envelope_recipient = (message_headers.getheader('x-originally-to') or
 # envelope_recipient if we are not running under a virtualdomain.
 recipient_address = envelope_recipient
 if Defaults.USEVIRTUALDOMAINS and os.path.exists(Defaults.VIRTUALDOMAINS):
+    # Parse the virtualdomains control file; see qmail-send(8) for
+    # syntax rules.  All this because qmail doesn't store the original
+    # envelope recipient in the environment.
     (ousername, odomain) = string.split(envelope_recipient,'@')
     for line in fileinput.input(Defaults.VIRTUALDOMAINS):
+        vdomain_match = 0
         line = string.lower(string.strip(line))
         # Comment or blank line?
         if line == '' or line[0] in '#':
             continue
         else:
             (vdomain, prepend) = string.split(line,':')
+            # domain:prepend
             if vdomain == string.lower(odomain):
+                vdomain_match = 1
+            # .domain:prepend (wildcard)
+            elif not string.split(vdomain,'.',1)[0]:
+                if string.find(string.lower(odomain), vdomain) != -1:
+                    vdomain_match = 1
+            # user@domain:prepend
+            else:
+                try:
+                    if string.split(vdomain,'@')[1] == string.lower(odomain):
+                        vdomain_match = 1
+                except IndexError:
+                    pass
+            if vdomain_match:
                 # strip off the prepend
                 if prepend:
                     nusername = string.replace(ousername,prepend + '-','')

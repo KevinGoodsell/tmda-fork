@@ -3,6 +3,9 @@
 	* tmda-filter (recipient_address): Only parse VIRTUALDOMAINS if
 	support is turned on *and* the file exists.
 
+	(recipient_address): Add support for wildcards and "virtual user"
+	entries in VIRTUALDOMAINS.
+
 2001-08-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (original_recipient): USEVIRTUALDOMAINS replaces
