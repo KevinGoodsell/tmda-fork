@@ -45,8 +45,6 @@ Contributions:
 
     * Arcady Genkin -- Gentoo Linux Package.
 
-    * Jim Geovedi -- OpenBSD port (formerly by David Lebel).
-
     * Jesse Guardiani -- various contrib scripts.
 
     * David Guerizec -- Pending.py module, lots of tmda-ofmipd
@@ -65,6 +63,8 @@ Contributions:
     * Bernard Johnson -- contrib files to support tmda-ofmipd running
       as a system daemon in SysV/RedHat style.  Improvements to
       tmda.spec.
+
+    * Sergei Kolobov -- FreeBSD port (formerly Mike Meyer).
 
     * Brian Lalor -- testing the initial Sendmail support; bugfixes.
 
@@ -92,8 +92,6 @@ Contributions:
 
     * Adam McKenna -- Debian package.
 
-    * Sergei Kolobov -- FreeBSD port (formerly Mike Meyer).
-
     * Sven Neuhaus -- mirror of www.tmda.net in Germany.
 
     * Drew Raines -- Tireless assistance on tmda-users; custom address
@@ -106,15 +104,18 @@ Contributions:
 
     * Tim Rice -- MMDF support.
 
-    * Kimmo Suominen -- NetBSD package (formerly Amitai Schlair).
-
     * Michael Schler -- registration of, and secondary nameservice for
       TMDA.NET.
 
     * Robin S. Socha -- lots of TMDA advocacy, particularly in the
       de.* newsgroups, and documentation (Gnus HOWTO).
 
+    * Dave Steinberg -- OpenBSD port (formerly David Lebel, and Jim
+      Geovedi).
+
     * Reuben Sumner -- original HMAC module.
+
+    * Kimmo Suominen -- NetBSD package (formerly Amitai Schlair).
 
     * Simon Waldman -- documentation (Fetchmail HOWTO).
 
