@@ -39,7 +39,7 @@ import Defaults
 # Manage a connection to an SMTP server.
 class Connection:
     def __init__(self):
-        self.__connect()
+        self.__conn = None
 
     def __connect(self):
         self.__conn = smtplib.SMTP()
@@ -55,25 +55,32 @@ class Connection:
                                  Defaults.SMTPSSL_CERTFILE)
             
     def sendmail(self, envsender, recips, msgtext):
+        if self.__conn is None:
+            self.__connect()
         try:
             results = self.__conn.sendmail(envsender, recips, msgtext)
         except smtplib.SMTPException:
-            # For safety, reconnect.
-            self.__conn.quit()
-            self.__connect()
-            # Let exceptions percolate up.
+            # For safety, close this connection.  The next send
+            # attempt will automatically re-open it.  Pass the
+            # exception on up.
+            self.quit()
             raise
-        # Decrement the session counter, reconnecting if necessary.
+        # This session has been successfully completed.
         self.__numsessions -= 1
         # By testing exactly for equality to 0, we automatically
         # handle the case for SMTP_MAX_SESSIONS_PER_CONNECTION <= 0
         # meaning never close the connection.  We won't worry about
         # wraparound <wink>.
         if self.__numsessions == 0:
-            self.__conn.quit()
-            self.__connect()
+            self.quit()
         return results
 
     def quit(self):
-        self.__conn.quit()
+        if self.__conn is None:
+            return
+        try:
+            self.__conn.quit()
+        except smtplib.SMTPException:
+            pass
+        self.__conn = None
 
