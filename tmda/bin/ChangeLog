@@ -1,5 +1,8 @@
 2001-07-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-clean: New script to remove old messages from the pending
+	queue.
+
 	* tmda-filter (inject_pending): Change format of `X-Confirmed:' to
 	resemble rfc822 dates to more easily compare it to the `Date:'
 	header.
