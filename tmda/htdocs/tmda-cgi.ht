@@ -1,8 +1,9 @@
-Title: tmda-cgi HOWTO
+﻿Title: tmda-cgi HOWTO
 Links: overview-links.h usage-links.h howto-links.h support-links.h 
 
 <h1>tmda-cgi (contributed by <a href="mailto:gre7g@wolfhome.com">Gre7g Luterman</a>)</h1>
 <p><a href="#What">What is it?</a><br>
+  <a href="#Screen">Screenshots</a> <br>
   <a href="#Require">Requirements</a><br>
   <a href="#Blame">Credit/blame</a><br>
   <a href="#Install">Installation</a><br>
@@ -76,6 +77,21 @@ can:</p>
       weight loss drugs, penis enlargement, and Nigerian swindles today! Now I 
       remember why the rest of my family thinks that e-mail is a pain.&quot;
 </ul>
+<hr>
+<h2><a name="Screen" id="Screen"></a>Screenshots</h2>
+<p><b><i>Note:</i></b> You may find the default colors ugly. Those can be changed 
+  by modifying the CSS file.</p>
+<p><a href="http://tmda.sourceforge.net/screenshots/login.png" target="_blank">Login</a></p>
+<p><a href="http://tmda.sourceforge.net/screenshots/pending.png" target="_blank">Index 
+  of pending e-mails (whitelist &amp; blacklist options enabled)</a></p>
+<p><a href="http://tmda.sourceforge.net/screenshots/view1.png" target="_blank">View 
+  the contents of a pending e-mail with attachements</a></p>
+<p><a href="http://tmda.sourceforge.net/screenshots/confirm.png" target="_blank">Optional 
+  Javascript confirmation when deleting or blacklisting</a></p>
+<p><a href="http://tmda.sourceforge.net/screenshots/view2.png" target="_blank">Show 
+  all headers mode when viewing an e-mail</a></p>
+<p><a href="http://tmda.sourceforge.net/screenshots/confirmed.png" target="_blank">URL confirmation 
+  feedback</a></p>
 <hr>
 <h2><a name="Require"></a>Requirements</h2>
 <p>TBD. Until we do more testing it isn't clear what systems have problems with 
@@ -341,7 +357,7 @@ os.umask(0027)<br>
 &nbsp;<br>
 # Locate important files and directories<br>
 DATADIR = "/var/tmda/%s/" % os.environ["USER"]<br>
-CONFIRM_APPEND &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "lists/whitelist"<br>
+        CONFIRM_APPEND &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "lists/confirmed"<br>
 FILTER_INCOMING &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= DATADIR + "filters/incoming"<br>
 FILTER_OUTGOING &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= DATADIR + "filters/outgoing"<br>
 LOGFILE_DEBUG &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= DATADIR + "logs/debug"<br>
@@ -502,12 +518,11 @@ ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
   that, although not erroneous, may not be what you expect. Check this list for 
   help if you experience problems with tmda-cgi.</p>
 <ol>
-  <li>tmda-cgi's whitelist &amp; URL confirmation features do not update the list 
-    pointed to by configuration variable <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a></tt><tt>.</tt> 
+  <li>tmda-cgi's whitelist feature does not update the list pointed to by configuration 
+    variable <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a></tt><tt>.</tt> 
     <p>tmda-cgi uses configuration variable <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a> 
       instead of <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a>.</tt> 
-      To use the whitelist feature or to auto-append to a list when the user clicks 
-      a confirmation URL, you must set <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a> 
+      To use the whitelist feature, you must set <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a> 
       to a list that is handled by your incoming filter.</li>
 </ol>
 <hr>
