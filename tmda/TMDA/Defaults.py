@@ -232,17 +232,13 @@ if not vars().has_key('CONFIRM_ACCEPT_CC'):
 if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
     CONFIRM_MAX_MESSAGE_SIZE = 50000
 
-# CONFIRM_ACCEPT_TEMPLATE
-# Full path to a custom template for confirmation acceptance notices.
-# Default is confirm_accept.txt in ../templates/.
-if not vars().has_key('CONFIRM_ACCEPT_TEMPLATE'):
-    CONFIRM_ACCEPT_TEMPLATE = PARENTDIR + '/templates/confirm_accept.txt'
-    
-# CONFIRM_REQUEST_TEMPLATE
-# Full path to a custom template for confirmation requests.
-# Default is confirm_request.txt in ../templates/.
-if not vars().has_key('CONFIRM_REQUEST_TEMPLATE'):
-    CONFIRM_REQUEST_TEMPLATE = PARENTDIR + '/templates/confirm_request.txt'
+# TEMPLATE_DIR
+# Full path to a directory containing custom TMDA templates.  Any
+# templates found in this directory will be used, otherwise the
+# default templates will be used.
+# No default.
+if not vars().has_key('TEMPLATE_DIR'):
+    TEMPLATE_DIR = None
 
 # DATED_TEMPLATE_VARS
 # Set this variable to 1 if you want to use 'dated' address variables

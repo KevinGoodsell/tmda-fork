@@ -1,3 +1,10 @@
+2002-03-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter: -t option replaces both -A and -R.
+
+	(bouncegen): General cleanup, and also the templatefile searching
+	is now done in Util.maketext() instead of here.
+
 2002-02-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (main): Run logit() after msg.deliver() has

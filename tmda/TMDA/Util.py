@@ -30,6 +30,7 @@ import popen2
 import random
 import re
 import string
+import sys
 import time
 
 
@@ -387,7 +388,6 @@ def build_cdb(filename):
 def build_dbm(filename):
     import anydbm
     import glob
-    import sys
     import tempfile
 
     try:
@@ -548,23 +548,51 @@ def wraptext(text, column=70, honor_leading_ws=1):
 def maketext(templatefile, vardict):
     """Make some text from a template file.
 
-    Reads the `templatefile' which should be a full pathname, and does
-    string substitution by interpolating in the `localdict'.
+     Several locations are scanned for templatefile, in the following order:
+     1. The directory specified by tmda-filter's `-t' option.
+     2. Defaults.TEMPLATE_DIR
+     3. ../templates/
+     4. The package/RPM template directory.
+
+    The first match found stops the search.  In this way, you can
+    specialize templates at the desired level, or, if you use only the
+    default templates, you don't need to change anything.
+    
+    Once the templatefile is found, string substitution is performed
+    by interpolation in `localdict'.
 
     Based on code from Mailman
     <URL:http://www.gnu.org/software/mailman/mailman.html>
     Copyright (C) 1998,1999,2000,2001 by the Free Software Foundation, Inc.,
     and licensed under the GNU General Public License version 2.
     """
-    fp = open(templatefile)
-    template = fp.read()
-    fp.close()
     import Defaults
-    localdict = Defaults.__dict__.copy()
-    localdict.update(vardict)
-    text = template % localdict
-    return text
-
+    # Calculate the locations to scan.
+    searchdirs = []
+    searchdirs.append(os.environ.get('TMDA_TEMPLATE_DIR'))
+    searchdirs.append(Defaults.TEMPLATE_DIR)
+    searchdirs.append(Defaults.PARENTDIR + '/templates/')
+    searchdirs.append(sys.prefix + '/share/tmda/')
+    searchdirs.append('/etc/tmda/')
+    # Start scanning.
+    foundit = None
+    for dir in searchdirs:
+        if dir:
+            filename = os.path.join(dir, templatefile)
+            if os.path.exists(filename):
+                foundit = filename
+                break
+    if foundit is None:
+        raise IOError, "Can't find " + templatefile
+    else:
+        fp = open(foundit, 'r')
+        template = fp.read()
+        fp.close()
+        localdict = Defaults.__dict__.copy()
+        localdict.update(vardict)
+        text = template % localdict
+        return text
+        
 
 def filter_match(filename, recip, sender=None):
     """Check if the give e-mail addresses match lines in filename."""

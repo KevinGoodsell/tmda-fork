@@ -58,8 +58,6 @@ import os                                      # don't remove
 
 # CONFIRM_ACCEPT_NOTIFY = 1
 
-# CONFIRM_ACCEPT_TEMPLATE = "/full/path/to/confirm_accept.txt"
-
 # CONFIRM_ADDRESS = "jdoe@domain.dom"
 
 # CONFIRM_APPEND = "/full/path/to/whitelist"
@@ -67,8 +65,6 @@ import os                                      # don't remove
 # CONFIRM_CC = "jdoe-confirm@domain.dom"
 
 # CONFIRM_MAX_MESSAGE_SIZE = 50000
-
-# CONFIRM_REQUEST_TEMPLATE = "/full/path/to/confirm_request.txt"
 
 # DATADIR = os.path.expanduser("~/.tmda/")
 
@@ -107,6 +103,8 @@ import os                                      # don't remove
 # SENDER_TEMPLATE_VARS = 0
 
 # SENDMAIL = "/usr/sbin/sendmail"
+
+# TEMPLATE_DIR = "/full/path/to/templates/"
 
 # TIMEOUT = "5d"
 

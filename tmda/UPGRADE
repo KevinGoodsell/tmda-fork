@@ -1,5 +1,19 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.49:
+
+* Custom templates are now referred to by a template directory rather
+  than individually.  Any templates found in this directory will be
+  used, otherwise the default templates will be used.  You can specify
+  a custom template directory in one of two ways:
+
+  A TEMPLATE_DIR setting in your tmdarc.  This replaces use of
+  CONFIRM_ACCEPT_TEMPLATE and CONFIRM_REQUEST_TEMPLATE.
+
+  tmda-filter's -t option, which replaces both -A and -R.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.48:
 
 * As of v0.48, TMDA is released under the GNU General Public License

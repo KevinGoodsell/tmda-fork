@@ -35,18 +35,14 @@ OPTIONS:
 	-c <file>
 	--config-file <file>
 	   Specify a different configuration file other than ~/.tmdarc.
-	   
-	-d
+
+        -d
 	--discard
 	   Discard message if address is invalid instead of bouncing it.
 
-        -A <file>
-	--confirm-accept-template <file>
-	   Full pathname to a custom template for confirmation acceptance notices.
-
-        -R <file>
-	--confirm-request-template <file>
-	   Full pathname to a custom template for confirmation requests.
+        -t <dir>
+        --template-dir <dir>
+	   Full pathname to a directory containing custom TMDA templates.
 
         -I <file>
         --filter-incoming-file <file>
@@ -85,14 +81,13 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:dA:R:I:M:Vh', ['config-file=',
-                                                 'discard',
-                                                 'confirm-accept-template=',
-                                                 'confirm-request-template=',
-                                                 'filter-incoming-file=',
-                                                 'filter-match=',
-                                                 'version',
-                                                 'help'])
+                               'c:dt:I:M:Vh', ['config-file=',
+                                               'discard',
+                                               'template-dir=',
+                                               'filter-incoming-file=',
+                                               'filter-match=',
+                                               'version',
+                                               'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -109,10 +104,8 @@ for opt, arg in opts:
 	filter_match = 1
     elif opt in ('-I', '--filter-incoming-file'):
 	os.environ['TMDA_FILTER_INCOMING'] = arg
-    elif opt in ('-R', '--confirm-request-template'):
-        os.environ['TMDA_CONFIRM_REQUEST_TEMPLATE'] = arg
-    elif opt in ('-A', '--confirm-accept-template'):
-        os.environ['TMDA_CONFIRM_ACCEPT_TEMPLATE'] = arg
+    elif opt in ('-t', '--template-dir'):
+        os.environ['TMDA_TEMPLATE_DIR'] = arg
     elif opt in ('-d', '--discard'):
 	discard = 1
     elif opt in ('-c', '--config-file'):
@@ -461,38 +454,33 @@ def bouncegen(mode):
     subject = globals().get('subject')
     original_message_body = globals().get('message_body')
     original_message_headers = globals().get('message_headers')
-
+    original_message_size = globals().get('message_size')
+    # Don't include message bodies over a certain size.
     if (Defaults.CONFIRM_MAX_MESSAGE_SIZE and
-        int(Defaults.CONFIRM_MAX_MESSAGE_SIZE) < int(globals().get('message_size'))):
-        original_message = str(original_message_headers) + "\n" + \
-                           "[ Message body suppressed (exceeded " + \
-                           str(Defaults.CONFIRM_MAX_MESSAGE_SIZE) + " bytes) ]"
+        (int(Defaults.CONFIRM_MAX_MESSAGE_SIZE) < int(original_message_size))):
+        original_message = "%s\n[ Message body suppressed (exceeded %s bytes) ]"\
+                           % (original_message_headers,
+                              Defaults.CONFIRM_MAX_MESSAGE_SIZE)
     else:
         original_message = globals().get('message')
-
-    pkg_template_dir = '/etc/tmda/'    # Debian
-    if not os.path.exists(pkg_template_dir):
-        pkg_template_dir = sys.prefix + '/share/tmda/' # Redhat
     # Optional 'dated' address variables.
     if Defaults.DATED_TEMPLATE_VARS:
         dated_timeout = Util.format_timeout(Defaults.TIMEOUT)
-        dated_expire_date = time.asctime(
-            time.gmtime(now + Util.seconds(Defaults.TIMEOUT)))
-        dated_cookie_address = Cookie.make_dated_address(
-            Defaults.USERNAME + '@' + Defaults.HOSTNAME)
+        dated_expire_date = time.asctime(time.gmtime
+                                         (now + Util.seconds(Defaults.TIMEOUT)))
+        dated_cookie_address = Cookie.make_dated_address(Defaults.USERNAME +
+                                                         '@' +
+                                                         Defaults.HOSTNAME)
     # Optional 'sender' address variables.
     if Defaults.SENDER_TEMPLATE_VARS:
-        sender_cookie_address = Cookie.make_sender_address(
-            Defaults.USERNAME + '@' + Defaults.HOSTNAME,
-            envelope_sender)
+        sender_cookie_address = Cookie.make_sender_address(Defaults.USERNAME +
+                                                           '@' +
+                                                           Defaults.HOSTNAME,
+                                                           envelope_sender)
     if mode == 'accept':                # confirmation acceptance notices
-        env_template = os.environ.get('TMDA_CONFIRM_ACCEPT_TEMPLATE')
-        def_template = Defaults.CONFIRM_ACCEPT_TEMPLATE
-        pkg_template = pkg_template_dir + 'confirm_accept.txt'
-    if mode == 'request':               # request confirmations
-        env_template = os.environ.get('TMDA_CONFIRM_REQUEST_TEMPLATE')
-        def_template = Defaults.CONFIRM_REQUEST_TEMPLATE
-        pkg_template = pkg_template_dir + 'confirm_request.txt'
+        templatefile = 'confirm_accept.txt'
+    if mode == 'request':               # confirmation requests
+        templatefile = 'confirm_request.txt'
         timestamp = str('%d' %now)
         pid = Defaults.PID
         confirm_accept_address = Cookie.make_confirm_address(recipient_address,
@@ -500,27 +488,20 @@ def bouncegen(mode):
                                                              pid,
                                                              'accept')
         pendingdir = Defaults.DATADIR + 'pending'
-        pending_message = timestamp + '.' + pid + '.msg'
+        pending_message = "%s.%s.msg" % (timestamp, pid)
         # Create ~/.tmda/ and friends if necessary.
         if not os.path.exists(pendingdir):
-            os.makedirs(pendingdir,0700) # stores the unconfirmed messages
-        # Write ~/.tmda/pending/TIMESTAMP.PID.msg
+            os.makedirs(pendingdir, 0700) # stores the unconfirmed messages
         # X-TMDA-Recipient is used by release_pending().
         message_headers['X-TMDA-Recipient'] = recipient_address
+        # Write ~/.tmda/pending/TIMESTAMP.PID.msg
         pending_contents = str(message_headers) + '\n' + message_body
-        Util.writefile(pending_contents, pendingdir + '/' + pending_message)
-    # Find the right template.
-    if env_template and os.path.exists(env_template):
-        right_template = env_template
-    elif def_template and os.path.exists(def_template):
-        right_template = def_template
-    else:
-        # must be installed from a package
-        right_template = pkg_template
+        Util.writefile(pending_contents,
+                       os.path.join(pendingdir, pending_message))
     # Create the message and then send it.
-    bounce_message = Util.maketext(right_template,vars())
+    bounce_message = Util.maketext(templatefile, vars())
     if mode == 'accept':
-        send_bounce(bounce_message,already_confirmed=1)
+        send_bounce(bounce_message, already_confirmed=1)
     if mode == 'request':
         if Defaults.CONFIRM_CC:
             send_cc(Defaults.CONFIRM_CC)

@@ -1,3 +1,11 @@
+2002-03-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (maketext): Search for the templatefile in a series of
+	directories.  First match wins.
+	
+	* Defaults.py (TEMPLATE_DIR): New variable, replaces
+	CONFIRM_ACCEPT_TEMPLATE and CONFIRM_REQUEST_TEMPLATE.
+
 2002-02-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Cookie.py (make_confirm_address): Use Defaults.CONFIRM_ADDRESS
