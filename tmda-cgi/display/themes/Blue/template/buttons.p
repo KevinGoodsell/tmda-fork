@@ -33,11 +33,11 @@ aS'Outgoing Filter'
 p17
 aS'Test Filters'
 p18
-aS'Local Config'
-p19
-aS'Global Config'
-p20
 aS'Theme'
+p19
+aS'Local Config'
+p20
+aS'Global Config'
 p21
 aS'Change Password'
 p22

@@ -113,6 +113,7 @@ def main():
       
     import PendList
     import View
+    import Theme
     
     # Share "globals"
     PendList.PVars = PVars
@@ -120,6 +121,8 @@ def main():
     View.PVars     = PVars
     View.Form      = Form
     CgiUtil.PVars  = PVars
+    Theme.PVars    = PVars
+    Theme.Form     = Form
     
     # View?
     if Form["cmd"].value == "pending":
@@ -129,6 +132,8 @@ def main():
         View.Show()
       except Errors.MessageError:  # No messages left?
         PendList.Show()
+    elif Form["cmd"].value == "theme":
+      Theme.Show()
     else:
       CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
         Form["cmd"].value, "interpret command", "", "Please be patient while "

@@ -3,11 +3,32 @@ Title: Theme Selection
   <tr>
     <td colspan="2"><b>Select a theme:</b></td>
   </tr>
-  <!-- var: Row --><tr align="center" height="150">
-    <!-- var: Cell --><td><a
-        href="%(Script)s?cmd=theme&subcmd=%(Name)s&SID=%(SID)s"><img
-        src="display/themes/%(Name)s/theme.png" alt="%(Name)s" width="200"
-        height="87" border="0"></a><br>
-      %(Name)s</td><!-- /var (Cell) -->
-  </tr><!-- /var (Row) -->
+<!-- var: Columns="2" -->
+<!-- var: Row -->
+  <tr height="150">
+<!-- var: Cell -->
+<td><table cellpadding="5"<!-- var: Selected --> bordercolor="#4E508F" border="2"<!-- /var -->>
+        <tr>
+          <td align="center"><a
+href="%(Script)s?cmd=theme&subcmd=%(Name)s&SID=%(SID)s"><img
+src="display/themes/%(Name)s/theme.png" alt="%(Name)s" width="200" height="87" 
+border="0"></a><br>
+%(Name)s</td>
+        </tr>
+      </table></td>
+<!-- /var (Cell) -->
+  </tr>
+<!-- /var (Row) -->
+</table>
+<table>
+  <tr>
+    <td><b>Theme:</b></td>
+    <td>&nbsp;</td>
+    <td>%(Name)s</td>
+  </tr>
+  <tr>
+    <td><b>Info:</b></td>
+    <td>&nbsp;</td>
+    <td>%(Info)s<!-- var: None="<i>None.</i>" --></td>
+  </tr>
 </table>
