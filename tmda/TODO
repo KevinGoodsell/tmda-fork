@@ -1,5 +1,8 @@
 General
 
+	- Investigate the feasibility of supporting other MTAs besides
+	qmail.
+
 	- Find a TMDA logo (any graphic designers out there?)
 
 	- Write a program to view the pending queue contents.
