@@ -31,7 +31,7 @@ tmda_cgi = "0.09B+"
 Codename = "Fluorine"
 
 # TMDA version required
-TMDAReqVer = "0.75"
+TMDAReqVer = "0.77"
 
 # Python version
 Python = sys.version.split()[0]

@@ -1,5 +1,11 @@
 ======================================================================
 
+If you are upgrading from a release of tmda-cgi < 0.10:
+
+* Requires TMDA release 0.77 or later.
+
+======================================================================
+
 If you are upgrading from a release of tmda-cgi < 0.09:
 
 * display directory has been updated again.  You'll need to copy in the new
