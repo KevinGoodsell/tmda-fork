@@ -1,3 +1,8 @@
+2002-04-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-pending (main): Have 'from_name' fall back to
+	'from_address' if From: lacks a Fullname.
+
 2002-04-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-pending (main): Bugfix.  If running in interactive and
