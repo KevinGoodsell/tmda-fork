@@ -152,8 +152,7 @@ class Deliver:
         # Construct a UUCP-style From_ line, e.g:
         # From johndoe@nightshade.la.mastaler.com Thu Feb 28 20:16:35 2002
         #
-        ufline = 'From %s %s\n' % (self.env_sender,
-                                   time.asctime(time.gmtime(time.time())))
+        ufline = 'From %s %s\n' % (self.env_sender, time.asctime())
         try:
 	    # When orig_length is None, we haven't opened the file yet.
             orig_length = None

@@ -1,3 +1,8 @@
+2003-01-30  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Deliver.py (Deliver.__deliver_mbox): The UUCP-style From_ line's
+	timestamp is now based on localtime() instead of gmtime().
+
 2003-01-29  Tim Legant  <tim@catseye.net>
 
 	* FilterStore.py (FlatFileStore.__init__): Added code to lowercase
