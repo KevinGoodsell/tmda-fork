@@ -299,6 +299,9 @@ self.assoc[item], temp, itemnum, temp, itemnum, itemnum, temp)
   def get_bgcolor(self):
     return '#A6A6B3'
 
+  def get_charset(self):
+    return '%(CharSet)s'
+
   def get_body_metrics(self):
     Width = 'width="700"'
     if PageWidth.has_key(self.html):

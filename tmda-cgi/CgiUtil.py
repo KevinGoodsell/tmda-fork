@@ -22,6 +22,7 @@
 "Utilities for tmda-cgi."
 
 import cgi
+import codecs
 import os
 import re
 import sys
@@ -38,6 +39,7 @@ QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*", re.S)
 UnquotedString = re.compile(r"^(\S+)\s*")
 HomeDirSearch  = re.compile("^~/")
 HTMLTagSearch  = re.compile("</?([^\s>]*).*?>", re.S)
+UTF8           = codecs.getencoder("utf-8")
 
 # CGI exception classes
 class NotInstalled(Errors.TMDAError):
@@ -147,7 +149,7 @@ the open and close tag should be removed as well."""
 
 def ReportToSpamCop(MsgObj):
   "Report a given message to SpamCop."
-  
+
   if PVars[("NoOverride", "Sendmail")]:
     Sendmail = "-s %s" % PVars[("NoOverride", "Sendmail")]
   else:
@@ -157,3 +159,70 @@ def ReportToSpamCop(MsgObj):
   P = os.popen(Command, "w")
   P.write(MsgObj.msgobj.as_string(1))
   P.close()
+
+def AliasCharSet(CharSet):
+  "Recognize a charset's alias."
+  if CharSet in ("csgb2312", "gb_2312-80", "iso-ir-58", "chinese",
+    "csiso58gb231280"):
+    CharSet = "gb2312"
+  # Is it GBK?
+  elif CharSet in ("cp936", "ms936", "windows-936"):
+    CharSet = "gbk"
+  # Is it Big5?
+  elif CharSet in ("big5-hkscs", "csbig5", "chinesebig5"):
+    CharSet = "big5"
+  return CharSet
+
+def TranslateToUTF8(CharSet, Str, Errors):
+  "Represent a string in UTF-8."
+
+  if not CharSet:
+    return Str
+  CharSet = AliasCharSet(CharSet)
+
+  # Find appropriate decoder
+  try:
+    Decoder = codecs.getdecoder(CharSet)
+  except LookupError:
+    try:
+      # Is it GB2312?
+      if CharSet == "gb2312":
+        import chinese.gb2312
+        Lib = chinese.gb2312
+      # Is it GBK?
+      elif CharSet == "gbk":
+        import chinese.gbk
+        Lib = chinese.gbk
+      # Is it Big5?
+      elif CharSet == "big5":
+        import chinese.big5
+        Lib = chinese.big5
+      # Don't recognize it.  Was it our fallback?
+      elif CharSet == PVars[("General", "CSEncoding")]:
+        # It was our fallback!  Give up now!
+        return Str
+      # Mark it and use the fallback
+      else:
+        return "(%s) %s" % (CharSet,
+          TranslateToUTF8(PVars[("General", "CSEncoding")], Str, Errors))
+      Decoder = Lib.Codec().decode
+    except ImportError:
+      # We know what it was, but we don't have the library installed.
+      return "(%s) %s" % (CharSet, Str)
+
+  # Decode string to Unicode
+  try:
+    Uni = Decoder(Str, errors = Errors)[0]
+  except TypeError:
+    Uni = Decoder(Str)[0]
+
+  # Encode for UTF-8
+  return UTF8(Uni)[0]
+
+def FindCharSet(MsgObj):
+  "Find the character set in an e-mail."
+  RetVal = None
+  for Part in MsgObj.msgobj.walk():
+    CS = Part.get_content_charset()
+    if CS: RetVal = CS
+  return RetVal

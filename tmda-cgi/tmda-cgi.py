@@ -58,6 +58,7 @@ MyCgiTb.ErrTemplate = "prog_err2.html"
 # Make some global stuff available to all
 Template.Template.BaseDir = "%s/display/themes/Blue/template" % \
   os.path.abspath(os.path.split(sys.argv[0])[0])
+Template.Template.Dict["CharSet"]  = "iso-8859-1"
 Template.Template.Dict["Script"]   = os.environ["SCRIPT_NAME"]
 Template.Template.Dict["SID"]      = ""
 Template.Template.Dict["DispDir"]  = os.environ["TMDA_CGI_DISP_DIR"]
@@ -81,6 +82,7 @@ try:
   try:
     PVars = Session.Session(Form)
     CgiUtil.ErrTemplate = "error.html"
+    Template.Template.Dict["CharSet"] = PVars[("General", "CSEncoding")]
   except CgiUtil.NotInstalled, (ErrStr, PVars):
     Template.Template.Dict["ErrMsg"] = ErrStr
     # Can log in but TMDA is not installed correctly

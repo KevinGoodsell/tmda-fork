@@ -6,10 +6,6 @@ Things left to do:
 
     * Filter Viewer -- graphic view of your filters
 
-    * Language Support -- code to recognize the language an e-mail is in and
-                          include the appropriate language identifiers in the
-                          viewer
-
     * Tutorial -- finish section on mailing lists
 
     * URL Confirmation -- doesn't work yet for virtual users

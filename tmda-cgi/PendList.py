@@ -93,6 +93,7 @@ def Show():
 
   # Load the display template
   T = Template.Template("pending.html")
+  T["CharSet"] = "utf-8"
 
   # Find the message numbers we'll display
   FirstMsg = PVars["Pager"]
@@ -216,6 +217,9 @@ width="18" height="18" alt="Last">"""
       )
       T["Date"] = ZeroSearch.sub(ZeroSub, Date)
 
+      # Character set
+      CharSet = CgiUtil.FindCharSet(MsgObj)
+
       # Subject:
       if not MsgObj.msgobj["subject"]:
         Subject = "None"
@@ -224,8 +228,12 @@ width="18" height="18" alt="Last">"""
         value = ""
         for decoded in email.Header.decode_header( MsgObj.msgobj["subject"] ):
           if decoded[1]:
-            value += "(" + decoded[1] + ") " 
-          value += decoded[0] + " "
+            try:
+              value += CgiUtil.TranslateToUTF8(decoded[1], decoded[0], "strict")
+            except UnicodeError:
+              value += CgiUtil.TranslateToUTF8(CharSet, decoded[0], "ignore")
+          else:
+            value += CgiUtil.TranslateToUTF8(CharSet, decoded[0], "ignore")
         Subject = value
         if len(Subject) > int(PVars[("PendingList", "CropSubject")]):
           Subject = \
@@ -243,8 +251,12 @@ width="18" height="18" alt="Last">"""
         value = ""
         for decoded in email.Header.decode_header( MsgObj.msgobj["from"] ):
           if decoded[1]:
-            value += "(" + decoded[1] + ") " 
-          value += decoded[0] + " "
+            try:
+              value += CgiUtil.TranslateToUTF8(decoded[1], decoded[0], "strict")
+            except UnicodeError:
+              value += CgiUtil.TranslateToUTF8(CharSet, decoded[0], "ignore")
+          else:
+            value += CgiUtil.TranslateToUTF8(CharSet, decoded[0], "ignore")
         From = value
         Temp = Address.search(From)
         if Temp:

@@ -51,8 +51,6 @@ ZipType2     = re.compile("^application/zip")
 def AddIcon(Part):
   "Add an appropriate attachment."
   
-  global Attachment
-  
   Filename = Part.get_filename("")
   Icon = "exe"
   if ImageType1.search(Filename): Icon = "image"
@@ -73,7 +71,7 @@ def AddIcon(Part):
 def Show():
   "Show an e-mail in HTML."
 
-  global messageCharset, Allow, Remove, Attachment, Divider, PartTemplate, T
+  global Allow, Remove, Attachment, Divider, PartTemplate, T
 
   # Deal with a particular message?
   if Form.has_key("msgid"):
@@ -227,6 +225,8 @@ width="18" height="18" alt="Last">"""
       # Decode internationalized headers
       for decoded in email.Header.decode_header( Line ):
         Headers += decoded[0] + " "
+        if decoded[1]:
+          T["CharSet"] = CgiUtil.AliasCharSet(decoded[1])
       Headers += "\n"
     T["Headers"] = '<pre class="Headers">%s</pre>' % Headers
   else:
@@ -240,6 +240,8 @@ width="18" height="18" alt="Last">"""
       # Decode internationalazed headers
       for decoded in email.Header.decode_header( MsgObj.msgobj[Header] ):
         value += decoded[0] + " "
+        if decoded[1]:
+          T["CharSet"] = CgiUtil.AliasCharSet(decoded[1])
       T["Value"] = CgiUtil.Escape(value)
       HeaderRow.Add()
 
@@ -250,12 +252,6 @@ width="18" height="18" alt="Last">"""
   Divider      = T["Divider"]
   PartTemplate = T["Part"]
 
-  # Check if there's a charset defined.
-  messageCharset = None
-  T["charset"] = "us-ascii" # default charset
-  if MsgObj.msgobj.get_content_charset():
-    messageCharset = MsgObj.msgobj.get_content_charset()
-    T["charset"] = messageCharset
   ShowPart(MsgObj.msgobj)
 
   # Remove unneeded bits?
@@ -282,8 +278,6 @@ width="18" height="18" alt="Last">"""
 def ShowPart(Part):
   "Analyze message part and display it as best possible."
 
-  global Allow, Remove, Divider, PartTemplate, T
-
   # Each part is one of five things and must be handled accordingly
   # multipart/alternative - pick one and display it
   # message or multipart  - recurse through each
@@ -293,8 +287,7 @@ def ShowPart(Part):
 
   # Check if there's a character set for this part.
   if Part.get_content_charset():
-    messageCharset = Part.get_content_charset()
-    T["charset"] = messageCharset
+    T["CharSet"] = CgiUtil.AliasCharSet(Part.get_content_charset())
 
   # Display this part
   if Part.is_multipart():
