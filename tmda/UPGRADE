@@ -14,6 +14,11 @@ If you are upgrading from a release of TMDA < 0.48:
   # new rule
   from-file -autocdb ~/lists/whitelist_confirmed accept
 
+* The contrib/list2cdb and contrib/list2dbm scripts have been removed.
+  Using the '-autocdb' or '-autodbm' argument to from-file or to-file
+  is much easier than rebuilding your DB files manually.  See the
+  TMDA Filter Specification for more details on these options.
+
 * The 'to-mailman' and 'from-mailman' sources have changed.  You no
   longer specify the attribute to search with '.<attr_name>'.  Instead
   these sources now take the '-attr' argument with the attribute as

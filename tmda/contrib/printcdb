@@ -3,8 +3,8 @@
 #
 # Usage: % printcdb cdbfile.cdb
 #
-# Print the contents of a CDB file with each key and its
-# value seperated by whitespace.
+# Print the contents of a CDB file in TMDA list format (i.e, with each
+# key and its value seperated by whitespace).
 
 import cdb
 import sys

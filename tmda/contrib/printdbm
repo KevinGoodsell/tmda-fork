@@ -2,8 +2,8 @@
 #
 # Usage: % printdbm dbmfile.db
 #
-# Print the contents of a DBM db with each key and its
-# value seperated by whitespace.
+# Print the contents of a DBM db in TMDA list format (i.e, with each
+# key and its value seperated by whitespace).
 
 import anydbm
 import sys
