@@ -1,3 +1,10 @@
+2003-04-09  Gre7g Luterman <gre7g@wolfhome.com>
+
+	* getuserinfo-vpopmail.sh: New file from Jesse Guardiani.
+
+	This stub file converts the output of /home/vpopmail/bin/vuserinfo
+	into a format used by tmda-cgi.
+
 2003-04-08  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* smtp-check-sender: New file.
