@@ -185,7 +185,7 @@ Title: Default Settings
     <table class="example">
       <tr>
         <td>[NoOverride]<br>
-          SpamCopFilter = /home/user/sausr/bin/spamassassin -d</td>
+          SpamCopFilter = /home/user/sausr/bin/spamassassin -x -d</td>
       </tr>
     </table>
   <p>Default: <i>None.</i></p>
