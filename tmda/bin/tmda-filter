@@ -206,21 +206,29 @@ def send_bounce(bounce_message, **vars):
         inject.append('-f')
         inject.append(Defaults.BOUNCE_ENV_SENDER)
         inject.append(envelope_sender)
-        pipeline = popen2.popen2(inject)[1]
-        pipeline.write(str(message_headers))
-        pipeline.write('\n')
-        pipeline.write(message_body)
-        pipeline.close()
-    
+        try:
+            pipeline = popen2.popen2(inject)[1]
+            pipeline.write(str(message_headers))
+            pipeline.write('\n')
+            pipeline.write(message_body)
+            pipeline.close()
+        except IOError, error_msg:
+            print error_msg
+            mta.defer()
+
 
 def bounce_cc(address):
     """Send a 'carbon copy' of the bounced message to address."""
     inject = []
     inject.append(Defaults.SENDMAIL)
     inject.append(address)
-    pipeline = popen2.popen2(inject)[1]
-    pipeline.write(message)
-    pipeline.close()
+    try:
+        pipeline = popen2.popen2(inject)[1]
+        pipeline.write(message)
+        pipeline.close()
+    except IOError, error_msg:
+        print error_msg
+        mta.defer()
     logit(string.join(inject),time.time())
 
 

@@ -1,3 +1,10 @@
+2001-10-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (send_bounce): For good measure, wrap the popen2
+	call in a try/except and defer upon IOError.
+
+	(bounce_cc): Ditto.
+
 2001-10-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-sendmail (main): Bugfix.  Recipients being passed to
