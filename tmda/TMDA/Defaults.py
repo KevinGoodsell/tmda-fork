@@ -686,12 +686,43 @@ if not vars().has_key('PENDING_DELETE_APPEND'):
 if not vars().has_key('PENDING_RELEASE_APPEND'):
     PENDING_RELEASE_APPEND = None
 
+# ADDED_HEADERS
+# A Python dictionary containing one or more header:value string pairs
+# that should be added to _all_ outgoing client-side messages (i.e,
+# messages sent with tmda-sendmail) prior to injection.  Listed
+# headers and their values are case-sensitive.
+#
+# As the examples below illustrate, the full power of Python is
+# available to create these headers -- just make sure both the header
+# and its value end up as strings.
+#
+# Examples:
+#
+# ADDED_HEADERS = {"X-Fact" : "Father Hennepin Discovered Niagra Falls"}
+# import time, os, random
+# ADDED_HEADERS = {
+#     "X-Localtime" : time.asctime(),
+#     "X-Favorite-Author" : "James Joyce",
+#     "X-OperatingSystem" : os.uname()[0],
+#     "Organization" : os.environ.get("ORGANIZATION"),
+#     "X-Uptime" : os.popen("/usr/bin/uptime").read().strip(),
+#     "X-Now-Reading" : random.choice(open
+#                                     ("/home/jasonrm/.now-reading").
+#                                     readlines()).strip()
+#     }
+#
+# No default
+if not vars().has_key('ADDED_HEADERS'):
+    ADDED_HEADERS = None
+
 # PURGED_HEADERS
 # A list containing one or more message headers that should be removed
 # from outgoing client-side messages (i.e, messages sent with
 # tmda-sendmail) prior to injection.  Listed headers are
 # case-insensitive, and the purging will only be attempted if the
 # header actually exists.
+#
+# NOTE: PURGED_HEADERS is run _after_ ADDED_HEADERS (see above).
 #
 # Examples:
 #

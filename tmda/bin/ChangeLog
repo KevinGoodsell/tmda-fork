@@ -1,3 +1,8 @@
+2002-05-22  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-inject (inject_message): Iterate over
+	Defaults.ADDED_HEADERS if it's defined.
+
 2002-05-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter: Add more checks for when auto_reply should be 0.
