@@ -498,7 +498,8 @@ def verify_dated_cookie(dated_cookie):
         if datemac != newdatemac:
             logit("CONFIRM bad_dated_cookie")
         else:
-            logit("CONFIRM expired_dated_cookie")
+            logit("CONFIRM expired_dated_cookie (%s)" % \
+                  Util.unixdate(int(cookie_date)))
         bouncegen('request')
 
 
