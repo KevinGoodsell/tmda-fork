@@ -7,4 +7,4 @@ A local copy of the HTML documentation matching this release is
 included in the "htdocs" directory.
 
 If you are upgrading from an earlier release of TMDA, make sure to
-consult the `UPGRADE' file.
+consult <URL:http://tmda.net/upgrade.html>.

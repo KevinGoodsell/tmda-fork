@@ -10,6 +10,7 @@
 <li><a href="requirements.html">Requirements</a>
 <li><a href="download.html">Download</a>
 <li><a href="install.html">Installation</a>
+<li><a href="upgrade.html">Upgrading</a>
 <h3>Configuration</h3>
 <li><a href="config.html">Overview</a>
 <li><a href="config-pre.html">Pre-Configuration</a>

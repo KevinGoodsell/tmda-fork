@@ -30,8 +30,8 @@ aren't running it already and see if the problem disappears, which is
 likely given the rate at which TMDA is being developed.<br><br>
 
 <li>Unless you are installing TMDA for the first time, make sure you
-are caught up with the <b>UPGRADE</b> file which comes with the
-distribution.<br><br>
+have followed the <a href="upgrade.html">upgrade instructions</a>.
+<br><br>
 
 <li>Read the <a href="http://tmda.net/faq.cgi" TARGET="Resource Window">FAQ</a> 
 to make sure your question has not already been
