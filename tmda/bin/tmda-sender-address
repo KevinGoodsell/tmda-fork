@@ -28,7 +28,8 @@ def main():
 
     try:
         address = sys.argv[1]
-        print Cookie.make_sender_address(address)
+        sender_address = Cookie.make_sender_address(address)
+        sys.stdout.write(sender_address)
     except IndexError:
         usage(2)
 
