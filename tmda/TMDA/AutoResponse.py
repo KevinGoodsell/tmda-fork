@@ -72,22 +72,22 @@ class AutoResponse:
         recipient is the recipient e-mail address of this auto
         response.  Normally the envelope sender address.
         """
-        msgin_as_string = Util.msg_as_string(msgin)
+        self.msgin_as_string = Util.msg_as_string(msgin)
         # Only do this step if the user wants to include the entire message.
         if Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY > 1:
             max_msg_size = int(Defaults.CONFIRM_MAX_MESSAGE_SIZE)
             # Don't include the payload if it's over a certain size.
-            if max_msg_size and max_msg_size < len(msgin_as_string):
+            if max_msg_size and max_msg_size < len(self.msgin_as_string):
                 msgin.set_payload('[ Message body suppressed '
                                   '(exceeded %s bytes) ]' % max_msg_size)
-                msgin_as_string = Util.msg_as_string(msgin)
+                self.msgin_as_string = Util.msg_as_string(msgin)
             # Now try to re-parse the message with a full parse (not a
             # header-only parse) and store that as self.msgin.  If the full
             # parse fails, there is no choice but to use the header-parsed
             # version, so to prevent later Generator failures, we reset
             # AUTORESPONSE_INCLUDE_SENDER_COPY to include only the headers.
             try:
-                self.msgin = message_from_string(msgin_as_string)
+                self.msgin = message_from_string(self.msgin_as_string)
             except (KeyError, MessageError, TypeError, ValueError):
                 self.msgin = msgin
                 Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY = 1

@@ -1,3 +1,11 @@
+2003-12-03  Tim Legant  <tim@catseye.net>
+
+	* AutoResponse.py (AutoResponse.__init__): Made msgin_as_string a
+	member (instead of a local).  It was once a member, then switched
+	to a local with the change of 2003-11-11.  Then the change of
+	2003-11-16 used it in create, but it wasn't changed back to a
+	member.
+
 2003-11-19  Tim Legant  <tim@catseye.net>
 
 	* Errors.py (AddressError, QueueError): In the last change I
