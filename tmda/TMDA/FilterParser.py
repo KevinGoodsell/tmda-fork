@@ -736,7 +736,7 @@ class FilterParser:
         Test = ""
         for Key in Keys:
             if Test: Test += "OR "
-            Test += "('%s' %s ADDRESS) " % (Key, Compare)
+            Test += "('%s' %s ADDRESS) " % (Key.replace("'", "\\'"), Compare)
         # Perform the query
         self.MySQL.query("SELECT * FROM %s WHERE %s LIMIT 1" % (Table, Test))
         # Fetch the result
