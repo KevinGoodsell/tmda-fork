@@ -549,7 +549,7 @@ class FilterParser:
                         break
                 if found_match:
                     break
-            # Mailman list-configuration databases.
+            # Mailman configuration databases.
             if source in ('from-mailman', 'to-mailman'):
                 match = os.path.expanduser(match)
                 try:
@@ -557,20 +557,18 @@ class FilterParser:
                 except KeyError:
                     raise MatchError(lineno,
                                      '"%s" missing -attr argument' % source)
-                # The filename is expected to be in the format of
-                # either 'filename.db', or 'filename.pck'.
-                dbsuffix = string.split(match, '.')[-1]
-                # If the filename ends with `.db', then it is
-                # assumed that the file contains a Python marshal
-                # (MM 2.0).  If the file ends with `.pck' then it
-                # is assumed to contain a Python pickle (MM 2.1).
-                if dbsuffix == 'db':
-                    import marshal
-                    Serializer = marshal
-                elif dbsuffix == 'pck':
-                    import cPickle
-                    Serializer = cPickle
-                mmdb_file = open(match, 'r')
+                # Find the Mailman configuration database.
+                # 'config.db' is a Python marshal used in MM 2.0, and
+                # 'config.pck' is a Python pickle used in MM 2.1.
+                config_db = os.path.join(match, 'config.db')
+                config_pck = os.path.join(match, 'config.pck')
+                if os.path.exists(config_pck):
+                    dbfile = config_pck
+                    import cPickle as Serializer
+                elif os.path.exists(config_db):
+                    dbfile = config_db
+                    import marshall as Serializer
+                mmdb_file = open(dbfile, 'r')
                 mmdb_data = Serializer.load(mmdb_file)
                 mmdb_file.close()
                 mmdb_addylist = mmdb_data[mmdb_key]
@@ -578,7 +576,7 @@ class FilterParser:
                 if type(mmdb_addylist) is types.DictType:
                      mmdb_addylist = mmdb_data[mmdb_key].keys()
                 for addy in keys:
-                    if addy and string.lower(addy) in mmdb_addylist:
+                    if addy and addy.lower() in mmdb_addylist:
                         found_match = 1
                         break
                 if found_match:

@@ -29,6 +29,14 @@ If you are upgrading from a release of TMDA < 0.55:
   from-ezmlm ~alias/all-acl-users/mod ok
   from-ezmlm ~alias/all-acl-users/digest ok
 
+* You should no longer specify 'config.db' or 'config.pck' when using
+  a from-mailman or to-mailman source.  Specify just the list
+  directory instead, and the configuration database will be located
+  automatically.  e.g,
+
+  from-mailman -attr=members ~mailman/lists/viewnet-news ok
+  from-mailman -attr=digest_members ~mailman/lists/viewnet-news ok
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.52:

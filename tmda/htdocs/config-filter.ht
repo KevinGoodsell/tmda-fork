@@ -156,15 +156,14 @@ The match field of an -ezmlm line should be the full path to the parent director
 
 '-mailman' sources match addresses contained in a Mailman
 configuration database.  The match field should be the full path to
-the configuration database for your list which will be either
-"config.db" or "config.pck" depending on which version of Mailman you
-are running.  Both styles are supported.  The '-mailman' sources
-require you to specify an `attribute' to search.  Use the '-attr=<attribute>'
-flag to specify the name of an attribute contained in the database.
-For example, `members' (subscriber addresses), `digest_members'
-(digest subscriber addresses), or `owner' (list owner's address).
-<br><br>
+the list directory.  Both Mailman 2.0 and 2.1-style configuration
+databases are supported.  The '-mailman' sources require you to
+specify an `attribute' to search.  Use the '-attr=<attribute>' flag to
+specify the name of an attribute contained in the database.  For
+example, `members' (subscriber addresses), `digest_members' (digest
+subscriber addresses), or `owner' (list owner's address).
 
+<br><br>
 
 The following table shows what the <b>match</b> expression should
 contain for a given <b>source</b>:
@@ -484,8 +483,8 @@ from-file -autocdb ~/.tmda/lists/confirmed ok
 from-file ~/.tmda/lists/whitelist_wildcards accept
 
 # Mailman mailing list subscribers and digest subscribers
-from-mailman -attr=members ~mailman/lists/viewnet-news/config.db ok
-from-mailman -attr=digest_members ~mailman/lists/viewnet-news/config.db ok
+from-mailman -attr=members ~mailman/lists/viewnet-news ok
+from-mailman -attr=digest_members ~mailman/lists/viewnet-news ok
 
 # ezmlm mailing list subscribers and digest subscribers
 from-ezmlm ~alias/all-acl-users ok
@@ -515,7 +514,7 @@ size >1000000 exit
 from postmaster@* bare
 
 # And so is all mail from the tmda-users mailing list owner
-from-mailman -attr=owner ~mailman/lists/tmda-users/config.db bare
+to-mailman -attr=owner ~mailman/lists/tmda-users bare
 
 # All whitelisted contacts receive untagged messages
 to-cdb ~/.tmda/lists/whitelist.cdb bare

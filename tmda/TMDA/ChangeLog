@@ -3,6 +3,9 @@
 	* FilterParser.py (FilterParser.firstmatch): *-ezmlm sources now
 	match the parent directory DIR rather than DIR/subscribers.
 
+	(FilterParser.firstmatch): *-mailman sources now match just the
+	list directory.  The config database is located automatically.
+
 2002-05-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* MTA.py (MTA.deliver): Deliver the message according to

@@ -1,7 +1,7 @@
 2002-05-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* config-filter.ht: Update *-ezmlm to show parent directory as the
-	argument.
+	* config-filter.ht: Update *-ezmlm and *-mailman to show just the
+	parent directory as the argument.
 
 2002-05-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
