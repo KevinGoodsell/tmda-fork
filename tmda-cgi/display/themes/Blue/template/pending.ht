@@ -34,7 +34,7 @@ Title: Pending E-mail
                     width="58" height="15" alt="Leave/Release/Delete"><!--
                     var: WhIcon --><img src="%(ThemeDir)s/buttons/options_r1_c2.gif"
                     width="19" height="15" alt="/Whitelist"><!-- /var --><!--
-                    var: BhIcon --><img src="%(ThemeDir)s/buttons/options_r1_c3.gif"
+                    var: BlIcon --><img src="%(ThemeDir)s/buttons/options_r1_c3.gif"
                     width="20" height="15" alt="/Blacklist"><!-- /var --></td>
                   <th width="150">Sender</th>
                   <th width="250">Subject</th>
