@@ -376,7 +376,7 @@ rights.""")
 
     # Get IP, User, UID, & Home directory
     self.Vars["IP"]   = os.environ["REMOTE_ADDR"]
-    self.Vars["User"] = Form["user"].value
+    self.Vars["User"] = Form["user"].value.lower()
     self.__suid__("root")
     try:
       if os.environ.has_key("TMDA_VLOOKUP"):

@@ -1,5 +1,7 @@
 2003-11-16  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Force user names to be lowercase.
+
 	* Applied Tim Legant's patch to reporter.py (SpamCop reporter).
 
 	* Version 0.12B is released.
