@@ -224,7 +224,9 @@ def inject_pending(pathname,timestamp,pid):
     """Reinject then unlink a sucessfully confirmed message."""
     (username, hostname) = string.split(recipient_address,'@')
     # Strip off the '-confirm-accept.TIMESTAMP.PID.HMAC' from username.
-    base_username = string.join((string.split(username,'-')[:-2]),'-')
+    base_username = string.join(
+        (string.split(username,Defaults.RECIPIENT_DELIMITER)[:-2]),
+        Defaults.RECIPIENT_DELIMITER)
     base_recipient = base_username + '@' + hostname
     # Create the `confirm-done' address
     confirm_done_address = Cookie.make_confirm_address(base_recipient,
@@ -370,19 +372,18 @@ def bouncegen(mode):
     pkg_template_dir = '/etc/tmda/'    # Debian
     if not os.path.exists(pkg_template_dir):
         pkg_template_dir = sys.prefix + '/share/tmda/' # Redhat
-    # Opional 'dated' address variables.
+    # Optional 'dated' address variables.
     if Defaults.DATED_TEMPLATE_VARS:
         dated_timeout = Util.format_timeout(Defaults.TIMEOUT)
-        dated_expire_date = time.asctime(time.gmtime
-                                         (now + Util.seconds(Defaults.TIMEOUT)))
-        dated_cookie = Cookie.make_dated_cookie('%d' % now)
-        dated_cookie_address = Defaults.USERNAME + '-dated-' + dated_cookie \
-                               + '@' + Defaults.HOSTNAME
+        dated_expire_date = time.asctime(
+            time.gmtime(now + Util.seconds(Defaults.TIMEOUT)))
+        dated_cookie_address = Cookie.make_dated_address(
+            Defaults.USERNAME + '@' + Defaults.HOSTNAME)
     # Optional 'sender' address variables.
     if Defaults.SENDER_TEMPLATE_VARS:
-        sender_cookie = Cookie.make_sender_cookie(envelope_sender)
-        sender_cookie_address = Defaults.USERNAME + '-sender-' + sender_cookie \
-                                + '@' + Defaults.HOSTNAME
+        sender_cookie_address = Cookie.make_sender_address(
+            Defaults.USERNAME + '@' + Defaults.HOSTNAME,
+            envelope_sender)
     if mode == 'accept':                # confirmation acceptance notices
         env_template = os.environ.get('TMDA_CONFIRM_ACCEPT_TEMPLATE')
         def_template = Defaults.CONFIRM_ACCEPT_TEMPLATE
@@ -436,14 +437,13 @@ def bouncegen(mode):
 
 def main():
 
-    # Decide what to do with the incoming message based on environment
-    # variables supplied by qmail-local.  See qmail-command(8) for more info.
-
-    # Get cookie type and value
-    ext = os.environ.get('EXT')
+    # Get the cookie type and value by parsing the extension address.
+    # This is available in the EXT environment variable under qmail,
+    # and EXTENSION under Postfix.
+    ext = (os.environ.get('EXT') or os.environ.get('EXTENSION'))
     if ext:
         ext = string.lower(ext)
-        ext_split = string.split(ext,'-')
+        ext_split = string.split(ext, Defaults.RECIPIENT_DELIMITER)
         cookie_value = ext_split[-1]
         try:
             cookie_type = ext_split[-2]

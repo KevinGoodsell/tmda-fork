@@ -2,6 +2,12 @@
 
 	* tmda-filter (bounce_cc): Use popen2 for uniformity.
 
+	(inject_pending): Replace references to `-' with
+	RECIPIENT_DELIMITER.
+
+	(main): Ditto.  Also check for Postfix's EXTENSION environment
+	variable which is analogous to qmail's EXT.
+	
 	(send_bounce): Use the more general SENDMAIL interface to send
 	confirmation messages rather than INJECT.  We pass
 	BOUNCE_ENV_SENDER as the argument to `sendmail -f' to set the

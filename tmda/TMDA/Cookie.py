@@ -35,8 +35,9 @@ def make_confirm_address(address,time,pid,keyword):
     """Return a full confirmation-style e-mail address."""
     confirm_cookie = make_confirm_cookie(time,pid,keyword)
     (username, hostname) = string.split(address,'@')
-    confirm_address = username + '-confirm-' + keyword + '.' + \
-                      confirm_cookie + '@' + hostname
+    confirm_address = username + Defaults.RECIPIENT_DELIMITER + 'confirm' \
+                      + Defaults.RECIPIENT_DELIMITER + keyword + '.' \
+                      + confirm_cookie + '@' + hostname
     return confirm_address
 
 
@@ -60,7 +61,8 @@ def make_dated_address(address):
     now = '%d' % time.time()
     dated_cookie = make_dated_cookie(now)
     (username, hostname) = string.split(address,'@')
-    dated_address = username + '-dated-' + dated_cookie + '@' + hostname
+    dated_address = username + Defaults.RECIPIENT_DELIMITER + 'dated' + \
+                    Defaults.RECIPIENT_DELIMITER + dated_cookie + '@' + hostname
     return dated_address
 
 
@@ -76,6 +78,6 @@ def make_sender_address(address, sender):
     sender = string.lower(sender)
     sender_cookie = make_sender_cookie(sender)
     (username, hostname) = string.split(address,'@')
-    sender_address = username + '-sender-' + sender_cookie + \
-                    '@' + hostname
+    sender_address = username + Defaults.RECIPIENT_DELIMITER + 'sender' + \
+                     Defaults.RECIPIENT_DELIMITER + sender_cookie + '@' + hostname
     return sender_address

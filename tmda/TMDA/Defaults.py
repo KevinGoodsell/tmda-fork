@@ -103,6 +103,15 @@ else:
         print "invalid sendmail program path:",SENDMAIL
         sys.exit(ERR_CONFIG)
 
+# RECIPIENT_DELIMITER
+# A single character which specifies the separator between user names
+# and address extensions (e.g, user-ext).
+# The default under qmail is `-', while the default for Sendmail and
+# friends is likely `+'.  Postfix has a config variable named
+# `recipient_delimiter' that defines this character.
+if not vars().has_key('RECIPIENT_DELIMITER'):
+    RECIPIENT_DELIMITER = "-"
+
 # USEVIRTUALDOMAINS
 # Set this variable to 0 if want to turn off TMDA's virtualdomains
 # support.  This should obviously only be done if you are not running

@@ -1,5 +1,15 @@
 2001-10-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (RECIPIENT_DELIMITER): New variable specifing the
+	character used to separate user names and address extensions.
+	
+	* Cookie.py (make_confirm_address): Replace references to `-' with
+	RECIPIENT_DELIMITER.
+
+	(make_sender_address): Ditto.
+
+	(make_dated_address): Ditto.
+
 	* Defaults.py (SENDMAIL): New variable defining the path to the
 	sendmail program or sendmail compatibility interface.
 
