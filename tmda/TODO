@@ -1,6 +1,7 @@
 General
+	- Write a LOGFILE statistics/summary script.
 	- Possibly Object-Orientize TMDA with Classes, inheritance,
-	etc.  Are there any benefits to doing this?
+	etc.  Are there any real benefits to doing this?
 	- Regression testing script.
 	- Move documentation into texinfo format.
 	- Write a Tkinter based GUI for .tmdarc management.
