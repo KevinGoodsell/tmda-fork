@@ -489,7 +489,7 @@ if vars().has_key('CGI_ACTIVE'):
     # Default is "../../bin/tmda-pending" (which assumes you are running
     # directly out of the source tree).
     if not vars().has_key('CGI_PATH_TO_PENDING'):
-        CGI_PATH_TO_PENDING = os.path.split(os.path.dirname(PARENTDIR))[0] # '../../'
+        CGI_PATH_TO_PENDING = os.path.split(PARENTDIR)[0] # '../../'
         CGI_PATH_TO_PENDING = os.path.join(CGI_PATH_TO_PENDING, 'bin', 'tmda-pending')
 
     # CGI_SESSION_EXP
@@ -505,20 +505,6 @@ if vars().has_key('CGI_ACTIVE'):
     if not vars().has_key('CGI_SESSION_EXP'):
         CGI_SESSION_EXP = 300
 
-    # CGI_SESSION_PREFIX
-    # Session data is stored in temporary files between page hits.
-    # CGI_SESSION_PREFIX describes where these files will be stored and how
-    # they should be prefixed.  The actual session number will be appended
-    # to the prefix to form the file name (ex: /tmp/PySess.jI92Xzo8).
-    # The files should be stored in a world-writable directory like /tmp.
-    #
-    # Example:
-    # CGI_SESSION_PREFIX = "/tmp/sess"
-    #
-    # Default is "/tmp/PySess.".
-    if not vars().has_key('CGI_SESSION_PREFIX'):
-        CGI_SESSION_PREFIX = "/tmp/PySess."
-
     # CGI_USE_JS_CONFIRM
     # Enables a pop-up confirmation box before any message is deleted or
     # blacklisted.  Must be disabled if you will be surfing tmda-cgi in
@@ -531,6 +517,18 @@ if vars().has_key('CGI_ACTIVE'):
     # Default is 1.
     if not vars().has_key('CGI_USE_JS_CONFIRM'):
         CGI_USE_JS_CONFIRM = 1
+
+    # CGI_USER
+    # Defines the user name to use at non-critical times (such as reading
+    # and writing session files.  CGI_USER is only signifigant when running
+    # in system-wide mode.  See contrib/cgi/INSTALL for more about modes.
+    #
+    # Example:
+    # CGI_USER = "apache"
+    #
+    # Default is "nobody".
+    if not vars().has_key('CGI_USER'):
+        CGI_USER = "nobody"
 
 # CONFIRM_ADDRESS
 # An optional e-mail address to use for creating confirmation
