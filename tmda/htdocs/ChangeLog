@@ -1,3 +1,8 @@
+2002-02-21  Tim Legant  <tim@catseye.net>
+
+	* config-filter.ht: Move 'from*' sources to list of incoming and
+	outgoing sources.
+
 2002-02-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* faq.ht: Update link to bbdb-normalize-tmda-addresses.
