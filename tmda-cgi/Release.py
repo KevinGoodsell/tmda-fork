@@ -24,16 +24,12 @@
 This module is run when a user clicks a URL in a confirmation e-mail."""
 
 import cgi
-try:
-  import cgitb
-  cgitb.enable()
-except ImportError:
-  pass
-
 import os
 import pwd
 import re
 import CgiUtil
+import MyCgiTb
+import Template
 from email.Utils import parseaddr
 from TMDA import Util
 from TMDA import Errors
@@ -43,9 +39,14 @@ def Release(QueryString):
 
 QueryString is in the format <UID>.<timestamp>.<PID>.<HMAC>
 
-Where <UID> is the UID of the TMDA account, <HMAC> must be used to validate 
-<timestamp>.<PID>, and the pending e-mail filename is  "<timestamp>.<PID>.msg". 
+Where <UID> is the UID of the TMDA account, <HMAC> must be used to validate
+<timestamp>.<PID>, and the pending e-mail filename is  "<timestamp>.<PID>.msg".
 """
+
+  # Prepare the traceback in case of uncaught exception
+  MyCgiTb.Content()
+  MyCgiTb.ErrTemplate = "prog_err2.html"
+  CgiUtil.ErrTemplate = "error2.html"
 
   try:
     UID, Timestamp, PID, HMAC = QueryString.split(".")
@@ -59,7 +60,7 @@ Where <UID> is the UID of the TMDA account, <HMAC> must be used to validate
       "locate pending e-mail", "",
       "Recheck link or contact TMDA programmers.")
   MsgID = "%s.%s.msg" % (Timestamp, PID)
-  
+
   # Check to make sure they're not trying to access anything other than email
   if not re.compile("^\d+\.\d+\.msg$").search(MsgID):
     CgiUtil.TermError("<tt>%s.%s.%s</tt> is not a valid message ID." % \
@@ -74,7 +75,7 @@ Where <UID> is the UID of the TMDA account, <HMAC> must be used to validate
   if os.environ.has_key("TMDARC"):
     # Yes, replace it
     os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/", "/%s/" % User)
-  
+
   # Try to change users
   try:
     os.seteuid(0)
@@ -88,7 +89,7 @@ Where <UID> is the UID of the TMDA account, <HMAC> must be used to validate
   from TMDA import Defaults
   from TMDA import Pending
   from TMDA import Cookie
-  
+
   try:
     Defaults.CRYPT_KEY
   except AttributeError:
@@ -102,10 +103,10 @@ Where <UID> is the UID of the TMDA account, <HMAC> must be used to validate
 &nbsp;&nbsp;&nbsp;&#8226; Place <tt>%s</tt> in group %d.<br>
 &nbsp;&nbsp;&nbsp;&#8226; Assign permissions 640 to <tt>%s</tt>.<br>
 &nbsp;&nbsp;&nbsp;&#8226; Set ALLOW_MODE_640 = 1 in your configuration file.<br>
-3. Disable URL confirmation in your confirmation template.""" % 
-(Defaults.CRYPT_KEY_FILE, os.geteuid(), Defaults.CRYPT_KEY_FILE, os.getegid(), 
+3. Disable URL confirmation in your confirmation template.""" %
+(Defaults.CRYPT_KEY_FILE, os.geteuid(), Defaults.CRYPT_KEY_FILE, os.getegid(),
 Defaults.CRYPT_KEY_FILE))
-  
+
   # Validate the HMAC
   if Cookie.confirmationmac(Timestamp, PID, "accept") != HMAC:
     CgiUtil.TermError("<tt>%s.%s.%s</tt> is not a valid message ID." % \
@@ -122,49 +123,33 @@ Defaults.CRYPT_KEY_FILE))
       "retrieve pending e-mail", "",
       "Inquire with recipient about e-mail.")
 
-  print """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<title>Released e-mail</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="%sstyles.css" rel="stylesheet" type="text/css">
-</head>
+  T = Template.Template("released.html")
 
-<body>
-<table width="100%%" height="100%%">
-  <tr> 
-    <td valign="middle"><table align="center" class="Release">
-        <tr> 
-          <td>The following e-mail has been released from quarantine:<br>&nbsp; 
-            <table class="Headers">""" % CgiUtil.DispDir
+  # Fetch row
+  Row = T["Row"]
 
+  # Generate header rows
   for Header in Defaults.SUMMARY_HEADERS:
-    print """  <tr>
-    <th>%s:</th>
-    <td width="5">
-    <td>%s</td>
-  </tr>
-""" % (Header.capitalize(), CgiUtil.Escape(MsgObj.msgobj[Header]))
+    T["Name"]  = Header.capitalize()
+    T["Value"] = CgiUtil.Escape(MsgObj.msgobj[Header])
+    Row.Add()
 
-  print "</table><br>"
-  
+  # Can we add this address to a do-not-confirm-again list?
   if Defaults.CONFIRM_APPEND:
     ConfirmAddr = Util.confirm_append_address \
     (
       parseaddr(MsgObj.msgobj["x-primary-address"])[1],
       parseaddr(MsgObj.msgobj["return-path"])[1]
     )
-    if ConfirmAddr and Util.append_to_file(ConfirmAddr, Defaults.CONFIRM_APPEND):
-      print "Future e-mails from <tt>%s</tt> will not have to be confirmed." % \
-      ConfirmAddr
+    if ConfirmAddr:
+      Util.append_to_file(ConfirmAddr, Defaults.CONFIRM_APPEND)
+      T["Address"] = ConfirmAddr
+    else:
+      T["Future"]
+  else:
+    T["Future"]
 
-  print """            </td>
-        </tr>
-      </table></td>
-  </tr>
-</table>
-</body>
-</html>"""
+  print T
 
   # Make sure release does not write to PENDING_RELEASE_APPEND
   Defaults.PENDING_RELEASE_APPEND = None
