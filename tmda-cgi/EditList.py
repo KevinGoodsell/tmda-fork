@@ -43,7 +43,7 @@ def Show():
   "Edit any plaintext list file."
 
   # Load the display template
-  T = Template.Template("editlist.html")
+  T = Template.Template("editlist.html", PVars = PVars)
   NoneList = T["NoneList"]
   List = ""
 

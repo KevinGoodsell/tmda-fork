@@ -246,7 +246,7 @@ def Show():
       del PVars["InProcess"][PMsg]
 
   # Load the display template
-  T = Template.Template("pending.html")
+  T = Template.Template("pending.html", PVars = PVars)
   T["CharSet"] = "utf-8"
   T["MsgID"]   = ""
 

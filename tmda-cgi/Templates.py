@@ -35,7 +35,7 @@ def Show():
   global AssignVar, Assignments, Config, LineNum, LastLine
 
   # Load the display template
-  T = Template.Template("templates.html")
+  T = Template.Template("templates.html", PVars = PVars)
   Row = T["Row"]
 
   # Hide save button?

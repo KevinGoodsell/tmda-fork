@@ -202,6 +202,8 @@ rights.""")
     # Get system defaults
     self.PVars = {}
     self.ThemeVars = ConfigParser.ConfigParser()
+    # Make this case-sensitive
+    self.ThemeVars.optionxform = str
     Filename  = os.path.join(os.getcwd(), "defaults.ini")
     self.ThemeVars.read(Filename)
     if len(self.ThemeVars.sections()) < 2:
@@ -526,3 +528,9 @@ rights.""")
     else:
       return self.PVars.has_key(":".join(a)) or \
         self.ThemeVars.has_option(a[0], a[1])
+
+  def keys( self ):
+    return self.PVars.keys()
+
+  def vars( self, section ):
+    return self.ThemeVars.options( section )

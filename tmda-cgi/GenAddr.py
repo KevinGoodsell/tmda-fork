@@ -31,7 +31,7 @@ def Show():
   "Generate dynamic addresses."
 
   # Load the display template
-  T = Template.Template("gen_addr.html")
+  T = Template.Template("gen_addr.html", PVars = PVars)
 
   # Not sure yet which form we'll use, so put something in each field.
   T["Keyword"]     = PVars[("GenAddr", "Keyword")]

@@ -1,3 +1,10 @@
+2004-03-18  Jim Ramsay      <i.am@jimramsay.com>
+
+	* Made text-size in TMDA-X theme user-configurable
+
+	* Now theme designers can define, user-configure, and access theme
+	  variables.  (Previously could just define and configure)
+
 2004-03-11  Jim Ramsay	    <i.am@jimramsay.com>
 
 	* Fixes for Solaris

@@ -34,10 +34,10 @@ def Show():
 
   # Load the display template
   if Form["cmd"].value == "incoming":
-    T = Template.Template("incoming.html")
+    T = Template.Template("incoming.html", PVars = PVars)
     T["FilePath"] = Filename = CgiUtil.ExpandUser(Defaults.FILTER_INCOMING)
   else:
-    T = Template.Template("outgoing.html")
+    T = Template.Template("outgoing.html", PVars = PVars)
     T["FilePath"] = Filename = CgiUtil.ExpandUser(Defaults.FILTER_OUTGOING)
 
   # Get file

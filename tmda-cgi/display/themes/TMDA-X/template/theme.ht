@@ -69,7 +69,8 @@ function unhover( name )
   </TR>
   <TR>
     <TD>
-<!-- var: FormVars="General:UseJSConfirm:Yes:No,
+<!-- var: FormVars="Theme:SidebarSize:Large:Small,
+  General:UseJSConfirm:Yes:No,
   ViewPending:AltPref:textplain:texthtml,
   ViewPending:EmailClass:sans:serif:fixed,
   General:CSEncoding:iso-8859-1:gb2312:big5, PendingList:PagerSize,
@@ -79,6 +80,14 @@ function unhover( name )
   ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr" -->
 <table>
   <form method="post" action="%(Script)s">
+    <tr>
+      <td align="right"><select name="ThemeSidebarSize">
+          <option %(ThemeSidebarSizeLargeSelected)s value="Large">Large</option>
+          <option %(ThemeSidebarSizeSmallSelected)s value="Small">Small</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Sidebar text size</td>
+    </tr>
     <tr>
       <td align="right"><select name="GeneralUseJSConfirm">
           <option %(GeneralUseJSConfirmYesSelected)s value="Yes">Enabled</option>

@@ -34,7 +34,7 @@ def Show():
   "Test dynamic addresses."
 
   # Load the display template
-  T = Template.Template("test_addr.html")
+  T = Template.Template("test_addr.html", PVars = PVars)
   Sender  = T["Sender"]
   Results = T["ShowResults"]
 

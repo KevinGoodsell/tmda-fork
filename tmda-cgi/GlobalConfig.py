@@ -29,7 +29,7 @@ def Show():
   "Show global config file."
 
   # Load the display template
-  T = Template.Template("globalconfig.html")
+  T = Template.Template("globalconfig.html", PVars = PVars)
 
   # Get file
   T["FilePath"] = Defaults.GLOBAL_TMDARC

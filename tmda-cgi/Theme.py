@@ -42,7 +42,7 @@ def Show():
     PVars.GetTheme()
 
   # Load the display template
-  T = Template.Template("theme.html")
+  T = Template.Template("theme.html", PVars = PVars)
 
   # Find the available themes
   Themes = os.listdir(ThemesDir)
@@ -94,6 +94,7 @@ def Show():
       else:
         PVars[Parts[0:2]] = ""
     PVars.Save()
+    T.refreshPVars( PVars )
 
   # Find any theme vars they let us configure
   for Var in FormVars:

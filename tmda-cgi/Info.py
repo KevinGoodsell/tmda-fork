@@ -109,7 +109,7 @@ def Show():
   global T, AckRow, ContRow, ToDoRow, BugCell, BugRow, BugCols, IncludeRow
 
   # Load the display template
-  T = Template.Template("info.html")
+  T = Template.Template("info.html", PVars = PVars)
 
   # Fill in variables
   T["CgiVersion"]  = All

@@ -90,7 +90,7 @@ def Show():
   Queue._loadCache()
 
   # Get e-mail template
-  T = Template.Template("view.html")
+  T = Template.Template("view.html", PVars = PVars)
   T["EmailClass"] = PVars[("ViewPending", "EmailClass")]
 
   # Locate messages in pending dir

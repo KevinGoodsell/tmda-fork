@@ -226,7 +226,7 @@ function Preloader()
     return 'cellspacing="0" cellpadding="0"'
 
   def get_category(self, item, itemnum):
-    return "<td class=\"sidebar\"><A href=\"%s\" class=\"sidebarMainLink\">%s</a></td>" % ( self.assoc[item], item )
+    return "<td class=\"sidebar\"><A href=\"%s\" class=\"sidebarMainLink%%(SidebarSize)s\">%s</a></td>" % ( self.assoc[item], item )
 
   def get_item(self, url, text, extra):
     if url is None:

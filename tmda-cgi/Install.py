@@ -398,7 +398,7 @@ def Install():
   Defaults = ReimportDefaults(FilesToInstall, Backup)
 
   # Prepare template
-  T = Template.Template("installed.html")
+  T = Template.Template("installed.html", PVars = PVars)
   T["EMail"] = "%s@%s" % (Defaults["USERNAME"], Defaults["HOSTNAME"])
   Row = T["Row"]
   if len(FilesClobbered):
@@ -500,7 +500,7 @@ def Uninstall():
 
   # Prepare template
   from TMDA import Defaults
-  T = Template.Template("uninstalled.html")
+  T = Template.Template("uninstalled.html", PVars = PVars)
   T["EMail"] = "%s@%s" % (Defaults.USERNAME, Defaults.HOSTNAME)
   T["Archive"] = PVars[("NoOverride", "UninstallBackupTGZ")]
   Row    = T["Row"]
@@ -610,7 +610,7 @@ def Restore():
   Defaults = ReimportDefaults(FilesToInstall, Backup)
 
   # Prepare template
-  T = Template.Template("installed.html")
+  T = Template.Template("installed.html", PVars = PVars)
   T["EMail"] = "%s@%s" % (Defaults["USERNAME"], Defaults["HOSTNAME"])
   Row = T["Row"]
   if len(FilesClobbered):
@@ -701,7 +701,7 @@ def Show():
       TemplateFN = "welcome.html"
 
   # Load template
-  T = Template.Template(TemplateFN)
+  T = Template.Template(TemplateFN, PVars = PVars)
 
   # Javascript confirmation?
   if PVars.has_key(["General", "UseJSConfirm"]) and \

@@ -138,7 +138,8 @@ class Template:
 
   def __init__ \
   (
-    self, Filename = None, BoilerPlate = None, SubTemplate = None, Name = None
+    self, Filename = None, BoilerPlate = None, SubTemplate = None, Name = None,
+    PVars = None
   ):
     "Constructor."
     self.BoilerPlate = BoilerPlate
@@ -151,7 +152,16 @@ class Template:
       F = open("%s/%s" % (self.BaseDir, Filename))
       self.HTML = [self.LonePctSearch.sub(self.LonePctRepl, F.read())]
       F.close()
+    # Import the "Theme" section from PVars,
+    # to allow Themes to use custom settings
+    if PVars:
+      for var in PVars.vars( "Theme" ):
+	self.Dict[ var ] = PVars[ "Theme", var ]
     self.Items = {}
+
+  def refreshPVars( self, PVars ):
+    for var in PVars.vars( "Theme" ):
+      self.Dict[ var ] = PVars[ "Theme", var ]
 
   def __setitem__(self, Index, Value):
     "Assign a substitution variable."

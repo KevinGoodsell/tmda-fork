@@ -113,7 +113,7 @@ body
   -moz-border-radius: 10px
 }
 
-a.sidebarMainLink:link
+a.sidebarMainLinkLarge:link
 {
   font-family: Impact, Lucida, sans-serif;
   font-size: 24pt;
@@ -122,7 +122,7 @@ a.sidebarMainLink:link
   background: #000000;
   text-decoration: none;
 }
-a.sidebarMainLink:visited
+a.sidebarMainLinkLarge:visited
 {
   font-family: Impact, Lucida, sans-serif;
   font-size: 24pt;
@@ -131,7 +131,7 @@ a.sidebarMainLink:visited
   background: #000000;
   text-decoration: none;
 }
-a.sidebarMainLink:active
+a.sidebarMainLinkLarge:active
 {
   font-family: Impact, Lucida, sans-serif;
   font-size: 24pt;
@@ -140,7 +140,7 @@ a.sidebarMainLink:active
   background: #000000;
   text-decoration: none;
 }
-a.sidebarMainLink:hover
+a.sidebarMainLinkLarge:hover
 {
   font-family: Impact, Lucida, sans-serif;
   font-size: 24pt;
@@ -149,6 +149,45 @@ a.sidebarMainLink:hover
   background: #000000;
   text-decoration: none;
 }
+
+a.sidebarMainLinkSmall:link
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 20pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarMainLinkSmall:visited
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 20pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarMainLinkSmall:active
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 20pt;
+  font-weight: normal;
+  color: #76B2F6;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarMainLinkSmall:hover
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 20pt;
+  font-weight: normal;
+  color: #F6FE02;
+  background: #000000;
+  text-decoration: none;
+}
+
+
 
 a.sidebarSubLink:link
 {

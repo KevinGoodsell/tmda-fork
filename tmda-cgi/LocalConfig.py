@@ -117,7 +117,7 @@ def Show():
   global AssignVar, Assignments, Config, LineNum, LastLine
 
   # Load the display template
-  T = Template.Template("localconfig.html")
+  T = Template.Template("localconfig.html", PVars = PVars)
   T["ErrMsg"] = "Displaying requested view. Click on filename to toggle."
   ErrStr = None
 

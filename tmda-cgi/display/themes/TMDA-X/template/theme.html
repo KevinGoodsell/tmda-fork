@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Feb 18 12:24:09 2004 -->
+<!-- Thu Mar 18 11:54:05 2004 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -38,18 +38,18 @@ cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0">
 <td width="130" bgcolor="#000000" valign="top" class="sidebar">
 <!-- start of sidebar table -->
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr><td class="sidebar"><A href="%(Script)s?cmd=gen_addr&SID=%(SID)s" class="sidebarMainLink">Addresses</a></td></tr>
-<tr><td class="sidebar"><A href="%(Script)s?cmd=pending&SID=%(SID)s" class="sidebarMainLink">Pending</a></td></tr>
-<tr><td class="sidebar"><A href="%(Script)s?cmd=incoming&SID=%(SID)s" class="sidebarMainLink">Filters</a></td></tr>
-<tr><td class="sidebar"><A href="%(Script)s?cmd=editlist&SID=%(SID)s" class="sidebarMainLink">Lists</a></td></tr>
-<tr><td class="sidebar"><A href="%(Script)s?cmd=theme&SID=%(SID)s" class="sidebarMainLink">Settings</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=gen_addr&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Addresses</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=pending&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Pending</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=incoming&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Filters</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=editlist&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Lists</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=theme&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Settings</a></td></tr>
 <tr class="sidebar"><td><span class="sidebarActive"><li>Theme</span></td></tr>
-<tr class="sidebar"><td><a href="%(Script)s?cmd=localconfig&SID=%(SID)s" class="sidebarSubLink"><li>Local</a></td></tr>
+<tr class="sidebar"><td><a href="%(Script)s?cmd=localconfig&SID=%(SID)s" class="sidebarSubLink"><li>Local Config</a></td></tr>
 <tr class="sidebar"><td><a href="%(Script)s?cmd=templates&SID=%(SID)s" class="sidebarSubLink"><li>Templates</a></td></tr>
-<tr class="sidebar"><td><a href="%(Script)s?cmd=globalconfig&SID=%(SID)s" class="sidebarSubLink"><li>Global</a></td></tr>
+<tr class="sidebar"><td><a href="%(Script)s?cmd=globalconfig&SID=%(SID)s" class="sidebarSubLink"><li>Global Config</a></td></tr>
 <tr class="sidebar"><td><a href="%(Script)s?cmd=uninstall&SID=%(SID)s" class="sidebarSubLink"><li>Uninstall</a></td></tr>
-<tr><td class="sidebar"><A href="%(Script)s?cmd=info&SID=%(SID)s" class="sidebarMainLink">Info</a></td></tr>
-<tr><td class="sidebar"><A href="%(Script)s?cmd=logout&SID=%(SID)s" class="sidebarMainLink">Logout</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=info&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Info</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=logout&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Logout</a></td></tr>
 </table><!-- end of sidebar table -->
 
 </td>
@@ -127,7 +127,8 @@ function unhover( name )
   </TR>
   <TR>
     <TD>
-<!-- var: FormVars="General:UseJSConfirm:Yes:No,
+<!-- var: FormVars="Theme:SidebarSize:Large:Small,
+  General:UseJSConfirm:Yes:No,
   ViewPending:AltPref:textplain:texthtml,
   ViewPending:EmailClass:sans:serif:fixed,
   General:CSEncoding:iso-8859-1:gb2312:big5, PendingList:PagerSize,
@@ -137,6 +138,14 @@ function unhover( name )
   ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr" -->
 <table>
   <form method="post" action="%(Script)s">
+    <tr>
+      <td align="right"><select name="ThemeSidebarSize">
+          <option %(ThemeSidebarSizeLargeSelected)s value="Large">Large</option>
+          <option %(ThemeSidebarSizeSmallSelected)s value="Small">Small</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Sidebar text size</td>
+    </tr>
     <tr>
       <td align="right"><select name="GeneralUseJSConfirm">
           <option %(GeneralUseJSConfirmYesSelected)s value="Yes">Enabled</option>
