@@ -1,6 +1,7 @@
 2002-08-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
-	* Defaults.py (SMTPAUTHUSER, SMTPAUTHPASSWORD): New variables.
+	* Defaults.py (SMTPAUTH_USERNAME, SMTPAUTH_PASSWORD): New
+	variables.
 	
 	* SMTP.py (Connection.__connect): Add support for SMTP
 	authentication.

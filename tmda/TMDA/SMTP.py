@@ -46,8 +46,9 @@ class Connection:
         self.__conn.connect(Defaults.SMTPHOST)
         self.__numsessions = Defaults.SMTP_MAX_SESSIONS_PER_CONNECTION
         # Optional SMTP Authentication.
-        if Defaults.SMTPAUTHUSER and Defaults.SMTPAUTHPASSWORD:
-            self.__conn.login(Defaults.SMTPAUTHUSER, Defaults.SMTPAUTHPASSWORD)
+        if Defaults.SMTPAUTH_USERNAME and Defaults.SMTPAUTH_PASSWORD:
+            self.__conn.login(Defaults.SMTPAUTH_USERNAME,
+                              Defaults.SMTPAUTH_PASSWORD)
             
     def sendmail(self, envsender, recips, msgtext):
         try:
