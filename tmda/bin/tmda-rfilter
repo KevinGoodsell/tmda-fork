@@ -509,16 +509,28 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         if os.path.exists(confirmed_filepath):
             msg = Util.msg_from_file(open(confirmed_filepath, 'r'))
             # Optionally append the sender's address to a file.
-            if Defaults.CONFIRM_APPEND:
+            if Defaults.CONFIRM_APPEND or Defaults.DB_CONFIRM_APPEND:
                 confirm_append_addr = Util.confirm_append_address(
                     parseaddr(msg.get('x-primary-address'))[1],
                     parseaddr(msg.get('return-path'))[1])
                 if not confirm_append_addr:
                     raise IOError, \
                           confirmed_filepath + ' has no Return-Path header!'
+            if Defaults.CONFIRM_APPEND:
                 if Util.append_to_file(confirm_append_addr,
                                        Defaults.CONFIRM_APPEND) != 0:
                     logit('CONFIRM_APPEND ' + Defaults.CONFIRM_APPEND)
+            if Defaults.DB_CONFIRM_APPEND and Defaults.DB_CONNECTION:
+                _username = Defaults.USERNAME.lower()
+                _hostname = Defaults.HOSTNAME.lower()
+                _recipient = _username + '@' + _hostname
+                params = FilterParser.create_sql_params(
+                    recipient=_recipient, username=_username,
+                    hostname=_hostname, sender=confirm_append_addr)
+                Util.db_insert(Defaults.DB_CONNECTION,
+                               Defaults.DB_CONFIRM_APPEND,
+                               params)
+                logit('DB_CONFIRM_APPEND ')
         # Optionally generate a confirmation acceptance notice.
         if Defaults.CONFIRM_ACCEPT_NOTIFY:
             if (delivery_status == 'c' and
@@ -762,17 +774,18 @@ def main():
     # The list of sender e-mail addresses comes from the envelope
     # sender, the "From:" header, the "Reply-To:" header, and possibly
     # the "X-Primary-Address" header.
-    sender_list = [envelope_sender]
+    sender_dict = { envelope_sender: None }
     confirm_append_address = Util.confirm_append_address(x_primary_address,
                                                          envelope_sender)
     if confirm_append_address and confirm_append_address != envelope_sender:
-        sender_list.append(confirm_append_address)
+        sender_dict[confirm_append_address] = None
     from_list = getaddresses(msgin.get_all('from', []))
     replyto_list = getaddresses(msgin.get_all('reply-to', []))
     for list in from_list, replyto_list:
         for a in list:
             emaddy = a[1]
-            sender_list.append(emaddy)
+            sender_dict[emaddy] = None
+    sender_list = [ addr.lower() for addr in sender_dict.keys() ]
     # Process confirmation messages first.
     confirm_done_hdr = msgin.get('x-tmda-confirm-done')
     if confirm_done_hdr:

@@ -1102,6 +1102,59 @@ if MYSQL_ENABLED and not vars().has_key('MYSQL_PASSWORD'):
 if not vars().has_key('DB_CONNECTION'):
     DB_CONNECTION = None
 
+# DB_CONFIRM_APPEND
+# SQL INSERT statement to be used to insert confirmed sender addresses
+# into a SQL database. The Python DB API will take care of properly
+# quoting parameters that are strings.
+# Requires a valid DB_CONNECTION object.
+#
+# Available substition parameters are:
+#
+# %(recipient)s  - USERNAME@HOSTNAME
+# %(username)s   - USERNAME
+# %(hostname)s   - HOSTNAME
+# %(sender)s     - sender's address (envelope sender or X-Primary-Address)
+#
+# Examples:
+#
+# DB_CONFIRM_APPEND = """
+#  INSERT INTO whitelist (user_email, address)
+#       VALUES (%(recipient)s, %(sender)s)"""
+#
+# DB_CONFIRM_APPEND = """
+#  INSERT INTO wildcard_list (uid, address, action)
+#       SELECT uid, %(sender)s, 'accept'
+#         FROM users
+#        WHERE users.email = %(recipient)s"""
+#
+# Default is None
+if not vars().has_key('DB_CONFIRM_APPEND'):
+    DB_CONFIRM_APPEND = None
+
+# DB_BARE_APPEND
+# SQL INSERT statement to be used to insert recipient addresses into
+# a SQL database if the outgoing <action> was 'bare=append'. The Python
+# DB API will take care of properly quoting parameters that are strings.
+# Requires a valid DB_CONNECTION object.
+#
+# Available substition parameters are:
+#
+# %(recipient)s  - recipient's email address
+# %(username)s   - USERNAME (of TMDA user)
+# %(hostname)s   - HOSTNAME (of TMDA user)
+# %(sender)s     - USERNAME@HOSTNAME (address of TMDA user)
+# %(fromheader)s - address of TMDA user in From: header field
+#
+# Examples:
+#
+# DB_BARE_APPEND = """
+#  INSERT INTO whitelist (user_email, address)
+#       VALUES (%(sender)s, %(recipient)s)"""
+#
+# Default is None
+if not vars().has_key('DB_BARE_APPEND'):
+    DB_BARE_APPEND = None
+
 # PENDING_DIR
 # Full path to the directory containing messages pending confirmation
 # (aka, the "pending queue").  If this directory doesn't exist, it

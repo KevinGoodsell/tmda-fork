@@ -1,3 +1,15 @@
+2003-07-11  Tim Legant  <tim@catseye.net>
+
+	* tmda-inject (make_field): Added code to insert recipient into
+	database using the SQL code in DB_BARE_APPEND if both
+	DB_BARE_APPEND and DB_CONNECTION are set.  Mimics BARE_APPEND
+	functionality.
+
+	* tmda-rfilter (verify_confirm_cookie): Added code to insert
+	sender into database using the SQL code in DB_CONFIRM_APPEND if
+	both DB_CONFIRM_APPEND and DB_CONNECTION are set.  Mimics
+	CONFIRM_APPEND functionality.
+
 2003-07-01  Tim Legant  <tim@catseye.net>
 
 	* tmda-rfilter (main): Create FilterParser with DB_CONNECTION.

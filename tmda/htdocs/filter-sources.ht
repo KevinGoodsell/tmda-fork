@@ -9,22 +9,74 @@ chevrons (<b>&lt;&gt;</b>) should be replaced by the appropriate
 option, without the chevrons.
 <br><br>
 
+<strong>NOTE:</strong> <br>
+
+The <code>from*</code> and <code>to*</code> sources match against
+different addresses or sets of addresses depending on whether they are
+used in an incoming filter or an outgoing filter.<br><br>
+
+<table border="1" cellspacing="0">
+<tr><th>Source</th><th>Incoming Filter</th><th>Outgoing Filter</th></tr>
+<tr>
+  <th>from*</th>
+  <td><ul>
+      <li>envelope sender</li>
+      <li>From: header field</li>
+      <li>Reply-To: header field</li>
+      <li>X-Primary-Address header field if the <a
+      href="config-vars.html#PRIMARY_ADDRESS_MATCH">PRIMARY_ADDRESS_MATCH</a>
+      setting can be satisfied</li>
+      </ul>
+  </td>
+  <td><ul>
+      <li>From: header field
+      set by user's MUA</li>
+      </ul>
+  </td>
+</tr>
+<tr>
+  <th>to*</th>
+  <td><ul><li>envelope recipient</li></ul></td>
+  <td>One of:<ul>
+      <li>recipients on tmda-sendmail's command line</li>
+      <li>To: header field</li>
+      </ul>
+  </td>
+</tr>
+</table>
+
+<h3>Domain Search</h3>
+Domain names of the addresses given above are also used in the search.
+The portion after the first <code>@</code> in an e-mail address is
+considered the "domain". i.e,
+<blockquote><pre>
+jason@mastaler.com -> mastaler.com
+mastaler@cs.yale.edu -> cs.yale.edu
+</blockquote></pre>
+Domains must be listed one per line when used in a file. e.g,
+<blockquote><pre>
+wingnet.net
+mastaler.com
+tmda.net
+cs.yale.edu
+</blockquote></pre>
+
+The matching is exact. This isn't wildcarding, so with the above list, 
+<code>mastaler@cs.yale.edu</code> <strong>would</strong> match, but 
+<code>mastaler@wopr.cs.yale.edu</code> <strong>would not</strong> match.  
+You'd have to add <code>wopr.cs.yale.edu</code> to the list first.<br><br>
+
+This feature may be useful for sites that wish to check a large number
+of domain names, but don't want the overhead of the wildcard
+code. This feature is less flexible than wildcarding, but is much
+faster since the list of domains can be stored in a CDB or DBM (either directly, 
+or by using <code>-autocdb</code> / <code>-autodbm</code>).
+
+<h3>Sources</h3>
 This group of sources may be used in either incoming or outgoing
 filter files.
 <br><br>
 
-<strong>NOTE:</strong> <br>
-
-In order to find a match, the <code>from-*</code> sources examine the
-envelope sender address, any addresses in the From header field (not the UNIX
-mbox separator From_), any addresses in the Reply-To header field, and
-the address in the X-Primary-Address header field if the 
-<a href="config-vars.html#PRIMARY_ADDRESS_MATCH">PRIMARY_ADDRESS_MATCH</a>
-setting can be satisfied.
-<br><br>
-The <code>to-*</code> sources examine the envelope recipient address but
-<i>not</i> the To header field, which is often bogus in spam email.
-<br><br>
 <dl>
   <dt> <code> from <a href="#email_address">&lt;email_address&gt;</a><br>
     to <a href="#email_address">&lt;email_address&gt;</a> </code> 
@@ -34,9 +86,9 @@ The <code>to-*</code> sources examine the envelope recipient address but
 href="#email_address">below</a>. <br>
     <br>
   <dt> <code> from-file [ <a href="#autoflags">-autocdb</a> | <a href="#autoflags">-autodbm</a> 
-    ] [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a><br>
+    ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a><br>
     to-file [ <a href="#autoflags">-autocdb</a> | <a href="#autoflags">-autodbm</a> 
-    ] [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a> </code> 
+    ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a> </code> 
   <dd> The <code>from-file</code> and <code>to-file</code> sources expect the 
     name of a textfile as the match field. You can specify the entire path explicitly 
     or use a leading '~' to represent the user's home directory, like the shell 
@@ -51,16 +103,13 @@ href="#email_file">below</a>. <br>
     <a
 href="#autoflags">below</a>. <br>
     <br>
-    <code>-domains</code> tells the parser that the target file might also
-    contain <a href="#domains">domains</a>.<br>
-    <br>
     If the <code>-optional</code> flag is given, the non-existence of the file 
     is not an error. If the file should exist, don't specify this flag; the parser 
     will log an error and will defer the mail so that you have a chance to fix 
     the problem. <br>
     <br>
-  <dt> <code> from-cdb [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a><br>
-    to-cdb [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a> </code> 
+  <dt> <code> from-cdb [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a><br>
+    to-cdb [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a> </code> 
   <dd> The <code>from-cdb</code> and <code>to-cdb</code> sources expect a match 
     field of a CDB database filename. You can specify the entire path or use a 
     leading '~' to represent the user's home directory. You should specify the 
@@ -68,25 +117,19 @@ href="#autoflags">below</a>. <br>
     contents are documented <a
 href="#db_file">below</a>. <br>
     <br>
-    <code>-domains</code> tells the parser that the target CDB might also
-    contain <a href="#domains">domains</a>.<br>
-    <br>
     If the <code>-optional</code> flag is given, the non-existence of the file 
     is not an error. If the file should exist, don't specify this flag; the parser 
     will log an error and will defer the mail so that you have a chance to fix 
     the problem. <br>
     <br>
-  <dt> <code> from-dbm [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#db_file">&lt;database.db&gt;</a><br>
-    to-dbm [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#db_file">&lt;database.db&gt;</a> </code> 
+  <dt> <code> from-dbm [ -optional ] <a href="#db_file">&lt;database.db&gt;</a><br>
+    to-dbm [ -optional ] <a href="#db_file">&lt;database.db&gt;</a> </code> 
   <dd> The <code>from-dbm</code> and <code>to-dbm</code> sources expect the name 
     of a DBM database in the match field. You can specify the entire path or use 
     a leading '~' to represent the user's home directory. You should specify the 
     <b>.db</b> extension as part of the filename. The DBM format and expected 
     contents are documented <a
 href="#db_file">below</a>. <br>
-    <br>
-    <code>-domains</code> tells the parser that the target DBM might also
-    contain <a href="#domains">domains</a>.<br>
     <br>
     If the <code>-optional</code> flag is given, the non-existence of the file 
     is not an error. If the file should exist, don't specify this flag; the parser 
@@ -126,27 +169,8 @@ TARGET="Resource Window">Mailman</a> configuration database. The match field sho
     will log an error and will defer the mail so that you have a chance to fix 
     the problem. <br>
     <br>
-  <dt> <code> from-mysql [ -like | -rlike ] &lt;table&gt;<br>
-    to-mysql [ -like | -rlike ] &lt;table&gt; </code> 
-  <dd> The <code>from-mysql</code> and <code>to-mysql</code> sources match against 
-    addresses contained in a <a href="http://www.mysql.com/"
-TARGET="Resource Window">MySQL</a> database table. The match field should be the 
-    table name. The MySQL host, user name, password, and database name should 
-    all be configured with the appropriate <a href="config-vars.html"
-TARGET="Resource Window">MYSQL_*</a> variable. The MySQL table format and expected 
-    contents are documented <a href="#MySQL">below</a>.<br>
-    <br>
-    If no flags are specified, the address(es) being tested must exactly match 
-    an entry in the table. Wildcard matching may be done by adding the <code>-like</code> 
-    or <code>-rlike</code> flags. <code>-like</code> indicates that MySQL <code>LIKE</code> 
-    comparison should be done (i.e. <code>%@my.host.name</code> would match all 
-    users in the <code>my.host.name</code> domain). <code>-rlike</code> indicates 
-    that MySQL regular expression (<code>RLIKE</code>) comparison should be done 
-    (i.e. <code>.+@my\.host\.name</code> would match all users in the <code>my.host.name</code> 
-    domain).<br>
-    <br>
-  <dt> <code> from-sql [ <a href="#domains">-domains</a> ] -wildcards | &lt;-addr_column=&lt;column_name&gt; [ -action_column=&lt;column_name&gt;]&gt; &lt;SQL_query&gt;<br>
-  to-sql [ <a href="#domains">-domains</a> ] -wildcards | &lt;-addr_column=&lt;column_name&gt; [ -action_column=&lt;column_name&gt; ]&gt; &lt;SQL_query&gt; </code>
+  <dt> <code> from-sql -wildcards | -addr_column=&lt;column_name&gt; [ -action_column=&lt;column_name&gt;] &lt;SQL_query&gt;<br>
+  to-sql -wildcards | -addr_column=&lt;column_name&gt; [ -action_column=&lt;column_name&gt; ] &lt;SQL_query&gt; </code>
   <dd> The <code>from-sql</code> and <code>to-sql</code> sources match
     against addresses stored in a SQL database. The &lt;SQL_query&gt;
     is a SQL SELECT statement that should retrieve the appropriate
@@ -292,12 +316,6 @@ TARGET="Resource Window">MYSQL_*</a> variable. The MySQL table format and expect
     variables. The Python DB API takes care of that for you in a
     manner appropriate for the database you are using. <br>
     <br>
-    <code>-domains</code> tells the parser that the database column
-    containing addresses to match might also contain <a
-    href="#domains">domains</a>. This is the <code>-addr_column</code>
-    in the case of exact matches or the first column (the name is
-    irrelevant) in the case of <code>-wildcards</code>. <br>
-    <br>
 </dl>
 The following group of sources may be used only in incoming filter files. <br>
 <br>
@@ -407,7 +425,8 @@ contains whitespace, it should be quoted.
     <br>
     <br>
     <strong>NOTE:</strong> Wildcard characters are not recognized in a CDB or 
-    DBM file. <br>
+    DBM file and are only recognized in SQL databases if you specify
+    the -wildcards argument to the rule. <br>
     <br>
     The special characters are: 
 
@@ -438,34 +457,6 @@ jdoe@domain.dom
     <strong>NOTE:</strong> To match the empty envelope sender such as bounce messages 
     are sent with, use <b><code><></code></b> as the expression. <br>
     <br>
-
-  <dt> <a name="domains"><b>Domains</b></a> 
-  <dd> The portion after the first <code>@</code> in an e-mail
-	address is considered the "domain". i.e,
-<blockquote><pre>
-jason@mastaler.com -> mastaler.com
-mastaler@cs.yale.edu -> cs.yale.edu
-</blockquote></pre>
-
-Domains must be listed one per line when used in a file. e.g,
-<blockquote><pre>
-wingnet.net
-mastaler.com
-tmda.net
-cs.yale.edu
-</blockquote></pre>
-
-The matching is exact. This isn't wildcarding, so with the above list, 
-<code>mastaler@cs.yale.edu</code> <strong>would</strong> match, but 
-<code>mastaler@wopr.cs.yale.edu</code> <strong>would not</strong> match.  
-You'd have to add <code>wopr.cs.yale.edu</code> to the list first.<br><br>
-
-This feature may be useful for sites that wish to check a large number
-of domain names, but don't want the overhead of the wildcard
-code. This feature is less flexible than wildcarding, but is much
-faster since the list of domains can be stored in a CDB or DBM (either directly, 
-or by using <code>-autocdb</code> / <code>-autodbm</code>).
-<br><br>
 
   <dt> <a name="email_file"><b>Email Address Files</b></a> 
   <dd> Email address files are textfiles containing an email address, domain, or
@@ -515,39 +506,6 @@ Window">python-cdb</a> extension module installed. <br>
 href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource
 Window">python-cdb</a> extension module installed. <br>
     <br>
-  <dt> <a name="MySQL" id="MySQL"><b>MySQL Tables</b></a> 
-  <dd> MySQL tables used in <code>from-mysql</code> and <code>to-mysql</code> 
-    filter sources should be created with the following SQL: 
-    <p> 
-    <pre>CREATE TABLE &lt;table_name&gt;
-(
-    ADDRESS text NOT NULL,
-    ACTION text NOT NULL,
-    PRIMARY KEY (ADDRESS(80))
-)</pre>
-    The <code>ACTION</code> field in your records may generally be left blank, 
-    but if present, any command in the field will override the action specified 
-    in the filter source. In other words: 
-    <pre>+-------------+--------+
-| ADDRESS     | ACTION |
-+-------------+--------+
-| %@yahoo.com | bounce |
-+-------------+--------+</pre>
-    will cause all mail from yahoo.com to bounce, even if the filter source was: 
-    <pre>from-mysql -like TMDA accept</pre>
-    Make sure that the MySQL user specified in <a href="config-vars.html#MYSQL_USER"><code>MYSQL_USER</code></a> 
-    has been <code>GRANT</code>ed sufficient <code>SELECT</code> privileges to 
-    allow access to the table listed in your filter source.<br>
-    <br>
-    The TMDA filter parser will stop on the first matching record found. If you 
-    are using the <code>-like</code> or <code>-rlike</code> options and multiple 
-    table entries match, there is no predicting which record will be used.<br>
-    <br>
-    If you wish to explore MySQL databases, make sure you have the <a
-href="http://sourceforge.net/projects/mysql-python/" TARGET="Resource
-Window">mysql-python</a> extension module installed. <br>
-    <br></dt>
-    
   <dd></dt> 
   <dd></dt> 
   <dt> <a name="re_file"><b>Regular Expression Files</b></a> 
@@ -565,4 +523,3 @@ Window">mysql-python</a> extension module installed. <br>
     a backslash (<code><b>\</b></code>). <br>
     <br>
 </dl>
-

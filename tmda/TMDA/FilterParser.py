@@ -262,22 +262,18 @@ class FilterParser:
     arguments = {
         'from'         : None,
         'to'           : None,
-        'from-file'    : ('autocdb', 'autodbm', 'domains', 'optional'),
-        'to-file'      : ('autocdb', 'autodbm', 'domains', 'optional'),
-        'from-cdb'     : ('domains', 'optional',),
-        'to-cdb'       : ('domains', 'optional',),
-        'from-dbm'     : ('domains', 'optional',),
-        'to-dbm'       : ('domains', 'optional',),
+        'from-file'    : ('autocdb', 'autodbm', 'optional'),
+        'to-file'      : ('autocdb', 'autodbm', 'optional'),
+        'from-cdb'     : ('optional',),
+        'to-cdb'       : ('optional',),
+        'from-dbm'     : ('optional',),
+        'to-dbm'       : ('optional',),
         'from-ezmlm'   : ('optional',),
         'to-ezmlm'     : ('optional',),
         'from-mailman' : ('attr', 'optional' ),
         'to-mailman'   : ('attr', 'optional' ),
-        'from-mysql'   : ('like', 'rlike'),
-        'to-mysql'     : ('like', 'rlike'),
-        'from-sql'     : ('action_column', 'addr_column',
-                          'domains', 'wildcards'),
-        'to-sql'       : ('action_column', 'addr_column',
-                          'domains', 'wildcards'),
+        'from-sql'     : ('action_column', 'addr_column', 'wildcards'),
+        'to-sql'       : ('action_column', 'addr_column', 'wildcards'),
         'body'         : ('case',),
         'headers'      : ('case',),
         'body-file'    : ('case', 'optional'),
@@ -724,44 +720,6 @@ class FilterParser:
                                   source)
 
 
-    def __search_mysql(self, Table, Args, Keys, Actions, Source):
-        "Search MySQL table."
-        if not self.MySQL:
-            # Connect to the database if we have not yet connected
-            import _mysql
-            self.MySQL = _mysql.connect \
-            (
-                host = Defaults.MYSQL_HOST,
-                db = Defaults.MYSQL_DATABASE,
-                user = Defaults.MYSQL_USER,
-                passwd = Defaults.MYSQL_PASSWORD
-            )
-        # Searches can be for records that are "=", "like", or "rlike" the
-        # keys.  "=" is the fastest and the default, but it does not allow any
-        # wildcarding.  "like" allows "_" to mean any character and "%" to
-        # mean any string.  "rlike" allows regular expressions.
-        Compare = "="
-        if Args.has_key('like'): Compare = "LIKE"
-        elif Args.has_key('rlike'): Compare = "RLIKE"
-        Test = ""
-        for Key in Keys:
-            if Test: Test += "OR "
-            Test += "('%s' %s ADDRESS) " % (Key.replace("'", "\\'"), Compare)
-        # Perform the query
-        self.MySQL.query("SELECT * FROM %s WHERE %s LIMIT 1" % (Table, Test))
-        # Fetch the result
-        Result = self.MySQL.store_result().fetch_row(0, 1)
-        found_match = len(Result)
-
-        # If there is an entry for this key, we consider it an overriding
-        # action specification.
-        if found_match and Result[0]["ACTION"]:
-            Actions.clear()
-            Actions.update(self.__buildactions(Result[0]["ACTION"], Source))
-
-        return found_match
-
-
     def __search_cdb(self, pathname, keys, actions, source):
         """
         Search DJB's constant databases; see <http:/cr.yp.to/cdb.html>.
@@ -842,24 +800,13 @@ class FilterParser:
         """
         Attempt to extract the domain name from each address in keys.
         """
-        domains = []
+        domains = {}
         for k in keys:
             try:
-                domains.append(k.split('@', 1)[1])
+                domains[k.split('@', 1)[1]] = None
             except IndexError:
                 pass
-        return domains
-
-
-    def __create_sql_params(self, dbkeys):
-        """Return dictionary of parameters for sql statement."""
-        params = { 'recipient': Defaults.USERNAME+'@'+Defaults.HOSTNAME,
-                   'username' : Defaults.USERNAME,
-                   'hostname' : Defaults.HOSTNAME
-                 }
-        for i in range(len(dbkeys)):
-            params['criterion'+str(i)] = dbkeys[i]
-        return params
+        return domains.keys()
 
 
     def __create_sql_criteria(self, dbkeys, addresscolumn):
@@ -889,33 +836,42 @@ class FilterParser:
         dbkeys = keys
         if args.has_key('wildcards'):
             dbkeys = []
-        params = self.__create_sql_params(dbkeys)
+        _username = Defaults.USERNAME.lower()
+        _hostname = Defaults.HOSTNAME.lower()
+        _recipient = _username + '@' + _hostname
+        params = create_sql_params(dbkeys,
+                                   recipient=_recipient,
+                                   username=_username,
+                                   hostname=_hostname)
         cursor = self.db_instance.cursor()
-        cursor.execute(selectstmt, params)
-        rows = cursor.fetchall()
-        if cursor.rowcount <= 0:
-            return 0
-        if args.has_key('wildcards'):
-            if len(cursor.description) > 1:
-                dblist = [' '.join([row[0], row[1] or '']) for row in rows]
+        try:
+            cursor.execute(selectstmt, params)
+            rows = cursor.fetchall()
+            if cursor.rowcount <= 0:
+                return 0
+            if args.has_key('wildcards'):
+                if len(cursor.description) > 1:
+                    dblist = [' '.join([row[0], row[1] or '']) for row in rows]
+                else:
+                    dblist = [row[0] for row in rows]
+                found_match = self.__search_list(dblist, keys, actions, source)
             else:
-                dblist = [row[0] for row in rows]
-            found_match = self.__search_list(dblist, keys, actions, source)
-        else:
-            action_column = args.get('action_column')
-            if action_column:
-                actcolidx = self.__get_column_index(action_column, cursor)
-                if actcolidx == -1:
-                    actcolidx = self.__get_column_index(action_column.lower(),
-                                                        cursor)
+                action_column = args.get('action_column')
+                if action_column:
+                    actcolidx = self.__get_column_index(action_column, cursor)
                     if actcolidx == -1:
-                        err = "no action column (%s)" % (action_column,)
-                        raise MatchError(lineno, err)
-                action = rows[0][actcolidx]
-                if action:
-                    actions.clear()
-                    actions.update(self.__buildactions(action, source))
-            found_match = 1
+                        actcolidx = self.__get_column_index(
+                            action_column.lower(), cursor)
+                        if actcolidx == -1:
+                            err = "no action column (%s)" % (action_column,)
+                            raise MatchError(lineno, err)
+                    action = rows[0][actcolidx]
+                    if action:
+                        actions.clear()
+                        actions.update(self.__buildactions(action, source))
+                found_match = 1
+        finally:
+            cursor.close()
         return found_match
 
 
@@ -945,8 +901,7 @@ class FilterParser:
             if source in ('from-file', 'to-file'):
                 dbname = os.path.expanduser(match)
                 search_func = self.__search_file
-                if args.has_key('domains'):
-                    keys += self.__extract_domains(keys)
+                keys += self.__extract_domains(keys)
                 # If we have an 'auto*' argument, ensure that the database
                 # is up-to-date.  If the 'optional' argument is also given,
                 # don't die if the file doesn't exist.
@@ -974,8 +929,7 @@ class FilterParser:
             if source in ('from-dbm', 'to-dbm'):
                 import anydbm
                 match = os.path.expanduser(match)
-                if args.has_key('domains'):
-                    keys += self.__extract_domains(keys)
+                keys += self.__extract_domains(keys)
                 try:
                     found_match = self.__search_dbm(match, keys,
                                                     actions, source)
@@ -988,8 +942,7 @@ class FilterParser:
             if source in ('from-cdb', 'to-cdb'):
                 import cdb
                 match = os.path.expanduser(match)
-                if args.has_key('domains'):
-                    keys += self.__extract_domains(keys)
+                keys += self.__extract_domains(keys)
                 try:
                     found_match = self.__search_cdb(match, keys,
                                                     actions, source)
@@ -1059,22 +1012,13 @@ class FilterParser:
                             break
                 if found_match:
 		    break
-            # MySQL-style databases.
-            if source in ('from-mysql', 'to-mysql'):
-                found_match = self.__search_mysql \
-                (
-                    match, args, keys, actions, source
-                )
-                if found_match:
-		    break
             # Generic SQL.  Expects a SELECT statement as the 'match' field.
             # There are two "modes", depending on the presence of TMDA-style
             # wildcards in the database.  See the filter source documentation
             # for more information.
             if source in ('from-sql', 'to-sql'):
                 selectstmt = match
-                if args.has_key('domains'):
-                    keys += self.__extract_domains(keys)
+                keys += self.__extract_domains(keys)
                 addr_column = args.get('addr_column')
                 if args.has_key('wildcards'):
                     if addr_column:
@@ -1235,3 +1179,12 @@ def splitaction(action):
     if len(parts) == 1:
         return (parts[0], None)
     return tuple(parts)
+
+
+def create_sql_params(dbkeys=[], **kwargs):
+    """Return dictionary of parameters for SQL statement."""
+    params = kwargs.copy()
+    for i in range(len(dbkeys)):
+        params['criterion'+str(i)] = dbkeys[i]
+    return params
+

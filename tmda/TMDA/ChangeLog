@@ -1,3 +1,17 @@
+2003-07-11  Tim Legant  <tim@catseye.net>
+
+	* Defaults.py: New variables DB_BARE_APPEND and
+	DB_CONFIRM_APPEND.
+
+	* FilterParser.py (FilterParser): Removed {from,to}-mysql code.
+	Moved __create_sql_params method to module-level function
+	create_sql_params.  Removed -domains argument and always add the
+	domains into the keys.  Made the domains list contain only unique
+	domains.
+
+	* Util.py (db_insert): New function, used by the DB_BARE_APPEND
+	and DB_CONFIRM_APPEND code.
+
 2003-07-01  Tim Legant  <tim@catseye.net>
 
 	* Util.py (filter_match): Create FilterParser with DB_CONNECTION.

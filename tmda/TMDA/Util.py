@@ -737,6 +737,21 @@ def unpickle(file):
     return object
 
 
+def db_insert(db, insert_sql, params):
+    """Insert (using the 'insert_sql' SQL) an address into a SQL DB."""
+    dbmodule = sys.modules[db.__module__]
+    DatabaseError = getattr(dbmodule, 'DatabaseError')
+    cursor = db.cursor()
+    try:
+        try:
+            cursor.execute(insert_sql, params)
+            db.commit()
+        except DatabaseError:
+            pass
+    finally:
+        cursor.close()
+
+
 def findmatch(list, addrs):
     """Determine whether any of the passed e-mail addresses match a
     Unix shell-style wildcard pattern contained in list.  The

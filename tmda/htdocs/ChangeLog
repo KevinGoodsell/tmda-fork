@@ -1,3 +1,8 @@
+2003-07-11  Tim Legant  <tim@catseye.net>
+
+	* filter-sources.ht: Removed {from,to}-mysql documentation, moved
+	-domains documentation to top, since now it is default behavior.
+
 2003-07-09  Tim Legant  <tim@catseye.net>
 
 	* filter-sources.ht: Added section on new sources 'from-sql' and

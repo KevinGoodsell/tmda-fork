@@ -97,6 +97,10 @@ Each variable definition below contains one or more examples.
 <td><a href="#DATED_TEMPLATE_VARS">DATED_TEMPLATE_VARS</a></td>
 </tr>
 <tr>
+<td><a href="#DB_BARE_APPEND">DB_BARE_APPEND</a></td>
+<td><a href="#DB_CONFIRM_APPEND">DB_CONFIRM_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#DB_CONNECTION">DB_CONNECTION</a></td>
 <td><a href="#DELIVERY">DELIVERY</a></td>
 </tr>
@@ -737,6 +741,63 @@ Set this variable to 1 if you want to use 'dated' address variables
 in your templates.
 <br><br>
 Default is 0 (turned off)
+<dt><hr>
+<a name="DB_BARE_APPEND"><h4>DB_BARE_APPEND</h4></a>
+<dd>
+SQL INSERT statement to be used to insert recipient addresses into
+a SQL database if the outgoing &lt;action&gt; was 'bare=append'. The Python
+DB API will take care of properly quoting parameters that are strings.
+Requires a valid DB_CONNECTION object.
+<br><br>
+Available substition parameters are:
+<br><br>
+%(recipient)s  - recipient's email address
+%(username)s   - USERNAME (of TMDA user)
+%(hostname)s   - HOSTNAME (of TMDA user)
+%(sender)s     - USERNAME@HOSTNAME (address of TMDA user)
+%(fromheader)s - address of TMDA user in From: header field
+<br><br>
+Examples:
+<br><br>
+<code>DB_BARE_APPEND = """</code><br>
+<blockquote>
+<code> INSERT INTO whitelist (user_email, address)</code><br>
+<code>      VALUES (%(sender)s, %(recipient)s)"""</code>
+</blockquote>
+<br>
+Default is None
+<dt><hr>
+<a name="DB_CONFIRM_APPEND"><h4>DB_CONFIRM_APPEND</h4></a>
+<dd>
+SQL INSERT statement to be used to insert confirmed sender addresses
+into a SQL database. The Python DB API will take care of properly
+quoting parameters that are strings.
+Requires a valid DB_CONNECTION object.
+<br><br>
+Available substition parameters are:
+<br><br>
+%(recipient)s  - USERNAME@HOSTNAME
+%(username)s   - USERNAME
+%(hostname)s   - HOSTNAME
+%(sender)s     - sender's address (envelope sender or X-Primary-Address)
+<br><br>
+Examples:
+<br><br>
+<code>DB_CONFIRM_APPEND = """</code><br>
+<blockquote>
+<code> INSERT INTO whitelist (user_email, address)</code><br>
+<code>      VALUES (%(recipient)s, %(sender)s)"""</code>
+</blockquote>
+<br>
+DB_CONFIRM_APPEND = """
+<blockquote>
+ INSERT INTO wildcard_list (uid, address, action)
+      SELECT uid, %(sender)s, 'accept'
+        FROM users
+       WHERE users.email = %(recipient)s"""
+</blockquote>
+<br>
+Default is None
 <dt><hr>
 <a name="DB_CONNECTION"><h4>DB_CONNECTION</h4></a>
 <dd>

@@ -161,9 +161,20 @@ def make_field(cookie_type, cookie_option, from_address, to_address):
 	# Use an untagged address.
 	field = from_address
 	# Optionally append the recipient address to a file.
-	if (cookie_option and string.lower(cookie_option) == 'append'
-	    and Defaults.BARE_APPEND):
-	    Util.append_to_file(to_address, Defaults.BARE_APPEND)
+        if cookie_option and cookie_option.lower() == 'append':
+            if Defaults.BARE_APPEND:
+                Util.append_to_file(to_address, Defaults.BARE_APPEND)
+            if Defaults.DB_BARE_APPEND and Defaults.DB_CONNECTION:
+                _username = Defaults.USERNAME.lower()
+                _hostname = Defaults.HOSTNAME.lower()
+                _sender = _username + '@' + _hostname
+                params = FilterParser.create_sql_params(
+                    recipient=to_address.lower(),
+                    fromheader=from_address.lower(),
+                    username=_username, hostname=_hostname, sender=_sender)
+                Util.db_insert(Defaults.DB_CONNECTION,
+                               Defaults.DB_BARE_APPEND,
+                               params)
     elif cookie_type == 'dated':
 	# Send a message with a tagged (dated) address.
 	if cookie_option:               # check for timeout override
