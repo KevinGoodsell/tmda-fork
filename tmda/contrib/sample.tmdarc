@@ -84,5 +84,5 @@ import os                                      # don't remove
 
 # WHITELIST_AUTO_APPEND = 0
 
-# WHITELIST_TO_BARE = 0
+# WHITELIST_TO_BARE = 1
 

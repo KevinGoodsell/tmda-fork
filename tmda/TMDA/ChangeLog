@@ -1,3 +1,7 @@
+2001-09-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (WHITELIST_TO_BARE): Turn on by default.
+
 2001-09-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (WHITELIST_AUTO_APPEND): New variable to toggle

@@ -305,11 +305,11 @@ if not vars().has_key('WHITELIST_AUTO_APPEND'):
     WHITELIST_AUTO_APPEND = 0
 
 # WHITELIST_TO_BARE
-# Set this variable to 1 if you want addresses in your
-# WHITELIST to receive untagged (no cookie added) messages.
-# Default is 0 (turned off)
+# Set this variable to 0 if you don't want addresses in your WHITELIST
+# to automatically receive untagged (no cookie added) messages.
+# Default is 1 (turned on)
 if not vars().has_key('WHITELIST_TO_BARE'):
-    WHITELIST_TO_BARE = 0
+    WHITELIST_TO_BARE = 1
 
 ###################################
 # END of user configurable settings

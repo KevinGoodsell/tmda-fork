@@ -1,3 +1,7 @@
+2001-09-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Change default value for WHITELIST_TO_BARE to on.
+	
 2001-09-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add WHITELIST_AUTO_APPEND.
