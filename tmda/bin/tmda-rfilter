@@ -149,7 +149,7 @@ stdin = StringIO(sys.stdin.read())
 msgin = email.message_from_file(stdin)
 
 # Original message contents as a string.
-orig_msgin_as_string = msgin.as_string()
+orig_msgin_as_string = Util.msg_as_string(msgin)
 
 # Original message headers as a string.
 orig_msgin_headers_as_string = Util.headers_as_string(msgin)
@@ -381,7 +381,7 @@ def send_bounce(bounce_message, type):
 
 def send_cc(address):
     """Send a 'carbon copy' of the message to address."""
-    Util.sendmail(msgin.as_string(), address, envelope_sender)
+    Util.sendmail(Util.msg_as_string(msgin), address, envelope_sender)
     logit('CC ' + address)
 
 
@@ -425,7 +425,7 @@ def release_pending(timestamp, pid, msg):
     del msg['X-TMDA-Confirmed']
     msg['X-TMDA-Confirmed'] = Util.unixdate()
     # Reinject the message to the original envelope recipient.
-    Util.sendmail(msg.as_string(), recipient, return_path)
+    Util.sendmail(Util.msg_as_string(msg), recipient, return_path)
     mta.stop()
 
 
@@ -594,7 +594,7 @@ def create_pending_msg(timestamp, pid):
     del msgin['X-TMDA-Recipient']
     msgin['X-TMDA-Recipient'] = recipient_address
     # Write ~/.tmda/pending/TIMESTAMP.PID.msg
-    pending_contents = msgin.as_string()
+    pending_contents = Util.msg_as_string(msgin)
     fn = os.path.join(pendingdir, pending_message)
     Util.writefile(pending_contents, fn)
     del msgin['X-TMDA-Recipient']

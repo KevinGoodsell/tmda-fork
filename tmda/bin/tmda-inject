@@ -123,7 +123,6 @@ for opt, arg in opts:
 from TMDA import Cookie
 from TMDA import Defaults
 from TMDA import FilterParser
-from TMDA import Message
 from TMDA import Util
 
 import email
@@ -139,8 +138,8 @@ if filter_match:
     Util.filter_match(Defaults.FILTER_OUTGOING, recip, sender)
     sys.exit()
 
-msgout = Message.message_from_file(sys.stdin)
-orig_msgout_as_string = msgout.as_string()
+msgout = email.message_from_file(sys.stdin)
+orig_msgout_as_string = Util.msg_as_string(msgout)
 orig_msgout_size = len(orig_msgout_as_string)
 orig_msgout_body_as_raw_string = Util.body_as_raw_string(msgout)
 
@@ -316,7 +315,7 @@ def inject_message(resending,
                                              action_msg = log_msg)
         logger.write()
     # Inject the message.
-    Util.sendmail(msg.as_string(), to_address, envelope_sender)
+    Util.sendmail(Util.msg_as_string(msg, 78), to_address, envelope_sender)
     injections += 1
     # Remove any custom headers we added for this recipient from the
     # message object, else all subsequent recipients will receive them

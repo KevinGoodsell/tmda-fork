@@ -425,7 +425,8 @@ class Message:
         del self.msgobj['X-TMDA-Released']
         self.msgobj['X-TMDA-Released'] = Util.unixdate()
         # Reinject the message to the original envelope recipient.
-        Util.sendmail(self.msgobj.as_string(), self.recipient, self.return_path)
+        Util.sendmail(Util.msg_as_string(self.msgobj),
+                      self.recipient, self.return_path)
 
     def delete(self):
         """Delete a message from the pending queue."""
@@ -470,7 +471,7 @@ class Message:
 
     def show(self):
         """Return the string representation of a message."""
-        return self.msgobj.as_string()
+        return Util.msg_as_string(self.msgobj)
 
     def getDate(self):
         timestamp = self.msgid.split('.')[0]
@@ -519,7 +520,7 @@ class Message:
     def summary(self, count = 0, total = 0, mailto = 0):
         """Return summary header information."""
         if not self.msg_size:
-            self.msg_size = len(self.msgobj.as_string())
+            self.msg_size = len((Util.msg_as_string(self.msgobj)))
             if  self.msg_size == 1:
                 self.bytes =    self.bytes[:-1]
         str = self.msgid + " ("

@@ -22,8 +22,11 @@
 """General purpose functions."""
 
 
-import cPickle
+from cStringIO import StringIO
+import email
 import email.Utils
+from email.Generator import Generator
+import cPickle
 import fileinput
 import fnmatch
 import os
@@ -453,6 +456,29 @@ def confirm_append_address(xp, rp):
     return rp
 
 
+def msg_as_string(msg, maxheaderlen=0, mangle_from_=0, unixfrom=0):
+    """A more flexible replacement for Message.as_string().  The default
+    is a textual representation of the message where the headers are
+    not wrapped, From is not escaped, and a leading From_ line is not
+    added.
+
+    msg is an email.Message.Message object.
+
+    maxheaderlen specifies the longest length for a non-continued
+    header.  Disabled by default.  RFC 2822 recommends 78.
+    
+    mangle_from_ escapes any line in the body that begins with "From"
+    with ">".  Useful when writing to Unix mbox files.  Default is
+    False.
+
+    unixfrom forces the printing of the envelope header delimiter.
+    Default is False."""
+    fp = StringIO()
+    g = Generator(fp, mangle_from_=mangle_from_, maxheaderlen=maxheaderlen)
+    g.flatten(msg, unixfrom=unixfrom)
+    return fp.getvalue()
+
+
 def sendmail(msgstr, envrecip, envsender):
     """Send e-mail via direct SMTP, or by opening a pipe to the
     sendmail program.
@@ -504,7 +530,7 @@ def headers_as_list(msg):
 
 def headers_as_raw_string(msg):
     """Return the headers as a raw (undecoded) string."""
-    msgtext = msg.as_string()
+    msgtext = msg_as_string(msg)
     idx = msgtext.index('\n\n')
     return msgtext[:idx+1]
 
@@ -523,9 +549,10 @@ def headers_as_string(msg):
 
 def body_as_raw_string(msg):
     """Return the body as a raw (undecoded) string."""
-    msgtext = msg.as_string()
+    msgtext = msg_as_string(msg)
     idx = msgtext.index('\n\n')
     return msgtext[idx+2:]
+
 
 
 def rename_headers(msg, old, new):

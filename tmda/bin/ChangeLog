@@ -1,3 +1,13 @@
+2003-04-22  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-inject (msgout): Use Util.msg_as_string().
+	(inject_message): Ditto.
+
+	* tmda-rfilter: Ditto.
+	(send_cc): Ditto.
+	(release_pending): Ditto.
+	(create_pending_msg): Ditto.
+
 2003-04-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (autorespond_to_sender): Check for Majordomo

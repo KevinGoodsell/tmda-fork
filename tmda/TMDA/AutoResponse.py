@@ -72,7 +72,7 @@ class AutoResponse:
         response.  Normally the envelope sender address.
         """
         self.msgin = msgin
-        self.msgin_as_string = self.msgin.as_string()
+        self.msgin_as_string = Util.msg_as_string(self.msgin)
         self.msgin_size = len(self.msgin_as_string)
         self.bouncemsg = message_from_string(bouncetext)
         self.responsetype = response_type
@@ -206,7 +206,7 @@ class AutoResponse:
         """
         Inject the auto response into the mail transport system.
         """
-        Util.sendmail(self.mimemsg.as_string(),
+        Util.sendmail(Util.msg_as_string(self.mimemsg, 78),
                       self.recipient, Defaults.BOUNCE_ENV_SENDER)
 
 

@@ -24,7 +24,6 @@
 
 import fcntl
 import os
-import re
 import signal
 import socket
 import stat
@@ -108,9 +107,12 @@ class Deliver:
         """Deliver the message appropriately."""
         (type, dest) = self.get_instructions()
         if type == 'program':
-            self.__deliver_program(self.msg.as_string(unixfrom=1), dest)
+            # don't wrap headers, don't escape From, add From_ line
+            self.__deliver_program(Util.msg_as_string(self.msg, 0, 0, 1),
+                                   dest)
         elif type == 'forward':
-            self.__deliver_forward(self.msg.as_string(), dest)
+            # don't wrap headers, don't escape From, don't add From_ line
+            self.__deliver_forward(Util.msg_as_string(self.msg), dest)
         elif type == 'mbox':
             # Ensure destination path exists.
             if not os.path.exists(dest):
@@ -122,14 +124,17 @@ class Deliver:
                 raise Errors.DeliveryError, \
                       'Destination "%s" is a symlink!' % dest
             else:
-                self.__deliver_mbox(self.msg.as_string(), dest)
+                # don't wrap headers, escape From, add From_ line
+                self.__deliver_mbox(Util.msg_as_string(self.msg, 0, 1, 1),
+                                    dest)
         elif type == 'maildir':
             # Ensure destination path exists.
             if not os.path.exists(dest):
                 raise Errors.DeliveryError, \
                       'Destination "%s" does not exist!' % dest
             else:
-                self.__deliver_maildir(self.msg.as_string(), dest)
+                # don't wrap headers, don't escape From, don't add From_ line
+                self.__deliver_maildir(Util.msg_as_string(self.msg), dest)
 
     def __deliver_program(self, message, program):
         """Deliver message to /bin/sh -c program."""
@@ -149,10 +154,6 @@ class Deliver:
         Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
         General Public License version 2.
         """
-        # Construct a UUCP-style From_ line, e.g:
-        # From johndoe@nightshade.la.mastaler.com Thu Feb 28 20:16:35 2002
-        #
-        ufline = 'From %s %s\n' % (self.env_sender, time.asctime())
         try:
 	    # When orig_length is None, we haven't opened the file yet.
             orig_length = None
@@ -172,18 +173,11 @@ class Deliver:
                       'Destination "%s" is not an mbox file!' % mbox
             fp.seek(0, 2)                # seek to end
             orig_length = fp.tell()      # save original length
-            fp.write(ufline)
-
-            # Replace lines beginning with "From ", ">From ", ">>From ", ...
-            # with ">From ", ">>From ", ">>>From ", ...
-            escapefrom = re.compile(r'^(?P<gts>\>*)From ', re.MULTILINE)
-            msg = escapefrom.sub('>\g<gts>From ', message)
             # Add a trailing newline if last line incomplete.
-            if msg[-1] != '\n':
-                msg = msg + '\n'
-
+            if message[-1] != '\n':
+                message = message + '\n'
             # Write the message.
-            fp.write(msg)
+            fp.write(message)
             # Add a trailing blank line.
             fp.write('\n')
             fp.flush()

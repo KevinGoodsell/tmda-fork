@@ -1,3 +1,20 @@
+2003-04-22  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Util.py (msg_as_string): New function.  Replacement for
+	Message.as_string().
+	
+	* AutoResponse.py (AutoResponse.__init__): Use
+	Util.msg_as_string() instead of msg.as_string().
+	(AutoResponse.send): Ditto.
+
+	* Pending.py (Message.release): Ditto.
+	(Message.show): Ditto.
+	(Message.summary): Ditto.
+
+	* Deliver.py (Deliver.deliver): Ditto.
+	* (Deliver.__deliver_mbox): No need to add the leading From_ line
+	or escape "From" ourselves.
+
 2003-04-19  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Removed virtual user processing from Util.
