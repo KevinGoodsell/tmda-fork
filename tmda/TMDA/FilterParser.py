@@ -222,7 +222,7 @@ class FilterParser:
     bol_comment = re.compile(r'\s*#')
 
     most_sources = re.compile(r"""
-    ( (?:to|from)-(?:file|cdb|dbm|ezmlm|mailman|mysql|sql)
+    ( (?:to|from)-(?:file|cdb|dbm|ezmlm|mailman|sql)
     | size | pipe
     | (?:to|from) (?!-) )
     """, re.VERBOSE | re.IGNORECASE)
@@ -281,9 +281,6 @@ class FilterParser:
         'size'         : None,
         'pipe'         : None
         }
-
-    # MySQL connection
-    MySQL = None
 
 
     def __init__(self, db_instance=None):
