@@ -52,8 +52,8 @@ OPTIONS:
         --filter-match <recipient> <sender>
            Check whether the given e-mail address matches a line in
            your outgoing filter and then exit.  The first address
-           given should be the message recipient (you), and the second
-           is the sender.  This option will also check for parsing
+           given should be the message recipient, and the second is
+           the sender (you).  This option will also check for parsing
            errors in the filter file.
            
 	recip
