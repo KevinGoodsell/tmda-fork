@@ -37,52 +37,49 @@ from TMDA import Errors
 def Release(QueryString):
   """Release the message represented in the QueryString.
 
-QueryString is in the format <UID>&<recipient_address>&<confirm_cookie>
+QueryString is in one of two formats, real users MAY confirm with:
+
+<UID>.<confirm_cookie>
+
+Virtual users MUST confirm with:
+
+<UID>&<recipient_address>&<confirm_cookie>
 
 Where <UID> is the UID of the TMDA account, <recipient_address> is the untagged
 address of the original message recipient, and <confirm_cookie> is used to find
-and validate the pending email in question.
-
-(Old-style addresses of the format <UID>.<confirm_cookie> are still accepted)
-"""
+and validate the pending email in question."""
 
   # Prepare the traceback in case of uncaught exception
   MyCgiTb.ErrTemplate = "prog_err2.html"
   CgiUtil.ErrTemplate = "error2.html"
 
-  QueryStringError = 0
-  oldStyle = 0
   try:
     UID, Recipient, Cookie = QueryString.split("&")
-  except ValueError:
+    UID = int(UID)
+    GID = int(pwd.getpwuid(UID)[3])
+    OldStyle = 0
+
+    # Get base address from Recipient
+    RecipUser, RecipDomain = Recipient.split("@")
+    User = RecipUser.split('-')[0] + "@" + RecipDomain
+  except (ValueError, KeyError):
     try:
       # Check for old-style format
-      ## WARNING -- DEPRECATED and may soon disappear ##
-      UID, Timestamp, PID, HMAC = QueryString.split(".")
-      oldStyle = 1
-    except ValueError:
-      QueryStringError = 1
+      UID, Cookie = QueryString.split(".", 1)
+      UID = int(UID)
+      UserRec = pwd.getpwuid(UID)
+      User = UserRec[0]
+      GID = int(UserRec[3])
+      OldStyle = 1
+    except (ValueError, KeyError):
+      CgiUtil.TermError("Unable to parse query string.",
+        "Program error / corrupted link.",
+        "locate pending e-mail", "", """Please check the link you followed and
+make sure that it is typed in exactly as it was sent to you.""")
   try:
     # Get real user from UID
-    UID = int(UID)
-    UserRec = pwd.getpwuid(UID)
-    User = UserRec[0]
-    GID = int(UserRec[3])
-    if not oldStyle:
-      # Get base address from Recipient
-      RecipUser, RecipDomain = Recipient.split("@")
-      Recipient = RecipUser.split('-')[0] + "@" + RecipDomain
-    if not oldStyle:
-      # Get message parts form Cookie
-      Timestamp, PID, HMAC = Cookie.split(".")
+    Timestamp, PID, HMAC = Cookie.split(".")
   except ValueError:
-    # May be from any failed .split or int()
-    QueryStringError = 1
-  except KeyError:
-    # May occur if UID is not found on the system.
-    QueryStringError = 1
-
-  if QueryStringError:
     CgiUtil.TermError("Unable to parse query string.",
       "Program error / corrupted link.",
       "locate pending e-mail", "", """Please check the link you followed and
@@ -104,15 +101,7 @@ make sure that it is typed in exactly as it was sent to you.""")
   except OSError:
     pass
   try:
-    if os.environ.has_key("TMDA_VLOOKUP"):
-      if oldStyle:
-        # Old style URLs are not allowed with virtual user setups.
-        CgiUtil.TermError("Confirm Failed",
-          "Old-style URL is not compatible with virtual users",
-          "use incompatible URL", """Contact this message's sender by an
-alternate means and inform them of this error, or try confirming your message
-using an alternate method.""")
-      User = Recipient
+    if os.environ.has_key("TMDA_VLOOKUP") and not OldStyle:
       VLookup = \
         CgiUtil.ParseString(os.environ["TMDA_VLOOKUP"], User )
       List = Util.RunTask(VLookup[1:])
@@ -164,7 +153,14 @@ of this error, or try confirming your message using an alternate method.""")
     pass
 
   # Now that we know who we are, get our defaults
-  from TMDA import Defaults
+  try:
+    from TMDA import Defaults
+  except Errors.ConfigError:
+        CgiUtil.TermError("Confirm Failed",
+          "Old-style URL is not compatible with virtual users",
+          "use incompatible URL", "", """Contact this message's sender by an
+alternate means and inform them of this error, or try confirming your message
+using an alternate method.""")
   from TMDA import Pending
   from TMDA import Cookie
 

@@ -109,16 +109,15 @@ Unicode.PVars = PVars
 # First visit to any page?
 if not Form.keys():
   # Release an e-mail by URL?
-  try:
-    if os.environ["QUERY_STRING"]:
-      import Release
-      Release.Release(os.environ["QUERY_STRING"])
-      sys.exit()
-  except KeyError:
-    pass
-  # Initial login
-  import Login
-  Call(Login)
+  if os.environ["QUERY_STRING"]:
+    import Release
+    Release.Release(os.environ["QUERY_STRING"])
+    sys.exit()
+
+  else:
+    # Initial login
+    import Login
+    Call(Login)
 
 # Logged in yet?
 elif not PVars.Valid:
