@@ -487,7 +487,8 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                   Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED):
                 bouncegen('accept',
                           Defaults.CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED)
-            elif not delivery_status:
+            elif ((not delivery_status) and
+                  (Defaults.CONFIRM_ACCEPT_TEXT_INITIAL)):
                 bouncegen('accept', Defaults.CONFIRM_ACCEPT_TEXT_INITIAL)
         # Just stop if the message has already been delivered.  Also,
         # change the release mark from 'R' to 'C' to note that this
