@@ -1,3 +1,10 @@
+2001-11-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (main): Bugfix.  Move the check for 'confirm'
+	cookies out in front of the FILTER_INCOMING.  Otherwise, the
+	filter's rules might prevent the confirmation acceptance messages
+	from getting through.
+
 2001-11-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (usage): Added `-M', `--filter-match' command-line

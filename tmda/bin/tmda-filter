@@ -517,7 +517,11 @@ def main():
     From = message_headers.getaddr('from')[1]
     ReplyTo = message_headers.getaddr('reply-to')[1]
     sender_list = [EnvelopeSender, From, ReplyTo]
-    
+
+    # Process confirmation messages first.
+    if cookie_type == 'confirm' and cookie_value:
+        verify_confirm_cookie(cookie_value)
+
     # Parse the incoming filter file.
     infilter = FilterParser.FilterParser()
     infilter.read(Defaults.FILTER_INCOMING)
@@ -550,11 +554,8 @@ def main():
 
     # The message didn't match the filter file, so check if it was
     # sent to a 'tagged' address.
-    # Confirm tag?
-    if cookie_type == 'confirm' and cookie_value:
-        verify_confirm_cookie(cookie_value)
     # Dated tag?
-    elif cookie_type == 'dated' and cookie_value:
+    if cookie_type == 'dated' and cookie_value:
         verify_dated_cookie(cookie_value)
     # Sender tag?
     elif cookie_type == 'sender' and cookie_value:
