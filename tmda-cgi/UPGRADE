@@ -1,5 +1,12 @@
 ======================================================================
 
+If you are upgrading from a release of tmda-cgi < 0.11:
+
+* Added "%(RealHome)s" as one of the substitution variables available
+  during auto-install.
+
+======================================================================
+
 If you are upgrading from a release of tmda-cgi < 0.10:
 
 * Requires TMDA release 0.77 or later.

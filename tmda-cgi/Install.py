@@ -24,6 +24,7 @@
 import binascii
 import glob
 import os
+import pwd
 import re
 import sys
 import time
@@ -633,6 +634,7 @@ def Show():
     "Domain":    Util.gethostname(),
     "Home":      os.environ["HOME"],
     "Parent":    "..",
+    "RealHome":  pwd.getpwuid(os.geteuid())[5],
     "UrlDomain": os.environ["SERVER_NAME"],
     "User":      os.environ["USER"],
     "VPop":      PVars[("NoOverride", "VPop")],

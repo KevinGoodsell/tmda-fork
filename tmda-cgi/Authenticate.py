@@ -25,6 +25,7 @@ import CgiUtil
 import crypt
 import os
 import random
+import socket
 import sys
 
 import Template
@@ -97,6 +98,9 @@ def CheckPassword(Form):
     RetVal = Authenticate( Form["user"].value, Form["password"].value )
   except Errors.AuthError, error:
     Except = "\n*** EXCEPTION CAUGHT ***: %s" % error.msg
+    RetVal = 0
+  except socket.error, (error, msg):
+    Except = "\n*** EXCEPTION CAUGHT ***: %s" % msg
     RetVal = 0
   Template.Template.Dict["ErrMsg"] = "Capturing the debug stream...\n" + \
     DebugStringOutput.__repr__() + Except
