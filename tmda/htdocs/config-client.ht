@@ -331,6 +331,16 @@ sendmail: /path/to/tmda/bin/tmda-sendmail
 </ul>
 <br>
 
+<li>For <a href="http://www.inter7.com/sqwebmail.html" TARGET="Resource Window">SqWebMail</a>,<br>
+<ul>
+<li>Replace <em>/usr/local/share/sqwebmail/sendit.sh</em> with 
+<em>contrib/sendit.sh</em> from the TMDA distribution. 
+<li> sendit.sh automatically works with  SqWebMail + vpopmail + TMDA, or just
+SqWebMail + vpopmail.
+</ul>
+<br>
+
+
 <li>For <a href="http://kmail.kde.org/" TARGET="Resource Window">KMail (KDE Mail)</a>,
  Settings --> Configure KMail --> Network --> Sending Mail<br>
 <ul>
