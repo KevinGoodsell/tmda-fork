@@ -121,7 +121,7 @@ class AutoResponse:
             self.mimemsg.attach(textpart)
             if Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY == 1:
                 # include the headers only as a text/rfc822-headers part.
-                rfc822part = MIMEText(self.msgin_as_string,
+                rfc822part = MIMEText(Util.headers_as_raw_string(self.msgin),
                                       'rfc822-headers',
                                       self.msgin.get_charsets()[0])
                 rfc822part['Content-Description'] = 'Original Message Headers'
