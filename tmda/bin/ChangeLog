@@ -8,6 +8,8 @@
 	settings are used as before.
 	Patch contributed by Ron Bickers.
 
+	(main): Add error checking for bogus/malformed From: headers.
+
 	(main): Don't set QMAILNAME in the environment if the From: header
 	is lacking the user's full name.
 	
