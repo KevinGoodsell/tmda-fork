@@ -45,10 +45,7 @@ class MissingEnvironmentVariable(TMDAError):
 class AddressError(TMDAError):
     """Address errors."""
     def __init__(self, errmsg = ''):
-        self.args = errmsg
-
-    def __repr__(self):
-        return self.args
+        TMDAError.__init__(errmsg)
 
 class BadCryptoError(AddressError):
     """Bad (or no) cryptographic information in address."""
@@ -60,22 +57,20 @@ class ExpiredAddressError(AddressError):
 
 class QueueError(TMDAError):
     def __init__(self, errmsg = 'Unknown error'):
-        self.args = errmsg
-
-    def __repr__(self):
-        return '%s:\n%s' % (self.__class__, self.args)
+        TMDAError.__init__(errmsg)
 
 class MessageError(QueueError):
     pass
 
 class AuthError(TMDAError):
     """Authentication Errors""" 
-    def __init__(self, errmsg = 'Authentication Error', helpmsg = ''):
+    def __init__(self, errmsg='Authentication Error', helpmsg=''):
+        TMDAError.__init__(self, errmsg)
         self.msg = errmsg
         self.help = helpmsg
 
-    def __repr__(self):
-        if self.help == '':
-          return '%s: %s' % (self.__class__, self.msg)
-        else:
-          return '%s: %s\n(%s)' % (self.__class__, self.msg, self.help)
+    def __str__(self):
+        s = '%s: %s' % (self.__class__, self.msg)
+        if self.help:
+            s += '\n(%s)' % (self.help,)
+        return s

@@ -1,3 +1,21 @@
+2003-11-16  Tim Legant  <tim@catseye.net>
+
+	* Auth.py (Auth.init_auth_method): Cleaned up exception handling
+	so that error messages could actually be read!
+
+	* (Auth.init_remote): Fixed IMAP4_SSL class definition.
+	Previously, it was defined as a local variable which just
+	disappeared after init_remote() finished.  Now, we store it in an
+	instance variable named IMAP4_SSL.  Also, fixed various code
+	issues to bring it in line with the version distributed with
+	Python 2.3.
+
+	* Errors.py (AddressError, QueueError): Removed __repr__ method.
+	Called ancestor's __init__.
+
+	* (AuthError): Renamed __repr__ to __str__; cleaned it up.  Called
+	ancestor's __init__.
+
 2003-11-11  Tim Legant  <tim@catseye.net>
 
 	* AutoResponse.py (AutoResponse.__init__): Recreate incoming

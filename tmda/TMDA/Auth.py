@@ -29,6 +29,7 @@ import base64
 import md5
 import popen2
 import time
+import imaplib
 
 # TMDA imports
 import Version
@@ -152,16 +153,15 @@ class Auth(Util.Debugable):
         """Initializes the authentication mechanism.
         See init_file, init_checkpw, and init_remote for more details.
         """
-        try:
-            cmd = "self.init_%s(arg)" % type
-            eval( cmd )
-        except AttributeError, err:
-            self.debug( "Attribute Error: %s" % err )
-            raise ValueError, \
-                "Authentication type '%s' not recognised.\n " % type + \
-                "Must be one of %s" % repr(self.allowed_authtypes)
-        except ValueError, err:
-            raise err
+        mname = 'init_%s' % type
+        meth = getattr(self, mname, None)
+        if meth is None:
+            self.debug("Attribute Error: " \
+                       "Auth instance has no attribute '%s'" % mname)
+            raise ValueError(
+                "Authentication type '%s' not recognised.\n " \
+                "Must be one of %s" % (type, repr(self.allowed_authtypes)))
+        meth(arg)
 
     def init_file(self, file):
         """Initializes the authentication scheme with a flat file.
@@ -253,7 +253,6 @@ class Auth(Util.Debugable):
 
         if self.__authremote['proto'] == 'imaps':
             try:
-                import imaplib
                 self.IMAP4_SSL = imaplib.IMAP4_SSL
             except AttributeError:
                 class IMAP4_SSL(imaplib.IMAP4):
@@ -263,38 +262,44 @@ class Auth(Util.Debugable):
                         This connection will be used by the routines:
                         read, readline, send, shutdown.
                         """
-                        self.sock = socket.socket(socket.AF_INET, \
+                        self.host = host
+                        self.port = port
+                        self.sock = socket.socket(socket.AF_INET,
                                                   socket.SOCK_STREAM)
-                        self.sock.connect((self.host, self.port))
-                        self.sslsock = socket.ssl(self.sock)
-                        self.file = self.sock.makefile('rb')
+                        self.sock.connect((host, port))
+                        self.sslobj = socket.ssl(self.sock, None, None)
 
                     def read(self, size):
                         """Read 'size' bytes from remote."""
-                        buf = self.sslsock.read(size)
-                        return buf
+                        # sslobj.read() sometimes returns < size bytes
+                        data = self.sslobj.read(size)
+                        while len(data) < size:
+                            data += self.sslobj.read(size-len(data))
+                        return data
 
                     def readline(self):
                         """Read line from remote."""
-                        line = [ ]
-                        c = self.sslsock.read(1)
-                        while c:
-                            line.append(c)
-                            if c == '\n':
-                                break
-                            c = self.sslsock.read(1)
-                        buf = ''.join(line)
-                        return buf
+                        line = ""
+                        while 1:
+                            char = self.sslobj.read(1)
+                            line += char
+                            if char == "\n": return line
 
                     def send(self, data):
                         """Send data to remote."""
                         bytes = len(data)
                         while bytes > 0:
-                            sent = self.sslsock.write(data)
+                            sent = self.sslobj.write(data)
                             if sent == bytes:
-                                break   # avoid copy
+                                break    # avoid copy
                             data = data[sent:]
                             bytes = bytes - sent
+
+                    def shutdown(self):
+                        """Close I/O established in "open"."""
+                        self.sock.close()
+
+                self.IMAP4_SSL = locals()['IMAP4_SSL']
         elif self.__authremote['proto'] == 'ldap':
             try:
                 import ldap
@@ -470,7 +475,6 @@ class Auth(Util.Debugable):
             self.__authremote['port'] = authport
         port = self.__defaultauthports[self.__authremote['proto']]
         if self.__authremote['proto'] == 'imap':
-            import imaplib
             if self.__authremote['port']:
                 port = int(self.__authremote['port'])
             M = imaplib.IMAP4(self.__authremote['host'], port)
@@ -488,7 +492,6 @@ class Auth(Util.Debugable):
                 self.debug( "Uncaught %s: %s" % (err.__class__, err) )
                 return 0
         elif self.__authremote['proto'] == 'imaps':
-            import imaplib
             if self.__authremote['port']:
                 port = int(self.__authremote['port'])
             M = self.IMAP4_SSL(self.__authremote['host'], port)
