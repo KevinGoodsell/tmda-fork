@@ -3,6 +3,9 @@
 	* Util.py (make_msgid): New function to create and return an
 	rfc2822 compliant Message-ID string.
 
+	(make_date): New function to create and return an rfc2822
+	compliant Date string.
+
 	* Defaults.py (PID): Store the process id here so all areas of the
 	code can access it without having to re-fetch it.
 

@@ -4,6 +4,8 @@
 	TMDA.Defaults is imported before time is.  This is so the user's
 	TIMEZONE setting is globally respected.
 
+	(send_bounce): Add our own Date header.
+
 	(send_bounce): Add our own Message-ID header.
 
 2001-11-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>

@@ -9,7 +9,6 @@ import os
 import re
 import string
 import sys
-import time
 import types
 
 
@@ -123,6 +122,7 @@ def make_msgid(timesecs=None, pid=None):
 
     pid is optional, and if not given, the current process id is used.
     """
+    import time
     if not timesecs:
         timesecs = time.time()
     if not pid:
@@ -134,6 +134,60 @@ def make_msgid(timesecs=None, pid=None):
     date = time.strftime("%Y%m%d%H%M%S", time.gmtime(timesecs))
     message_id = "<%s.%s.tmda@%s>" % (date, pid, idhost)
     return message_id
+
+
+def make_date(timesecs=None, localtime=1):
+    """Return an rfc2822 compliant Date string.  e.g,
+
+    Fri, 30 Nov 2001 04:06:11 -0700 (MST)
+    
+    timesecs is optional, and if not given, the current time is used.
+
+    Optional localtime is a flag that when true, returns a date
+    relative to the local timezone instead of UTC.  This is the
+    default.
+    """
+    import time
+    if not timesecs:
+        timesecs = time.time()
+    if localtime:
+        timetuple = time.localtime(timesecs)
+        tzname = time.tzname[timetuple[-1]]
+    else:
+        timetuple = time.gmtime(timesecs)
+        tzname = 'UTC'
+    try:
+        import email                    # Python >= 2.2 only
+        rfc2822date = email.Utils.formatdate(timesecs,localtime)
+        rfc2822date_tzname = '%s (%s)' % (rfc2822date, tzname)
+    except ImportError:
+        # This except block can be removed once Python >= 2.2 is required.
+        if localtime:
+            # Calculate timezone offset, based on whether the local zone has
+            # daylight savings time, and whether DST is in effect.
+            if time.daylight and timetuple[-1]:
+                offset = time.altzone
+            else:
+                offset = time.timezone
+            hours, minutes = divmod(abs(offset), 3600)
+            # Remember offset is in seconds west of UTC, but the timezone is in
+            # minutes east of UTC, so the signs differ.
+            if offset > 0:
+                sign = '-'
+            else:
+                sign = '+'
+            zone = '%s%02d%02d (%s)' % (sign, hours, minutes / 60, tzname)
+        else:
+            # Timezone offset is always -0000
+            zone = '%s (%s)' % ('-0000', tzname)
+        rfc2822date_tzname = '%s, %02d %s %04d %02d:%02d:%02d %s' % (
+            ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][timetuple[6]],
+            timetuple[2],
+            ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][timetuple[1] - 1],
+            timetuple[0], timetuple[3], timetuple[4], timetuple[5],
+        zone)
+    return rfc2822date_tzname
 
 
 def file_to_dict(file,dict):

@@ -231,10 +231,12 @@ def send_bounce(bounce_message, **vars):
         bounce_message = cStringIO.StringIO(bounce_message)
         message_headers = rfc822.Message(bounce_message)
         # Add some headers.
-        message_headers['Message-ID'] = Util.make_msgid()
+        timesecs = time.time()
+        message_headers['Date'] = Util.make_date(timesecs)
+        message_headers['Message-ID'] = Util.make_msgid(timesecs)
+        message_headers['To'] = envelope_sender
         if not vars.has_key('already_confirmed'):
             message_headers['Reply-To'] = vars['confirm_accept_address']
-        message_headers['To'] = envelope_sender
         message_headers['Precedence'] = 'bulk'
         message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
         message_body = bounce_message.read()
