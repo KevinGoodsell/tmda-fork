@@ -16,6 +16,9 @@
 	  in their config files.  Users with releases prior to 0.03 are
 	  STRONGLY ENCOURAGED to upgrade to the latest version.
 
+	* Incorporated some compiler requests from Time Rice like the -D
+	  option.
+
 2003-04-12  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* tmda-cgi 0.02 is released.

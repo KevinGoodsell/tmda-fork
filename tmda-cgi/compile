@@ -42,6 +42,10 @@ Where:
        Specify a different directory for supplimental display files (icons and
        stylesheet).
 
+    -D
+    --dont-compile
+       Instead of compiling CGI, generate files needed and instructions.
+
     -e <seconds>
     --session-exp <seconds>
        Specify the number of seconds old a session may be before it risk get-
@@ -230,18 +234,16 @@ def Interactive(OptD):
   Ask("Relative or absolute web path from CGI to display directory", OptD,
     "DispDir")
   Ask("CGI mode [system-wide, single-user, no-su]", OptD, "Mode")
+  Ask('Virtual user stub and parameters (or "None" if no virtual users)',
+    OptD, "VLookup")
   if OptD["Mode"] == "system-wide":
     Ask("User name to use while accessing session data", OptD, "User")
-    Ask("""Real user name to use when login is a virtual user (or "None" if no virtual
-users)""", OptD, "VUser")
-  if OptD["VUser"] == "None":
-    OptD["VLookup"] = "None"
-  else:
-    Ask('Virtual user stub and parameters (or "None" if no virtual users)',
-      OptD, "VLookup")
+    if OptD["VLookup"] != "None":
+      Ask("Real user name to use when login is a virtual user", OptD, "VUser")
   Ask('Session path/file prefix', OptD, "SessionPrefix")
   Ask('Session expiration (seconds)', OptD, "SessionExp")
   Ask('Session cleanup odds (0.01 = 1%)', OptD, "SessionOdds")
+  Ask('Compile? [Yes, No]', OptD, "Compile")
   print
 
 Program = sys.argv[0]
@@ -249,23 +251,26 @@ Program = sys.argv[0]
 Perm = 06711
 
 # Keep options in one handy dictionary
-OptD = {}
-OptD["Python"]        = sys.executable
-OptD["Target"]        = "tmda-cgi"
-OptD["Base"]          = "../tmda/"
-OptD["Path"]          = "./"
-OptD["DispDir"]       = "../display/"
-OptD["User"]          = "nobody"
-OptD["AuthType"]      = "default"
-OptD["AuthFile"]      = "None"
-OptD["AuthProg"]      = "/usr/sbin/checkpassword"
-OptD["AuthURI"]       = "imap://localhost"
-OptD["AuthArg"]       = "None"
-OptD["VUser"]         = "vpopmail"
-OptD["VLookup"]       = "vpopmail1 /home/vpopmail/bin/vuserinfo ~"
-OptD["SessionPrefix"] = "/tmp/TMDASession."
-OptD["SessionExp"]    = "300"
-OptD["SessionOdds"]   = "0.01"
+OptD = \
+{
+  "Python":        sys.executable,
+  "Target":        "tmda-cgi",
+  "Base":          "../tmda/",
+  "Path":          "./",
+  "DispDir":       "../display/",
+  "User":          "nobody",
+  "AuthType":      "default",
+  "AuthFile":      "None",
+  "AuthProg":      "/usr/sbin/checkpassword",
+  "AuthURI":       "imap://localhost",
+  "AuthArg":       "None",
+  "VUser":         "vpopmail",
+  "VLookup":       "vpopmail1 /home/vpopmail/bin/vuserinfo ~",
+  "SessionPrefix": "/tmp/TMDASession.",
+  "SessionExp":    "300",
+  "SessionOdds":   "0.01",
+  "Compile":       "Yes"
+}
 if os.geteuid():
   OptD["Mode"] = "single-user"
 else:
@@ -282,11 +287,11 @@ def Usage(Code, Msg=""):
   sys.exit(Code)
 
 try:
-  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:e:f:i:l:m:nho:p:r:s:t:u:",
-    ["base-dir=", "config-file=", "display-dir=", "session-exp", "file-auth=", 
-     "help", "install-prefix=", "mode=", "no-su", "cleanup-odds",
-     "program-auth=", "remote-auth=", "session-prefix", "target=", "user=",
-     "virtual-lookup="])
+  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:De:f:i:l:m:nho:p:r:s:t:u:",
+    ["base-dir=", "config-file=", "display-dir=", "dont-compile",
+     "session-exp", "file-auth=", "help", "install-prefix=", "mode=", "no-su", 
+     "cleanup-odds", "program-auth=", "remote-auth=", "session-prefix", 
+     "target=", "user=", "virtual-lookup="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
@@ -300,6 +305,8 @@ for Opt, Arg in Opts:
     OptD["Config"] = Arg
   elif Opt in ("-d", "--display-dir"):
     OptD["DispDir"] = Arg
+  elif Opt in ("-D", "--dont-compile"):
+    OptD["Compile"] = "No"
   elif Opt in ("-e", "--session-exp"):
     OptD["SessionExp"] = Arg
   elif Opt in ("-f", "--file-auth"):
@@ -402,8 +409,8 @@ if OptD["Path"][-1] != "/": OptD["Path"] += "/"
 
 if OptD["Mode"] == "no-su": Perm = 0711
 
-# Create dirs.h
-F = open("dirs.h", "w")
+# Create tmda-cgi.h
+F = open("tmda-cgi.h", "w")
 F.write("""
 #define PYTHON    "%(Python)s"
 #define INSTALL   "%(Path)s"
@@ -442,23 +449,33 @@ try:
   os.unlink(OptD["Target"])
 except: pass
 
-# Compile tmda-cgi
-os.system("gcc -include ./dirs.h %(Path)stmda-cgi.c -o %(Target)s" % OptD)
-
-# Remove dirs.h
-os.unlink("dirs.h")
-
-# Set permissions
-try:
-  os.chmod(OptD["Target"], Perm)
-except OSError, (ErrNo, StrError):
-  print "Compile aborted.  Error #%d: %s" % (ErrNo, StrError)
-  sys.exit()
+CompStr = "cc %(Path)stmda-cgi.c -o %(Target)s" % OptD
+if OptD["Compile"] == "Yes":
+  # Compile tmda-cgi
+  os.system(CompStr)
+  
+  # Remove tmda-cgi.h
+  os.unlink("tmda-cgi.h")
+  
+  # Set permissions
+  try:
+    os.chmod(OptD["Target"], Perm)
+  except OSError, (ErrNo, StrError):
+    print "Compile aborted.  Error #%d: %s" % (ErrNo, StrError)
+    sys.exit()
 
 # Compile Python code
 compileall.compile_dir(OptD["Path"])
 
-print "Compilation done."
+if OptD["Compile"] == "Yes":
+  print "Compilation done."
+else:
+  print """
+Program not compiled.  You will need to do this manually:
+
+%s
+chmod %o %s
+""" % (CompStr, Perm, OptD["Target"])
 
 # Print warnings
 if OptD["AuthType"] == "remote":
