@@ -70,6 +70,12 @@ OPTIONS:
         root/tofmipd, otherwise ~user/.tmda/tofmipd.  Use this option
         to override these defaults.
 
+    -C <n>
+    --connections <n>
+        Do not handle more than n simultaneous connections. If there
+        are n active connections, defer acceptance of a new connection
+        until one finishes. n must be a positive integer. Default: 20
+    
     -c <directory>
     --configdir <directory>
         Base directory to search for the authenticated user's TMDA
@@ -106,6 +112,7 @@ proxyport = '%s:%s' % (FQDN, 8025)
 program = sys.argv[0]
 configdir = None
 authprog = None
+connections = 20
 
 if os.getuid() == 0:
     running_as_root = 1
@@ -151,14 +158,15 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-			       'p:u:A:a:c:dVh', ['proxyport=',
-                                                 'username=',
-                                                 'authfile=',
-                                                 'authprog=',
-                                                 'configdir=',
-                                                 'debug',
-                                                 'version',
-                                                 'help'])
+			       'p:u:A:a:c:C:dVh', ['proxyport=',
+                                                   'username=',
+                                                   'authfile=',
+                                                   'authprog=',
+                                                   'configdir=',
+                                                   'connections=',
+                                                   'debug',
+                                                   'version',
+                                                   'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -183,6 +191,8 @@ for opt, arg in opts:
 	authfile = arg
     elif opt in ('-c', '--configdir'):
 	configdir = arg
+    elif opt in ('-C', '--connections'):
+	connections = arg
         
 
 import asynchat
@@ -642,6 +652,13 @@ class SMTPServer(asyncore.dispatcher):
               'tmda-ofmipd started at %s\n\tListening on %s' % \
               (Util.unixdate(), proxyport)
 
+    def readable(self):
+        if len(asyncore.socket_map) > int(connections):
+            # too many simultaneous connections
+            return 0
+        else:
+            return 1
+        
     def handle_accept(self):
         conn, addr = self.accept()
         print >> DEBUGSTREAM, 'Incoming connection from %s' % repr(addr)
