@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Jan 14 18:49:33 2002 -->
+<!-- Fri Mar 15 10:49:38 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -530,6 +530,23 @@ alias for tcsh.
 alias slrn-dated 'm4 -DTMDADATED=`tmda-address -dn` ~/.slrnrc.m4 > ~/.slrnrc && slrn -h newshost'
 
 </pre></blockquote>
+</ol>
+
+<li>For <a href="http://www.tin.org/" TARGET="Resource Window">TIN</a>:
+
+<blockquote><pre>
+
+In tinrc:
+# If --internal use the builtin mini inews for posting via NNTP
+# otherwise use an external inews program
+inews_prog=/path/to/bin/inews.sh
+ 
+inews.sh:
+#!/bin/sh
+sed "/^From:/d" |/usr/bin/inews -h -S -f `/usr/bin/tmda-address -d` 
+
+</pre></blockquote>
+
 </ul>
 
 </TD><!-- end of body cell -->

@@ -1,3 +1,8 @@
+2002-03-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-client.ht: Add dated address config for the TIN
+	newsreader.
+	
 2002-03-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-filter.ht: Document the instruction option to the
