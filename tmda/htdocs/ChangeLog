@@ -1,3 +1,7 @@
+2002-07-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-client.ht: Mention tmda.el.
+
 2002-07-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-ofmipd.ht: Document -A option.

@@ -283,6 +283,10 @@ add the following line to your .gnus file:<br>
 
 </pre></blockquote>
 
+Also see <strong>tmda.el</strong> (located in contrib), which is a module
+for integrating TMDA with Gnus and Message mode.
+<br><br>
+
 <li>For <a href="http://www.mhost.com/nmh/" TARGET="Resource Window">nmh</a>,
 <ul>
 <li>Make sure nmh was compiled to use Sendmail as its delivery agent
