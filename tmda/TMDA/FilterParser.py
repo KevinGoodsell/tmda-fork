@@ -144,7 +144,7 @@ class FilterParser:
                 rule = self.__parserule(rule_line)
 		self.filterlist.append(rule)
             except Error, e:
-                self.__adderror(self.rule_lineno, e._msg)
+                self.__adderror(self.__rule_lineno, e._msg)
 
         # If any parsing errors occurred raise an exception.
         if self.__exception:
@@ -370,7 +370,7 @@ class FilterParser:
         return found_match
 
 
-    def __search_cdb(self, pathname, keys, actions):
+    def __search_cdb(self, pathname, keys, actions, source):
         """
         Search DJB's constant databases; see <http:/cr.yp.to/cdb.html>.
         """
