@@ -1,3 +1,11 @@
+2002-07-31  Josh  <huber@alum.wpi.edu>
+
+	* tmda.el (tmda-addr-at-point): Fixed regexp
+	* tmda.el (tmda-pending-summary-args): Changed default to terse.
+	* tmda.el (tmda-pending-truncate-lines): New.
+	* tmda.el (tmda-pending-show): Use truncate option during buffer
+	display.
+
 2002-07-26  Josh  <huber@alum.wpi.edu>
 
 	* tmda.el: Misc Fixes, also add tmda-pending-count

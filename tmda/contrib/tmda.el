@@ -52,6 +52,8 @@
 ;;    tmda-default-wildcard-whitelist
 ;;    tmda-default-wildcard-blacklist
 ;;    tmda-pending-tag-auto-advance
+;;    tmda-pending-summary-args
+;;    tmda-pending-truncate-lines
 ;;
 ;;    See the help text for each variable for more information.
 ;;
@@ -144,6 +146,13 @@
 ;;    Enjoy!
 
 ;; Version history:
+
+;; 7/31/2002 v0.10
+;;  * Fixed regexp for addr-at-point routine
+;;  * Changed display of tmda-pending to better show new messages
+;;  * Changed tmda-pending default to terse output
+;;  * Fixed a few bugs in tmda-pending
+;;  * Added tmda-pending-truncate-lines and support code
 
 ;; 7/26/2002 - v0.9
 ;;  * Made the address at point matching a little better.
@@ -353,7 +362,7 @@ This can be useful in posting-styles:
 
 (defun tmda-addr-at-point ()
   (save-excursion
-    (let* ((mstr "A-Za-z0-9_\\.\\+\\-")
+    (let* ((mstr "=A-Za-z0-9_\\.\\+\\-")
 	   (not-match-regexp (format "\\(\\`\\|[^@%s]\\)" mstr))
 	   (addr-regexp (format "\\([%s]*@[%s]*\\)" mstr mstr)))
       (re-search-backward not-match-regexp nil t)
@@ -582,29 +591,45 @@ to the kill ring for easy pasting wherever it is needed."
   (switch-to-buffer tmda-pending-buffer t))
 
 (defvar tmda-pending-summary-args
-  "-bs"
+  "-bT"
   "*Arguments to pass to tmda-pending to generate a summary.")
+
+(defvar tmda-pending-truncate-lines t
+  "*If value is t, truncate lines in the tmda-pending buffer to the
+current window size.")
 
 (defun tmda-pending-refresh-buffer ()
   (interactive)
   (switch-to-buffer tmda-pending-buffer t)
   (toggle-read-only 0)
   (erase-buffer)
+  (insert "-*- New pending messages -*-\n\n")
+  (insert (shell-command-to-string
+	   (concat "tmda-pending -C " tmda-pending-summary-args)))
+  (insert "\n-*- Complete list of pending messages -*-\n\n")
   (insert (shell-command-to-string
 	   (concat "tmda-pending " tmda-pending-summary-args)))
   ;; put tag placeholders at the start of lines with msgids
   (save-excursion
     (goto-char (point-min))
     (while (not (eobp))
-      (if (looking-at ".*[0-9.]+\\.msg[\t ]")
-	  (insert "[ ] ")
-	(insert "    "))
+      (cond ((looking-at ".*[0-9.]+\\.msg[\t ]")
+	     (insert "[ ] "))
+	    ((looking-at "^$"))      ; do nothing
+	    ((looking-at "^-\\*- ")) ; again, do nothing
+	    (t
+	     (insert "    ")))
+      (when tmda-pending-truncate-lines
+	(let* ((winwidth (1- (window-width)))
+	       (curwidth (save-excursion (end-of-line) (current-column))))
+	  (when (> curwidth winwidth)
+	    (save-excursion
+	      (move-to-column winwidth)
+	      (kill-line)))))
       (forward-line)))
   (insert (concat "\n" tmda-pending-help-text))
   (goto-char (point-min))
-  ;; remove blank line at start
-  (when (looking-at "^ *$")
-    (kill-line))
+  (tmda-pending-next-msg)
   (toggle-read-only 1))
 
 (defun tmda-pending-msg ()
@@ -631,6 +656,7 @@ to the kill ring for easy pasting wherever it is needed."
    (insert (shell-command-to-string
 	    (concat "tmda-pending -qbS " msg)))
    (local-set-key "q" 'tmda-pending-show-buffer-kill)
+   (goto-char (point-min))
    (toggle-read-only 1)))
 
 (defun tmda-pending-tag-command (char)
