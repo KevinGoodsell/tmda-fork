@@ -136,11 +136,23 @@ envelope_sender = os.environ.get('SENDER')
 # such in the filter files.
 if envelope_sender == '':
     envelope_sender = '<>'
-
+# If the envelope sender contains only a user part, we need to form it
+# into a fully qualified address by appending the local hostname.
+# This should only be the case when running Sendmail, and the message
+# is sent between local users.
+elif len(string.split(envelope_sender,'@')) == 1:
+    envelope_sender = envelope_sender + '@' + Util.gethostname()
+    
 # $RECIPIENT is the envelope recipient address.
 # Use the X-Originally-To header if it exists.
 envelope_recipient = (message_headers.getheader('x-originally-to')
                       or os.environ.get('RECIPIENT'))
+# If the envelope recipient contains only a user part, we need to form
+# it into a fully qualified address by appending the local hostname.
+# This should only be the case when running Sendmail, and the message
+# is sent between local users.
+if len(string.split(envelope_recipient,'@')) == 1:
+    envelope_recipient = envelope_recipient + '@' + Util.gethostname()
 
 # recipient_address is the original address the message was sent to,
 # not qmail-send's rewritten interpretation.  This will be the same as

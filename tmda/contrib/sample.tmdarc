@@ -30,6 +30,7 @@ import os                                      # don't remove
 
 # MAIL_TRANSFER_AGENT = "exim"
 # MAIL_TRANSFER_AGENT = "postfix"
+# MAIL_TRANSFER_AGENT = "sendmail"
 
 # LOCAL_DELIVERY_AGENT = "/full/path/to/bin/procmail"
 # LOCAL_DELIVERY_AGENT = "/full/path/to/bin/maildrop"

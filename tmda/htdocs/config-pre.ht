@@ -4,10 +4,11 @@ Links: overview-links.h usage-links.h config-links.h support-links.h
 <h3>TMDA Pre-Configuration</h3>
 
 You may need to make some system-wide configuration changes to your
-MTA software depending on which one you are running.
+MTA software depending on which one you are running (in order of ease):
 <br><br>
 
-[ <A HREF="#qmail">qmail</a> | <A HREF="#postfix">Postfix</a> | <A HREF="#exim">Exim</a> ]
+[ <A HREF="#qmail">qmail</a> | <A HREF="#postfix">Postfix</a> | <A HREF="#exim">Exim</a>  
+| <A HREF="#sendmail">Sendmail</a> ]
 <br><br>
 <hr>
 
@@ -79,7 +80,7 @@ suffix_optional
 <ol>
 
 <li>
-TMDA receives much of it's information about the envelope of
+TMDA receives much of its information about the envelope of
 an incoming message from environment variables set by the MTA.  Most
 importantly, <strong>SENDER</strong> (the full envelope sender address),
 <strong>RECIPIENT</strong> (the full envelope recipient address), and
@@ -100,6 +101,59 @@ address_pipe:
   environment = EXTENSION=${substr_1:$local_part_suffix}:\
                 RECIPIENT=$local_part$local_part_suffix@$domain 
 </blockquote></pre>
+
+</ol>
+
+<hr>
+
+<a name="sendmail"><h4>MTA Configuration (Sendmail)</h4></a>
+
+TMDA receives much of its information about the envelope of
+an incoming message from environment variables (usually set by the MTA).  Most
+importantly, <strong>SENDER</strong> (the full envelope sender address),
+<strong>RECIPIENT</strong> (the full envelope recipient address), and
+<strong>EXT</strong> or <strong>EXTENSION</strong> (the recipient
+address extension).<br><br>
+
+The main difficulty with using TMDA under Sendmail, is that Sendmail does
+not provide such variables as the other three supported MTAs do.
+In fact, it does not provide any envelope information to commands run
+from a .forward file.  In order to be reliable, TMDA needs these
+<em>real</em> sender and recipient values.  It can't rely on what
+might be in the To: or From: headers.<br><br>
+
+So in order to use TMDA, you need some way to obtain the necessary
+envelope information and set the corresponding environment variables.
+If your Sendmail installation is using <a
+href="http://www.procmail.org/" TARGET="Resource Window">procmail</a>
+as its local mailer, you can do this by configuring Sendmail to add
+the envelope information as headers in the message.  Your
+<b>.procmailrc</b> can then set the environment variables from these
+headers.  The necessary Sendmail configuration changes are
+covered below.  <br><br>
+
+<ol>
+
+<li>Make sure procmail is installed on your server, and then add the
+following rules to your <b>sendmail.mc</b> file if they are not
+already present: <br><br>
+
+<blockquote><pre>
+FEATURE(`local_procmail', `/usr/bin/procmail')
+
+LOCAL_CONFIG
+HX-Envelope-To: $u 
+HX-Envelope-From: $g 
+</blockquote></pre>
+
+Sendmail will now use procmail to delivery local mail, and will
+add `X-Envelope-To' and `X-Envelope-From' headers to every 
+message it handles.
+<br><br>
+
+<li>Now run <b>sendmail.mc</b> through <b>m4</b> to produce your new
+<b>sendmail.cf</b> file, and restart Sendmail so the changes will take
+effect.
 
 </ol>
 

@@ -92,6 +92,12 @@ class Qmail(MTA):
         sys.exit(self.EX_OK)
 
 
+class Sendmail(MTA):
+    """Sendmail-specific methods and instance variables."""
+    def __init__(self):
+        MTA.__init__(self)
+
+
 def init():
     """Factory function which determine what MTA we are running and
     instantiates the corresponding MTA subclass."""
@@ -102,6 +108,8 @@ def init():
         return Postfix()
     elif my_mta == 'Qmail':
         return Qmail()
+    elif my_mta == 'Sendmail':
+        return Sendmail()
     else:
         print "Unsupported MTA",my_mta
         sys.exit(Defaults.EX_TEMPFAIL)

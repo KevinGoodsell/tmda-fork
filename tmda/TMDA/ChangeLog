@@ -1,3 +1,10 @@
+2001-12-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* MTA.py (Sendmail.__init__): New class to support Sendmail.  We
+	just inherit from the MTA superclass with no method overrides.
+
+	* Defaults.py: Add support for Sendmail.
+
 2001-12-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Remove PYTHON_VERSION, PLATFORM, and

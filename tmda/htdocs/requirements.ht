@@ -25,9 +25,8 @@ Type "copyright", "credits" or "license" for more information.
 Currently supported MTAs include 
 <a href="http://www.qmail.org/" TARGET="Resource Window">qmail</a>, 
 <a href="http://www.postfix.org/" TARGET="Resource Window">Postfix</a>,
-and <a href="http://www.exim.org/" TARGET="Resource Window">Exim</a>.
-Support for <a href="http://www.sendmail.org/" TARGET="Resource Window">Sendmail</a>
-is in process.
+<a href="http://www.exim.org/" TARGET="Resource Window">Exim</a>,
+and <a href="http://www.sendmail.org/" TARGET="Resource Window">Sendmail</a>.
 <br><br>
 
 <li>If you are using an MTA other than qmail, a local delivery agent
@@ -35,13 +34,13 @@ such as
 <a href="http://www.procmail.org/" TARGET="Resource Window">procmail</a>
 or 
 
-<a href="http://www.flounder.net/~mrsam/maildrop/" TARGET="Resource Window">maildrop</a>.
-This doesn't mean you need to maintain a .procmailrc or .mailfilter file; TMDA just
-uses the executable to perform final mail delivery.  Any program capable of 
-accepting a message on stdin and writing it to mailbox will suffice.  But
-again, this is only required if you are 
-<strong>NOT running qmail!</strong>
-<br><br>
+<a href="http://www.flounder.net/~mrsam/maildrop/" TARGET="Resource
+Window">maildrop</a>.  This doesn't necessarily mean you need to
+maintain a .procmailrc or .mailfilter file; TMDA just uses the
+executable to perform final mail delivery.  Any program capable of
+accepting a message on stdin and writing it to mailbox will suffice.
+But again, this is only required if you are <strong>NOT running
+qmail!</strong> <br><br>
 
 
   

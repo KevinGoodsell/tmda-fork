@@ -89,7 +89,7 @@ if not vars().has_key('DATADIR'):
 
 # MAIL_TRANSFER_AGENT
 # Defines which mail transfer agent (MTA) software you are running.
-# Possible choices are "exim", "postfix" or "qmail"
+# Possible choices are "exim", "postfix", "qmail", or "sendmail".
 # Default is qmail
 if not vars().has_key('MAIL_TRANSFER_AGENT'):
     MAIL_TRANSFER_AGENT = "qmail"
@@ -151,8 +151,8 @@ if not vars().has_key('VIRTUALDOMAINS'):
 # The envelope sender of the bounce message.
 # Default is an empty envelope sender <>.
 if not vars().has_key('BOUNCE_ENV_SENDER'):
-    # Exim doesn't like -f ''
-    if MAIL_TRANSFER_AGENT == 'exim':
+    # Exim and Sendmail don't like -f ''
+    if MAIL_TRANSFER_AGENT in ('exim', 'sendmail'):
         BOUNCE_ENV_SENDER = '<>'
     else:
         BOUNCE_ENV_SENDER = ''

@@ -1,3 +1,17 @@
+2001-12-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* features.ht (Links): Mention Sendmail support.
+
+	* requirements.ht (Links): Ditto.
+
+	* config-server.ht: Add Sendmail configuration information.  Set
+	the necessary environment variables from the X-Envelope* headers
+	before passing the message to tmda-filter.
+
+	* config-pre.ht: Add Sendmail configuration information.  Focus on
+	using procmail as the local mailer, and then adding X-Envelope-To
+	and X-Envelope-From headers to all incoming messages.
+
 2001-12-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-server.ht: Move success reporting information onto the

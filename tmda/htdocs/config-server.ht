@@ -7,11 +7,16 @@ TMDA processes incoming messages on the SMTP server though a mail
 filter program called tmda-filter.
 <br><br>
 
-Server configuration instructions differ slightly based on whether you
-are running qmail or not.  First follow the <A
-HREF="#general">general</a> set of instructions, and then read the set
-of instructions corresponding to your local configuration 
-[ <A HREF="#qmail">qmail</a> | <A HREF="#non-qmail">non-qmail</a> ]
+Server configuration instructions differ based on which MTA you are running.
+
+First follow the <A HREF="#general">general</a> set of instructions,
+and then read the set of instructions corresponding to your MTA
+
+[ <A HREF="#qmail">qmail</a> | 
+  <A HREF="#exim-postfix">Exim/Postfix</a> |
+  <A HREF="#sendmail">Sendmail</a>
+]
+
 <br><br>
 <hr>
 
@@ -105,7 +110,7 @@ for using in public forums such as newgroups and mailing lists where
 the "harvesting" potential is high.  This is a much better alternative
 than using a munged address such as <em>jasonNOSPAM@mastaler.com</em>
 or <em>jason@REMOVE_THIS.mastaler.com</em> which is confusing, error
-prone, and inconvenient for those trying to reply to your message.
+prone, and inconvenient for those trying to reply to your messages.
 
 <br><br>
 
@@ -150,7 +155,7 @@ otherwise it goes through the confirmation process.
 <br>
 <hr>
 
-<a name="non-qmail"><h4>TMDA Server Configuration (non-qmail-only)</h4></a>
+<a name="exim-postfix"><h4>TMDA Server Configuration (Exim and Postfix only)</h4></a>
 
 <ol>
 
@@ -213,6 +218,69 @@ Finally, add the following snippet to the end of your existing <b>.procmailrc</b
 to do final delivery:
 
 <blockquote><pre>
+
+# Run the message through tmda-filter.
+:0 w
+| /path/to/tmda/bin/tmda-filter
+
+# Take the exit code from TMDA.
+EXITCODE=$?
+
+# TMDA takes care of final delivery
+DEFAULT=/dev/null
+
+</blockquote></pre>
+
+</ol>
+<hr>
+
+<a name="sendmail"><h4>TMDA Server Configuration (Sendmail only)</h4></a>
+
+These instructions assume you are running procmail as your local
+mailer, and have configured Sendmail to add `X-Envelope-To' and
+`X-Envelope-From' headers to your messages as described on the 
+<a href="config-pre.html#sendmail">Pre-Configuration</a> page.
+<ol>
+
+<li>Finish setting up your <b>~/.tmdarc</b> and optionally a
+system-wide <b>/etc/tmdarc</b> by reading through the
+included <b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b>,
+<b>MAIL_TRANSFER_AGENT</b>, <b>LOCAL_DELIVERY_AGENT</b>, and
+<b>RECIPIENT_DELIMITER</b> are required entries for non-qmail users.
+<br><br>
+
+<li>Modify your <b>.procmailrc</b> to set the SENDER, RECIPIENT,
+and EXTENSION variables, and then invoke tmda-filter.
+<br><br>
+
+First, modify <b>LOCAL_DELIVERY_AGENT</b> in your <b>~/.tmdarc</b> so
+that it runs procmail with an separate rcfile (to avoid an infinite
+loop):
+
+<blockquote><pre>
+
+LOCAL_DELIVERY_AGENT = "/path/to/bin/procmail ~/.procmailrc-tmda"
+
+</blockquote></pre>
+
+<b>~/.procmailrc-tmda</b> at a minimum might contain the location of
+your default mailbox.  e.g,
+
+<blockquote><pre>
+
+DEFAULT=/path/to/your/inbox
+
+</blockquote></pre>
+
+Finally, add the following snippet to the end of your <b>~/.procmailrc</b>
+to do final delivery:
+
+<blockquote><pre>
+
+# Set the necessary environment variables.
+SENDER=`formail -x X-Envelope-From | sed 's/^[ ]*//'`
+RECIPIENT=`formail -x X-Envelope-To | sed 's/^[ ]*//'`
+EXTENSION="$1"
 
 # Run the message through tmda-filter.
 :0 w

@@ -1,3 +1,11 @@
+2001-12-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (envelope_sender): Fully qualify the envelope sender
+	if it only contains the user part.  This will be the case when
+	local mail is exchanged on a Sendmail box.
+
+	(envelope_recipient): Ditto.
+
 2001-12-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (send_bounce): Get X-Delivery-Agent info from
