@@ -696,7 +696,7 @@ Examples:
 <code>DELIVERY = "~/Mailbox"</code><br>
 <code>DELIVERY = "/var/mail/jasonrm"</code><br>
 <code>DELIVERY = "|/usr/bin/maildrop"</code><br>
-<code>DELIVERY = "|/usr/bin/procmail -f $SENDER ~/.procmailrc-tmda"</code><br>
+<code>DELIVERY = "|/usr/bin/procmail ~/.procmailrc-tmda"</code><br>
 <code>DELIVERY = "me@new.job.com"</code>
 <br><br>
 No default for non-qmail users.

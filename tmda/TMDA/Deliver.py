@@ -60,7 +60,6 @@ class Deliver:
         from the TMDA.FilterParser instance.
         """
         self.msg = msg
-        self.message = msg.as_string()
         self.option = delivery_option
         self.env_sender = os.environ.get('SENDER')
         
@@ -110,9 +109,9 @@ class Deliver:
         """Deliver the message appropriately."""
         (type, dest) = self.get_instructions()
         if type == 'program':
-            self.__deliver_program(self.message, dest)
+            self.__deliver_program(self.msg.as_string(unixfrom=1), dest)
         elif type == 'forward':
-            self.__deliver_forward(self.message, dest)
+            self.__deliver_forward(self.msg.as_string(), dest)
         elif type == 'mbox':
             # Ensure destination path exists.
             if not os.path.exists(dest):
@@ -124,14 +123,14 @@ class Deliver:
                 raise Errors.DeliveryError, \
                       'Destination "%s" is a symlink!' % dest
             else:
-                self.__deliver_mbox(self.message, dest)
+                self.__deliver_mbox(self.msg.as_string(), dest)
         elif type == 'maildir':
             # Ensure destination path exists.
             if not os.path.exists(dest):
                 raise Errors.DeliveryError, \
                       'Destination "%s" does not exist!' % dest
             else:
-                self.__deliver_maildir(self.message, dest)
+                self.__deliver_maildir(self.msg.as_string(), dest)
 
     def __deliver_program(self, message, program):
         """Deliver message to /bin/sh -c program."""
