@@ -3,6 +3,7 @@ General
 	etc.  Are there any benefits to doing this?
 	- Regression testing script.
 	- Move documentation into texinfo format.
+	- Write a Tkinter based GUI for .tmdarc management.
 
 tmda-inject
 	- Possibly support regular expression matching for the special
