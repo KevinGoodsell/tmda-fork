@@ -147,6 +147,10 @@
 
 ;; Version history:
 
+;; 11/06/2002 v0.11
+;;  * Reorganized the changelist structure to be more efficient
+;;  * Made the "fit-to-window" code a little better.
+
 ;; 7/31/2002 v0.10
 ;;  * Fixed regexp for addr-at-point routine
 ;;  * Changed display of tmda-pending to better show new messages
@@ -576,11 +580,12 @@ to the kill ring for easy pasting wherever it is needed."
 (defun tmda-pending-buffer-kill ()
   (interactive)
   (let* ((changes (tmda-pending-changelist))
+         (dcount (length (cdr (assoc ?d changes))))
+         (rcount (length (cdr (assoc ?r changes))))
 	 (quit
-	  (if changes
-	      (and changes
-		   (y-or-n-p
-		    "Quit tmda-pending buffer without applying changes? "))
+	  (if (not (= 0 dcount rcount))
+              (y-or-n-p
+               "Quit tmda-pending buffer without applying changes? ")
 	    t)))
     (when quit
       (kill-buffer tmda-pending-buffer))))
@@ -611,22 +616,22 @@ current window size.")
 	   (concat "tmda-pending " tmda-pending-summary-args)))
   ;; put tag placeholders at the start of lines with msgids
   (save-excursion
-    (goto-char (point-min))
-    (while (not (eobp))
-      (cond ((looking-at ".*[0-9.]+\\.msg[\t ]")
-	     (insert "[ ] "))
-	    ((looking-at "^$"))      ; do nothing
-	    ((looking-at "^-\\*- ")) ; again, do nothing
-	    (t
-	     (insert "    ")))
-      (when tmda-pending-truncate-lines
-	(let* ((winwidth (1- (window-width)))
-	       (curwidth (save-excursion (end-of-line) (current-column))))
-	  (when (> curwidth winwidth)
-	    (save-excursion
-	      (move-to-column winwidth)
-	      (kill-line)))))
-      (forward-line)))
+    (let ((winwidth (1- (window-width))))
+      (goto-char (point-min))
+      (while (not (eobp))
+        (cond ((looking-at ".*[0-9.]+\\.msg[\t ]")
+               (insert "[ ] "))
+              ((looking-at "^$"))      ; do nothing
+              ((looking-at "^-\\*- ")) ; again, do nothing
+              (t
+               (insert "    ")))
+        (when tmda-pending-truncate-lines
+          (let ((curwidth (save-excursion (end-of-line) (current-column))))
+            (when (> curwidth winwidth)
+              (save-excursion
+                (move-to-column winwidth)
+                (kill-line)))))
+        (forward-line))))
   (insert (concat "\n" tmda-pending-help-text))
   (goto-char (point-min))
   (tmda-pending-next-msg)
@@ -686,33 +691,39 @@ current window size.")
 (defun tmda-pending-changelist ()
   (save-excursion
     (goto-char (point-min))
-    (let (msg (first t) (changelist))
+    (let (msg
+          (first t)
+          (changelist (copy-tree '((?d) (?r)))))
       (while (or first (tmda-pending-next-msg))
 	(when (setq msg (tmda-pending-msg))
 	  (let ((tag (save-excursion (forward-char 1)
 				     (char-after))))
 	    (when (not (eq tag ? ))
-	      (push (cons msg tag) changelist))))
+              (push msg (cdr (assoc tag changelist))))))
 	(setq first nil))
       changelist)))
 
 (defun tmda-pending-apply-changes ()
   (interactive)
-  (let ((changes (tmda-pending-changelist)))
+  (let* ((changes (tmda-pending-changelist))
+         (dels (cdr (assoc ?d changes)))
+         (rels (cdr (assoc ?r changes))))
     (message "Processing...")
-    (dolist (item changes)
-      (let* ((msg (car item))
-	     (act (cdr item))
-	     (actopt (cdr (assq act tmda-pending-act-cmd-alist))))
-	(message (concat "Processing..." msg))
-	(when (and msg actopt)
-	  (message (shell-command-to-string
-		    (format "tmda-pending -b %s %s" actopt msg)))))))
-
+    (when (< 0 (length dels))
+      (message "Processing...deletes")
+      (message (shell-command-to-string
+                (format "tmda-pending -b -d %s"
+                        (mapconcat 'identity dels " ")))))
+    (when (< 0 (length rels))
+      (message "Processing...releases")
+      (message (shell-command-to-string
+                (format "tmda-pending -b -r %s"
+                        (mapconcat 'identity rels " "))))))
   (sleep-for 0.5)
-  (message "Processing...done")
+  (message "Processing...refreshing pending list")
   (tmda-pending-refresh-buffer)
-  (tmda-pending-update-count))
+  (tmda-pending-update-count)
+  (message "Processing...done."))
 
 (defun tmda-pending-next-msg ()
   (interactive)
@@ -732,6 +743,7 @@ current window size.")
 (defun tmda-pending-setup-keys ()
   (local-set-key "q" 'tmda-pending-buffer-kill)
   (local-set-key "s" 'tmda-pending-show)
+  (local-set-key (kbd "RET") 'tmda-pending-show)
   (local-set-key "r" 'tmda-pending-release)
   (local-set-key "d" 'tmda-pending-delete)
   (local-set-key "c" 'tmda-pending-clear-mark)
