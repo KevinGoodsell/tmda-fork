@@ -101,6 +101,10 @@ tag = 'dated'
 option = None
 print_newline = 1
 
+for opt, arg in opts:
+    if opt in ('-c', '--config-file'):
+        os.environ['TMDARC'] = arg
+
 from TMDA import Defaults
 
 for opt, arg in opts:
@@ -112,8 +116,6 @@ for opt, arg in opts:
     if opt == '--version':
         print Version.TMDA
         sys.exit()
-    elif opt in ('-c', '--config-file'):
-        os.environ['TMDARC'] = arg
     elif opt in ('-a', '--address'):
         address = arg
     elif opt in ('-d', '--dated'):
