@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="display/styles.css" type="text/css"?>
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Fri Apr 18 14:55:34 2003 -->
+<!-- USING HT2HTML 2.1 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Configuration
+
+-->
+
+<head>
+<title>Configuration</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.1">
+<link rel="STYLESHEET" href="display/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000"
+      onload="Preloader()"
+      link="#0000bb"  vlink="#551a8b"
+      alink="#ff0000">
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="700" height="100%" border="0"
+cellspacing="0" cellpadding="0"><tr><td valign="top"><table class="matte"
+width="100%" height="100%" border="0" cellspacing="0" cellpadding="0"><tr>
+<td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="194" height="135" valign="middle" bgcolor="#7B7CB6" class="corner"><img src="display/corner.gif" width="194" height="135" alt=""></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="top" background="display/top_bg.gif" bgcolor="#7B7CB6" class="banner"><a href="/"><img src="display/title.png" width="341" height="135"
+border="0" alt="TMDA (http://tmda.net) CGI Interface"></a></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="194" background="display/left_bg.gif" bgcolor="#7B7CB6" valign="top" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><a href="index.html"
+onmouseover="document.images.x37.src='display/dyn_buttons/layout1_r1_c1_h.png'"
+onmouseout="document.images.x37.src='display/dyn_buttons/layout1_r1_c1.png'"><img
+src="display/dyn_buttons/layout1_r1_c1.png" name="x37" height="50" width="194" border="0" alt="Overview"></a></td></tr>
+<tr><td><a href="virtual.html"
+onmouseover="document.images.x115.src='display/dyn_buttons/layout1_r2_c1_h.png'"
+onmouseout="document.images.x115.src='display/dyn_buttons/layout1_r2_c1.png'"><img
+src="display/dyn_buttons/layout1_r2_c1.png" name="x115" height="35" width="194" border="0" alt="Virtual Users"></a></td></tr>
+<tr><td><a href="download.html"
+onmouseover="document.images.x195.src='display/dyn_buttons/layout1_r3_c1_h.png'"
+onmouseout="document.images.x195.src='display/dyn_buttons/layout1_r3_c1.png'"><img
+src="display/dyn_buttons/layout1_r3_c1.png" name="x195" height="35" width="194" border="0" alt="Install"></a></td></tr>
+<tr><td><a href="auth.html"
+onmouseover="document.images.x275.src='display/dyn_buttons/layout1_r4_c1_h.png'"
+onmouseout="document.images.x275.src='display/dyn_buttons/layout1_r4_c1.png'"><img
+src="display/dyn_buttons/layout1_r4_c1.png" name="x275" height="35" width="194" border="0" alt="Passwords"></a></td></tr>
+<tr><td><img src="display/dyn_buttons/layout1_r5_c1_h.png"
+height="35" width="194" border="0" alt="Config."></td></tr>
+<tr><td><img src="display/dyn_buttons/h-subtopic9.png" border="0" alt=" - Configuration" width="194" height="14"
+name="subtopic9"></td></tr>
+<tr><td><a href="confirm.html" onmouseover="document.images.subtopic10.src='display/dyn_buttons/h-subtopic10.png'"
+onmouseout="document.images.subtopic10.src='display/dyn_buttons/subtopic10.png'"><img src="display/dyn_buttons/subtopic10.png" border="0" alt=" - URL Confirmation" width="194" height="14"
+name="subtopic10"></a></td></tr>
+<tr><td><a href="surprise.html"
+onmouseover="document.images.x442.src='display/dyn_buttons/layout1_r6_c1_h.png'"
+onmouseout="document.images.x442.src='display/dyn_buttons/layout1_r6_c1.png'"><img
+src="display/dyn_buttons/layout1_r6_c1.png" name="x442" height="35" width="194" border="0" alt="Support"></a></td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" class="body"><h2><a name="Config"></a>Configuration</h2>
+
+<p>tmda-cgi is controlled by parameters that are stored in a variety of places. 
+  For technical reasons, no one place could hold them all.</p>
+<ul>
+  <li>Parameters needed before authentication are compiled into the binary 
+    itself. These parameters are set with the <a 
+    href="compile.html#Running"><tt>compile</tt></a> program.<p></li>
+  <li>Parameters that are needed by TMDA are stored in <a href="#Config">TMDA 
+    configuration files</a>.<p></li>
+  <li>tmda-cgi defaults are stored in <a 
+    href="#Defaults"><tt>defaults.ini</tt></a>.<p></li>
+  <li>The user-selected theme may override default values with <a 
+    href="#Theme"><tt>theme.ini</tt></a>.<p></li>
+  <li><a href="#User">User preferences</a> may override any default or theme 
+    setting.</li>
+</ul>
+
+<h3><a name="Config"></a>TMDA Configuration Files</h3>
+<p>TMDA is configured with a global file (located at <tt>/etc/tmdarc</tt>) and 
+  local files for each user (generally located at 
+  <tt>~user/.tmda/config</tt>).</p>
+<p>The contents of these files is described in depth on the <a 
+  href="/config-vars.html">TMDA Configuration Variables</a> web page. tmda-cgi 
+  specific variables are the variables beginning with "CGI_". The definitions of 
+  these are also listed below, for your convenience:</p>
+
+<h4><a name="CGI_SETTINGS"></a>CGI_SETTINGS</h4>
+<blockquote>
+  <p>Filename for saving <a href="#User">various tmda-cgi settings</a>.  This 
+    filename can include a full path, otherwise it is relative the user's config 
+    file. No error will be reported if this file does not exist.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>CGI_SETTINGS = "/home/jim/.tmda/MyCGISettings"</td>
+      </tr>
+    </table>
+  <p>Default is "<tt>tmda-cgi.ini</tt>".</p>
+</blockquote>
+
+<h4><a name="CGI_URL"></a>CGI_URL</h4>
+<blockquote>
+  <p>Absolute URL of your tmda-cgi installation.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>CGI_URL = "http://www.domain.dom/cgi-bin/tmda.cgi"</td>
+      </tr>
+    </table>
+  <p>No default.</p>
+</blockquote>
+
+<h3><a name="Defaults"></a>Default Settings</h3>
+<p>The default settings file (<tt>defaults.ini</tt> in the root of your tmda-cgi 
+  install) determines the default look and feel for each user. Feel free to 
+  modify these settings. Users can always override the defaults file with their 
+  own preferences.</p>
+<p>The default settings file is broken into sections for easy organization. The 
+  value of each parameter is as follows:</p>
+
+<h4>General:Theme</h4>
+<blockquote>
+  <p>Theme to use if the user has not yet selected one of their own.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[General]<br>
+          Theme = Coffee</td>
+      </tr>
+    </table>
+  <p>Default: <tt>Blue</tt></p>
+</blockquote>
+
+<h4>General:UseJSConfirm</h4>
+<blockquote>
+  <p>Enables a pop-up confirmation box before any message is deleted or 
+    blacklisted. Disable this option if most of your users have browsers without 
+    Javascript or where Javascript is disabled. Such users will have to disable 
+    Javascript confirmation to be able to delete or blacklist messages.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[General]<br>
+          UseJSConfirm = 0</td>
+      </tr>
+    </table>
+  <p>Default: <tt>1</tt> (enabled)</p>
+</blockquote>
+
+<h4>PendingList:CropSender</h4>
+<blockquote>
+  <p>Maximum length of a sender's e-mail address before it will be cropped in 
+    list view.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[PendingList]<br>
+          CropSender = 40</td>
+      </tr>
+    </table>
+  <p>Default: <tt>25</tt></p>
+</blockquote>
+
+<h4>PendingList:CropSubject</h4>
+<blockquote>
+  <p>Maximum length of an e-mail subject before it will be cropped in list 
+    view.<p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[PendingList]<br>
+          CropSubject = 50</td>
+      </tr>
+    </table>
+  <p>Default: <tt>40</tt></p>
+</blockquote>
+
+<h4>PendingList:DateFormat</h4>
+<blockquote>
+  <p>Format string for <a
+    href="http://python.org/doc/current/lib/module-time.html#l2h-1386">time.strftime()</a>,
+    used when displaying message dates in pending list view.</p>
+  <p>time.strftime() pads numeric fields with zeros to make them fixed-width 
+    fields. To suppress the zero-padding behavior, prefix any of the listed 
+    directives with "Z-".</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[PendingList]<br>
+          DateFormat = %m/%d/%y</td>
+      </tr>
+    </table>
+  <p>Default: <tt>%a Z-%m/Z-%d</tt></p>
+</blockquote>
+
+<h4>PendingList:PagerSize</h4>
+<blockquote>
+  <p>Number of e-mails to show on a page.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[PendingList]<br>
+          PagerSize = 25</td>
+      </tr>
+    </table>
+  <p>Default: <tt>15</tt></p>
+</blockquote>
+
+<h4>ViewPending:Headers</h4>
+<blockquote>
+  <p>Show only headers listed in <a 
+    href="/config-vars.html#SUMMARY_HEADERS"><tt>SUMMARY_HEADERS</tt></a> 
+    (short) or show all headers (all).</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[ViewPending]<br>
+          Headers = all</td>
+      </tr>
+    </table>
+  <p>Default: <tt>short</tt></p>
+</blockquote>
+
+<h3><a name="Theme"></a>Theme-based Defaults</h3>
+<p>Each theme may optionally override the settings in <a 
+  href="#Defaults"><tt>defaults.ini</tt></a> with its own "defaults" file. This 
+  file is located at <tt>display/themes/&lt;theme&gt;/theme.ini</tt> off of 
+  tmda-cgi's root directory. No error will be reported if this file does not 
+  exist.</p>
+<p>The format and variables supported is identical to that of the 
+  <tt>defaults.ini</tt> file.</p>
+
+<h3><a name="User"></a>User Preferences</h3>
+<p>User preferences are set by user actions while running tmda-cgi, and override 
+  any settings in both the <a href="#Defaults"><tt>defaults.ini</tt></a> and <a 
+  href="#Theme"><tt>theme.ini</tt></a> files. These preferences are saved in a 
+  file located at <a href="#CGI_SETTINGS"><tt>CGI_SETTINGS</tt></a>.<p>
+<p>There is no reason to edit this file by hand, although you may delete the 
+  file to return to all default preferences. No error will be reported if this 
+  file does not exist.</p>
+</td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table></td></tr></table></td></tr></table><!-- end of page table -->
+<script>
+<!--
+function Preloader()
+{
+  var x37 = new Image();
+x37.src = "display/dyn_buttons/layout1_r1_c1_h.png";
+  var x115 = new Image();
+x115.src = "display/dyn_buttons/layout1_r2_c1_h.png";
+  var x195 = new Image();
+x195.src = "display/dyn_buttons/layout1_r3_c1_h.png";
+  var x275 = new Image();
+x275.src = "display/dyn_buttons/layout1_r4_c1_h.png";
+var subtopic10 = new Image();
+subtopic10.src = "display/dyn_buttons/h-subtopic10.png";
+  var x442 = new Image();
+x442.src = "display/dyn_buttons/layout1_r6_c1_h.png";
+}
+//-->
+</script>
+</body></html>

@@ -30,7 +30,7 @@ Title: Compiling tmda-cgi
   panic. Simply hit control-C and the program will save the responses you have 
   given. These will be used as the defaults when you re-run <tt>compile</tt>.
 
-<h3>Running <tt>compile</tt></h3>
+<h3><a name="Running"></a>Running <tt>compile</tt></h3>
 
 <p>Depending on the mode you have chosen, you may need to be logged in as a 
   specific user when you compile tmda-cgi. Consult the following chart:<p>

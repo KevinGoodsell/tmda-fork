@@ -1,31 +1,7 @@
 a            { color: #4E508F                                               }
 .body        { padding-right: 15px; padding-bottom: 20px                    }
-.email       { padding: 15px; text-align: justify                           }
 .matte       { background-image: url(left_bg.gif);
                background-repeat: repeat-y; background-position: left       }
-
-.Attachments { text-align: center                                           }
-.InProcess   { font-style: italic                                           }
-.NewMsg td   { font-weight: bold                                            }
-
-.Condition   { text-align: center; border: 1px solid #000000                }
-.Content     { padding-right: 15px; padding-bottom: 20px                    }
-.Filename    { font-family: "Courier New", Courier, mono;
-               font-size: smaller; color: #990000                           }
-.horz        { background-image: url(flowchart/dot.gif);
-               background-repeat: repeat-x; background-position: center     }
-.ld          { background-image: url(flowchart/ld.gif);
-               background-repeat: no-repeat;
-               background-position: center center                           }
-.lm          { background-image: url(flowchart/lm.gif);
-               background-repeat: no-repeat;
-               background-position: center center                           }
-.rd          { background-image: url(flowchart/rd.gif);
-               background-repeat: no-repeat;
-               background-position: center center                           }
-.rm          { background-image: url(flowchart/rm.gif);
-               background-repeat: no-repeat;
-               background-position: center center                           }
-.Target      { text-align: center; border: 1px solid #000000                }
-.vert        { background-image: url(flowchart/dot.gif);
-               background-repeat: repeat-y; background-position: center     }
+.example td  { background-color: #DEDFED; font-size: x-small;
+               font-family: "Courier New", Courier, mono;
+               white-space: nowrap; padding: 5px 10px                       }
