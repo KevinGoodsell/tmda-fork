@@ -8,6 +8,9 @@
 	(logit): Add a `Sndr' line to the logfile when the message's
 	envelope sender differs from the From: address.
 
+	(logit): Only write a `From' line to the logfile if such a header
+	exists.
+	
 2001-10-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-sendmail (main): Bugfix.  Recipients being passed to

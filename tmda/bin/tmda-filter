@@ -169,7 +169,6 @@ def logit(action_msg,date):
             logfile = open(Defaults.LOGFILE, 'a') # append to the file
             Date = time.asctime(time.localtime(date))
             From = message_headers.getheader('from')
-            if not From:From = envelope_sender
             EnvelopeSender = envelope_sender
             To = recipient_address
             Subject = subject
@@ -181,7 +180,8 @@ def logit(action_msg,date):
             logfile.write('Date: ' + Date + '\n')
             if message_headers.getaddr('from')[1] != EnvelopeSender:
                 logfile.write('Sndr: ' + EnvelopeSender + '\n')
-            logfile.write('From: ' + From + '\n')
+            if From:
+                logfile.write('From: ' + From + '\n')
             logfile.write('  To: ' + To + '\n')
             logfile.write('Subj: ' + Subject + '\n')
             logfile.write(actionstr + ' '*wsbuf + sizestr + '\n')
