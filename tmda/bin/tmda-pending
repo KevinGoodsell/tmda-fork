@@ -313,7 +313,6 @@ def release(msgobj, msg):
     msgobj['X-TMDA-Released'] = Util.unixdate()
     # Reinject the message to the original envelope recipient.
     Util.sendmail(msgobj.as_string(), recipient, return_path)
-    os.rename(msg, msg + ':3,R')
 
 
 def main():
