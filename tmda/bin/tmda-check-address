@@ -1,0 +1,135 @@
+#!/usr/bin/env python
+
+"""Check a tagged (dated or sender style) e-mail address.
+
+Usage:  %(program)s [-c <file>] [-h] address [senderaddr]
+
+Where:
+    -c <file>
+    --config-file <file>
+       Specify a different configuration file other than ~/.tmdarc.
+
+    --help
+    -h
+       Print this help message and exit.
+
+    address is the address you want to check.
+    
+    senderaddr is the sender address to verify if checking a sender style address.
+"""
+
+import getopt
+import os
+import sys
+import string
+import time
+
+
+program = sys.argv[0]
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                                   'c:h', ['config-file=','help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    elif opt in ('-c', '--config-file'):
+        os.environ['TMDARC'] = arg
+
+
+try:
+    import paths
+except ImportError:
+    pass
+    
+from TMDA import Cookie
+
+
+def valid_dated_cookie(cookie):
+    """Check a dated cookie"""
+
+    # Split date and cookie parts
+    cookie_split = string.split(cookie,'.')
+    if len(cookie_split) != 2:
+	return None
+
+    cookie_date = cookie_split[0]
+    datemac = cookie_split[1]
+    newdatemac = Cookie.datemac(cookie_date)
+
+    # If a valid cookie, return the expire time
+    if datemac == newdatemac:
+	return int(cookie_date)
+    else:
+	return None
+
+    
+def valid_sender_cookie(cookie, sender_address):
+    """Check a sender cookie"""
+
+    sender_address_cookie = Cookie.make_sender_cookie(sender_address)
+    return cookie == sender_address_cookie
+
+
+def main():
+
+    # Address to check is required
+    try:
+	address = args[0]
+    except IndexError:
+	usage(0)
+
+    # Get cookie part of address
+    local_part = string.split(address,'@')[0]
+    address_split = string.split(local_part,'-')
+    cookie = address_split[-1]
+
+    # Get address tag style (dated, sender, etc.)
+    try:
+	ext = address_split[-2]
+    except IndexError:
+	print 'ERROR: Not a tagged address.'
+	sys.exit()
+    
+    if ext == 'dated':
+	expires = valid_dated_cookie(cookie)
+	if not expires:
+	    print 'STATUS: INVALID COOKIE'
+	    sys.exit()
+
+	now = time.time()
+        expires_str = time.asctime(time.gmtime(expires)) + ' UTC'
+	if now > expires:
+	    print 'STATUS:  EXPIRED'
+	    print 'EXPIRED: %s' % (expires_str)
+	else:
+	    print 'STATUS:  VALID'
+	    print 'EXPIRES: %s' % (expires_str)
+
+    elif ext == 'sender':
+	try:
+	    sender_address = args[1]
+	except IndexError:
+	    usage(0)
+        
+	if valid_sender_cookie(cookie, sender_address):
+	    print 'STATUS: VALID'
+	else:
+	    print 'STATUS: INVALID COOKIE'
+
+    else:
+	print 'ERROR: Not a tagged address.'
+    
+
+if __name__ == '__main__':
+    main()
+
