@@ -27,7 +27,7 @@ TMDA (and its author) holds the following assumptions about the current Internet
 <li>Spam will not cease until it becomes prohibitively expensive for spammers to operate.<br><br>
 </ol>
 
-<u>TMDA's Whitelist-based Strategy</u>&nbsp;&nbsp;
+<u>TMDA's Whitelist-centric Strategy</u>&nbsp;&nbsp;
 <strong>``Deny everything that is not <em>explicitly allowed</em>''</strong><br>
 <br>
 <ul>
@@ -53,7 +53,7 @@ techniques (See the Client Configuration section) that make it easier
 for contacts that aren't on your whitelist to reach you.  <br><br>
 </ul>
 
-<u>Traditional Blacklist-based Strategy</u>&nbsp;&nbsp;
+<u>Traditional Blacklist-centric Strategy</u>&nbsp;&nbsp;
 <strong>``Allow everything that is not <em>explicitly denied</em>''</strong><br>
 <br>
 <ul>
