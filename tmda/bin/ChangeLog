@@ -1,3 +1,10 @@
+2002-06-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-pending (release): Be more intelligent about removing
+	Delivered-To lines.
+
+	* tmda-rfilter (release_pending): Ditto.
+
 2002-06-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-ofmipd (TMDAProxy.process_message): fork() tmda-inject.
