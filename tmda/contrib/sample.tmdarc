@@ -1,14 +1,14 @@
 # -*- python -*-
 
 # sample.tmdarc - Sample configuration file for TMDA.
-# Copy to ~/.tmdarc, uncomment, and modify to taste.
+# Copy to /etc/tmdarc or ~/.tmdarc, uncomment, and modify to taste.
 #
 # See the "User configurable settings" section of TMDA/Defaults.py for
 # explanations of the possible settings and their default values.
 #
 # Only CRYPT_KEY is required in the .tmdarc.
 #
-# NOTE: This file must be mode 600 or 400.
+# NOTE: ~/.tmdarc must be chmod 600 or 400.
 
 import os                                      # don't remove
 

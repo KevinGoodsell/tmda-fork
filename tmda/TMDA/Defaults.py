@@ -3,8 +3,6 @@
 """TMDA configuration variable defaults."""
 
 
-# Make site-wide configuration changes to this file.  
-
 import os
 import stat
 import string
@@ -25,21 +23,31 @@ PYTHON_VERSION = string.split(sys.version)[0]
 DELIVERY_AGENT = 'TMDA ' + 'v' + TMDA_VERSION + '/Python ' + PYTHON_VERSION \
                  + ' (' + sys.platform + ')'
 
-# Exit codes: everything except 0, 99 and 100 are soft errors.
+# qmail exit codes: everything except 0, 99 and 100 are soft errors.
 ERR_OK = 0          # Success; look at the next .qmail file instruction.
 ERR_INTERNAL = 93   # This program has a bug!  How did that happen?
 ERR_CONFIG = 94     # Something wrong with the config-file; defer delivery.
 ERR_REMOTE = 95     # Remote user error.
-ERR_IO = 96         # Problem with, open, read, write, or close; defer delivery.
+ERR_IO = 96         # Problem with open, read, write, or close; defer delivery.
 ERR_STOP = 99       # Success, but don't look further in the .qmail file.
 ERR_HARD = 100      # Hard error; bounce message back to sender.
 ERR_SOFT = 111      # Soft error; defer delivery.
 
-# Look for the config-file in the environment first then default to ~/.tmdarc.
+# If the file /etc/tmdarc exists, read it before ~/.tmdarc.
+# Make site-wide configuration changes to this file.
+GLOBAL_TMDARC = '/etc/tmdarc'
+if os.path.exists(GLOBAL_TMDARC):
+    try:
+        execfile(GLOBAL_TMDARC)
+    except IOError:
+        pass                            # just skip it if we can't open it
+    
+# Look for the user-config-file in the environment first then default
+# to ~/.tmdarc.
 TMDARC = os.environ.get('TMDARC')
 if not TMDARC:TMDARC = os.path.expanduser("~/.tmdarc")
 
-# Read-in the user's configuration file first.
+# Read-in the user's configuration file.
 if not os.path.exists(TMDARC):
     print "Can't open configuration file:",TMDARC
     sys.exit(ERR_CONFIG)
@@ -68,15 +76,13 @@ else:
 # User configurable settings
 ############################
 
-# Only compute defaults for settings not in user's ~/.tmdarc to speed
-# startup.
+# Only compute defaults for unset variables to speed startup.
 
 # DATADIR
 # Top-level directory which TMDA uses to store its files and
 # directories.  TMDA should be free to create files and directories
 # under DATADIR if need be.  Make sure to include a trailing "/".
 # Default is ~/.tmda/
-
 if not vars().has_key('DATADIR'):
     DATADIR = os.path.expanduser("~/.tmda/")
 
