@@ -6,12 +6,10 @@
 import os
 import sys
 
-program = sys.argv[0]
+progpath = os.path.abspath(sys.argv[0])
 
-try:
-    progpath = os.path.realpath(program)
-except AttributeError:
-    progpath = os.path.abspath(program)
+if os.path.islink(progpath):
+    progpath = os.path.abspath(os.readlink(progpath))
 
 prefix = os.path.split(os.path.dirname(progpath))[0] # '../'
 

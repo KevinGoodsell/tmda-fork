@@ -23,11 +23,9 @@ EX_OK = 0
 EX_TEMPFAIL = 75
 
 # TMDA parent directory.
-program = sys.argv[0]
-try:
-    progpath = os.path.realpath(program)
-except AttributeError:
-    progpath = os.path.abspath(program)
+progpath = os.path.abspath(sys.argv[0])
+if os.path.islink(progpath):
+    progpath = os.path.abspath(os.readlink(progpath))
 PARENTDIR = os.path.split(os.path.dirname(progpath))[0] # '../'
 
 # If the file /etc/tmdarc exists, read it before ~/.tmdarc.

@@ -1,7 +1,6 @@
 2002-01-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* paths.py: Used os.path.realpath to follow symbolic links if
-	possible instead of os.path.abspath which doesn't.
+	* paths.py: Follow symlinks to find the true path.
 
 2002-01-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
