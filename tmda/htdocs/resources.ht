@@ -24,6 +24,12 @@ a TMDA configuration and administration tool which integrates into the
 <a href="http://inter7.com/qmailadmin/" TARGET="Resource Window">QmailAdmin</a>
  web managment system.<br><br>
 
+<li>Bill Duncan has written a
+<a href="http://www.squirrelmail.org/plugin_view.php?id=78" 
+TARGET="Resource Window">TMDA plugin</a> for the
+<a href="http://www.squirrelmail.org/" TARGET="Resource Window">SquirrelMail</a>
+webmail package.<br><br>
+
 <li><a href="http://www.visca.com/tmda/tmda_confirm.html" TARGET="Resource Window">tmda_confirm.pl</a> 
 is a Perl script that checks all the CONFIRM messages in the TMDA log
 file entries for the last $hours hours and pulls out the corresponding

@@ -1,5 +1,7 @@
 2002-02-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* resources.ht (TARGET): Link to the TMDA plugin for SquirrelMail.
+	
 	* config-server.ht (Links): Include 'preline' in dot-qmail
 	instructions.
 	
