@@ -40,6 +40,12 @@
 # You may embed variables in the HTML template as such:
 #   <!-- var: Column --><td>%(Value)s</td><!-- /var -->
 #
+# Or:
+#   <!-- var: Column="5" -->
+#
+# The latter form will be extracted as a string.  You cannot use the Add() and
+# Clear() functions for this form.
+#
 # You may add a comment in the ending tag if you wish:
 #   <!-- var: Column --><td>%(Value)s</td><!-- /var (Column) -->
 #
@@ -109,7 +115,7 @@ class Template:
   # Members global across all instantiations:
   Dict = {}
   BaseDir = "."
-  VarSearchStr  = "<!--\s*var:\s*%s\s*-->"
+  VarSearchStr  = '<!--\s*var:\s*%s(?:="([^"]+)")?\s*-->'
   VarEndSearch  = re.compile("<!--\s*/var[^-]*-->", re.I)
   LonePctSearch = re.compile("([^%])%([^(%])")
   LonePctRepl   = r"\1%%\2"
@@ -174,24 +180,31 @@ class Template:
       if type(self.HTML[i]) == StringType:
         Match = self.SearchDict[Var].search(self.HTML[i])
         if Match:
-          # Found start tag, split off text before it
-          self.HTML[i:i+1] = \
-            [self.HTML[i][:Match.start()], self.HTML[i][Match.end():]]
-          # Now search for the end tag
-          for j in range(i+1, len(self.HTML)):
-            if type(self.HTML[j]) == StringType:
-              Match = self.VarEndSearch.search(self.HTML[j])
-              if Match:
-                # Found end tag, split off text after it
-                self.HTML[j:j+1] = \
-                  [self.HTML[j][:Match.start()], self.HTML[j][Match.end():]]
-                # Replace contents with a template
-                Extracted = Template(SubTemplate = self.HTML[i+1:j+1])
-                BoilerPlate = Template(BoilerPlate = Extracted, Name = Var)
-                BoilerPlate.UpdateItems(BoilerPlate)
-                self.HTML[i+1:j+1] = [BoilerPlate]
-                self.UpdateItems(self)
-                return self.HTML[i+1]
+          # Is it an all-in-one tag?
+          if Match.group(1):
+            # Found start tag, split off text before and after it
+            self.HTML[i] = \
+              self.HTML[i][:Match.start()] + self.HTML[i][Match.end():]
+            return Match.group(1)
+          else:
+            # Found start tag, split off text before it
+            self.HTML[i:i+1] = \
+              [self.HTML[i][:Match.start()], self.HTML[i][Match.end():]]
+            # Now search for the end tag
+            for j in range(i+1, len(self.HTML)):
+              if type(self.HTML[j]) == StringType:
+                Match = self.VarEndSearch.search(self.HTML[j])
+                if Match:
+                  # Found end tag, split off text after it
+                  self.HTML[j:j+1] = \
+                    [self.HTML[j][:Match.start()], self.HTML[j][Match.end():]]
+                  # Replace contents with a template
+                  Extracted = Template(SubTemplate = self.HTML[i+1:j+1])
+                  BoilerPlate = Template(BoilerPlate = Extracted, Name = Var)
+                  BoilerPlate.UpdateItems(BoilerPlate)
+                  self.HTML[i+1:j+1] = [BoilerPlate]
+                  self.UpdateItems(self)
+                  return self.HTML[i+1]
           raise KeyError, "Can't find end tag for variable: %s" % Var
       else:
         RetVal = self.HTML[i][Var]

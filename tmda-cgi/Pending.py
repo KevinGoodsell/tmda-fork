@@ -137,8 +137,8 @@ width="18" height="18" alt="Last">"""
   PVars.Save()
 
   # Capture extra radio buttons. If not present, remove icon
-  NumCols = 7
-  NumBlankCols = 3
+  NumCols = int(T["NumCols"])
+  NumBlankCols = int(T["NumBlankCols"])
   WhRadio = T["WhRadio"]
   BlRadio = T["BlRadio"]
   if not Defaults.PENDING_WHITELIST_APPEND:

@@ -65,7 +65,7 @@ def ColorReplacer((etype, evalue, etb), context=5):
 
   # Swap colors in ColorSwap with those specified in template
   for Color in ColorSwap.keys():
-    HTML = HTML.replace(ColorSwap[Color], T[Color].BoilerPlate.__repr__())
+    HTML = HTML.replace(ColorSwap[Color], T[Color])
 
   # Save HTML
   T["ErrorMessage"] = HTML
