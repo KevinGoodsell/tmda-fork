@@ -56,8 +56,10 @@ source match action
 to (recipient address)
 to-file
 to-cdb
+to-autocdb
 to-dbm
-
+to-ezmlm
+to-mailman.attribute
 </blockquote></pre>
 
 (for incoming only):
@@ -65,7 +67,10 @@ to-dbm
 from (sender address)
 from-file
 from-cdb
+from-autocdb
 from-dbm
+from-ezmlm
+from-mailman.attribute
 body (message body)
 body-file
 headers (message headers)
@@ -103,6 +108,41 @@ currently requires that you first install the
 <a href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource Window">python-cdb</a>
 extension module.
 <br><br>
+
+The '-autocdb' sources are intended to ease the use of CDB lists in TMDA
+by automatically rebuilding the CDB file as necessary.  This gives you the
+performance advantages of CDBs without the hassle of having to manually
+maintain them.  The match field of an -autocdb line should be
+the full path to the name of the source listfile in text, not the CDB.
+The code will automatically append '.cdb' to the filename.  With an
+-autocdb source, TMDA will rebuild the CDB if it either doesn't exist,
+or or its timestamp is older than its source file.  If the rebuild
+fails for some reason, TMDA will fall back to matching from the
+sourcefile instead.  Before you try this feature, make sure you have
+the <a href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource Window">python-cdb</a>
+extension module installed.
+<br><br>
+
+The '-ezmlm' and '-mailman.attribute' sources can be used to match the
+subscribers of an <a href="http://cr.yp.to/ezmlm.html" TARGET="Resource Window">ezmlm</a> 
+or <a href="http://list.org/" TARGET="Resource Window">Mailman</a> mailing list.
+<br><br>
+
+'-ezmlm' sources match addresses contained in ezmlm `subscribers' directories.
+The match field of an -ezmlm line should be the full path to the
+directory.
+<br><br>
+
+'-mailman.attribute' sources match addresses contained in a Mailman
+configuration database.  The match field should be the full path to
+the configuration database for your list which will be either
+"config.db" or "config.pck" depending on which version of Mailman you
+are running.  Both styles are supported.  The `attribute' portion of
+the source should be the name of an attribute contained in the database.
+For example, `members' (subscriber addresses), `digest_members'
+(digest subscriber addresses), or `owner' (list owner's address).
+<br><br>
+
 
 The following table shows what the <b>match</b> expression should
 contain for a given <b>source</b>:
@@ -228,7 +268,12 @@ envelope sender.<p>
 
 The action is any one of the outgoing actions from the list above
 (except <b>tag</b>, of course).  That action will be used to tag the
-specified header only.<p>
+specified header only.  If the specified action is not one from the
+list above, the action is inserted verbatim as a string.  This can
+be used to add arbitrary headers to your outgoing messages based on
+destination.  Quotes are required for text that includes whitespace and is
+be unnecessary for single word strings.
+<p>
 
 Why would you want to do this?  Some mailing lists restrict posting to
 subscribers only.  The way they accomplish this is by comparing the
@@ -277,8 +322,6 @@ to closed-list@lists.com tag
 
 </blockquote></pre>
 
-<br><br>
-
 <u><b>Example Incoming Filter</u></b>:
 
 <pre>
@@ -300,7 +343,16 @@ from *@=mycorp.dom ok
 # Include my blacklist and whitelist
 from-dbm ~/.tmda/lists/blacklist.db drop
 from-cdb ~/.tmda/lists/whitelist.cdb accept
+from-autocdb ~/.tmda/lists/confirmed ok
 from-file ~/.tmda/lists/whitelist_wildcards accept
+
+# Mailman mailing list subscribers and digest subscribers
+from-mailman.members ~mailman/lists/viewnet-news/config.db ok
+from-mailman.digest_members ~mailman/lists/viewnet-news/config.db ok
+
+# ezmlm mailing list subscribers and digest subscribers
+from-ezmlm ~alias/all-acl-users/subscribers ok
+from-ezmlm ~alias/all-acl-users/digest/subscribers ok
 
 # Revoked addresses
 to jason-stupid-promo.289076@mastaler.com bounce
@@ -346,6 +398,15 @@ to tmda-admin@samstech.net tag
    # this case.
    envelope  extension=mlists-tmda-admin
    from      default
+
+# Add some arbitrary headers.
+to foo@bar.com tag organization "Whatwerks.com, Inc."
+
+to foo@bar.com tag
+   from             sender
+   reply-to         dated
+   organization     "Disney Land"
+   x-favorite-dwarf Hungry
 
 # Use a different username and/or domain
 to *@gnus.org exp=jason@gnus.org

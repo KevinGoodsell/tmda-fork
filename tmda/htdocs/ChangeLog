@@ -1,3 +1,8 @@
+2002-02-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-filter.ht: Document adding arbitrary headers with the
+	`tag' action, from/to-mailman, from/to-ezmlm, and from/to-autocdb.
+	
 2002-02-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* requirements.ht (Links): Python >= 2.0 is now required.
