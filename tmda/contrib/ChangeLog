@@ -1,3 +1,9 @@
+2003-02-03  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* vipmap-to-authmap: New script from Jesse Guardiani for
+	converting vpopmail 'vipmap' output into tmda-ofmipd's 'ipauthmap'
+	file.
+
 2003-02-03  Tim Legant  <tim@catseye.net>
 
 	* vpopmail-vdir.sh (VUSERINFO): Changed the path from a hard-coded
