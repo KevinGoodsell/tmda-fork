@@ -1,5 +1,8 @@
 2001-10-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* support-links.h: Move External Resources link to the Support
+	subsection from the Overview subsection.
+	
 	* resources.ht (Links): Added link to Lou Hevly's tmda_confirm.pl.
 
 	* faq.ht (Links): Clarify that tmda-clean should be run from the
