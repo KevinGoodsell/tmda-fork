@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.61+"
+TMDA = "0.62"
 
 # Python version
 PYTHON = sys.version.split()[0]
