@@ -55,9 +55,6 @@ install contrib/tmda.el %{buildroot}%{_datadir}/emacs/site-lisp
 install contrib/tofmipd.init %{buildroot}%{_sysconfdir}/rc.d/init.d/tofmipd
 install contrib/tofmipd.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/tofmipd
 
-# remove files not yet ready
-rm -f %{buildroot}%{_bindir}/tmda-{gui,manager}
-
 %clean
 rm -rf %{buildroot}
 
