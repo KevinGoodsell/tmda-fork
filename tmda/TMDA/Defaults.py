@@ -919,6 +919,43 @@ if not vars().has_key('MAX_AUTORESPONSES_PER_DAY'):
 if not vars().has_key('RESPONSE_DIR') and MAX_AUTORESPONSES_PER_DAY != 0:
     RESPONSE_DIR = os.path.join(DATADIR, 'responses')
 
+# AUTORESPONSE_INCLUDE_SENDER_COPY
+# An integer which controls whether a copy of the sender's message is
+# included or not when sending an auto response.  Available options:
+#
+# 0 - do not include any portion of the sender's message.
+# 1 - include only the headers from the sender's message.
+# 2 - include the sender's entire message (recommended).
+#
+# Default is 2
+if not vars().has_key('AUTORESPONSE_INCLUDE_SENDER_COPY'):
+    AUTORESPONSE_INCLUDE_SENDER_COPY = 2
+
+# AUTORESPONSE_TEMPLATE_EMAIL_HEADERS
+# A list containing the names of headers in your templates that
+# contain an e-mail address.  This is necessary so that the e-mail
+# address will avoid being RFC 2047 encoded when handling
+# internationalized headers.
+#
+# Example:
+# AUTORESPONSE_TEMPLATE_EMAIL_HEADERS = ["from", "reply-to"]
+#
+# Default is "From:" and "Reply-To:".
+if not vars().has_key('AUTORESPONSE_TEMPLATE_EMAIL_HEADERS'):
+    AUTORESPONSE_TEMPLATE_EMAIL_HEADERS = ['from', 'reply-to']
+
+# AUTORESPONSE_TEMPLATE_ENCODED_HEADERS
+# A list containing the names of headers in your templates that might
+# contain an RFC 2047 encoded string.  This is necessary so that they
+# can be decoded first when handling internationalized headers.
+#
+# Example:
+# AUTORESPONSE_TEMPLATE_ENCODED_HEADERS = ["subject"]
+#
+# Default is "Subject:".
+if not vars().has_key('AUTORESPONSE_TEMPLATE_ENCODED_HEADERS'):
+    AUTORESPONSE_TEMPLATE_ENCODED_HEADERS = ['subject']
+
 # DELIVERED_CACHE
 # Path to the cache file used to keep track of which messages have
 # already been delivered.

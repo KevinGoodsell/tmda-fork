@@ -348,6 +348,20 @@ def pager(file):
     os.spawnvp(os.P_WAIT, pager_list[0], pager_list)
 
 
+def normalize_sender(sender):
+    """Return a normalized version of the given sender address for use
+    in ~/.tmda/responses.
+
+    - Any / characters are replaced with : to prevent creation of files
+      outside the directory.
+    - Spaces are replaced with underscores.
+    - The address is lowercased.
+    """
+    sender = sender.replace(' ', '_')
+    sender = sender.replace('/', ':')
+    return sender.lower()
+
+
 def sendmail(msgstr, envrecip, envsender):
     """Send e-mail via direct SMTP, or by opening a pipe to the
     sendmail program.

@@ -1,3 +1,9 @@
+2002-10-18  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (autorespond_to_sender): Check for Auto-Submitted:.
+
+	(send_bounce): Move guts into TMDA/AutoResponse.py.
+
 2002-10-04  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-inject (inject_message): Use MESSAGE_TAG_HEADER_STYLE when

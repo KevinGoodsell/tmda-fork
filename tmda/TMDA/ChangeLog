@@ -1,3 +1,15 @@
+2002-10-18  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Util.py (normalize_sender): New fuction, moved from
+	tmda-rfilter.
+	
+	* Defaults.py (AUTORESPONSE_INCLUDE_SENDER_COPY): New variable.
+
+	(AUTORESPONSE_TEMPLATE_EMAIL_HEADERS): Ditto.
+	(AUTORESPONSE_TEMPLATE_ENCODED_HEADERS): Ditto.
+
+	* AutoResponse.py: New file.
+
 2002-10-04  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Defaults.py (MESSAGE_TAG_HEADER_STYLE): New variable.

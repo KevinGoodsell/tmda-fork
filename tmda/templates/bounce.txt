@@ -1,5 +1,6 @@
-From: "%(FULLNAME)s" <%(recipient_address)s>
-Subject: failure notice
+From.US-ASCII: "%(FULLNAME)s" <%(recipient_address)s>
+Subject.US-ASCII: failure notice
+BodyCharset: US-ASCII
 
 Hi. This is the TMDA program at %(recipient_domain)s.
 I'm afraid I wasn't able to deliver your message to the following addresses.
@@ -8,6 +9,3 @@ This is a permanent error; I've given up. Sorry it didn't work out.
 <%(recipient_address)s>:
 %(bounce_text)s
 
---- Enclosed is a copy of your message.
-
-%(original_message)s

@@ -5,6 +5,30 @@ If you are upgrading from a release of TMDA < 0.63:
 * Python version 2.1 or greater is now required.  Upgrade at
   <URL:http://www.python.org/download/>
 
+* When sending an auto response, a new configuration variable
+  (AUTORESPONSE_INCLUDE_SENDER_COPY) is used to control whether a copy
+  of the sender's message is included or not.  For available options,
+  <URL:http://tmda.net/config-vars.html#AUTORESPONSE_INCLUDE_SENDER_COPY>
+
+  If you are using customized templates, you should remove the last
+  few lines in each template which include the sender's copy.  For
+  example, in confirm_request.txt:
+
+  --- Enclosed is a copy of your message.
+
+  %(original_message)s
+
+  Otherwise, you'll include two copies of the sender's message.
+
+* When sending confirmation requests, Reply-To is now set from the
+  confirm_request.txt template.  This is to allow the option to not
+  include the confirmation address in a Reply-To header.
+
+  If you use a customized confirm_request.txt, you'll need to add the
+  following line to the top (header section) of your template:
+
+  Reply-To: %(confirm_accept_address)s
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.59:
@@ -15,7 +39,7 @@ If you are upgrading from a release of TMDA < 0.59:
   From: "Jason R. Mastaler" <jasonrm@nightshade.la.mastaler.com>
   Subject: Please confirm your message
 
-  Set FULLNAME in your tmda config to override the default value
+  Set FULLNAME in your tmda config, to override the default value
   (taken from the password file).
 
 * ADDED_HEADERS has been renamed ADDED_HEADERS_CLIENT.
