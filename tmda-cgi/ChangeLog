@@ -1,3 +1,16 @@
+2003-04-28  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* tmda-cgi 0.07 is released.
+
+2003-04-27  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added install/uninstall/restore code.  It's quite huge so I won't be
+	  the least bit surprised if it is buggy (despite the million install/
+	  uninstall cycles I've run!).
+
+	* Minor tweaks to the info pages.  More stuff shown to help diagnose
+	  problems.
+
 2003-04-24  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* tmda-cgi 0.06 is released.

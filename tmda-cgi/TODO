@@ -1,8 +1,6 @@
 Things left to do:
 ==================
 
-    * Auto-Cleanup -- scheduling and somehow dealing with virtual users
-
     * Change Password -- figure out a way to do it or remove it from the menu
 
     * Equivilant Parts -- it would be nice to only show one part if two parts
@@ -25,3 +23,5 @@ Things left to do:
     * SpamCop -- an option to delete/blacklist/forward to SpamCop
 
     * Tutorial -- someone should write one
+
+    * URL Confirmation -- doesn't work yet for virtual users

@@ -1,6 +1,6 @@
 ======================================================================
 
-If you are upgrading from a release of tmda-cgi < 0.06:
+If you are upgrading from a release of tmda-cgi < 0.07:
 
 * display directory has been updated again.  You'll need to copy in the new
   one or use a symbolic link.
