@@ -16,8 +16,8 @@ you have installed, try typing <strong>python</strong> and/or
 <blockquote><pre>
 
 % python
-Python 2.2.1 (#1, Apr 10 2002, 05:34:10) 
-[GCC 3.0.4] on freebsd4
+Python 2.2.2 (#1, Oct 17 2002, 03:12:45) 
+[GCC 2.95.4 20020320 [FreeBSD]] on freebsd4
 Type "help", "copyright", "credits" or "license" for more information.
 >>> ^D
 
