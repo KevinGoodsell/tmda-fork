@@ -1,3 +1,8 @@
+2003-08-18  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Fixed list editor.  If a list cannot be found, the list editor used
+	  to blow up.
+
 2003-08-11  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Modified autoinstaller so it can handle user names with dots in them

@@ -45,6 +45,7 @@ def Show():
   # Load the display template
   T = Template.Template("editlist.html")
   NoneList = T["NoneList"]
+  List = ""
 
   # Find pre-calculated buttons
   Filename = os.path.join \
@@ -124,8 +125,6 @@ height="%(height)d" alt=""" % Buttons[File][1]
     else:
       if Form.has_key("list"):
         List = Form["list"].value
-      else:
-        List = ""
 
       # Make sure the list is properly formatted
       List = re.sub("\r\n", "\n", List)
