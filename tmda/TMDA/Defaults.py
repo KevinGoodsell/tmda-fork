@@ -376,6 +376,22 @@ if not vars().has_key('LOGFILE'):
 if not vars().has_key('MESSAGE_FROM_STYLE'):
     MESSAGE_FROM_STYLE = "angles"
 
+# PURGED_HEADERS
+# A list containing one or more message headers that should be removed
+# from outgoing client-side messages (i.e, messages sent with
+# tmda-sendmail) prior to injection.  Listed headers are
+# case-insensitive, and the purging will only be attempted if the
+# header actually exists.
+#
+# Examples:
+#
+# PURGED_HEADERS = ["x-mailer"]
+# PURGED_HEADERS = ["x-mailer", "user-agent"]
+#
+# No default
+if not vars().has_key('PURGED_HEADERS'):
+    PURGED_HEADERS = None
+
 # TIMEOUT
 # The timeout interval for 'dated' addresses.  The available units are
 # (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).
@@ -388,7 +404,7 @@ if not vars().has_key('TIMEOUT'):
 # Defaults to your UNIX username.
 if not vars().has_key('USERNAME'):
     USERNAME = Util.getusername()
-
+    
 ###################################
 # END of user configurable settings
 ###################################

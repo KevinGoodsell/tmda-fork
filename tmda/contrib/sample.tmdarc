@@ -89,6 +89,8 @@ import os                                      # don't remove
 
 # MESSAGE_FROM_STYLE = "angles"
 
+# PURGED_HEADERS = []
+
 # SENDER_TEMPLATE_VARS = 0
 
 # SENDMAIL = "/usr/sbin/sendmail"

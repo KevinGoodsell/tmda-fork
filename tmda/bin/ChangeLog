@@ -1,3 +1,8 @@
+2001-12-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (inject_message): Optionally remove the headers
+	contained in Defaults.PURGED_HEADERS.
+	
 2001-12-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (inject_message): Bugfix.  tmda-inject was not

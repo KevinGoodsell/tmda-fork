@@ -1,3 +1,8 @@
+2001-12-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (PURGED_HEADERS): New variable specifying a list of
+	headers to remove before sending outgoing mail.
+
 2001-12-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (DELIVERY_AGENT): Modify DELIVERY_AGENT to use

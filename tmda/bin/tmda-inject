@@ -190,6 +190,10 @@ def inject_message(resending,
         message_headers['Message-ID'] = Util.make_msgid()
     # Add `X-Delivery-Agent' header.
     message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
+    # Optionally, remove some headers.
+    if Defaults.PURGED_HEADERS:
+        for hdr in Defaults.PURGED_HEADERS:
+            del message_headers[hdr]
     # Inject the message.
     inject = []
     inject.append(Defaults.SENDMAIL)
