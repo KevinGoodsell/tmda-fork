@@ -519,8 +519,9 @@ if CGI_ACTIVE and not vars().has_key('CGI_USE_JS_CONFIRM'):
 
 # CGI_USER
 # Defines the user name to use at non-critical times (such as reading
-# and writing session files.  CGI_USER is only signifigant when running
-# in system-wide mode.  See tmda-cgi.html for more about modes.
+# and writing session files.  CGI_USER is only signifigant when
+# running in system-wide mode.  See http://tmda.net/tmda-cgi/ for more
+# about modes.
 #
 # Example:
 # CGI_USER = "apache"
