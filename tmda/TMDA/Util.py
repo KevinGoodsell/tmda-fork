@@ -535,9 +535,11 @@ def msg_as_string(msg, maxheaderlen=0, mangle_from_=0, unixfrom=0):
 
     unixfrom forces the printing of the envelope header delimiter.
     Default is False."""
-    from email.Generator import Generator
+    from email.Generator import HeaderParsedGenerator
     fp = StringIO()
-    g = Generator(fp, mangle_from_=mangle_from_, maxheaderlen=maxheaderlen)
+    g = HeaderParsedGenerator(fp,
+                              mangle_from_=mangle_from_,
+                              maxheaderlen=maxheaderlen)
     g.flatten(msg, unixfrom=unixfrom)
     return fp.getvalue()
 

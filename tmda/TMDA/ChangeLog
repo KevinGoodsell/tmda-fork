@@ -1,3 +1,9 @@
+2003-07-31  Tim Legant  <tim@catseye.net>
+
+	* Util.py (msg_as_string): Use HeaderParsedGenerator rather than
+	the standard Generator, which fails on messages parsed with
+	HeaderParser.
+
 2003-07-18  Tim Legant  <tim@catseye.net>
 
 	* MTA.py (MTA.deliver, MTA.stop, Qmail.deliver): Added support for
