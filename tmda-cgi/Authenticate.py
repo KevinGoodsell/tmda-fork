@@ -35,7 +35,7 @@ from TMDA import Errors
 # For now, output all Auth.py errors to http error log
 Auth.DEBUGSTREAM = sys.stderr
 
-authinit = False
+authinit = 0
 
 def InitProgramAuth( Program, trueProg = "/usr/bin/true" ):
   """Initializes the authentication scheme with a checkpw-style program.
@@ -43,20 +43,20 @@ def InitProgramAuth( Program, trueProg = "/usr/bin/true" ):
   global authinit
   Auth.authtype = 'prog'
   if not os.access( Program, os.F_OK ):
-    authinit = False
+    authinit = 0
     raise ValueError, "'%s' does not exist" % Program
   if not os.access( trueProg, os.F_OK ):
-    authinit = False
+    authinit = 0
     raise ValueError, "'%s' does not exist", trueProg
   if not os.access( Program, os.X_OK ):
-    authinit = False
+    authinit = 0
     raise ValueError, "'%s' is not executable" % Program
   if not os.access( trueProg, os.X_OK ):
-    authinit = False
+    authinit = 0
     raise ValueError, "'%s' is not executable", trueProg
   # Now initialize the authprog with the checkpasswd program and "true"
   Auth.authprog = "%s %s" % ( Program, trueProg )
-  authinit = True
+  authinit = 1
 
 def InitFileAuth( Filename="/etc/tmda-cgi" ):
   """Initializes the authentication scheme with a flat file
@@ -64,10 +64,10 @@ def InitFileAuth( Filename="/etc/tmda-cgi" ):
   global authinit
   Auth.authtype = 'file'
   if not os.access( Filename, os.F_OK ):
-    authinit = False
+    authinit = 0
     raise ValueError, "File '%s' does not exist" % Filename
   Auth.authfile = Filename
-  authinit = True
+  authinit = 1
 
 def InitRemoteAuth( URI ):
   """Initialaze the authentication scheme with a remote URL
@@ -77,27 +77,27 @@ def InitRemoteAuth( URI ):
   try:
     Auth.parse_auth_uri( URI )
     Auth.init_auth_method()
-    authinit = True
+    authinit = 1
   except ValueError, err:
-    authinit = False
+    authinit = 0
     raise Errors.AuthError, "Bad URI: %s" % err.value
   except ImportError, err:
-    authinit = False
+    authinit = 0
     raise Errors.AuthError, "URI scheme not supported: %s" % err.value
 
 def Authenticate(User, Password):
   """Checks password against initialized authentication scheme filename.
 
- - Returns True or False, depending on authentication.
+ - Returns 1 or 0, depending on authentication.
 
  - May raise Errors.AuthError if something "funny" happens."""
   global authinit
-  RetVal = False
+  RetVal = 0
   if authinit:
     if Auth.authtype == 'prog' or Auth.authtype == 'remote':
       try:
         if Auth.authenticate_plain( User, Password ):
-          RetVal = True
+          RetVal = 1
       except Errors.AuthError:
         pass
     elif Auth.authtype == 'file':
@@ -120,7 +120,7 @@ def Authenticate(User, Password):
         if Temp[0] == User:
           if Temp[1] == "":
             raise Errors.AuthError, \
-              "User %s is denied login (blank password in file)" % Temp[0], \
+              "User %s is denied login" % Temp[0], \
               "Blank password in file"
 
           Perm = os.stat(Filename)[0] & 07777
@@ -128,12 +128,12 @@ def Authenticate(User, Password):
           # Any file may have encrypted passwords in it.
           # Even though this is a Bad Idea.
           if crypt.crypt(Password, Temp[1][:2]) == Temp[1]:
-            RetVal = True
+            RetVal = 1
             break
           # Only <secret> files may have cleartext passwords in it.
           if Perm == 0400 or Perm == 0600:
             if Temp[1] == Password:
-              RetVal = True
+              RetVal = 1
               break
         PasswordRecord = F.readline()
       F.close()
@@ -142,7 +142,7 @@ def Authenticate(User, Password):
         "Authentication mechanism '%s' unknown." % Auth.authtype
   else:
     raise Errors.AuthError, "No authentication mechanism initialized."
-  # If we made it this far, we're either returning True or False.
+  # If we made it this far, we're either returning 1 or 0.
   return RetVal
 
 def CheckPassword(Form):
@@ -152,7 +152,7 @@ def CheckPassword(Form):
   errHelp = "Reset password or correct file permissions"
   try:
     if Authenticate( Form["user"].value, Form["password"].value ):
-      return True
+      return 1
   except Errors.AuthError, error:
     errMsg = error.msg
     if error.help != "":
@@ -162,4 +162,4 @@ def CheckPassword(Form):
     CgiUtil.TermError("Login failed", "Authentication error",
       "validate password", errMsg, errHelp)
   else:
-    return False
+    return 0
