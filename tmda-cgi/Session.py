@@ -177,11 +177,6 @@ its partition is marked "nosuid" in /etc/fstab.""")
 
     # Logging in?
     if not Form.has_key("user"):
-      if int(Form["debug"].value):
-        CgiUtil.TermError( "Login Failed", "Authentication error",
-         "Check Username", "No username given", 
-         "Ensure that you remembered to fill out the username" )
-      else:
         return
 
     # Is there a TMDARC variable?
