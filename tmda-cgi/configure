@@ -169,7 +169,7 @@ try:
   readline.parse_and_bind("tab: complete")
   readline.set_startup_hook(SetDefault)
   Input = TabCompInput
-except ImportError, AttributeError:
+except (ImportError, AttributeError):
   Input = PlainInput
 
 def Ask(Question, Str, ValProg = None, TestStr = None):

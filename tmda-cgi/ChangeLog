@@ -1,3 +1,7 @@
+2003-11-17  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Fixed a stupid type-o in configure.
+
 2003-11-16  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Force user names to be lowercase.
