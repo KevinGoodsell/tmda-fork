@@ -110,8 +110,8 @@ def make_keyword_address(address, keyword):
 
 
 def make_fingerprint(hdrlist):
-    """Expects a list of message header values as strings, and returns
-    a full (unsliced) HMAC as a base64 encoded string (sans newline)."""
+    """Expects a list of strings, and returns a full (unsliced) HMAC
+    as a base64 encoded string (sans newline)."""
     fp = HMAC.hmac(Defaults.CRYPT_KEY)
     for hdr in hdrlist:
         fp.update(hdr)

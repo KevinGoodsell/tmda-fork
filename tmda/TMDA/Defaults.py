@@ -323,16 +323,18 @@ if not vars().has_key('ACTION_OUTGOING'):
 # FINGERPRINT
 #
 # A list containing one or more message headers whose values should be
-# used to create a "fingerprint" for the message.  The fingerprint is
-# a SHA-1 HMAC digest represented as a base64-encoded string.  This
-# fingerprint will be added to your outgoing client-side messages
-# (i.e, messages sent with tmda-sendmail) in an `X-TMDA-Fingerprint'
-# header prior to injection.
+# used to create a "fingerprint" for the message.  If the header value
+# is 'body' (all-lowercase), the message body content is used instead
+# of a header value.  The fingerprint is a SHA-1 HMAC digest
+# represented as a base64-encoded string.  This fingerprint will be
+# added to your outgoing client-side messages (i.e, messages sent with
+# tmda-sendmail) in an `X-TMDA-Fingerprint' header prior to injection.
 #
 # Examples:
 #
 # FINGERPRINT = ["message-id"]
 # FINGERPRINT = ["message-id", "from", "date"]
+# FINGERPRINT = ["message-id", "body"]
 #
 # Things to keep in mind, especially if verifying these fingerprints
 # with non-TMDA code.

@@ -1,5 +1,7 @@
 2002-02-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (FINGERPRINT): Document 'body'.
+
 	* Cookie.py (make_fingerprint): Use the binascii module instead of
 	base64 to do the binary to base64 encoding since we already have
 	it imported.
