@@ -54,6 +54,10 @@ Where:
       See the NOTE below for security advisory.
       This is mandatory if you don't have a local installation of TMDA.
 
+   -s
+   --ssl
+      Connect to the server with SSL.
+
 NOTE: This is early alpha software, so please try it, and send your
 comments to the tmda-workers@tmda.net mailing list.
 
@@ -141,6 +145,24 @@ sout = None
 ProtoError = "Protocole Error"
 AuthError = "Authentication Error"
 
+class SSL_socket:
+    """Wrapper class to socket.ssl to add readline method."""
+    def __init__(self, sock):
+        self._sock = socket.ssl(sock)
+
+    def __getattr__(self, attr):
+        return getattr(self._sock, attr)
+
+    def readline(self):
+        line = []
+        c = self._sock.read(1)
+        while c:
+            line.append(c)
+            if c == '\n':
+                return ''.join(line)
+            c = self._sock.read(1)
+        raise IOError, "Broken pipe"
+
 def connectToServer(host, auth):
     global sock, sin, sout
     if sock:
@@ -148,8 +170,11 @@ def connectToServer(host, auth):
         return 0
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect(host)
-    sin = sock.makefile('r', 0)
-    sout = sock.makefile('w', 0)
+    if use_ssl:
+        sin = sout = SSL_socket(sock)
+    else:
+        sin = sock.makefile('r', 0)
+        sout = sock.makefile('w', 0)
     # eat up greetings from manager
     ## FIXME: maybe check the protocol version ?
     cc = sin.read(1)
@@ -293,9 +318,10 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'H:U:pVh',
+                               'H:U:spVh',
                                         ['host=',
                                          'user=',
+                                         'ssl',
                                          'pending',
                                          'version',
                                          'help'])
@@ -305,6 +331,7 @@ except getopt.error, msg:
 pending_first = 0
 host = None
 port = 8765
+use_ssl = None
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
@@ -316,6 +343,8 @@ for opt, arg in opts:
         sys.exit()
     if opt in ('-p', '--pending'):
         pending_first = 1
+    if opt in ('-s', '--ssl'):
+        use_ssl = 1
     elif opt in ('-H', '--host'):
         using_network=1
         try:

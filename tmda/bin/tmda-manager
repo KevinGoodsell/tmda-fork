@@ -382,7 +382,7 @@ class TMDAShell(Cmd):
         print 'exit'
         return self.do_exit(args)
 
-def connection(hostport, ssl=0):
+def connection(hostport):
     stdin = sys.stdin
     stdout = sys.stdout
     import socket
@@ -406,12 +406,8 @@ def connection(hostport, ssl=0):
             conn, addr = sock.accept()
             pid = os.fork()
             if not pid:
-                if ssl:
-                    ## FIXME: ssl support doesn't work
-                    sin = sout = socket.ssl(conn)
-                else:
-                    sin = conn.makefile('r', 0)
-                    sout = conn.makefile('w', 0)
+                sin = conn.makefile('r', 0)
+                sout = conn.makefile('w', 0)
                 print 'accepted connection from %s:%s' % addr
                 try:
                     TMDAShell('+', sin, sout, stdout).mainLoop()
@@ -420,7 +416,7 @@ def connection(hostport, ssl=0):
                     sys.stdout = stdout
                     print msg
                 sys.stdin = stdin
-                print 'closing connection to ' + repr(addr)
+                print 'closing connection from %s:%s' % addr
                 sin.close()
                 sout.close()
                 break
@@ -432,7 +428,7 @@ def connection(hostport, ssl=0):
 
 def main():
     if daemon_mode:
-        connection(hostport, 0)
+        connection(hostport)
     else:
         TMDAShell().mainLoop()
 
