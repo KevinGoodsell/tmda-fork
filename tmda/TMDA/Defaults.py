@@ -97,9 +97,9 @@ if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
 # Filename which contains a list of e-mail addresses and/or
 # substrings, one per line, which are considered unacceptable and
 # therefore bounced if there is a match.
-# Default is ~/.tmda/blacklist.txt
+# Default is ~/.tmda/lists/blacklist
 if not vars().has_key('BLACKLIST'):
-    BLACKLIST = DATADIR + "blacklist.txt"
+    BLACKLIST = DATADIR + "lists/" + "blacklist"
 
 # BOUNCE_BLACKLIST_CC
 # An optional e-mail address which will be sent a copy of any message
@@ -248,17 +248,17 @@ if not vars().has_key('USERPREFIX'):
 # BARE_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive untagged (no cookie added) messages.
-# Default is ~/.tmda/bare.txt
+# Default is ~/.tmda/lists/bare
 if not vars().has_key('BARE_FILE'):
-    BARE_FILE = DATADIR + "bare.txt"
+    BARE_FILE = DATADIR + "lists/" + "bare"
 
 # DATED_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive messages with a dated cookie added to your
 # address.
-# Default is ~/.tmda/dated.txt
+# Default is ~/.tmda/lists/dated
 if not vars().has_key('DATED_FILE'):
-    DATED_FILE = DATADIR + "dated.txt"
+    DATED_FILE = DATADIR + "lists/" + "dated"
 
 # EXP_FILE
 # Filename which contains a list of explicit to/from pairs, one per
@@ -268,9 +268,9 @@ if not vars().has_key('DATED_FILE'):
 #  xemacs-announce@xemacs.org jason@xemacs.org
 #  domreg@internic.net        hostmaster@mastaler.com
 #
-# Default is ~/.tmda/exp.txt
+# Default is ~/.tmda/lists/exp
 if not vars().has_key('EXP_FILE'):
-    EXP_FILE = DATADIR + "exp.txt"
+    EXP_FILE = DATADIR + "lists/" + "exp"
 
 # EXT_FILE
 # Filename which contains a list of e-mail address/extension pairs,
@@ -280,25 +280,25 @@ if not vars().has_key('EXP_FILE'):
 #  xemacs-beta@xemacs.org list-xemacs-beta
 #  qmail@list.cr.yp.to    list-qmail
 #
-# Default is ~/.tmda/ext.txt
+# Default is ~/.tmda/lists/ext
 if not vars().has_key('EXT_FILE'):
-    EXT_FILE = DATADIR + "ext.txt"
+    EXT_FILE = DATADIR + "lists/" + "ext"
 
 # SENDER_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive messages with a sender cookie added to your
 # address.
-# Default is ~/.tmda/sender.txt
+# Default is ~/.tmda/lists/sender
 if not vars().has_key('SENDER_FILE'):
-    SENDER_FILE = DATADIR + "sender.txt"
+    SENDER_FILE = DATADIR + "lists/" + "sender"
 
 # WHITELIST
 # Filename which contains a list of e-mail addresses and/or
 # substrings, one per line, which are considered trusted contacts and
 # therefore allowed directly into your mailbox if there is a match.
-# Default is ~/.tmda/whitelist.txt
+# Default is ~/.tmda/lists/whitelist
 if not vars().has_key('WHITELIST'):
-    WHITELIST = DATADIR + "whitelist.txt"
+    WHITELIST = DATADIR + "lists/" + "whitelist"
 
 # WHITELIST_TO_BARE
 # Set this variable to 1 if you want addresses in your

@@ -1,4 +1,33 @@
 ======================================================================
+
+If you are upgrading from a release of TMDA < 0.30:
+
+Version 0.30 introduced "confirmation mode" where instead of just
+bouncing the message, it will be stored in a pending-queue until the
+sender responds to a confirmation request.  Some configuration changes
+are necessary:
+
+* Confirmation mode is the default, so if you want to retain the old
+  behavior instead, set "CONFIRMATION_MODE = 0" in your .tmdarc.
+
+* The pending message queue will be maintained under ~/.tmda/ by
+  default, and it will be created automatically if it doesn't exist.
+  Set "DATADIR" in your .tmdarc to something else if you want to use a
+  different directory.
+
+* The default locations for the former 'dot-tmda' files are now within
+  ~/.tmda/lists/:
+
+  ~/.tmda-bare      -->  ~/.tmda/lists/bare
+  ~/.tmda-blacklist -->  ~/.tmda/lists/blacklist
+  ~/.tmda-dated     -->  ~/.tmda/lists/dated
+  ~/.tmda-exp       -->  ~/.tmda/lists/exp
+  ~/.tmda-ext       -->  ~/.tmda/lists/ext
+  ~/.tmda-sender    -->  ~/.tmda/lists/sender
+  ~/.tmda-whitelist -->  ~/.tmda/lists/whitelist
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.21:
 
 Starting with version 0.21, the syntax for .tmda-* files changed from

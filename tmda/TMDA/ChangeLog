@@ -1,3 +1,8 @@
+2001-07-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py: Change default location of former dot-tmda files to
+	lie within DATADIR/lists/. (e.g, ~/.tmda-bare --> ~/.tmda/lists/bare)
+
 2001-07-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Change default location of dot-tmda files to lie
