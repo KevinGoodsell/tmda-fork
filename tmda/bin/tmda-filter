@@ -111,7 +111,7 @@ envelope_recipient = (message_headers.getheader('x-originally-to')
 
 # recipient_address is the original address the message was sent to,
 # not qmail-send's rewritten interpretation.  This will be the same as
-# envelope_recipient if we are not running under a virtualdomain.
+# envelope_recipient if we are not running under a qmail virtualdomain.
 recipient_address = envelope_recipient
 if Defaults.USEVIRTUALDOMAINS and os.path.exists(Defaults.VIRTUALDOMAINS):
     # Parse the virtualdomains control file; see qmail-send(8) for
@@ -435,7 +435,8 @@ def bouncegen(mode):
     if mode == 'request':
         if Defaults.BOUNCE_CONFIRM_CC:
             bounce_cc(Defaults.BOUNCE_CONFIRM_CC)
-        send_bounce(bounce_message,confirm_accept_address = confirm_accept_address)
+        send_bounce(bounce_message,
+                    confirm_accept_address = confirm_accept_address)
         mta.stop()  
 
 
