@@ -60,6 +60,9 @@ def Show():
   for Theme in Themes:
     # Skip "CVS" if you see it
     if Theme == "CVS": continue
+
+    # Also skip anything that is not a directory
+    if not os.path.isdir( os.path.join( ThemesDir, Theme ) ): continue
     
     T["Name"] = Theme
     Selected.Clear()
