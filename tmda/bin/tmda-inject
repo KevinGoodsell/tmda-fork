@@ -237,7 +237,7 @@ def inject_message(resending,
     if not message_headers.has_key('message-id'):
 	message_headers['Message-ID'] = Util.make_msgid()
     # Add `X-Delivery-Agent' header.
-    message_headers['X-Delivery-Agent'] = Version.ALL
+    message_headers['X-Delivery-Agent'] = 'TMDA/%s' % Version.TMDA
     # Optionally, add an `X-TMDA-Fingerprint' header.
     if Defaults.FINGERPRINT:
 	hdrlist = []
