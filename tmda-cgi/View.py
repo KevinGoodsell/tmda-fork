@@ -226,7 +226,7 @@ width="18" height="18" alt="Last">"""
       for decoded in email.Header.decode_header( Line ):
         Headers += decoded[0] + " "
         if decoded[1]:
-          T["CharSet"] = CgiUtil.AliasCharSet(decoded[1])
+          T.set_charset( decoded[1] )
       Headers += "\n"
     T["Headers"] = '<pre class="Headers">%s</pre>' % Headers
   else:
@@ -241,7 +241,7 @@ width="18" height="18" alt="Last">"""
       for decoded in email.Header.decode_header( MsgObj.msgobj[Header] ):
         value += decoded[0] + " "
         if decoded[1]:
-          T["CharSet"] = CgiUtil.AliasCharSet(decoded[1])
+          T.set_charset( decoded[1] )
       T["Value"] = CgiUtil.Escape(value)
       HeaderRow.Add()
 
@@ -285,9 +285,6 @@ def ShowPart(Part):
   # text/html             - sterilize & display
   # other                 - show as an attachment
 
-  # Check if there's a character set for this part.
-  if Part.get_content_charset():
-    T["CharSet"] = CgiUtil.AliasCharSet(Part.get_content_charset())
 
   # Display this part
   if Part.is_multipart():
@@ -313,6 +310,9 @@ def ShowPart(Part):
     Type = Part.get_type("text/plain")
     # Display the easily display-able parts
     if Type == "text/plain":
+      # Check if there's a character set for this part.
+      if Part.get_content_charset():
+        T.set_charset( Part.get_content_charset() )
       # Escape & display
       try:
         Str = Part.get_payload(decode=1).strip()
@@ -324,6 +324,9 @@ def ShowPart(Part):
         pass
     elif Type == "text/html":
       # Sterilize & display
+      # Check if there's a character set for this part.
+      if Part.get_content_charset():
+        T.set_charset( Part.get_content_charset() )
       try:
         T["Content"] = \
           CgiUtil.Sterilize(Part.get_payload(decode=1), Allow, Remove)

@@ -160,29 +160,18 @@ def ReportToSpamCop(MsgObj):
   P.write(MsgObj.msgobj.as_string(1))
   P.close()
 
-def AliasCharSet(CharSet):
-  "Recognize a charset's alias."
-  if CharSet in ("csgb2312", "gb_2312-80", "iso-ir-58", "chinese",
-    "csiso58gb231280"):
-    CharSet = "gb2312"
-  # Is it GBK?
-  elif CharSet in ("cp936", "ms936", "windows-936"):
-    CharSet = "gbk"
-  # Is it Big5?
-  elif CharSet in ("big5-hkscs", "csbig5", "chinesebig5"):
-    CharSet = "big5"
-  return CharSet
-
 def TranslateToUTF8(CharSet, Str, Errors):
   "Represent a string in UTF-8."
+  import email.Charset
 
   if not CharSet:
     return Str
-  CharSet = AliasCharSet(CharSet)
+  CS = email.Charset.Charset( CharSet )
+  RealCharset = CS.input_charset
 
   # Find appropriate decoder
   try:
-    Decoder = codecs.getdecoder(CharSet)
+    Decoder = codecs.getdecoder(RealCharset)
   except LookupError:
     try:
       # Is it GB2312?
