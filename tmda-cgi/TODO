@@ -1,6 +1,8 @@
 Things left to do:
 ==================
 
+    * Blacklist -- optionally blacklist when you report to spamcop
+
     * Custom Filter -- action for pending emails (Requested by Lloyd Zusman)
 
     * FAQ -- should this be made a CGI?  Add help on adding whitelist &
