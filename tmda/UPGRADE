@@ -11,6 +11,8 @@ If you are upgrading from a release of TMDA < 0.59:
   Set FULLNAME in your tmda config to override the default value
   (taken from the password file).
 
+* ADDED_HEADERS has been renamed ADDED_HEADERS_CLIENT.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.57:

@@ -1,7 +1,10 @@
 2002-07-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* Defaults.py (X_TMDA_IN_SUBJECT): New variable.
+	* Defaults.py (X_TMDA_IN_SUBJECT, ADDED_HEADERS_SERVER): New
+	variables.
 
+	Renamed ADDED_HEADERS to ADDED_HEADERS_CLIENT.
+	
 2002-06-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py: New helper functions: getuid, getgid, gethomedir, and

@@ -335,6 +335,10 @@ def send_bounce(bounce_message, **vars):
             headers['Reply-To'] = vars['confirm_accept_address']
         headers['Precedence'] = 'bulk'
         headers['X-Delivery-Agent'] = 'TMDA/%s' % Version.TMDA
+        # Optionally, add some headers.
+        if Defaults.ADDED_HEADERS_SERVER:
+            for hdr in Defaults.ADDED_HEADERS_SERVER.keys():
+                headers[hdr] = Defaults.ADDED_HEADERS_SERVER[hdr]
         body = bounce_message.read()
         Util.sendmail(headers, body,
                       envelope_sender, Defaults.BOUNCE_ENV_SENDER)

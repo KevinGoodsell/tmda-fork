@@ -1,5 +1,7 @@
 2002-07-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-rfilter (send_bounce): Consult ADDED_HEADERS_SERVER.
+
 	* tmda-inject (main): Optionally parse the Subject: header for
 	X-TMDA override actions.
 

@@ -849,7 +849,7 @@ if not vars().has_key('PENDING_RELEASE_APPEND'):
 if not vars().has_key('PENDING_WHITELIST_APPEND'):
     PENDING_WHITELIST_APPEND = None
 
-# ADDED_HEADERS
+# ADDED_HEADERS_CLIENT
 # A Python dictionary containing one or more header:value string pairs
 # that should be added to _all_ outgoing client-side messages (i.e,
 # messages sent with tmda-sendmail) prior to injection.  Listed
@@ -861,9 +861,9 @@ if not vars().has_key('PENDING_WHITELIST_APPEND'):
 #
 # Examples:
 #
-# ADDED_HEADERS = {"X-Fact" : "Father Hennepin Discovered Niagra Falls"}
+# ADDED_HEADERS_CLIENT = {"X-Fact" : "Father Hennepin Discovered Niagra Falls"}
 # import time, os, random
-# ADDED_HEADERS = {
+# ADDED_HEADERS_CLIENT = {
 #     "X-Localtime" : time.asctime(),
 #     "X-Favorite-Author" : "James Joyce",
 #     "X-OperatingSystem" : os.uname()[0],
@@ -875,8 +875,20 @@ if not vars().has_key('PENDING_WHITELIST_APPEND'):
 #     }
 #
 # No default
-if not vars().has_key('ADDED_HEADERS'):
-    ADDED_HEADERS = None
+if not vars().has_key('ADDED_HEADERS_CLIENT'):
+    ADDED_HEADERS_CLIENT = None
+
+# ADDED_HEADERS_SERVER
+# A Python dictionary containing one or more header:value string pairs
+# that should be added to _all_ outgoing server-side messages (i.e,
+# messages sent with tmda-filter) prior to injection.  Listed
+# headers and their values are case-sensitive.
+#
+# See ADDED_HEADERS_CLIENT (above) for some examples.
+#
+# No default
+if not vars().has_key('ADDED_HEADERS_SERVER'):
+    ADDED_HEADERS_SERVER = None
 
 # PURGED_HEADERS
 # A list containing one or more message headers that should be removed
