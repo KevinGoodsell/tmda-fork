@@ -16,10 +16,11 @@ Packager: Ron Bickers <rbickers@logicetc.com>
 Url: http://tmda.sourceforge.net/
 
 %description
-TMDA is an OSI certified software application designed to significantly
-reduce (or eliminate) the amount of SPAM/UCE you receive by using unique,
-cryptographically enhanced (tagged) e-mail addresses. TMDA can both filter
-your incoming e-mail, and tag your outgoing address.
+TMDA is an OSI certified software application designed to
+significantly reduce the amount of SPAM/UCE (junk-mail) you receive.
+TMDA combines a "whitelist" (for known/trusted senders), a "blacklist"
+(for undesired senders), and a cryptographically enhanced confirmation
+system (for unknown, but legitimate senders).
 
 %prep
 %setup
@@ -50,6 +51,9 @@ rm -rf %{buildroot}
 %doc ChangeLog COPYRIGHT CRYPTO FAQ INSTALL README THANKS TODO UPGRADE contrib/ doc/
 
 %changelog
+
+* Fri Sep 21 2001 Jason R. Mastaler <jason@mastaler.com>
+  - Updated %description.
 
 * Wed Sep 12 2001 Jason R. Mastaler <jason@mastaler.com>
   - Updated %build to call "compileall" instead of "setup".
