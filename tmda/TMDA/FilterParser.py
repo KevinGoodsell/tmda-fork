@@ -434,10 +434,7 @@ class FilterParser:
         sub = None
         # First, check the Defaults namespace.
         import Defaults
-        try:
-            sub = getattr(sys.modules['Defaults'], var)
-        except AttributeError:
-            pass
+        sub = Defaults.__dict__.get(var, None)
         # Then, try the environment.
         if not sub:
             sub = os.environ.get(var)

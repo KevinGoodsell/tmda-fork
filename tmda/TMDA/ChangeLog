@@ -1,3 +1,8 @@
+2002-08-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py (FilterParser.__findvarsub): Query the Defaults
+	vardict when checking the namespace.
+	
 2002-08-06  Tim Legant  <tim@catseye.net>
 
 	* FilterParser.py: Added macro substitution and variable
