@@ -423,7 +423,11 @@ def main():
                     if interactive:
                         count = count - 1
                         msgs.insert(msgs.index(msg), msg)
-                    
+                        if cache:
+                            # remove message from cache, or else we
+                            # won't be prompted for it again
+                            msgcache.remove(msg)
+                        
     if cache:
         # Trim tail entries off if necessary, and then save the cache.
         msgcache = msgcache[:Defaults.PENDING_CACHE_LEN]
