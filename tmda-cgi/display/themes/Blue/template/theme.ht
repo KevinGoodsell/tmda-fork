@@ -11,7 +11,7 @@ Title: Theme Selection
         <tr>
           <td align="center"><a
 href="%(Script)s?cmd=theme&subcmd=%(Name)s&SID=%(SID)s"><img
-src="%(ThemeDir)s/../%(Name)s/theme.png" alt="%(Name)s" title="%(Name)s" width="200" height="87" 
+src="%(ThemeDir)s/../%(Name)s/theme.png" alt="%(Name)s" title="%(Name)s" width="200" height="87"
 border="0"></a><br>
 %(Name)s</td>
         </tr>
@@ -37,8 +37,10 @@ border="0"></a><br>
 <!-- var: FormVars="General:UseJSConfirm:Yes:No,
   ViewPending:AltPref:text/plain:text/html,
   ViewPending:EmailClass:proportional:fixed, PendingList:PagerSize,
-  PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db, PendingList:CropSender,
-  PendingList:CropSubject, ViewPending:AllowTags, ViewPending:BlockRemove" -->
+  PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db,
+  Login:InitPage:pending:gen_addr, PendingList:CropSender,
+  PendingList:CropSubject, PendingList:ShowAddr:Name:Address:All,
+  ViewPending:AllowTags, ViewPending:BlockRemove" -->
 <table>
   <form method="post" action="%(Script)s">
     <tr>
@@ -75,6 +77,19 @@ border="0"></a><br>
       <td>&nbsp;</td>
       <td>Number of pending e-mails to show in list form</td>
     </tr>
+:Name:Address:All
+    <tr>
+      <td align="center"><select name="PendingListShowAddr">
+          <option %(PendingListShowAddrNameSelected)s
+            value="Name">Name</option>
+          <option %(PendingListShowAddrAddressSelected)s
+            value="Address">Address</option>
+          <option %(PendingListShowAddrAllSelected)s
+            value="All">All</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Addresses display method in pending list.</td>
+    </tr>
     <tr>
       <td align="center"><select name="PendingListDateFormat">
           <option %(PendingListDateFormataZmZdSelected)s
@@ -89,7 +104,17 @@ border="0"></a><br>
             value="%d %b">05 Apr</option>
         </select></td>
       <td>&nbsp;</td>
-      <td>Font to use when viewing e-mails</td>
+      <td>Date format to use in pending list.</td>
+    </tr>
+    <tr>
+      <td align="center"><select name="LoginInitPage">
+          <option %(LoginInitPagependingSelected)s
+            value="pending">PendList</option>
+          <option %(LoginInitPagegen_addrSelected)s
+            value="gen_addr">GenAddr</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Date format to use in pending list.</td>
     </tr>
     <tr>
       <td align="center"><input type="text" name="PendingListCropSender"

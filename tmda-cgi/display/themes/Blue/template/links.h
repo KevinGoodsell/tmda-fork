@@ -12,10 +12,9 @@
 <h3>Lists</h3>
 <li><a href="%(Script)s?cmd=editlist&SID=%(SID)s">%(Lists)s</a>
 <h3>Settings</h3>
+<li><a href="%(Script)s?cmd=theme&SID=%(SID)s">Theme</a>
 <li><a href="%(Script)s?cmd=localconfig&SID=%(SID)s">Local Config</a>
 <li><a href="%(Script)s?cmd=globalconfig&SID=%(SID)s">Global Config</a>
-<li><a href="%(Script)s?cmd=theme&SID=%(SID)s">Theme</a>
-<li><a href="%(Script)s?cmd=password&SID=%(SID)s">Change Password</a>
 <li><a href="%(Script)s?cmd=uninstall&SID=%(SID)s">Uninstall</a>
 <h3>Info</h3>
 <li><a href="%(Script)s?cmd=info&SID=%(SID)s"></a>

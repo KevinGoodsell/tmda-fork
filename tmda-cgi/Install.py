@@ -104,13 +104,16 @@ Return 0 on success, error code on error."""
   TarCmd = "%s -C %s -czf %s %s" % (PVars[("NoOverride", "WhichTar")],
     os.environ["HOME"], Archive, " ".join(Files))
   RetVal = os.system(re.sub("([\(\)])", r"\\\1", TarCmd))
+  if RetVal:
+    CgiUtil.TermError("CreateTgz failed.", "Errcode: %D" % RetVal,
+      "create backup", re.sub("([\(\)])", r"\\\1", TarCmd),
+      "Check file permissions in home directory.")
   for (DstFn, SrcFn) in Parents:
     os.rename(SrcFn, DstFn)
   try:
     os.rmdir(os.path.join(os.environ["HOME"], "%(Parent)s"))
   except OSError:
     pass
-  return RetVal
 
 def ReadTgz(Archive):
   "Return the files listed in an archive."
@@ -253,10 +256,7 @@ def Install():
   Backup = os.path.join(os.environ["HOME"],
     PVars[("NoOverride", "InstallBackupTGZ")])
   if len(FilesClobbered):
-    if CreateTgz(Backup, FilesClobbered):
-      CgiUtil.TermError("Install aborted.", "Unable to backup files.",
-        "create backup", CgiUtil.FileDetails("backup", Backup),
-        "Check file permissions in home directory.")
+    CreateTgz(Backup, FilesClobbered):
   elif os.path.isfile(Backup):
     os.unlink(Backup)
     Backup = None
@@ -322,10 +322,7 @@ def Uninstall():
   # Archive the files
   Backup = os.path.join(os.environ["HOME"],
     PVars[("NoOverride", "UninstallBackupTGZ")])
-  if CreateTgz(Backup, RemoveFiles):
-    CgiUtil.TermError("Uninstall aborted.", "Unable to backup files.",
-      "create backup", CgiUtil.FileDetails("backup", Backup),
-      "Check file permissions in home directory.")
+  CreateTgz(Backup, RemoveFiles):
 
   # Erase files
   for File in RemoveFiles:
@@ -478,10 +475,7 @@ def Restore():
   Backup = os.path.join(os.environ["HOME"],
     PVars[("NoOverride", "InstallBackupTGZ")])
   if len(FilesClobbered):
-    if CreateTgz(Backup, FilesClobbered):
-      CgiUtil.TermError("Install aborted.", "Unable to backup files.",
-        "create backup", CgiUtil.FileDetails("backup", Backup),
-        "Check file permissions in home directory.")
+    CreateTgz(Backup, FilesClobbered):
   elif os.path.isfile(Backup):
     os.unlink(Backup)
     Backup = None

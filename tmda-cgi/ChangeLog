@@ -1,3 +1,27 @@
+2003-05-02  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Removed unimplemented change password menu item.  Re-arranged theme
+	  option.
+
+	* Added a form mode where users can change a bunch of stuff without
+	  editing the config file.
+
+	* Added a To parameter to the pending list which can be put in
+	  templates to display who the e-mail was to.
+
+	* Added a selectable way to pick which page is shown first after login,
+	  "pending" or "gen_addr".
+
+	* Don't use environment variable TMDA_VUSER if no virtual users are on
+	  the system.
+
+2003-05-01  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added a setting which displays either name, address, or both in the
+	  pending list.
+
+	* Do not save config file if it has a syntax error in it.
+
 2003-04-30  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Added a preference as to which equivilant part of an e-mail you would

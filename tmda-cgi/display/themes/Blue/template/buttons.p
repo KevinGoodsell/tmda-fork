@@ -33,42 +33,40 @@ aS'Outgoing Filter'
 p17
 aS'Test Filters'
 p18
-aS'Local Config'
-p19
-aS'Global Config'
-p20
 aS'Theme'
+p19
+aS'Local Config'
+p20
+aS'Global Config'
 p21
-aS'Change Password'
-p22
 aS'Uninstall'
-p23
+p22
 aS'whitelist'
-p24
+p23
 aS'white'
-p25
+p24
 aS'blacklist'
-p26
+p25
 aS'black'
-p27
+p26
 aS'confirmed'
-p28
+p27
 aS'confirm'
-p29
+p28
 aS'revoked'
-p30
+p29
 aS'work'
-p31
+p30
 aS'family'
-p32
+p31
 aS'friends'
-p33
+p32
 aS'accept'
-p34
+p33
 aS'deny'
-p35
+p34
 aS'whitelist_confirmed'
-p36
+p35
 aS'other'
-p37
+p36
 as.

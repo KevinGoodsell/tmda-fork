@@ -34,7 +34,7 @@ from TMDA import Pending
 
 # Pre-calc the regular expressions
 GoodFN     = re.compile("^\d+\.\d+\.msg$")
-Address    = re.compile("^(.+) +<.+>")
+Address    = re.compile("^(.+) +<(.+)>")
 ZeroSearch = re.compile("Z-0*(\d)")
 ZeroSub    = r"\1"
 
@@ -221,13 +221,34 @@ width="18" height="18" alt="Last">"""
         From = MsgObj.msgobj["from"]
         Temp = Address.search(From)
         if Temp:
-          From = Temp.group(1)
-      if len(From) > PVars[("PendingList", "CropSender")]:
-        From = \
-          cgi.escape(From[:PVars[("PendingList", "CropSender")] - 1]) + "&#8230;"
+          if PVars[("PendingList", "ShowAddr")] == "Name":
+            From = Temp.group(1)
+          if PVars[("PendingList", "ShowAddr")] == "Address":
+            From = Temp.group(2)
+      if len(From) > int(PVars[("PendingList", "CropSender")]):
+        From = cgi.escape(From[:int(PVars[("PendingList", "CropSender")]) -
+          1]) + "&#8230;"
       else:
         From = cgi.escape(From)
       T["Sender"] = From
+
+      # To:
+      if not MsgObj.msgobj["to"]:
+        To = ""
+      else:
+        To = MsgObj.msgobj["to"]
+        Temp = Address.search(To)
+        if Temp:
+          if PVars[("PendingList", "ShowAddr")] == "Name":
+            To = Temp.group(1)
+          if PVars[("PendingList", "ShowAddr")] == "Address":
+            To = Temp.group(2)
+      if len(To) > int(PVars[("PendingList", "CropDest")]):
+        To = cgi.escape(To[:int(PVars[("PendingList", "CropDest")]) -
+          1]) + "&#8230;"
+      else:
+        To = cgi.escape(To)
+      T["Sender"] = To
 
       if PVars["InProcess"].has_key(Msg):
         InProcess.Clear()

@@ -12,7 +12,11 @@ Things left to do:
                           include the appropriate language identifiers in the
                           viewer
 
+    * Read -- mark all messages read button perhaps?
+
     * SpamCop -- an option to delete/blacklist/forward to SpamCop
+
+    * tmda-cgi dir -- catch bad tmda-cgi directory
 
     * Tutorial -- someone should write one
 

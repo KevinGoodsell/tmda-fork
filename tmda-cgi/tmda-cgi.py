@@ -82,8 +82,9 @@ try:
       CgiUtil.TermError("crypt_key permissions.", "Bad permissions.",
         "reading crypt_key", ErrStr, "Fix permissions on crypt_key.")
 except CgiUtil.JustLoggedIn, (ErrStr, PVars):
-  PVars["Pager"]     = 0
-  PVars["InProcess"] = {}
+  PVars["Pager"]       = 0
+  PVars["InProcess"]   = {}
+  PVars["LocalConfig"] = "Form"
   PVars.Save()
 
 # First visit to any page?
@@ -120,7 +121,7 @@ elif Form.has_key("cmd"):
   import TestAddr
   import Theme
   import View
-  
+
   # Share "globals"
   CgiUtil.PVars     = PVars
   EditFilter.PVars  = PVars
@@ -142,42 +143,45 @@ elif Form.has_key("cmd"):
   Theme.Form        = Form
   View.PVars        = PVars
   View.Form         = Form
-  
+
+  Cmd = Form["cmd"].value
+  if Cmd == "init":
+    Cmd = PVars[("Login", "InitPage")]
+
   # View?
-  if Form["cmd"].value in ("incoming", "outgoing"):
+  if Cmd in ("incoming", "outgoing"):
     EditFilter.Show()
-  elif Form["cmd"].value[:8] == "editlist":
+  elif Cmd[:8] == "editlist":
     EditList.Show()
-  elif Form["cmd"].value == "gen_addr":
+  elif Cmd == "gen_addr":
     GenAddr.Show()
-  elif Form["cmd"].value == "globalconfig":
+  elif Cmd == "globalconfig":
     GlobalConfig.Show()
-  elif Form["cmd"].value == "info":
+  elif Cmd == "info":
     Info.Show()
-  elif Form["cmd"].value == "install":
+  elif Cmd == "install":
     pass
-  elif Form["cmd"].value == "localconfig":
+  elif Cmd == "localconfig":
     LocalConfig.Show()
-  elif Form["cmd"].value == "pending":
+  elif Cmd == "pending":
     PendList.Show()
-  elif Form["cmd"].value == "restore":
+  elif Cmd == "restore":
     pass
-  elif Form["cmd"].value == "uninstall":
+  elif Cmd == "uninstall":
     Install.Show()
-  elif Form["cmd"].value == "view":
+  elif Cmd == "view":
     try:
       View.Show()
     except Errors.MessageError:  # No messages left?
       PendList.Show()
-  elif Form["cmd"].value == "test_addr":
+  elif Cmd == "test_addr":
     TestAddr.Show()
-  elif Form["cmd"].value == "theme":
+  elif Cmd == "theme":
     Theme.Show()
   else:
     CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
-      Form["cmd"].value, "interpret command", "", "Please be patient while "
-      "we release newer versions of the code which will implement this "
-      "function.")
+      Cmd, "interpret command", "", "Please be patient while we release newer "
+      "versions of the code which will implement this function.")
 
 else:
   CgiUtil.TermError("No command instruction.", "Program bug.",
