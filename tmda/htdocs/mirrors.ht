@@ -3,14 +3,27 @@ Links: overview-links.h usage-links.h support-links.h
 
 <h3>TMDA Mirrors</h3>
 
-These web pages are mirrored in several locations for your
-convenience. Here are the current list of mirrors: 
+
+These web pages are mirrored from <a href="http://www.tmda.net/">www.tmda.net</a>
+in several locations for your convenience. Here are the current list of mirrors: 
 <br><br>
 
-North America
+<li>North America
 <ul>
+
+United States
+<ul>
+
+<li><a href="http://www.us.tmda.net/" TARGET="Resource Window">
+www.us.tmda.net</a> (SourceForge)<br>
+
 <li><a href="http://tmda.mirrors.summersault.com/" TARGET="Resource Window">
-tmda.mirrors.summersault.com</a> (United States)<br>
+tmda.mirrors.summersault.com</a><br>
+
+<li><a href="http://mirrors.standblue.net/tmda.net/" TARGET="Resource Window">
+mirrors.standblue.net/tmda.net</a><br>
+
+</ul>
 
 </ul>
 
