@@ -30,7 +30,7 @@ import time
 
 import Version
 import Util
-
+import Errors
 
 ## FIXME: debug stuff should be in it's own module
 class Devnull:
@@ -230,9 +230,13 @@ def pipecmd(command, *strings):
 
 def run_authprog(username, password):
     """authprog should return 0 for auth ok, and a positive integer in
-    case of a problem."""
+    case of a problem.  Return 1 upon successful authentication, and 0
+    otherwise."""
     print >> DEBUGSTREAM, "Trying authprog method"
-    return pipecmd('%s' % authprog, '%s\0%s\0' % (username, password))
+    cmd = "/bin/sh -c 'exec %s 3<&0'" % authprog
+    authResult = pipecmd(cmd, '%s\0%s\0' % (username, password))
+    print >> DEBUGSTREAM, "'%s' returned %d" % (authprog, authResult)
+    return authResult == 0
 
 def run_remoteauth(username, password):
     """Authenticate username/password combination against a remote
@@ -248,13 +252,15 @@ def run_remoteauth(username, password):
             port = int(remoteauth['port'])
         M = imaplib.IMAP4(remoteauth['host'], port)
         try:
-            M.login(username, password)
-            M.logout()
-            M.close()
-            return 1
-        except:
+            (type, data) = M.login(username, password)
+            print >> DEBUGSTREAM, "Login response: %s %s" % (type, data)
+            retVal = ( type == 'OK' )
+            (type, data) = M.logout()
+            print >> DEBUGSTREAM, "Logout response: %s %s" % (type, data)
+            return retVal
+        except IMAP4.error, err:
             print >> DEBUGSTREAM, "imap authentication for %s@%s failed" % \
-                  (username, remoteauth['host'])
+                  (username, remoteauth['host'], err)
             return 0
     elif remoteauth['proto'] == 'imaps':
         import imaplib
@@ -262,12 +268,16 @@ def run_remoteauth(username, password):
             port = int(remoteauth['port'])
         M = IMAP4_SSL(remoteauth['host'], port)
         try:
-            M.login(username, password)
+            (type, data) = M.login(username, password)
+            print >> DEBUGSTREAM, "Login response: %s %s" % (type, data)
+            retVal = ( type == 'OK' )
             M.logout()
-            return 1
-        except:
-            print >> DEBUGSTREAM, "imaps authentication for %s@%s failed" % \
-                  (username, remoteauth['host'])
+            (type, data) = M.logout()
+            print >> DEBUGSTREAM, "Logout response: %s %s" % (type, data)
+            return retVal
+        except IMAP4_SSL.error, err:
+            print >> DEBUGSTREAM, "imaps authentication for %s@%s failed: %s" % \
+                  (username, remoteauth['host'], err)
             return 0
     elif remoteauth['proto'] in ('pop3', 'apop'):
         import poplib
@@ -284,9 +294,9 @@ def run_remoteauth(username, password):
                 M.apop(username, password)
                 M.quit()
                 return 1
-        except:
-            print >> DEBUGSTREAM, "%s authentication for %s@%s failed" % \
-                  (remoteauth['proto'], username, remoteauth['host'])
+        except poplib.error_proto, err:
+            print >> DEBUGSTREAM, "%s authentication for %s@%s failed: %s" % \
+                  (remoteauth['proto'], username, remoteauth['host'], err)
             return 0
     elif remoteauth['proto'] == 'ldap':
         import ldap
@@ -310,15 +320,20 @@ def run_remoteauth(username, password):
 def authenticate_plain(username, password, type=None):
     if type == None:
         type = authtype
-    if type == 'remote':
-        return run_remoteauth(username, password)
-    if type == 'prog':
-        return run_authprog(username, password)
-    if type == 'file':
-        ## FIXME: implement /etc/tofmipd auth
-        return 0
+    try:
+      if type == 'remote':
+          return run_remoteauth(username, password)
+      if type == 'prog':
+          return run_authprog(username, password)
+      if type == 'file':
+          ## FIXME: implement /etc/tofmipd auth
+          return 0
+    except:
+      return 0
     
-    raise AuthError, "Unknown authentication type '%s'." % type
+    raise Errors.AuthError, \
+      "Unknown authentication type '%s'." % type, \
+      "Ensure that Auth.authtype is set to 'remote' 'prog' or 'file'"
 
 def authfile2dict(authfile):
     """Iterate over a tmda-ofmipd authentication file, and return a

@@ -67,3 +67,15 @@ class QueueError(TMDAError):
 
 class MessageError(QueueError):
     pass
+
+class AuthError(TMDAError):
+    """Authentication Errors""" 
+    def __init__(self, errmsg = 'Authentication Error', helpmsg = ''):
+        self.msg = errmsg
+        self.help = helpmsg
+
+    def __repr__(self):
+        if self.help == '':
+          return '%s: %s' % (self.__class__, self.msg)
+        else:
+          return '%s: %s\n(%s)' % (self.__class__, self.msg, self.help)
