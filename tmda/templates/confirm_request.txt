@@ -14,4 +14,4 @@ to the following address, or use your mailer's "Reply" feature.
    %(confirm_accept_address)s
 
 This confirmation verifies that your message is legitimate and not
-junk-mail.
+junk-mail. You should only have to confirm your address once.
