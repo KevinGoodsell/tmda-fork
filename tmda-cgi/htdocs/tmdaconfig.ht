@@ -1,0 +1,36 @@
+Title: TMDA Configuration Files
+
+<h3><a name="Config"></a>TMDA Configuration Files</h3>
+<p>TMDA is configured with a global file (located at <tt>/etc/tmdarc</tt>) and
+  local files for each user (generally located at
+  <tt>~user/.tmda/config</tt>).</p>
+<p>The contents of these files is described in depth on the <a
+  href="/config-vars.html">TMDA Configuration Variables</a> web page. tmda-cgi
+  specific variables are the variables beginning with "CGI_". The definitions of
+  these are also listed below, for your convenience:</p>
+
+<h4><a name="CGI_SETTINGS"></a>CGI_SETTINGS</h4>
+<blockquote>
+  <p>Filename for saving <a href="userpref.html">various tmda-cgi settings</a>.
+    This filename can include a full path, otherwise it is relative the user's
+    config file. No error will be reported if this file does not exist.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>CGI_SETTINGS = "/home/jim/.tmda/MyCGISettings"</td>
+      </tr>
+    </table>
+  <p>Default is "<tt>tmda-cgi.ini</tt>".</p>
+</blockquote>
+
+<h4><a name="CGI_URL"></a>CGI_URL</h4>
+<blockquote>
+  <p>Absolute URL of your tmda-cgi installation.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>CGI_URL = "http://www.domain.dom/cgi-bin/tmda.cgi"</td>
+      </tr>
+    </table>
+  <p>No default.</p>
+</blockquote>

@@ -1,0 +1,78 @@
+Title: Auto-installation & Auto-uninstallation
+
+<h2>Auto-install</h2>
+
+<p>tmda-cgi is now capable of autoinstalling TMDA on user accounts.</p>
+
+<p><b><i>TMDA must already be installed on the server.</i></b></p>
+
+<p>This feature does not install TMDA, but configures an already existing e-
+  mail account so it will work with TMDA.</p>
+
+<p>To use this feature, the user need only log in to tmda-cgi (<a 
+  href="auth.html#ProgAuth">program</a> or <a 
+  href="auth.html#RemtAuth">remote</a> authentication is strongly recommended 
+  if you wish to use auto-install) and click "Sign up.", however, the system 
+  administrator will need to verify how the installation will be done 
+  beforehand!</p>
+
+<h3><a name="Skel"></a><tt>skel</tt></h3>
+
+<p>Before allowing users to auto-install or auto-uninstall, carefully check 
+  over each file in the <tt>skel/install</tt> directory. These files will be 
+  copied to the user's directory upon installation.</p>
+
+<p><b><i>Important note:</i></b> The <tt>skel</tt> directories included with 
+  tmda-cgi were designed for servers running <a 
+  href="http://cr.yp.to/qmail.html">qmail</a>.  If you use a different mail 
+  server package, do <b><i>not</i></b> use the files as-is! You should look 
+  through these files and see how they work, but you will need to create a 
+  totally different set of <tt>skel</tt> files.
+
+<p><tt>skel</tt> files allow for variable substitution. All of the following
+  text strings, if found in the file or filename, will be replaced with the
+  following:</p>
+
+<table cellpadding="7">
+  <tr>
+    <td valign="top" nowrap><b><tt>%(Base)s</tt></b></td>
+    <td>The path to TMDA's root directory.</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(CryptKey)s</tt></b></td>
+    <td>A new valid, random, cryptographic key.</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(Home)s</tt></b></td>
+    <td>The path to the user's home directory.</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(Parent)s</tt></b></td>
+    <td>The constant string "<tt>..</tt>".</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(User)s</tt></b></td>
+    <td>The user's login name, or the left-most portion (before the "@") of the 
+      user's e-mail address in the case of virtual users.</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(VPop)s</tt></b></td>
+    <td>The path to the virtual user's home directory (for example: 
+      <tt>/home/vpopmail</tt>).</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(VPopBin)s</tt></b></td>
+    <td>The path to the virtual user's bin directory (for example: 
+      <tt>/home/vpopmail/bin</tt>).</td>
+  </tr>
+</table>
+
+<p>If you need to put a "%" in one of the <tt>skel</tt> files, you will have to 
+  type "%%" instead.  This will prevent errors during the install process.</p>
+
+<p>In addition to a <tt>skel/install</tt> directory, there is also a 
+  <tt>skel/uninstall</tt> directory.  If you have any files which should be 
+  installed after the uninstall process is complete, you may place skeletons 
+  for them files here. For example, qmail users should add a
+  <tt>.qmail-default</tt> file after uninstallation so that any future mail 
+  that comes in for a tagged address will still be accepted.</p>

@@ -1,0 +1,30 @@
+Title: Theme-based Defaults
+
+<h3><a name="Theme"></a>Theme-based Defaults</h3>
+<p>Each theme may optionally override the settings in <a
+  href="defaults.html"><tt>defaults.ini</tt></a> with its own "defaults" file.
+  This file is located at <tt>display/themes/&lt;theme&gt;/theme.ini</tt> off
+  of tmda-cgi's root directory. No error will be reported if this file does not
+  exist.</p>
+<p>The format and variables supported is identical to that of the
+  <tt>defaults.ini</tt> file. <tt>theme.ini</tt> may not override any variables
+  in the <tt>[NoOverride]</tt> section. Additional variables allowed in
+  <tt>theme.ini</tt> are:</p>
+
+<table width="100%">
+  <tr>
+    <td><a href="#ThemeInfo">Theme:Info</a></td>
+  </tr>
+</table>
+
+<h4><a name="ThemeInfo"></a>Theme:Info</h4>
+<blockquote>
+  <p>General information on the theme.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[Theme]<br>
+          Info = &amp;copy;2003 Graham Chapman, all rights reserved.</td>
+      </tr>
+    </table>
+</blockquote>
