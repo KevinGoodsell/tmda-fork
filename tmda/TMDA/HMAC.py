@@ -13,8 +13,6 @@ For all the relevant papers and RFCs see:
 <http://www-cse.ucsd.edu/users/mihir/papers/hmac.html>
 """
 
-import string
-
 # For MD5         #  For SHA-1
 ####################################
 # import md5      #  import sha
@@ -31,8 +29,7 @@ _ipad="\x36"*_B
 _opad="\x5C"*_B
 
 def _strxor(a,b):
-    #return "".join(map(lambda x,y: chr(ord(x) ^ ord(y)),a,b))
-    return string.join(map(lambda x,y: chr(ord(x) ^ ord(y)),a,b), '')
+    return "".join(map(lambda x,y: chr(ord(x) ^ ord(y)),a,b))
         
 class hmac:
     "RFC2104 HMAC class"
