@@ -25,7 +25,9 @@ Contributions:
      
     * Francisco Sam Castillo -- QAdmin-TMDA web management utility.
 
-    * Arcady Genkin -- creator/maintainer of the Gentoo Linux Package.
+    * Vincent Danen -- Mandrake Linux RPMs.
+
+    * Arcady Genkin -- Gentoo Linux Package.
 
     * Lou Hevly -- documentation (vpopmail tutorial).
 
@@ -34,9 +36,15 @@ Contributions:
     * Tim Legant -- support for multi-line, multi-action filter files,
       and from/to-autocdb.
 
-    * Adam McKenna -- creator/maintainer of the Debian package.
+    * Adam McKenna -- Debian package.
 
     * Ted Rathkopf -- support for "pre-extension" definitions in
       /var/qmail/users/assign (now depreciated).
 
     * Reuben Sumner -- the HMAC.py module.
+
+--------------
+^L
+Local Variables:
+mode: text
+End:
