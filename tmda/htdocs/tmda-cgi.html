@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Dec  7 12:18:55 2002 -->
+<!-- Sat Dec  7 12:32:51 2002 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -678,11 +678,27 @@ ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
 <p>To supply a confirmation URL, simply use the <tt>%(confirm_accept_url)s</tt> 
   variable in <tt>confirm_request.txt</tt> as shown in <a href="#nosuExample">Centralized 
   no-su setup</a>.</p>
-<p><em><strong>Note:</strong></em> Be sure you set <a href="config-vars.html#CGI_ACTIVE"><tt>CGI_ACTIVE</tt></a>, 
-  <a href="config-vars.html#CGI_ACTIVE"><tt>CGI_ACTIVE</tt></a>, and <a href="config-vars.html#CGI_ACTIVE"><tt>CGI_ACTIVE</tt></a> 
-  before modifying your template! No confirmation e-mails will be sent if you 
-  specify a <tt>%(confirm_accept_url)</tt> until these three variables are properly 
-  configured. Always test your configuration after making a change to your templates.</p>
+<p><em><strong>Notes:</strong></em></p>
+<ul>
+  <li>Be sure you set <a href="config-vars.html#CGI_ACTIVE"><tt>CGI_ACTIVE</tt></a>, 
+    <a href="config-vars.html#CGI_URL"><tt>CGI_URL</tt></a>, and <a href="config-vars.html#TEMPLATE_DIR"><tt>TEMPLATE_DIR</tt></a> 
+    before modifying your template! No confirmation e-mails will be sent if you 
+    specify a <tt>%(confirm_accept_url)</tt> until these variables are properly 
+    configured.<br>
+  </li>
+  <li>Always test your configuration after making a change to your templates.<br>
+  </li>
+  <li>Your crypt_key file must be readible by tmda-cgi to use this feature. 
+    <p>This is not and issue if you are running in system-wide orf single-user 
+      modes, but in no-su mode, you will have to:</p>
+  </li>
+  <ul>
+    <li>Put crypt_key in the CGI's group.</li>
+    <li>Assign crypt_key 640 permissions.</li>
+    <li>Turn on <a href="config-vars.html#ALLOW_MODE_640">ALLOW_MODE_640</a>.<br>
+    </li>
+  </ul>
+</ul>
 
 </td><!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
