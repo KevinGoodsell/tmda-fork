@@ -549,6 +549,10 @@ def Show():
   elif Form["cmd"].value == "restore":
     Restore()  # Does not return.
   elif Form["cmd"].value == "uninstall":
+    self[("NoOverride", "MayInstall")][0].lower() == "n":
+      CgiUtil.TermError("No permission.",
+        "Uninstallation disabled by sysadmin.", "uninstall",
+        "", "Contact system administrator.")
     if Form.has_key("subcmd"):
       try:
         ReleaseAndDelete(int(Form["release"].value))

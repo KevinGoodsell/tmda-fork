@@ -1,5 +1,7 @@
 2003-05-03  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Added override.py for overriding user variables.  See docs.
+
 	* Automatically detect web user.  No longer needs to be set in compile.
 
 	* Added a mechanism for reporting spam to SpamCop.
@@ -29,9 +31,6 @@
 	  the system.
 
 2003-05-01  Gre7g Luterman  <gre7g@wolfhome.com>
-
-	* Added a setting which displays either name, address, or both in the
-	  pending list.
 
 	* Do not save config file if it has a syntax error in it.
 
