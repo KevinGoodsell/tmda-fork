@@ -1,3 +1,11 @@
+2003-05-13  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Replaced standard Python iso-8859-1 decoder with my own that seems
+	  to work better.
+
+	* Removed some Python 2.2 dependencies.  Seems to work fine with 2.1
+	  now.
+
 2003-05-06  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Display international characters in both pending lists and e-mails.
