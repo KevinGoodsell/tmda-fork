@@ -36,6 +36,7 @@ from LinkFixer import LinkFixer
 sitelinks = [
     ('%(rootdir)s/index.html', 'TMDA Homepage', '<br>[\
     <a href="http://www.au.tmda.net/">AU</a> |\
+    <a href="http://www.de.tmda.net/">DE</a> |\
     <a href="http://www.pl.tmda.net/">PL</a> |\
     <a href="http://www.us.tmda.net/">US</a> \
     mirror ]'),
