@@ -1,3 +1,9 @@
+2001-12-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (DELIVERY_AGENT): Modify DELIVERY_AGENT to use
+	distutils.util.get_platform() if available which is more
+	descriptive than sys.platform.
+	
 2001-12-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py: Only import time once at the toplevel.
