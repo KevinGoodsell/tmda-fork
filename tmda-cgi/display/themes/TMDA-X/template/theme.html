@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Mar 18 11:54:05 2004 -->
+<!-- Fri Mar 19 08:52:04 2004 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -43,11 +43,11 @@ cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0">
 <tr><td class="sidebar"><A href="%(Script)s?cmd=incoming&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Filters</a></td></tr>
 <tr><td class="sidebar"><A href="%(Script)s?cmd=editlist&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Lists</a></td></tr>
 <tr><td class="sidebar"><A href="%(Script)s?cmd=theme&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Settings</a></td></tr>
-<tr class="sidebar"><td><span class="sidebarActive"><li>Theme</span></td></tr>
-<tr class="sidebar"><td><a href="%(Script)s?cmd=localconfig&SID=%(SID)s" class="sidebarSubLink"><li>Local Config</a></td></tr>
-<tr class="sidebar"><td><a href="%(Script)s?cmd=templates&SID=%(SID)s" class="sidebarSubLink"><li>Templates</a></td></tr>
-<tr class="sidebar"><td><a href="%(Script)s?cmd=globalconfig&SID=%(SID)s" class="sidebarSubLink"><li>Global Config</a></td></tr>
-<tr class="sidebar"><td><a href="%(Script)s?cmd=uninstall&SID=%(SID)s" class="sidebarSubLink"><li>Uninstall</a></td></tr>
+<tr class="sidebar"><td><span class="sidebarActive%(SidebarSize)s"><li>Theme</span></td></tr>
+<tr class="sidebar"><td><a href="%(Script)s?cmd=localconfig&SID=%(SID)s" class="sidebarSubLink%(SidebarSize)s"><li>Local Config</a></td></tr>
+<tr class="sidebar"><td><a href="%(Script)s?cmd=templates&SID=%(SID)s" class="sidebarSubLink%(SidebarSize)s"><li>Templates</a></td></tr>
+<tr class="sidebar"><td><a href="%(Script)s?cmd=globalconfig&SID=%(SID)s" class="sidebarSubLink%(SidebarSize)s"><li>Global Config</a></td></tr>
+<tr class="sidebar"><td><a href="%(Script)s?cmd=uninstall&SID=%(SID)s" class="sidebarSubLink%(SidebarSize)s"><li>Uninstall</a></td></tr>
 <tr><td class="sidebar"><A href="%(Script)s?cmd=info&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Info</a></td></tr>
 <tr><td class="sidebar"><A href="%(Script)s?cmd=logout&SID=%(SID)s" class="sidebarMainLink%(SidebarSize)s">Logout</a></td></tr>
 </table><!-- end of sidebar table -->
@@ -127,7 +127,7 @@ function unhover( name )
   </TR>
   <TR>
     <TD>
-<!-- var: FormVars="Theme:SidebarSize:Large:Small,
+<!-- var: FormVars="Theme:SidebarSize:Large:Medium:Small,
   General:UseJSConfirm:Yes:No,
   ViewPending:AltPref:textplain:texthtml,
   ViewPending:EmailClass:sans:serif:fixed,
@@ -141,6 +141,7 @@ function unhover( name )
     <tr>
       <td align="right"><select name="ThemeSidebarSize">
           <option %(ThemeSidebarSizeLargeSelected)s value="Large">Large</option>
+          <option %(ThemeSidebarSizeMediumSelected)s value="Medium">Medium</option>
           <option %(ThemeSidebarSizeSmallSelected)s value="Small">Small</option>
         </select></td>
       <td>&nbsp;</td>

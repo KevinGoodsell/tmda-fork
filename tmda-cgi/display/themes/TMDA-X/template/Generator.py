@@ -86,8 +86,8 @@ function Preloader()
     self.buttons['subtopics'].append(sidebar[i][1])
     preload = ""
     name = '<li>%s' % sidebar[i][1].replace('/', ' ')
-    linkClass = "class=\"sidebarSubLink\""
-    activeName = "<span class=\"sidebarActive\">%s</span>" % name
+    linkClass = "class=\"sidebarSubLink%(SidebarSize)s\""
+    activeName = "<span class=\"sidebarActive%%(SidebarSize)s\">%s</span>" % name
     sidebar[i] = (sidebar[i][0], name, (linkClass, activeName, preload))
     return subtopic + 1
 

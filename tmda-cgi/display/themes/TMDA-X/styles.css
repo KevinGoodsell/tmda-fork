@@ -150,10 +150,47 @@ a.sidebarMainLinkLarge:hover
   text-decoration: none;
 }
 
-a.sidebarMainLinkSmall:link
+a.sidebarMainLinkMedium:link
 {
   font-family: Impact, Lucida, sans-serif;
   font-size: 20pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarMainLinkMedium:visited
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 20pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarMainLinkMedium:active
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 20pt;
+  font-weight: normal;
+  color: #76B2F6;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarMainLinkMedium:hover
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 20pt;
+  font-weight: normal;
+  color: #F6FE02;
+  background: #000000;
+  text-decoration: none;
+}
+
+a.sidebarMainLinkSmall:link
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 18pt;
   font-weight: normal;
   color: #FFFFFF;
   background: #000000;
@@ -162,7 +199,7 @@ a.sidebarMainLinkSmall:link
 a.sidebarMainLinkSmall:visited
 {
   font-family: Impact, Lucida, sans-serif;
-  font-size: 20pt;
+  font-size: 18pt;
   font-weight: normal;
   color: #FFFFFF;
   background: #000000;
@@ -171,7 +208,7 @@ a.sidebarMainLinkSmall:visited
 a.sidebarMainLinkSmall:active
 {
   font-family: Impact, Lucida, sans-serif;
-  font-size: 20pt;
+  font-size: 18pt;
   font-weight: normal;
   color: #76B2F6;
   background: #000000;
@@ -180,16 +217,51 @@ a.sidebarMainLinkSmall:active
 a.sidebarMainLinkSmall:hover
 {
   font-family: Impact, Lucida, sans-serif;
-  font-size: 20pt;
+  font-size: 18pt;
   font-weight: normal;
   color: #F6FE02;
   background: #000000;
   text-decoration: none;
 }
 
+a.SidebarSubLinkLarge:link
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 14pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarSubLinkLarge:visited
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 14pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarSubLinkLarge:active
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 14pt;
+  font-weight: normal;
+  color: #76B2F6;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarSubLinkLarge:hover
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 14pt;
+  font-weight: normal;
+  color: #F6FE02;
+  background: #000000;
+  text-decoration: none;
+}
 
-
-a.sidebarSubLink:link
+a.SidebarSubLinkMedium:link
 {
   font-family: Impact, Lucida, sans-serif;
   font-size: 12pt;
@@ -198,7 +270,7 @@ a.sidebarSubLink:link
   background: #000000;
   text-decoration: none;
 }
-a.sidebarSubLink:visited
+a.sidebarSubLinkMedium:visited
 {
   font-family: Impact, Lucida, sans-serif;
   font-size: 12pt;
@@ -207,7 +279,7 @@ a.sidebarSubLink:visited
   background: #000000;
   text-decoration: none;
 }
-a.sidebarSubLink:active
+a.sidebarSubLinkMedium:active
 {
   font-family: Impact, Lucida, sans-serif;
   font-size: 12pt;
@@ -216,12 +288,74 @@ a.sidebarSubLink:active
   background: #000000;
   text-decoration: none;
 }
-a.sidebarSubLink:hover
+a.sidebarSubLinkMedium:hover
 {
   font-family: Impact, Lucida, sans-serif;
   font-size: 12pt;
   font-weight: normal;
   color: #F6FE02;
+  background: #000000;
+  text-decoration: none;
+}
+
+a.sidebarSubLinkSmall:link
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 11pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarSubLinkSmall:visited
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 11pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarSubLinkSmall:active
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 11pt;
+  font-weight: normal;
+  color: #76B2F6;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarSubLinkSmall:hover
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 11pt;
+  font-weight: normal;
+  color: #F6FE02;
+  background: #000000;
+  text-decoration: none;
+}
+
+.sidebarActiveLarge
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 14pt;
+  color: #76B2F6;
+  background: #000000;
+  text-decoration: none;
+}
+.sidebarActiveMedium
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 12pt;
+  color: #76B2F6;
+  background: #000000;
+  text-decoration: none;
+}
+.sidebarActiveSmall
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 11pt;
+  color: #76B2F6;
   background: #000000;
   text-decoration: none;
 }
@@ -262,15 +396,6 @@ td.sidebar
   background: #000000;
   padding-left: 5px;
   padding-right: 5px;
-}
-
-.sidebarActive
-{
-  font-family: Impact, Lucida, sans-serif;
-  font-size: 12pt;
-  color: #76B2F6;
-  background: #000000;
-  text-decoration: none;
 }
 
 .corner

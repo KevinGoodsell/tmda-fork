@@ -69,7 +69,7 @@ function unhover( name )
   </TR>
   <TR>
     <TD>
-<!-- var: FormVars="Theme:SidebarSize:Large:Small,
+<!-- var: FormVars="Theme:SidebarSize:Large:Medium:Small,
   General:UseJSConfirm:Yes:No,
   ViewPending:AltPref:textplain:texthtml,
   ViewPending:EmailClass:sans:serif:fixed,
@@ -83,6 +83,7 @@ function unhover( name )
     <tr>
       <td align="right"><select name="ThemeSidebarSize">
           <option %(ThemeSidebarSizeLargeSelected)s value="Large">Large</option>
+          <option %(ThemeSidebarSizeMediumSelected)s value="Medium">Medium</option>
           <option %(ThemeSidebarSizeSmallSelected)s value="Small">Small</option>
         </select></td>
       <td>&nbsp;</td>
