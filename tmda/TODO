@@ -2,11 +2,6 @@ General
 
 	- Find a TMDA logo (any graphic designers out there?)
 
-	- Write a sendmail wrapper similar to qmail's sendmail wrapper
-	that accepts sendmail options and then runs tmda-inject.
-	Useful for MUAs such as VM which hardcode sendmail options
-	when injecting mail.
-	
 	- Write a program to view the pending queue contents.
 
 	- Write a program to extract the From: address from a piped
