@@ -1,5 +1,8 @@
 2001-11-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config-filter.ht (Links): Point the list2dbm link at an updated
+	version.
+	
 	* resources.ht (Links): Link to Francisco Sam Castillo's
 	QAdmin-TMDA.
 	
