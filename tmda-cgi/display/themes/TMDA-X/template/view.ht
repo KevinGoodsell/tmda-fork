@@ -1,0 +1,289 @@
+Title: Pending E-mail - Message %(DispRange)s
+
+<script>
+
+function TestConfirm()
+{
+  action = document.forms[0].subcmd.value
+  if( action == "pass" )
+  {
+    return false
+  }
+  doConfirm = false
+  msg = ""
+  if( action == "delete" )
+  {
+    msg = "Permanently delete this pending message?"
+    doConfirm = true
+  }
+  else if( action == "black" )
+  {
+    msg = "Permanently blacklist (and delete) this pending message?"
+    doConfirm = true
+  }
+  else if( action == "spamcop" )
+  {
+    msg = "Report (and delete) this pending message?"
+    doConfirm = true
+  }
+  msg += "\nAny confirmation that follows will fail."
+  return (!doConfirm || confirm(msg))
+}
+
+</script>
+<form action="%(Script)s" method="GET" %(OnSubmit)s>
+   <input type="hidden" name="cmd" value="view">
+   <input type="hidden" name="msgid" value="%(MsgID)s">
+   <input type="hidden" name="SID" value="%(SID)s">
+<table width="100%" cellpadding="0" cellspacing="0"
+  style="border: 2px solid #000000; -moz-border-radius: 10px">
+  <tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr align="center" bgcolor="#000000" height="24">
+          <td align="left" width="33%" valign="center" align="left">
+            <table cellspacing="0" cellpadding="0" border=0>
+            <tr><td valign="bottom" align="right"
+                    style="padding: 3px 5px 5px">
+              <select name="subcmd" style="background: #F2F8FF">
+                <option value="pass" selected>Action
+               <!-- var: RlAction -->
+                <option value="release">Release
+               <!-- /var -->
+               <!-- var: DlAction -->
+                <option value="delete">Delete
+               <!-- /var -->
+               <!-- var: WhAction -->
+                <option value="white">Whitelist
+               <!-- /var -->
+               <!-- var: BlAction -->
+                <option value="black">Blacklist
+               <!-- /var -->
+               <!-- var: ScAction -->
+                <option value="spamcop">Report
+               <!-- /var -->
+                %(FilterOptions)s
+              </select>
+             </td>
+             <td valign="center" align="left" style="padding-bottom: 3px"> 
+              <input type="submit" name="ExecuteButton" value="Execute"
+                     class="actionButton">
+            </td></tr></table>   
+          </td>
+          <td align="center" valign="center" width="34%%">
+            <table width="100%" cellpadding=0 cellspacing=0 border=0>
+            <tr>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: FirstButton1Active -->
+               <a href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/first-active.png" border="0" width="22"
+               height="16" alt="First" title="First Page"></a>
+              <!-- /var -->
+              <!-- var: FirstButton1Inactive -->
+                <img src="%(ThemeDir)s/images/first-inactive.png" alt="First"
+                     width="18" height="12" title="First Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: PrevButton1Active -->
+               <a href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/prev-active.png" border="0" width="17"
+               height="19" alt="Prev" title="Previous Page"></a>
+              <!-- /var -->
+              <!-- var: PrevButton1Inactive -->
+                <img src="%(ThemeDir)s/images/prev-inactive.png" alt="Prev"
+                     width="11" height="12" title="Previous Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%"
+              style="padding-bottom: 0px; padding-top: 2px">
+              <A href="%(Script)s?cmd=pending&SID=%(SID)s"><img
+              src="%(ThemeDir)s/images/top-active.png" border="0" width="16"
+              height="21" alt="Up" title="Up to Pending List"></A>
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: NextButton1Active -->
+               <a href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/next-active.png" border="0" width="17"
+               height="16" alt="Next" title="Next Page"></a>
+              <!-- /var -->
+              <!-- var: NextButton1Inactive -->
+                <img src="%(ThemeDir)s/images/next-inactive.png" alt="Next"
+                     width="11" height="12" title="Next Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: LastButton1Active -->
+               <a href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/last-active.png" border="0" width="21"
+               height="15" alt="Last" title="Last Page"></a>
+              <!-- /var -->
+              <!-- var: LastButton1Inactive -->
+                <img src="%(ThemeDir)s/images/last-inactive.png" alt="Last"
+                     width="18" height="12" title="Last Page">
+              <!-- /var -->
+            </td>
+          </tr></table>
+          </td>
+          <td align="right" width="33%"
+            style="padding-right: 5px; padding-bottom: 2px; 
+                   font-family: tahoma, sans-serif;
+                   font-weight: bold; color: #FFFFFF">
+            Message %(DispRange)s
+          </td>
+        </tr>
+        <tr bgcolor="#FFFFFF">
+          <!-- var: NumCols="9" -->
+          <td colspan="3">
+<!-- var: ShortHeaders -->
+            <table border="0" cellspacing="0" cellpadding="0"
+             width="100%">
+           <tr bgcolor="#F2F8FF"><td
+            style="padding: 15px">
+            <table border="0" cellspacing="0" cellpadding="0">
+<!-- var: HeaderRow -->
+              <tr class="%(EmailClass)s">
+                <td valign="top"><b>%(Name)s:</b></td>
+                <td width="5"></td>
+                <td>%(Value)s</td>
+              </tr>
+<!-- /var (HeaderRow) -->
+            </table>
+            </td>
+            <td valign="top" align="right" style="padding: 10px">
+              <table border="0" cellspacing="0" cellpadding="0"
+               style="border-style: solid; border-color: #76B2F6;
+                      border-width: 1px">
+              <tr bgcolor="#FFFFFF">
+                <td valign=top" align="center" 
+                 style="padding: 5px; font-family: sans-serif; font-size: 10pt">
+                  <A href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s">
+                    View All<BR>Headers
+                  </A>
+                </td>
+              </tr></table>   
+            </td>
+            </tr>
+            </table>
+<!-- /var (ShortHeaders) -->
+<!-- var: AllHeaders -->
+            <table border=0 width="100%" cellpadding="15" cellspacing="0">
+            <tr bgcolor="#F2F8FF"><td>
+              <table border=0 width="100%" collpodding="0" cellspacing="0">
+              <tr><td>
+                %(Headers)s
+              </td>
+              <td valign="top" align="right" style="padding: 10px">
+                <table border="0" cellspacing="0" cellpadding="0"
+                 style="border-style: solid; border-color: #76B2F6;
+                        border-width: 1px">
+                <tr bgcolor="#FFFFFF">
+                  <td valign=top" align="center" 
+                   style="padding: 5px; font-family: sans-serif; font-size: 10pt">
+                    <A href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s">
+                      View Short<BR>Headers
+                    </A>
+                  </td>
+                </tr></table> 
+              </td></tr></table>
+            </td></tr></table>
+<!-- /var (AllHeaders) -->
+</td></tr>
+<tr bgcolor="#000000"><td height="2" colspan="3"></td></tr>
+<tr bgcolor="#FFFFFF" class="%(EmailClass)s">
+<td style="padding: 15px" colspan="3">
+<!-- var: Part -->
+<!-- var: Divider -->
+</td></tr>
+<tr bgcolor="#000000"><td height="2" colspan="3"></td></tr>
+<tr bgcolor="#FFFFFF" class="%(EmailClass)s">
+<td style="padding: 15px" colspan="3">
+<!-- /var (Divider) -->
+            %(Content)s
+<!-- /var (Part) -->
+<!-- var: NoAttachments -->
+            <hr color="#76B2F6">
+            <table>
+              <tr>
+<!-- var: Attachment -->
+                <td align="center">
+                  <img src="%(DispDir)s/icons/%(Icon)s.gif" width="32" 
+                    height="32"><br>
+                  %(Filename)s<br>
+                  (%(Size)s)
+                </td>
+                <td width="10">&nbsp;</td>
+<!-- /var (Attachment) -->
+              </tr>
+            </table>
+<!-- /var (NoAttachments) -->
+          </td>
+        </tr>
+        <tr align="center" bgcolor="#000000" height="24">
+          <td align="left" width="33%">&nbsp;</td>
+          <td align="center valign="bottom" width="34%">
+            <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: FirstButton2Active -->
+               <a href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/first-active.png" border="0" width="22"
+               height="16" alt="First" title="First Page"></a>
+              <!-- /var -->
+              <!-- var: FirstButton2Inactive -->
+                <img src="%(ThemeDir)s/images/first-inactive.png" alt="First"
+                     width="18" height="12" title="First Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: PrevButton2Active -->
+               <a href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/prev-active.png" border="0" width="17"
+               height="19" alt="Prev" title="Previous Page"></a>
+              <!-- /var -->
+              <!-- var: PrevButton2Inactive -->
+                <img src="%(ThemeDir)s/images/prev-inactive.png" alt="Prev"
+                     width="11" height="12" title="Previous Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%"
+              style="padding-bottom: 0px; padding-top: 2px">
+              <A href="%(Script)s?cmd=pending&SID=%(SID)s"><img
+              src="%(ThemeDir)s/images/top-active.png" border="0" width="16"
+              height="21" alt="Up" title="Up to Pending List"></A>
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: NextButton2Active -->
+               <a href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/next-active.png" border="0" width="17"
+               height="16" alt="Next" title="Next Page"></a>
+              <!-- /var -->
+              <!-- var: NextButton2Inactive -->
+                <img src="%(ThemeDir)s/images/next-inactive.png" alt="Next"
+                     width="11" height="12" title="Next Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: LastButton2Active -->
+               <a href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/last-active.png" border="0" width="21"
+               height="15" alt="Last" title="Last Page"></a>
+              <!-- /var -->
+              <!-- var: LastButton2Inactive -->
+                <img src="%(ThemeDir)s/images/last-inactive.png" alt="Last"
+                     width="18" height="12" title="Last Page">
+              <!-- /var -->
+            </td>
+          </tr></table>
+          </td>
+          <td align="right" width="33%"
+            style="padding-right: 5px; font-family: tahoma, sans-serif;
+                   font-weight: bold; color: #FFFFFF">
+            Message %(DispRange)s
+          </td>
+
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</form>

@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Tue Jan 27 16:03:05 2004 -->
+<!-- USING HT2HTML 2.1 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: About tmda-cgi
+
+-->
+
+<head>
+<title>About tmda-cgi</title>
+<meta http-equiv="Content-Type" content="text/html; charset=%(CharSet)s">
+<meta name="generator" content="HT2HTML/2.1">
+<link rel="STYLESHEET" href="%(ThemeDir)s/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000"
+      onload="Preloader()"
+      link="#0000bb"  vlink="#551a8b"
+      alink="#ff0000">
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="100%%" height="100%%" border="0"
+cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td align="right" valign="bottom" valign="middle" bgcolor="#76B2F6" class="corner"><img src="%(ThemeDir)s/corner.png" alt="[Lighthouse]"></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="bottom" bgcolor="#76B2F6" class="banner"><map name="bannerMap" id="bannerMap">
+<area href="http://tmda.net" shape="RECT" Coords="328,111,456,134" title="http://tmda.net">
+</map><img src="%(ThemeDir)s/banner.png" usemap="#bannerMap" width="457" height="135" border=0></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="130" bgcolor="#000000" valign="top" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td class="sidebar"><A href="%(Script)s?cmd=gen_addr&SID=%(SID)s" class="sidebarMainLink">Addresses</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=pending&SID=%(SID)s" class="sidebarMainLink">Pending</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=incoming&SID=%(SID)s" class="sidebarMainLink">Filters</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=editlist&SID=%(SID)s" class="sidebarMainLink">Lists</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=theme&SID=%(SID)s" class="sidebarMainLink">Settings</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=info&SID=%(SID)s" class="sidebarMainLink">Info</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=logout&SID=%(SID)s" class="sidebarMainLink">Logout</a></td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" class="body"><table width="100%" height="100%" border=0 cellspacing=0 cellpadding=0>
+<tr><td bgcolor=#000000 height="20" align="left" class="banner2"><img src="%(ThemeDir)s/banner2.png"</td></tr>
+<tr><td class="mainContent" valign="top">
+<H1>About tmda-cgi</H1>
+
+<table border=0 class="linkTable" style="margin-bottom: 15px">
+<TR><TD>
+  <table width="100%%" border=0><TR>
+  <TD>[</TD><TD align=center><a href="#Tutorial">Tutorial</a></TD>
+  <TD>|</TD><TD align=center><a href="#Version">Version</a></TD>
+  <TD>|</TD><TD align=center><a href="#Params">Compile Params</a></TD>
+  <TD>|</TD><TD align=center><a href="#Special">Special Instructions</a></TD>
+  <TD>]</TD></TR></Table>
+</TD></TR>
+<TR><TD>
+  <table width="100%%" border=0><TR>
+  <TD>[</TD><TD align=center><a href="#Authors">Authors</a></TD>
+  <TD>|</TD><TD align=center><a href="#Links">Links</a></TD>
+  <TD>|</TD><TD align=center><a href="#Ack">Acknowledgements</a></TD>
+  <TD>|</TD><TD align=center><a href="#Contrib">Contributions</a></TD>
+  <TD>]</TD></TR></Table>
+</TD></TR>
+<TR><TD>
+  <table width="100%%" border=0><TR>
+  <TD>[</TD><TD align=center><a href="#Bug">Bug Finders</a></TD>
+  <TD>|</TD><TD align=center><a href="#Include">Included Software</a></TD>
+  <TD>|</TD><TD align=center><a href="#ToDo">Still To Do</a></TD>
+  <TD>]</TD></TR></Table>
+</TD></TR>
+</Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Tutorial"></a>Tutorial</h2>
+
+<p>Need a little <a
+  href="http://tmda.sourceforge.net/tmda-cgi/t_index.html">help</a> with
+  tmda-cgi?</p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Version"></a>Version</h2>
+<table cellspacing="7">
+  <tr>
+    <td><b>tmda-cgi:</b></td>
+    <td class="textField">%(CgiVersion)s</td>
+  </tr>
+  <tr>
+    <td><b>TMDA:</b></td>
+    <td class="textField">%(TmdaVersion)s</td>
+  </tr>
+  <tr>
+    <td><b>Theme:</b></td>
+    <td class="textField">TMDA-X/0.1 by Jim Ramsay &lt;<A href="mailto:i.am@jimramsay.com">i.am@jimramsay.com</A>&gt;</td>
+  </tr>
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Params"></a>Compile Params</h2>
+<table cellspacing="7">
+<!-- var: Params -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s:</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Special"></a>Special Instructions</h2>
+<p>%(Instruct)s</p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Authors"></a>Authors</h2>
+<p>tmda-cgi was written by <a href="mailto:gre7g@wolfhome.com">Gre7g 
+  Luterman</a> and <a href="mailto:i.am@jimramsay.com">Jim Ramsay</a></p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Links"></a>Links</h2>
+<p>Find out more about
+  <a href="http://tmda.sourceforge.net/tmda-cgi/">tmda-cgi</a>.</p>
+<p>Find out more about <a href="http://tmda.sourceforge.net/">TMDA</a>.</p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Ack"></a>Acknowledgements</h2>
+<table cellspacing="7">
+<!-- var: AckRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Contrib"></a>Contributions</h2>
+<table cellspacing="7">
+<!-- var: ContRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Bug"></a>Bug Finders</h2>
+<table cellspacing="7" width="100%">
+<!-- var: BugRow -->
+  <tr>
+<!-- var: BugCell -->
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+<!-- /var -->
+  </tr>
+<!-- /var -->
+</table><p>
+<!-- var: BugCols="3" -->
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Include"></a>Included Software</h2>
+<table cellspacing="7" width="100%">
+<!-- var: IncludeRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="ToDo"></a>Still To Do</h2>
+<table cellspacing="7">
+<!-- var: ToDoRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>
+
+</tr></td>
+</table></td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table><!-- end of page table -->
+<script>
+<!--
+function Preloader()
+{
+}
+//-->
+</script>
+</body></html>

@@ -1,0 +1,82 @@
+Title: Test Filters
+
+<H1>Use this page to test your incoming or outgoing filters.</H1>
+<p>TMDA filters can test incoming and outgoing mail for a variety of things; the
+  sender's address, the intended recipient's address, headers, strings in the
+  message body, and even the size of the message itself. If you suspect that
+  your TMDA filters are doing something you do not intend for them to do, you
+  can use this page to create a dummy e-mail and test to see how the filters
+  would have handled it.</p>
+<table>
+  <tr>
+    <td valign="baseline"><b><i>Note:</i></b></td>
+    <td width="5">&nbsp;</td>
+    <td>This page is for diagnostic purposes only. It will not actually send or
+      queue an e-mail.</td>
+  </tr>
+</table><p>
+<table align="center">
+  <form action="%(Script)s" method="post" enctype="multipart/form-data">
+    <tr>
+      <td width="20" valign="baseline"><input name="source" type="radio" %(UploadChecked)s value="upload"></td>
+      <td colspan="2">Upload a test e-mail (with headers) from:<br> <input name="file" type="file" size="45"></td>
+    </tr>
+    <tr height="10">
+      <td colspan="3"></td>
+    </tr>
+    <tr height="1">
+      <td></td>
+      <td colspan="2" bgcolor="#7B7CB6"></td>
+    </tr>
+    <tr height="10">
+      <td colspan="3"></td>
+    </tr>
+    <tr>
+      <td><input name="source" type="radio" %(FormChecked)s value="form"></td>
+      <td width="70"><strong>From:</strong></td>
+      <td><input name="from" type="text" value="%(From)s" size="46"></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td><strong>To:</strong></td>
+      <td><input name="to" type="text" value="%(To)s" size="46"></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td><strong>Subject:</strong></td>
+      <td><input name="subject" type="text" value="%(Subject)s" size="46"></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td><input name="x_head" type="text" value="%(XHead)s" size="8"></td>
+      <td><input name="x_val" type="text" value="%(XVal)s" size="46"></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td colspan="2"><textarea name="body" cols="48" rows="5">%(Body)s</textarea></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>Byte count:</td>
+      <td>
+        <input name="count" type="text" value="%(Count)s" size="5">
+        <input name="SID" type="hidden" value="%(SID)s">
+        <input name="cmd" type="hidden" value="test_filt">
+      </td>
+    </tr>
+    <tr height="10">
+      <td colspan="3"></td>
+    </tr>
+    <tr height="1">
+      <td></td>
+      <td colspan="2" bgcolor="#7B7CB6"></td>
+    </tr>
+    <tr height="10">
+      <td colspan="3"></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td colspan="2" align="center"><input type="submit" value=" Test "></td>
+    </tr>
+  </form>
+</table>

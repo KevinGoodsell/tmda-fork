@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Tue Jan 27 16:04:08 2004 -->
+<!-- USING HT2HTML 2.1 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Pending E-mail - Message %(DispRange)s
+
+-->
+
+<head>
+<title>Pending E-mail - Message %(DispRange)s</title>
+<meta http-equiv="Content-Type" content="text/html; charset=%(CharSet)s">
+<meta name="generator" content="HT2HTML/2.1">
+<link rel="STYLESHEET" href="%(ThemeDir)s/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000"
+      onload="Preloader()"
+      link="#0000bb"  vlink="#551a8b"
+      alink="#ff0000">
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="100%%" height="100%%" border="0"
+cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td align="right" valign="bottom" valign="middle" bgcolor="#76B2F6" class="corner"><img src="%(ThemeDir)s/corner.png" alt="[Lighthouse]"></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="bottom" bgcolor="#76B2F6" class="banner"><map name="bannerMap" id="bannerMap">
+<area href="http://tmda.net" shape="RECT" Coords="328,111,456,134" title="http://tmda.net">
+</map><img src="%(ThemeDir)s/banner.png" usemap="#bannerMap" width="457" height="135" border=0></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="130" bgcolor="#000000" valign="top" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td class="sidebar"><A href="%(Script)s?cmd=gen_addr&SID=%(SID)s" class="sidebarMainLink">Addresses</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=pending&SID=%(SID)s" class="sidebarMainLink">Pending</a></td></tr>
+<tr class="sidebar"><td><span class="sidebarActive"><li>E-mail</span></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=incoming&SID=%(SID)s" class="sidebarMainLink">Filters</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=editlist&SID=%(SID)s" class="sidebarMainLink">Lists</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=theme&SID=%(SID)s" class="sidebarMainLink">Settings</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=info&SID=%(SID)s" class="sidebarMainLink">Info</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=logout&SID=%(SID)s" class="sidebarMainLink">Logout</a></td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" class="body"><table width="100%" height="100%" border=0 cellspacing=0 cellpadding=0>
+<tr><td bgcolor=#000000 height="20" align="left" class="banner2"><img src="%(ThemeDir)s/banner2.png"</td></tr>
+<tr><td class="mainContent" valign="top">
+<script>
+
+function TestConfirm()
+{
+  action = document.forms[0].subcmd.value
+  if( action == "pass" )
+  {
+    return false
+  }
+  doConfirm = false
+  msg = ""
+  if( action == "delete" )
+  {
+    msg = "Permanently delete this pending message?"
+    doConfirm = true
+  }
+  else if( action == "black" )
+  {
+    msg = "Permanently blacklist (and delete) this pending message?"
+    doConfirm = true
+  }
+  else if( action == "spamcop" )
+  {
+    msg = "Report (and delete) this pending message?"
+    doConfirm = true
+  }
+  msg += "\nAny confirmation that follows will fail."
+  return (!doConfirm || confirm(msg))
+}
+
+</script>
+<form action="%(Script)s" method="GET" %(OnSubmit)s>
+   <input type="hidden" name="cmd" value="view">
+   <input type="hidden" name="msgid" value="%(MsgID)s">
+   <input type="hidden" name="SID" value="%(SID)s">
+<table width="100%" cellpadding="0" cellspacing="0"
+  style="border: 2px solid #000000; -moz-border-radius: 10px">
+  <tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr align="center" bgcolor="#000000" height="24">
+          <td align="left" width="33%" valign="center" align="left">
+            <table cellspacing="0" cellpadding="0" border=0>
+            <tr><td valign="bottom" align="right"
+                    style="padding: 3px 5px 5px">
+              <select name="subcmd" style="background: #F2F8FF">
+                <option value="pass" selected>Action
+               <!-- var: RlAction -->
+                <option value="release">Release
+               <!-- /var -->
+               <!-- var: DlAction -->
+                <option value="delete">Delete
+               <!-- /var -->
+               <!-- var: WhAction -->
+                <option value="white">Whitelist
+               <!-- /var -->
+               <!-- var: BlAction -->
+                <option value="black">Blacklist
+               <!-- /var -->
+               <!-- var: ScAction -->
+                <option value="spamcop">Report
+               <!-- /var -->
+                %(FilterOptions)s
+              </select>
+             </td>
+             <td valign="center" align="left" style="padding-bottom: 3px"> 
+              <input type="submit" name="ExecuteButton" value="Execute"
+                     class="actionButton">
+            </td></tr></table>   
+          </td>
+          <td align="center" valign="center" width="34%%">
+            <table width="100%" cellpadding=0 cellspacing=0 border=0>
+            <tr>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: FirstButton1Active -->
+               <a href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/first-active.png" border="0" width="22"
+               height="16" alt="First" title="First Page"></a>
+              <!-- /var -->
+              <!-- var: FirstButton1Inactive -->
+                <img src="%(ThemeDir)s/images/first-inactive.png" alt="First"
+                     width="18" height="12" title="First Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: PrevButton1Active -->
+               <a href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/prev-active.png" border="0" width="17"
+               height="19" alt="Prev" title="Previous Page"></a>
+              <!-- /var -->
+              <!-- var: PrevButton1Inactive -->
+                <img src="%(ThemeDir)s/images/prev-inactive.png" alt="Prev"
+                     width="11" height="12" title="Previous Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%"
+              style="padding-bottom: 0px; padding-top: 2px">
+              <A href="%(Script)s?cmd=pending&SID=%(SID)s"><img
+              src="%(ThemeDir)s/images/top-active.png" border="0" width="16"
+              height="21" alt="Up" title="Up to Pending List"></A>
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: NextButton1Active -->
+               <a href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/next-active.png" border="0" width="17"
+               height="16" alt="Next" title="Next Page"></a>
+              <!-- /var -->
+              <!-- var: NextButton1Inactive -->
+                <img src="%(ThemeDir)s/images/next-inactive.png" alt="Next"
+                     width="11" height="12" title="Next Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: LastButton1Active -->
+               <a href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/last-active.png" border="0" width="21"
+               height="15" alt="Last" title="Last Page"></a>
+              <!-- /var -->
+              <!-- var: LastButton1Inactive -->
+                <img src="%(ThemeDir)s/images/last-inactive.png" alt="Last"
+                     width="18" height="12" title="Last Page">
+              <!-- /var -->
+            </td>
+          </tr></table>
+          </td>
+          <td align="right" width="33%"
+            style="padding-right: 5px; padding-bottom: 2px; 
+                   font-family: tahoma, sans-serif;
+                   font-weight: bold; color: #FFFFFF">
+            Message %(DispRange)s
+          </td>
+        </tr>
+        <tr bgcolor="#FFFFFF">
+          <!-- var: NumCols="9" -->
+          <td colspan="3">
+<!-- var: ShortHeaders -->
+            <table border="0" cellspacing="0" cellpadding="0"
+             width="100%">
+           <tr bgcolor="#F2F8FF"><td
+            style="padding: 15px">
+            <table border="0" cellspacing="0" cellpadding="0">
+<!-- var: HeaderRow -->
+              <tr class="%(EmailClass)s">
+                <td valign="top"><b>%(Name)s:</b></td>
+                <td width="5"></td>
+                <td>%(Value)s</td>
+              </tr>
+<!-- /var (HeaderRow) -->
+            </table>
+            </td>
+            <td valign="top" align="right" style="padding: 10px">
+              <table border="0" cellspacing="0" cellpadding="0"
+               style="border-style: solid; border-color: #76B2F6;
+                      border-width: 1px">
+              <tr bgcolor="#FFFFFF">
+                <td valign=top" align="center" 
+                 style="padding: 5px; font-family: sans-serif; font-size: 10pt">
+                  <A href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s">
+                    View All<BR>Headers
+                  </A>
+                </td>
+              </tr></table>   
+            </td>
+            </tr>
+            </table>
+<!-- /var (ShortHeaders) -->
+<!-- var: AllHeaders -->
+            <table border=0 width="100%" cellpadding="15" cellspacing="0">
+            <tr bgcolor="#F2F8FF"><td>
+              <table border=0 width="100%" collpodding="0" cellspacing="0">
+              <tr><td>
+                %(Headers)s
+              </td>
+              <td valign="top" align="right" style="padding: 10px">
+                <table border="0" cellspacing="0" cellpadding="0"
+                 style="border-style: solid; border-color: #76B2F6;
+                        border-width: 1px">
+                <tr bgcolor="#FFFFFF">
+                  <td valign=top" align="center" 
+                   style="padding: 5px; font-family: sans-serif; font-size: 10pt">
+                    <A href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s">
+                      View Short<BR>Headers
+                    </A>
+                  </td>
+                </tr></table> 
+              </td></tr></table>
+            </td></tr></table>
+<!-- /var (AllHeaders) -->
+</td></tr>
+<tr bgcolor="#000000"><td height="2" colspan="3"></td></tr>
+<tr bgcolor="#FFFFFF" class="%(EmailClass)s">
+<td style="padding: 15px" colspan="3">
+<!-- var: Part -->
+<!-- var: Divider -->
+</td></tr>
+<tr bgcolor="#000000"><td height="2" colspan="3"></td></tr>
+<tr bgcolor="#FFFFFF" class="%(EmailClass)s">
+<td style="padding: 15px" colspan="3">
+<!-- /var (Divider) -->
+            %(Content)s
+<!-- /var (Part) -->
+<!-- var: NoAttachments -->
+            <hr color="#76B2F6">
+            <table>
+              <tr>
+<!-- var: Attachment -->
+                <td align="center">
+                  <img src="%(DispDir)s/icons/%(Icon)s.gif" width="32" 
+                    height="32"><br>
+                  %(Filename)s<br>
+                  (%(Size)s)
+                </td>
+                <td width="10">&nbsp;</td>
+<!-- /var (Attachment) -->
+              </tr>
+            </table>
+<!-- /var (NoAttachments) -->
+          </td>
+        </tr>
+        <tr align="center" bgcolor="#000000" height="24">
+          <td align="left" width="33%">&nbsp;</td>
+          <td align="center valign="bottom" width="34%">
+            <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: FirstButton2Active -->
+               <a href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/first-active.png" border="0" width="22"
+               height="16" alt="First" title="First Page"></a>
+              <!-- /var -->
+              <!-- var: FirstButton2Inactive -->
+                <img src="%(ThemeDir)s/images/first-inactive.png" alt="First"
+                     width="18" height="12" title="First Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: PrevButton2Active -->
+               <a href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/prev-active.png" border="0" width="17"
+               height="19" alt="Prev" title="Previous Page"></a>
+              <!-- /var -->
+              <!-- var: PrevButton2Inactive -->
+                <img src="%(ThemeDir)s/images/prev-inactive.png" alt="Prev"
+                     width="11" height="12" title="Previous Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%"
+              style="padding-bottom: 0px; padding-top: 2px">
+              <A href="%(Script)s?cmd=pending&SID=%(SID)s"><img
+              src="%(ThemeDir)s/images/top-active.png" border="0" width="16"
+              height="21" alt="Up" title="Up to Pending List"></A>
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: NextButton2Active -->
+               <a href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/next-active.png" border="0" width="17"
+               height="16" alt="Next" title="Next Page"></a>
+              <!-- /var -->
+              <!-- var: NextButton2Inactive -->
+                <img src="%(ThemeDir)s/images/next-inactive.png" alt="Next"
+                     width="11" height="12" title="Next Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="20%%">
+              <!-- var: LastButton2Active -->
+               <a href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/last-active.png" border="0" width="21"
+               height="15" alt="Last" title="Last Page"></a>
+              <!-- /var -->
+              <!-- var: LastButton2Inactive -->
+                <img src="%(ThemeDir)s/images/last-inactive.png" alt="Last"
+                     width="18" height="12" title="Last Page">
+              <!-- /var -->
+            </td>
+          </tr></table>
+          </td>
+          <td align="right" width="33%"
+            style="padding-right: 5px; font-family: tahoma, sans-serif;
+                   font-weight: bold; color: #FFFFFF">
+            Message %(DispRange)s
+          </td>
+
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</form>
+
+</tr></td>
+</table></td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table><!-- end of page table -->
+<script>
+<!--
+function Preloader()
+{
+}
+//-->
+</script>
+</body></html>

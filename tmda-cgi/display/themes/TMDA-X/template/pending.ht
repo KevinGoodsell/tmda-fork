@@ -1,0 +1,473 @@
+Title: Pending E-mail (Page %(PageRange)s)
+
+<!-- Some variables to configure -->
+<!-- var: EvenRowColor="#FFFFFF" -->
+<!-- var: OddRowColor="#F2F8FF" -->
+
+<!-- Some unused variables -->
+
+<!-- var: NumCols="5" --><!-- var: NumBlankCols="1" -->
+
+<script>
+<!-- Hide script
+function SetAction(action)
+{
+  for( i = 0; i < document.forms.actions.Action.length; i++ )
+  {
+    if( document.forms.actions.Action.options[i].value == action )
+    {
+      document.forms.actions.Action.options[i].selected = true
+    }
+  }
+  return true
+}
+
+function TestConfirm()
+{
+  selectCount = 0
+  for( i = 0; i < %(PagerSize)s; i++)
+  {
+      if( document.forms.actions["c" + i] )
+      {
+        if( document.forms.actions["c" + i].checked )
+        {
+          selectCount++;
+        }
+      }
+  }
+  if( selectCount > 0 )
+  {
+    msg = ""
+    action = document.forms.actions.Action.value
+    if( selectCount == 1 )
+    {
+      theseMessages = " this pending message?"
+    }
+    else
+    {
+      theseMessages = " these pending messages?"
+    }
+    if( action == "Blacklist" )
+    {
+      msg = "Permanently blacklist (and delete)"
+    }
+    else if( action == "Delete" )
+    {
+      msg = "Permanently delete"
+    }
+    else if( action == "Report" )
+    {
+      msg = "Report (and delete)"
+    }
+    if( msg != "" )
+    {
+      msg += theseMessages
+      msg += "\nAny confirmation that follows will fail."
+      return confirm(msg)
+    }
+  }
+  return true
+}
+
+// ReadArray is an array mapping message numbers (0 through total-1)
+// ReadArray[0] is TRUE if the message has already been read.
+// ReadArray[0] is FALSE If the message has not been read.
+%(ReadArray)s
+
+function Set(Value)
+{
+  if (Value != "Selected")
+  {
+    document.forms.actions.Select.options[0].selected = true
+    shouldCheck = false
+    switch( Value )
+    {
+      case "All":
+        shouldCheck = true
+        break
+      case "None":
+        shouldCheck = false
+        break
+      default:  
+    }
+    i = 0
+    while (document.forms.actions["c" + i])
+    {
+      switch( Value )
+      {
+        case "Inverse":
+          shouldCheck = !document.forms.actions["c" + i].checked
+          break
+        case "Read":
+          shouldCheck = ReadArray[i]
+          break
+        case "Unread":
+          shouldCheck = !ReadArray[i]
+          break
+        default:
+      }
+      document.forms.actions["c" + i].checked = shouldCheck
+      i++
+    }
+  }
+}
+
+function mouseoverRow( row )
+{
+  if( row.bgColor != "#FDFFA5" )
+  {
+    savedColor = row.bgColor
+    row.bgColor = "#FDFFA5"
+  }
+  return true;
+}
+function mouseoutRow( row )
+{
+  row.bgColor = savedColor
+  return true;
+}
+
+clickedWidget = false;
+function clickRow( rownum )
+{
+  //alert("Row");
+  if( !clickedWidget )
+    document.forms.actions["c" + rownum].checked =
+      !document.forms.actions["c" + rownum].checked;
+  clickedWidget = false;
+  return true;
+}
+// -->
+</script>
+<form name="actions" method="post" %(OnSubmit)s action="%(Script)s">
+  <input type="hidden" name="SID" value="%(SID)s">
+  <input type="hidden" name="cmd" value="pending">
+  <input type="hidden" name="subcmd" value="batch">
+<table cellpadding="0" cellspacing="0" align="center" width="100%"
+  style="border: 2px solid #000000; -moz-border-radius: 10px"
+  >
+  <tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr><td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr bgcolor="#000000" height="24">
+            <td align="left" width="33%"
+              style="padding-left: 5px; font-family: tahoma, sans-serif; 
+                     font-weight: bold; color: #FFFFFF">
+              Page %(PageRange)s
+            </td>
+            <td align="center" valign="center" width="9%">
+              <!-- var: FirstButton1Active -->
+               <a href="%(Script)s?cmd=pending&subcmd=first&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/first-active.png" border="0" width="22"
+               height="16" alt="First" title="First Page"></a>
+              <!-- /var -->
+              <!-- var: FirstButton1Inactive -->
+                <img src="%(ThemeDir)s/images/first-inactive.png" alt="First"
+                     width="18" height="12" title="First Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="8%">
+              <!-- var: PrevButton1Active -->
+               <a href="%(Script)s?cmd=pending&subcmd=prev&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/prev-active.png" border="0" width="17"
+               height="19" alt="Prev" title="Previous Page"></a>
+              <!-- /var -->
+              <!-- var: PrevButton1Inactive -->
+                <img src="%(ThemeDir)s/images/prev-inactive.png" alt="Prev"
+                     width="11" height="12" title="Previous Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="8%">
+              <!-- var: NextButton1Active -->
+               <a href="%(Script)s?cmd=pending&subcmd=next&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/next-active.png" border="0" width="17"
+               height="16" alt="Next" title="Next Page"></a>
+              <!-- /var -->
+              <!-- var: NextButton1Inactive -->
+                <img src="%(ThemeDir)s/images/next-inactive.png" alt="Next"
+                     width="11" height="12" title="Next Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="9%">
+              <!-- var: LastButton1Active -->
+               <a href="%(Script)s?cmd=pending&subcmd=last&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/last-active.png" border="0" width="21"
+               height="15" alt="Last" title="Last Page"></a>
+              <!-- /var -->
+              <!-- var: LastButton1Inactive -->
+                <img src="%(ThemeDir)s/images/last-inactive.png" alt="Last"
+                     width="18" height="12" title="Last Page">
+              <!-- /var -->
+            </td>
+            <td align="right" width="33%"
+              style="padding-right: 5px; font-family: tahoma, sans-serif; 
+                     font-weight: bold; color: #FFFFFF">
+              %(DispRange)s Messages
+            </td>
+          </tr></table>
+        </td></tr> 
+        <tr><td bgcolor="#76B2F6" height="1"></td></tr>
+        <tr><td bgcolor="#000000">
+            <table cellspacing="0" cellpadding="0" border="0" width="70%%">
+              <tr bgcolor="#000000">
+                <td style="color: #FFFFFF; font-weight: bold; padding-left: 15px; font-family: tahoma, sans-serif">
+                  Actions:
+                </td>
+              <!-- var: RlIcon -->
+                <td valign="bottom"
+                  style="padding: 3px 10px">
+                  <input type="submit" name="ReleaseButton" value="Release"
+                   onclick="SetAction('Release')"
+                   class="actionButton"
+                   >
+                </td>
+              <!-- /var -->
+              <!-- var: WhIcon -->
+                <td valign="bottom"
+                  style="padding: 3px 10px">
+                  <input type="submit" name="WhitelistButton" value="Whitelist"
+                   onclick="SetAction('Whitelist')"
+                   class="actionButton"
+                   >
+                </td>
+              <!-- /var -->
+                <td
+                  style="padding: 3px 5px 3px 10px">
+                  <select name="Action" style="background: #F2F8FF; font-family: tahoma, sans-serif; font-size: 10pt">
+                  <option value="Pass" selected>Other action
+                 <!-- var: RdAction -->
+                  <option value="Read">Mark as Read
+                 <!-- /var -->
+                 <!-- var: DlAction -->
+                  <option value="Delete">Delete
+                 <!-- /var -->
+                 <!-- var: RlAction -->
+                  <option value="Release">Release
+                 <!-- /var --> 
+                 <!-- var: WhAction -->
+                  <option value="Whitelist">Whitelist
+                 <!-- /var -->
+                 <!-- var: BlAction -->
+                  <option value="Blacklist">Blacklist
+                 <!-- /var -->
+                 <!-- var: ScAction -->
+                  <option value="Report">Report to Spamcop
+                 <!-- /var -->
+                  %(FilterOptions)s
+                </select>  
+                <input type="submit" name="ExecuteButton" value="&lt;- Apply"
+                 class="actionButton"
+                 >
+                </td>
+              </tr>
+            </table></td>  
+          </tr>
+          <tr bgcolor="#C9E3FF">
+            <td><table cellspacing="0" width="100%" border=0>
+              <tr valign="bottom" bgcolor="#C9E3FF">
+                <th width="50" align="left"
+                  style="padding-left: 5px; padding-right: 5px">
+                  <select name="Select" onchange="Set(this.value)" style="font-weight: bold">
+                    <option value="Pass" selected >Select
+                    <option value="All">All
+                    <option value="None">None
+                    <option value="Inverse">Inverse
+                    <option value="Unread">Unread
+                    <option value="Read">Read
+                  </select>
+                </th>
+                <th width="150" align="left" style="padding-left: 10px">
+                  Sender
+                </th>
+                <th width="250" align="left" style="padding-left: 10px">
+                  Subject
+                </th>
+                <th width="80" align="left" style="padding-left: 10px">
+                  Date
+                </th>
+                <th width="50" align="right" style="padding-right: 10px">
+                  Size
+                </th>
+              </tr>
+      <tr>
+        <td colspan="5" bgcolor="#000000" height="1"></td>
+      </tr>
+<!-- var: Row -->
+      <tr class="%(MsgClass)s" bgcolor="%(RowBgColor)s"
+        onmouseover="mouseoverRow(this)"
+        onmouseout="mouseoutRow(this)">
+        <td valign="top" align="center"
+         onclick="clickRow(%(MsgNum)d)">
+          <input type="hidden" name="%(MsgName)s" value="%(MsgID)s">
+          <input type="checkbox" name="%(CheckName)s" value="Selected"
+           onmousedown="clickRow(%(MsgNum)d);">
+        </td>
+        <td valign="top" style="padding-left: 8px"
+         onclick="clickRow(%(MsgNum)d)">
+          %(Sender)s
+        </td>
+        <td valign="top" style="padding-left: 8px"
+         onclick="clickRow(%(MsgNum)d)">
+          <a href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s"
+           onmousedown="clickRow(%(MsgNum)d);">
+          %(Subject)s
+          </a>
+        </td>
+        <td nowrap valign="top" style="padding-left: 8px"
+         onclick="clickRow(%(MsgNum)d)">
+          %(Date)s
+        </td>
+        <td align="right" valign="top" style="padding-right: 5px"
+         onclick="clickRow(%(MsgNum)d)">
+          %(Size)s
+        </td>
+      </tr>
+<!-- /var -->
+<!-- var: InProcessRow -->
+      <tr class="InProcess" bgcolor="%(RowBgColor)s">
+        <td>&nbsp;</td>
+        <td valign="top" style="padding-left: 8px">
+          %(Sender)s
+        </td>
+        <td valign="top" style="padding-left: 8px">
+          %(Subject)s
+        </td>
+        <td nowrap valign="top" style="padding-left: 8px">
+          %(Date)s
+        </td>
+        <td align="right" valign="top" style="padding-right: 5px">
+          %(Size)s
+        </td>
+      </tr>
+<!-- /var -->
+    </table></td>
+</tr>
+    <tr><td><table width="100%" border="0" cellpadding="0" cellspacing="0">
+          <tr bgcolor="#000000" height="24">
+            <td align="left" width="30%"
+              style="padding-left: 5px; font-family: tahoma, sans-serif; 
+                     font-weight: bold; color: #FFFFFF">
+              Page %(PageRange)s
+            </td>
+            <td align="center" valign="center" width="9%">
+              <!-- var: FirstButton2Active -->
+               <a href="%(Script)s?cmd=pending&subcmd=first&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/first-active.png" border="0" width="22"
+               height="16" alt="First" title="First Page"></a>
+              <!-- /var -->
+              <!-- var: FirstButton2Inactive -->
+                <img src="%(ThemeDir)s/images/first-inactive.png" alt="First"
+                     width="18" height="12" title="First Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="8%">
+              <!-- var: PrevButton2Active -->
+               <a href="%(Script)s?cmd=pending&subcmd=prev&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/prev-active.png" border="0" width="17"
+               height="19" alt="Prev" title="Previous Page"></a>
+              <!-- /var -->
+              <!-- var: PrevButton2Inactive -->
+                <img src="%(ThemeDir)s/images/prev-inactive.png" alt="Prev"
+                     width="11" height="12" title="Previous Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="8%">
+              <!-- var: NextButton2Active -->
+               <a href="%(Script)s?cmd=pending&subcmd=next&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/next-active.png" border="0" width="17"
+               height="16" alt="Next" title="Next Page"></a>
+              <!-- /var -->
+              <!-- var: NextButton2Inactive -->
+                <img src="%(ThemeDir)s/images/next-inactive.png" alt="Next"
+                     width="11" height="12" title="Next Page">
+              <!-- /var -->
+            </td>
+            <td align="center" valign="center" width="9%">
+              <!-- var: LastButton2Active -->
+               <a href="%(Script)s?cmd=pending&subcmd=last&SID=%(SID)s"><img
+               src="%(ThemeDir)s/images/last-active.png" border="0" width="21"
+               height="15" alt="Last" title="Last Page"></a>
+              <!-- /var -->
+              <!-- var: LastButton2Inactive -->
+                <img src="%(ThemeDir)s/images/last-inactive.png" alt="Last" 
+                     width="18" height="12" title="Last Page">
+              <!-- /var -->
+            </td>
+            <td align="right" width="30%"
+              style="padding-right: 5px; font-family: tahoma, sans-serif; 
+                     font-weight: bold; color: #FFFFFF">
+              %(DispRange)s Messages
+            </td>
+          </tr></table>
+        </td></tr>
+      </table>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0">
+<!-- var: InProcess -->
+        <tr>
+          <td colspan="2" bgcolor="#AAD4FF" height="1"></td>
+        </tr>
+        <tr bgcolor="#76B2F6">
+          <td valign="top" width="45"><font
+            color="#000000"><b><i>Note:</i></b></font></td>
+          <td>
+            <font color="#000000"><span class="InProcess">Marked</span>
+              messages are being processed by the mail server. They will be
+              removed from the pending list when released.</font>
+          </td>
+        </tr>
+<!-- /var -->
+      </table>
+    </td>
+  </tr>
+</table>
+</form>
+
+<!-- var: searchForm -->
+  <form name="search" method="get" %(OnSubmit)s action="%(Script)s">
+<table class="roundBox1" style="margin-top: 15px" align="center"><TR><TD>
+  <H3 style="font-family: tahoma, sans-serif">Search Pending List</H3>
+    <input type="hidden" name="SID" value="%(SID)s">
+    <input type="hidden" name="cmd" value="pending">
+  <table border=0>
+    <TR>
+      <TD>
+        <select name="searchPattern" style="font-weight: bold; text-align: right">
+          <option value="_header:from">From:&nbsp;
+          <option value="_header:to,cc,x-tmda-recipient">To:&nbsp;
+          <option value="_header:subject" selected>Subject containing:&nbsp;
+          <option value="^\n.*%%s.*">Body containing:&nbsp;
+          <option value="%%s">Regular Expression:&nbsp;
+        </select>
+      </TD>
+      <TD>
+        <input name="search" size="40">
+      </TD>
+    </TR>
+    <TR>
+      <TD></TD>
+      <TD align="right">
+        <table width="100%"><TR>
+          <TD>
+            <input type="checkbox" name="searchCaseSensitive">Case Sensitive
+          </TD>
+          <TD>
+            <input type="submit" value="Search" class="smallButton">
+          </TD>
+        </TR></table>
+      </TD>
+    </TR>
+    <TR>
+      <TD colspan=2 align="center" style="padding-top: 10px">
+        <span style="background: #FFFFFF; padding: 2px; border: 1px solid #000000; margin: 2px">Note: Be patient, the search may take a long time</span>
+      </TD>
+    </TR>
+  </TABLE>
+</TD></TR></TABLE>
+  </form>
+<!-- /var -->
+<!-- var: clearSearch -->
+<table class="roundBox1" style="margin-top: 15px" align="center"><TR><TD>
+  <A href="%(Script)s?cmd=pending&SID=%(SID)s" style="font-family: tahoma, sans-serif; font-size: 14pt; color: #000000">Clear search results</A>
+</TD></TR></table>
+<!-- /var -->

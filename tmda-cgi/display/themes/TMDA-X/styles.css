@@ -1,0 +1,364 @@
+body
+{
+  padding: 0px;
+  margin: 0px;
+  background: #A6A6B3;
+}
+.logintop
+{
+  padding: 0px;
+  margin: 0px;
+  color: #000000;
+  background: #76B2F6;
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 24pt;
+}
+.loginbottom
+{
+  padding: 0px;
+  margin: 0px;
+  color: #FFFFFF;
+  background: #000000;
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 24pt;
+}
+.loginbutton
+{
+  border-color: #FFFFFF #888888 #888888 #FFFFFF;
+  -moz-border-radius: 15px;
+  background: #000000;
+  color: #FFFFFF;
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 24pt;
+}
+.logintext
+{
+  border-color: #000000;
+  border-style: solid;
+  border-width: 1px;
+  background: #76B2F6;
+  color: #000000;
+  font-family: sans-serif;
+  font-size: 20pt;
+}
+.loginpw
+{
+  border-color: #000000;
+  border-style: solid;
+  border-width: 1px;
+  background: #76B2F6;
+  color: #000000;
+  font-family: sans-serif;
+  font-size: 20pt;
+}
+
+.roundBox1
+{
+  background: #C9E3FF;
+  border: 5px solid #000000;
+  -moz-border-radius: 10px;
+  padding: 10px
+}
+
+.roundBox2
+{
+  background: #C9E3FF;
+  border: 5px solid #000000;
+  -moz-border-radius: 10px;
+  width: 100%;
+  margin: 5px;
+  padding: 10px
+}
+
+.roundBox3
+{
+  background: #C9E3FF;
+  border: 5px solid #000000;
+  -moz-border-radius: 10px;
+  padding: 0px
+}
+
+.editBox
+{
+  background: #F2F8FF;
+  border: 2px solid #000000;
+  -moz-border-radius: 10px;
+  padding: 5px
+}
+
+.selectedTheme
+{
+  background: #F2F8FF;
+  border: 2px solid #76B2F6;
+  -moz-border-radius: 10px;
+  font-weight: bold
+}
+
+.smallButton
+{
+  border-color: #FFFFFF #888888 #888888 #FFFFFF;
+  background: #000000;
+  color: #FFFFFF;
+  font-weight: bold;
+  -moz-border-radius: 10px
+}
+.actionButton
+{
+  border-color: #DDDDFF #8888AA #8888AA #DDDDFF;
+  background: #002B59;
+  color: #FFFFFF;
+  font-family: tahoma, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  -moz-border-radius: 10px
+}
+
+a.sidebarMainLink:link
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 24pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarMainLink:visited
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 24pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarMainLink:active
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 24pt;
+  font-weight: normal;
+  color: #76B2F6;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarMainLink:hover
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 24pt;
+  font-weight: normal;
+  color: #F6FE02;
+  background: #000000;
+  text-decoration: none;
+}
+
+a.sidebarSubLink:link
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 12pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarSubLink:visited
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 12pt;
+  font-weight: normal;
+  color: #FFFFFF;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarSubLink:active
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 12pt;
+  font-weight: normal;
+  color: #76B2F6;
+  background: #000000;
+  text-decoration: none;
+}
+a.sidebarSubLink:hover
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 12pt;
+  font-weight: normal;
+  color: #F6FE02;
+  background: #000000;
+  text-decoration: none;
+}
+
+a:link
+{
+  font-family: sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  color: #2974C4;
+  text-decoration: none
+}
+a:visited
+{
+  font-family: sans-serif;
+  font-size: 12pt;
+  font-weight: normal;
+  color: #2974C4;
+  text-decoration: none
+}
+a:hover
+{
+  font-family: sans-serif;
+  font-size: 12pt;
+  color: #0076F4;
+  text-decoration: underline
+}
+
+.textField
+{
+  padding-right: 5px;
+  padding-left: 5px;
+  background-color: #F2F8FF
+}
+
+td.sidebar
+{
+  background: #000000;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.sidebarActive
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 12pt;
+  color: #76B2F6;
+  background: #000000;
+  text-decoration: none;
+}
+
+.corner
+{
+  padding: 0px
+}
+.mainTitle
+{
+  font-family: Impact, Lucida, sans-serif;
+  font-size: 52pt;
+  color: #000000;
+  background: #76B2F6;
+}
+.body
+{
+  padding: 0px;
+  font-size: 1px;
+}
+.banner
+{
+  padding-top: 3px;
+  background: url('banner_bg.png');
+  background-color: #76B2F6;
+  background-repeat: repeat-x;
+  background-position: left bottom
+}
+.banner2
+{
+  background: url('banner2_bg.png');
+  background-repeat: repeat-x;
+  background-position: left top
+}
+.mainContent
+{
+  font-family: sans-serif;
+  font-size: 12pt;
+  padding: 15px;
+  background-image: url(body_bg.png)
+}
+
+
+H1
+{
+  font-family: sans-serif;
+  font-size: 18pt;
+  font-weight: bold
+}
+H2
+{
+  font-family: sans-serif;
+  font-size: 16pt;
+  font-weight: bold
+}
+H3
+{
+  font-family: sans-serif;
+  font-size: 14pt;
+  font-weight: bold
+}
+H4
+{
+  font-family: sans-serif;
+  font-size: 12pt;
+  font-weight: bold
+}
+
+tt
+{
+  font-size: 12pt
+}
+
+
+.linkTable
+{
+  border-color: #76B2F6;
+  border-style: solid;
+  border-width: 2px;
+  background: #ffffff;
+  -moz-border-radius: 5px
+}
+
+.sans
+{
+  font-family: sans-serif;
+  font-size: 10pt;
+  text-align: justify
+}
+.serif
+{
+  font-family: serif;
+  font-size: 12pt;
+  text-align: justify
+}
+.fixed
+{
+  text-align: justify;
+  font-size: 10pt;
+  font-family: "Courier New", Courier, mono, monospace
+}
+.InProcess
+{
+  font-style: italic
+}
+.NewMsg
+{
+  font-weight: bold
+}
+
+
+.Condition    { text-align: center; border: 1px solid #000000                }
+.Content      { padding-right: 15px; padding-bottom: 20px                    }
+.Filename     { font-family: "Courier New", Courier, mono;
+                font-size: smaller; color: #990000                           }
+.horz         { background-image: url(flowchart/dot.gif);
+                background-repeat: repeat-x; background-position: center     }
+.ld           { background-image: url(flowchart/ld.gif);
+                background-repeat: no-repeat;
+                background-position: center center                           }
+.lm           { background-image: url(flowchart/lm.gif);
+                background-repeat: no-repeat;
+                background-position: center center                           }
+.rd           { background-image: url(flowchart/rd.gif);
+                background-repeat: no-repeat;
+                background-position: center center                           }
+.rm           { background-image: url(flowchart/rm.gif);
+                background-repeat: no-repeat;
+                background-position: center center                           }
+.Target       { text-align: center; border: 1px solid #000000                }
+.vert         { background-image: url(flowchart/dot.gif);
+                background-repeat: repeat-y; background-position: center     }

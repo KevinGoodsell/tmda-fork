@@ -1,0 +1,41 @@
+Title: Installed!
+
+<table class="roundBox2">
+  <tr><td>
+    <h1>TMDA has been successfully installed!</h1>
+  </td></tr>
+  <tr><td><b>
+  Your e-mail account, <tt>%(EMail)s</tt>, is now guarded against spam by
+  TMDA.</b>
+  </td></tr>
+<!-- var: OverWritten -->
+  <tr><td>
+  Please note that the following file(s) in your personal directory were
+  overwritten in the process of installing TMDA:
+  </td></tr>
+  <tr><td>
+<tt><!-- var: Row -->%(Filename)s<br><!-- /var (Row) --></tt>
+  </td></tr>
+  <tr><td>
+  This does not generally indicate a problem. As a precaution, the original
+  contents of these file(s) have been backed up into the archive:
+  </td></tr>
+  <tr><td>
+  <tt>%(Archive)s</tt>
+  </td></tr>
+  <tr><td>
+  If you choose to uninstall TMDA, these file(s) will be restored to their
+  original contents.
+  </td></tr>
+<!-- /var (OverWritten) -->
+</table>
+
+<table class="roundBox2">
+  <tr><td>
+<h2>Special instructions from your system administrator:</h2>
+  </td></tr>
+  <tr><td>
+<p>%(Instruct)s</p>
+<!-- var: NoneInstruct="<b><i>None.</i></b>" -->
+  </td></tr>
+</table>

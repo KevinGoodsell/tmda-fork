@@ -1,0 +1,147 @@
+Title: About tmda-cgi
+
+<H1>About tmda-cgi</H1>
+
+<table border=0 class="linkTable" style="margin-bottom: 15px">
+<TR><TD>
+  <table width="100%%" border=0><TR>
+  <TD>[</TD><TD align=center><a href="#Tutorial">Tutorial</a></TD>
+  <TD>|</TD><TD align=center><a href="#Version">Version</a></TD>
+  <TD>|</TD><TD align=center><a href="#Params">Compile Params</a></TD>
+  <TD>|</TD><TD align=center><a href="#Special">Special Instructions</a></TD>
+  <TD>]</TD></TR></Table>
+</TD></TR>
+<TR><TD>
+  <table width="100%%" border=0><TR>
+  <TD>[</TD><TD align=center><a href="#Authors">Authors</a></TD>
+  <TD>|</TD><TD align=center><a href="#Links">Links</a></TD>
+  <TD>|</TD><TD align=center><a href="#Ack">Acknowledgements</a></TD>
+  <TD>|</TD><TD align=center><a href="#Contrib">Contributions</a></TD>
+  <TD>]</TD></TR></Table>
+</TD></TR>
+<TR><TD>
+  <table width="100%%" border=0><TR>
+  <TD>[</TD><TD align=center><a href="#Bug">Bug Finders</a></TD>
+  <TD>|</TD><TD align=center><a href="#Include">Included Software</a></TD>
+  <TD>|</TD><TD align=center><a href="#ToDo">Still To Do</a></TD>
+  <TD>]</TD></TR></Table>
+</TD></TR>
+</Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Tutorial"></a>Tutorial</h2>
+
+<p>Need a little <a
+  href="http://tmda.sourceforge.net/tmda-cgi/t_index.html">help</a> with
+  tmda-cgi?</p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Version"></a>Version</h2>
+<table cellspacing="7">
+  <tr>
+    <td><b>tmda-cgi:</b></td>
+    <td class="textField">%(CgiVersion)s</td>
+  </tr>
+  <tr>
+    <td><b>TMDA:</b></td>
+    <td class="textField">%(TmdaVersion)s</td>
+  </tr>
+  <tr>
+    <td><b>Theme:</b></td>
+    <td class="textField">TMDA-X/0.1 by Jim Ramsay &lt;<A href="mailto:i.am@jimramsay.com">i.am@jimramsay.com</A>&gt;</td>
+  </tr>
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Params"></a>Compile Params</h2>
+<table cellspacing="7">
+<!-- var: Params -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s:</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Special"></a>Special Instructions</h2>
+<p>%(Instruct)s</p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Authors"></a>Authors</h2>
+<p>tmda-cgi was written by <a href="mailto:gre7g@wolfhome.com">Gre7g 
+  Luterman</a> and <a href="mailto:i.am@jimramsay.com">Jim Ramsay</a></p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Links"></a>Links</h2>
+<p>Find out more about
+  <a href="http://tmda.sourceforge.net/tmda-cgi/">tmda-cgi</a>.</p>
+<p>Find out more about <a href="http://tmda.sourceforge.net/">TMDA</a>.</p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Ack"></a>Acknowledgements</h2>
+<table cellspacing="7">
+<!-- var: AckRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Contrib"></a>Contributions</h2>
+<table cellspacing="7">
+<!-- var: ContRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Bug"></a>Bug Finders</h2>
+<table cellspacing="7" width="100%">
+<!-- var: BugRow -->
+  <tr>
+<!-- var: BugCell -->
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+<!-- /var -->
+  </tr>
+<!-- /var -->
+</table><p>
+<!-- var: BugCols="3" -->
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="Include"></a>Included Software</h2>
+<table cellspacing="7" width="100%">
+<!-- var: IncludeRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>
+
+<Table class="roundBox2"><TR><TD>
+<h2><a name="ToDo"></a>Still To Do</h2>
+<table cellspacing="7">
+<!-- var: ToDoRow -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td class="textField">%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+</TD></TR></Table>

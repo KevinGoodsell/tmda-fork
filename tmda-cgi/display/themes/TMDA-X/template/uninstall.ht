@@ -1,0 +1,31 @@
+Title: Uninstall TMDA?
+
+<h1>Uninstall</h1>
+<p>Would you like to uninstall TMDA from your e-mail account? Doing this will 
+  open you up to being spammed.</p>
+<p>If you would like to proceed, you must decide how you would like to handle 
+  any e-mails still in your pending directory. You may choose to release or 
+  delete them based on how long they have been sitting in your pending 
+  directory.</p>
+<form method="post" action="%(Script)s">
+<table align="center" class="roundBox1">
+  <tr>
+    <td align="center"><p><B>Yes</B>, I would like to uninstall TMDA.</p>
+      <p><select name="release">
+<option value="1s">Don't release anything. Delete it all.</option>
+<option value="1d">Release all mail pending for less than a day.</option>
+<option value="3d">Release all mail pending for less than three days.</option>
+<option value="7d" selected>Release all mail pending for less than a week.</option>
+<option value="14d">Release all mail pending for less than two weeks.</option>
+<option value="30d">Release all mail pending for less than a month.</option>
+<option value="100Y">Release all mail, regardless of age.</option>
+          </select></p>
+      <p>I understand that all messages not released will be deleted.</p>
+      <p><input type="submit" value="Uninstall" class="smallButton"
+          onclick="if( confirm('Warning, your account will not be protected from spam if you do this.\nAre you sure you want to uninstall TMDA from your email account?') ) { return true; } else { alert( 'Uninstall Cancelled' ); return false;}"></p>
+      <input type="hidden" name="SID" value="%(SID)s">
+      <input type="hidden" name="cmd" value="uninstall">
+      <input type="hidden" name="subcmd" value="go">
+    </td>
+  </tr>
+</table></form>

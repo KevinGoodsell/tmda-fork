@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
+<html>
+<head>
+<title>Frequently Asked Questions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="STYLESHEET" href="%(ThemeDir)s/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000" marginwidth=0 marginheight=0>
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="100%%" height="100%%" border="0"
+cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="135" height="135" align="right" valign="bottom" style="padding-top: 3px" valign="middle" bgcolor="#76B2F6" class="corner"><img src="%(ThemeDir)s/corner.png" alt="[Lighthouse]"></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="bottom" bgcolor="#76B2F6" class="banner"><map name="bannerMap" id="bannerMap">
+<area href="http://tmda.net" shape="RECT" Coords="328,111,456,134" title="http://tmda.net">
+</map><img src="%(ThemeDir)s/banner.png" usemap="#bannerMap" width="457" height="135" border=0 alt="TMDA-cgi - a useful addition to http://www.tmda.net"></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<td colspan=2 valign="top" class="body"><table width="100%" height="100%" border=0 cellspacing=0 cellpadding=0>
+<tr><td width=135 bgcolor=#000000><td bgcolor=#000000 height="20" align="left" class="banner2"><img src="%(ThemeDir)s/banner2.png" alt=""></td></tr>
+<tr><td colspan=2 class="mainContent" valign="top">
+
+<H1>Frequently Asked Questions</H1>
+
+<UL class="linkTable">
+<li><a href="#Free">Is it really free?</a>
+<li><a href="#Annoy">Won't this challenge/response thing annoy people
+  who send me mail?</a>
+<li><a href="#Quarantine">Can I look at the messages in quarantine to make
+  sure I'm not missing something important?</a>
+<li><a href="#Automated">What about my mailing list and joke of the day?
+  How will that get past TMDA?</a>
+<li><a href="#Replies">What about people I send mail to, do they get
+  challenged as well?</a>
+<li><a href="#Uninstall">What if I change my mind? Can I get rid of TMDA
+  easily?</a>
+</UL>
+
+<table class="roundBox2">
+  <tr>
+    <td><H2><a name="Free"></a>Is it really free?</H2></td>
+  </tr>
+  <tr>
+    <td>
+  Yes, both TMDA and tmda-cgi (the program that lets you configure TMDA with
+  your web browser) are free. The programmers who created it volunteered their
+  time because they hate spam <b><i>that</i></b> much.
+    </td>
+  </tr>
+</table>
+
+<table class="roundBox2">
+  <tr>
+    <td><H2><a name="Annoy"></a>Won't this challenge/response thing annoy people
+                                who send me mail?</H2></td>
+  </tr>
+  <tr>
+    <td>
+  A little, perhaps. But I think you'll see that the inconvenience is slight
+  and since other users only have to confirm once, they won't mind doing it to
+  help you stay spam-free. You'd reply to a message to make them spam-free,
+  wouldn't you?
+  <p>
+  Also, you can edit the list that TMDA uses to determine whether messages get
+  challenged. If you really think that replying to confirmation messages will
+  annoy your friends, you can put their addresses on the list pre-emptively and
+  they'll never notice a difference.
+    </td>
+  </tr>
+</table>
+
+<table class="roundBox2"> 
+  <tr> 
+    <td><H2><a name="Quarantine"></a>Can I look at the messages in quarantine to 
+                                     make sure I'm not missing something
+                                     important?</H2></td>
+  </tr>
+  <tr>
+    <td>
+  Yes, tmda-cgi has a feature that lets you look at quarantined mail. TMDA
+  calls this your "pending" directory. You can even select the whitelist button
+  associated with a message to release it, and allow future mail from that
+  source to be accepted without challenge.
+    </td>
+  </tr>
+</table>
+
+<table class="roundBox2">
+  <tr>
+    <td><H2><a name="Automated"></a>What about my mailing list and 
+                                    joke-of-the-day? How will that get past 
+                                    TMDA?</H2></td>
+  </tr> 
+  <tr> 
+    <td>
+  There are two simple ways to tell TMDA to accept mail from a particular
+  automated source:
+
+<ul>
+<li>For automated mailings that always come from the same e-mail address (such
+    as a joke-of-the-day mailing), simply add the sender's e-mail address to
+    your list. Any future mailings from that address will be accepted without a
+    challenge.<p>
+    This is nice because if joke-of-the-day (or whomever) sells off your address
+    to a spammer, you still won't receive any spam. The spammer will almost
+    certainly send the spam from a different address than the one you
+    listed.<p></li>
+<li>Mailing lists require a slightly different tactic. Since the posts come
+    from all sorts of different addresses, the easiest solution is to create a
+    "keyword" address and use that when you sign up for the list.<p>
+    Suppose you wanted to join a mailing list about quilters. Instead of signing
+    up with your real e-mail address (let's say it is
+    <tt>joe@i.love.quilts.com</tt>), you can use tmda-cgi to generate a keyword
+    address such as <tt>joe-keyword-quilters.092a48@i.love.quilts.com</tt> and
+    use that when you sign up (yes, it is a pretty long address, but you can
+    generally copy and paste it). Any e-mail that arrives to this address will
+    be accepted.<p>
+    Keyword addresses are a bit like giving out a key to your mailbox. Anyone
+    can send mail to them. If the a spammer gets a hold of a keyword address,
+    they can start spamming you again. <b><i>However</i></b>, locks are easily
+    changed and keywords are easily revoked. If you start receiving spam
+    directed to <tt>joe-keyword-quilters.092a48@i.love.quilts.com</tt>, you'll
+    know it leaked out from your quilters mailing list. You can revoke the
+    address and either sign up again to the mailing list with a new keyword
+    address, or revoke the keyword and find some other place to get your fix of
+    quilting news.</li>
+</ul>
+    </td> 
+  </tr> 
+</table> 
+
+<table class="roundBox2">
+  <tr>
+    <td><H2><a name="Uninstall"></a>What if I change my mind? Can I get rid of
+                                    TMDA easily?</H2></td>
+  </tr> 
+  <tr> 
+    <td>  
+  Yes, there is an uninstall option on the tmda-cgi menu, under "settings".
+    </td> 
+  </tr> 
+</table> 
+
+<table class="linkTable" width="50%%" align=center style="margin-top: 10px">
+  <tr><td>
+    <H2>So, are you in?</H2>
+  </td></tr>
+  <tr><td align="center" style="padding-top: 20px">
+    <a href="%(Script)s?cmd=install&SID=%(SID)s"><b>Yes, sign me up!</b></a>
+  </td></tr>
+  <tr><td align="center" style="padding-top: 20px; padding-bottom: 20px">
+    <a href="%(Script)s?cmd=welcome&SID=%(SID)s"><b>Back to the welcome page</b></a>
+  </td></tr>
+</table>
+
+</tr></td>
+</table></td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table><!-- end of page table -->
+</body></html>

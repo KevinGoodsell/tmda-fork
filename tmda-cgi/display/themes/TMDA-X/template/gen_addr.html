@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Tue Jan 27 16:03:02 2004 -->
+<!-- USING HT2HTML 2.1 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Generate Dynamic E-mail Addresses
+
+-->
+
+<head>
+<title>Generate Dynamic E-mail Addresses</title>
+<meta http-equiv="Content-Type" content="text/html; charset=%(CharSet)s">
+<meta name="generator" content="HT2HTML/2.1">
+<link rel="STYLESHEET" href="%(ThemeDir)s/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000"
+      onload="Preloader()"
+      link="#0000bb"  vlink="#551a8b"
+      alink="#ff0000">
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="100%%" height="100%%" border="0"
+cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td align="right" valign="bottom" valign="middle" bgcolor="#76B2F6" class="corner"><img src="%(ThemeDir)s/corner.png" alt="[Lighthouse]"></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="bottom" bgcolor="#76B2F6" class="banner"><map name="bannerMap" id="bannerMap">
+<area href="http://tmda.net" shape="RECT" Coords="328,111,456,134" title="http://tmda.net">
+</map><img src="%(ThemeDir)s/banner.png" usemap="#bannerMap" width="457" height="135" border=0></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="130" bgcolor="#000000" valign="top" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td class="sidebar"><A href="%(Script)s?cmd=gen_addr&SID=%(SID)s" class="sidebarMainLink">Addresses</a></td></tr>
+<tr class="sidebar"><td><span class="sidebarActive"><li>Generate</span></td></tr>
+<tr class="sidebar"><td><a href="%(Script)s?cmd=test_addr&SID=%(SID)s" class="sidebarSubLink"><li>Test</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=pending&SID=%(SID)s" class="sidebarMainLink">Pending</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=incoming&SID=%(SID)s" class="sidebarMainLink">Filters</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=editlist&SID=%(SID)s" class="sidebarMainLink">Lists</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=theme&SID=%(SID)s" class="sidebarMainLink">Settings</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=info&SID=%(SID)s" class="sidebarMainLink">Info</a></td></tr>
+<tr><td class="sidebar"><A href="%(Script)s?cmd=logout&SID=%(SID)s" class="sidebarMainLink">Logout</a></td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" class="body"><table width="100%" height="100%" border=0 cellspacing=0 cellpadding=0>
+<tr><td bgcolor=#000000 height="20" align="left" class="banner2"><img src="%(ThemeDir)s/banner2.png"</td></tr>
+<tr><td class="mainContent" valign="top">
+<H1>Use this page to generate dynamic return addresses.</H1>
+<p>Copy the addresss you want and paste it into any web forms that will
+  send you automated mailings. By using a generated address you won't have
+  to modify your filters to receive your mail.</p>
+
+<table border=0 cellpadding=10 cellspacing=0 align=center>
+<tr><td>
+<form method="post" action="%(Script)s">
+<table cellpadding=0 cellspacing=0 class="roundBox1" width="100%%"><tr><td>
+  <table border=0>
+  <tr>
+    <td colspan=3>
+      <b>Dated address</b>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-right: 5px; white-space: nowrap">
+      Expires in:
+    </td>
+    <td>
+      <input name="exp_amt" type="text" value="%(ExpAmt)d" size="2">
+      <select name="exp_units">
+        <option value="m"%(mSel)s>minutes</option>
+        <option value="h"%(hSel)s>hours</option>
+        <option value="d"%(dSel)s>days</option>
+        <option value="w"%(wSel)s>weeks</option>
+        <option value="M"%(MSel)s>months</option>
+        <option value="Y"%(YSel)s>years</option>
+      </select>
+      <input type="hidden" name="cmd" value="gen_addr">
+      <input type="hidden" name="subcmd" value="dated">
+      <input type="hidden" name="SID" value="%(SID)s">
+    </td>
+    <td align="right">
+      <input type="submit" value="Generate" class="smallButton">
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-right: 5px; white-space: nowrap">
+      Use address:
+    </td>
+    <td colspan=2>
+      <input name="dated_addr" type="text" value="%(DatedAddr)s" size="65">
+    </td>
+  </tr>
+    <td colspan=3>
+      <i>
+        Users will typically have to confirm once a dated address expires.</td>
+      </i>
+    </td>
+  </tr>
+  </table>
+</td></tr></table>
+</form>
+</td></tr>
+<tr><td>
+<form method="post" action="%(Script)s">
+<table cellpadding=0 cellspacing=0 class="roundBox1" width="100%%"><tr><td>
+  <table border=0>
+  <tr>
+    <td colspan=3>
+      <b>Keyword address</b>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-right: 5px; white-space: nowrap">
+      Keyword:
+    </td>
+    <td>
+      <input name="keyword" type="text" value="%(Keyword)s" size="35">
+      <input type="hidden" name="cmd" value="gen_addr">
+      <input type="hidden" name="subcmd" value="keyword">
+      <input type="hidden" name="SID" value="%(SID)s">
+    </td>
+    <td align="right">
+      <input type="submit" value="Generate" class="smallButton">
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-right: 5px; white-space: nowrap">
+      Use address:
+    </td>
+    <td colspan=2>
+      <input name="keyword_addr" type="text" value="%(KeywordAddr)s" size="65">
+    </td>
+  </tr>
+    <td colspan=3>
+      <i>
+        You may have to revoke a keyword address if a spammer starts using one.
+      </i>
+    </td>
+  </tr>
+  </table>
+</td></tr></table>
+</form>
+</td></tr>
+<tr><td>
+<form method="post" action="%(Script)s">
+<table cellpadding=0 cellspacing=0 class="roundBox1" width="100%%"><tr><td>
+  <table border=0>
+  <tr>
+    <td colspan=3>
+      <b>Sender address</b>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-right: 5px; white-space: nowrap">
+      Valid if from:
+    </td>
+    <td>
+      <input name="sender" type="text" value="%(Sender)s" size="32">
+      <input type="hidden" name="cmd" value="gen_addr">
+      <input type="hidden" name="subcmd" value="sender">
+      <input type="hidden" name="SID" value="%(SID)s">
+    </td>
+    <td align="right">
+      <input type="submit" value="Generate" class="smallButton">
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-right: 5px; white-space: nowrap">
+      Use address:
+    </td>
+    <td colspan=2>
+      <input name="sender_addr" type="text" value="%(SenderAddr)s" size="65">
+    </td>
+  </tr>
+    <td colspan=3>
+      <i>
+        Consult an e-mail's headers for the &quot;Return-Path&quot;
+        address.
+      </i>
+    </td>
+  </tr>
+  </table>
+</td></tr></table>
+</form>
+</td></tr></table>
+
+<p><b>Note:</b>
+  If you would like to use an email different from your default email address
+  (%(defaultAddress)s), you may type it in the "Use Address" box before
+  clicking the "Generate" button.</p>
+
+</tr></td>
+</table></td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table><!-- end of page table -->
+<script>
+<!--
+function Preloader()
+{
+}
+//-->
+</script>
+</body></html>

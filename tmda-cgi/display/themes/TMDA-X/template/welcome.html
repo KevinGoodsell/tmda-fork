@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
+<!--
+Why did I end up here?  Here's some details:
+
+%(ErrMsg)s
+
+-->
+<html>
+<head>
+<title>Welcome to TMDA!</title>
+<meta http-equiv="Content-Type" content="text/html; charset=%(CharSet)s">
+<meta name="generator" content="HT2HTML/2.1">
+<link rel="STYLESHEET" href="%(ThemeDir)s/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000"
+      onload="Preloader()"
+      link="#0000bb"  vlink="#551a8b"
+      alink="#ff0000">
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="100%%" height="100%%" border="0"
+cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="135" height="135" align="right" valign="bottom" style="padding-top: 3px" valign="middle" bgcolor="#76B2F6" class="corner"><img src="%(ThemeDir)s/corner.png" alt="[Lighthouse]"></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="bottom" bgcolor="#76B2F6" class="banner"><map name="bannerMap" id="bannerMap">
+<area href="http://tmda.net" shape="RECT" Coords="328,111,456,134" title="http://tmda.net">
+</map><img src="%(ThemeDir)s/banner.png" usemap="#bannerMap" width="457" height="135" border=0></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of body cell -->
+<td colspan=2 valign="top" class="body"><table width="100%" height="100%" border=0 cellspacing=0 cellpadding=0>
+<tr><td width=135 bgcolor=#000000></td><td bgcolor=#000000 height="20" align="left" class="banner2"><img src="%(ThemeDir)s/banner2.png"</td></tr>
+<tr><td colspan=2 class="mainContent" valign="top">
+
+<H1>Welcome to TMDA!</H1>
+
+<table class="roundBox2">
+  <tr><td>
+    <H2>What is it?</H2>
+  </td></tr>
+  <tr><td>
+  <a href="http://www.tmda.net" target="TMDAWin">TMDA</a> (tagged message delivery agent)
+  is the free answer to your spam woes. Unlike other filters that look for
+  keywords such as &quot;viagra&quot;, &quot;sweepstakes&quot;, and 
+  &quot;lesbians&quot;; TMDA uses a simple, but highly reliable method for
+  determining which e-mails come from real people... <i>it asks them!</i>
+  </td></tr>
+</table>
+
+<table class="roundBox2">
+  <tr><td valign="top">
+    <H2>TMDA asks people if they are real?</H2>
+  </td><td rowspan=2>
+    <img src="%(ThemeDir)s/diagram.png" width="361" height="237" align="right" style="border: 1px solid black;" border=1>
+  </tr>
+  <tr><td valign="top">
+  Yes, it is called a &quot;challenge/response method&quot;.
+  When someone sends mail to a TMDA guarded e-mail address for
+  the first time, instead of just blindly dumping the message
+  in your in-box, TMDA puts it in a special quarantine area
+  and sends a 
+  &quot;<a href="%(Script)s?cmd=conf-example&SID=%(SID)s">challenge</a>&quot;
+  back to the author.
+  The challenge is just an e-mail that briefly explains
+  the system and asks the user to reply to the challenge (this
+  is the &quot;response&quot; part). Once TMDA receives the
+  response, it releases the original message from quarantine
+  and adds the sender to a list of people from which it will
+  accept mail. Any future messages from that user will be accepted
+  without another challenge.
+  </td></tr>
+</table>
+
+<table class="roundBox2">
+  <tr><td>
+  <H2>How does that help?</H2>
+  </td></tr>
+  <tr><td>
+  Spammers typically put fake e-mail addresses on their spam.
+  They don't want you to reply to them. The address they use
+  is bad, so they never receive TMDA's challenge, they never
+  get to respond, the message is never released from quarantine,
+  and it never makes it to your in-box. Instead, it sits around
+  and gathers dust until the system throws it away.
+  </td></tr>
+</table>
+
+<table class="roundBox2">
+  <tr><td>
+    <H2>Great! How do I get it?</H2>
+  </td></tr>
+  <tr><td>
+  &quot;Getting it&quot; is easy, simply click the link at
+  the end of this page to install the system. But before you
+  do, please take a few minutes and look over the following
+  FAQs (frequently asked questions). TMDA is a radically different
+  way to handle your mail, so it is best to understand some
+  of the finer details before you proceed.
+  </td></tr>
+</table>
+
+<table class="roundBox2">
+  <tr><td>
+    <H2>FAQs:</H2>
+  </td></tr>
+  <tr><td>
+    <ul>
+    <li><a href="%(Script)s?cmd=faq&SID=%(SID)s#Free">Is it really free?</a>
+    <li><a href="%(Script)s?cmd=faq&SID=%(SID)s#Annoy">Won't this challenge/response thing annoy people who send me mail?</a>
+    <li><a href="%(Script)s?cmd=faq&SID=%(SID)s#Quarantine">Can I look at the messages in quarantine to make sure I'm not missing something important?</a>
+    <li><a href="%(Script)s?cmd=faq&SID=%(SID)s#Automated">What about my mailing list and joke of the day? How will that get past TMDA?</a>
+    <li><a href="%(Script)s?cmd=faq&SID=%(SID)s#Replies">What about people I send mail to, do they get challenged as well?</a>
+    <li><a href="%(Script)s?cmd=faq&SID=%(SID)s#Uninstall">What if I change my mind? Can I get rid of TMDA easily?</a>
+    </ul>
+  </td></tr>
+</table>
+
+<table class="linkTable" width="50%%" align=center style="margin-top: 10px">
+  <tr><td>
+    <H2>So, are you in?</H2>
+  </td></tr>
+  <tr><td align="center" style="padding-top: 20px">
+    <a href="%(Script)s?cmd=install&SID=%(SID)s"><b>Yes, sign me up!</b></a>
+  </td></tr>
+  <tr><td align="center" style="padding-top: 20px; padding-bottom: 20px">
+    <a href="%(Script)s?cmd=logout&SID=%(SID)s"><b>No, log me out.</b></a>
+  </td></tr>
+</table>
+
+</tr></td>
+</table></td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table><!-- end of page table -->
+<script>
+<!--
+function Preloader()
+{
+}
+//-->
+</script>
+</body></html>

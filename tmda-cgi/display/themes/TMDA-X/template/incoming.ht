@@ -1,0 +1,21 @@
+Title: Incoming Filter
+
+<table align="center">
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td height="30" align="center" valign="top"><b>Editing Incoming Filter:</b> <tt>%(FilePath)s</tt></td>
+    </tr>
+    <tr>
+      <td><textarea name="filter" cols="64" class="editBox"
+        rows="15">%(FileContents)s</textarea>
+        <input type="hidden" name="subcmd" value="save">
+        <input type="hidden" name="cmd" value="incoming">
+        <input type="hidden" name="SID" value="%(SID)s">
+      </td>
+    </tr>
+    <tr align="center">
+      <td height="30" valign="bottom"><!-- var: SaveButton --><input
+        type="submit" value="Save" class="smallButton"><!-- /var --></td>
+    </tr>
+  </form>
+</table>

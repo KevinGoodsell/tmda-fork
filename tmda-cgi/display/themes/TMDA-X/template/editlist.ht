@@ -1,0 +1,37 @@
+Title: List Editor
+
+<!-- var: CurrentListEntry="<tr><td class='sidebar'><span class='sidebarActive'><li>%(listName)s</span></td></tr>" -->
+
+<!-- var: ListEntry="<tr><td class='sidebar'><a href='%(listLink)s' class='sidebarSubLink'><li>%(listName)s</A></td></tr>" -->
+
+<!-- var: NoLists -->
+<table align="center">
+  <form method="post" action="%(Script)s">
+    <tr align="center" valign="top">
+      <td height="30"><H1>%(FilePath)s:</H1></td>
+    </tr>
+    <tr>
+      <td height="30" valign="center" align=center>
+        [ <a href="%(Script)s?cmd=editlist%(ListNum)d&subcmd=sort&SID=%(SID)s">Sort by Address</a> |
+        <a href="%(Script)s?cmd=editlist%(ListNum)d&subcmd=domsort&SID=%(SID)s">Sort by Domain</a> ]
+      </td>
+    <tr>
+      <td align="center"><textarea name="list" cols="30" class="editBox"
+        rows="15">%(FileContents)s</textarea></td>
+    </tr>
+    <tr>
+      <td valign="bottom" align=center>
+        <input type="submit" value="Save" class="smallButton">
+        <input type="hidden" name="cmd" value="editlist%(ListNum)d">
+        <input type="hidden" name="subcmd" value="save">
+        <input type="hidden" name="SID" value="%(SID)s">
+      </td>
+    </tr>
+  </form>
+</table>
+<!-- /var (NoLists) -->
+<!-- var: NoneList -->
+<H1>No lists are currently defined.</H1>
+<p>Please <a href="%(Script)s?cmd=incoming&SID=%(SID)s">edit your filters</a>
+  to define your lists.</p>
+<!-- /var (NoneList) -->

@@ -1,0 +1,257 @@
+Title: Theme Selection
+
+<script content-type="text/javascript">
+<!-- Hide from old browsers...
+
+function hover( name )
+{
+  if( document.implementation.hasFeature("CSS", "") )
+  {
+    name = name + "-select";
+    className = document.getElementById( name ).className;
+    if( className == "" )
+    {
+      document.getElementById( name ).style.setProperty(
+        'border', 
+        '2px solid black', 
+        'important' );
+      document.getElementById( name ).style.setProperty(
+        'background', 
+        '#FDFFA5', 
+        'important' );
+      document.getElementById( name ).style.setProperty(
+        'font-weight', 
+        'bold', 
+        'important' );
+      document.getElementById( name ).style.setProperty(
+        '-moz-border-radius', 
+        '10px', 
+        'important' );
+      document.getElementById( name ).style.setProperty(
+        'padding', 
+        '0px', 
+        'important' );
+    }
+  }
+}
+
+function unhover( name )
+{
+  if( document.implementation.hasFeature("CSS", "") )
+  {
+    name = name + "-select";
+    className = document.getElementById( name ).className;
+    if( className == "" )
+    {
+      document.getElementById( name ).style.removeProperty( 'border' );
+      document.getElementById( name ).style.removeProperty( 'background' );
+      document.getElementById( name ).style.removeProperty( 'font-weight' );
+      document.getElementById( name ).style.removeProperty( '-moz-border-radius' );
+      document.getElementById( name ).style.setProperty(
+        'padding', 
+        '2px', 
+        'important' );
+    }
+  }
+}
+// -->
+</script>
+
+<H1>Theme Settings</H1>
+
+<table border=0 cellspacing=10 align=center>
+<TR><TD>
+<table class="roundBox1" width="100%%">
+  <TR>
+    <TD>
+      <H3>TMDA-X Theme Customization:</H3>
+    </TD>
+  </TR>
+  <TR>
+    <TD>
+<!-- var: FormVars="General:UseJSConfirm:Yes:No,
+  ViewPending:AltPref:textplain:texthtml,
+  ViewPending:EmailClass:sans:serif:fixed,
+  General:CSEncoding:iso-8859-1:gb2312:big5, PendingList:PagerSize,
+  PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db:Ymd:BZd:DaysAgo,
+  Login:InitPage:pending:gen_addr, PendingList:CropSender,
+  PendingList:CropSubject, PendingList:ShowAddr:Name:Address:All,
+  ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr" -->
+<table>
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td align="right"><select name="GeneralUseJSConfirm">
+          <option %(GeneralUseJSConfirmYesSelected)s value="Yes">Enabled</option>
+          <option %(GeneralUseJSConfirmNoSelected)s value="No">Disabled</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Javascript confirmation before deleting or blacklisting</td>
+    </tr>
+    <tr>
+      <td align="right"><select name="ViewPendingAltPref">
+          <option %(ViewPendingAltPreftextplainSelected)s
+            value="text/plain">Plain</option>
+          <option %(ViewPendingAltPreftexthtmlSelected)s
+            value="text/html">HTML</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Preferred message format if an option exists</td>
+    </tr>
+    <tr>
+      <td align="right"><select name="ViewPendingEmailClass">
+          <option %(ViewPendingEmailClasssansSelected)s
+            value="sans">Sans-serif</option>
+          <option %(ViewPendingEmailClassserifSelected)s
+            value="serif">Serif</option>
+          <option %(ViewPendingEmailClassfixedSelected)s
+            value="fixed">Fixed</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Font to use when viewing e-mails</td>
+    </tr>
+    <tr>
+      <td align="right"><select name="GeneralCSEncoding">
+          <option %(GeneralCSEncodingiso88591Selected)s
+            value="iso-8859-1">English</option>
+          <option %(GeneralCSEncodinggb2312Selected)s
+            value="gb2312">GB2312</option>
+          <option %(GeneralCSEncodingbig5Selected)s
+            value="big5">Big5</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Font to use when viewing e-mails</td>
+    </tr>
+    <tr>
+      <td align="right"><input type="text" name="PendingListPagerSize"
+        value="%(PendingListPagerSize)s" size="2"></td>
+      <td>&nbsp;</td>
+      <td>Number of pending e-mails to show in list form</td>
+    </tr>
+    <tr>
+      <td align="right"><select name="PendingListShowAddr">
+          <option %(PendingListShowAddrNameSelected)s
+            value="Name">Name</option>
+          <option %(PendingListShowAddrAddressSelected)s
+            value="Address">Address</option>
+          <option %(PendingListShowAddrAllSelected)s
+            value="All">All</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Addresses display method in pending list.</td>
+    </tr>
+    <tr>
+      <td align="right"><select name="PendingListDateFormat">
+          <option %(PendingListDateFormatYmdSelected)s
+            value="%Y-%m-%d">2003-03-13</option>
+          <option %(PendingListDateFormataZmZdSelected)s
+            value="%a Z-%m/Z-%d">Tue 3/13</option>
+          <option %(PendingListDateFormataZdZmSelected)s
+            value="%a Z-%d/Z-%m">Tue 13/3</option>
+          <option %(PendingListDateFormatZmZdSelected)s
+            value="Z-%m/Z-%d">3/13</option>
+          <option %(PendingListDateFormatZdZmSelected)s
+            value="Z-%d/Z-%m">13/3</option>
+          <option %(PendingListDateFormatdbSelected)s
+            value="%d %b">05 Apr</option>
+          <option %(PendingListDateFormatBZdSelected)s
+            value="%B Z-%d">April 5</option>
+          <option %(PendingListDateFormatDaysAgoSelected)s
+            value="DaysAgo">3 days ago</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Date format to use in pending list.</td>
+    </tr>
+    <tr>
+      <td align="right"><select name="LoginInitPage">
+          <option %(LoginInitPagependingSelected)s
+            value="pending">Pending</option>
+          <option %(LoginInitPagegen_addrSelected)s
+            value="gen_addr">Addresses</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Initial page to show upon login.</td>
+    </tr>
+    <tr>
+      <td align="right"><input type="text" name="PendingListCropSender"
+        value="%(PendingListCropSender)s" size="2"></td>
+      <td>&nbsp;</td>
+      <td>Width of sender field in list view</td>
+    </tr>
+    <tr>
+      <td align="right"><input type="text" name="PendingListCropSubject"
+        value="%(PendingListCropSubject)s" size="2"></td>
+      <td>&nbsp;</td>
+      <td>Width of subject field in list view</td>
+    </tr>
+    <tr>
+      <td>OK HTML tag</td>
+      <td>&nbsp;</td>
+      <td><input type="text" name="ViewPendingAllowTags"
+        value="%(ViewPendingAllowTags)s" size="45"></td>
+    </tr>
+    <tr>
+      <td>Remove HTML</td>
+      <td>&nbsp;</td>
+      <td><input type="text" name="ViewPendingBlockRemove"
+        value="%(ViewPendingBlockRemove)s" size="45"></td>
+    </tr>
+    <tr>
+      <td><a href="http://spamcop.net">SpamCop</a> Addr.</td>
+      <td>&nbsp;</td>
+      <td><input type="text" name="GeneralSpamCopAddr"
+        value="%(GeneralSpamCopAddr)s" size="45"></td>
+    </tr>
+    <tr>
+      <td colspan="3" align="center"><br>
+        <input type="submit" value="Save Changes" class="smallButton">
+        <input type="hidden" name="cmd" value="theme">
+        <input type="hidden" name="subcmd" value="save">
+        <input type="hidden" name="SID" value="%(SID)s">
+      </td>
+    </tr>
+  </form>
+</table>
+    </TD>
+  </TR>
+</TABLE>
+</TR></TD>
+<TR><TD>
+<table align="center" class="roundBox1" width="100%%">
+  <tr>
+    <td colspan="2"><H3>Select a different theme:</H3></td>
+  </tr>
+<!-- var: Columns="2" -->
+<!-- var: Row -->
+  <tr height="150">
+<!-- var: Cell -->
+<td align=center><table id="%(Name)s-select" cellpadding="5"<!-- var: Selected --> class="selectedTheme"<!-- /var --> style="padding: 2px">
+        <tr>
+          <td align="center"><a
+href="%(Script)s?cmd=theme&subcmd=%(Name)s&SID=%(SID)s"><img
+src="%(ThemeDir)s/../%(Name)s/theme.png" alt="%(Name)s" title="%(Name)s" width="200" height="87"
+onmouseover="hover('%(Name)s')"
+onmouseout="unhover('%(Name)s')"
+border="0"></a><br>
+%(Name)s</td>
+        </tr>
+      </table></td>
+<!-- /var (Cell) -->
+  </tr>
+<!-- /var (Row) -->
+  <tr><td colspan=2>
+<table>
+  <tr>
+    <td><b>Selected Theme:</b></td>
+    <td>&nbsp;</td>
+    <td class="textField">%(Name)s</td>
+  </tr>
+  <tr>
+    <td><b>Info:</b></td>
+    <td>&nbsp;</td>
+    <td class="textField">%(Info)s<!-- var: None="<i>None.</i>" --></td>
+  </tr>
+</table>
+  </td></tr>
+
+</table>
+</TD></TR></TABLE>

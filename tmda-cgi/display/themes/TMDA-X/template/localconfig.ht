@@ -1,0 +1,170 @@
+Title: Local Configuration File
+
+<!--
+
+
+
+Why did I end up here?  Here's some details:
+
+%(ErrMsg)s
+
+
+
+-->
+<form method="post" action="%(Script)s">
+  <table align="center">
+<!-- var: PathRow -->
+    <tr>
+      <td height="30" align="center" valign="top">
+        <b>Editing Local Configuration file:</b> <tt>%(FilePath)s</tt>
+      </td>
+    </tr>
+    <tr>
+      <td height="30" align="center" valign="top">[<a href="%(Script)s?cmd=localconfig&subcmd=toggle&SID=%(SID)s">Toggle between Form-View and Text-View</a>]</td>
+    </tr>
+<!-- /var (PathRow) -->
+<!-- var: ErrRow -->
+    <tr>
+      <td bgcolor="#FF0000"><table width="100%">
+        <tr>
+          <td align="center"><font color="#FFFF00" size="+2"><b>Not saved!</b></font></td>
+          <td>&nbsp;</td>
+          <td align="center"><font color="#FFFF00"><b>%(ErrStr)s</b></font></td>
+        </tr>
+      </table></td>
+    </tr>
+<!-- /var (ErrRow) -->
+    <tr>
+      <td>
+<!-- var: TextView -->
+<textarea name="config" cols="64" rows="15" class="editBox">%(FileContents)s</textarea>
+<!-- /var (TextView) -->
+<!-- var: FormView -->
+<!-- var: FormVars="FULLNAME, CONFIRM_ADDRESS, CONFIRM_ACCEPT_NOTIFY:I:1:0,
+TIMEOUT, TAGS_CONFIRM:L, TAGS_DATED:L, TAGS_KEYWORD:L, TAGS_SENDER:L,
+BOUNCE_TEXT_FILTER_INCOMING, BOUNCE_TEXT_INVALID_CONFIRMATION,
+BOUNCE_TEXT_NONEXISTENT_PENDING, CONFIRM_ACCEPT_TEXT_INITIAL,
+CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED, CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED,
+ADDED_HEADERS_CLIENT:D, ADDED_HEADERS_SERVER:D" -->
+<table cellpadding="7" cellspacing="0" width="100%" class="roundBox1">
+  <tr>
+    <td><table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="180"><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#FULLNAME">Your Full Name</a></tt></td>
+          <td align="left"><input name="FULLNAME" type="text" value="%(FULLNAME)s" size="30"></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td><table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="180"><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#CONFIRM_ADDRESS">Your Outgoing Address</a></tt></td>
+          <td align="left"><input name="CONFIRM_ADDRESS" type="text" value="%(CONFIRM_ADDRESS)s" size="30"></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td><table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="180"><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#CONFIRM_ACCEPT_NOTIFY">Confirmation Notification</a></tt></td>
+          <td align="left"><select name="CONFIRM_ACCEPT_NOTIFY">
+              <option value="1"%(CONFIRM_ACCEPT_NOTIFY1Selected)s>Enable (1)</option>
+              <option value="0"%(CONFIRM_ACCEPT_NOTIFY0Selected)s>Disable (0)</option>
+            </select></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td><table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="180"><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#TIMEOUT">Default Address Expiration</a></tt></td>
+          <td align="left"><input name="TIMEOUT" type="text" value="%(TIMEOUT)s" size="3"></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td><table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="180"><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#TAGS_CONFIRM">Confirmation Tags</a></tt></td>
+          <td align="left"><input name="TAGS_CONFIRM" type="text" value="%(TAGS_CONFIRM)s" size="30"></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td><table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="180"><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#TAGS_DATED">Dated Tags</a></tt></td>
+          <td align="left"><input name="TAGS_DATED" type="text" value="%(TAGS_DATED)s" size="30"></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td><table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="180"><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#TAGS_KEYWORD">Keyword Tags</a></tt></td>
+          <td align="left"><input name="TAGS_KEYWORD" type="text" value="%(TAGS_KEYWORD)s" size="30"></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td><table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="180"><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#TAGS_SENDER">Sender Tags</a></tt></td>
+          <td align="left"><input name="TAGS_SENDER" type="text" value="%(TAGS_SENDER)s" size="30"></td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#BOUNCE_TEXT_FILTER_INCOMING">Incoming filter bounce text:</a></tt>
+      <br>
+      <textarea name="BOUNCE_TEXT_FILTER_INCOMING" cols="48" rows="3">%(BOUNCE_TEXT_FILTER_INCOMING)s</textarea></td>
+  </tr>
+  <tr>
+    <td><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#BOUNCE_TEXT_INVALID_CONFIRMATION">Invalid confirmation bounce text:</a><br>
+      </tt>
+      <textarea name="BOUNCE_TEXT_INVALID_CONFIRMATION" cols="48" rows="3">%(BOUNCE_TEXT_INVALID_CONFIRMATION)s</textarea></td>
+  </tr>
+  <tr>
+    <td><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#BOUNCE_TEXT_NONEXISTENT_PENDING">Not found in Pending List bounce text:</a></tt><br>
+      <textarea name="BOUNCE_TEXT_NONEXISTENT_PENDING" cols="48" rows="3">%(BOUNCE_TEXT_NONEXISTENT_PENDING)s</textarea></td>
+  </tr>
+  <tr>
+    <td height="107"><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#CONFIRM_ACCEPT_TEXT_INITIAL">Initial Confirmation Accepted message:</a></tt><br>
+      <textarea name="CONFIRM_ACCEPT_TEXT_INITIAL" cols="48" rows="3">%(CONFIRM_ACCEPT_TEXT_INITIAL)s</textarea></td>
+  </tr>
+  <tr>
+    <td><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED">Already Confirmed message:</a><br>
+      </tt>
+      <textarea name="CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED" cols="48" rows="3">%(CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED)s</textarea></td>
+  </tr>
+  <tr>
+    <td><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED">Already Released message:</a><br>
+      </tt>
+      <textarea name="CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED" cols="48" rows="3">%(CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED)s</textarea></td>
+  </tr>
+  <tr>
+    <td><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#ADDED_HEADERS_CLIENT">Extra Headers for user-sent messages:</a><br>
+      </tt>
+      <textarea name="ADDED_HEADERS_CLIENT" cols="48" rows="3">%(ADDED_HEADERS_CLIENT)s</textarea></td>
+  </tr>
+  <tr>
+    <td><tt><a target="Definition" href="http://tmda.sourceforge.net/config-vars.html#ADDED_HEADERS_SERVER">Extra Headers for server-sent messages:</a><br>
+      </tt>
+      <textarea name="ADDED_HEADERS_SERVER" cols="48" rows="3">%(ADDED_HEADERS_SERVER)s</textarea></td>
+  </tr>
+</table>
+<!-- /var (FormView) -->
+      </td>
+    </tr>
+    <tr align="center">
+      <td height="30" valign="bottom">
+<!-- var: SaveButton -->
+        <input type="submit" value="Save" class="smallButton">
+        <input type="hidden" name="subcmd" value="save">
+        <input type="hidden" name="cmd" value="localconfig">
+        <input type="hidden" name="SID" value="%(SID)s">
+<!-- /var (SaveButton) -->
+      </td>
+    </tr>
+  </table>
+</form>

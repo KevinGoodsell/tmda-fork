@@ -1,0 +1,20 @@
+Title: Global Configuration File
+
+<form>
+  <table align="center">
+    <tr>
+      <td height="30" align="center" valign="top"><b>Viewing global configuration file:</b> <tt>%(FilePath)s</tt></td>
+    </tr>
+    <tr>
+      <td align="center"><!-- var: NoFile --><textarea name="textarea" class="editBox"
+        cols="64" rows="15">%(FileContents)s</textarea><!-- /var -->
+        <!-- var: NoneLook="<i>No such file</i>" -->
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <i>This read-only file cannot be saved.</i>
+      </td>
+    </tr>
+  </table>
+</form>
