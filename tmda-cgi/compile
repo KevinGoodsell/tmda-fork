@@ -103,7 +103,7 @@ Where:
           automatically appended if not specified.
         Examples: -p "/usr/sbin/checkpassword-pam -s id -- /bin/true"
                   -p /home/vpopmail/bin/vchkpw
-                     (/usr/bin/true or /bin/true is automatically used) 
+                     (/usr/bin/true or /bin/true is automatically used)
 
     -r protocol[://host[:port]][/dn]
     --remote-auth protocol[://host[:port]][/dn]
@@ -153,7 +153,7 @@ Authentication is done by default using a file of the format username:password.
 The default location for this file is chosen in the following order:
 
  1) File tmda-cgi in the same directory as the config file specified by the '-c'
-    option (See below for discussion of -c) 
+    option (See below for discussion of -c)
  2) File tmda-cgi in ~/.tmda/tmda-cgi for the user attempting to log in.
  3) File /etc/tmda-cgi
 
@@ -197,8 +197,11 @@ import re
 import string
 import sys
 
-def Ask(Question, OptD, Str):
+def Ask(Question, Str, ValProg = None, TestStr = None):
   "Ask for a member from the keyboard."
+
+  global OptD
+
   while 1:
     print Question
     Temp = raw_input("(%s): " % OptD[Str]).strip()
@@ -206,44 +209,55 @@ def Ask(Question, OptD, Str):
       Limit = re.search("\[(.+,.+)\]", Question)
       if Limit and not (Temp in Limit.group(1).split(", ")): continue
       OptD[Str] = Temp
+    if ValProg:
+      Filename = TestStr % OptD[Str].split()[0]
+      if not ValProg(Filename):
+        print "Warning!  Cannot locate: %s" % Filename
+        print "Use this value anyhow? [Yes, No]"
+        Temp = raw_input("(No):").strip().lower()
+        if not Temp or (Temp[0] != "y"): continue
     break
 
-def Interactive(OptD):
+def Interactive():
   "Get options interactively."
-  Ask("Location of Python interpreter (version 2.1+)", OptD, "Python")
-  Ask("Target filename (and location) to compile CGI", OptD, "Target")
-  Ask("Path to TMDA root directory", OptD, "Base")
-  Ask("Path to tmda-cgi Python files", OptD, "Path")
-  Ask('User config file location (or "None" for system default)', OptD,
-    "Config")
-  Ask("Authentication Type [file, program, remote, default]", OptD, "AuthType")
+
+  global OptD
+
+  Ask("Location of Python interpreter (version 2.1+)", "Python",
+    os.path.isfile, "%s")
+  Ask("Target filename (and location) to compile CGI", "Target")
+  Ask("Path to TMDA root directory", "Base", os.path.isdir, "%s/TMDA")
+  Ask("Path to tmda-cgi Python files", "Path", os.path.isfile,
+    "%s/tmda-cgi.py")
+  Ask('User config file location (or "None" for system default)', "Config")
+  Ask("Authentication Type [file, program, remote, default]", "AuthType")
   if OptD["AuthType"] == "file":
-    Ask('Authentication File (or "None" for system default)', OptD, "AuthFile")
+    Ask('Authentication File (or "None" for system default)', "AuthFile",
+      os.path.isfile, "%s")
     OptD["AuthArg"] = OptD["AuthFile"]
   elif OptD["AuthType"] == "program":
     Ask("""Authentication (checkpassword-style) program (full path and args)
- * For more details, see `config --help` option -p *""", OptD,
-      "AuthProg")
+ * For more details, see `config --help` option -p *""", "AuthProg",
+     os.path.isfile, "%s")
     OptD["AuthArg"] = OptD["AuthProg"]
   elif OptD["AuthType"] == "remote":
-    Ask('Authentication URI (protocol://host.domain.com[:port][/dn])', OptD,
+    Ask('Authentication URI (protocol://host.domain.com[:port][/dn])',
       "AuthURI")
     OptD["AuthArg"] = OptD["AuthURI"]
   elif OptD["AuthType"] == "default":
     OptD["AuthArg"] = "None"
-  Ask("Relative or absolute web path from CGI to display directory", OptD,
-    "DispDir")
-  Ask("CGI mode [system-wide, single-user, no-su]", OptD, "Mode")
+  Ask("Relative or absolute web path from CGI to display directory", "DispDir")
+  Ask("CGI mode [system-wide, single-user, no-su]", "Mode")
   Ask('Virtual user stub and parameters (or "None" if no virtual users)',
-    OptD, "VLookup")
+    "VLookup")
   if OptD["Mode"] == "system-wide":
-    Ask("User name to use while accessing session data", OptD, "User")
+    Ask("User name to use while accessing session data", "User")
     if OptD["VLookup"] != "None":
-      Ask("Real user name to use when login is a virtual user", OptD, "VUser")
-  Ask('Session path/file prefix', OptD, "SessionPrefix")
-  Ask('Session expiration (seconds)', OptD, "SessionExp")
-  Ask('Session cleanup odds (0.01 = 1%)', OptD, "SessionOdds")
-  Ask('Compile? [Yes, No]', OptD, "Compile")
+      Ask("Real user name to use when login is a virtual user", "VUser")
+  Ask('Session path/file prefix', "SessionPrefix")
+  Ask('Session expiration (seconds)', "SessionExp")
+  Ask('Session cleanup odds (0.01 = 1%)', "SessionOdds")
+  Ask('Compile? [Yes, No]', "Compile")
   print
 
 Program = sys.argv[0]
@@ -289,8 +303,8 @@ def Usage(Code, Msg=""):
 try:
   Opts, Args = getopt.getopt(sys.argv[1:], "c:d:De:f:i:l:m:nho:p:r:s:t:u:",
     ["base-dir=", "config-file=", "display-dir=", "dont-compile",
-     "session-exp", "file-auth=", "help", "install-prefix=", "mode=", "no-su", 
-     "cleanup-odds", "program-auth=", "remote-auth=", "session-prefix", 
+     "session-exp", "file-auth=", "help", "install-prefix=", "mode=", "no-su",
+     "cleanup-odds", "program-auth=", "remote-auth=", "session-prefix",
      "target=", "user=", "virtual-lookup="])
 except getopt.error, Msg:
   Usage(1, Msg)
@@ -351,7 +365,7 @@ if not len(Opts):
     pass
   Break = 0
   try:
-    Interactive(OptD)
+    Interactive()
   except KeyboardInterrupt:
     Break = 1
     print "\nSaving settings. Delete compile.ini to reset back to defaults."
@@ -453,10 +467,10 @@ CompStr = "cc -I . %(Path)stmda-cgi.c -o %(Target)s" % OptD
 if OptD["Compile"] == "Yes":
   # Compile tmda-cgi
   os.system(CompStr)
-  
+
   # Remove tmda-cgi.h
   os.unlink("tmda-cgi.h")
-  
+
   # Set permissions
   try:
     os.chmod(OptD["Target"], Perm)
