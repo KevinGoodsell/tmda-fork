@@ -98,7 +98,8 @@ class AutoResponse:
         """
         # Headers that users shouldn't be setting in their templates.
         bad_headers = ['MIME-Version', 'Content-Type', 'BodyCharset',
-                       'Content-Transfer-Encoding', 'Content-Disposition']
+                       'Content-Transfer-Encoding', 'Content-Disposition',
+                       'Content-Description']
         for h in bad_headers:
             if self.bouncemsg.has_key(h):
                 del self.bouncemsg[h]
@@ -111,12 +112,19 @@ class AutoResponse:
         elif bodyparts > 1:
             # A multipart/mixed entity with two bodyparts.
             self.mimemsg = MIMEMultipart('mixed')
+            if self.responsetype == 'request':
+                textpart['Content-Description'] = 'Confirmation Request'
+            elif self.responsetype == 'accept':
+                textpart['Content-Description'] = 'Confirmation Acceptance'
+            elif self.responsetype == 'bounce':
+                textpart['Content-Description'] = 'Failure Notice'
             self.mimemsg.attach(textpart)
             if Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY == 1:
                 # include the headers only as a text/rfc822-headers part.
                 rfc822part = MIMEText(self.msgin_as_string,
                                       'rfc822-headers',
                                       self.msgin.get_charsets()[0])
+                rfc822part['Content-Description'] = 'Original Message Headers'
             elif Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY == 2:
                 # include the entire message as a message/rfc822 part.
                 # don't include the payload if it's over a certain size.
@@ -126,6 +134,7 @@ class AutoResponse:
                                   % Defaults.CONFIRM_MAX_MESSAGE_SIZE
                     self.msgin.set_payload(new_payload)
                 rfc822part = MIMEMessage(self.msgin)
+                rfc822part['Content-Description'] = 'Original Message'
             self.mimemsg.attach(rfc822part)
         # fold the template headers into the main entity.
         for k, v in self.bouncemsg.items():
