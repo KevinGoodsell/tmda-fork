@@ -1,11 +1,12 @@
 From.US-ASCII: "%(FULLNAME)s" <%(recipient_address)s>
-Subject.US-ASCII: failure notice
+Subject.US-ASCII: Mail delivery failed: returning message to sender
 BodyCharset: US-ASCII
 
-Hi. This is the TMDA program at %(recipient_domain)s.
-I'm afraid I wasn't able to deliver your message to the following addresses.
-This is a permanent error; I've given up. Sorry it didn't work out.
+This message was created automatically by mail delivery software (TMDA).
+
+Your message attached below could not be delivered to one or more of
+its recipients. This is a permanent error. The following address(es)
+failed:
 
 <%(recipient_address)s>:
 %(bounce_text)s
-
