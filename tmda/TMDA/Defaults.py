@@ -241,15 +241,15 @@ else:
 
 # FILTER_INCOMING
 # Filter file which controls how incoming messages are tagged.
-# Default is ~/.tmda/lists/incoming
+# Default is ~/.tmda/filters/incoming
 if not vars().has_key('FILTER_INCOMING'):
-    FILTER_INCOMING = DATADIR + "lists/" + "incoming"
+    FILTER_INCOMING = DATADIR + "filters/" + "incoming"
 
 # FILTER_OUTGOING
 # Filter file which controls how outgoing messages are tagged.
-# Default is ~/.tmda/lists/outgoing
+# Default is ~/.tmda/filters/outgoing
 if not vars().has_key('FILTER_OUTGOING'):
-    FILTER_OUTGOING = DATADIR + "lists/" + "outgoing"
+    FILTER_OUTGOING = DATADIR + "filters/" + "outgoing"
 
 # FILTER_BOUNCE_CC
 # An optional e-mail address which will be sent a copy of any message

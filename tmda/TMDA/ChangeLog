@@ -1,5 +1,8 @@
 2001-11-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py: Change default location of FILTER_INCOMING and
+	FILTER_OUTGOING to ~/.tmda/filters/ instead of ~/.tmda/lists/.
+
 	* Util.py (gethostname): socket module was not returning the FQDN
 	on Solaris.  So now we at least attempt to first use
 	socket.getfqdn() which does work on Solaris, but only on Python2.
