@@ -134,6 +134,11 @@ Where:
        Compile as a file other than ./tmda-cgi.
        Current default: %(Target)s
 
+    -u <virtual user>
+    --virtual-user <virtual-user>
+       Real user name to run as when a virtual user logs in.
+       Current default: %(VUser)s
+
 If you specify no options, then the program will run in an interactive mode,
 provide defaults for all values, and remember the new values you give it as
 future defaults in case you need to recompile later.
@@ -307,7 +312,7 @@ try:
     ["base-dir=", "config-file=", "display-dir=", "session-exp=", "file-auth=",
      "help", "install-prefix=", "virtual-lookup=", "mode=", "no-su",
      "cleanup-odds", "program-auth=", "remote-auth=", "session-prefix=",
-     "target="])
+     "target=", "virtual-user="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
@@ -329,6 +334,8 @@ for Opt, Arg in Opts:
     OptD["AuthArg"] = Arg
   elif Opt in ("-i", "--install-prefix"):
     OptD["InstPath"] = Arg
+  elif Opt in ("-u", "--virtual-user"):
+    OptD["VUser"] = Arg
   elif Opt in ("-l", "--virtual-lookup"):
     OptD["VLookup"] = Arg
   elif Opt in ("-o", "--cleanup-odds"):

@@ -1,5 +1,8 @@
 2003-08-18  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Applied a patch to configure for Bernard Johnson which I believe is
+	  used in making RPMs.
+
 	* Fixed list editor.  If a list cannot be found, the list editor used
 	  to blow up.
 
