@@ -7,6 +7,7 @@ import cPickle
 import fileinput
 import fnmatch
 import os
+import popen2
 import random
 import re
 import string
@@ -225,6 +226,53 @@ def file_to_list(file):
     return list
 
 
+def pipecmd(command, *strings):
+    """Run a child process, returning opened pipes for communication.
+
+    command is the program to execute as a sub-process.
+
+    *strings are optional pieces of data to write to command.
+    """
+    try:
+        popen2._cleanup()
+        cmd = popen2.Popen3(command, 1, bufsize=-1)
+        cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
+        if strings:
+            # Write to the tochild file object.
+            for s in strings:
+                cmdin.write(s)
+            cmdin.flush()
+            cmdin.close()
+        # Read from the childerr object; command will block until exit.
+        err = cmderr.read().strip()
+        cmderr.close()
+        # Read from the fromchild object.
+        out = cmdout.read().strip()
+        cmdout.close()
+        # Get exit status from the wait() member function.
+        r = cmd.wait()
+        if err or r:
+            # If exit status is non-zero, raise an exception with data
+            # from childerr.
+            if r and os.WIFEXITED(r):
+                exitcode = 'exited %i' % os.WEXITSTATUS(r)
+                if os.WIFSIGNALED (r):
+                    exitsignal = 'signal %i' % os.WTERMSIG(r)
+                else:
+                    exitsignal = 'no signal'
+            else:
+                exitcode = 'no exit?'
+                exitsignal = ''
+            raise IOError, 'command "%s" %s %s (%s)' \
+                  % (command, exitcode, exitsignal, err)
+        if out:
+            # command wrote something to stdout.
+            print out
+    except Exception, txt:
+        raise IOError, \
+              'failure delivering message to command "%s" (%s)' % (command, txt)
+
+
 def writefile(contents, fullpathname):
     """Simple function to write contents to a file."""
     if os.path.exists(fullpathname):
@@ -267,6 +315,28 @@ def pager(file):
         pager_list.append(arg)
     pager_list.append(file)
     os.spawnvp(os.P_WAIT, pager_list[0], pager_list)
+
+
+def sendmail(headers, body, recip, return_path=None):
+    """Send e-mail by opening a pipe to the sendmail program.
+
+    headers can be either a rfc822.Message instance, or a set of
+    rfc822 compatible message headers as a string.
+
+    body is the message body content as a string.
+
+    recip is the recipient e-mail address.
+
+    return_path is an optional e-mail address which the envelope
+    sender address of the message will be set to.
+    """
+    import Defaults
+    if return_path is not None:
+        env_sender = '-f ' + return_path
+    else:
+        env_sender = ''
+    cmd = "%s %s %s" % (Defaults.SENDMAIL, env_sender, recip)
+    pipecmd(cmd, str(headers), '\n', body)
 
 
 def build_cdb(filename):

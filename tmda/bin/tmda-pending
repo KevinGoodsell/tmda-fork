@@ -120,7 +120,6 @@ import cStringIO
 import getopt
 import glob
 import os
-import popen2
 import rfc822
 import sys
 import time
@@ -254,16 +253,8 @@ def release(headers, body, recipient):
     headers['X-TMDA-Released'] = Util.unixdate()
     # Collect the envelope sender to pass to sendmail.
     return_path = headers.getaddr('return-path')[1]
-    inject = []
-    inject.append(Defaults.SENDMAIL)
-    inject.append('-f')
-    inject.append(return_path)
-    inject.append(recipient)
-    pipeline = popen2.popen2(inject)[1]
-    pipeline.write(str(headers))
-    pipeline.write('\n')
-    pipeline.write(body)
-    pipeline.close()
+    # Inject the message.
+    Util.sendmail(headers, body, recipient, return_path)
 
 
 def main():

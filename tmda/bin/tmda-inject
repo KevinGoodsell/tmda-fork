@@ -107,7 +107,6 @@ from TMDA import FilterParser
 from TMDA import Util
 
 
-import popen2
 import rfc822
 import string
 
@@ -245,28 +244,20 @@ def inject_message(resending,
     if Defaults.PURGED_HEADERS:
 	for hdr in Defaults.PURGED_HEADERS:
 	    del message_headers[hdr]
-    # Inject the message.
-    inject = []
-    inject.append(Defaults.SENDMAIL)
-    inject.append('-f')
-    inject.append(envelope_sender)
-    inject.append(to_address)
-    pipeline = popen2.popen2(inject)[1]
-    pipeline.write(str(message_headers))
-    # Write the custom headers.
+    # Create the custom headers.
     custom_headers = [ h for h in actions.keys()
-                       if h not in ('from', 'envelope', 'resent-from') ]
+                        if h not in ('from', 'envelope', 'resent-from') ]
+    nice_headers = []
     for header in custom_headers:
-	(cookie_type, cookie_option) = actions[header]
-	field = make_field(cookie_type, cookie_option, from_address, to_address)
+        (cookie_type, cookie_option) = actions[header]
+        field = make_field(cookie_type, cookie_option, from_address, to_address)
         if cookie_type:
             field = message_format(field, full_name, Defaults.MESSAGE_FROM_STYLE)
-	nice_header = string.capwords(
-                          header.replace('-', ' ')).replace(' ', '-')
-        pipeline.write('%s: %s\n' % (nice_header, field))
-    pipeline.write('\n')
-    pipeline.write(message_body)
-    pipeline.close()
+        nice_header = string.capwords(header.replace('-', ' ')).replace(' ', '-')
+        nice_headers.append('%s: %s\n' % (nice_header, field))
+    # Inject the message.
+    Util.sendmail(str(message_headers) + ''.join(nice_headers), message_body,
+                  to_address, envelope_sender)
 
 
 ######

@@ -1,3 +1,11 @@
+2002-02-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (inject_message): Send mail with Util.sendmail().
+
+	* tmda-pending (release): Ditto.
+
+	* tmda-rfilter: Ditto.
+	
 2002-02-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-pending (main): Make interactive command summary more

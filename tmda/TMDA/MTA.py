@@ -4,10 +4,11 @@
 
 
 import os
-import string
 import sys
 
 import Defaults
+import Errors
+import Util
 
 
 class MTA:
@@ -29,31 +30,9 @@ class MTA:
     def stop(self):
         sys.exit(self.EX_OK)
 
-    def deliver(self, message=None):
-        self.local_delivery_agent = Defaults.LOCAL_DELIVERY_AGENT
-        # Make sure the LDA actually exists first.
-        lda_path = string.split(string.lstrip(self.local_delivery_agent))[0]
-        if not os.path.exists(lda_path):
-            print "Nonexistent LOCAL_DELIVERY_AGENT:",lda_path
-            self.defer()
-        else:
-            self.__pipeline = os.popen(self.local_delivery_agent, 'w')
-            self.__pipeline.write(message)
-            exitcode = self.__pipeline.close()
-            if not exitcode:
-                exitcode = 0
-            signal = exitcode & 0x7f
-            exitval = exitcode >> 8
-            if signal:
-                print "LOCAL_DELIVERY_AGENT died by signal", signal
-                self.defer()
-            elif exitval == 0:
-                self.stop()
-            elif exitval >= 64 and exitval <= 78:
-                sys.exit(exitval)
-            else:
-                print "LOCAL_DELIVERY_AGENT unknown exit value", exitval
-                self.defer()
+    def deliver(self, message):
+        Util.pipecmd(Defaults.LOCAL_DELIVERY_AGENT, message)
+        self.stop()
 
 
 class Exim(MTA):
@@ -101,15 +80,14 @@ class Sendmail(MTA):
 def init():
     """Factory function which determine what MTA we are running and
     instantiates the corresponding MTA subclass."""
-    my_mta = string.capitalize(Defaults.MAIL_TRANSFER_AGENT)
-    if my_mta == 'Exim':
+    mta = Defaults.MAIL_TRANSFER_AGENT
+    if mta == 'exim':
         return Exim()
-    elif my_mta == 'Postfix':
+    elif mta == 'postfix':
         return Postfix()
-    elif my_mta == 'Qmail':
+    elif mta == 'qmail':
         return Qmail()
-    elif my_mta == 'Sendmail':
+    elif mta == 'sendmail':
         return Sendmail()
     else:
-        print "Unsupported MTA",my_mta
-        sys.exit(Defaults.EX_TEMPFAIL)
+        raise Errors.ConfigError, "Unsupported MAIL_TRANSFER_AGENT: " + mta

@@ -128,15 +128,10 @@ if not vars().has_key('RECIPIENT_DELIMITER'):
 # interface.  Defaults to one of the two standard locations, but you
 # can override it in case it is installed elsewhere.
 if not vars().has_key('SENDMAIL'):
-    SENDMAIL = None
     for sendmail in ('/usr/sbin/sendmail', '/usr/lib/sendmail'):
         if os.path.exists(sendmail):
             SENDMAIL = sendmail
             break
-    if SENDMAIL is None:
-        raise IOError, "Can't find your sendmail program!"
-elif not os.path.exists(SENDMAIL):
-    raise IOError, "Invalid SENDMAIL path: " + SENDMAIL
 
 # USEVIRTUALDOMAINS
 # Set this variable to 0 if want to turn off TMDA's qmail virtualdomains
@@ -161,7 +156,7 @@ if not vars().has_key('BOUNCE_ENV_SENDER'):
     if MAIL_TRANSFER_AGENT in ('exim', 'sendmail'):
         BOUNCE_ENV_SENDER = '<>'
     else:
-        BOUNCE_ENV_SENDER = ''
+        BOUNCE_ENV_SENDER = "''"
 
 # BARE_APPEND
 # Filename to which a recipient's e-mail address should be

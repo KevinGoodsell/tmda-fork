@@ -12,6 +12,10 @@ class ConfigError(TMDAError):
     """tmdarc errors."""
     pass
 
+class DeliveryError(TMDAError):
+    """Delivery module errors."""
+    pass
+
 class MissingEnvironmentVariable(TMDAError):
     """An essential environment variable is not defined."""
     def __init__(self, varname):

@@ -114,7 +114,6 @@ from TMDA import Util
 
 import cStringIO
 import fileinput
-import popen2
 import rfc822
 import string
 import time
@@ -297,27 +296,14 @@ def send_bounce(bounce_message, **vars):
         message_headers['Precedence'] = 'bulk'
         message_headers['X-Delivery-Agent'] = Version.ALL
         message_body = bounce_message.read()
-        inject = []
-        inject.append(Defaults.SENDMAIL)
-        inject.append('-f')
-        inject.append(Defaults.BOUNCE_ENV_SENDER)
-        inject.append(envelope_sender)
-        pipeline = popen2.popen2(inject)[1]
-        pipeline.write(str(message_headers))
-        pipeline.write('\n')
-        pipeline.write(message_body)
-        pipeline.close()
+        Util.sendmail(message_headers, message_body,
+                      envelope_sender, Defaults.BOUNCE_ENV_SENDER)
 
 
 def send_cc(address):
     """Send a 'carbon copy' of the message to address."""
-    inject = []
-    inject.append(Defaults.SENDMAIL)
-    inject.append(address)
-    pipeline = popen2.popen2(inject)[1]
-    pipeline.write(message)
-    pipeline.close()
-    logit(string.join(inject))
+    Util.sendmail(message_headers, message_body, address)
+    logit('CC ' + address)
 
 
 def release_pending(pathname, timestamp, pid):
@@ -347,16 +333,8 @@ def release_pending(pathname, timestamp, pid):
     # Add the date when confirmed in a header.
     message_headers['X-TMDA-Confirmed'] = Util.unixdate()
     # Reinject the message.
-    inject = []
-    inject.append(Defaults.SENDMAIL)
-    inject.append('-f')
-    inject.append(return_path)
-    inject.append(confirm_done_address)
-    pipeline = popen2.popen2(inject)[1]
-    pipeline.write(str(message_headers))
-    pipeline.write('\n')
-    pipeline.write(message_body)
-    pipeline.close()
+    Util.sendmail(message_headers, message_body,
+                  confirm_done_address, return_path)
     mta.stop()
 
 

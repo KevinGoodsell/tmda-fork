@@ -1,3 +1,19 @@
+2002-02-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+        * Util.py (pipecmd): New function that runs child processes with
+        error checking.
+
+        (sendmail): New function to send e-mail with the sendmail program.
+                
+        * MTA.py (MTA.deliver): Use Util.pipecmd() to deliver the
+        message.  Also raise an exception rather than sys.exit(75) upon
+        error.
+                
+        * Errors.py: Add DeliveryError for delivery module related errors.
+        
+        * Defaults.py: Remove SENDMAIL path checking; Util.sendmail() will
+        catch any such errors.
+
 2002-02-22  Tim Legant  <tim@catseye.net>
 
 	* Util.py (build_dbm): Fixed bug; DBM was renamed to current
