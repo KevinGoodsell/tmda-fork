@@ -37,18 +37,18 @@ RPM are available.
 
 <br><br>
 <ul>
-<li>binary RPM:<br>
+<li>RedHat-7.x RPM:<br>
 <blockquote><pre>
 
-# rpm --upgrade tmda-0.01-1.noarch.rpm
+# rpm -Uvh tmda-0.01-1.noarch.rpm
 
 </pre></blockquote>
 
-<li>source SRPM:<br>
+<li>source RPM:<br>
 <blockquote><pre>
 
 # rpm --rebuild tmda-0.01-1.src.rpm
-# rpm --upgrade /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
+# rpm -Uvh /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
 
 </pre></blockquote>
 
