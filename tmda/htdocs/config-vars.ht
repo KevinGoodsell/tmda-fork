@@ -34,187 +34,189 @@ Each variable definition below contains one or more examples.
 <td><a href="#ACTION_FAIL_SENDER">ACTION_FAIL_SENDER</a></td>
 </tr>
 <tr>
+<td><a href="#ACTION_HEADER_INCOMING">ACTION_HEADER_INCOMING</a></td>
 <td><a href="#ACTION_INCOMING">ACTION_INCOMING</a></td>
+</tr>
+<tr>
 <td><a href="#ACTION_OUTGOING">ACTION_OUTGOING</a></td>
-</tr>
-<tr>
 <td><a href="#ADDED_HEADERS_CLIENT">ADDED_HEADERS_CLIENT</a></td>
+</tr>
+<tr>
 <td><a href="#ADDED_HEADERS_SERVER">ADDED_HEADERS_SERVER</a></td>
-</tr>
-<tr>
 <td><a href="#ALLOW_MODE_640">ALLOW_MODE_640</a></td>
+</tr>
+<tr>
 <td><a href="#AUTORESPONSE_INCLUDE_SENDER_COPY">AUTORESPONSE_INCLUDE_SENDER_COPY</a></td>
-</tr>
-<tr>
 <td><a href="#BARE_APPEND">BARE_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#BOUNCE_ENV_SENDER">BOUNCE_ENV_SENDER</a></td>
-</tr>
-<tr>
 <td><a href="#BOUNCE_TEXT_EXPIRED_DATED">BOUNCE_TEXT_EXPIRED_DATED</a></td>
+</tr>
+<tr>
 <td><a href="#BOUNCE_TEXT_FAIL_DATED">BOUNCE_TEXT_FAIL_DATED</a></td>
-</tr>
-<tr>
 <td><a href="#BOUNCE_TEXT_FAIL_KEYWORD">BOUNCE_TEXT_FAIL_KEYWORD</a></td>
+</tr>
+<tr>
 <td><a href="#BOUNCE_TEXT_FAIL_SENDER">BOUNCE_TEXT_FAIL_SENDER</a></td>
-</tr>
-<tr>
 <td><a href="#BOUNCE_TEXT_FILTER_INCOMING">BOUNCE_TEXT_FILTER_INCOMING</a></td>
+</tr>
+<tr>
 <td><a href="#BOUNCE_TEXT_INVALID_CONFIRMATION">BOUNCE_TEXT_INVALID_CONFIRMATION</a></td>
-</tr>
-<tr>
 <td><a href="#BOUNCE_TEXT_NONEXISTENT_PENDING">BOUNCE_TEXT_NONEXISTENT_PENDING</a></td>
+</tr>
+<tr>
 <td><a href="#CGI_ACTIVE">CGI_ACTIVE</a></td>
-</tr>
-<tr>
 <td><a href="#CGI_CLEANUP_ODDS">CGI_CLEANUP_ODDS</a></td>
+</tr>
+<tr>
 <td><a href="#CGI_CROP_SENDER">CGI_CROP_SENDER</a></td>
-</tr>
-<tr>
 <td><a href="#CGI_CROP_SUBJECT">CGI_CROP_SUBJECT</a></td>
+</tr>
+<tr>
 <td><a href="#CGI_DATE_FORMAT">CGI_DATE_FORMAT</a></td>
-</tr>
-<tr>
 <td><a href="#CGI_PAGER_SIZE">CGI_PAGER_SIZE</a></td>
+</tr>
+<tr>
 <td><a href="#CGI_SESSION_EXP">CGI_SESSION_EXP</a></td>
-</tr>
-<tr>
 <td><a href="#CGI_URL">CGI_URL</a></td>
+</tr>
+<tr>
 <td><a href="#CGI_USER">CGI_USER</a></td>
-</tr>
-<tr>
 <td><a href="#CGI_USE_JS_CONFIRM">CGI_USE_JS_CONFIRM</a></td>
+</tr>
+<tr>
 <td><a href="#CONFIG_EXEC">CONFIG_EXEC</a></td>
-</tr>
-<tr>
 <td><a href="#CONFIRM_ACCEPT_CC">CONFIRM_ACCEPT_CC</a></td>
+</tr>
+<tr>
 <td><a href="#CONFIRM_ACCEPT_NOTIFY">CONFIRM_ACCEPT_NOTIFY</a></td>
-</tr>
-<tr>
 <td><a href="#CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED">CONFIRM_ACCEPT_TEXT_ALREADY_CONFIRMED</a></td>
+</tr>
+<tr>
 <td><a href="#CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED">CONFIRM_ACCEPT_TEXT_ALREADY_RELEASED</a></td>
-</tr>
-<tr>
 <td><a href="#CONFIRM_ACCEPT_TEXT_INITIAL">CONFIRM_ACCEPT_TEXT_INITIAL</a></td>
+</tr>
+<tr>
 <td><a href="#CONFIRM_ADDRESS">CONFIRM_ADDRESS</a></td>
-</tr>
-<tr>
 <td><a href="#CONFIRM_APPEND">CONFIRM_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#CONFIRM_CC">CONFIRM_CC</a></td>
-</tr>
-<tr>
 <td><a href="#CONFIRM_MAX_MESSAGE_SIZE">CONFIRM_MAX_MESSAGE_SIZE</a></td>
+</tr>
+<tr>
 <td><a href="#CRYPT_KEY_FILE">CRYPT_KEY_FILE</a></td>
-</tr>
-<tr>
 <td><a href="#DATADIR">DATADIR</a></td>
+</tr>
+<tr>
 <td><a href="#DATED_TEMPLATE_VARS">DATED_TEMPLATE_VARS</a></td>
-</tr>
-<tr>
 <td><a href="#DELIVERY">DELIVERY</a></td>
+</tr>
+<tr>
 <td><a href="#FILTER_BOUNCE_CC">FILTER_BOUNCE_CC</a></td>
-</tr>
-<tr>
 <td><a href="#FILTER_DROP_CC">FILTER_DROP_CC</a></td>
+</tr>
+<tr>
 <td><a href="#FILTER_INCOMING">FILTER_INCOMING</a></td>
-</tr>
-<tr>
 <td><a href="#FILTER_OUTGOING">FILTER_OUTGOING</a></td>
+</tr>
+<tr>
 <td><a href="#FINGERPRINT">FINGERPRINT</a></td>
-</tr>
-<tr>
 <td><a href="#FULLNAME">FULLNAME</a></td>
+</tr>
+<tr>
 <td><a href="#HMAC_BYTES">HMAC_BYTES</a></td>
-</tr>
-<tr>
 <td><a href="#HOSTNAME">HOSTNAME</a></td>
+</tr>
+<tr>
 <td><a href="#LOCALDATE">LOCALDATE</a></td>
-</tr>
-<tr>
 <td><a href="#LOGFILE_DEBUG">LOGFILE_DEBUG</a></td>
+</tr>
+<tr>
 <td><a href="#LOGFILE_INCOMING">LOGFILE_INCOMING</a></td>
-</tr>
-<tr>
 <td><a href="#LOGFILE_OUTGOING">LOGFILE_OUTGOING</a></td>
+</tr>
+<tr>
 <td><a href="#MAIL_TRANSFER_AGENT">MAIL_TRANSFER_AGENT</a></td>
-</tr>
-<tr>
 <td><a href="#MAX_AUTORESPONSES_PER_DAY">MAX_AUTORESPONSES_PER_DAY</a></td>
+</tr>
+<tr>
 <td><a href="#MESSAGE_FROM_STYLE">MESSAGE_FROM_STYLE</a></td>
-</tr>
-<tr>
 <td><a href="#MESSAGE_TAG_HEADER_STYLE">MESSAGE_TAG_HEADER_STYLE</a></td>
+</tr>
+<tr>
 <td><a href="#OUTGOINGMAIL">OUTGOINGMAIL</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_BLACKLIST_APPEND">PENDING_BLACKLIST_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_CACHE">PENDING_CACHE</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_CACHE_LEN">PENDING_CACHE_LEN</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_DELETE_APPEND">PENDING_DELETE_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_RELEASE_APPEND">PENDING_RELEASE_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_WHITELIST_APPEND">PENDING_WHITELIST_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PRIMARY_ADDRESS_MATCH">PRIMARY_ADDRESS_MATCH</a></td>
+</tr>
+<tr>
 <td><a href="#PURGED_HEADERS">PURGED_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#RECIPIENT_DELIMITER">RECIPIENT_DELIMITER</a></td>
+</tr>
+<tr>
 <td><a href="#RECIPIENT_HEADER">RECIPIENT_HEADER</a></td>
-</tr>
-<tr>
 <td><a href="#RESPONSE_DIR">RESPONSE_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#SENDER_TEMPLATE_VARS">SENDER_TEMPLATE_VARS</a></td>
-</tr>
-<tr>
 <td><a href="#SENDMAIL_PROGRAM">SENDMAIL_PROGRAM</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPAUTH_PASSWORD">SMTPAUTH_PASSWORD</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPAUTH_USERNAME">SMTPAUTH_USERNAME</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPHOST">SMTPHOST</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL">SMTPSSL</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPSSL_CERTFILE">SMTPSSL_CERTFILE</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL_KEYFILE">SMTPSSL_KEYFILE</a></td>
+</tr>
+<tr>
 <td><a href="#SMTP_MAX_SESSIONS_PER_CONNECTION">SMTP_MAX_SESSIONS_PER_CONNECTION</a></td>
-</tr>
-<tr>
 <td><a href="#SUMMARY_HEADERS">SUMMARY_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_CONFIRM">TAGS_CONFIRM</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_DATED">TAGS_DATED</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_KEYWORD">TAGS_KEYWORD</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_SENDER">TAGS_SENDER</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_EMAIL_HEADERS">TEMPLATE_EMAIL_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_ENCODED_HEADERS">TEMPLATE_ENCODED_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TIMEOUT">TIMEOUT</a></td>
+</tr>
+<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
-<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 <td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
+</tr>
 </table>
 
 <dl>
@@ -351,6 +353,20 @@ Possible values include:
 </blockquote>
 <br>
 Default is confirm
+<dt><hr>
+<a name="ACTION_HEADER_INCOMING"><h4>ACTION_HEADER_INCOMING</h4></a>
+<dd>
+Set this variable to 1 if you want TMDA to add an `X-TMDA-Action'
+header to your delivered incoming messages. The value of this header
+is the same as the "Actn:" field in a LOGFILE_INCOMING entry. e.g,
+<br>
+<br>
+X-TMDA-Action: OK (from johndoe* ok)
+<br><br>
+NOTE: This will not work if you are running qmail and have not set
+the DELIVERY variable.
+<br><br>
+Default is 0 (turned off)
 <dt><hr>
 <a name="ACTION_INCOMING"><h4>ACTION_INCOMING</h4></a>
 <dd>
