@@ -1,3 +1,8 @@
+2003-06-16  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added readline module to configure program.  We now have tab-
+	  completion!
+
 2003-06-14  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Fixed a bug that messed up URL confirmations for real users with

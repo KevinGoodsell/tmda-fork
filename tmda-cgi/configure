@@ -149,6 +149,13 @@ import re
 import string
 import sys
 
+try:
+  import readline
+  readline.set_completer_delims(" |=")
+  readline.parse_and_bind("tab: complete")
+except ImportError:
+  pass
+
 def Ask(Question, Str, ValProg = None, TestStr = None):
   "Ask for a member from the keyboard."
 
