@@ -37,6 +37,7 @@ ErrTemplate    = "error2.html"
 QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*")
 UnquotedString = re.compile(r"^(\S+)\s*")
 HomeDirSearch  = re.compile("^~/")
+HTMLTagSearch  = re.compile("</?([^\s>]*).*?>")
 
 # CGI exception classes
 class NotInstalled(Errors.TMDAError):
@@ -111,3 +112,29 @@ def ParseString(Str, User):
 
 def ExpandUser(Path):
   return HomeDirSearch.sub(os.environ["HOME"] + "/", Path)
+
+def Sterilize(Str, Allow, Remove):
+  """Remove all offensive HTML from a given string.
+
+Allow is a list of tags (b, i, etc.) which are allowed and may remain.
+Remove is a list of tags which should not only be removed, but all text within
+the open and close tag should be removed as well."""
+  RetVal = ""
+  while 1:
+    Match = HTMLTagSearch.search(Str)
+    if Match:
+      RetVal += Str[:Match.start()]
+      Tag = Match.group(1).lower()
+      if Tag in Allow:
+        RetVal += Match.group(0)
+        Str = Str[Match.end():]
+      elif Tag in Remove:
+        Match = re.search("</%s\s*>" % Tag, Str, re.I)
+        if Match:
+          Str = Str[Match.end():]
+        else:
+          return RetVal
+      else:
+        Str = Str[Match.end():]
+    else:
+      return RetVal + Str

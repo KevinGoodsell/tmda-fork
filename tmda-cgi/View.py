@@ -228,9 +228,11 @@ width="18" height="18" alt="Last">"""
       HeaderRow.Add()
 
   # Go through each part and generate HTML
-  TextParts = 0
+  TextParts   = 0
   Attachments = ""
-  HTML = ""
+  HTML        = ""
+  Allow       = re.split("[,\s]+", PVars[("ViewPending", "AllowTags")])
+  Remove      = re.split("[,\s]+", PVars[("ViewPending", "BlockRemove")])
   for Part in MsgObj.msgobj.walk():
     Type = Part.get_type("text/plain")
     # Display the easily display-able parts
@@ -245,7 +247,7 @@ width="18" height="18" alt="Last">"""
         except AttributeError:
           pass
       else:
-        HTML += Part.get_payload(decode=1)
+        HTML += CgiUtil.Sterilize(Part.get_payload(decode=1), Allow, Remove)
     # Don't show anything if the part contains other parts
     # (those parts will be recursed seperately)
     elif not MessageType.search(Type):
