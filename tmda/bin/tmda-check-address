@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Check a tagged (dated, keyword or sender style) e-mail address.
+"""Check a tagged (dated, or sender style only) e-mail address.
 
 Usage:  %(program)s [-c <file>] [-h] address [senderaddr]
 
