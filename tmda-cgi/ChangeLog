@@ -1,3 +1,10 @@
+2003-08-20  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Modified install skeleton so it defines HOSTNAME.
+
+	* Changed umask before and after writing session file in /tmp so that
+	  permissions are 0600.
+
 2003-08-18  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Applied a patch to configure for Bernard Johnson which I believe is

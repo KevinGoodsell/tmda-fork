@@ -178,6 +178,7 @@ we save Vars or PVars."""
       self.__suid__("web")
       Filename = os.environ["TMDA_SESSION_PREFIX"] + self.SID
       Data     = self.Vars
+      UMask    = os.umask(0177)
 
     # Save data
     try:
@@ -192,6 +193,8 @@ we save Vars or PVars."""
         """Either grant the session user sufficient privileges to write the
 session file,<br>or recompile the CGI and specify a CGI_USER with more
 rights.""")
+    if not self.RealUser:
+      os.umask(UMask)
     os.chdir(CWD)
 
   def LoadSysDefaults(self):
@@ -214,6 +217,7 @@ rights.""")
       self.NoOverride[Option] = self.ThemeVars.get("NoOverride", Option, 1)
 
     # Trim out domain name from user name
+    os.environ["LOGIN"] = self.Vars["User"]
     Match = re.search(self[("NoOverride", "UserSplit")], self.Vars["User"])
     if Match:
       os.environ["USER"] = Match.group(1)
