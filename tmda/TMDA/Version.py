@@ -34,17 +34,17 @@ TMDA = "0.49+"
 PYTHON = sys.version.split()[0]
 
 # System information
-# e.g, ('IRIX64', 'acl', '6.5', '10181059', 'IP27')
+# e.g, ('OSF1', 'spe147', 'V5.1', '1885', 'alpha')
 UNAME = os.uname()
 
 # Platform identifier
-# e.g, IRIX64
-PLATFORM = UNAME[0]
+# e.g, OSF1
+PLATFORM = UNAME[0].replace(' ', '_')
 
 # Machine architecture
-# e.g, IP27
+# e.g, alpha
 ARCH = UNAME[4].replace(' ', '_')
 
 # Summary of all the version identifiers
-# e.g, TMDA/0.49 (Python 2.2; IRIX64-IP27)
-ALL = "TMDA/%s (Python %s; %s-%s)" % (TMDA, PYTHON, PLATFORM, ARCH)
+# e.g, TMDA/0.49 (Python 2.2 on OSF1-alpha)
+ALL = "TMDA/%s (Python %s on %s-%s)" % (TMDA, PYTHON, PLATFORM, ARCH)

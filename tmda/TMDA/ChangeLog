@@ -1,6 +1,7 @@
 2002-03-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* Version.py (ARCH): Replace any spaces with underscores.
+	* Version.py (ARCH, PLATFORM): Replace any spaces with
+	underscores.
 
 2002-03-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
