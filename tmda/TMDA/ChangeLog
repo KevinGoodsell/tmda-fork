@@ -1,3 +1,22 @@
+2003-12-09  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Pending.py (Message.initMessage): Remove unnecessary method, and
+	move that code into Message.__init__.
+
+	(Message.__init__): New variables x_primary_address and
+	append_address.
+
+	(Message.release): Append append_address instead of return_path.
+	(Message.delete): Ditto.
+	(Message.whitelist): Ditto.
+	(Message.blacklist): Ditto.
+		
+	(Queue.mainLoop): Remove call to Message.initMessage().
+	(Message.release): Ditto.
+	(Message.delete): Ditto.
+	(Message.whitelist): Ditto.
+	(Message.blacklist): Ditto.
+	
 2003-12-03  Jason R. Mastaler  <jason@mastaler.com>
 
 	* AutoResponse.py (AutoResponse.create): Add an RFC 2183

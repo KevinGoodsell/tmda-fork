@@ -277,7 +277,7 @@ class Queue:
         for msgid in self.msgs:
             self.count = self.count + 1
             try:
-                M = Message(msgid, self.command_recipient).initMessage()
+                M = Message(msgid, self.command_recipient)
             except Errors.MessageError, obj:
                 self.cPrint(obj)
                 continue
@@ -426,24 +426,18 @@ class Message:
         except email.Errors.BoundaryError:
             self.msgobj = Util.msg_from_file(open(self.msgfile, 'r'))
         self.recipient = recipient
-
-    def initMessage(self, recipient = None):
-        self.return_path = parseaddr(self.msgobj.get('return-path'))[1]
-        if not recipient and not self.recipient:
+        if self.recipient is None:
             self.recipient = self.msgobj.get('x-tmda-recipient')
-        else:
-            self.recipient = recipient
-        return self
+        self.return_path = parseaddr(self.msgobj.get('return-path'))[1]
+        self.x_primary_address = parseaddr(self.msgobj.get('x-primary-address'))[1]
+        self.append_address = Util.confirm_append_address(
+            self.x_primary_address, self.return_path)
 
     def release(self):
         """Release a message from the pending queue."""
-        try:
-            self.return_path
-        except:
-            self.initMessage()
         import Cookie
         if Defaults.PENDING_RELEASE_APPEND:
-            Util.append_to_file(self.return_path,
+            Util.append_to_file(self.append_address,
                                 Defaults.PENDING_RELEASE_APPEND)
         timestamp, pid, suffix = self.msgid.split('.')
         # Remove Return-Path: to avoid duplicates.
@@ -467,23 +461,15 @@ class Message:
 
     def delete(self):
         """Delete a message from the pending queue."""
-        try:
-            self.return_path
-        except:
-            self.initMessage()
         if Defaults.PENDING_DELETE_APPEND:
-            Util.append_to_file(self.return_path,
+            Util.append_to_file(self.append_address,
                                 Defaults.PENDING_DELETE_APPEND)
         os.unlink(self.msgfile)
 
     def whitelist(self):
         """Whitelist the message sender."""
-        try:
-            self.return_path
-        except:
-            self.initMessage()
         if Defaults.PENDING_WHITELIST_APPEND:
-            Util.append_to_file(self.return_path,
+            Util.append_to_file(self.append_address,
                                 Defaults.PENDING_WHITELIST_APPEND)
         else:
             raise Errors.ConfigError, \
@@ -491,12 +477,8 @@ class Message:
 
     def blacklist(self):
         """Blacklist the message sender."""
-        try:
-            self.return_path
-        except:
-            self.initMessage()
         if Defaults.PENDING_BLACKLIST_APPEND:
-            Util.append_to_file(self.return_path,
+            Util.append_to_file(self.append_address,
                                 Defaults.PENDING_BLACKLIST_APPEND)
         else:
             raise Errors.ConfigError, \
