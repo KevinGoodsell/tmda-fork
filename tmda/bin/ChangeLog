@@ -1,3 +1,8 @@
+2003-04-29  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (main): Perform an automated cleanup of the pending
+	queue depending on Defaults.PENDING_CLEANUP_ODDS.
+
 2003-04-27  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-inject (main): Add TMDA_INJECT_RECIPIENT and

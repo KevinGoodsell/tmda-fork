@@ -1,5 +1,27 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.77:
+
+* By default, tmda-filter now performs an automated cleanup of the
+  pending queue upon receipt of an incoming message.  If you wish to
+  use this feature, you should disable any cron jobs you might be
+  running to periodically purge your pending queue of old messages.
+
+  The default cleanup interval is approximately once per 100 incoming
+  messages received.  To tweak this interval, or disable this feature,
+  see <URL:http://tmda.net/config-vars.html#PENDING_CLEANUP_ODDS>.
+
+  When this feature is enabled, the default lifetime for a message in
+  the pending queue is 14 days.  Any message older than 14 days will
+  be deleted.  If you wish to raise or lower this threshold, see
+  <URL:http://tmda.net/config-vars.html#PENDING_LIFETIME>.
+
+  This feature respects the
+  <URL:http://tmda.net/config-vars.html#PENDING_DELETE_APPEND>
+  setting.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.76:
 
 * LOCALDATE has been deprecated.

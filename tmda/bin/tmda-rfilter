@@ -680,7 +680,14 @@ def bouncegen(mode, text=None):
 ######
 
 def main():
-
+    # Possibly clean the pending queue?
+    if Defaults.PENDING_CLEANUP_ODDS <> 0:
+        from random import random
+        if random() < float(Defaults.PENDING_CLEANUP_ODDS):
+            from TMDA import Pending
+            q = Pending.Queue()
+            q.initQueue()
+            q.cleanQueue()
     # Get the cookie type and value by parsing the extension address.
     ext = address_extension
     cookie_type = cookie_value = None
@@ -769,7 +776,6 @@ def main():
     default_action = Defaults.ACTION_INCOMING.lower()
     bouncetext = Defaults.BOUNCE_TEXT_FILTER_INCOMING
     do_default_action(default_action, 'action_incoming', bouncetext)
-
 
 # This is the end my friend.
 if __name__ == '__main__':

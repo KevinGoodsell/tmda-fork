@@ -184,6 +184,38 @@ class Queue:
                 return 0
         return 1
 
+    def cleanQueue(self, lifetime=None):
+        """Delete messages in the pending queue which exceed a certain
+        lifetime."""
+        # We can't use the Message class and delete method below
+        # because this would mean parsing the contents of every
+        # message regardless of whether we use PENDING_DELETE_APPEND
+        # or not.
+        self.older = 1
+        if lifetime is None:
+            self.threshold = Defaults.PENDING_LIFETIME
+        else:
+            self.threshold = lifetime
+        for msgid in self.msgs:
+            if not self.checkTreshold(msgid):
+                continue
+            # delete this message
+            msgfile = os.path.join(self.pendingdir, msgid)
+            if Defaults.PENDING_DELETE_APPEND:
+                try:
+                    msgobj = Util.msg_from_file(open(msgfile, 'r'))
+                except IOError:
+                    # in case of concurrent cleanups
+                    pass
+                else:
+                    rp = parseaddr(msgobj.get('return-path'))[1]
+                    Util.append_to_file(rp, Defaults.PENDING_DELETE_APPEND)
+            try:
+                os.unlink(msgfile)
+            except OSError:
+                # in case of concurrent cleanups
+                pass
+
     def checkDelivered(self, M):
         """Check if the message has already been delivered."""
         if M.wasDelivered():

@@ -1046,6 +1046,49 @@ if MYSQL_ENABLED and not vars().has_key('MYSQL_USER'):
 if MYSQL_ENABLED and not vars().has_key('MYSQL_PASSWORD'):
     MYSQL_PASSWORD = ""
 
+# PENDING_LIFETIME
+# A time interval describing how long a message can live in the
+# pending queue before it's subject to automated deletion by
+# tmda-filter (a feature controlled by the PENDING_CLEANUP_ODDS
+# setting).
+#
+# Time intervals can be expressed in seconds (s), minutes (m), hours
+# (h), days (d), weeks (w), months (M), or years (Y).
+#
+# Examples:
+#
+# PENDING_LIFETIME = "24h" # messages can live for 24 hours
+# PENDING_LIFETIME = "1M"  # messages can live for 1 month
+#
+# Default is 14d (14 day lifetime)
+if not vars().has_key('PENDING_LIFETIME'):
+    PENDING_LIFETIME = '14d'
+
+# PENDING_CLEANUP_ODDS
+# A floating point number which describes the odds that tmda-filter
+# will automatically clean the pending queue of expired messages upon
+# receipt of an incoming message.  The lifetime of a message in the
+# pending queue is controlled by the PENDING_LIFETIME setting.
+#
+# If you wish to disable this feature in order to clean the queue by
+# hand, or through cron, set this value to 0.0.  If you wish to
+# trigger a cleanup every time a message arrives, set it to 1.0.
+#
+# The closer this value gets to 1.0, the fewer messages you'll have in
+# your pending queue beyond PENDING_LIFETIME, but at some additional
+# expense upon delivery.
+#
+# Examples:
+#
+# PENDING_CLEANUP_ODDS = 0.0   # 0% chance
+# PENDING_CLEANUP_ODDS = 1.0   # 100% chance
+# PENDING_CLEANUP_ODDS = 0.025 # 2.5% chance
+#
+# Default is 0.01, or 1% chance of cleanup for every message received,
+# or cleanup approximately once per 100 messages received.
+if not vars().has_key('PENDING_CLEANUP_ODDS'):
+    PENDING_CLEANUP_ODDS = 0.01
+
 # PENDING_CACHE
 # Path to the cache file used when tmda-pending is invoked with the
 # --cache option.
@@ -1077,7 +1120,9 @@ if not vars().has_key('PENDING_BLACKLIST_APPEND'):
 
 # PENDING_DELETE_APPEND
 # Filename to which a sender's e-mail address should be automatically
-# appended when a message is "deleted" by tmda-pending.
+# appended when a message is "deleted" by tmda-pending.  tmda-filter's
+# automated pending queue cleanup feature (see PENDING_CLEANUP_ODDS)
+# also respects this setting.
 #
 # Example:
 # PENDING_DELETE_APPEND = "/full/path/to/blacklist"
