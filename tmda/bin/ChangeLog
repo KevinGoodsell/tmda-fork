@@ -4,6 +4,11 @@
 	resemble rfc822 dates to more easily compare it to the `Date:'
 	header.
 	
+	(bouncegen): Save the pending message with a Return-Path: header
+	so that when reinjected it will be sent with the original envelope
+	sender.  This will allow any post-TMDA processing that uses the
+	envelope sender to work as expected.
+
 2001-07-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (verify_confirm_cookie): New function to validate a

@@ -97,11 +97,13 @@ stdin = cStringIO.StringIO(sys.stdin.read())
 
 # Collect the message headers.
 message_headers = rfc822.Message(stdin)
+# Collect the message body.
+message_body = stdin.read()
 
 # Collect the entire message.
 message = stdin.getvalue()
 # Calculate the message size.
-message_size = str(len(stdin.read()))
+message_size = str(len(message_body))
 
 # $SENDER is the envelope sender address.
 envelope_sender = os.environ.get('SENDER')
@@ -315,7 +317,7 @@ def verify_sender_cookie(sender_address,sender_cookie):
 
 def bouncegen(mode,passed_cookie=None):
     """Bounce the message back to sender."""
-    # Common vVariables.
+    # Common variables.
     now = time.time()
     envelope_recipient = globals().get('envelope_recipient')
     envelope_sender = globals().get('envelope_sender')
@@ -346,6 +348,7 @@ def bouncegen(mode,passed_cookie=None):
         confirm_accept_address = Defaults.USERNAME + '-confirm-accept.' + \
                                  confirm_cookie + '@' + Defaults.HOSTNAME
         pendingdir = Defaults.DATADIR + 'pending'
+        pending_message = timestamp + '.' + pid + '.msg'
         package_template = sys.prefix + '/share/tmda/bounce_confirm_' \
                            + mode + '.txt'
         # Create ~/.tmda/ and friends if necessary.
@@ -355,9 +358,10 @@ def bouncegen(mode,passed_cookie=None):
             except IOError, error_msg:
                 print error_msg
                 sys.exit(Defaults.ERR_IO)
-        # ~/.tmda/pending/TIMESTAMP.PID.msg
-        pending_message = timestamp + '.' + pid + '.msg'
-        Util.writefile(message, pendingdir + '/' + pending_message)
+        # Write ~/.tmda/pending/TIMESTAMP.PID.msg
+        message_headers['Return-Path'] = '<' + envelope_sender + '>'
+        pending_contents = str(message_headers) + '\n' + message_body
+        Util.writefile(pending_contents, pendingdir + '/' + pending_message)
         logit("CONFIRM pending " + pending_message, time.time())
     else:
         package_template = sys.prefix + '/share/tmda/bounce_' + mode + '.txt'
