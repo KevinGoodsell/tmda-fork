@@ -4,4 +4,6 @@ Links: overview-links.h usage-links.h config-links.h support-links.h
 <h3>TMDA Configuration Overview</h3>
 
 Read the <em>Server Configuration</em> section, and then optionally
-<em>Client Configuration</em>.
+<em>Client Configuration</em> (both under the
+<strong>Configuration</strong> sidebar to the left).
+

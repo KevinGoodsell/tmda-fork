@@ -1,5 +1,9 @@
 2001-10-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config.ht (Links): Emphasize the left sidebar.
+
 	* features.ht (Links): Changed wording, third-party delivery agent
 	is required for non-qmail.
+
+	(Links): Emphasize Postfix.
 
