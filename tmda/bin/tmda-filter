@@ -309,11 +309,11 @@ def bouncegen(mode):
     if mode == 'accept':                # confirmation acceptance notices
         env_template = os.environ.get('TMDA_CONFIRM_ACCEPT_TEMPLATE')
         def_template = Defaults.CONFIRM_ACCEPT_TEMPLATE
-        pkg_template = sys.prefix + '/share/tmda/confirm_accept..txt'
+        pkg_template = sys.prefix + '/share/tmda/confirm_accept.txt'
     if mode == 'request':               # request confirmations
         env_template = os.environ.get('TMDA_CONFIRM_REQUEST_TEMPLATE')
         def_template = Defaults.CONFIRM_REQUEST_TEMPLATE
-        pkg_template = sys.prefix + '/share/tmda/confirm_request..txt'
+        pkg_template = sys.prefix + '/share/tmda/confirm_request.txt'
         timestamp = str('%d' %now)
         pid = str(os.getpid())
         confirm_cookie = Cookie.make_confirm_cookie(timestamp,pid,'accept')
