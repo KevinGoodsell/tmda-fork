@@ -3,10 +3,37 @@ Title: Password Authentication
 <h2>Password Authentication</h2>
 <p>tmda-cgi currently has three possible authentication mechanisms:</p>
 <ul> 
-  <li><a href="#FileAuth">File authentication</a>
-  <li><a href="#ProgAuth">Program authentication</a> (checkpassword-style)
   <li><a href="#RemtAuth">Remote authentication</a>
+  <li><a href="#ProgAuth">Program authentication</a> (checkpassword-style)
+  <li><a href="#FileAuth">File authentication</a>
 </ul>
+
+<h3><a name="RemtAuth"></a>Remote Authentication</h3>
+<p>tmda-cgi supports authentication by a remote host, using some common
+existing protocols:</p>
+<ul>
+  <li>imap
+  <li>imaps (secure SSL imap)
+  <li>apop
+  <li>pop3
+  <li>ldap (requires separately obtained python ldap library)
+</ul>
+<p>The authentication mechanism is specified as an URI in the regular URI
+format: <tt>protocol://host.domain.com[:port][/ldap_domain]</tt> where
+&quot;protocol&quot; must be from the list above, and the rest should be
+self-explanatory.</p>
+
+<h3><a name="ProgAuth"></a>Program Authentication</h3>
+
+<p>tmda-cgi supports authentication by a checkpassword-style program
+  (see <a href="http://cr.yp.to/checkpwd/interface.html">a description</a> of
+  this interface). Typically, this is <tt>checkpassword</tt> or 
+  <tt>vchkpw</tt>.</p>
+<p>When specifying this method of authentication, you may need to supply
+  additional parameters to your checkpassword program. By default,
+  <tt>configure</tt> will append <tt>/bin/true</tt> or
+  <tt>/usr/bin/true</tt>, but any program that eventually returns
+  &quot;0&quot; will do.</p>
 
 <h3><a name="FileAuth"></a>File authentication:</h3>
 
@@ -131,30 +158,3 @@ Title: Password Authentication
   <tt>?debug=1</tt> onto the end of your CGI URL. This will display some 
   diagnostic information if the login fails instead of simply saying 
   &quot;Wrong password. Try again.&quot;</p>
-
-<h3><a name="ProgAuth"></a>Program Authentication</h3>
-
-<p>tmda-cgi supports authentication by a checkpassword-style program
-  (see <a href="http://cr.yp.to/checkpwd/interface.html">a description</a> of
-  this interface). Typically, this is <tt>checkpassword</tt> or 
-  <tt>vchkpw</tt>.</p>
-<p>When specifying this method of authentication, you may need to supply
-  additional parameters to your checkpassword program. By default,
-  <tt>configure</tt> will append <tt>/bin/true</tt> or
-  <tt>/usr/bin/true</tt>, but any program that eventually returns
-  &quot;0&quot; will do.</p>
-
-<h3><a name="RemtAuth"></a>Remote Authentication</h3>
-<p>tmda-cgi supports authentication by a remote host, using some common
-existing protocols:</p>
-<ul>
-  <li>imap
-  <li>imaps (secure SSL imap)
-  <li>apop
-  <li>pop3
-  <li>ldap (requires separately obtained python ldap library)
-</ul>
-<p>The authentication mechanism is specified as an URI in the regular URI
-format: <tt>protocol://host.domain.com[:port][/ldap_domain]</tt> where
-&quot;protocol&quot; must be from the list above, and the rest should be
-self-explanatory.</p>
