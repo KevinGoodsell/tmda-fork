@@ -613,6 +613,15 @@ def Show():
     else:
       TemplateFN = "welcome.html"
 
-  # Display template
+  # Load template
   T = Template.Template(TemplateFN)
+
+  # Javascript confirmation?
+  if PVars.has_key(["General", "UseJSConfirm"]) and \
+    PVars[("General", "UseJSConfirm")] == "Yes":
+    T["OnSubmit"] = 'onSubmit="return JSConfirm()"'
+  else:
+    T["OnSubmit"] = ""
+
+  # Display template
   print T

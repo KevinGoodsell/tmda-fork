@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue May 20 10:35:19 2003 -->
+<!-- Thu May 22 10:32:26 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -75,21 +75,25 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r7_c1.png" name="x545" height="39" width="
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <td valign="top" class="body"><script>
+<!-- Hide script
 function ConfirmDelete()
 {
   if (confirm("Permanently delete this pending message?\nAny confirmation that follows will fail."))
     document.location.href = "%(Script)s?cmd=view&subcmd=delete&msgid=%(MsgID)s&SID=%(SID)s"
 }
+
 function ConfirmBlacklist()
 {
   if (confirm("Blacklist sender and permanently delete this pending message?"))
     document.location.href = "%(Script)s?cmd=view&subcmd=black&msgid=%(MsgID)s&SID=%(SID)s"
 }
+
 function ConfirmSpamCop()
 {
   if (confirm("Permanently delete this pending message and report to SpamCop?"))
     document.location.href = "%(Script)s?cmd=view&subcmd=spamcop&msgid=%(MsgID)s&SID=%(SID)s"
 }
+// -->
 </script>
 <table width="100%" border="2" cellpadding="0" cellspacing="0"
   bordercolor="#4E508F">

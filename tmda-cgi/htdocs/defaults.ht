@@ -277,10 +277,11 @@ Title: Default Settings
 
 <h4><a name="GeneralUseJSConfirm"></a>General:UseJSConfirm</h4>
 <blockquote>
-  <p>Enables a pop-up confirmation box before any message is deleted or 
-    blacklisted. Disable this option if most of your users have browsers without 
-    Javascript or where Javascript is disabled. Such users will have to disable 
-    Javascript confirmation to be able to delete or blacklist messages.</p>
+  <p>Enables a pop-up confirmation box before any irreversible actions, such as
+    deleting or blacklisting a message. Disable this option if most of your
+    users have browsers without Javascript or where Javascript is disabled.
+    Such users will have to disable Javascript confirmation to be able to
+    delete or blacklist messages.</p>
   <p>Example:
     <table class="example">
       <tr>

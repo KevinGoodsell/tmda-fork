@@ -1,21 +1,25 @@
 Title: Pending E-mail
 
 <script>
+<!-- Hide script
 function ConfirmDelete()
 {
   if (confirm("Permanently delete this pending message?\nAny confirmation that follows will fail."))
     document.location.href = "%(Script)s?cmd=view&subcmd=delete&msgid=%(MsgID)s&SID=%(SID)s"
 }
+
 function ConfirmBlacklist()
 {
   if (confirm("Blacklist sender and permanently delete this pending message?"))
     document.location.href = "%(Script)s?cmd=view&subcmd=black&msgid=%(MsgID)s&SID=%(SID)s"
 }
+
 function ConfirmSpamCop()
 {
   if (confirm("Permanently delete this pending message and report to SpamCop?"))
     document.location.href = "%(Script)s?cmd=view&subcmd=spamcop&msgid=%(MsgID)s&SID=%(SID)s"
 }
+// -->
 </script>
 <table width="100%" border="2" cellpadding="0" cellspacing="0"
   bordercolor="#4E508F">

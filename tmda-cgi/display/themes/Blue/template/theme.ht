@@ -50,7 +50,7 @@ border="0"></a><br>
           <option %(GeneralUseJSConfirmNoSelected)s value="No">Disabled</option>
         </select></td>
       <td>&nbsp;</td>
-      <td>Javascript confirmation before deleting or blacklisting</td>
+      <td>Javascript confirmation before irreversible actions</td>
     </tr>
     <tr>
       <td align="center"><select name="ViewPendingAltPref">

@@ -1,5 +1,13 @@
 Title: Uninstall TMDA?
 
+<script>
+<!-- Hide script
+function JSConfirm()
+{
+  return confirm("Are you sure you want to uninstall TMDA?")
+}
+// -->
+</script>
 <h2>Uninstall</h2>
 <p>Would you like to uninstall TMDA from your e-mail account? Doing this will 
   open you up to being spammed.</p>
@@ -7,7 +15,7 @@ Title: Uninstall TMDA?
   any e-mails still in your pending directory. You may choose to release or 
   delete them based on how long they have been sitting in your pending 
   directory.</p>
-<form method="post" action="%(Script)s">
+<form method="post" %(OnSubmit)s action="%(Script)s">
 <table border="1" align="center" cellpadding="20">
   <tr>
     <td align="center"><p>Yes, I would like to uninstall TMDA.</p>

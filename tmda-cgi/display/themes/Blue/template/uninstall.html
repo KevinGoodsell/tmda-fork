@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed May  7 23:02:32 2003 -->
+<!-- Thu May 22 10:41:46 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -86,14 +86,22 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r7_c1.png" name="x904" height="39" width="
 </td>
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
-<td valign="top" class="body"><h2>Uninstall</h2>
+<td valign="top" class="body"><script>
+<!-- Hide script
+function JSConfirm()
+{
+  return confirm("Are you sure you want to uninstall TMDA?")
+}
+// -->
+</script>
+<h2>Uninstall</h2>
 <p>Would you like to uninstall TMDA from your e-mail account? Doing this will 
   open you up to being spammed.</p>
 <p>If you would like to proceed, you must decide how you would like to handle 
   any e-mails still in your pending directory. You may choose to release or 
   delete them based on how long they have been sitting in your pending 
   directory.</p>
-<form method="post" action="%(Script)s">
+<form method="post" %(OnSubmit)s action="%(Script)s">
 <table border="1" align="center" cellpadding="20">
   <tr>
     <td align="center"><p>Yes, I would like to uninstall TMDA.</p>
