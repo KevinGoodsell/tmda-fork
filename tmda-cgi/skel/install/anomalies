@@ -17,7 +17,7 @@ VIRTUAL_TEST = "^/home/vpopmail/domains/"
 # to specify different files based on the mail program you're using.  You can
 # only have one mail program installed, of course, so if you are creating this
 # skel directory by hand, feel free to simply use a list.
-REAL_ONLY = {"qmail": [".qmail", ".qmail-default"]}
+REAL_ONLY = {"qmail": [".qmail", ".qmail-default"], "sendmail": [".procmail"]}
 
 # VIRTUAL_ONLY is the compliment to REAL_ONLY, above.  These files should only
 # be copied if the user logging in is a virtual user (i.e. VIRTUAL_TEST matched

@@ -35,6 +35,8 @@ from TMDA import Defaults
 # Regular expression searches
 EscapeSearch  = re.compile('(\\")')
 EscapeSub     = r"\\\1"
+HTMLEscSearch = re.compile('"')
+HTMLEscSub    = "&quot;"
 CommentSearch = re.compile("^\s*(#.*)?$")
 ReturnSearch  = re.compile("\r?\n")
 ReturnSub     = "\\\\n"
@@ -241,7 +243,7 @@ Not safe to proceed in form mode.
             Value = repr(Value)
           else:
             Value = str(Value)
-        T[Parts[0]] = Value
+        T[Parts[0]] = HTMLEscSearch.sub(HTMLEscSub, Value)
         if len(Parts) > 2:
           for Part in Parts[1:]:
             if str(Value) == Part:
