@@ -1,3 +1,8 @@
+2002-10-02  Jason R. Mastaler  <jasonrm@aguirre.la.mastaler.com>
+
+	* tmda-inject (make_field): Reset $TMDA_TIMEOUT if no timeout
+	override is specified.
+
 2002-09-30  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-inject: Use the email module instead of the rfc822 module.
