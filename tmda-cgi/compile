@@ -45,6 +45,9 @@ Where:
     -f <authfile>
     --file-auth <authfile>
        Specify a different authentication file than the default.
+       - The default is either <config_directory>/tmda-cgi, ~/.tmda/tmda-cgi
+         for the authenticating user, or /etc/tmda-cgi, whichever is found
+         first.
 
     -h
     --help
@@ -68,30 +71,40 @@ Where:
      * The code used to do this is ALPHA stable, so do not rely on this *
      * functionality yet.                                               *
      ********************************************************************
-       Specify checkpassword-style authentication, where "checkpw" is the full
-       path to the desired checkpassword-style program.
-       - Ensure that --true-prog is set correctly for your system as well.  
+       Specify checkpassword-style authentication
+       - Must conform exactly to the checkpassword stardard
+            http://cr.yp.to/checkpwd/interface.html
+        - Any program that returns '0' (true) is acceptable as the command
+          run by the checkpassword program upon successful authentication.
+        - If "program" requires commandline switches, you must supply the
+          command to be run upon successful authentication.
+          If "program" does not, the default program (/usr)/bin/true is
+          automatically appended if not specified.
+        Examples: -p "/usr/sbin/checkpassword-pam -s id -- /bin/true"
+                  -p /usr/local/vpopmair/vchkpw
+                     (/usr/bin/true or /bin/true is automatically used) 
 
-    -r <uri>
-    --remote-auth <uri>
+    -r protocol[://host[:port]][/dn]
+    --remote-auth protocol[://host[:port]][/dn]
      ** Warning *********************************************************
      * The code used to do this is ALPHA stable, so do not rely on this *
      * functionality yet.                                               *
      ********************************************************************
-       Specify remote authentication, where "uri" is the remote authentication
-       mechanism and host in the format:
-         protocol://host.domain.com[:port][/ldap_domain]
-       Currently supported protocols:
-         imap, imaps, apop, pop3, ldap
+        Host to connect to to check username and password.
+        - Allowed protocols are:
+            imap, imaps, apop, pop3, ldap
+        - Host defaults to localhost
+        - Port defaults to default port for the protocol
+        - dn is manditory for ldap and must contain a '%%(user)s'
+          identifying the username
+        Examples: -r imap
+                  -r imaps://myimapserver.net
+                  -r pop3://mypopserver.net:2110
+                  -r ldap://host.com/cn=%%(user)s,dc=host,dc=com
 
     -t <file>
     --target <file>
        Compile as a file other than ./tmda-cgi.
-
-    -T <true>
-    --true-prog <true>
-       Specify the path to the "true" program (which returns 0)
-       Default is '/usr/bin/true'
 
     -u <user>
     --user <user>
@@ -179,7 +192,6 @@ def Interactive(OptD):
     Ask('Authentication (checkpassword-style) program (full path)', OptD,
       "AuthProg")
     OptD["AuthArg"] = OptD["AuthProg"]
-    Ask('Full path to "true" program', OptD, "AuthTrue")
   elif OptD["AuthType"] == "remote":
     Ask('Authentication URI (protocol://host.domain.com[:port][/dn])', OptD,
       "AuthURI")
@@ -211,7 +223,6 @@ OptD["AuthFile"] = "None"
 OptD["AuthProg"] = "/usr/sbin/checkpassword"
 OptD["AuthURI"]  = "imap://localhost"
 OptD["AuthArg"]  = "None"
-OptD["AuthTrue"] = "/usr/bin/true"
 if os.geteuid():
   OptD["Mode"] = "single-user"
 else:
@@ -228,10 +239,10 @@ def Usage(Code, Msg=""):
   sys.exit(Code)
 
 try:
-  Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:f:i:m:nhp:r:t:T:u:",
+  Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:f:i:m:nhp:r:t:u:",
     ["base-dir=", "config-file=", "display-dir=", "file-auth=", "help",
      "install-prefix=", "mode=", "no-su", "program-auth=", "remote-auth=",
-     "target=", "true-prog=", "user="])
+     "target=", "user="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
@@ -264,8 +275,6 @@ for Opt, Arg in Opts:
     OptD["AuthArg"] = Arg
   elif Opt in ("-t", "--target"):
     OptD["Target"] = Arg
-  elif Opt in ("-T", "--true-prog"):
-    OptD["AuthTrue"] = Arg
   elif Opt in ("-m", "--mode"):
     if not Arg in ("system-wide", "single-user", "no-su"):
       Usage(1, "Valid modes are system-wide, single-user, and no-su")
@@ -354,9 +363,6 @@ if OptD["AuthArg"] != "None":
   print "Users will be authenticated using %(AuthType)s %(AuthArg)s" % OptD
   F.write("""#define AUTH_TYPE "TMDA_AUTH_TYPE=%(AuthType)s"
 #define AUTH_ARG "TMDA_AUTH_ARG=%(AuthArg)s"
-""" % OptD)
-  if OptD["AuthType"] == "program":
-    F.write( """#define AUTH_TRUE "TMDA_AUTH_TRUE=%(AuthTrue)s"
 """ % OptD)
 F.close()
 

@@ -42,20 +42,27 @@ def InitProgramAuth( Program, trueProg = "/usr/bin/true" ):
 (Implemented by Auth.py)"""
   global authinit
   Auth.authtype = 'prog'
-  if not os.access( Program, os.F_OK ):
+  try:
+    realprog, args = Program.split(" ", 1)
+  except ValueError:
+    realprog, args = Program, trueProg
+  try:
+    if not CanRun( realprog ):
+      authinit = 0
+      raise ValueError, "'%s' is not executable" % realprog
+  except IOError:
     authinit = 0
-    raise ValueError, "'%s' does not exist" % Program
-  if not os.access( trueProg, os.F_OK ):
-    authinit = 0
-    raise ValueError, "'%s' does not exist", trueProg
-  if not os.access( Program, os.X_OK ):
-    authinit = 0
-    raise ValueError, "'%s' is not executable" % Program
-  if not os.access( trueProg, os.X_OK ):
-    authinit = 0
-    raise ValueError, "'%s' is not executable", trueProg
+    raise ValueError, "'%s' does not exist" % realprog
+  if args == trueProg:
+    try:
+      if not CanRun( args ):
+        authinit = 0
+        raise ValueError, "'%s' is not executable" % args
+    except IOError:
+      authinit = 0
+      raise ValueError, "'%s' does not exist" % args
   # Now initialize the authprog with the checkpasswd program and "true"
-  Auth.authprog = "%s %s" % ( Program, trueProg )
+  Auth.authprog = "%s %s" % ( realprog, args )
   authinit = 1
 
 def InitFileAuth( Filename="/etc/tmda-cgi" ):
@@ -63,7 +70,11 @@ def InitFileAuth( Filename="/etc/tmda-cgi" ):
 (Not implemented by Auth.py yet)"""
   global authinit
   Auth.authtype = 'file'
-  if not os.access( Filename, os.F_OK ):
+  try:
+    if not CanRead( Filename ):
+      authinit = 0
+      raise ValueError, "File '%s' cannot be read" % Filename
+  except IOError:
     authinit = 0
     raise ValueError, "File '%s' does not exist" % Filename
   Auth.authfile = Filename
@@ -161,5 +172,41 @@ def CheckPassword(Form):
   if int(Form["debug"].value):
     CgiUtil.TermError("Login failed", "Authentication error",
       "validate password", errMsg, errHelp)
+  else:
+    return 0
+
+def CanRead(File):
+  """Checks if File can be read be current euid/egid"""
+  try:
+    fstat = os.stat( File )
+  except:
+    raise IOError, "File %s not found" % File
+  needuid = fstat.st_uid
+  needgid = fstat.st_gid
+  filemod = fstat.st_mode & 0777
+  if filemod & 04:
+    return 1
+  elif filemod & 040 and needgid == os.getegid():
+    return 1
+  elif filemod & 0400 and needuid == os.geteuid():
+    return 1
+  else:
+    return 0
+
+def CanRun(File):
+  """Checks if File can be run be current euid/egid"""
+  try:
+    fstat = os.stat( File )
+  except:
+    raise IOError, "File %s not found" % File
+  needuid = fstat.st_uid
+  needgid = fstat.st_gid
+  filemod = fstat.st_mode & 0777
+  if filemod & 01:
+    return 1
+  elif filemod & 010 and needgid == os.getegid():
+    return 1
+  elif filemod & 0100 and needuid == os.geteuid():
+    return 1
   else:
     return 0
