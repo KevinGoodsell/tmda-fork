@@ -4,6 +4,7 @@ Title: Password Authentication
 <p>tmda-cgi currently has three possible authentication mechanisms:</p>
 <ul> 
   <li><a href="#RemtAuth">Remote authentication</a>
+    (<a href="#IMAPSNotes">IMAPS notes</a>)
   <li><a href="#ProgAuth">Program authentication</a> (checkpassword-style)
   <li><a href="#FileAuth">File authentication</a>
 </ul>
@@ -22,6 +23,17 @@ existing protocols:</p>
 format: <tt>protocol://host.domain.com[:port][/ldap_domain]</tt> where
 &quot;protocol&quot; must be from the list above, and the rest should be
 self-explanatory.</p>
+
+<h4><a name="IMAPSNotes"></a>IMAPS Notes:</h3>
+
+<p>Although you can get IMAPS working with tmda-cgi (and TMDA in general),
+  there are a few version restrictions.</p>
+
+<ul>
+  <li>Python 2.1 is not supported.
+  <li>If running Python 2.2.x, you need at least TMDA 0.89 for IMAPS.
+  <li>Python 2.3.x should work with any version of TMDA.
+</ul>
 
 <h3><a name="ProgAuth"></a>Program Authentication</h3>
 
