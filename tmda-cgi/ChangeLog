@@ -3,6 +3,8 @@
 	* Changed installer/uninstaller to support multiple type of
 	  MAIL_TRANSFER_AGENT in a single install or uninstall skel directory.
 
+	* Change sort to be case insensative and added a domain sort feature.
+
 2003-05-29  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* tmda-cgi 0.10 is released.

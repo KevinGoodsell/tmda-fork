@@ -12,6 +12,8 @@ Contributions:
 
     * Ben Bullock -- bug finding
 
+    * Dan Davis -- case insensative sorting
+
     * Julian Easterling -- bug finding
 
     * Dan Egli -- bug finding
@@ -27,6 +29,8 @@ Contributions:
     * Tim Legant -- authentication
 
     * Remo Mattei -- bug finding
+
+    * Tomasz Nidecki -- sort by domain
 
     * Kelvin D. Olson -- suggested adding UrlDomain and ShortUrlDom to the
                          autoinstall variable list
@@ -53,5 +57,5 @@ Includes:
 ---------
 
     * Alan Eldridge -- SpamCop Reporting Program (reporter.py)
-    
+
     * Barry Warsaw -- Templated Webpage Generator (ht2html)

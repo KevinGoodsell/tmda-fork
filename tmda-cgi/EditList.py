@@ -29,6 +29,16 @@ import Template
 from TMDA import Defaults
 from TMDA import FilterParser
 
+def DomainSort(a, b):
+  "Comparison function for domain sorter."
+  a = a.split("@", 1)
+  if len(a) < 2: a.append("")
+  a.reverse()
+  b = b.split("@", 1)
+  if len(b) < 2: b.append("")
+  b.reverse()
+  return cmp(" ".join(a), " ".join(b))
+
 def Show():
   "Edit any plaintext list file."
 
@@ -105,7 +115,11 @@ height="%(height)d" alt=""" % Buttons[File][1]
   if Form.has_key("subcmd"):
     if Form["subcmd"].value == "sort":
       List = List.split("\n")
-      List.sort()
+      List.sort(lambda a, b: cmp(a.upper(), b.upper()))
+      List = "\n".join(List)
+    elif Form["subcmd"].value == "domsort":
+      List = List.split("\n")
+      List.sort(DomainSort)
       List = "\n".join(List)
     else:
       if Form.has_key("list"):

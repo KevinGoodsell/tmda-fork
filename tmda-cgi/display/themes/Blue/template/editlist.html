@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu May 22 10:27:28 2003 -->
+<!-- Sat May 31 13:08:03 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -77,15 +77,18 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r7_c1.png" name="x545" height="39" width="
 <table align="center">
   <form method="post" action="%(Script)s">
     <tr align="center" valign="top">
-      <td height="30" colspan="2"><b>%(FilePath)s:</b></td>
+      <td height="30" colspan="3"><b>%(FilePath)s:</b></td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><textarea name="list" cols="55"
+      <td colspan="3" align="center"><textarea name="list" cols="55"
         rows="15">%(FileContents)s</textarea></td>
     </tr>
     <tr align="center">
       <td height="30" valign="bottom">
-        <a href="%(Script)s?cmd=editlist%(ListNum)d&subcmd=sort&SID=%(SID)s">Sort</a>
+        <a href="%(Script)s?cmd=editlist%(ListNum)d&subcmd=sort&SID=%(SID)s">User Sort</a>
+      </td>
+      <td height="30" valign="bottom">
+        <a href="%(Script)s?cmd=editlist%(ListNum)d&subcmd=domsort&SID=%(SID)s">Domain Sort</a>
       </td>
       <td valign="bottom">
         <input type="submit" value="Save">
