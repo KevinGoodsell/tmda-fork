@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.73+"
+TMDA = "0.74"
 
 # TMDA version codename
 CODENAME = "Citation"
