@@ -260,14 +260,15 @@ def make_msgid(timesecs=None, pid=None):
 def make_date(timesecs=None):
     """Return an RFC 2822 compliant Date: string.  e.g,
 
-    Thu, 16 May 2002 04:23:10 +1200
+    Thu, 24 Apr 2003 10:15:15 +1200 (NZST)
 
     timesecs is optional, and if not given, the current time is used.
     """
     if timesecs is None:
         timesecs = time.time()
-    from Defaults import LOCALDATE
-    return email.Utils.formatdate(timesecs, LOCALDATE)
+    tzname = time.tzname[time.localtime(timesecs)[-1]]
+    basedate = email.Utils.formatdate(timesecs, localtime=1)
+    return '%s (%s)' % (basedate, tzname)
 
 
 def file_to_dict(file, dict):

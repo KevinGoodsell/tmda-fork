@@ -873,7 +873,7 @@ class SMTPChannel(asynchat.async_chat):
         else:
             rh.append('(%s)' % (self.__peerip))
         rh.append('by %s (tmda-ofmipd) with ESMTP;' % (self.__fqdn))
-        rh.append(email.Utils.formatdate(localtime=1))
+        rh.append(Util.make_date())
         os.environ['TMDA_OFMIPD_RECEIVED'] = ' '.join(rh)
 
     def smtp_NOOP(self, arg):

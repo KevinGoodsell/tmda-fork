@@ -1,5 +1,11 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.76:
+
+* LOCALDATE has been deprecated.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.74:
 
 * contrib/cgi has been removed.  tmda-cgi is now maintained/released

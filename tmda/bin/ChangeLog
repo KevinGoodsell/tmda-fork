@@ -1,5 +1,8 @@
 2003-04-23  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
+	* tmda-ofmipd (SMTPChannel.smtp_EHLO): Use Util.make_date() for
+	Received header.
+	
 	* tmda-inject (inject_message): Examine Defaults.TMDAINJECT
 	when deciding whether to create Date and Message-ID fields.
 		
