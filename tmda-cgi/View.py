@@ -131,6 +131,7 @@ def Show():
       try:
         MsgObj = Pending.Message(PVars["MsgID"])
 
+        if Form["subcmd"].value == "pass": pass
         if Form["subcmd"].value == "delete":
           MsgObj.delete()
         elif Form["subcmd"].value == "release":
@@ -146,6 +147,7 @@ def Show():
         elif Form["subcmd"].value == "spamcop":
           CgiUtil.ReportToSpamCop(MsgObj)
           MsgObj.delete()
+        # TODO: Check if subcmd is a custom filter and process accordingly
         del Msgs[MsgIdx]
       except IOError: pass
 
@@ -196,16 +198,20 @@ width="18" height="18" alt="Last">"""
 
   # Use Javascript confirmation?
   if PVars[("General", "UseJSConfirm")] == "Yes":
+    T["OnSubmit"]  = "onSubmit=\"return TestConfirm()\""  
     T["DeleteURL"]    = "javascript:ConfirmDelete()"
     T["BlacklistURL"] = "javascript:ConfirmBlacklist()"
     T["SpamCopURL"]   = "javascript:ConfirmSpamCop()"
   else:
+    T["OnSubmit"]  = ""
     T["DeleteURL"]    = "%s?cmd=view&subcmd=delete&SID=%s" % \
       (os.environ["SCRIPT_NAME"], PVars.SID)
     T["BlacklistURL"] = "%s?cmd=view&subcmd=black&SID=%s" % \
       (os.environ["SCRIPT_NAME"], PVars.SID)
     T["SpamCopURL"]   = "%s?cmd=view&subcmd=spamcop&SID=%s" % \
       (os.environ["SCRIPT_NAME"], PVars.SID)
+
+  T["DispRange"] = "%d of %d" % (MsgIdx + 1, len(Msgs))
 
   # Read in e-mail
   MsgObj = Pending.Message(PVars["MsgID"])
@@ -256,18 +262,57 @@ width="18" height="18" alt="Last">"""
 
   # Remove unneeded bits?
   NumCols = int(T["NumCols"])
-  if not Defaults.PENDING_BLACKLIST_APPEND:
+
+  # TODO: Programatically check a setting to see which are allowed,
+  #       and which should be shown.
+  # For now, allow and show everything
+  RlAllowed = 1
+  DlAllowed = 1
+  WhAllowed = 1 and Defaults.PENDING_WHITELIST_APPEND
+  BlAllowed = 1 and Defaults.PENDING_BLACKLIST_APPEND
+  ScAllowed = 1 and PVars[("General", "SpamCopAddr")]
+  FltAllowed = 1
+  RlShow = RlAllowed and 1
+  DlShow = DlAllowed and 1
+  WhShow = WhAllowed and 1
+  BlShow = BlAllowed and 1
+  ScShow = ScAllowed and 1
+  
+  if not RlAllowed:
+    T["RlAction"]
+  if not RlShow:
+    NumCols -= 1
+    T["RlIcon1"]
+    T["RlIcon2"]  
+  if not DlAllowed:
+    T["DlAction"]
+  if not DlShow:
+    NumCols -= 1
+    T["DlIcon1"]
+    T["DlIcon2"]
+  if not BlAllowed:
+    T["BlAction"]
+  if not BlShow:
     NumCols -= 1
     T["BlIcon1"]
     T["BlIcon2"]
-  if not Defaults.PENDING_WHITELIST_APPEND:
+  if not WhAllowed:
+    T["WhAction"]
+  if not WhShow:
     NumCols -= 1
     T["WhIcon1"]
     T["WhIcon2"]
-  if not PVars[("General", "SpamCopAddr")]:
+  if not ScAllowed:  
+    T["ScAction"]
+  if not ScShow:
     NumCols -= 1
     T["SCIcon1"]
     T["SCIcon2"]
+  if FltAllowed:
+    T["FilterOptions"] = CgiUtil.getFilterOptions()
+  else:
+    T["FilterOptions"] = ""
+    
   T["NumCols"] = NumCols
   if len(Attachment.HTML) == 0:
     T["NoAttachments"]

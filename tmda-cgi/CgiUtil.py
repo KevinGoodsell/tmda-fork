@@ -170,3 +170,16 @@ def FindCharSet(MsgObj):
     CS = Part.get_content_charset()
     if CS: RetVal = CS
   return RetVal
+
+def getFilterOptions():
+  "Returns all available custom filters in an HTML <option> list"
+  # TODO
+  # When there are filters, show them as:
+  #
+  # "<option value=\"F%d\">%s" % (FilterIndex, FilterName)
+  #
+  # Where "i" is the index of that filter.
+  #
+
+  # For now, show nothing.
+  return ""

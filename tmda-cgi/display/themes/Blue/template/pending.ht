@@ -92,13 +92,17 @@ function Set(Value)
                   href="javascript:Set('pass')"><img 
                   src="%(ThemeDir)s/buttons/options_r1_c1.gif" border="0" 
                   width="20" height="15" alt="Leave" title="Leave"></a></td>
+              <!-- var: RlIcon -->
                 <td width="1%"><a href="javascript:Set('release')"><img 
                   src="%(ThemeDir)s/buttons/options_r1_c2.gif" border="0" 
                   width="20" height="15" alt="Release" 
                   title="Release"></a></td>
+              <!-- /var -->
+              <!-- var: DlIcon -->
                 <td width="1%"><a href="javascript:Set('delete')"><img 
                   src="%(ThemeDir)s/buttons/options_r1_c3.gif" border="0" 
                   width="20" height="15" alt="Delete" title="Delete"></a></td>
+              <!-- /var -->
               <!-- var: WhIcon -->
                 <td width="1%"><a href="javascript:Set('whitelist')"><img
                   src="%(ThemeDir)s/buttons/options_r1_c4.gif" border="0" 
@@ -130,7 +134,7 @@ function Set(Value)
                   Size
                 </th>
               </tr>
-<!-- var: NumCols="9" --><!-- var: NumBlankCols="3" -->
+<!-- var: NumCols="10" --><!-- var: NumBlankCols="6" -->
 <!-- var: EvenRowColor="#DADCEB" --><!-- var: OddRowColor="#DADCEB" -->
 <!-- var: Row -->
       <tr>
@@ -141,12 +145,16 @@ function Set(Value)
           <input type="hidden" name="%(MsgName)s" value="%(MsgID)s">
           <input type="radio" name="%(RadioName)s" value="pass" checked>
         </td>
+       <!-- var: RlRadio -->
         <td valign="top">
           <input type="radio" name="%(RadioName)s" value="release">
         </td>
+       <!-- /var -->
+       <!-- var: DlRadio -->
         <td valign="top">
           <input type="radio" name="%(RadioName)s" value="delete">
         </td>
+       <!-- /var -->
        <!-- var: WhRadio -->
         <td valign="top">
           <input type="radio" name="%(RadioName)s" value="whitelist">
@@ -159,7 +167,7 @@ function Set(Value)
        <!-- /var -->
        <!-- var: SCRadio -->
         <td valign="top">
-          <input type="radio" name="%(RadioName)s" value="spamcop">
+          <input type="radio" name="%(RadioName)s" value="report">
         </td>
        <!-- /var -->
         <td valign="top" style="padding-left: 8px">%(Sender)s</td>
@@ -176,10 +184,10 @@ function Set(Value)
       </tr>
       <tr class="InProcess">
         <td colspan="%(NumBlankCols)s">&nbsp;</td>
-        <td>%(Sender)s</td>
-        <td>%(Subject)s</td>
-        <td nowrap>%(Date)s</td>
-        <td>%(Size)s</td>
+        <td style="padding-left: 8px">%(Sender)s</td>
+        <td style="padding-left: 8px">%(Subject)s</td>
+        <td nowrap style="padding-left: 8px">%(Date)s</td>
+        <td align="right" style="padding-right: 5px">%(Size)s</td>
       </tr>
 <!-- /var -->
     </table></td>

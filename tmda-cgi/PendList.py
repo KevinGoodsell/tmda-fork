@@ -43,38 +43,125 @@ ZeroSub    = r"\1"
 def Show():
   "Show all pending e-mail in an HTML form."
 
+  ReadList = []
   if Form.has_key("subcmd"):
     # Batch operation
     if Form["subcmd"].value == "batch":
+      ReleaseList = [] 
+      WhiteList = []
+      BlackList = []
+      DeleteList = []
+      OtherList = []
+      OtherAction = "Pass"
       for Count in range(int(PVars[("PendingList", "PagerSize")])):
+        # Check for radioboxes (a0 through a%(PagerSize)d)
         if Form.has_key("a%d" % Count):
           # Check to make sure they're not trying to access anything other than
           # email
           if not GoodFN.search(Form["m%d" % Count].value):
             CgiUtil.TermError("<tt>%s</tt> is not a valid message ID." %
               Form["m%d" % Count].value, "Program error / corrupted link.",
-              "retrieve pending e-mail", "",
+              "process pending e-mail", "",
               "Recheck link or contact TMDA programmers.")
 
           if Form["a%d" % Count].value == "pass": continue
           try:
             MsgObj = Pending.Message(Form["m%d" % Count].value)
             if Form["a%d" % Count].value == "release":
-              MsgObj.release()
-              PVars["InProcess"][Form["m%d" % Count].value] = 1
+              ReleaseList.append(MsgObj)
             elif Form["a%d" % Count].value == "delete":
-              MsgObj.delete()
+              DeleteList.append(MsgObj)
             elif Form["a%d" % Count].value == "whitelist":
-              MsgObj.whitelist()
-              MsgObj.release()
-              PVars["InProcess"][Form["m%d" % Count].value] = 1
+              WhiteList.append(MsgObj)
+              ReleaseList.append( thisMsgId )
             elif Form["a%d" % Count].value == "blacklist":
-              MsgObj.blacklist()
-              MsgObj.delete()
-            elif Form["a%d" % Count].value == "spamcop":
-              CgiUtil.ReportToSpamCop(MsgObj)
-              MsgObj.delete()
+              BlackList.append(MsgObj)
+              DeleteList.append(MsgObj)
+            elif Form["a%d" % Count].value == "report":
+              OtherAction = "Report"
+              OtherList.append(MsgObj)
+            elif Form["a%d" % Count].value == "other":
+              if Form["Action"].value == "Release":
+                ReleaseList.append(MsgObj)
+              elif Form["Action"].value == "Delete":
+                DeleteList.append(MsgObj)
+              elif Form["Action"].value == "Whitelist":
+                WhiteList.append(MsgObj)
+                ReleaseList.append(MsgObj)
+              elif Form["Action"].value == "Blacklist":
+                BlackList.append(MsgObj)
+                DeleteList.append(MsgObj)  
+              elif Form["Action"].value == "Read":
+                ReadList.append(MsgObj)
+              else:
+                OtherList.append(MsgObj)
+                OtherAction = Form["Action"].value
           except IOError: pass
+        # Check for checkboxes (c0 through c%(PagerSize)d)
+        elif Form.has_key("c%d" % Count ):
+          # Check to make sure they're not trying to access anything other than
+          # email
+          if not GoodFN.search(Form["m%d" % Count].value):
+            CgiUtil.TermError("<tt>%s</tt> is not a valid message ID." %
+              Form["m%d" % Count].value, "Program error / corrupted link.",
+              "process pending e-mail", "",
+              "Recheck link or contact TMDA programmers.")
+
+          try:
+            MsgObj = Pending.Message(Form["m%d" % Count].value)
+            if Form.has_key("ReleaseButton"):
+              ReleaseList.append( MsgObj )
+            elif Form.has_key("DeleteButton"):
+              DeleteList.append( MsgObj )
+            elif Form.has_key("BlacklistButton"):
+              BlackList.append( MsgObj )
+              DeleteList.append( MsgObj )
+            elif Form.has_key("WhitelistButton"):
+              WhiteList.append( MsgObj )
+              ReleaseList.append( thisMsgId )
+            elif Form.has_key("ReportButton"):
+              OtherAction = "Report"
+              OtherList.append( MsgObj )
+            elif Form.has_key("ExecuteButton"):
+              OtherAction = Form["Action"].value
+              if OtherAction == "Release":
+                ReleaseList.append( MsgObj )
+              elif OtherAction == "Delete":
+                DeleteList.append( MsgObj )
+              elif OtherAction == "Whitelist":
+                WhiteList.append( MsgObj )
+                ReleaseList.append( thisMsgId )
+              elif OtherAction == "Blacklist":
+                BlackList.append( MsgObj )
+                DeleteList.append( MsgObj )
+              elif OtherAction == "Read":
+                ReadList.append( MsgObj )
+              else: 
+                OtherList.append( MsgObj )
+          except IOError: pass
+      # Process the messages found:
+      # Apply "other" action... May be Report or a custom filter
+      for MsgObj in OtherList:
+        if OtherAction == "Report":
+          CgiUtil.ReportToSpamCop(MsgObj)
+          DeleteList.append(MsgObj)
+        # TODO: Check if OtherAction is a custom filter
+        #       If so, run it on the message and check the return value
+        #       and add the MsgObj to the appropriate action list based on the
+        #       filter output.
+      for MsgObj in WhiteList:
+        # Whitelist (and release) each message
+        MsgObj.whitelist()
+      for MsgObj in ReleaseList:
+        # Release each message
+        PVars["InProcess"][MsgObj.msgid] = 1
+        MsgObj.release()
+      for MsgObj in BlackList:
+        # Blacklist (and delete) each message
+        MsgObj.blacklist()
+      for MsgObj in DeleteList:
+        # Delete each message
+        MsgObj.delete()
 
   # Locate messages in pending dir
   Queue = Pending.Queue(descending = 1, cache = 1)
@@ -84,6 +171,12 @@ def Show():
     Msgs = Queue.listPendingIds()
   except Errors.QueueError:
     Msgs = []
+
+  # Mark messages as read if necessary
+  for MsgObj in ReadList:
+    # Mark as Read
+    Queue._addCache(MsgObj.msgid)
+    Queue._saveCache()
 
   # Any messages no longer "in process"?
   for PMsg in PVars["InProcess"].keys()[:]:
@@ -168,27 +261,67 @@ width="18" height="18" alt="Last">"""
   PVars["Pager"] = FirstMsg
   PVars.Save()
 
-  # Capture extra radio buttons. If not present, remove icon
   NumCols = int(T["NumCols"])
   NumBlankCols = int(T["NumBlankCols"])
+
+  # Grab the radiobuttons if they exist
+  RlRadio = T["RlRadio"]
+  DlRadio = T["DlRadio"]
   WhRadio = T["WhRadio"]
   BlRadio = T["BlRadio"]
-  SCRadio = T["SCRadio"]
-  if not Defaults.PENDING_WHITELIST_APPEND:
+  ScRadio = T["ScRadio"]
+
+  # TODO: Programatically check a setting to see which are allowed,
+  #       and which should be shown.
+  # For now, allow everything
+  RlAllowed = 1
+  DlAllowed = 1
+  WhAllowed = 1 and Defaults.PENDING_WHITELIST_APPEND
+  BlAllowed = 1 and Defaults.PENDING_BLACKLIST_APPEND
+  ScAllowed = 1 and PVars[("General", "SpamCopAddr")]
+  FltAllowed = 1
+  RlShow    = RlAllowed and 1
+  DlShow    = DlAllowed and 1
+  WhShow    = WhAllowed and 1
+  BlShow    = BlAllowed and 1
+  ScShow    = ScAllowed and 1
+ 
+  if not RlAllowed:
+    T["RlAction"]
+  if not RlShow:
+    T["RlIcon"]
+    NumCols -= 1
+    NumBlankCols -= 1
+  if not DlAllowed:
+    T["DlAction"]
+  if not DlShow:
+    T["DlIcon"]
+    NumCols -= 1
+    NumBlankCols -= 1
+  if not WhAllowed:
+    T["WhAction"]
+  if not WhShow:  
     T["WhIcon"]
-  else:
-    NumCols += 1
-    NumBlankCols += 1
-  if not Defaults.PENDING_BLACKLIST_APPEND:
+    NumCols -= 1
+    NumBlankCols -= 1
+  if not BlAllowed:
+    T["BlAction"]
+  if not BlShow:
     T["BlIcon"]
-  else:
-    NumCols += 1
-    NumBlankCols += 1
-  if not PVars[("General", "SpamCopAddr")]:
+    NumCols -= 1
+    NumBlankCols -= 1
+  if not ScAllowed:
+    T["ScAction"]
+  if not ScShow:
     T["SCIcon"]
+    NumCols -= 1
+    NumBlankCols -= 1
+    
+  if FltAllowed:
+    T["FilterOptions"] = CgiUtil.getFilterOptions() 
   else:
-    NumCols += 1
-    NumBlankCols += 1
+    T["FilterOptions"] = ""
+
   T["NumCols"] = NumCols
   T["NumBlankCols"] = NumBlankCols
 
@@ -199,21 +332,32 @@ width="18" height="18" alt="Last">"""
     T["OnSubmit"] = ""
   T["PagerSize"] = PVars[("PendingList", "PagerSize")]
 
+  ReadArray = []
+
   # Parse out embedded variables from template
   Row          = T["Row"]
   InProcessRow = T["InProcessRow"]
   InProcess    = T["InProcess"]
-  EvenRowColor = T["EvenRowColor"]
-  OddRowColor  = T["OddRowColor"]
+  try:
+    EvenRowColor = T["EvenRowColor"]
+    OddRowColor  = T["OddRowColor"]
+  except:
+    EvenRowColor = None
+    OddRowColor  = None
+  try:
+    RowBgColor   = T["RowBgColor"]
+  except:
+    RowBgColor   = None  
   if len(Msgs):
     # Add rows for messages if there are any
     Count = 0
-    InProcMsg = ""
+    #InProcMsg = ""
+    inProcessLine = 0
     for Msg in Msgs[FirstMsg:LastMsg]:
       T["MsgID"] = Msg
-      if Count % 2 == 0:
+      if Count % 2 == 0 and OddRowColor is not None:
         T["RowBgColor"] = OddRowColor
-      else:
+      elif EvenRowColor is not None:
         T["RowBgColor"] = EvenRowColor
 
       # Print a single message record inside list loop
@@ -321,33 +465,58 @@ width="18" height="18" alt="Last">"""
       T["To"] = To
 
       if PVars["InProcess"].has_key(Msg):
-        InProcess.Clear()
-        InProcess.Add()
+        # Message is "in process"  
+        if not inProcessLine:
+          InProcess.Clear()
+          InProcess.Add()
+          inProcessLine = 1
         InProcessRow.Add()
       else:
         # Message is not "in process"
         T["RadioName"] = "a%d" % Count
+        T["CheckName"] = "c%d" % Count
         T["MsgName"]   = "m%d" % Count
+        T["MsgNum"]    = Count
         T["MsgID"]     = Msg
 
         # Read this one yet?
         if Msg in Queue.msgcache:
           T["MsgClass"] = "OldMsg"
+          ReadArray.append(1)
         else:
           T["MsgClass"] = "NewMsg"
+          ReadArray.append(0)
 
-        if Defaults.PENDING_WHITELIST_APPEND:
+        if RlShow and RlRadio:
+          RlRadio.Clear()
+          RlRadio.Add()
+        if DlShow and DlRadio:
+          DlRadio.Clear()
+          DlRadio.Add()
+        if WhShow and WhRadio:
           WhRadio.Clear()
           WhRadio.Add()
-        if Defaults.PENDING_BLACKLIST_APPEND:
+        if BlShow and BlRadio:
           BlRadio.Clear()
           BlRadio.Add()
-        if PVars[("General", "SpamCopAddr")]:
-          SCRadio.Clear()
-          SCRadio.Add()
+        if ScShow and ScRadio:
+          ScRadio.Clear()
+          ScRadio.Add()
 
         Row.Add()
         Count = Count + 1
+    
+    ReadArrayText = "ReadArray = new Array("
+    for SubCount in range( 0, Count ):
+      if ReadArray[SubCount]:
+        ReadArrayText += "true"
+      else:
+        ReadArrayText += "false"
+      if SubCount == ( Count - 1 ):
+        ReadArrayText += ")"
+      else:
+        ReadArrayText += ", "
+    T["ReadArray"] = ReadArrayText
 
   # No messages to display
   else:
