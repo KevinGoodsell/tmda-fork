@@ -26,10 +26,10 @@ import sys
 
 
 # TMDA version
-TMDA = "0.81"
+TMDA = "0.81+"
 
 # TMDA version codename
-CODENAME = "Swaps"
+CODENAME = "Needles"
 
 # Python version
 PYTHON = sys.version.split()[0]
