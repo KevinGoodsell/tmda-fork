@@ -149,12 +149,12 @@ subject = message_headers.getheader('subject', 'None')
 
 # Collect the message's Precedence: header.
 precedence = message_headers.getheader('precedence', None)
-# If its value is "bulk" or "junk", we should not generate any
+# If its value is "bulk", "junk", or "list" we should not generate any
 # auto-replies.
 auto_reply = 1
 if precedence:
     precedence = string.lower(precedence)
-    if precedence in ('bulk','junk'):
+    if precedence in ('bulk','junk','list'):
         auto_reply = 0
 
 
