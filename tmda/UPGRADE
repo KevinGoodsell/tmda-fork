@@ -1,5 +1,15 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.55:
+
+* DELIVERY has replaced LOCAL_DELIVERY_AGENT.  You can simply rename
+  (or copy) LOCAL_DELIVERY_AGENT to DELIVERY in your tmdarc to retain
+  current functionality.  However, you should also read about DELIVERY
+  in Defaults.py, as it contains some significant enhancements that
+  may simplify your overall configuration.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.52:
 
 * For its Python 2.x dependency, tmda.spec now has RPM look for the

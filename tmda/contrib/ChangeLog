@@ -1,3 +1,7 @@
+2002-05-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Replace LOCAL_DELIVERY_AGENT with DELIVERY.
+	
 2002-04-30  Jason R. Mastaler  <jason@mastaler.com>
 
 	* sample.tmdarc: Include example settings for optional variables

@@ -127,18 +127,34 @@ if not vars().has_key('DATADIR'):
 if not vars().has_key('MAIL_TRANSFER_AGENT'):
     MAIL_TRANSFER_AGENT = "qmail"
 
-# LOCAL_DELIVERY_AGENT
-# The full path to the program used to deliver a sucessful message to
-# your mailbox.  Only necessary if you are NOT running qmail!
-# Tested LDAs include maildrop and procmail.
-# This variable may also contain arguments which will be passed to the command.
-# e.g, LOCAL_DELIVERY_AGENT = "/usr/bin/procmail -p ~/.procmailrc"
-# No default
-if not vars().has_key('LOCAL_DELIVERY_AGENT'):
-    LOCAL_DELIVERY_AGENT = None
-if MAIL_TRANSFER_AGENT != 'qmail' and not LOCAL_DELIVERY_AGENT:
-    raise Errors.ConfigError, \
-          "non-qmail must define LOCAL_DELIVERY_AGENT in " + TMDARC
+# DELIVERY
+# The default delivery instruction for successful messages, or TMDA's
+# final delivery location.  Only required if you are NOT running
+# qmail.  The default value for qmail users is "_qok_" which means
+# exit(0) and proceed to the next instruction in the dot-qmail file.
+#
+# Delivery to qmail-style Maildirs, mboxrd-format mboxes, programs
+# (pipe), and forward to an e-mail addresses are supported.
+#
+# Acceptable syntax and restrictions for delivery instructions are
+# discussed in the ``action'' section of the TMDA Filter Specification
+# (config-filter.html).  Please read this documentation.
+#
+# Examples:
+# DELIVERY = "~/Maildir/"
+# DELIVERY = "~/Mailbox"
+# DELIVERY = "/var/mail/jasonrm"
+# DELIVERY = "|/usr/bin/maildrop"
+# DELIVERY = "|/usr/bin/procmail ~/.procmailrc-tmda"
+# DELIVERY = "me@new.job.com"
+#
+# No default for non-qmail users.
+if not vars().has_key('DELIVERY'):
+    if MAIL_TRANSFER_AGENT == 'qmail':
+        DELIVERY = "_qok_"
+    else:
+        raise Errors.ConfigError, \
+              "non-qmail users must define DELIVERY in " + TMDARC
 
 # RECIPIENT_DELIMITER
 # A single character which specifies the separator between user names

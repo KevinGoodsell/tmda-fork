@@ -26,6 +26,7 @@ import os
 import sys
 
 import Defaults
+import Deliver
 import Errors
 import Util
 
@@ -49,10 +50,13 @@ class MTA:
     def stop(self):
         sys.exit(self.EX_OK)
 
-    def deliver(self, message):
-        Util.pipecmd(Defaults.LOCAL_DELIVERY_AGENT, message)
+    def deliver(self, headers, body, instruction=None):
+        if instruction is None:
+            instruction = Defaults.DELIVERY
+        msg = Deliver.Deliver(headers, body, instruction)
+        msg.deliver()
         self.stop()
-
+            
 
 class Exim(MTA):
     """Exim-specific methods and instance variables."""
@@ -86,8 +90,15 @@ class Qmail(MTA):
     def stop(self):
         sys.exit(self.EX_STOP)
 
-    def deliver(self, message=None):
-        sys.exit(self.EX_OK)
+    def deliver(self, headers, body, instruction=None):
+        if instruction is None:
+            instruction = Defaults.DELIVERY
+        if instruction == '_qok_':
+            sys.exit(self.EX_OK)
+        else:
+            msg = Deliver.Deliver(headers, body, instruction)
+            msg.deliver()
+            self.stop()
 
 
 class Sendmail(MTA):

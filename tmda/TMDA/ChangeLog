@@ -1,3 +1,12 @@
+2002-05-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* MTA.py (MTA.deliver): Deliver the message according to
+	Defaults.DELIVERY via a Deliver.Deliver() object.
+
+	(Qmail.deliver): Ditto.
+
+	* Defaults.py: DELIVERY replaces LOCAL_DELIVERY_AGENT.
+
 2002-05-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (TMDARC): Allow ~/.tmda/config as a second default
