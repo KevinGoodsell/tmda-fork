@@ -15,6 +15,8 @@ TMDA filter file support necessitates several configuration changes:
 
 * WHITELIST_AUTO_APPEND was replaced by CONFIRM_APPEND.
 
+* COOKIE_TYPE was replaced by ACTION_OUTGOING.
+
 See Defaults.py and FilterParser.py for more details.
 
 ======================================================================

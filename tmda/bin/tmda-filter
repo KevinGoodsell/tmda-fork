@@ -528,20 +528,33 @@ def main():
     if cookie_type == 'confirm' and cookie_value:
         verify_confirm_cookie(cookie_value)
     # Dated tag?
-    if cookie_type == 'dated' and cookie_value:
+    elif cookie_type == 'dated' and cookie_value:
         verify_dated_cookie(cookie_value)
     # Sender tag?
-    if cookie_type == 'sender' and cookie_value:
+    elif cookie_type == 'sender' and cookie_value:
         sender_address = globals().get('envelope_sender')
         verify_sender_cookie(sender_address,cookie_value)
     # Keyword tag?
-    if cookie_type == 'keyword' and cookie_value:
+    elif cookie_type == 'keyword' and cookie_value:
         verify_keyword_cookie(cookie_value)
         
     # If the message gets this far (i.e, was not sent to a tagged
-    # address and it didn't match the filter file), then we bounce it
-    # for confirmation.
-    bouncegen('request')
+    # address and it didn't match the filter file), then we consult
+    # Defaults.ACTION_INCOMING.
+    default_action = string.lower(Defaults.ACTION_INCOMING)
+    if default_action in ('bounce','reject'):
+        logit('%s %s' % ('BOUNCE', 'action_incoming'), disposal_time)
+        print 'Message rejected by recipient.'
+        mta.bounce()
+    elif default_action in ('drop','exit','stop'):
+        logit('%s %s' % ('DROP', 'action_incoming'), disposal_time)
+        mta.stop()
+    elif default_action in ('accept','deliver','ok'):
+        logit('%s %s' % ('OK', 'action_incoming'), disposal_time)
+        mta.deliver(message)
+    else:
+        # bouncegen does logging
+        bouncegen('request')
 
 
 # This is the end my friend.

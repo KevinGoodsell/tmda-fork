@@ -1,3 +1,11 @@
+2001-11-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (ACTION_OUTGOING): New variable replacing
+	COOKIE_TYPE to specify the default tag on outgoing messages.
+
+	(ACTION_INCOMING): New variable to specify how incoming messages
+	are disposed of by default.
+
 2001-11-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (TMDARC): Exit(75) to force a deferral if any

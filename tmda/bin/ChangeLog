@@ -1,3 +1,12 @@
+2001-11-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (main): Consult ACTION_INCOMING to decide how to
+	dispose of messages by default rather than always requesting
+	confirmation.
+	
+	* tmda-inject (main): Use ACTION_OUTGOING instead of COOKIE_TYPE
+	to specify the default tagging type.
+
 2001-11-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (send_cc): Replaces bounce_cc.

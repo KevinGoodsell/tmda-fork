@@ -43,6 +43,10 @@ import os                                      # don't remove
 # not defaults are shown below.  Consult Defaults.py for more info.
 #####################################################################
 
+# ACTION_INCOMING = "confirm"
+
+# ACTION_OUTGOING = "dated"
+
 # ALLOW_MODE_640 = 0
 
 # BOUNCE_ENV_SENDER = ""
@@ -58,8 +62,6 @@ import os                                      # don't remove
 # CONFIRM_MAX_MESSAGE_SIZE = 50000
 
 # CONFIRM_REQUEST_TEMPLATE = "/full/path/to/confirm_request.txt"
-
-# COOKIE_TYPE = "dated"
 
 # DATADIR = os.path.expanduser("~/.tmda/")
 

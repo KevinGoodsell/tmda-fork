@@ -219,14 +219,6 @@ if not vars().has_key('DATED_TEMPLATE_VARS'):
 if not vars().has_key('SENDER_TEMPLATE_VARS'):
     SENDER_TEMPLATE_VARS = 0
 
-# COOKIE_TYPE
-# The default cookie type is dated.  Possible values are:
-#       dated   (can only be replied to for TIMEOUT)
-#       sender  (can only be replied to by address)
-#       bare    (untagged)
-if not vars().has_key('COOKIE_TYPE'):
-    COOKIE_TYPE = "dated"
-
 # CRYPT_KEY
 # Your encryption key should be unique and kept secret.
 # Use the included "tmda-keygen" program to generate your key.
@@ -264,6 +256,46 @@ if not vars().has_key('FILTER_BOUNCE_CC'):
 # No default.
 if not vars().has_key('FILTER_DROP_CC'):
     FILTER_DROP_CC = None
+
+# ACTION_INCOMING
+# Specifies how incoming messages should be disposed of by default if
+# they didn't match FILTER_INCOMING and were not sent to a tagged
+# address.
+# Possible values include:
+#
+# "bounce"
+#    bounce the message
+#
+# "drop"
+#    silently drop the message
+#
+# "ok"
+#    deliver the message
+#
+# "confirm"
+#    request confirmation for the message
+#
+# Default is confirm
+if not vars().has_key('ACTION_INCOMING'):
+    ACTION_INCOMING = "confirm"
+
+# ACTION_OUTGOING
+# Specifies how outgoing messages should be tagged by default if there
+# are no matches in FILTER_OUTGOING and no X-TMDA header.
+# Possible values include:
+#
+# "bare"
+#    don't tag
+#
+# "dated"
+#    tag with a dated address
+#
+# "sender"
+#    tag with a sender address
+#
+# Default is dated
+if not vars().has_key('ACTION_OUTGOING'):
+    ACTION_OUTGOING = "dated"
 
 # FULLNAME
 # Your full name.
