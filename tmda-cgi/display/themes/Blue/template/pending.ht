@@ -68,11 +68,11 @@ function Set(Value)
               src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
               height="18" alt="First" title="First"></a><!-- /var --></td>
             <td align="center"><!-- var: PrevButt1 --><a
-              href="%(Script)s?cmd=pending&subcmd=prev&SID=%(SID)s"><img
+              href="%(Script)s?cmd=pending&subcmd=prev&msgid=%(MsgID)s&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19"
               height="18" alt="Prev" title="Prev"></a><!-- /var --></td>
             <td align="center"><!-- var: NextButt1 --><a
-              href="%(Script)s?cmd=pending&subcmd=next&SID=%(SID)s"><img
+              href="%(Script)s?cmd=pending&subcmd=next&msgid=%(MsgID)s&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18"
               height="18" alt="Next" title="Next"></a><!-- /var --></td>
             <td align="center"><!-- var: LastButt1 --><a
@@ -201,11 +201,11 @@ function Set(Value)
               src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
               height="18" alt="First" title="First"></a><!-- /var --></td>
             <td align="center"><!-- var: PrevButt2 --><a
-              href="%(Script)s?cmd=pending&subcmd=prev&SID=%(SID)s"><img
+              href="%(Script)s?cmd=pending&subcmd=prev&msgid=%(MsgID)s&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19"
               height="18" alt="Prev" title="Prev"></a><!-- /var --></td>
             <td align="center"><!-- var: NextButt2 --><a
-              href="%(Script)s?cmd=pending&subcmd=next&SID=%(SID)s"><img
+              href="%(Script)s?cmd=pending&subcmd=next&msgid=%(MsgID)s&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18"
               height="18" alt="Next" title="Next"></a><!-- /var --></td>
             <td align="center"><!-- var: LastButt2 --><a
