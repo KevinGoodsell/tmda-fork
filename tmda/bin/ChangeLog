@@ -1,5 +1,7 @@
 2002-04-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-rfilter (recipient_header): Parse the header as an address.
+	
 	* tmda-pending (main): Support PENDING_DELETE_APPEND and
 	PENDING_RELEASE_APPEND.
 	

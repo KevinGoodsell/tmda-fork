@@ -163,7 +163,7 @@ if envelope_sender == None:
 # Use Defaults.RECIPIENT_HEADER instead if set.
 recipient_header = None
 if Defaults.RECIPIENT_HEADER:
-    recipient_header = message_headers.getheader(Defaults.RECIPIENT_HEADER)
+    recipient_header = message_headers.getaddr(Defaults.RECIPIENT_HEADER)[1]
 envelope_recipient = (recipient_header or os.environ.get('RECIPIENT'))
 if envelope_recipient == None:
     raise Errors.MissingEnvironmentVariable('RECIPIENT')
