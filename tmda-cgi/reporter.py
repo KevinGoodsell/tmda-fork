@@ -60,68 +60,30 @@ BSD license with my copyright.
 # 2002/03/07
 #   Use textsub regex matching to deal with problems about overlapping
 #   strings to hide.
+# 2003/11/12 - Tim Legant
+#   Ripped out all address/domain hiding code.  SpamCop is now complaining
+#   about that.
 # 
 
 import getopt
 import os
-import pwd
 import re
-import socket
-import string
 import sys
 import time
-import UserDict
 
-class Textsub(UserDict.UserDict):
-    """Do multiple string replacements in one pass.
-
-    Original algorithm by Xavier Defrang. Posted on
-    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/81330.
-    """
-    def __init__(self, dict = None):
-        self.re = None
-        self.regex = None
-        UserDict.UserDict.__init__(self, dict)
-        
-    def compile(self):
-        if len(self.data) > 0:
-            tmp = "(%s)" % "|".join(map(re.escape,
-                                        self.data.keys()))
-            if self.re != tmp:
-                self.re = tmp
-                self.regex = re.compile(self.re)
-
-    def __call__(self, match):
-        return self.data[match.string[match.start():match.end()]]
-
-    def replace(self, s):
-        if len(self.data) == 0:
-            return s
-        return self.regex.sub(self, s)
 
 class SpamcopConf:
     def __init__(self):
         pid = os.getpid()
-        uid = os.getuid()
-        pwent = pwd.getpwuid(uid)
         tm = time.localtime(time.time())
         self.mailto = None
         self.sendmail = "/usr/sbin/sendmail"
         self.MIME_delim = 'DeathToSpammers' * 3 + '%05d' % (pid,)
         self.subject = time.strftime("SPAM REPORT %Y/%m/%d %H:%M:%S %Z", tm)
-        self.hidden = Textsub()
-        self.hide_string(pwent[0])
-        tmp = socket.gethostname().split('.')
-        if len(tmp) > 1:
-            self.hide_string(string.join(tmp[-2:],'.'))
-            for w in tmp[:-2]:
-                self.hide_string(w)
     def set_mailto(self, val):
         self.mailto = val
     def set_sendmail(self, val):
         self.sendmail = val
-    def hide_string(self, str):
-        self.hidden[str] = 'X' * len(str)
 
 def usage(ec):
     print """
@@ -131,7 +93,6 @@ Options:
     -h			show this help and exit
     -V			show version and exit
     -s sendmail-path	set path to sendmail program
-    -H string[,string]	strings to hide in submitted message
 Notes:
 
 1. Spamcop now uses per-user spam submission email addresses.  You
@@ -142,8 +103,7 @@ Notes:
    is given on the command line.
 3. If no address is given on the command line, and the environment var
    SPAMCOP_MAIL is not set, the message is written to standard output.
-4. The environment var SPAMCOP_HIDE is equivalent to '-H' option.
-5. The environment var SPAMCOP_SENDMAIL is equivalent to '-s' option.
+4. The environment var SPAMCOP_SENDMAIL is equivalent to '-s' option.
 """
     sys.exit(ec)
    
@@ -172,7 +132,6 @@ Content-Disposition: attachment
     skip = 0
     body = 0
     for l in spam:
-        l = conf.hidden.replace(l)
         if re.match(r"^Subject:\s+\*+SPAM\*+\s+", l):
             outfile.write(re.sub(r"\s+\*+SPAM\*+", "", l, 1))
         elif re.match(r"^X-Spam-", l):
@@ -194,7 +153,6 @@ Content-Disposition: attachment
                      % (subjstr, mailto))
 
 def write_mail(spam, conf):
-    conf.hidden.compile()
     spams = []
     currspam = []
     for l in spam:
@@ -216,9 +174,6 @@ Gconf = SpamcopConf()
 
 if os.environ.has_key('SPAMCOP_MAIL'):
     Gconf.set_mailto(os.environ['SPAMCOP_MAIL'])
-if os.environ.has_key('SPAMCOP_HIDE'):
-    for w in os.environ['SPAMCOP_HIDE'].split(','):
-        Gconf.hide_string(w)
 if os.environ.has_key('SPAMCOP_SENDMAIL'):
     Gconf.set_sendmail(os.environ['SPAMCOP_SENDMAIL'])
 
@@ -232,12 +187,9 @@ for (opt,val) in opts:
         sys.exit(0)
     elif opt == '-s':
         Gconf.set_sendmail(val)
-    elif opt == '-H':
-        for w in val.split(','):
-            Gconf.hide_string(w)
 
 if len(args) > 0:
-    Gconf.set_mailto(string.join(args))
+    Gconf.set_mailto(' '.join(args))
 
 write_mail(sys.stdin.readlines(), Gconf)
 

@@ -1,5 +1,7 @@
 2003-11-16  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Applied Tim Legant's patch to reporter.py (SpamCop reporter).
+
 	* Version 0.12B is released.
 
 	* Added PendingList:ShowDelete and PendingList:ShowBlack (both with
