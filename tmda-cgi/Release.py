@@ -37,38 +37,114 @@ from TMDA import Errors
 def Release(QueryString):
   """Release the message represented in the QueryString.
 
-QueryString is in the format <UID>.<timestamp>.<PID>.<HMAC>
+QueryString is in the format <UID>&<recipient_address>&<confirm_cookie>
 
-Where <UID> is the UID of the TMDA account, <HMAC> must be used to validate
-<timestamp>.<PID>, and the pending e-mail filename is  "<timestamp>.<PID>.msg".
+Where <UID> is the UID of the TMDA account, <recipient_address> is the untagged
+address of the original message recipient, and <confirm_cookie> is used to find
+and validate the pending email in question.
+
+(Old-style addresses of the format <UID>.<confirm_cookie> are still accepted)
 """
 
   # Prepare the traceback in case of uncaught exception
   MyCgiTb.ErrTemplate = "prog_err2.html"
   CgiUtil.ErrTemplate = "error2.html"
 
+  QueryStringError = 0
+  oldStyle = 0
   try:
-    UID, Timestamp, PID, HMAC = QueryString.split(".")
+    UID, Recipient, Cookie = QueryString.split("&")
+  except ValueError:
+    try:
+      # Check for old-style format
+      ## WARNING -- DEPRECATED and may soon disappear ##
+      UID, Timestamp, PID, HMAC = QueryString.split(".")
+      oldStyle = 1
+    except ValueError:
+      QueryStringError = 1
+  try:
+    # Get real user from UID
     UID = int(UID)
     UserRec = pwd.getpwuid(UID)
     User = UserRec[0]
-    GID = UserRec[3]
+    GID = int(UserRec[3])
+    if not oldStyle:
+      # Get base address from Recipient
+      RecipUser, RecipDomain = Recipient.split("@")
+      Recipient = RecipUser.split('-')[0] + "@" + RecipDomain
+    if not oldStyle:
+      # Get message parts form Cookie
+      Timestamp, PID, HMAC = Cookie.split(".")
   except ValueError:
-    CgiUtil.TermError("Unable to parse query string." % \
-      (Timestamp, PID, HMAC), "Program error / corrupted link.",
-      "locate pending e-mail", "",
-      "Recheck link or contact TMDA programmers.")
-  MsgID = "%s.%s.msg" % (Timestamp, PID)
+    # May be from any failed .split or int()
+    QueryStringError = 1
+  except KeyError:
+    # May occur if UID is not found on the system.
+    QueryStringError = 1
 
+  if QueryStringError:
+    CgiUtil.TermError("Unable to parse query string.",
+      "Program error / corrupted link.",
+      "locate pending e-mail", "",
+      "retrieve pending e-mail", "",
+      "Please check the link you followed and make sure that it is typed in exactly as it was sent to you.")
+
+  MsgID = "%s.%s.msg" % (Timestamp, PID)
   # Check to make sure they're not trying to access anything other than email
   if not re.compile("^\d+\.\d+\.msg$").search(MsgID):
     CgiUtil.TermError("<tt>%s.%s.%s</tt> is not a valid message ID." % \
       (Timestamp, PID, HMAC), "Program error / corrupted link.",
       "retrieve pending e-mail", "",
-      "Recheck link or contact TMDA programmers.")
+      "Please check the link you followed and make sure that it is typed in exactly as it was sent to you.")
 
+  # Set up the user's home directory.
+  try:
+    os.seteuid(0)
+    os.setegid(0)
+    os.setuid(0)
+  except OSError:
+    pass
+  try:
+    if os.environ.has_key("TMDA_VLOOKUP"):
+      if oldStyle:
+        # Old style URLs are not allowed with virtual user setups.
+        CgiUtil.TermError("Confirm Failed",
+          "Old-style URL is not compatible with virtual users",
+          "use incompatible URL",
+          "Contact this message's sender by an alternate means and inform them of this error, or try confirming your message using an alternate method.")
+      User = Recipient
+      VLookup = \
+        CgiUtil.ParseString(os.environ["TMDA_VLOOKUP"], User )
+      List = Util.RunTask(VLookup[1:])
+      Sandbox = {"User": User}
+      Filename = os.path.join("stubs", "%s.py", VLookup[0])
+      try:
+        execfile(Filename, Sandbox)
+      except IOError:
+        CgiUtil.TermError("Can't load virtual user stub.",
+          "Cannot execute %s" % Filename, "execute stub",
+          "TMDA_VLOOKUP = %s" % os.environ["TMDA_VLOOKUP"],
+          "Contact this message's sender by an alternate means and inform them of this error, or try confirming your message using an alternate method.")
+      Home, Uid, Gid = Sandbox["getuserparams"](List)
+    else:
+      Home, Uid, Gid = Util.getuserparams( User )
+  except KeyError:
+    CgiUtil.TermError("No such user", "User %s not found" % User, 
+        "tried to find user %s" % User,
+        "Contact this message's sender by an alternate means and inform them of this error, or try confirming your message using an alternate method.")
+  if Uid < 2:
+    PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
+    Uid = PasswordRecord[2]
+    Gid = PasswordRecord[3]
+    if not int(Uid):
+      CgiUtil.TermError("TMDA_VUSER is UID 0.", "It is not safe to run "
+        "tmda-cgi as root.", "set euid",
+        "TMDA_VUSER = %s" % os.environ["TMDA_VUSER"],
+        "Contact this message's sender by an alternate means and inform them of this error, or try confirming your message using an alternate method.")
+
+  # We now have the home directory and the User.  Set this in the environment.
   os.environ["USER"] = User
-  os.environ["HOME"] = Util.gethomedir(User)
+  os.environ["HOME"] = Home
 
   # Is there a TMDARC variable?
   if os.environ.has_key("TMDARC"):
@@ -79,8 +155,8 @@ Where <UID> is the UID of the TMDA account, <HMAC> must be used to validate
   try:
     os.seteuid(0)
     os.setegid(0)
-    os.setegid(GID)
-    os.seteuid(UID)
+    os.setgid(Gid)
+    os.setuid(Uid)
   except OSError:
     pass
 
