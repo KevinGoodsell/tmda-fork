@@ -318,29 +318,11 @@ def send_cc(address):
     logit('CC ' + address)
 
 
-def release_pending(pathname, timestamp, pid):
+def release_pending(timestamp, pid, message_headers, message_body):
     """Release a confirmed message from the pending queue."""
-    fp = open(pathname, 'r')
-    message_headers = rfc822.Message(fp)
-    message_body = fp.read()
-    fp.close()
-    # Optionally append the envelope sender to a file.
     return_path = message_headers.getaddr('return-path')[1]
-    if Defaults.CONFIRM_APPEND:
-        if Util.append_to_file(return_path, Defaults.CONFIRM_APPEND) != 0:
-            logit('CONFIRM_APPEND ' + return_path)
-    # Optionally generate the confirmation acceptance notice.
-    if Defaults.CONFIRM_ACCEPT_NOTIFY:
-        bouncegen('accept')
-    # Optionally send the confirmation to a special address.
-    if Defaults.CONFIRM_ACCEPT_CC:
-        send_cc(Defaults.CONFIRM_ACCEPT_CC)
-    # Create the `confirm-done' address
     confirm_done_address = Cookie.make_confirm_address(
-        message_headers.getheader('x-tmda-recipient'),
-        timestamp,
-        pid,
-        'done')
+        message_headers.getheader('x-tmda-recipient'), timestamp, pid, 'done')
     del message_headers['x-tmda-recipient']
     # Add the date when confirmed in a header.
     message_headers['X-TMDA-Confirmed'] = Util.unixdate()
@@ -369,27 +351,39 @@ def verify_confirm_cookie(confirm_cookie):
     if confirm_action == 'accept':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
                                                   confirm_pid, 'accept')
-        # Accept the message only if the HMAC can be verified,
+        # Accept the message only if the HMAC can be verified.
         if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address")
             bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
-        # and it hasn't already been delivered,
-        elif confirmed_filename in delcache:
+        logit("CONFIRM accept " + confirmed_filename)
+        if os.path.exists(confirmed_file):
+            fp = open(confirmed_file, 'r')
+            message_headers = rfc822.Message(fp)
+            message_body = fp.read()
+            fp.close()
+            # Optionally append the envelope sender to a file.
+            return_path = message_headers.getaddr('return-path')[1]
+            if Defaults.CONFIRM_APPEND:
+                if Util.append_to_file(return_path,
+                                       Defaults.CONFIRM_APPEND) != 0:
+                    logit('CONFIRM_APPEND ' + Defaults.CONFIRM_APPEND)
+            # Optionally generate the confirmation acceptance notice.
             if Defaults.CONFIRM_ACCEPT_NOTIFY:
                 bouncegen('accept')
-                logit("CONFIRM_ACCEPT_NOTIFY already_delivered_message")
-            else:
-                logit("NONE already_delivered_message")
+            # Optionally send the confirmation to a special address.
+            if Defaults.CONFIRM_ACCEPT_CC:
+                send_cc(Defaults.CONFIRM_ACCEPT_CC)
+        # Just stop if this message has already been delivered,
+        if confirmed_filename in delcache:
             mta.stop()
-        # and it actually exists.
+        # otherwise alert sender that the message is missing.
         elif not (os.path.exists(confirmed_file)):
             logit("BOUNCE nonexistent_pending_message")
             bouncegen('bounce', Defaults.BOUNCE_TEXT_NONEXISTENT_PENDING)
         # Release the message.
         else:
-            logit("CONFIRM accept " + confirmed_filename)
-            release_pending(confirmed_file,
-                            confirm_timestamp,confirm_pid)
+            release_pending(confirm_timestamp, confirm_pid,
+                            message_headers, message_body)
     # post-confirmation
     elif confirm_action == 'done':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
@@ -402,11 +396,11 @@ def verify_confirm_cookie(confirm_cookie):
         elif confirmed_filename in delcache:
             # JRM: shouldn't get here - you are either trying to
             # re-release a message, or someone is playing silly
-            # buggers.
-            logit("NONE already_delivered_message")
+            # buggers and trying to sneak a message through.
+            logit("DROP already_delivered_message")
             mta.stop()
         else:
-            # Add message to the start of the cache.
+            # Add message to the front of the cache.
             if confirmed_filename not in delcache:
                 delcache.insert(0, confirmed_filename)
             # Trim tail entries off if necessary, and then write the cache.

@@ -6,6 +6,8 @@ If you are upgrading from a release of TMDA < 0.50:
   are confirmed (or released) and delivered.  Now they are simply
   noted in the DELIVERED_CACHE file.  
 
+* BOUNCE_TEXT_ALREADY_CONFIRMED has been deprecated.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.49:

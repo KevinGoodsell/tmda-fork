@@ -1,3 +1,9 @@
+2002-03-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (release_pending): Move the CONFIRM_APPEND,
+	CONFIRM_ACCEPT_NOTIFY, and CONFIRM_ACCEPT_CC processing to
+	verify_confirm_cookie().
+
 2002-03-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (verify_confirm_cookie): Add the pending message's
