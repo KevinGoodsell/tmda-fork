@@ -64,12 +64,12 @@ def Attachment(Part):
   elif SoundType2.search(Part.get_type("text/plain")): Icon = "sound"
   elif ZipType2.search(Part.get_type("text/plain")): Icon = "zip"
   return """<td>
-  <img src=%s.gif width=32 height=32><br>
+  <img src="%sicons/%s.gif" width="32" height="32"><br>
   %s<br>
   (%s)
 </td>
 <td width="10">
-</td>""" % (CgiUtil.DispDir + Icon, Filename, CgiUtil.Size(Part))
+</td>""" % (CgiUtil.DispDir, Icon, Filename, CgiUtil.Size(Part))
 
 def Show():
   "Show an e-mail in HTML."
