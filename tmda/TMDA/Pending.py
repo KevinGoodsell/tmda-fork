@@ -218,11 +218,11 @@ class Queue:
             
     def showMessage(self, M):
         """Display a message."""
-        if self.summary and not self.terse:
+        if self.terse:
+            self.Print(M.terse(tsv=1))
+        else:
             self.Print()
             self.Print(M.summary(self.count, self.total, self.summary))
-        elif self.terse:
-            self.Print(M.terse(tsv=1))
 
     ## Pure virtual method (to be used by InteractiveQueue)
     def endProcessMessage(self, M):
@@ -324,6 +324,8 @@ class InteractiveQueue(Queue):
         if self.terse:
             self.Print()
         self.showMessage(M)
+        if self.terse:
+            self.Print()
         if not self.userInput(M):
             return 0
         return 1
