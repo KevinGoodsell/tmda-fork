@@ -212,7 +212,7 @@ function TestConfirm()
         pass
   
       # Message size
-      T["Size"] = CgiUtil.Size(MsgObj.msgobj)
+      T["Size"] = CgiUtil.Size(MsgObj)
   
       # Find preferred date
       Date = time.strftime \

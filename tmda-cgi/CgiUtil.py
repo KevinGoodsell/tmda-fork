@@ -36,7 +36,7 @@ QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*")
 UnquotedString = re.compile(r"^(\S+)\s*")
 
 def Size(MsgObj):
-  MsgSize = len(MsgObj.as_string())
+  MsgSize = os.stat(MsgObj.msgfile).st_size
   if MsgSize > 512:
     if MsgSize > 5120:
       if MsgSize > 524288:
