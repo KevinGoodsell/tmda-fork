@@ -1,3 +1,8 @@
+2001-09-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (usage): Accept an `-f' option, but don't do
+	anything with it.
+
 2001-08-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (send_bounce): Add a "Precedence: bulk" header to

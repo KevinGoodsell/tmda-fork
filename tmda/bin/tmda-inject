@@ -6,12 +6,15 @@
 
 """Tag and send outgoing messages.
 
-Usage:  %(program)s [-c <file>] [-q] [-h] [ recip ... ]
+Usage:  %(program)s [-c <file>] [-f <sender>] [-q] [-h] [ recip ... ]
 
 Where:
 	-c <file>
 	--config-file <file>
 	   Specify a different configuration file other than ~/.tmdarc.
+
+        -f <sender>
+           This option is silently ignored currently.
 
         -q
         --qfilter
@@ -46,7 +49,7 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:qh', ['config-file=','qfilter','help'])
+                               'c:qhf:', ['config-file=','qfilter','help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -57,6 +60,8 @@ for opt, arg in opts:
         os.environ['TMDARC'] = arg
     elif opt in ('-q', '--qfilter'):
         qfilter = 99
+    elif opt == '-f':
+        pass
 
 
 try:
