@@ -1,3 +1,8 @@
+2001-11-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* results.ht (Links): Add testimonial from Lou Hevly, Message-Id:
+	<5.1.0.14.2.20011110233040.01dc7de0@visca.com>
+
 2001-11-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-pre.ht (Links): Mention `untrusted_set_sender = true' as
