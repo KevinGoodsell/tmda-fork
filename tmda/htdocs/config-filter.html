@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Feb 25 13:12:33 2003 -->
+<!-- Tue Mar  4 14:17:55 2003 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -641,6 +641,12 @@ headers -case 'MAKE MONEY FAST' drop
 # Accept all messages smaller than 10KB, but drop messages larger than 1MB
 size <10000 deliver
 size >1000000 exit
+
+# Throw the message away if Razor says it's SPAM
+pipe /usr/bin/razor-check drop
+
+# Save the message to a special mbox if Razor says it's SPAM
+pipe "/usr/bin/razor-check -rs=razor.server.com" deliver=~/mbox.spam
 
 </pre>
 
