@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Sep  2 01:19:40 2003 -->
+<!-- Tue Sep  2 01:20:42 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
-Title: TMDA Installation
+Title: TMDA Donations
 
 -->
 
 <head>
-<title>TMDA Installation</title>
+<title>TMDA Donations</title>
 <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
 <meta name="generator" content="HT2HTML/2.0">
 <style type="text/css">
@@ -95,7 +95,7 @@ Install
 <a href="download.html">Download</a>
 </td></tr>
 <tr><td bgcolor="#cccccc">
-<b>Installation</b>
+<a href="install.html">Installation</a>
 </td></tr>
 <tr><td bgcolor="#cccccc">
 <a href="upgrade.html">Upgrading</a>
@@ -170,7 +170,7 @@ Support
 <a href="mirrors.html">Mirrors</a>
 </td></tr>
 <tr><td bgcolor="#cccccc">
-<a href="donations.html">Donations</a>
+<b>Donations</b>
 </td></tr>
 <tr><td bgcolor="#cccccc">&nbsp;
 <tr><td bgcolor="#191970"><b><font color="#ffffff">
@@ -192,78 +192,55 @@ Author
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
 <td valign="top" width="90%" class="body"><br>
-<h3>TMDA Installation</h3>
+<h3>TMDA Donations</h3>
 
-<u>Installation from gzipped tarball</u><br><br>
-Choose an installation location which can either be an individual area 
-(such as within your home directory), or a shared area (such as /usr/local) 
-for system-wide use, and change to that directory.<br><br>
-<ol>
-<li>Unpack the TMDA distribution.<br>
-<blockquote><pre>
-
-# gunzip -c tmda-0.01.tgz | tar xvf -
-
-</pre></blockquote>
-
-<li>If this is a system-wide install, run the <strong>compileall</strong>
-script to byte-compile all the .py files.  Byte-compilation is
-optional, but will speed TMDA's start-up time.  This will be done
-automatically by Python if you have write permissions in the
-installation directory, which is why it's not necessary for individual
-installs.
-<blockquote><pre>
-
-# cd tmda-0.01
-# ./compileall
-
-</pre></blockquote>
-
-<li>TMDA is designed to run directly from its source directory.  For
-example, if installed in /usr/local/tmda-0.01/, you'd run <b>tmda-keygen</b>
-by invoking <code>/usr/local/tmda-0.01/bin/tmda-keygen</code>.  Do not
-move the bin/* programs outside the source tree, although making
-symlinks from other areas of the filesystem (such as /usr/local/bin)
-into the source tree will work fine.
-
-</ol>
-
-<u>Installation from Linux RPMs</u><br><br>
-
-If you are running Linux, you may wish to install TMDA via RPM
-instead.  A binary RPM can be built and installed directly from the source
-tarball:
-
-<blockquote><pre>
-
-# rpmbuild -tb tmda-0.01.tgz 
-# rpm -Uvh /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
-
-</pre></blockquote>
-
-If your system lacks a <b>/usr/bin/python2</b>, you may get a
-dependency warning from RPM.  If you're sure your Python meets the 
-<a href="requirements.html">requirements</a>, then you can override this
-dependency check using the <em>--nodeps</em> option to RPM:
-
-<blockquote><pre>
-
-# rpmbuild -tb --nodeps tmda-0.01.tgz
-# rpm -Uvh --nodeps /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
-
-</pre></blockquote>
-
-<u>Post-Installation</u><br><br>
-
-Report your installation (used only to satisfy my curiosity
-about what platforms are using TMDA):
-
-<blockquote><pre>
-# tmda-keygen -V | mail jason-tmdausage@mastaler.com
-</blockquote></pre>
-
-Then proceed to the <a href="config.html">Configuration</a> section.
+Like most open source projects, TMDA is developed and supported
+entirely by the unpaid and free hours of hackers and users
+from all over the globe.  It's entirely a volunteer effort.  
+TMDA is completely free, and you are not obligated to
+offer anything at all in return for it, but often users prefer to give
+back in some manner.
 <br><br>
+
+Typically, TMDA donations come in the form of valuable non-financial
+contributions such as code, documentation, and advocacy, but the
+option of a monetary donation is now available as well.
+Your financial contribution will be used only to further the project.
+It will not be used for the personal needs of any TMDA developer or user.
+<br><br>
+
+Examples of how your donation might be used:<br>
+
+<ul>
+<li>Help pay the monthly hosting charge for the tmda.net server.<br>
+<li>Pay a free-lance developer to implement an important new TMDA capability.<br>
+<li>Fund the first annual TMDA developer/user retreat and wild turkey hunt.<br>
+</ul>
+
+Examples of how your donation <strong>will not</strong> be used:<br>
+
+<ul>
+<li>Help expand Jason's single malt scotch collection.<br>
+</ul>
+
+If you feel TMDA has been useful to yourself or your organization and would
+like to make a donation, click on the button below.  Once your donation has
+been received, you will be contacted and asked whether you would like to be
+publicly acknowledged as a TMDA donor, or remain anonymous.
+<br><br>
+
+<form action="https://www.paypal.com/cgi-bin/webscr"
+method="post"> <input type="hidden" name="cmd" value="_xclick"> <input
+type="hidden" name="business" value="donations@tmda.net"> <input
+type="hidden" name="item_name" value="TMDA"> <input type="hidden"
+name="no_shipping" value="1">
+<input type="hidden" name="no_note"
+value="1"> <input type="hidden" name="currency_code"
+value="USD"> <input type="hidden" name="tax" value="0"> <input
+type="image"
+src="https://www.paypal.com/images/x-click-butcc-donate.gif"
+border="0" name="submit" alt="Make payments with PayPal - it's fast,
+free and secure!"></form>
 
 </td><!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->

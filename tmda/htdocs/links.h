@@ -6,7 +6,7 @@
 <li><a href="challengeresponse.html">Challenge/Response</a>
 <li><a href="results.html">Results &amp; Testimonials</a>
 <li><a href="inuse.html">TMDA In Use</a>
-<li><a href="press.html">Press Coverage</a><!-- -*- html -*- -->
+<li><a href="press.html">Press Coverage</a>
 <h3>Install</h3>
 <li><a href="requirements.html">Requirements</a>
 <li><a href="download.html">Download</a>
@@ -34,3 +34,4 @@
 <li><a href="support-commercial.html">Commercial Support</a>
 <li><a href="resources.html">External Resources</a>
 <li><a href="mirrors.html">Mirrors</a>
+<li><a href="donations.html">Donations</a>
