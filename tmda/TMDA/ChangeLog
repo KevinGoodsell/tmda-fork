@@ -1,3 +1,12 @@
+2003-07-18  Tim Legant  <tim@catseye.net>
+
+	* MTA.py (MTA.deliver, MTA.stop, Qmail.deliver): Added support for
+	the delivery when Defaults.DELIVERY = '_filter_'.
+
+	* Deliver.py (Deliver.get_instructions, Deliver.deliver): Added
+	support for the '_filter_' style of delivery, where the message is
+	simply piped to stdout.
+
 2003-07-11  Tim Legant  <tim@catseye.net>
 
 	* Defaults.py: New variables DB_BARE_APPEND and

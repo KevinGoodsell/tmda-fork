@@ -27,6 +27,7 @@ import os
 import signal
 import socket
 import stat
+import sys
 import time
 
 import Defaults
@@ -98,6 +99,9 @@ class Deliver:
             self.delivery_dest = self.option
             if firstchar == '~':
                 self.delivery_dest = os.path.expanduser(self.delivery_dest)
+        elif self.option == '_filter_':
+            self.delivery_type = 'filter'
+            self.delivery_dest = 'stdout'
         # Unknown delivery instruction.
         else:
             raise Errors.DeliveryError, \
@@ -138,6 +142,8 @@ class Deliver:
             else:
                 # don't wrap headers, don't escape From, don't add From_ line
                 self.__deliver_maildir(Util.msg_as_string(self.msg), dest)
+        elif type == 'filter':
+            sys.stdout.write(Util.msg_as_string(self.msg))
 
     def __deliver_program(self, message, program):
         """Deliver message to /bin/sh -c program."""

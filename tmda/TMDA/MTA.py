@@ -48,14 +48,16 @@ class MTA:
         sys.exit(self.EX_TEMPFAIL)
 
     def stop(self):
+        if self.default_delivery == '_filter_':
+            sys.exit(99)
         sys.exit(self.EX_OK)
 
     def deliver(self, msg, instruction=None):
-        if instruction is None:
+        if instruction is None or self.default_delivery == '_filter_':
             instruction = self.default_delivery
         msg = Deliver.Deliver(msg, instruction)
         msg.deliver()
-        self.stop()
+        sys.exit(0)
 
 
 class Exim(MTA):
@@ -91,13 +93,15 @@ class Qmail(MTA):
         sys.exit(self.EX_STOP)
 
     def deliver(self, msg, instruction=None):
-        if instruction is None:
+        if instruction is None or self.default_delivery == '_filter_':
             instruction = self.default_delivery
         if instruction == '_qok_':
             sys.exit(self.EX_OK)
         else:
             msg = Deliver.Deliver(msg, instruction)
             msg.deliver()
+            if instruction == '_filter_':
+                sys.exit(self.EX_OK)
             self.stop()
 
 

@@ -1,3 +1,10 @@
+2003-07-18  Tim Legant  <tim@catseye.net>
+
+	* tmda-rfilter (opt processing): Added '-p/--print' option to
+	print successfully confirmed or filtered messages to stdout rather
+	than delivering them.  This allows tmda-filter to work as a filter
+	in maildrop and procmail.
+
 2003-07-11  Tim Legant  <tim@catseye.net>
 
 	* tmda-inject (make_field): Added code to insert recipient into
