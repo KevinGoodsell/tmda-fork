@@ -176,6 +176,13 @@ import random
 import time
 
 
+# This can be removed eventually.
+warning = 'NOTE: This is early alpha software, and not yet meant for general ' + \
+          'use. If you decide to use it anyway, please send your comments to ' + \
+          'the tmda-workers@tmda.net mailing list, and not tmda-users.'
+print 'WARNING:\n'
+print Util.wraptext(warning), '\n'
+
 __version__ = Version.TMDA
 
 

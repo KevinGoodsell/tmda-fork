@@ -344,6 +344,7 @@ try:
     from TMDA import Address
     from TMDA import Pending
     from TMDA import Errors
+    from TMDA.Util import wraptext
 
     using_network = 0
     getVars = lib_getVars
@@ -362,14 +363,17 @@ except ImportError:
         TMDA = 'unknown'
     Version = VersionObject()
 
-
-
+# This can be removed eventually.
+warning = 'NOTE: This is early alpha software, and not yet meant for general ' + \
+          'use. If you decide to use it anyway, please send your comments to ' + \
+          'the tmda-workers@tmda.net mailing list, and not tmda-users.'
+print 'WARNING:\n'
+print wraptext(warning), '\n'
 
 try:
     from Tkinter import *
 except ImportError:
     ## FIXME: what to do if we don't have TMDA ?
-    from TMDA.Util import wraptext
     no_tk = 'It appears your Python is not configured with Tkinter ' + \
             'support. Visit http://python.org/topics/tkinter/trouble.html ' + \
             'for more information.'
