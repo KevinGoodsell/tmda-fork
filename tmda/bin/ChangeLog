@@ -1,3 +1,11 @@
+2001-12-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (verify_keyword_cookie): Bugfix.  Wasn't able to
+	handle `.' within a keyword.  Now after splitting the cookie on
+	`.', everything after the last dot is the mac, and everything
+	before it is the keyword.
+	Reported by Matt Armstrong.
+
 2001-12-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (envelope_sender): Fully qualify the envelope sender

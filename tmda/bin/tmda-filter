@@ -423,12 +423,9 @@ def verify_sender_cookie(sender_address,sender_cookie):
 
 def verify_keyword_cookie(keyword_cookie):
     """Verify a keyword cookie."""
-    # Save some time if the cookie is bogus.
     parts = string.split(keyword_cookie, '.')
-    if len(parts) != 2:
-        bouncegen('request')
-    keyword = parts[0]
-    mac = parts[1]
+    keyword = string.join(parts[:-1], '.')
+    mac = parts[-1:][0]
     newmac = Cookie.make_keywordmac(keyword)
     # Accept the message only if the HMAC can be verified.
     if mac == newmac:
@@ -544,7 +541,7 @@ def main():
     else:
         cookie_type = None
         cookie_value = None
-    
+
     # The list of sender e-mail addresses comes from the envelope
     # sender, the "From:" header and the "Reply-To:" header.
     sender_list = [envelope_sender]
