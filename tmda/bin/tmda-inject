@@ -378,7 +378,8 @@ def main():
                                                     bccs + apparently_tos)
         for pair in header_pairs:
             address = pair[1]
-            address_list.append(address)
+            if address:
+                address_list.append(address)
 
     # Check for the `X-TMDA' override header.
     if msgout.has_key('x-tmda'):
