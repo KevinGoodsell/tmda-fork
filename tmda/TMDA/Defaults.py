@@ -950,7 +950,12 @@ if not vars().has_key('RESPONSE_DIR') and MAX_AUTORESPONSES_PER_DAY != 0:
 #
 # 0 - do not include any portion of the sender's message.
 # 1 - include only the headers from the sender's message.
-# 2 - include the sender's entire message (recommended).
+# 2 - include the sender's entire message.
+#
+# 2 is *highly* recommended. Not only to give the sender a clear
+# indication of which message is being responded to, but also to
+# preserve the message for the sender in case she didn't save a copy
+# when sending it.
 #
 # Default is 2
 if not vars().has_key('AUTORESPONSE_INCLUDE_SENDER_COPY'):

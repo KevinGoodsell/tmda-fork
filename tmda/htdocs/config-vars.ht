@@ -443,7 +443,12 @@ included or not when sending an auto response.  Available options:
 <br><br>
 0 - do not include any portion of the sender's message.
 1 - include only the headers from the sender's message.
-2 - include the sender's entire message (recommended).
+2 - include the sender's entire message.
+<br><br>
+2 is *highly* recommended. Not only to give the sender a clear
+indication of which message is being responded to, but also to
+preserve the message for the sender in case she didn't save a copy
+when sending it.
 <br><br>
 Default is 2
 <dt><hr>
