@@ -1,0 +1,7 @@
+CRYPT_KEY_FILE = "%(Home)s/.tmda/crypt_key"
+CONFIRM_APPEND = "%(Home)s/.tmda/lists/confirmed"
+DATADIR = "%(Home)s/.tmda/"
+FILTER_INCOMING = "%(Home)s/.tmda/filters/incoming"
+FILTER_OUTGOING = "%(Home)s/.tmda/filters/outgoing"
+LOGFILE_DEBUG = "%(VPop)s/tmdadebug.log"
+LOGFILE_INCOMING = "%(VPop)s/tmdaincoming.log"

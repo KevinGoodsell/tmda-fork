@@ -1,0 +1,2 @@
+|preline -f %(Base)s/bin/tmda-filter -c %(Home)/.tmda/config -t %(Home)s/.tmda/templates/
+|%(VPopBin)s/vdelivermail '' %(Home)s

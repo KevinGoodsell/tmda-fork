@@ -1,0 +1,2 @@
+to-file %(Home)s/.tmda/lists/whitelist bare
+to-file %(Home)s/.tmda/lists/confirmed bare
