@@ -32,7 +32,7 @@ UTF8     = codecs.lookup("utf-8")[0]
 
 def Xlate(Chr):
   if ord(Chr) >= 160: return unichr(ord(Chr))
-  if Chr == "€": return u"\u20AC"
+  if Chr == "\x80": return u"\u20AC"
   if Chr == "‚": return u"\u201A"
   if Chr == "ƒ": return u"\u2061"
   if Chr == "„": return u"\u201E"
@@ -72,7 +72,7 @@ def TranslateToUTF8(CharSet, Str, Errors):
   CharSet = CS.input_charset
 
   # Find appropriate decoder
-  if CharSet in ("iso-8859-1", "us-ascii"):
+  if CharSet in ("iso-8859-1", "us-ascii", "us_ascii" ):
     Decoder = Iso8859
   else:
     try:
