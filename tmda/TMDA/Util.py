@@ -771,3 +771,90 @@ def filter_match(filename, recip, sender=None):
         print 'MATCH:', matchline
     else:
         print 'Sorry, no matching lines.'
+
+def CanRead( file, uid = None, gid = None, raiseError = 1 ):
+    try:
+        return CanMode( file, MODE_READ, uid, gid )
+    except IOError:
+        if not raiseError:
+            return 0
+        else:
+            pass
+
+def CanWrite( file, uid = None, gid = None, raiseError = 1 ):
+    try:
+        return CanMode( file, MODE_WRITE, uid, gid )
+    except IOError:
+        if not raiseError:
+            return 0
+        else:
+            pass
+
+def CanExec( file, uid = None, gid = None, raiseError = 1 ):
+    try:
+        return CanMode( file, MODE_EXEC, uid, gid )
+    except IOError:
+        if not raiseError:
+            return 0
+        else:
+            pass
+
+MODE_EXEC = 01
+MODE_WRITE = 02
+MODE_READ = 04
+
+def CanMode( file, mode = MODE_READ, uid = None, gid = None ):
+    try:
+        fstat = os.stat( file )
+    except:
+        raise IOError, "'%s' does not exist" % file
+    if uid is None:
+        uid = os.geteuid()
+    if gid is None:
+        gid = os.getegid()
+    needuid = fstat.st_uid
+    needgid = fstat.st_gid
+    filemod = fstat.st_mode & 0777
+    if filemod & mode:
+        return 1
+    elif filemod & ( mode * 010 ) and needgid == gid:
+        return 1
+    elif filemod & ( mode * 0100 ) and needuid == uid:
+        return 1
+    else:
+        return 0
+
+class DevnullOutput:
+    def write(self, msg): pass
+    def flush(self): pass
+    def __repr__(self):
+        return ""
+
+class StringOutput:
+    def __init__(self):
+        self.__content = ""
+    def write(self, msg):
+        self.__content += "%s" % msg
+    def flush(self):
+        self.__content = ""
+    def __repr__(self):
+        return self.__content
+
+class Debugable:
+    def __init__(self, outputObject = DevnullOutput() ):
+        self.DEBUGSTREAM = outputObject
+        if self.DEBUGSTREAM is DevnullOutput:
+            self.level = 0
+        else:
+            self.level = 1
+
+    def debug(self, msg, level = 1):
+        if self.level >= level:
+            print >> self.DEBUGSTREAM, msg
+
+    def set_debug(level = 1):
+        self.level = level
+
+    def set_nodebug():
+        self.level = 0
+
