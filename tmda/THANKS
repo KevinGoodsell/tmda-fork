@@ -42,6 +42,8 @@ Contributions:
 
     * Jim Geovedi -- OpenBSD port (formerly by David Lebel).
 
+    * Jesse Guardiani -- vipmap-to-authmap script.
+
     * David Guerizec -- Pending.py module, lots of tmda-ofmipd
       improvements, miscellaneous bugfixes, and tmda-gui (TKinter
       interface).

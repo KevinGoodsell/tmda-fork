@@ -1,0 +1,243 @@
+#!/bin/sh
+
+# --------------------------------------------------
+#  vipmap-to-authmap - See usage() below
+#  Version           - 0.001
+#  Author            - Jesse D. Guardiani
+#  Created           - 01/30/03
+#  Modified          - 01/30/03
+# --------------------------------------------------
+#
+#  ChangeLog
+#  ---------
+#
+#  01/30/03 - JDG
+#  --------------
+#  - First release (0.001)
+#
+# --------------------------------------------------
+
+# --
+# GLOBALS
+# --
+VERSION='0.001'
+PROGRAM_NAME='vipmap-to-authmap'
+VPOPMAIL_PATH=~vpopmail/
+VIPMAP_PATH="${VPOPMAIL_PATH}bin/vipmap"
+NUM_OF_MAPS=`$VIPMAP_PATH | wc -l`
+TMP_FILE_PATH='tmp_file'
+IPAUTHMAP_PATH="${VPOPMAIL_PATH}.tmda/ipauthmap"
+PORT=''
+BAD_EXIT_CODE='1'
+GOOD_EXIT_CODE='0'
+
+usage(){
+	echo ""
+	echo "------------------------------------------------------------------------"
+	echo "usage: $PROGRAM_NAME [-hvs] [-f ipauthmap_path] [-m vipmap_path]"
+	echo "       [-p port]"
+	echo "------------------------------------------------------------------------"
+	echo "       $PROGRAM_NAME builds a tmda-ofmipd ipauthmap file from the"
+	echo "       output of vpopmail's vipmap command."
+	echo ""
+	echo "       The ipauthmap file usually has the following format:"
+	echo ""
+	echo "       IP1:IP1:PORT"
+	echo "       IP2:IP2:PORT"
+	echo ""
+	echo "       The PORT part is optional and only included if the -p option is"
+	echo "       specified."
+	echo ""
+	echo "  -h       print this help message"
+	echo "  -v       print version"
+	echo "  -s       be silent"
+	echo "  -f ipauthmap_path"
+	echo "           specify the path to the ipauthmap file this script will"
+	echo "           overwrite. This defaults to:"
+	echo "           $IPAUTHMAP_PATH"
+	echo "  -m vipmap_path"
+	echo "           specify the path to the vipmap command. This defaults to:"
+	echo "           $VIPMAP_PATH"
+	echo "  -p port  specify the port to append onto IP pairs in ipauthmap file"
+	echo "------------------------------------------------------------------------"
+}
+	
+
+
+
+# --
+# Get and process options
+# --
+while getopts :hvsf:m:p: WHICH_OPTIONS	# read options and arguments
+do
+	case $WHICH_OPTIONS in
+		v)	echo "$PROGRAM_NAME Version: $VERSION"
+			exit "$GOOD_EXIT_CODE";;
+		s)	SILENT=1;;
+		f)	IPAUTHMAP_PATH="$OPTARG";;
+		m)	VIPMAP_PATH="$OPTARG";;
+		p)	PORT="$OPTARG";;
+		h)	usage
+			exit "$GOOD_EXIT_CODE";;
+		?)	usage
+			exit "$BAD_EXIT_CODE";;
+	esac
+done
+
+
+
+
+# --
+# Validate important paths
+# --
+
+# Make sure $VIPMAP_PATH exists and is executable
+if [ ! -x "$VIPMAP_PATH" ]; then
+        echo "Error: '$VIPMAP_PATH' not executable!" 1>&2
+        exit '1'
+fi
+
+# Make sure $IPAUTHMAP_PATH exists and is writable
+if [ ! -w "$IPAUTHMAP_PATH" ]; then
+	echo "Error: '$IPAUTHMAP_PATH' not writable!" 1>&2
+	exit '1'
+fi
+
+
+# --
+# Define functions
+# --
+
+# Basic return code error message function
+die_rcode() {
+	EXIT_CODE=$1
+	ERROR_MSG=$2
+
+	if [ $EXIT_CODE -ne '0' ]; then
+		echo "$ERROR_MSG" 1>&2
+		echo "Exiting!" 1>&2
+		exit "$BAD_EXIT_CODE"
+	fi
+}
+
+
+# --
+# Generate $PORT_LIST and the temp file if user
+# specified the -p option.
+# --
+if [ "$PORT" != '' ]; then
+	# --
+	# Less important variables (Read: DON'T TOUCH!)
+	# --
+	COUNT=0
+	PORT_LIST=""
+
+
+	# append exactly $NUM_OF_MAPS number of port entries
+	# to our $PORT_LIST variable.
+	while [ $COUNT -lt $NUM_OF_MAPS ]
+	do {
+		COUNT=`expr $COUNT + 1`
+
+		# append port number
+		PORT_LIST=`echo ${PORT_LIST}$PORT`
+
+		# append newline for all but the last iteration
+		if [ $COUNT -lt $NUM_OF_MAPS ]; then
+			PORT_LIST=`echo "$PORT_LIST\n"`
+		fi
+	}
+	done
+
+	# Check to see if the temp file already exists
+	# It shouldn't, since it's partially random.
+	if [ -f $TMP_FILE_PATH ]; then
+		echo "Hmm... '$TMP_FILE_PATH' file already exists." 1>&2
+		echo 'Please remove it manually then re-run this script.' 1>&2
+		echo 'Exiting.' 1>&2
+		exit "$BAD_EXIT_CODE"
+	fi
+
+
+	# save $PORT_LIST in temp file
+	echo -e $PORT_LIST > $TMP_FILE_PATH
+fi
+
+
+# Check to see if the ipauthmap file exists
+if [ -f $IPAUTHMAP_PATH ]; then
+	# File exists, so check if it is writable
+	if [ ! -w $IPAUTHMAP_PATH ]; then
+		echo "Error: '$IPAUTHMAP_PATH' is NOT writable." 1>&2
+		exit "$BAD_EXIT_CODE"
+	else
+		# inform user
+		if [ "$SILENT" -ne 1 ]; then
+			# File exists and is writable, so remove it.
+			echo "removing old file: '$IPAUTHMAP_PATH'"
+		fi
+
+		# remove temp file
+		rm $IPAUTHMAP_PATH
+		exit_code="$?"
+
+		die_rcode $exit_code "\nError: attempt to remove '$IPAUTHMAP_PATH' failed!"
+	fi
+fi
+
+
+# **********************************************************
+# What a statement, eh?
+# **********************************************************
+# Basically, this is what happens:
+# --------------------------------
+#   1.) execute vipmap and strip out the IP address column.
+#   2.) Do 1.) again.
+#   3.) pipe both of these outputs through 'sort' so like
+#       IP addresses appear consecutively.
+#   4.) pipe output from 3.) through paste, which takes
+#       consecutive IP addresses and "pastes" them adjacent
+#       each other on the same line, separated by a colon,
+#       like this:
+# 
+#          IP1:IP2
+#
+#   5.) At the same time, take one line from the temp file
+#       and "paste" it onto the end of each IP pair, to
+#       make a string like this:
+#
+#          IP1:IP2:PORT
+# 
+#   6.) Write all pasted statements to the ipauthmap file.
+# **********************************************************
+
+if [ "$PORT" != '' ]; then
+	{ $VIPMAP_PATH | cut -f "1" -d " ";$VIPMAP_PATH | cut -f "1" -d " ";} \
+       		| sort | paste -d ":" - - $TMP_FILE_PATH > $IPAUTHMAP_PATH
+	exit_code="$?"
+else
+	{ $VIPMAP_PATH | cut -f "1" -d " ";$VIPMAP_PATH | cut -f "1" -d " ";} \
+       		| sort | paste -d ":" - - > $IPAUTHMAP_PATH
+	exit_code="$?"
+fi
+
+# die on bad exit status
+die_rcode $exit_code "\nError: create '$IPAUTHMAP_PATH' failed!"
+
+# inform user
+if [ "$SILENT" -ne 1 ]; then
+	echo 'New ipauthmap file installed!'
+fi
+
+# If user specified -p option
+if [ "$PORT" != '' ]; then
+	# Be a good little script and clean up your junk
+	rm $TMP_FILE_PATH
+	exit_code="$?"
+
+	die_rcode $exit_code "\nError: attempt to remove '$TMP_FILE_PATH' failed!"
+fi
+
+# All is well that ends well
+exit "$GOOD_EXIT_CODE"
+
