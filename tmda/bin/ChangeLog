@@ -1,3 +1,7 @@
+2002-07-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-ofmipd (quote_rcpts): More security improvements.
+
 2002-07-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-ofmipd (authfile2dict): Strip whitespace before processing

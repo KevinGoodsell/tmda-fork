@@ -229,9 +229,13 @@ def run_authprog(username, password):
 
 
 def quote_rcpts(rcpttos):
+    """Each address should be properly quoted to prevent malicious
+    users from executing code by passing args to tmda-inject."""
     rcpttos_quoted = []
     for rcptto in rcpttos:
-        rcpttos_quoted.append("'%s'" % rcptto)
+        rcpttos_quoted.append("'%s'" %
+                              rcptto.replace
+                              ("\\", "\\\\").replace("'", "'\\\\\\''"))
     return rcpttos_quoted
 
 
