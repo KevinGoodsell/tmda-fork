@@ -23,10 +23,10 @@
 
 
 from cStringIO import StringIO
-import email
-import email.Utils
 from email.Generator import Generator
 import cPickle
+import email
+import email.Utils
 import fileinput
 import fnmatch
 import os
