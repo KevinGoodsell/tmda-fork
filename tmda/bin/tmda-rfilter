@@ -241,22 +241,34 @@ subject = message_headers.getheader('subject', 'None')
 # The directory of pending messages.
 pendingdir = os.path.join(Defaults.DATADIR, 'pending')
 
-# Collect the message's Precedence: header.
-precedence = message_headers.getheader('precedence', None)
-# If its value is "bulk", "junk", or "list" we should not generate any
-# auto-replies.
 auto_reply = 1
-if precedence and string.lower(precedence) in ('bulk','junk','list'):
+# - Don't respond if:
+#   - SENDER is <>
+if envelope_sender == '<>':
     auto_reply = 0
-# Don't generate an auto-reply if the message contains any of the
-# List-XXX: mailing list headers defined in rfc2369, nor
-# `Mailing-List'.
-list_headers = ['list-help', 'list-subscribe', 'list-unsubscribe',
-                'list-post', 'list-owner', 'list-archive', 'mailing-list']
+#   - SENDER is <#@[]>
+if envelope_sender == '<#@[]>':
+    auto_reply = 0
+#   - SENDER starts with "mailer-daemon"
+if envelope_sender.lower().startswith('mailer-daemon'):
+    auto_reply = 0
+#   - header "List-ID:" (as per RFC 2919)
+#   - header "Mailing-List:"
+#   - header "X-Mailing-List:"
+#   - header "X-ML-Name:"
+#   - header "List-(Help|Unsubscribe|Subscribe|Post|Owner|Archive):"
+#     (as per RFC 2369)
+list_headers = ['list-id', 'list-help', 'list-subscribe', 'list-unsubscribe',
+                'list-post', 'list-owner', 'list-archive', 'mailing-list',
+                'x-mailing-list', 'x-ml-name']
 for hdr in list_headers:
     if message_headers.has_key(hdr):
         auto_reply = 0
         break
+#   - header "Precedence:" value junk, bulk, or list
+precedence = message_headers.getheader('precedence', None)
+if precedence and precedence.lower() in ('bulk', 'junk', 'list'):
+    auto_reply = 0
 
 
 ###########
@@ -277,6 +289,8 @@ def logit(action_msg, timesecs=None):
         Subject = subject
         Action = action_msg
         actionstr = 'Actn: ' + Action
+        if not globals().get('auto_reply'):
+            actionstr = '%s (no reply)' % actionstr
         sizestr = '(' + message_size + ')'
         wsbuf = 78 - len(actionstr) - len(sizestr)
         # Write the log entry and then close the log.

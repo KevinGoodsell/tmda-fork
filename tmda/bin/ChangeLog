@@ -1,3 +1,10 @@
+2002-05-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter: Add more checks for when auto_reply should be 0.
+
+	(bouncegen): Add '(no reply)' to the Actn: line of the
+	LOGFILE_INCOMING entry to indicate that no auto-response was sent.
+	
 2002-05-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-keygen (main): Print only the unquoted key.
