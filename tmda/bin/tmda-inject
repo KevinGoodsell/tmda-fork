@@ -155,7 +155,8 @@ def main():
     
     # If running through qfilter, get recipient list from QMAILRCPTS.
     if os.environ.has_key('QMAILRCPTS'):
-        address_list = string.split(os.environ['QMAILRCPTS'],'\n')[:-1]
+        address_list = string.split(string.lower
+                                    (os.environ['QMAILRCPTS']),'\n')[:-1]
     else:
         # Downcase and then combine To:, Cc:, and Bcc: addresses into one list.
        address_list = []

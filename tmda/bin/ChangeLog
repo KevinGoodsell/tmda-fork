@@ -1,5 +1,8 @@
 2001-06-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-inject (main): Fix to make 'QMAILRCPTS' addresses match
+	case insensitively.
+
 	* tmda-dated-address (main): Bugfix. When you provide extra
 	arguments to tmda-sender-address (e.g. -c /other/.tmdarc), the
 	wrong argument is read.
