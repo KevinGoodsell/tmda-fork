@@ -17,9 +17,6 @@ Things left to do:
                           include the appropriate language identifiers in the
                           viewer
 
-    * Remove JS -- Javascript code should not be in PendList.py.  It should be
-                   in the template pending.ht.
-
     * SpamCop -- an option to delete/blacklist/forward to SpamCop
 
     * Tutorial -- someone should write one
