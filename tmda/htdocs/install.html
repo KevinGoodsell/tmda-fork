@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Feb  6 10:40:30 2004 -->
+<!-- Tue Feb 10 12:08:05 2004 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -210,16 +210,14 @@ Contact
 <td valign="top" width="90%" class="body"><br>
 <h3>TMDA Installation</h3>
 
-<u>Installation from gzipped tarball</u><br><br>
+<u>Installation from gzipped source tarball</u><br><br>
 Choose an installation location which can either be an individual area 
 (such as within your home directory), or a shared area (such as /usr/local) 
-for system-wide use, and change to that directory.<br><br>
+for system-wide use, and change to that directory.<br>
 <ol>
 <li>Unpack the TMDA distribution.<br>
 <blockquote><pre>
-
-# gunzip -c tmda-0.01.tgz | tar xvf -
-
+# gunzip -c tmda-1.1.0.tgz | tar xvf -
 </pre></blockquote>
 
 <li>If this is a system-wide install, run the <strong>compileall</strong>
@@ -229,45 +227,36 @@ automatically by Python if you have write permissions in the
 installation directory, which is why it's not necessary for individual
 installs.
 <blockquote><pre>
-
-# cd tmda-0.01
+# cd tmda-1.1.0
 # ./compileall
-
 </pre></blockquote>
 
 <li>TMDA is designed to run directly from its source directory.  For
-example, if installed in /usr/local/tmda-0.01/, you'd run <b>tmda-keygen</b>
-by invoking <code>/usr/local/tmda-0.01/bin/tmda-keygen</code>.  Do not
+example, if installed in /usr/local/tmda-1.1.0/, you'd run <b>tmda-keygen</b>
+by invoking <code>/usr/local/tmda-1.1.0/bin/tmda-keygen</code>.  Do not
 move the bin/* programs outside the source tree, although making
 symlinks from other areas of the filesystem (such as /usr/local/bin)
 into the source tree will work fine.
 
 </ol>
 
-<u>Installation from Linux RPMs</u><br><br>
+<u><a name="RPM">Installation from Linux RPM</a></u><br><br>
 
-If you are running Linux, you may wish to install TMDA via RPM
-instead.  A binary RPM can be built and installed directly from the source
-tarball:
-
-<blockquote><pre>
-
-# rpmbuild -tb tmda-0.01.tgz 
-# rpm -Uvh /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
-
-</pre></blockquote>
-
-If your system lacks a <b>/usr/bin/python2</b>, you may get a
-dependency warning from RPM.  If you're sure your Python meets the 
-<a href="requirements.html">requirements</a>, then you can override this
-dependency check using the <em>--nodeps</em> option to RPM:
+If you are running an RPM-compatible distro of Linux, you may wish to
+install TMDA via RPM instead.  A binary RPM can be built and installed
+directly from the source tarball:
 
 <blockquote><pre>
-
-# rpmbuild -tb --nodeps tmda-0.01.tgz
-# rpm -Uvh --nodeps /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
-
+# rpmbuild -tb tmda-1.1.0.tgz 
+# rpm -Uvh /usr/src/redhat/RPMS/noarch/tmda-1.1.0-1.noarch.rpm
 </pre></blockquote>
+
+If your system lacks a <b>/usr/bin/python2.3</b> binary, you will get
+a dependency error from rpmbuild.  The solution is to install a 
+<a href="http://www.python.org/2.3.3/rpms.html" TARGET="Resource Window">
+Python 2.3.x RRM from python.org</a>.  As explained on their page, this will
+not conflict with or overwrite your system's existing Python in any way.
+<br><br>
 
 <u>Post-Installation</u><br><br>
 
