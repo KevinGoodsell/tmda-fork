@@ -35,31 +35,33 @@ Title: Pending E-mail
       <tr valign="bottom">
         <td height="24"><table border="0" cellspacing="0" cellpadding="0">
             <tr>
-              <td><img src="%(ThemeDir)s/buttons/options_r1_c1.gif" width="19" 
+              <td><img src="%(ThemeDir)s/buttons/options_r1_c1.gif" width="20" 
                 height="15" alt="Leave"></td>
-              <td><img src="%(ThemeDir)s/buttons/options_r1_c2.gif" width="19" 
+              <td><img src="%(ThemeDir)s/buttons/options_r1_c2.gif" width="20" 
                 height="15" alt="Release"></td>
-              <td><img src="%(ThemeDir)s/buttons/options_r1_c3.gif" width="19" 
+              <td><img src="%(ThemeDir)s/buttons/options_r1_c3.gif" width="20" 
                 height="15" alt="Delete"></td>
               <!-- var: WhIcon -->
-                <td><img src="%(ThemeDir)s/buttons/options_r1_c4.gif" width="19" 
+                <td><img src="%(ThemeDir)s/buttons/options_r1_c4.gif" width="20" 
                   height="15" alt="Whitelist"></td>
               <!-- /var -->
               <!-- var: BlIcon -->
                 <td><img src="%(ThemeDir)s/buttons/options_r1_c5.gif" width="20" 
                   height="15" alt="Blacklist"></td>
               <!-- /var -->
-              <td>&nbsp;</td>
             </tr>
           </table></td>
+        <td>&nbsp;</td>
         <th width="150">Sender</th>
+        <td>&nbsp;</td>
         <th width="250">Subject</th>
+        <td>&nbsp;</td>
         <th width="80">Date</th>
         <th width="50">Size</th>
       </tr>
 <!-- var: Row -->
       <tr>
-        <td colspan="5" bgcolor="#7A7AB6" height="1"></td>
+        <td colspan="8" bgcolor="#7A7AB6" height="1"></td>
       </tr>
       <tr class="%(MsgClass)s">
         <td><table border="0" cellspacing="0" cellpadding="0">
@@ -75,25 +77,30 @@ Title: Pending E-mail
               <!-- var: BlRadio -->
                 <td><input type="radio" name="%(RadioName)s" value="black"></td>
               <!-- /var -->
-              <td>&nbsp;</td>
             </tr>
           </table></td>
+        <td>&nbsp;</td>
         <td>%(Sender)s</td>
+        <td>&nbsp;</td>
         <td>
           <a href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s">%(Subject)s</a>
         </td>
+        <td>&nbsp;</td>
         <td nowrap>%(Date)s</td>
         <td>%(Size)s</td>
       </tr>
 <!-- /var -->
 <!-- var: InProcessRow -->
       <tr>
-        <td colspan="5" bgcolor="#7A7AB6" height="1"></td>
+        <td colspan="8" bgcolor="#7A7AB6" height="1"></td>
       </tr>
       <tr class="InProcess">
         <td>&nbsp;</td>
+        <td>&nbsp;</td>
         <td>%(Sender)s</td>
+        <td>&nbsp;</td>
         <td>%(Subject)s</td>
+        <td>&nbsp;</td>
         <td nowrap>%(Date)s</td>
         <td>%(Size)s</td>
       </tr>
