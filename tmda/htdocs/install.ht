@@ -57,8 +57,8 @@ dependency check using the <em>--nodeps</em> option to RPM:
 
 <blockquote><pre>
 
-# rpm --nodeps -tb tmda-0.01.tgz 
-# rpm --nodeps -Uvh /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
+# rpm -tb --nodeps tmda-0.01.tgz
+# rpm -Uvh --nodeps /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
 
 </pre></blockquote>
 

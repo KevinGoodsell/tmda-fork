@@ -3,6 +3,9 @@
 	* install.ht (Links): Clarify that TMDA is meant to be run
 	directly from its source tree.
 
+	(tarball): --nodeps has to come after, not before the other
+	options on Mandrake.
+
 2002-05-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* resources.ht: Link to Andrew Wilson's Mail::Address::Tagged perl
