@@ -140,7 +140,7 @@ if filter_match:
     sys.exit()
     
 # We use this MTA instance to control the fate of the message.
-mta = MTA.init()
+mta = MTA.init(Defaults.MAIL_TRANSFER_AGENT, Defaults.DELIVERY)
 
 # Read sys.stdin into a temporary variable for later access.
 stdin = StringIO(sys.stdin.read())

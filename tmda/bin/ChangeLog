@@ -1,3 +1,15 @@
+2003-01-20  Tim Legant  <tim@catseye.net>
+
+	* tmda-ofmipd (class VDomainProxy): Added new proxy class to
+	support the two virtual domain add-ons for qmail (VPopMail and
+	VMailMgr).
+
+	(main): If a --vhome-script was specified, create a VDomainProxy
+	instead of a TMDAProxy.
+
+	* tmda-rfilter: Changed call to MTA.init() to pass the mail
+	transfer agent and the default delivery action as parameters.
+
 2002-12-09  Tim Legant  <tim@catseye.net>
 
 	* tmda-rfilter (bouncegen): Test Defaults.CGI_ACTIVE before

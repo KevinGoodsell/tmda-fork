@@ -107,11 +107,37 @@ OPTIONS:
         configuration file in.  This might be useful if you wish to
         maintain TMDA files outside the user's home directory.
         
-        'username/config' will be appended to form the path.  e.g,
+        'username/config' will be appended to form the path; e.g,
         `-c /var/tmda' will have tmda-ofmipd search for
         `/var/tmda/bobby/config'.  If this option is not used,
-        `~user/.tmda/config' will be assumed.
-"""
+        `~user/.tmda/config' will be assumed, but see the
+        --vhome-script option for qmail virtual domain users.
+
+    -S <script>
+    --vhome-script <script>
+        Full pathname of script that prints a virtual email user's home
+        directory on standard output.  tmda-ofmipd will read that path and use
+        it to build the path to the user's config file instead of
+        '~user/.tmda'.  The script must take two arguments, the user name and
+        the domain, on its command line.
+
+        This option is for use only with the VPopMail and VMailMgr add-ons to
+        qmail.  See the contrib/ directory for sample scripts.
+
+    -v <path_to_qmails_virtualdomains_file>
+    --vdomains-path <path_to_qmails_virtualdomains_file>
+        Full pathname to qmail's virtualdomains file.  The default for most
+        installations is /var/qmail/control/virtualdomains.  This is also
+        tmda-ofmipd's default, so you normally won't need to set this
+        parameter.
+
+        If you have installed qmail somewhere other than /var/qmail, you will
+        need to set this so tmda-ofmipd can find the virtualdomains file.
+
+        NOTE: This is only used when you have a qmail installation with virtual
+        domains using the VPopMail or VMailMgr add-ons.  It implies that you
+        will also set the --vhome-script parameter above.  If you set this
+        without setting --vhome-script, tmda-ofmipd will issue a warning."""
 
 import getopt
 import os
@@ -155,6 +181,8 @@ defaultauthports = { 'imap':  143,
                      #                     'pop3s': 995,
                      }
 connections = 20
+vhomescript = None
+vdomainspath = '/var/qmail/control/virtualdomains'
 
 if os.getuid() == 0:
     running_as_root = 1
@@ -200,7 +228,7 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                             'p:u:R:A:a:c:C:dVhfb', ['proxyport=',
+                         'p:u:R:A:a:c:C:dVhfbS:v:', ['proxyport=',
                                                      'username=',
                                                      'authfile=',
                                                      'remoteauth=',
@@ -211,7 +239,9 @@ try:
                                                      'version',
                                                      'help',
                                                      'foreground',
-                                                     'background'])
+                                                     'background',
+                                                     'vhome-script=',
+                                                     'vdomains-path='])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -272,7 +302,20 @@ for opt, arg in opts:
         configdir = arg
     elif opt in ('-C', '--connections'):
         connections = arg
-        
+    elif opt in ('-S', '--vhome-script'):
+        vhomescript = arg
+    elif opt in ('-v', '--vdomains-path'):
+        vdomainspath = arg
+
+if vhomescript and configdir:
+    msg = "WARNING: --vhome-script and --config-dir are incompatible." + \
+          "         Ignoring --config-dir."
+    configdir = None
+    warning(msg, exit=0)
+if vdomainspath and not vhomescript:
+    msg = "WARNING: --vdomains-path given but --vhomescript not given." + \
+          "         Ignoring --vdomainspath."
+
 
 import asynchat
 import asyncore
@@ -886,6 +929,9 @@ class SMTPServer(asyncore.dispatcher):
     def handle_accept(self):
         conn, addr = self.accept()
         print >> DEBUGSTREAM, 'Incoming connection from %s' % repr(addr)
+        locaddr = conn.getsockname()
+        self._localip = locaddr[0]
+        print >> DEBUGSTREAM, 'Incoming connection to %s' % repr(locaddr)
         channel = SMTPChannel(self, conn, addr)
 
     # API for "doing something useful with the message"
@@ -972,6 +1018,77 @@ class PureProxy(SMTPServer):
         return refused
 
 
+class VDomainProxy(PureProxy):
+    """This proxy is used only for virtual domain support in a qmail +
+    (VPopMail or VMailMgr) environment.  It needs to behave differently from
+    the standard TMDA proxy in that authenticated users are not system
+    (/etc/passwd) users."""
+    def __init__(self, localaddr, remoteaddr):
+        from TMDA.MTA import Qmail
+        self._mta = Qmail('_qok_')
+        PureProxy.__init__(self, localaddr, remoteaddr)
+
+    def process_message(self, peer, mailfrom, rcpttos, data, auth_username):
+        # Set the TCPLOCALIP environment variable to support VPopMail's reverse
+        # IP domain mapping.
+        os.environ['TCPLOCALIP'] = self._localip
+        # Set up partial tmda-inject command line.
+        execdir = os.path.dirname(os.path.abspath(program))
+        inject_path = os.path.join(execdir, 'tmda-inject')
+        userinfo = auth_username.split('@', 1)
+        user = userinfo[0]
+        if len(userinfo) > 1:
+            domain = userinfo[1]
+        # If running as uid 0, fork in preparation for running the tmda-inject
+        # process and change UID and GID to the virtual domain user.  This is
+        # for VMailMgr, where each virtual domain is a system (/etc/passwd)
+        # user.
+        if running_as_root:
+            pid = os.fork()
+            if pid != 0:
+                rpid, status = os.wait()
+                # Did tmda-inject succeed?
+                if status != 0:
+                    raise IOError, 'tmda-inject failed!'
+                return
+            else:
+                # The 'prepend' is the system user in charge of this virtual
+                # domain.
+                prepend = self._mta.getvdomainprepend(auth_username,
+                                                      vdomainspath)
+                if not prepend:
+                    err = 'Error: "%s" not a virtual domain' % (domain,)
+                    print >> DEBUGSTREAM, err
+                    os._exit(-1)
+                os.seteuid(0)
+                os.setgid(Util.getgid(prepend))
+                os.setgroups(Util.getgrouplist(prepend))
+                os.setuid(Util.getuid(prepend))
+                # For VMailMgr's utilities.
+                os.environ['HOME'] = Util.gethomedir(prepend)
+        # From here on, we're either in the child (pid == 0) or we're not
+        # running as root, so we haven't forked.
+        vhomedir = Util.getvuserhomedir(user, domain, vhomescript)
+        print >> DEBUGSTREAM, 'vuser homedir: "%s"' % (vhomedir,)
+        # This is so "~" will work in the .tmda/* files.
+        os.environ['HOME'] = vhomedir
+        # Create the final tmda-inject command line.
+        tmda_configfile = os.path.join(vhomedir, '.tmda', 'config')
+        inject_cmd = '%s --config-file %s' % (inject_path, tmda_configfile)
+
+        try:
+            Util.pipecmd('%s %s' %
+                         (inject_cmd, ' '.join
+                          (quote_rcpts(rcpttos))), data)
+        except Exception, err:
+            print >> DEBUGSTREAM, 'Error:', err
+            if running_as_root:
+                os._exit(-1)
+        if running_as_root:
+            # Should never get here!
+            os._exit(0)
+
+
 class TMDAProxy(PureProxy):
     """Using this server for outgoing smtpd, the authenticated user
     will have his mail tagged using his TMDA config file."""
@@ -1025,8 +1142,12 @@ def main():
               authfile + ' must be chmod 400 or 600!'
     # try binding to the specified host:port
     host, port = proxyport.split(':', 1)
-    proxy = TMDAProxy((host, int(port)),
-                      ('localhost', 25))
+    if vhomescript:
+        proxy = VDomainProxy((host, int(port)),
+                             ('localhost', 25))
+    else:
+        proxy = TMDAProxy((host, int(port)),
+                          ('localhost', 25))
     if running_as_root:
         pw_uid = Util.getuid(username)
         # check ownership of authfile
