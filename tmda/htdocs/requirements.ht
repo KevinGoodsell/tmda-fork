@@ -13,14 +13,14 @@ Python pre-installed.  To check whether it is and what version you
 have installed, try typing <strong>python</strong> and/or
 <strong>python2</strong> at your shell's command line:
 
-<blockquote>
-<pre>
+<blockquote><pre>
+
 % python
 Python 2.2 (#1, Dec 22 2001, 04:19:53) [C] on irix646
 Type "help", "copyright", "credits" or "license" for more information.
 >>> ^D
-</pre>
-</blockquote>
+
+</pre></blockquote>
 
 <li>An SMTP server (a.k.a. mail transport agent or MTA) for mail reception.
 Currently supported MTAs include 
