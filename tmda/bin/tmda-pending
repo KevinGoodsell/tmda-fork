@@ -300,7 +300,7 @@ def main():
     global younger
     
 
-    os.chdir(Defaults.DATADIR + 'pending')
+    os.chdir(os.path.join(Defaults.DATADIR, 'pending'))
 
     msgs = args
     if not msgs:
