@@ -64,6 +64,8 @@ Contributions:
 
     * Reuben Sumner -- original HMAC module.
 
+    * Simon Waldman -- documentation (Fetchmail HOWTO).
+
     * Mate Wierdl -- tmda4ezmlm script.
 
     * Lloyd Zusman -- "whitelist" and "blacklist" commands for
