@@ -81,14 +81,37 @@ def usage(code, msg=''):
     if msg:
         print msg
     sys.exit(code)
-    
+
+# If -S / --vhome-script flag is given on command line, use it to determine the
+# virtual user's home directory and set $HOME to that, so that '~' refers to
+# the virtual user's home directory and not the domain directory.
+def setvuserhomedir(vhomescript):
+    """Set $HOME to the recipient's (virtual user) home directory.""" 
+    host = os.environ['HOST']
+    parts = os.environ['EXT'].split('-confirm-', 1)[0].split('-')
+    cmd = vhomescript + ' "%s"' + ' "%s"' % (host,)
+    username = ''
+    for part in parts:
+        username += part
+        fpin = os.popen(cmd % (username,))
+        vuserhomedir = fpin.read().strip()
+        if fpin.close() is None:
+            os.environ['HOME'] = vuserhomedir
+            os.chdir(vuserhomedir)
+            break
+        else:
+            username += '-'
+    else:  # didn't find username
+        sys.exit(0)
+
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:dt:I:M:Vh', ['config-file=',
+                             'c:dt:I:M:S:Vh', ['config-file=',
                                                'discard',
                                                'template-dir=',
                                                'filter-incoming-file=',
                                                'filter-match=',
+                                               'vhome-script=',
                                                'version',
                                                'help'])
 except getopt.error, msg:
@@ -113,6 +136,9 @@ for opt, arg in opts:
 	discard = 1
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
+    elif opt in ('-S', '--vhome-script'):
+        if os.environ.has_key('EXT') and os.environ.has_key('HOST'):
+            setvuserhomedir(arg)
 
 
 from TMDA import Defaults
@@ -233,7 +259,7 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
                 vdomain_match = 1
             # .domain:prepend (wildcard)
             elif not vdomain.split('.', 1)[0]:
-                if odomain.lower().find(vdomain) != 1:
+                if odomain.lower().find(vdomain) != -1:
                     vdomain_match = 1
             # user@domain:prepend
             else:
