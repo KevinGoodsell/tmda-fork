@@ -694,12 +694,12 @@ if not vars().has_key('PENDING_RELEASE_APPEND'):
 #
 # Examples:
 #
-# PURGED_HEADERS = ["x-mailer"]
-# PURGED_HEADERS = ["x-mailer", "user-agent"]
+# PURGED_HEADERS = ["bcc", "resent-bcc", "x-mailer"]
+# PURGED_HEADERS = ["bcc", "resent-bcc", "x-mailer", "user-agent"]
 #
-# No default
+# Default is "Bcc:" and "Resent-Bcc"
 if not vars().has_key('PURGED_HEADERS'):
-    PURGED_HEADERS = None
+    PURGED_HEADERS = ["bcc", "resent-bcc"]
 
 # RECIPIENT_HEADER
 # A string containing the name of a header (case-insensitive) whose

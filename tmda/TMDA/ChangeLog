@@ -1,5 +1,8 @@
 2002-05-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (PURGED_HEADERS): Add "Bcc:" and "Resent-Bcc" to the
+	default list.
+
 	* SMTP.py: New module.
 
 	* Util.py (sendmail): Send mail either via SMTP or using

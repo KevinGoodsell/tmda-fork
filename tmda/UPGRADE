@@ -10,6 +10,10 @@ If you are upgrading from a release of TMDA < 0.56:
 
 * tmdarc variable SENDMAIL has been renamed SENDMAIL_PROGRAM.
 
+* tmdarc variable PURGED_HEADERS now lists "Bcc:" and "Resent-Bcc" by
+  default.  If you define this variable in your tmdarc, be sure to add
+  these two headers.
+
 * CRYPT_KEY should be removed from ~/.tmdarc or ~/.tmda/config.  Your
   secret key is now read from CRYPT_KEY_FILE, which defaults to
   ~/.tmda/crypt_key.  To make this conversion, move your existing
