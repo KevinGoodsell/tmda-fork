@@ -3,9 +3,6 @@
 """Shared TMDA errors and messages."""
 
 
-import sys
-
-
 # exception classes
 class TMDAError(Exception):
     """Base class for all TMDA exceptions."""
