@@ -33,6 +33,10 @@ If you are upgrading from a release of TMDA < 0.56:
 
 * tmda-keygen now outputs an unquoted key instead of a CRYPT_KEY line.
 
+* Template variables dated_cookie_address and sender_cookie_address
+  were replaced with dated_recipient_address and
+  sender_recipient_address, which are based on the RECIPIENT address.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.55:

@@ -532,15 +532,11 @@ def bouncegen(mode, text=None):
         dated_timeout = Util.format_timeout(Defaults.TIMEOUT)
         dated_expire_date = time.asctime(time.gmtime
                                          (now + Util.seconds(Defaults.TIMEOUT)))
-        dated_cookie_address = Cookie.make_dated_address(Defaults.USERNAME +
-                                                         '@' +
-                                                         Defaults.HOSTNAME)
+        dated_recipient_address = Cookie.make_dated_address(recipient_address)
     # Optional 'sender' address variables.
     if Defaults.SENDER_TEMPLATE_VARS:
-        sender_cookie_address = Cookie.make_sender_address(Defaults.USERNAME +
-                                                           '@' +
-                                                           Defaults.HOSTNAME,
-                                                           envelope_sender)
+        sender_recipient_address = Cookie.make_sender_address(recipient_address,
+                                                              envelope_sender)
     if mode == 'accept':                # confirmation acceptance notices
         templatefile = 'confirm_accept.txt'
         confirm_accept_text = Util.wraptext(text)

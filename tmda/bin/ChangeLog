@@ -1,3 +1,9 @@
+2002-05-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (bouncegen): dated_cookie_address and
+	sender_cookie_address are replaced with dated_recipient_address
+	and sender_recipient_address
+
 2002-05-22  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-inject (inject_message): Iterate over
