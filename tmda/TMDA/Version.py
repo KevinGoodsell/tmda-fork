@@ -26,7 +26,7 @@ import platform
 
 
 # TMDA version
-TMDA = "1.1.2+"
+TMDA = "1.1.3"
 
 # TMDA version codename
 CODENAME = "Dailuaine"
