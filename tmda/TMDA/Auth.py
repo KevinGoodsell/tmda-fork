@@ -208,6 +208,42 @@ def init_auth_method():
 
 
 # Utility functions
+def pipefd3(command, *strings):
+    """Executes a command, feeding strings into fd#3 and returns the errorcode"""
+    fd3read, fd3write = os.pipe()
+    # Attach the pipe to FD 3 if it os not already.
+    if fd3read != 3:
+        try:
+            os.close(3)
+            os.dup2(fd3read,3)
+        except Exception, err:
+            print >> DEBUGSTREAM, "Pipefd3: %s (%s)" % (err.__class__, err)
+            raise err
+    pid = os.fork()
+    if pid == 0:
+        # Child
+        # Close other fd's
+        os.close(fd3write)
+        try:
+            # Exec the program
+            os.execvp(command.split()[0], command.split())
+        except Exception, err:
+            print >> DEBUGSTREAM, "Pipefd3: Execvp %s (%s)" % (err.__class__, err)
+            os._exit(200)
+    # Parent
+    # Open pipe into FD3
+    os.close(fd3read)
+    fd3 = os.fdopen(fd3write, 'w', -1)
+    # Feed in the input
+    for s in strings:
+        fd3.write(s)
+    fd3.flush()
+    fd3.close()
+    # Wait for command to exit
+    pid, status = os.waitpid(pid, 0)
+    # Return the errorcode
+    return status
+
 def pipecmd(command, *strings):
     popen2._cleanup()
     cmd = popen2.Popen3(command, 1, bufsize=-1)
@@ -236,10 +272,9 @@ def run_authprog(username, password):
     # Do we have the optional CheckPassord module available?  If so, let's use
     # that.
     try:
-        import CheckPassword
-        prog, true = authprog.split()
-        authResult = CheckPassword.CheckPassword(username, password, prog, true)
-    except ImportError:
+        authResult = not pipefd3(authprog, '%s\0%s\0' % (username, password))
+    except Exception, err:
+        print >> DEBUGSTREAM, "pipefd3 failed (%s: %s).\nFalling back to /bin/sh redirection." % (err.__class__, err)
         cmd = "/bin/sh -c 'exec %s 3<&0'" % authprog
         authResult = not pipecmd(cmd, '%s\0%s\0' % (username, password))
     print >> DEBUGSTREAM, "'%s' returned %d" % (authprog, authResult)
