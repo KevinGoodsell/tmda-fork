@@ -125,6 +125,13 @@ def getfileuid(path):
     return statinfo[stat.ST_UID]
 
 
+def issticky(path):
+    """Return True if the sticky bit is set on path.  Generally only
+    appropriate for directories."""
+    statinfo = os.stat(path)
+    return statinfo[stat.ST_MODE] & stat.S_ISVTX
+
+
 def getvdomainprepend(address, vdomainsfile):
     ret_prepend = ''
     if os.path.exists(vdomainsfile):
