@@ -408,7 +408,7 @@ def main():
             pass                        
         else:
             # Without `X-TMDA', we need to parse the outgoing filter file.
-            outfilter = FilterParser.FilterParser()
+            outfilter = FilterParser.FilterParser(Defaults.DB_CONNECTION)
             outfilter.read(Defaults.FILTER_OUTGOING)
             (actions, matching_line) = outfilter.firstmatch(address,
                                                             [from_address])

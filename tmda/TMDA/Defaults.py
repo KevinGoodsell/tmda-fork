@@ -1088,6 +1088,20 @@ if MYSQL_ENABLED and not vars().has_key('MYSQL_USER'):
 if MYSQL_ENABLED and not vars().has_key('MYSQL_PASSWORD'):
     MYSQL_PASSWORD = ""
 
+# DB_CONNECTION
+# Python DB API Connection object. This is specific to the database
+# and should be created in the ~/.tmda/config file.  This is typically
+# created by importing the appropriate module and calling the connect()
+# function.
+#
+# Example:
+# import MySQLdb
+# DB_CONNECTION = MySQLdb.connect("...")
+#
+# Default is None
+if not vars().has_key('DB_CONNECTION'):
+    DB_CONNECTION = None
+
 # PENDING_DIR
 # Full path to the directory containing messages pending confirmation
 # (aka, the "pending queue").  If this directory doesn't exist, it

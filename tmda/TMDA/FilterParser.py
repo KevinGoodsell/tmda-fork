@@ -37,6 +37,7 @@ import sys
 import time
 import types
 
+import Defaults
 import Util
 
 
@@ -221,7 +222,7 @@ class FilterParser:
     bol_comment = re.compile(r'\s*#')
 
     most_sources = re.compile(r"""
-    ( (?:to|from)-(?:file|cdb|dbm|ezmlm|mailman|mysql)
+    ( (?:to|from)-(?:file|cdb|dbm|ezmlm|mailman|mysql|sql)
     | size | pipe
     | (?:to|from) (?!-) )
     """, re.VERBOSE | re.IGNORECASE)
@@ -232,14 +233,14 @@ class FilterParser:
     """, re.VERBOSE | re.IGNORECASE)
 
     matches = re.compile(r"""
-    (?: ([\'\"]) ( (?: \\\1 | [^\1] )+ ) \1
+    (?: ([\'\"]) ( (?: \\\1 | . )+? ) \1
     | ( \S+ ) )
     """, re.VERBOSE)
         
     tag_action = re.compile(r"""
     ( [A-Za-z][-\w]+ )
     \s+
-    (?: ([\'\"]) ( (?: \\\2 | [^\2] )+ ) \2
+    (?: ([\'\"]) ( (?: \\\2 | . )+? ) \2
     | ( \S+ ) )
     """, re.VERBOSE)
 
@@ -273,6 +274,10 @@ class FilterParser:
         'to-mailman'   : ('attr', 'optional' ),
         'from-mysql'   : ('like', 'rlike'),
         'to-mysql'     : ('like', 'rlike'),
+        'from-sql'     : ('action_column', 'addr_column',
+                          'domains', 'wildcards'),
+        'to-sql'       : ('action_column', 'addr_column',
+                          'domains', 'wildcards'),
         'body'         : ('case',),
         'headers'      : ('case',),
         'body-file'    : ('case', 'optional'),
@@ -285,7 +290,8 @@ class FilterParser:
     MySQL = None
 
 
-    def __init__(self):
+    def __init__(self, db_instance=None):
+        self.db_instance = db_instance
         self.macros = []
         self.files = []
         self.filterlist = []
@@ -496,7 +502,6 @@ class FilterParser:
     def __findvarsub(self, var):
         """Look up 'var' in the Defaults namespace and the environment."""
         # First, check the Defaults namespace.
-        import Defaults
         sub = Defaults.__dict__.get(var, None)
         # Then, try the environment.
         if not sub:
@@ -686,22 +691,18 @@ class FilterParser:
 	return actions
 	
 
-    def __search_file(self, pathname, keys, actions, source):
-        """
-        Search a text file for match in first column.
-        """
-        found_match = 0
-        match_list = Util.file_to_list(pathname)
+    def __search_list(self, addrlist, keys, actions, source):
+        """Search addrlist for match in field 1, optional action in 2."""
         # This list comprehension splits each line in the list into
         # two columns, lowercases the first column and stuffs the
         # columns back together.  The result is the original list of
         # lines from the file with the first field in each line
         # lowercased.
-        match_list = [' '.join(
+        addrlist = [' '.join(
             apply(lambda f1, f2=None: f2 and [f1.lower(), f2]
                                           or [f1.lower()],
-                  line.split(None, 1))) for line in match_list]
-        found_match = Util.findmatch(match_list, keys)
+                  line.split(None, 1))) for line in addrlist]
+        found_match = Util.findmatch(addrlist, keys)
         if found_match:
             # The second column of the line may contain an
             # overriding action specification.
@@ -713,11 +714,21 @@ class FilterParser:
         return found_match
 
 
+    def __search_file(self, pathname, keys, actions, source):
+        """
+        Search a text file for match in first column.
+        """
+        return self.__search_list(Util.file_to_list(pathname),
+                                  keys,
+                                  actions,
+                                  source)
+
+
     def __search_mysql(self, Table, Args, Keys, Actions, Source):
         "Search MySQL table."
         if not self.MySQL:
             # Connect to the database if we have not yet connected
-            import Defaults, _mysql
+            import _mysql
             self.MySQL = _mysql.connect \
             (
                 host = Defaults.MYSQL_HOST,
@@ -838,7 +849,75 @@ class FilterParser:
             except IndexError:
                 pass
         return domains
-     
+
+
+    def __create_sql_params(self, dbkeys):
+        """Return dictionary of parameters for sql statement."""
+        params = { 'recipient': Defaults.USERNAME+'@'+Defaults.HOSTNAME,
+                   'username' : Defaults.USERNAME,
+                   'hostname' : Defaults.HOSTNAME
+                 }
+        for i in range(len(dbkeys)):
+            params['criterion'+str(i)] = dbkeys[i]
+        return params
+
+
+    def __create_sql_criteria(self, dbkeys, addresscolumn):
+        """Return condition string for insertion into SQL statement."""
+        if not dbkeys:
+            return ''
+        criteria = "("
+        for i in range(len(dbkeys)):
+            if i > 0:
+                criteria += " OR "
+            criteria += "%s = %%(criterion%d)s" % (addresscolumn, i)
+        criteria += ")"
+        return criteria
+
+
+    def __get_column_index(self, colname, cursor):
+        """Return index of column named 'colname'."""
+        for i in range(len(cursor.description)):
+            if colname == cursor.description[i][0]:
+                return i
+        return -1
+
+
+    def __search_sql(self, selectstmt, args, keys, actions, source, lineno):
+        """Search SQL DB (Python DB API 2.0)."""
+        found_match = 0
+        dbkeys = keys
+        if args.has_key('wildcards'):
+            dbkeys = []
+        params = self.__create_sql_params(dbkeys)
+        cursor = self.db_instance.cursor()
+        cursor.execute(selectstmt, params)
+        rows = cursor.fetchall()
+        if cursor.rowcount <= 0:
+            return 0
+        if args.has_key('wildcards'):
+            if len(cursor.description) > 1:
+                dblist = [' '.join([row[0], row[1] or '']) for row in rows]
+            else:
+                dblist = [row[0] for row in rows]
+            found_match = self.__search_list(dblist, keys, actions, source)
+        else:
+            action_column = args.get('action_column')
+            if action_column:
+                actcolidx = self.__get_column_index(action_column, cursor)
+                if actcolidx == -1:
+                    actcolidx = self.__get_column_index(action_column.lower(),
+                                                        cursor)
+                    if actcolidx == -1:
+                        err = "no action column (%s)" % (action_column,)
+                        raise MatchError(lineno, err)
+                action = rows[0][actcolidx]
+                if action:
+                    actions.clear()
+                    actions.update(self.__buildactions(action, source))
+            found_match = 1
+        return found_match
+
 
     def firstmatch(self, recipient, senders=None,
                    msg_body=None, msg_headers=None, msg_size=None):
@@ -988,6 +1067,29 @@ class FilterParser:
                 )
                 if found_match:
 		    break
+            # Generic SQL.  Expects a SELECT statement as the 'match' field.
+            # There are two "modes", depending on the presence of TMDA-style
+            # wildcards in the database.  See the filter source documentation
+            # for more information.
+            if source in ('from-sql', 'to-sql'):
+                selectstmt = match
+                if args.has_key('domains'):
+                    keys += self.__extract_domains(keys)
+                addr_column = args.get('addr_column')
+                if args.has_key('wildcards'):
+                    if addr_column:
+                        raise MatchError(lineno,
+                                         "-addr_column and -wildcards " +
+                                         "cannot be used together")
+                elif not addr_column:
+                    raise MatchError(lineno, "-addr_column must be specified")
+                else:
+                    criteria = self.__create_sql_criteria(keys, addr_column)
+                    selectstmt = selectstmt.replace('%(criteria)s', criteria)
+                found_match = self.__search_sql(
+                    selectstmt, args, keys, actions, source, lineno)
+                if found_match:
+                    break
             # A match is found if the command exits with a zero exit
             # status.
             if source == 'pipe' and msg_body and msg_headers:

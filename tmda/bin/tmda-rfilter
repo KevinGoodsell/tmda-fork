@@ -780,7 +780,7 @@ def main():
     if (cookie_type in Defaults.TAGS_CONFIRM) and cookie_value:
         verify_confirm_cookie(cookie_value, 'accept')
     # Parse the incoming filter file.
-    infilter = FilterParser.FilterParser()
+    infilter = FilterParser.FilterParser(Defaults.DB_CONNECTION)
     infilter.read(Defaults.FILTER_INCOMING)
     (actions, matching_line) = infilter.firstmatch(recipient_address,
                                                    sender_list,

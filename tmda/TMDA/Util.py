@@ -939,8 +939,9 @@ def maketext(templatefile, vardict):
 
 def filter_match(filename, recip, sender=None):
     """Check if the give e-mail addresses match lines in filename."""
+    import Defaults
     import FilterParser
-    filter = FilterParser.FilterParser()
+    filter = FilterParser.FilterParser(Defaults.DB_CONNECTION)
     filter.read(filename)
     (actions, matchline) = filter.firstmatch(recip, [sender])
     # print the results
