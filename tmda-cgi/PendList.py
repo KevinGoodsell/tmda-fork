@@ -589,5 +589,6 @@ def Show():
       T["Row"] = '<tr><td colspan="%s" align="center" class="InProcess"><i>No messages match the search criteria</i></td></tr>' % NumCols
     else: 
       T["Row"] = '<tr><td colspan="%s" align="center" class="InProcess"><i>No messages in your pending queue</i></td></tr>' % NumCols
+      T['searchForm']
 
   print T
