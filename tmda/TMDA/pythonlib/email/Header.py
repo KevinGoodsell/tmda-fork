@@ -342,7 +342,7 @@ class Header:
         lines = line.splitlines()
         return zip(lines, [charset]*len(lines))
 
-    def _encode_chunks(self, newchunks):
+    def _encode_chunks(self, newchunks, maxlinelen):
         # MIME-encode a header with many different charsets and/or encodings.
         #
         # Given a list of pairs (string, charset), return a MIME-encoded
@@ -367,7 +367,7 @@ class Header:
                 s = header
             else:
                 s = charset.header_encode(header)
-            _max_append(chunks, s, self._maxlinelen, ' ')
+            _max_append(chunks, s, maxlinelen, ' ')
         joiner = NL + self._continuation_ws
         return joiner.join(chunks)
 
@@ -407,14 +407,18 @@ class Header:
             newchunks += self._split(s, charset, targetlen, splitchars)
             lastchunk, lastcharset = newchunks[-1]
             lastlen = lastcharset.encoded_header_len(lastchunk)
-        return self._encode_chunks(newchunks)
+        return self._encode_chunks(newchunks, maxlinelen)
 
 
 
 def _split_ascii(s, firstlen, restlen, continuation_ws, splitchars):
+    linejoiner = '\n' + continuation_ws
     lines = []
     maxlen = firstlen
     for line in s.splitlines():
+        # Ignore any leading whitespace (i.e. continuation whitespace) already
+        # on the line, since we'll be adding our own.
+        line = line.lstrip()
         if len(line) < maxlen:
             lines.append(line)
             maxlen = restlen
@@ -460,11 +464,14 @@ def _split_ascii(s, firstlen, restlen, continuation_ws, splitchars):
                 # splitting on whitespace, try to recursively split this line
                 # on whitespace.
                 if partlen > maxlen and ch <> ' ':
-                    this = [_split_ascii(part, maxlen, restlen,
-                                         continuation_ws, ' ')]
+                    subs = _split_ascii(part, maxlen, restlen,
+                                        continuation_ws, ' ')
+                    subl = re.split(linejoiner, subs)
+                    lines.extend(subl[:-1])
+                    this = [subl[-1]]
                 else:
                     this = [part]
-                linelen = wslen + partlen
+                linelen = wslen + len(this[-1])
                 maxlen = restlen
             else:
                 this.append(part)
@@ -472,7 +479,6 @@ def _split_ascii(s, firstlen, restlen, continuation_ws, splitchars):
         # Put any left over parts on a line by themselves
         if this:
             lines.append(joiner.join(this))
-    linejoiner = '\n' + continuation_ws
     return linejoiner.join(lines)
 
 
@@ -496,7 +502,7 @@ def _binsplit(splittable, charset, maxlinelen):
             # m is acceptable, so is a new lower bound.
             i = m
         else:
-            # m is not acceptable, so final i must be < j.
+            # m is not acceptable, so final i must be < m.
             j = m - 1
     # i == j.  Invariant #1 implies that splittable[:i] fits, and
     # invariant #2 implies that splittable[:i+1] does not fit, so i
