@@ -435,7 +435,7 @@ tmda.cgi: tmda-cgi.h
 install: %(Target)s
 
 %(Target)s: tmda.cgi
-\tcp -pf tmda.cgi %(Target)s
+\tcp -f tmda.cgi %(Target)s
 \tchmod %(Perm)s %(Target)s
 """ % OptD)
 
