@@ -67,8 +67,7 @@ def TranslateToUTF8(CharSet, Str, Errors):
   "Represent a string in UTF-8."
   import email.Charset
 
-  if not CharSet:
-    return Str
+  if not CharSet: CharSet = "iso-8859-1"
   CS = email.Charset.Charset(CharSet)
   CharSet = CS.input_charset
 

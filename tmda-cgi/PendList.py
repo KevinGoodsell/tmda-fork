@@ -114,6 +114,8 @@ def Show():
   if FirstMsg >= len(Msgs):
     FirstMsg = len(Msgs) - \
                (len(Msgs) % int(PVars[("PendingList", "PagerSize")]) )
+  if FirstMsg >= len(Msgs):
+    FirstMsg -= int(PVars[("PendingList", "PagerSize")])
   if FirstMsg < 0:
     FirstMsg = 0
   if len(Msgs) <= int(PVars[("PendingList", "PagerSize")]):
