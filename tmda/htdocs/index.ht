@@ -38,8 +38,8 @@ To see what the confirmation process looks like,
 This methodology has the advantage of being very selective about what
 it allows in, while at the same time permitting legitimate, but
 previously unknown senders to reach you.  TMDA also has several
-techniques (See the Client Configuration section) that allow senders
-to circumvent the whitelist.  
+techniques (See the <a href="config-client.html">Client Configuration</a> section)
+that allow senders to circumvent the whitelist.  
 <br><br>
 </ul>
 

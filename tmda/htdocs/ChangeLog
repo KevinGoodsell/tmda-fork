@@ -1,5 +1,8 @@
 2002-01-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* index.ht (Links): Link to the Client Configuration page, don't
+	just refer to it.
+
 	* results.ht (Links): Replace Robin Socha testimonial with
 	<deathsquad.87666dmzet.fsf@socha.net>.
 	
