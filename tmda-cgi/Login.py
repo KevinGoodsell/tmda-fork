@@ -28,7 +28,13 @@ import Template
 def Show(Msg = "", Debug = 0):
   "Show a login form in HTML."
 
-  T = Template.Template("login.html")
+  try:
+    T = Template.Template("login.html")
+  except IOError:
+    CgiUtil.TermError("Cannot access templates.", "Have Python library files "
+      "been moved from where they were unzipped?", "reading templates",
+      CgiUtil.FileDetails("default theme directory",
+      Template.Template.Dict["ThemeDir"]), "Reinstall tmda-cgi.")
   T["LoginErr"] = Msg
   T["Debug"]    = Debug
   print T

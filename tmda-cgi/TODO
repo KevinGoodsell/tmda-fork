@@ -1,6 +1,8 @@
 Things left to do:
 ==================
 
+    * configure -- switch from compile to configure/make/make install
+
     * FAQ -- should this be made a CGI?  Add help on adding whitelist &
              blacklist options.
 
@@ -10,10 +12,6 @@ Things left to do:
                           include the appropriate language identifiers in the
                           viewer
 
-    * SpamCop -- an option to delete/blacklist/forward to SpamCop
-
-    * tmda-cgi dir -- catch bad tmda-cgi directory
-
-    * Tutorial -- someone should write one
+    * Tutorial -- finish section on mailing lists
 
     * URL Confirmation -- doesn't work yet for virtual users

@@ -80,7 +80,13 @@ def FileDetails(Desc, Filename):
   return "%s file <tt>%s</tt>, permissions %s" % (Desc, Filename, Perm)
 
 def TermError(Err, Cause, Failed, Other, Recommend):
-  T = Template.Template(ErrTemplate)
+  try:
+    T = Template.Template(ErrTemplate)
+  except IOError:
+    T = Template.Template(SubTemplate = ["""Error:<br>%(ErrorName)s<p>
+Cause:<br>%(Cause)s<p>
+Additional:<br>%(Additional)s<p>
+Recommend:<br>%(Recommendation)s"""])
   T["ErrorName"]  = Err
   T["Cause"]      = Cause
   T["Additional"] = """Running in %s mode.<br>
