@@ -42,6 +42,10 @@ print
 
 key = keygen()
 
+if len(key) != 40:
+    print "Oops, generated key is not 40-characters in length, exiting!"
+    sys.exit()
+    
 print "CRYPT_KEY =", '"' + key + '"'
 print
 print "Now paste this line into your ~/.tmdarc file,"

@@ -1,5 +1,8 @@
 2001-05-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-keygen (key): Add some integrity checking to make sure
+	generated key is the correct length.
+
 	* tmda-filter (main): Add the '-d' option to silently discard the
 	message and stop processing of the .qmail file (ERR_STOP) instead
 	of bouncing the message back to sender.
