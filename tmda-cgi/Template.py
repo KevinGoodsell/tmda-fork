@@ -119,7 +119,8 @@ class Template:
   VarEndSearch  = re.compile("<!--\s*/var[^-]*-->", re.I)
   LonePctSearch = re.compile("([^%])%([^(%])")
   LonePctRepl   = r"\1%%\2"
-  SearchDict = {}
+  SearchDict    = {}
+  BeenExpanded  = 0
 
   def __init__ \
   (
@@ -150,7 +151,10 @@ class Template:
     RetVal = ""
     for HTML in self.HTML:
       if type(HTML) == StringType:
-        RetVal += self.LonePctSearch.sub(self.LonePctRepl, HTML) % self.Dict
+        if self.BeenExpanded:
+          RetVal += HTML
+        else:
+          RetVal += self.LonePctSearch.sub(self.LonePctRepl, HTML) % self.Dict
       else:
         RetVal += repr(HTML)
     return RetVal
@@ -217,10 +221,12 @@ class Template:
     "Expand any %(<name>)s references in self."
     for i in range(len(self.HTML)):
       if type(self.HTML[i]) == StringType:
-        self.HTML[i] = \
-          self.LonePctSearch.sub(self.LonePctRepl, self.HTML[i]) % Dict
+        if not self.BeenExpanded:
+          self.HTML[i] = \
+            self.LonePctSearch.sub(self.LonePctRepl, self.HTML[i]) % Dict
       else:
         self.HTML[i].Expand(Dict)
+    self.BeenExpanded = 1
     return self
 
   def Add(self, Dict = None):
