@@ -21,7 +21,6 @@
 
 """Various versioning information."""
 
-import sys
 from TMDA import Version
 
 # tmda-cgi version
@@ -34,14 +33,10 @@ Codename = "Fluorine"
 TMDAReqVer = "0.77"
 
 # Python version
-Python = sys.version.split()[0]
+Python = Version.PYTHON
 
 # Platform identifier
-try:
-    from distutils.util import get_platform
-    Platform = get_platform()
-except ImportError:
-    Platform = sys.platform
+Platform = Version.PLATFORM
 
 # Summary of all the version identifiers
 # e.g, tmda-cgi/0.02 "Helium" (Python 2.2.2 on linux-i686)
