@@ -17,8 +17,8 @@ Where:
 
     -p
     --pretend
-      Don't actually operate on messages, just show what would have happened.
-      Implies --verbose.
+       Don't actually operate on messages, just show what would have happened.
+       Implies --verbose.
        
     -b
     --batch
@@ -51,6 +51,18 @@ Where:
        Normally, this is determined by parsing the `X-TMDA-Recipient'
        header which every pending message should contain.
 
+    -Y <interval>
+    --younger <interval>
+       Operate only on messages younger than the time interval given in
+       seconds (s), minutes (m), hours (h), days (d), weeks (w), months
+       (M), or years (Y).
+
+    -O <interval>
+    --older <interval>
+       Operate only on messages older than the time interval given in
+       seconds (s), minutes (m), hours (h), days (d), weeks (w), months
+       (M), or years (Y).
+
     -v
     --verbose
        Display output (default).
@@ -70,19 +82,22 @@ Where:
     Examples:
 
     (interactively operate on all pending messages)
-    $ %(program)s 
+    %(program)s 
 
     (interactively operate on just these messages)
-    $ %(program)s 1012182077.5803.msg 1012939546.7870.msg
+    %(program)s 1012182077.5803.msg 1012939546.7870.msg
 
     (immediately release these messages from the pending queue)
-    $ %(program)s -b -r 1012182077.5803.msg 1012939546.7870.msg
+    %(program)s -b -r 1012182077.5803.msg 1012939546.7870.msg
 
     (immediately delete all messages from the pending queue)
-    $ %(program)s -b -d
+    %(program)s -b -d
+
+    (silently and immediately delete all messages older than 30 days)
+    %(program)s -q -b -d -O 30d
     
     (mail a summary report of all pending messages)
-    $ %(program)s -b -s | mail -s 'TMDA pending summary' jason
+    %(program)s -b -s | mail -s 'TMDA pending summary' jason
 """
 
 import cStringIO
@@ -92,6 +107,7 @@ import os
 import popen2
 import rfc822
 import sys
+import time
 
 
 program = sys.argv[0]
@@ -100,9 +116,12 @@ command_recipient = None
 descending = None
 dispose = None
 interactive = 1
+older = None
 pretend = None
 summary = None
+threshold = None
 verbose = 1
+younger = None
 
 
 def usage(code, msg=''):
@@ -113,19 +132,21 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:ipbrdsADR:vqh', ['config-file=',
-                                                   'interactive',
-                                                   'pretend',
-                                                   'batch',
-                                                   'release',
-                                                   'delete',
-                                                   'summary',
-                                                   'ascending',
-                                                   'descending',
-                                                   'recipient=',
-                                                   'verbose',
-                                                   'quiet',
-                                                   'help'])
+                               'c:ipbrdsADR:Y:O:vqh', ['config-file=',
+                                                       'interactive',
+                                                       'pretend',
+                                                       'batch',
+                                                       'release',
+                                                       'delete',
+                                                       'summary',
+                                                       'ascending',
+                                                       'descending',
+                                                       'recipient=',
+                                                       'younger=',
+                                                       'older=',
+                                                       'verbose',
+                                                       'quiet',
+                                                       'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -152,6 +173,12 @@ for opt, arg in opts:
         descending = 1
     elif opt in ('-R', '--recipient'):
         command_recipient = arg
+    elif opt in ('-Y', '--younger'):
+        younger = 1
+        threshold = arg
+    elif opt in ('-O', '--older'):
+        older = 1
+        threshold = arg
     elif opt in ('-q', '--quiet'):
         verbose = 0
     elif opt in ('-v', '--verbose'):
@@ -212,8 +239,12 @@ def main():
     global descending
     global dispose
     global interactive
+    global older
     global summary
+    global threshold
     global verbose
+    global younger
+    
 
     os.chdir(Defaults.DATADIR + 'pending')
 
@@ -237,6 +268,15 @@ def main():
         if not os.path.exists(msg):
             cprint(verbose, msg, 'not found!')
         else:
+            if threshold:
+                threshold_secs = Util.seconds(threshold)
+                now = '%d' % time.time()
+                min_time = int(now) - int(threshold_secs)
+                msg_time = int(msg.split('.')[0])
+                if (younger and msg_time < min_time) or \
+                   (older and msg_time > min_time):
+                    # skip this message
+                    continue
             fp = cStringIO.StringIO(open(msg, 'r').read())
             headers = rfc822.Message(fp)
             body = fp.read()
