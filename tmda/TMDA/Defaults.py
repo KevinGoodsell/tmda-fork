@@ -1372,11 +1372,11 @@ if os.path.exists(CRYPT_KEY_FILE):
         if ALLOW_MODE_640 and crypt_key_filemode == 640:
             pass
         else:
-            if PENDING_FILE_PERM == 0600:
+            if not CGI_ACTIVE:
                 raise Errors.ConfigError, \
                       CRYPT_KEY_FILE + " must be chmod 400 or 600!"
 else:
-    if PENDING_FILE_PERM == 0600:
+    if not CGI_ACTIVE:
         raise Errors.ConfigError, "Can't find key file: " + CRYPT_KEY_FILE
 
 # Read key from CRYPT_KEY_FILE, and then convert it from hex back into
@@ -1384,7 +1384,7 @@ else:
 try:
     CRYPT_KEY = binascii.unhexlify(open(CRYPT_KEY_FILE).read().strip())
 except IOError:
-    if PENDING_FILE_PERM == 0600: raise
+    if not CGI_ACTIVE: raise
 
 ###################################
 # END of user configurable settings
