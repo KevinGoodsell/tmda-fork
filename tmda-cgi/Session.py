@@ -140,9 +140,9 @@ its partition is marked "nosuid" in /etc/fstab.""")
         # Now that we know who we are, get our defaults
         from TMDA import Defaults
         Template.Template.BaseDir = "%s/themes/%s/template" % \
-          (Defaults.CGI_THEME, os.environ["TMDA_CGI_DISP_DIR"])
+          (os.environ["TMDA_CGI_DISP_DIR"], Defaults.CGI_THEME)
         Template.Template.Dict["ThemeDir"] = "%s/themes/%s" % \
-          (Defaults.CGI_THEME, os.environ["TMDA_CGI_DISP_DIR"])
+          (os.environ["TMDA_CGI_DISP_DIR"], Defaults.CGI_THEME)
       except IOError: # Failed to resurrect session, fall through to make new SID
         pass
       return
@@ -231,9 +231,9 @@ its partition is marked "nosuid" in /etc/fstab.""")
       try:
         from TMDA import Defaults
         MyCgiTb.ErrTemplate = "%s/themes/%s/template/prog_err.html" % \
-          (Defaults.CGI_THEME, os.environ["TMDA_CGI_DISP_DIR"])
+          (os.environ["TMDA_CGI_DISP_DIR"], Defaults.CGI_THEME)
         Template.Template.Dict["ThemeDir"] = "%s/themes/%s" % \
-          (Defaults.CGI_THEME, os.environ["TMDA_CGI_DISP_DIR"])
+          (os.environ["TMDA_CGI_DISP_DIR"], Defaults.CGI_THEME)
       except Errors.ConfigError, (ErrStr):
         CgiUtil.TermError("ConfigError", ErrStr, "import Defaults",
           "", """Recheck the CGI's permissions and owner.  The file permissions

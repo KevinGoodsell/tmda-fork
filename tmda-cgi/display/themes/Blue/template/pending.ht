@@ -25,8 +25,7 @@ Title: Pending E-mail
               href="%(Script)s?cmd=list&subcmd=last&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
               height="18" alt="Last"></a><!-- /var --></td>
-            <td align="center"><font color="#FFFFFF">%(PageNum)d of
-              %(NumPages)d</font></td>
+            <td align="center"><font color="#FFFFFF">%(DispRange)s</font></td>
           </tr>
           <tr bgcolor="#DADCEB">
             <td colspan="6"><table cellpadding="0">
@@ -63,6 +62,18 @@ href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s">%(Subject)s</a></td>
                   <td>%(Size)s</td>
                 </tr>
 <!-- /var -->
+<!-- var: InProcessRow -->
+                <tr>
+                  <td colspan="5" bgcolor="#7A7AB6" height="1"></td>
+                </tr>
+                <tr class="InProcess">
+                  <td></td>
+                  <td>%(Sender)s</td>
+                  <td>%(Subject)s</td>
+                  <td nowrap>%(Date)s</td>
+                  <td>%(Size)s</td>
+                </tr>
+<!-- /var -->
               </table></td>
           </tr>
           <tr bgcolor="#7A7AB6" height="24">
@@ -85,10 +96,22 @@ href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s">%(Subject)s</a></td>
               href="%(Script)s?cmd=list&subcmd=last&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
               height="18" alt="Last"></a><!-- /var --></td>
-            <td align="center"><font color="#FFFFFF">%(PageNum)d of
-              %(NumPages)d</font></td>
+            <td align="center"><font color="#FFFFFF">%(DispRange)s</font></td>
           </tr>
         </form>
-      </table></td>
+      </table>
+<!-- var: InProcess -->
+      <table>
+        <tr>
+          <td class="Note">Note:</td>
+          <td>
+            <span class="InProcess">Marked</span> messages are being 
+              processed by the mail server.<br>
+            They will be removed from the pending list when released.
+          </td>
+        </tr>
+      </table>
+<!-- /var -->
+    </td>
   </tr>
 </table>
