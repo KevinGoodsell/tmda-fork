@@ -17,6 +17,9 @@ an interpreted, interactive, object-oriented programming language.
 <li>Integrated "blacklist" and "whitelist" functionality.
 <br><br>
 
+<li>Optional automatic whitelisting of confirmed senders.
+<br><br>
+
 <li>Supports MUA-independent, site-wide installations using relay rewriting, including
     non-unix clients such as Microsoft Windows.<br><br>
 

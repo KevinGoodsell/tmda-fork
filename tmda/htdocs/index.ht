@@ -34,14 +34,15 @@ TMDA (and its author) holds the following assumptions about the current Internet
 With TMDA, unrestricted access to your mailbox can no longer be
 assumed, a premise which spammers rely heavily upon.<br><br>
 
-The way TMDA thwarts incoming junk-mail is simple yet extremely effective.
-You maintain a "whitelist" of trusted contacts which are allowed
-directly into your mailbox.  Messages from unknown senders are held in
-a pending queue until they respond to a confirmation request sent by
-TMDA.  Once they respond to the confirmation, their original message
-is deemed legitimate and is delivered to you.  Updating your whitelist
-insures they won't have to confirm future messages.  To see what the
-confirmation process looks like, try sending 
+The way TMDA thwarts incoming junk-mail is simple yet extremely
+effective.  You maintain a "whitelist" of trusted contacts which are
+allowed directly into your mailbox.  Messages from unknown senders are
+held in a pending queue until they respond to a confirmation request
+sent by TMDA.  Once they respond to the confirmation, their original
+message is deemed legitimate and is delivered to you.  Updating your
+whitelist insures they won't have to confirm future messages.  TMDA
+can even be configured to automatically whitelist confirmed senders.
+To see what the confirmation process looks like, try sending
 <a href="mailto:jason-tmdatest@mastaler.com">me</a> a test message.
 (<strong>NOTE:</strong> Confirmed test messages are automatically discarded)
 <br><br>

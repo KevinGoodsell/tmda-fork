@@ -1,3 +1,9 @@
+2001-10-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* features.ht (Links): Mention the WHITELIST_AUTO_APPEND feature.
+
+	* index.ht (Links): Ditto.
+	
 2001-10-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* install.ht (Links): Add installation instructions for Linux RPMs.
