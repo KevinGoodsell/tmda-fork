@@ -4,6 +4,8 @@
 	header for the envelope_recipient value if it exists.  
 	Patch contributed by Ron Bickers.
 
+	(main): No need to lookup $SENDER a second time.
+
 2001-06-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (main): Lowercase the env sender, From and Reply-to

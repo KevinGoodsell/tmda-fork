@@ -1,3 +1,7 @@
+2001-06-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (TMDA_VERSION): Begin 0.22 development.
+
 2001-06-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (findmatch): Add support for custom matching syntax.

@@ -359,7 +359,7 @@ def main():
         # Sender tag?
         if ext and (ext == 'sender' or re.match("^sender-\w+",ext)):
             sender_cookie = ext2
-            sender_address = os.environ.get('SENDER')
+            sender_address = globals().get('envelope_sender')
             verify_sender_cookie(sender_address,sender_cookie)
             pass
 
