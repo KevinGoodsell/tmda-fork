@@ -4,7 +4,7 @@
 #                                                                            #
 # vadduser-tmda -  A TMDA wrapper script for vpopmail's vadduser program     #
 #                                                                            #
-# Version: 0.1                                                               #
+# Version: 0.2                                                               #
 #                                                                            #
 # Copyright (C) 2003 Cory Wright - http://www.standblue.net/                 #
 #                                                                            #
@@ -21,6 +21,16 @@
 # You should have received a copy of the GNU General Public License          #
 # along with this program; if not, write to the Free Software                #
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA  #
+#                                                                            #
+##############################################################################
+
+##############################################################################
+#                              Release History                               #
+#                                                                            #
+# * 0.1 - February 12, 2003 - Initial release as part of TMDA                #
+# * 0.2 - April 2, 2003 - Thanks to Ben Bullock (brb3@pobox.com) the         #
+#         vadduser-tmda script can now add TMDA on existing vpopmail         #
+#         accounts, with other improvements.                                 #
 #                                                                            #
 ##############################################################################
 
@@ -56,38 +66,49 @@ TMDAROOT="/usr/local/tmda/"
 VPOPROOT="/var/vpopmail/"
 PATH="$VPOPROOT/bin:$TMDAROOT/bin:$PATH"
 VTMDARC="$VPOPROOT/etc/vtmdarc"
-VUID="vpopmail"                      # These two can, and should, be set by  #
-VGID="vchkpw"                        # looking at vdominfo                   #
 
 #                                                                            #
 ##############################################################################
 
-# We need the full parameters passed so that we can send
-# them straight through to the vadduser program.
+# We need the full parameters passed so that we can send them straight through 
+# to the vadduser program.
 FULLPARAM="$*"
 
-# Determine the email address.  There's probably a better
-# way to do this.
-LASTPARAM=`eval echo $#`
-EMAILADDR=`eval echo \\\$${LASTPARAM}`
+# Determine the email address.  There's probably a better way to do this.
+EMAILADDR=`eval echo \\\$${#}`
 
-# First things first, add the new user.
-vadduser $FULLPARAM
-
-# Must not continue if creation was not successful.
-if [ "$?" != 0 ]; then
-	echo There was a problem adding the account.  Exiting...
-	exit 1
-fi
-
-# Set up a few variables that we need.  
-# Many of these are useful in vtmdarc
-VUSERDIR=`vuserinfo -d $EMAILADDR`
+# Set up a few variables that we need.  Many of these are useful in vtmdarc
 VUSERNAME=`echo $EMAILADDR | cut -d@ -f1`
 VDOMAIN=`echo $EMAILADDR | cut -d@ -f2`
+
+# Add the new user if the account does not already exist
+if ! vuserinfo $EMAILADDR > /dev/null 2>&1 ; then
+    echo "Creating the virtual user account..."
+
+    # Does the domain directory exist?
+    if ! vdominfo $VDOMDIR > /dev/null 2>&1 ; then
+	echo "Error: $VDOMDIR does not exist.  Exiting..."
+	exit 1
+    fi
+
+    # Add the virtual user account
+    $VPOPROOT/bin/vadduser $FULLPARAM
+
+    # Stop if creation was not successful.
+    if [ "$?" != 0 ]; then
+	echo "There was a problem adding the account.  Exiting..."
+	exit 1
+    fi
+fi
+
+VUSERDIR=`vuserinfo -d $EMAILADDR`
 VDOMDIR=`vdominfo -d $VDOMAIN`
-python -c 'import cdb' 2> /dev/null
+VUID=`vdominfo -u $VDOMAIN`
+VGID=`vdominfo -g $VDOMAIN`
+
+# Check python's cdb support
 CDB=""
+python -c 'import cdb' 2> /dev/null
 cdbcheckret=$?
 if [ $cdbcheckret = "0" ]; then
     CDB="-autocdb"
@@ -97,10 +118,12 @@ fi
 mkdir -p $VUSERDIR/.tmda/filters $VUSERDIR/.tmda/lists
 mkdir -p $VUSERDIR/.tmda/pending $VUSERDIR/.tmda/responses
 touch $VUSERDIR/.tmda/filters/incoming $VUSERDIR/.tmda/filters/outgoing
-touch $VUSERDIR/.tmda/lists/whitelist $VUSERDIR/.tmda/config
-echo "from-file $CDB $VUSERDIR/.tmda/lists/whitelist ok" >> $VUSERDIR/.tmda/filters/incoming
+touch $VUSERDIR/.tmda/lists/whitelist $VUSERDIR/.tmda/lists/blacklist
+touch $VUSERDIR/.tmda/config
+echo "from-file $CDB $VUSERDIR/.tmda/lists/whitelist ok"   >> $VUSERDIR/.tmda/filters/incoming
+echo "from-file $CDB $VUSERDIR/.tmda/lists/blacklist drop" >> $VUSERDIR/.tmda/filters/incoming
 cp -R $TMDAROOT/templates $VUSERDIR/.tmda/
-tmda-keygen -b > $VUSERDIR/.tmda/crypt_key
+$TMDAROOT/bin/tmda-keygen -b > $VUSERDIR/.tmda/crypt_key
 chmod 600 $VUSERDIR/.tmda/crypt_key
 
 # Create the .qmail files.
