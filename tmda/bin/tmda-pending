@@ -21,7 +21,7 @@
 
 """Pending queue manipulation tool.
 
-Usage:  %(program)s [OPTIONS] [messages ... ]
+Usage:  %(program)s [OPTIONS] [messages ... | - ]
 
 Where:
     -c <file>
@@ -116,9 +116,10 @@ Where:
     --help
        Print this help message and exit.
 
-    messages
-       If one or more messages are provided, operate just on them.
-       Otherwise, operate on all messages in the pending queue.
+    messages | -
+       If one or more messages are provided, operate just on them. 
+       If `-' is specified, operate on a list of messages provided by
+       standard input. Otherwise, operate on all messages in the pending queue.
        
     Examples:
 
@@ -130,6 +131,9 @@ Where:
 
     (immediately release these messages from the pending queue)
     %(program)s -b -r 1012182077.5803.msg 1012939546.7870.msg
+
+    (immediately release any messages with `foobar' in them)
+    %(program)s -b -T | grep foobar | awk '{print $1}' | %(program)s -b -r -
 
     (immediately delete all messages from the pending queue)
     %(program)s -b -d
@@ -314,7 +318,20 @@ def main():
     os.chdir(os.path.join(Defaults.DATADIR, 'pending'))
 
     msgs = args
-    if not msgs:
+
+    # Replace any `-' in the message list with those messages provided
+    # via standard input.  (Since it's pointless to call it twice,
+    # it's safe to remove any subsequent occurrences in the list after
+    # processing.)
+    wantedstdin = 0
+    for msg in msgs:
+        if msg == '-':
+            wantedstdin = 1
+            for line in sys.stdin.readlines():
+                msgs.append(line.strip())
+            msgs.remove('-')
+
+    if not msgs and not wantedstdin:
         msgs = glob.glob('*.*.msg')
 
     msgs.sort()

@@ -31,6 +31,9 @@ Contributions:
 
     * Bill Duncan -- SquirrelMail plugin.
 
+    * Michael S. Fischer -- tmda-pending patch which allows messages
+      to be specified on standard input.
+
     * Arcady Genkin -- Gentoo Linux Package.
 
     * David Guerizec -- Lots of tmda-ofmipd improvements,
