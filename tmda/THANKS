@@ -42,6 +42,8 @@ Contributions:
       improvements, miscellaneous bugfixes, and tmda-gui (TKinter
       interface).
 
+    * Chris Hardie -- mirror of www.tmda.net.
+
     * Lou Hevly -- documentation (vpopmail tutorial).
 
     * Mark Horn -- Configurable actions for tagged address
@@ -96,6 +98,8 @@ Contributions:
     * Simon Waldman -- documentation (Fetchmail HOWTO).
 
     * Mate Wierdl -- tmda4ezmlm script.
+
+    * Cory Wright -- mirror of www.tmda.net.
 
     * Lloyd Zusman -- "whitelist" and "blacklist" commands for
       tmda-pending.
