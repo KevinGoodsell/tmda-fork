@@ -41,7 +41,6 @@ import os
 import popen2
 import re
 import rfc822
-import stat
 import string
 import sys
 import time
