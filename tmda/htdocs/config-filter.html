@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue Sep  2 01:19:37 2003 -->
+<!-- Sat Oct 11 00:29:52 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -565,14 +565,14 @@ macro LIST_DELIVER(m) deliver=~/Mail/m/
 </blockquote></pre>
 Here's how you might use it for the two TMDA mailing lists.
 <pre><blockquote>
-from tmda-users-admin@tmda.net   LIST_DELIVER(TMDA-Users)
-from tmda-workers-admin@tmda.net LIST_DELIVER(TMDA-Workers)
+from tmda-users-bounces@tmda.net   LIST_DELIVER(TMDA-Users)
+from tmda-workers-bounces@tmda.net LIST_DELIVER(TMDA-Workers)
 
 </blockquote></pre>
 Expanding the above macros results in these rules.
 <pre><blockquote>
-from tmda-users-admin@tmda.net   deliver=~/Mail/TMDA-Users/
-from tmda-workers-admin@tmda.net deliver=~/Mail/TMDA-Workers/
+from tmda-users-bounces@tmda.net   deliver=~/Mail/TMDA-Users/
+from tmda-workers-bounces@tmda.net deliver=~/Mail/TMDA-Workers/
 
 </blockquote></pre>
 Macros may refer to other macros but may not refer to themselves, even

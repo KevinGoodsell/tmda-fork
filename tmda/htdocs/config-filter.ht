@@ -373,14 +373,14 @@ macro LIST_DELIVER(m) deliver=~/Mail/m/
 </blockquote></pre>
 Here's how you might use it for the two TMDA mailing lists.
 <pre><blockquote>
-from tmda-users-admin@tmda.net   LIST_DELIVER(TMDA-Users)
-from tmda-workers-admin@tmda.net LIST_DELIVER(TMDA-Workers)
+from tmda-users-bounces@tmda.net   LIST_DELIVER(TMDA-Users)
+from tmda-workers-bounces@tmda.net LIST_DELIVER(TMDA-Workers)
 
 </blockquote></pre>
 Expanding the above macros results in these rules.
 <pre><blockquote>
-from tmda-users-admin@tmda.net   deliver=~/Mail/TMDA-Users/
-from tmda-workers-admin@tmda.net deliver=~/Mail/TMDA-Workers/
+from tmda-users-bounces@tmda.net   deliver=~/Mail/TMDA-Users/
+from tmda-workers-bounces@tmda.net deliver=~/Mail/TMDA-Workers/
 
 </blockquote></pre>
 Macros may refer to other macros but may not refer to themselves, even
