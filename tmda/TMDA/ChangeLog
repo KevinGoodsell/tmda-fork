@@ -1,3 +1,8 @@
+2002-03-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (pipecmd): Bugfix.  A program that exits 0 but outputs
+	to stderr should not be considered a failed delivery.
+
 2002-03-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (BOUNCE_TEXT_*): New variables containing the text

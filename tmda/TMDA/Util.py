@@ -276,20 +276,24 @@ def pipecmd(command, *strings):
         cmdout.close()
         # Get exit status from the wait() member function.
         r = cmd.wait()
-        if err or r:
-            # If exit status is non-zero, raise an exception with data
-            # from childerr.
-            if r and os.WIFEXITED(r):
+        # If exit status is non-zero, raise an exception with data
+        # from childerr.
+        if r:
+            if os.WIFEXITED(r):
                 exitcode = 'exited %i' % os.WEXITSTATUS(r)
-                if os.WIFSIGNALED (r):
-                    exitsignal = 'signal %i' % os.WTERMSIG(r)
-                else:
-                    exitsignal = 'no signal'
+                exitsignal = ''
+            elif os.WIFSIGNALED(r):
+                exitcode = 'abnormal exit'
+                exitsignal = 'signal %i' % os.WTERMSIG(r)
             else:
+                # Stopped, etc.
                 exitcode = 'no exit?'
                 exitsignal = ''
             raise IOError, 'command "%s" %s %s (%s)' \
-                  % (command, exitcode, exitsignal, err)
+                  % (command, exitcode, exitsignal, err or '')
+        elif err:
+            # command wrote something to stderr.
+            print err
         if out:
             # command wrote something to stdout.
             print out
