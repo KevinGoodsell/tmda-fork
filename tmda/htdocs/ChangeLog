@@ -1,3 +1,8 @@
+2001-12-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht (Links): Update link to Einar Bordewich's
+	smtpd-auth/vpopmail/qmailadmin tutorial.
+
 2001-12-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-server.ht (HREF): Add jason-tmda example.

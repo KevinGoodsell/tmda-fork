@@ -72,7 +72,7 @@ You can configure a qmail relay to re-write the address of outgoing
 messages with tmda-inject, so that those running Microsoft Windows
 clients can take full advantage of TMDA.  See `README.RELAY' in the
 contrib/ directory or one user's
-<a href="http://mla.libertine.org/tmda-users/200108/msg00002.html" TARGET="Resource Window">
+<a href="http://tmda.bordewich.net/" TARGET="Resource Window">
 configuration details</a> 
 for a site-wide TMDA install using smtpd-auth, vpopmail and qmailadmin.
 <br><br>
