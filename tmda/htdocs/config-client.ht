@@ -399,7 +399,7 @@ sed "/^From:/d" |/usr/bin/inews -h -S -f `/usr/bin/tmda-address -d`
 
 <li>For <a href="http://www.mutt.org/" TARGET="Resource Window">Mutt</a>
 with the VVV-NNTP patch applied, see the following 
-<a href="http://mla.libertine.org/tmda-users/200203/msg00366.html" TARGET="Resource Window">instructions</a>.
+<a href="http://mla.libertine.org/tmda-users/200204/msg00443.html" TARGET="Resource Window">instructions</a>.
 
 <p>
 
