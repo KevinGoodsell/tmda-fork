@@ -31,6 +31,8 @@ import os                                      # don't remove
 
 # INJECT_FLAGS = "f"
 
+# LOCALS = "/var/qmail/control/locals"
+
 # Optional delivery logging
 # If you uncomment this section, you need to create ~/tmda/log/
 # Logging will be done a file in the form:

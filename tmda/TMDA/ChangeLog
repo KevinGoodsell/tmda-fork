@@ -1,3 +1,8 @@
+2001-05-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (LOCALS): Introduced new variable to support
+	virtualdomain detection.
+
 2001-05-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Cookie.py (make_dated_cookie): Support `X-TMDA: dated timeout'

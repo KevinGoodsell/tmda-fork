@@ -20,8 +20,8 @@ Where:
 
 import cStringIO
 import getopt
+import fileinput
 import os
-import pwd
 import re
 import rfc822
 import stat
@@ -195,15 +195,23 @@ def main():
     ext3 = os.environ.get('EXT3') 
     if ext3:ext3 = string.lower(ext3)
 
-    # Under a virtualdomain, 'USER' is set to the domain instead of
-    # the username, so this is how we test for it.
-    user = pwd.getpwuid(os.getuid())[0]
+    # HOST is the domain part of the recipient address.
+    host = os.environ.get('HOST')
+    if host:host = string.lower(host)
+
+    # When qmail rewrites a virtualdomain address into a local one, it
+    # changes $USER, but not $HOST.  Therefore if $HOST is NOT in
+    # control/locals, it's a virtualdomain address.
+    localslist = []
+    for line in fileinput.input(Defaults.LOCALS):
+        localslist.append(string.lower(string.strip(line)))
+
     # If this is a virtualdomain, shift the EXT* variables once left.
     # (i.e, EXT under normal == EXT2 under a virtualdomain, etc.)
-    if user != os.environ.get('USER'):
+    if host not in localslist:
         ext = ext2
         ext2 = ext3
-            
+
     while 1:
         # Is the sender in the BLACKLIST?
         if os.path.exists(Defaults.BLACKLIST) and \
