@@ -3,9 +3,9 @@
 	* FilterParser.py (_FilterFile.__init__): Add `-domains', a new
 	argument for from-(file|cdb|dbm) and to-(file|cdb|dbm).
 
-	(FilterParser.__add_domains): New method.
+	(FilterParser.__extract_domains): New method.
 
-	(FilterParser.firstmatch): Use __add_domains if the `-domains'
+	(FilterParser.firstmatch): Use __extract_domains if the `-domains'
 	argument is specified.
 	
 2003-03-04  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>

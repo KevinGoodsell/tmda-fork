@@ -829,10 +829,9 @@ class FilterParser:
         return (dbname, search_func)
 
 
-    def __add_domains(self, keys):
+    def __extract_domains(self, keys):
         """
-        Attempt to extract the domain names from each address in keys.
-        Add these to keys and return the combined list.
+        Attempt to extract the domain name from each address in keys.
         """
         domains = []
         for k in keys:
@@ -840,7 +839,7 @@ class FilterParser:
                 domains.append(k.split('@', 1)[1])
             except IndexError:
                 pass
-        return keys + domains
+        return domains
      
 
     def firstmatch(self, recipient, senders=None,
@@ -870,7 +869,7 @@ class FilterParser:
                 dbname = os.path.expanduser(match)
                 search_func = self.__search_file
                 if args.has_key('domains'):
-                    keys = self.__add_domains(keys)
+                    keys += self.__extract_domains(keys)
                 # If we have an 'auto*' argument, ensure that the database
                 # is up-to-date.  If the 'optional' argument is also given,
                 # don't die if the file doesn't exist.
@@ -899,7 +898,7 @@ class FilterParser:
                 import anydbm
                 match = os.path.expanduser(match)
                 if args.has_key('domains'):
-                    keys = self.__add_domains(keys)
+                    keys += self.__extract_domains(keys)
                 try:
                     found_match = self.__search_dbm(match, keys,
                                                     actions, source)
@@ -913,7 +912,7 @@ class FilterParser:
                 import cdb
                 match = os.path.expanduser(match)
                 if args.has_key('domains'):
-                    keys = self.__add_domains(keys)
+                    keys += self.__extract_domains(keys)
                 try:
                     found_match = self.__search_cdb(match, keys,
                                                     actions, source)
