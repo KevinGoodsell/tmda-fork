@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Jan 26 11:57:47 2002 -->
+<!-- Sun Jan 27 18:45:16 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -165,21 +165,34 @@ which can be changed by setting <b>FILTER_INCOMING</b> in your
 
 <u><b>Format of Filter Files</u></b>:
 <br><br>
-Each rule in a filter file is expected to start at the beginning of a
-line.  Additional lines that are part of the same rule must be
-indented by whitespace (spaces or tabs).  The amount of whitespace
-doesn't matter.  A blank line (either empty or containing nothing but
-whitespace) or a line beginning a new rule signifies the end of the
-previous rule.
-<br><br>
 
-Everything after <code><b>#</b></code> on a line is considered a
-comment and ignored.  Blank lines and lines with invalid syntax are
-also ignored.  Lines are read sequentially from top to bottom, and the
-<strong>first match wins</strong>.
-<br><br>
+A filter file is composed of filters, blank lines and comments.  Each
+filter in a filter file is expected to be a string containing three
+fields separated by whitespace.  Each filter may be placed on a single
+line or may be spread over several lines, to increase readability.
+You must follow a few rules when formatting your filters.
 
-The three fields in a filter file rule are:
+<ul>
+<li>Each filter must start at the beginning of a line.
+
+<li>Subsequent lines that are part of the same filter <i>must</i> be
+indented by one or more spaces or tabs.
+
+<li>Blank lines (either empty or containing only whitespace) or a line
+beginning a new filter signify the end of the previous rule.
+
+<li>A line containing only a comment does <i>not</i> end a filter.  You
+may intersperse comment lines within your filters (see the examples).
+
+<li>Everything after <code><b>#</b></code> on a line is considered a
+comment and ignored.
+
+<li>Filters with invalid syntax are also ignored.
+</ul>
+
+The filter file is read sequentially from top to bottom, and the first match
+wins.  The three fields in a filter are:
+
 <blockquote><pre><b>
 source match action
 
@@ -297,7 +310,15 @@ jdoe@domain.dom
 The body* and headers* sources on the other hand take regular expressions as defined
 in Python's
 <a href="http://www.python.org/doc/current/lib/module-re.html" TARGET="Resource Window">
-re module</a>.
+re module</a>.  Because regular expressions may include spaces, you
+must surround the regular expressions with quotation marks.  You may
+use either single quotes (<code><b>'</b></code>) or double quotes
+(<code><b>"</b></code>) as long as you use the the same one at both
+the beginning and the end.<p>
+
+If you need to match a quote in your regular expression, simply use
+the other style of quotes to surround the expression or escape the
+embedded quote with a backslash (<code><b>\</b></code>).
 <br><br>
 
 <li><b>action</b>: 
@@ -324,23 +345,89 @@ sender (tag with a sender address based on recipient)
 sender=address (tag with a sender address based on address instead)
 dated (tag with a dated address)
 dated=timeout_interval 
-default (tag with your default action as specified in ACTION_OUTGOING)
 exp,explicit,as=full_address (use an explicit address)
 ext,extension=address_extension (add an extension to the address)
 kw,keyword=keyword (tag with a keyword address)
-tag header action (tag specific headers with specific actions)
+default (take the default action specified by ACTION_OUTGOING)
+tag (tag one or more specific headers with the above actions)
 
 </blockquote></pre>
 
-<strong>NOTE:</strong>
-The <strong>tag</strong> action is useful when you need more fine
-grained control over how your outgoing message is tagged.  For
-example, you may want to send a message with a dated envelope sender
-and Reply-To, but a sender address in the "From:" header.  This would
-be useful when posting to a "members only" mailing list that checks
-your From header for membership.  Your sender From allows the message
-through to the list, and your dated Reply-To allows members to reply
-to you directly without confirmation.  <br><br>
+For all of the outgoing actions except <b>tag</b>, the tag applies to
+both the From: (or Resent-From:) header and the envelope sender.  Both
+will be set to the same address.<p>
+
+The <b>tag</b> action is a little more flexible, in that it can be
+used to tag more than one header and each header can be tagged with a
+different address.  The <b>tag</b> syntax is as follows:
+
+<pre><blockquote>
+to* &lt;email_address&gt; tag &lt;header action&gt; [header action] ...
+
+</blockquote></pre>
+
+Any of the to* <b>sources</b> may be used.  The email_address is
+explained in the <b>match</b> section above.  The email address is
+followed by the keyword <b>tag</b> which is followed by a list of
+header/action pairs.<p>
+
+The header is the name of the RFC822 header field you want to tag,
+usually From: or Reply-To:.  When you specify the header name, do not
+include the <code><b>:</b></code>.  Use <b>envelope</b> to tag the
+envelope sender.<p>
+
+The action is any one of the outgoing actions from the list above
+(except <b>tag</b>, of course).  That action will be used to tag the
+specified header only.<p>
+
+Why would you want to do this?  Some mailing lists restrict posting to
+subscribers only.  The way they accomplish this is by comparing the
+email address of the sender to their subscriber list.  Some lists
+compare the envelope sender while others compare the From: header.  If
+the particular list you are subscribed to compares against the From:
+header, that means your From: header must contain a valid email
+address, which can be harvested by spammers.<p>
+
+The solution to this problem is to subscribe with a <u>sender
+address</u> and use that same address in your From: header.  Then
+only the list can successfully send mail to you using that address.
+See the <a href="config-client.html">Client Configuration</a> page for
+more information about <u>sender</u> addresses.<p>
+
+The final issue now is that legitimate list members can't respond to
+you, since the <u>sender address</u> works only for the list itself.
+To get around that problem, set the Reply-To: header to a <b>dated</b>
+address.  Then list members will be able to reply for a period of time
+but by the time the spammers harvest that address, it will have
+expired.<p>
+
+Here's how to set all that up in your outgoing filter:
+<pre><blockquote>
+to closed-list@lists.com tag
+   from      sender=closed-list-admin@lists.com
+   envelope  sender=closed-list-admin@lists.com
+   reply-to  dated
+
+</blockquote></pre>
+
+As you can see, the ability to place a filter on several lines helps
+with the readability of these longer <b>tag</b> actions.<p>
+
+There is one last wrinkle.  A common case is where you wish to tag the
+From: header and the envelope sender with the same address but tag
+Reply-To: differently.  If you specify the From: header but not the
+envelope sender, TMDA will use address in the From: header as the
+envelope sender.<p>
+
+Thus, the above example can be shortened to this:
+<pre><blockquote>
+to closed-list@lists.com tag
+   from      sender=closed-list-admin@lists.com
+   reply-to  dated
+
+</blockquote></pre>
+
+<br><br>
 
 <u><b>Example Incoming Filter</u></b>:
 
@@ -370,8 +457,8 @@ to jason-stupid-promo.289076@mastaler.com bounce
 to jason-jcrew.832234@mastaler.com confirm
 
 # Examine the message content
-body "(viagra|ginseng)" confirm
-headers "Precedence:.*junk" reject
+body "viagra|ginseng" confirm
+headers 'Precedence:.*junk' reject
 
 # Accept all messages smaller than 10KB, but drop messages larger than 1MB
 size <10000 deliver
@@ -396,18 +483,19 @@ to king@grassland.com keyword=elvis_parsley
 to bobby@peru.com dated
 to-dbm /var/dbm/slowpokes.db dated=6M
 
-## members-only mailing lists
+# Majordomo and Mailman check the From: header for membership
+to mutt-users@mutt.org tag
+   from      sender=owner-mutt-users@mutt.org
+   reply-to  dated
 
 # ezmlm checks the envelope sender address for membership
 to tmda-admin@samstech.net tag
-   envelope ext=mlists-tmda-admin
-   from     dated
-
-# Majordomo and Mailman check the From: header for membership.
-to freebsd-stable@freebsd.org tag
-   envelope dated
-   from     sender=owner-freebsd-stable@freebsd.org
-   reply-to dated=2w
+   # Set envelope sender to the extension address I subscribed with
+   # and From: to 'default'.  TMDA comes with the default action
+   # (ACTION_OUTGOING) set to 'dated'.  Reply-To: isn't necessary in
+   # this case.
+   envelope  extension=mlists-tmda-admin
+   from      default
 
 # Use a different username and/or domain
 to *@gnus.org exp=jason@gnus.org
