@@ -48,10 +48,10 @@ def Show():
     # Batch operation
     if Form["subcmd"].value == "batch":
       ReleaseList = [] 
-      WhiteList = []
-      BlackList = []
-      DeleteList = []
-      OtherList = []
+      WhiteList   = []
+      BlackList   = []
+      DeleteList  = []
+      OtherList   = []
       OtherAction = "Pass"
       for Count in range(int(PVars[("PendingList", "PagerSize")])):
         # Check for radioboxes (a0 through a%(PagerSize)d)
@@ -188,6 +188,7 @@ def Show():
   # Load the display template
   T = Template.Template("pending.html")
   T["CharSet"] = "utf-8"
+  T["MsgID"]   = ""
 
   # Find the message numbers we'll display
   FirstMsg = PVars["Pager"]
