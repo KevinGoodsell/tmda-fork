@@ -24,6 +24,7 @@
 
 from email import message_from_string
 from email.Charset import add_alias
+from email.Errors import MessageError
 from email.Header import Header, decode_header
 from email.MIMEMessage import MIMEMessage
 from email.MIMEMultipart import MIMEMultipart
@@ -71,9 +72,25 @@ class AutoResponse:
         recipient is the recipient e-mail address of this auto
         response.  Normally the envelope sender address.
         """
-        self.msgin = msgin
-        self.msgin_as_string = Util.msg_as_string(self.msgin)
-        self.msgin_size = len(self.msgin_as_string)
+        msgin_as_string = Util.msg_as_string(msgin)
+        max_msg_size = int(Defaults.CONFIRM_MAX_MESSAGE_SIZE)
+        # Don't include the payload if it's over a certain size.
+        if max_msg_size and max_msg_size < len(msgin_as_string):
+            msgin.set_payload('[ Message body suppressed '
+                              '(exceeded %s bytes) ]' % max_msg_size)
+            msgin_as_string = Util.msg_as_string(msgin)
+        # Now try to re-parse the message with a full parse (not a header-only
+        # parse) and store that as self.msgin.  If the full parse fails, there
+        # is no choice but to use the header-parsed version, so to prevent
+        # later Generator failures, we reset AUTORESPONSE_INCLUDE_SENDER_COPY
+        # to include only the headers.  Only do this if it was set to include
+        # the entire message.
+        try:
+            self.msgin = message_from_string(msgin_as_string)
+        except (KeyError, MessageError, TypeError, ValueError):
+            self.msgin = msgin
+            if Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY > 1:
+                Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY = 1
         self.bouncemsg = message_from_string(bouncetext)
         self.responsetype = response_type
         self.recipient = recipient
@@ -127,12 +144,8 @@ class AutoResponse:
                 rfc822part['Content-Description'] = 'Original Message Headers'
             elif Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY == 2:
                 # include the entire message as a message/rfc822 part.
-                # don't include the payload if it's over a certain size.
-                if (Defaults.CONFIRM_MAX_MESSAGE_SIZE and
-                    (int(Defaults.CONFIRM_MAX_MESSAGE_SIZE) < int(self.msgin_size))):
-                    new_payload = '[ Message body suppressed (exceeded %s bytes) ]' \
-                                  % Defaults.CONFIRM_MAX_MESSAGE_SIZE
-                    self.msgin.set_payload(new_payload)
+                # If the message was > CONFIRM_MAX_MESSAGE_SIZE, it has already
+                # been truncated appropriately in the constructor.
                 rfc822part = MIMEMessage(self.msgin)
                 rfc822part['Content-Description'] = 'Original Message'
             self.mimemsg.attach(rfc822part)

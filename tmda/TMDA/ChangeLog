@@ -1,3 +1,16 @@
+2003-11-11  Tim Legant  <tim@catseye.net>
+
+	* AutoResponse.py (AutoResponse.__init__): Recreate incoming
+	message using the full email.Parser.Parser rather than the
+	HeaderParser.  Substitute 'body suppressed" message if necessary
+	before re-parsing.  This allows us to attach the message object to
+	the auto-response and allows Generator to correctly produce a
+	message in send(), even if the original message contained an
+	attachment of type message/rfc822.
+
+	(AutoResponse.create): Moved code checking message size to
+	__init__.
+
 2003-10-14  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Deliver.py (Deliver.__deliver_maildir): Use os.open() and
