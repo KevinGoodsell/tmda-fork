@@ -1,3 +1,18 @@
+2001-04-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (hexlify): New function to convert binary data strings to
+	their hexidecimal notation.
+	(unhexlify): New function to convert hex back to binary.
+
+	* Cookie.py (datemac): Replace binascii.hexlify with my own binary
+	to hex function to support Python < 2.0.
+	(make_sender_cookie): Ditto.
+
+	* Defaults.py (mode): Ditto.
+
+	* HMAC.py (_strxor): Python version earlier than 2.0 don't have
+	built-in string methods; replace with string.join().
+
 2001-04-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (TMDA_VERSION): Bump up to a new major release level

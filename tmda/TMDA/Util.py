@@ -105,3 +105,18 @@ def file_to_list(file,list):
             address = string.lower(address)
             list.append(address)
     return list
+
+
+def hexlify(b):
+    """Return the hexadecimal representation of the binary data."""
+    return "%02x"*len(b) % tuple(map(ord, b))
+
+
+def unhexlify(s):
+    """Return the binary data represented by the hexadecimal string."""
+    acc = []
+    append = acc.append
+    int16 = string.atoi
+    for i in range(0, len(s), 2):
+        append(chr(int16(s[i:i+2], 16)))
+    return string.join(acc, '')

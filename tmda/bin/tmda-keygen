@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-
-import binascii
 import commands
 import os
 import sys
+
+import paths
+from TMDA import Util
 
 
 def keygen():
@@ -34,7 +35,7 @@ def keygen():
                 key_data = key_data + os.popen(i).read()
         key = sha.new(key_data + "key").digest()
 
-    return binascii.hexlify(key)
+    return Util.hexlify(key)
         
 print "Generating a unique, 160-bit private key, please wait a moment.."
 print

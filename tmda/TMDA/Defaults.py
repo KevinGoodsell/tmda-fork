@@ -5,7 +5,6 @@
 
 # Make site-wide configuration changes to this file.  
 
-import binascii
 import os
 import stat
 import sys
@@ -188,7 +187,7 @@ execfile(TMDARC)
 # Convert key from hex back into raw binary.
 # Hex has only 4 bits of entropy per byte as opposed to 8.
 if CRYPT_KEY:
-    CRYPT_KEY = binascii.unhexlify(CRYPT_KEY)
+    CRYPT_KEY = Util.unhexlify(CRYPT_KEY)
 else:
     print "Encryption key not found!"
     sys.exit(ERR_CONFIG)

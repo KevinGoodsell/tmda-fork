@@ -3,7 +3,6 @@
 """Dated/Sender crypto-cookie functions."""
 
 
-import binascii
 import string
 import time
 
@@ -15,7 +14,7 @@ import Util
 def datemac(time):
     """Expects time as a string, and returns an HMAC in hex."""
     datemac = HMAC.new(Defaults.CRYPT_KEY,time).digest()[:3]
-    return binascii.hexlify(datemac)
+    return Util.hexlify(datemac)
 
 
 def make_dated_cookie(time):
@@ -28,7 +27,7 @@ def make_dated_cookie(time):
 def make_sender_cookie(address):
     """Return a sender-style cookie based on the given address."""
     sender_cookie = HMAC.new(Defaults.CRYPT_KEY,address).digest()[:3]
-    return binascii.hexlify(sender_cookie)
+    return Util.hexlify(sender_cookie)
 
 
 def make_dated_address():
