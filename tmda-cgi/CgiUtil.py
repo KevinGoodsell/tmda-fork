@@ -150,7 +150,7 @@ def ReportToSpamCop(MsgObj):
   "Report a given message to SpamCop."
 
   if PVars[("NoOverride", "Sendmail")]:
-    Sendmail = "-s %s" % PVars[("NoOverride", "Sendmail")]
+    Sendmail = "-s %s " % PVars[("NoOverride", "Sendmail")]
   else:
     Sendmail = ""
   Command = "%s reporter.py %s%s" % (sys.executable, Sendmail,
