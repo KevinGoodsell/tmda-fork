@@ -1,5 +1,25 @@
 ======================================================================
 
+If you are upgrading from a release of tmda-cgi < 0.03:
+
+* Requires TMDA release 0.75 or later
+
+* Changed the parameter string you must enter into compile to make tmda-cgi
+  work with virtual users.  The new default for this is:
+
+  vpopmail1 /home/vpopmail/bin/vuserinfo ~
+
+  DO NOT USE THE OLD STRING AS IT WILL NOT WORK!
+
+* display directory has *NO* similarity to the earlier setup.  If you do not
+  currently use a symbolic link to put the display directory in your web
+  tree, then you will want to completely delete your current display
+  directory and replace it with the new one.  We highly recommend using a
+  symbolic link if this option is available to you.  The display directory
+  is expected to change a lot in the next few releases.
+
+======================================================================
+
 If you are upgrading from a release of tmda-cgi < 0.02:
 
 * Requires TMDA release 0.74 or later

@@ -1,0 +1,9 @@
+2003-04-19  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added vpopmail1 stub.
+
+	  I'm calling it vpopmail1 instead of just vpopmail because it is
+	  possible that future versions (or perhaps even older versions) of
+	  vpopmail may require a radically different stub program.  We may
+	  have to add more stubs to support these versions instead of just
+	  making the current stub smarter.
