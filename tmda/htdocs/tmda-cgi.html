@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Dec  5 10:52:54 2002 -->
+<!-- Fri Dec  6 22:10:12 2002 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -218,7 +218,8 @@ Author
     <p>To remind you <em><strong>why</strong></em> you got TMDA in the first place. 
     <p> &quot;Wow, I would have gotten 100 e-mails about Viagara, cheap cigarettes, 
       weight loss drugs, penis enlargement, and Nigerian swindles today! Now I 
-      remember why the rest of my family thinks that e-mail is a pain.&quot;</ul>
+      remember why the rest of my family thinks that e-mail is a pain.&quot;
+</ul>
 <hr>
 <h2>Requirements</h2>
 <p>TBD. Until we do more testing it isn't clear what systems have problems with 
@@ -264,7 +265,8 @@ Author
     been done to date to see if it will work in other locations.<br>
   </li>
   <li>You will have to recompile tmda-cgi if you move your configuration files 
-    or source tree.<br></li>
+    or source tree.<br>
+  </li>
   <li>You will have to recompile tmda-cgi if you change which mode (system-wide, 
     single-user, or no-su) you run in.</li>
 </ul>
@@ -288,7 +290,7 @@ Author
   free to use these files as-is or modify/replace them to personalize the program.</p>
 <p>The simplest way to provide this directory is with a symbolic link (assuming 
   you have you web server configured to follow symbolic links). For example:</p>
-<blockquote>
+<blockquote> 
   <pre># ln -s display /path/to/webpage/directory</pre>
 </blockquote>
 <h3>Installing single-user</h3>
@@ -339,7 +341,7 @@ Author
 </blockquote>
 <p>At this point you will have to change permissions on any existing pending mail 
   and add something akin to:</p>
-<blockquote>
+<blockquote> 
   <pre>os.umask(027)</pre>
 </blockquote>
 <p>to your configuration file. That will make sure that future pending e-mails 
@@ -348,75 +350,156 @@ Author
   consider moving all of your TMDA files into one central location. This will 
   make it easier to keep group permissions on your directories and files. Here's 
   some sample directories and file contents I set up for my user <tt>cgitest</tt>:</p>
-<blockquote> 
-  <pre>/etc:
--rw-r--r--    1 root     root           22 Nov 24 23:54 tmda-cgi
--rw-r--r--    1 root     root          557 Nov 27 15:05 tmdarc
--rw-------    1 tofmipd  tofmipd        49 Nov 10 11:02 tofmipd
-
-/var:
-drwxr-s--x    3 root     nobody         72 Nov 27 11:24 tmda
-
-/var/tmda:
-drwx--s---    6 cgitest  nobody        200 Nov 27 11:39 cgitest
-
-/var/tmda/cgitest:
--rw-r-----    1 cgitest  nobody          0 Nov 27 11:39 config
--rw-r-----    1 cgitest  nobody         41 Nov 27 11:39 crypt_key
-drwx--s---    2 cgitest  nobody         96 Nov 27 12:55 filters
-drwx--s---    2 cgitest  nobody        144 Nov 27 12:59 lists
-drwx--s---    2 cgitest  nobody        120 Nov 27 12:57 logs
-drwxrws---    2 cgitest  nobody         48 Nov 27 11:37 pending
-drwx--s---    2 cgitest  nobody        768 Nov 29 09:54 responses
-
-/var/tmda/cgitest/filters:
--rw-rw----    1 cgitest  nobody        153 Nov 27 12:54 incoming
--rw-rw----    1 cgitest  nobody        150 Nov 27 12:55 outgoing
-
-/var/tmda/cgitest/lists:
--rw-rw----    1 cgitest  nobody          0 Nov 27 12:59 blacklist
--rw-rw----    1 cgitest  nobody          0 Nov 27 12:59 confirmed
--rw-rw----    1 cgitest  nobody          0 Nov 27 12:59 whitelist
-
-/var/tmda/cgitest/logs:
--rw-r-----    1 cgitest  nobody          0 Nov 27 12:57 debug
--rw-r-----    1 cgitest  nobody          0 Nov 27 12:57 in
--rw-r-----    1 cgitest  nobody          0 Nov 27 12:57 out
-
-/etc/tmda-cgi:
-cgitest:XPkY0q/9Uge9I
-
-/var/tmda/cgitest/filters/incoming:
-from-file /var/tmda/cgitest/lists/blacklist reject
-from-file /var/tmda/cgitest/lists/whitelist accept
-from-file /var/tmda/cgitest/lists/confirmed accept
-
-/var/tmda/cgitest/filters/outgoing:
-to-file /var/tmda/cgitest/lists/whitelist tag envelope dated=10d from bare
-to-file /var/tmda/cgitest/lists/confirmed tag envelope dated=10d from bare
-
-/etc/tmdarc:
-import Util
-
-DATADIR = &quot;/var/tmda/%s/&quot; % Util.getusername()
-CGI_ACTIVE = 1
-FILTER_INCOMING          = DATADIR + &quot;filters/incoming&quot;
-FILTER_OUTGOING          = DATADIR + &quot;filters/outgoing&quot;
-LOGFILE_DEBUG            = DATADIR + &quot;logs/debug&quot;
-LOGFILE_INCOMING         = DATADIR + &quot;logs/in&quot;
-LOGFILE_OUTGOING         = DATADIR + &quot;logs/out&quot;
-PENDING_BLACKLIST_APPEND = DATADIR + &quot;lists/blacklist&quot;
-PENDING_WHITELIST_APPEND = DATADIR + &quot;lists/whitelist&quot;
-os.umask(027)
-ADDED_HEADERS_CLIENT = { &quot;X-Primary-Address&quot;: &quot;%s@%s&quot; % \
-  (Util.getusername(), Util.gethostname()) }
-
-~cgitest/.qmail:
-|preline /usr/src/tmda/bin/tmda-filter -c /var/tmda/cgitest/config
-./Maildir/</pre>
+<blockquote> <tt>/etc:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-r--r-- &nbsp; &nbsp;1 root &nbsp; &nbsp; root &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 22 Nov 24 23:54 tmda-cgi<br>
+-rw-r--r-- &nbsp; &nbsp;1 root &nbsp; &nbsp; root &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;557 Nov 27 15:05 tmdarc<br>
+-rw------- &nbsp; &nbsp;1 tofmipd &nbsp;tofmipd &nbsp; &nbsp; &nbsp; &nbsp;49 Nov 10 11:02 tofmipd</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>drwxr-s--x &nbsp; &nbsp;3 root &nbsp; &nbsp; nobody &nbsp; &nbsp; &nbsp; &nbsp; 72 Nov 27 11:24 tmda</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>drwx--s--- &nbsp; &nbsp;6 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;200 Nov 27 11:39 cgitest</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 11:39 config<br>
+-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; 41 Nov 27 11:39 crypt_key<br>
+drwx--s--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; 96 Nov 27 12:55 filters<br>
+drwx--s--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;144 Nov 27 12:59 lists<br>
+drwx--s--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;120 Nov 27 12:57 logs<br>
+drwxrws--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; 48 Nov 27 11:37 pending<br>
+drwx--s--- &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;768 Nov 29 09:54 responses<br>
+drwxr-sr-x &nbsp; &nbsp;2 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;200 Dec &nbsp;6 20:33 templates</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/filters:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;153 Nov 27 12:54 incoming<br>
+-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;150 Nov 27 12:55 outgoing</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/lists:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:59 blacklist<br>
+-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:59 confirmed<br>
+-rw-rw---- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:59 whitelist</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/logs:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:57 debug<br>
+-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:57 in<br>
+-rw-r----- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 Nov 27 12:57 out</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/templates:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>-rw-r--r-- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;407 Dec &nbsp;6 20:30 bounce.txt<br>
+-rw-r--r-- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;215 Dec &nbsp;6 20:30 confirm_accept.txt<br>
+-rw-r--r-- &nbsp; &nbsp;1 cgitest &nbsp;nobody &nbsp; &nbsp; &nbsp; &nbsp;702 Dec &nbsp;6 20:33 confirm_request.txt</tt></td>
+    </tr>
+  </table><br>
+  <tt>/etc/tmda-cgi:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>cgitest:XPkY0q/9Uge9I</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/filters/incoming:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>from-file /var/tmda/cgitest/lists/blacklist reject<br>
+from-file /var/tmda/cgitest/lists/whitelist accept<br>
+from-file /var/tmda/cgitest/lists/confirmed accept</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/filters/outgoing:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>to-file /var/tmda/cgitest/lists/whitelist tag envelope dated=10d from bare<br>
+to-file /var/tmda/cgitest/lists/confirmed tag envelope dated=10d from bare</tt></td>
+    </tr>
+  </table><br>
+  <tt>/var/tmda/cgitest/templates/confirm_request.txt:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>From.US-ASCII: "%(FULLNAME)s" <%(recipient_address)s><br>
+Subject.US-ASCII: Please confirm your message<br>
+Reply-To.US-ASCII: %(confirm_accept_address)s<br>
+BodyCharset: US-ASCII<br>
+&nbsp;<br>
+This message was created automatically by mail delivery software<br>
+(TMDA).<br>
+&nbsp;<br>
+Your message attached below is being held because the address<br>
+<%(confirm_append_address)s> has not been verified.<br>
+&nbsp;<br>
+To release your message for delivery, please send an empty message<br>
+to the following address, surf the following link, or use your<br>
+mailer's "Reply" feature.<br>
+&nbsp;<br>
+ &nbsp; %(confirm_accept_address)s<br>
+&nbsp;<br>
+ &nbsp; %(confirm_accept_url)s<br>
+&nbsp;<br>
+This confirmation verifies that your message is legitimate and not<br>
+junk-mail. You should only have to confirm your address once.</tt></td>
+    </tr>
+  </table><br>
+  <tt>/etc/tmdarc:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>import Util<br>
+&nbsp;<br>
+# Allow group access to critical files<br>
+ALLOW_MODE_640 = 1<br>
+os.umask(0027)<br>
+&nbsp;<br>
+# Locate important files and directories<br>
+DATADIR = "/var/tmda/%s/" % os.environ["USER"]<br>
+CONFIRM_APPEND &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "lists/whitelist"<br>
+FILTER_INCOMING &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= DATADIR + "filters/incoming"<br>
+FILTER_OUTGOING &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= DATADIR + "filters/outgoing"<br>
+LOGFILE_DEBUG &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= DATADIR + "logs/debug"<br>
+LOGFILE_INCOMING &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "logs/in"<br>
+LOGFILE_OUTGOING &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "logs/out"<br>
+PENDING_BLACKLIST_APPEND = DATADIR + "lists/blacklist"<br>
+PENDING_WHITELIST_APPEND = DATADIR + "lists/whitelist"<br>
+TEMPLATE_DIR &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; = DATADIR + "templates/"<br>
+&nbsp;<br>
+# CGI location<br>
+CGI_URL = "http://wolfhome.com/~cgitest/index2.cgi"<br>
+<br>
+# Define X-Primary-Address key for TMDA-to-TMDA communications<br>
+ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
+ &nbsp;(os.environ["USER"], Util.gethostname()) }</tt></td>
+    </tr>
+  </table><br>
+  <tt>~cgitest/.qmail:</tt> 
+  <table>
+    <tr> 
+      <td width="600" bgcolor="#CCCCCC"><tt>|preline /usr/src/tmda/bin/tmda-filter -c /var/tmda/cgitest/config<br>
+./Maildir/</tt></td>
+    </tr>
+  </table><br>
 </blockquote>
 <p>tmda-cgi was compiled with the following:</p>
-<blockquote>
+<blockquote> 
   <pre>./compile -nc /var/tmda/~/config -t /www/tmda.cgi</pre>
 </blockquote>
 <p>Use the <tt>./compile -h</tt> for more details on how to use compile.</p>
