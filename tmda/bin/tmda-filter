@@ -35,7 +35,7 @@ program = sys.argv[0]
 def usage(code, msg=''):
     print __doc__ % globals()
     if msg:
-        print >> sys.stderr, msg
+        print msg
     sys.exit(code)
     
 try:
