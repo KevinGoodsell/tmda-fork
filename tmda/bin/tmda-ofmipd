@@ -553,6 +553,10 @@ class SMTPChannel(asynchat.async_chat):
         self.__auth_password = None
         self.__auth_sasl = None
         self.__sasl_types = ['login', 'cram-md5', 'plain']
+        # Remove CRAM-MD5 from the published SASL types if using the
+        # `--authprog' or `--remoteauth' options. See FAQ 5.8.
+        if remoteauth['enable'] or authprog:
+            self.__sasl_types.remove('cram-md5')
         self.__auth_cram_md5_ticket = '<%s.%s@%s>' % (random.randrange(10000),
                                                       int(time.time()), FQDN)
         self.__server = server
