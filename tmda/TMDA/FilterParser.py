@@ -896,7 +896,7 @@ class FilterParser:
                 elif os.path.exists(config_db):
                     dbfile = config_db
                     import marshal as Serializer
-                elif not args.has_key('optional'):
+                if not args.has_key('optional'):
                     mmdb_file = open(dbfile, 'r')
                     mmdb_data = Serializer.load(mmdb_file)
                     mmdb_file.close()
