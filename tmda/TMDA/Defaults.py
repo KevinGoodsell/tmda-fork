@@ -21,7 +21,7 @@ TMDA_VERSION = "0.21"
 TMDA_HOMEPAGE = "<http://tmda.sourceforge.net/>"
 
 PYTHON_VERSION = string.split(sys.version)[0]
-# e.g, X-Delivery-Agent: TMDA v0.12/Python 2.1 (linux2)
+# e.g, "TMDA v0.12/Python 2.1 (linux2)"
 DELIVERY_AGENT = 'TMDA ' + 'v' + TMDA_VERSION + '/Python ' + PYTHON_VERSION \
                  + ' (' + sys.platform + ')'
 
