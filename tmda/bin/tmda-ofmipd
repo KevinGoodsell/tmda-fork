@@ -1096,11 +1096,6 @@ class VDomainProxy(PureProxy):
     (VPopMail or VMailMgr) environment.  It needs to behave differently from
     the standard TMDA proxy in that authenticated users are not system
     (/etc/passwd) users."""
-    def __init__(self, localaddr, remoteaddr):
-        from TMDA.MTA import Qmail
-        self._mta = Qmail('_qok_')
-        PureProxy.__init__(self, localaddr, remoteaddr)
-
     def process_message(self, peer, mailfrom, rcpttos, data, auth_username):
         # Set the TCPLOCALIP environment variable to support VPopMail's reverse
         # IP domain mapping.
@@ -1129,8 +1124,7 @@ class VDomainProxy(PureProxy):
             else:
                 # The 'prepend' is the system user in charge of this virtual
                 # domain.
-                prepend = self._mta.getvdomainprepend(auth_username,
-                                                      vdomainspath)
+                prepend = Util.getvdomainprepend(auth_username, vdomainspath)
                 if not prepend:
                     err = 'Error: "%s" is not a virtual domain' % (domain,)
                     print >> DEBUGSTREAM, err
