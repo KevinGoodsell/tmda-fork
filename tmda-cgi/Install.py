@@ -665,6 +665,10 @@ def Show():
   elif Form["cmd"].value == "faq":
     TemplateFN = "faq.html"
   elif Form["cmd"].value == "install":
+    if not Util.CanWrite(os.environ["HOME"]):
+      CgiUtil.TermError("Can't write to home dir.", "No write permissions.",
+        "installing", CgiUtil.FileDetails("home directory",
+        os.environ["HOME"]), "Check file permissions in home directory.")
     Install()  # Does not return.
   elif Form["cmd"].value == "restore":
     Restore()  # Does not return.
