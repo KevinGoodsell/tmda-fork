@@ -36,11 +36,15 @@ PYTHON = sys.version.split()[0]
 
 # Platform identifier
 try:
-    from distutils.util import get_platform
-    PLATFORM = get_platform()
+    from platform import platform
+    PLATFORM = platform()
 except ImportError:
-    PLATFORM = sys.platform
+    try:
+        from distutils.util import get_platform
+        PLATFORM = get_platform()
+    except ImportError:
+        PLATFORM = sys.platform
 
 # Summary of all the version identifiers
-# e.g, TMDA/0.78+ "Dark Star" (Python/2.3b1+ on darwin-6.6-Power_Macintosh)
+# e.g, TMDA/0.86+ "Carry Back" (Python/2.3.2 on Darwin-6.8-Power_Macintosh-powerpc-32bit)
 ALL = 'TMDA/%s "%s" (Python/%s on %s)' % (TMDA, CODENAME, PYTHON, PLATFORM)

@@ -1,3 +1,8 @@
+2003-10-09  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Version.py (PLATFORM): Use the more descriptive 'platform'
+	module if it's available.
+
 2003-10-01  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Util.py (getfullname): Change default fallback value to an empty
