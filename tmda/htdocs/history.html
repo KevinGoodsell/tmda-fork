@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Dec 18 22:40:48 2003 -->
+<!-- Fri Dec 19 12:56:21 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -205,39 +205,79 @@ Contact
 <td valign="top" width="90%" class="body"><br>
 <h3>TMDA History</h3>
 
-TMDA was originally modeled after a Perl script written by Thomas
-Erskine called <a href="http://www.DeepEddy.Com/tms.html" TARGET="Resource Window">
-Tagged Message Sender</a> (TMS).
+<h4>TMS</h4>
 
-After using TMS for a month, I was thrilled with how effective it was
-in reducing my junk mail problem, but the program was no longer being
-developed.  I didn't want to see the concepts die, and also wanted to
-add a challenge/response system (which TMS lacked), so I decided to
-rewrite the program from scratch and name the result TMDA.  <br><br>
+TMDA was originally modeled after a little Perl script written by Thomas
+Erskine called <a href="http://www.DeepEddy.Com/tms" TARGET="Resource Window">
+Tagged Mail Sender</a> (TMS) which implemented the concept of
+tagged addresses.
 
-The first release of TMDA in April 2001 was essentially a rewrite of
-TMS in Python, and it grew from there.  TMDA has since evolved into a
-significantly larger and more featureful application.  The two
-applications today share very little except for some core ideas ('dated' and
-'sender' style tagged addresses).
-<br><br>
+After using TMS for a month, I 
+(<a href="mailto:jason@mastaler.com">Jason R. Mastaler</a>) 
+was thrilled with
+how effective it was in reducing my spam problem, but the program was
+no longer being developed or maintained.  I decided to rewrite the
+program from scratch and name the result TMDA.  The first release of
+TMDA in April 2001 was essentially a rewrite of TMS in Python, and it
+grew from there.
 
-Like TMS, early TMDA was strictly a qmail application.  The decision
-was later made to add support for other MTAs in order to expand usage
-and attract developers.  This in turn would improve the overall
-quality of the software.  Postfix support was added in October, Exim
-in November, and Sendmail in December of that same year.
-<br><br>
+<h4>Challenge/Response</h4>
 
-Currently TMDA should be considered "alpha" level software because it
+As more people began to use TMDA, it became clear a more user-friendly
+interface was needed, so a 
+<a href="challengeresponse.html">challenge/response</a> system was grafted
+on in July of 2001.  Even though TMDA implements a number of
+techniques, the C/R system is generally what TMDA is known for.
+While C/R systems are now commonplace, TMDA was the first 
+publically available program in widespread use to implement C/R
+as a primary anti-spam countermeasure.
+
+<h4>There is more to life than qmail</h4>
+
+The next hurdle was platform independence.  Like TMS, early TMDA was
+strictly a qmail application.  The decision was later made to add
+support for the other major Unix MTAs in order to expand usage and attract
+developers.  This in turn would improve the overall quality of the
+software.  Postfix support was added in October, Exim in November, and
+Sendmail and Courier in December of 2001.
+
+<h4>The "DA" in TMDA</h4>
+
+In 2002, the local mail delivery agent capabilities of TMDA were
+greatly improved, and in fact many now use it as a clearer and simpler
+alternative to Procmail or Maildrop in addition to the C/R system and other
+features.
+
+<h4>The first major release</h4>
+
+The 1.0-final release of TMDA was made in December of 2003; the fruits
+of almost three years of collaborative hacking.  The primary
+developers for this developent cycle were 
+<a href="mailto:jason@mastaler.com">Jason R. Mastaler</a> and 
+<a href="mailto:tim@catseye.net">Tim Legant</a>, 
+with nods to the contributors mentioned in 
+
+<a href="http://cvs.sourceforge.net/viewcvs.py/*checkout*/tmda/tmda/THANKS?rev=HEAD" TARGET="Resource Window">
+THANKS </a>
+
+and many others
+who provided feedback, bug reports, and invaluable suggestions.
+The 1.0.x releases are considered stable and reliable, and in fact are
+in use at many sites in a production level capacity.
+
+<h4>Tomorrow never dies</h4>
+
+The envelope continues to be pushed in TMDA 1.1.x, a new development cycle,
+which will untimately lead to another stable release, TMDA 1.2.
+Currently TMDA 1.1.x should be considered "alpha" level software because it
 is evolving rapidly.  Features and functionality are continually being
 added, reevaluated and improved, and subtle changes may appear between
-releases.  That said, TMDA users find the software solid and reliable,
-and a concerted effort is made to maintain this during each release.
-<br><br>
+releases.  <a href="mailto:jason@mastaler.com">Jason R. Mastaler</a> 
+remains TMDA maintainer.
 
-TMDA release 1.0 should be expected sometime during the Fall of 2003;
-the fruits of more than two years of hacking.
+<!-- That said, TMDA users gfind the software solid and reliable, -->
+<!-- and a concerted effort is made to maintain this during each release. -->
+
 
 </td><!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
