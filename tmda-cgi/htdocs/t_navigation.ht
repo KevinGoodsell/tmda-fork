@@ -1,0 +1,47 @@
+Title: Navigation of the Pending e-mails
+
+<h2>Navigation of the Pending e-mails</h2>
+
+<p>I think the pending e-mail list and e-mail viewer are fairly intuitive, so
+  I'll just post a couple annotated screenshots to point out some of the finer
+  details.</p>
+
+<a href="#Navigation">Pending List Navigation</a><br>
+<a href="#Read">Read and Unread</a><br>
+<a href="#Radio">Radio Button Controls</a><br>
+<a href="#Email">E-mail Controls</a><br>
+
+<h3><a name="Navigation"></a>Pending List Navigation</h3>
+
+<img src="display/navigation.png" width="584" height="153">
+
+<p>I put the navigation bars at both the top and bottom of the list for your 
+convenience.</p>
+
+<h3><a name="Read"></a>Read and Unread</h3>
+
+Bold text is used to mark unread e-mails. You can mark all e-mails read if
+  you wish.<br>
+
+<img src="display/read.png" width="562" height="170">
+
+<p>Clicking on an e-mail's subject will view the contents.</p>
+
+<h3><a name="Radio"></a>Radio Button Controls</h3>
+
+<p>Use the radio buttons to select what you want to do with any given
+  e-mail.</p>
+
+<img src="display/radio.png" width="415" height="224">
+
+<p>I do not recommend deleting the spam. This is really a waste of your time. 
+  The spam will disappear automatically after it expires. Mostly I just put the 
+  delete column in there for completeness.</p>
+
+<h3><a name="Email"></a>E-mail Controls</h3>
+
+Most of the navigation buttons are identical when viewing an e-mail.<br>
+
+<img src="display/email.png" width="440" height="208">
+
+<p>You can view "all" headers or "short" headers if you prefer.</p>

@@ -18,7 +18,11 @@ Title: Default Settings
     <td><a href="#NoOverrideMayEditLocalConfig">NoOverride:MayEditLocalConfig</a></td>
   </tr>
   <tr>
+    <td><a href="#NoOverrideMayEditTemplates">NoOverride:MayEditTemplates</a></td>
     <td><a href="#NoOverrideMayInstall">NoOverride:MayInstall</a></td>
+  </tr>
+  <tr>
+    <td><a href="#NoOverrideSendmail">NoOverride:Sendmail</a></td>
     <td><a href="#NoOverrideUninstallBackupTGZ">NoOverride:UninstallBackupTGZ</a></td>
   </tr>
   <tr>
@@ -31,26 +35,34 @@ Title: Default Settings
   </tr>
   <tr>
     <td><a href="#NoOverrideWhichTar">NoOverride:WhichTar</a></td>
+    <td><a href="#GeneralSpamCopAddr">General:SpamCopAddr</a></td>
+  </tr>
+  <tr>
     <td><a href="#GeneralTheme">General:Theme</a></td>
-  </tr>
-  <tr>
     <td><a href="#GeneralUseJSConfirm">General:UseJSConfirm</a></td>
+  </tr>
+  <tr>
     <td><a href="#GenAddrExpireNum">GenAddr:ExpireNum</a></td>
-  </tr>
-  <tr>
     <td><a href="#GenAddrExpireUnit">GenAddr:ExpireUnit</a></td>
+  </tr>
+  <tr>
     <td><a href="#GenAddrKeyword">GenAddr:Keyword</a></td>
-  </tr>
-  <tr>
     <td><a href="#GenAddrSender">GenAddr:Sender</a></td>
+  </tr>
+  <tr>
+    <td><a href="#LoginInitPage">Login:InitPage</a></td>
+    <td><a href="#PendingListCropDest">PendingList:CropDest</a></td>
+  </tr>
+  <tr>
     <td><a href="#PendingListCropSender">PendingList:CropSender</a></td>
-  </tr>
-  <tr>
     <td><a href="#PendingListCropSubject">PendingList:CropSubject</a></td>
-    <td><a href="#PendingListDateFormat">PendingList:DateFormat</a></td>
   </tr>
   <tr>
+    <td><a href="#PendingListDateFormat">PendingList:DateFormat</a></td>
     <td><a href="#PendingListPagerSize">PendingList:PagerSize</a></td>
+  </tr>
+  <tr>
+    <td><a href="#PendingListShowAddr">PendingList:ShowAddr</a></td>
     <td><a href="#ViewPendingAltPref">ViewPending:AltPref</a></td>
   </tr>
   <tr>
@@ -121,6 +133,19 @@ Title: Default Settings
   <p>Default: <tt>Yes</tt></p>
 </blockquote>
 
+<h4><a name="NoOverrideMayEditTemplates"></a>NoOverride:MayEditTemplates</h4>
+<blockquote>
+  <p>Allow users to edit their template files with tmda-cgi.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[NoOverride]<br>
+          MayEditTemplates = No</td>
+      </tr>
+    </table>
+  <p>Default: <tt>Yes</tt></p>
+</blockquote>
+
 <h4><a name="NoOverrideMayInstall"></a>NoOverride:MayInstall</h4>
 <blockquote>
   <p>Allow users to install TMDA on their account with tmda-cgi.</p>
@@ -132,6 +157,21 @@ Title: Default Settings
       </tr>
     </table>
   <p>Default: <tt>Yes</tt></p>
+</blockquote>
+
+<h4><a name="NoOverrideSendmail"></a>NoOverride:Sendmail</h4>
+<blockquote>
+  <p>Override the default location of sendmail (<tt>/usr/sbin/sendmail</tt>).
+    This parameter is used to forward spam to
+    <a href="http://spamcop.net">SpamCop</a></p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[NoOverride]<br>
+          Sendmail = /usr/local/bin/sendmail</td>
+      </tr>
+    </table>
+  <p>Default: <i>None.</i></p>
 </blockquote>
 
 <h4><a name="NoOverrideUninstallBackupTGZ"></a>NoOverride:UninstallBackupTGZ</h4>
@@ -191,6 +231,16 @@ Title: Default Settings
   <p>Default: <tt>/bin/tar</tt></p>
 </blockquote>
 
+<h4><a name="GeneralSpamCopAddr"></a>General:SpamCopAddr</h4>
+<blockquote>
+  <p>E-mail address to use when forwarding spam to
+    <a href="http://spamcop.net">SpamCop</a></p>
+  <p>I recommend you leave this setting blank. Instead of providing a single
+    e-mail address for all your users to share, encourage them to get their own
+    SpamCop address.</p>
+  <p>Default: <i>None.</i></p>
+</blockquote>
+
 <h4><a name="GeneralTheme"></a>General:Theme</h4>
 <blockquote>
   <p>Theme to use if the user has not yet selected one of their own.</p>
@@ -242,6 +292,38 @@ Title: Default Settings
 <blockquote>
   <p>Default to keyword to use on first run.</p>
   <p>Default: <i>None.</i></p>
+</blockquote>
+
+<h4><a name="LoginInitPage"></a>Login:InitPage</h4>
+<blockquote>
+  <p>First page to present to a user after they log in. Almost any <tt>cmd</tt>
+    (look at the URL when selecting a page in tmda-cgi) is valid, but I
+    recommend you use either <tt>pending</tt> or <tt>gen_addr</tt>.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[Login]<br>
+          InitPage = gen_addr</td>
+      </tr>
+    </table>
+  <p>Default: <tt>pending</tt></p>
+</blockquote>
+
+<h4><a name="PendingListCropDest"></a>PendingList:CropDest</h4>
+<blockquote>
+  <p>Maximum length of an e-mail recipient before it will be cropped in list 
+    view.</p>
+  <p>Please note that the theme which ships with tmda-cgi does not display
+    e-mail recipient. This parameter will only be of interest if you create
+    a theme which includes <tt>%(To)s</tt>.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[PendingList]<br>
+          CropDest = 40</td>
+      </tr>
+    </table>
+  <p>Default: <tt>25</tt></p>
 </blockquote>
 
 <h4><a name="PendingListCropSender"></a>PendingList:CropSender</h4>
@@ -301,6 +383,20 @@ Title: Default Settings
       </tr>
     </table>
   <p>Default: <tt>15</tt></p>
+</blockquote>
+
+<h4><a name="PendingListShowAddr"></a>PendingList:ShowAddr</h4>
+<blockquote>
+  <p>Method for displaying e-mail addresses in list mode. May be
+    "<tt>Name</tt>", "<tt>Address</tt>", or "<tt>All</tt>".</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[PendingList]<br>
+          ShowAddr = All</td>
+      </tr>
+    </table>
+  <p>Default: <tt>Name</tt></p>
 </blockquote>
 
 <h4><a name="ViewPendingAltPref"></a>ViewPending:AltPref</h4>

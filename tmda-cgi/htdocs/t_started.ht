@@ -1,0 +1,86 @@
+Title: Getting Started With TMDA
+
+<h2>Getting Started With TMDA</h2>
+
+<p>Creating your TMDA account is a no-brainer once you get the URL from your
+  system administrator.  Simply log in (this is generally the same password as
+  used for checking your e-mail) and follow the on-screen prompts.</p>
+
+<a href="#Special">Special Instructions</a><br>
+<a href="#FULLNAME"><tt>FULLNAME</tt></a><br>
+<a href="#Lists">Lists</a><br>
+<a href="#Pending">Checking Pending</a><p>
+
+<h2><a name="Special"></a>Special Instructions</h2>
+
+<p>Pay special attention to a section marked "Special Instructions" that may
+  appear at the end of the installation proceedure. These are instructions from
+  your system administrator and may require you to take special action to
+  function correctly with your new TMDA guarded account.</p>
+
+<p>After that, you may wish to set a few configuration parameters.</p>
+
+<h2><a name="FULLNAME"></a><tt>FULLNAME</tt></h2>
+
+<p>The default parameters are generally okay and don't take much tweaking, but
+  it is worth the time to page through the different menus underneath 
+  "Settings" to familiarize yourself with what can be set.  The only variable 
+  that I do recommend you set is under "Local Config": <tt>FULLNAME</tt>.</p>
+
+<p><tt>FULLNAME</tt> tells TMDA how to address any e-mails it sends out (such
+  as confirmation requests). If this blank is not filled in (or filled in
+  correctly) by default, enter your name into the space and hit return.</p>
+
+<p>Your account is now filtered and ready to go.</p>
+
+<h2><a name="Lists"></a>Lists</h2>
+
+<p>Click over to your lists section and familiarize yourself with the lists
+  configured. They will probably all be blank for now.  This will change as
+  you continue to use TMDA.</p>
+  
+<p>Although it is impossible to say which lists will come configured with your
+  new guarded account, the four most common are:</p>
+
+<ul>
+  <li>confirmed - users who have replied to a confirmation request they have
+    received<p></li>
+  <li>whitelist - addresses you have specifically allowed<p></li>
+  <li>blacklist - addresses you have specifically denied<p></li>
+  <li>revoked - keyword addresses you have used in the past, but have been
+    comprimised</li>
+</ul>
+
+<p>If you wish, you may consider adding users to your whitelist. This is a good
+  idea if you are expecting mail from any users who might be confused by a
+  confirmation request (computer novices, elderly relatives, etc.).</p>
+<p>Also, if you currently receive any automated mailings (such as
+  joke-of-the-day or breaking news alerts), add the e-mail addresses now.  If
+  you're not sure of the precise address to expect, you can use wildcards to
+  whitelist entire domains. For example, <a href="http://cnn.com">CNN.com</a>
+  sends out breaking news alerts from the address:</p>
+<blockquote><tt>BreakingNews@MAIL.CNN.COM</tt></blockquote>
+<p>So you could add:</p>
+<blockquote><tt>BreakingNews@MAIL.CNN.COM</tt></blockquote>
+<p>to your whitelist.  You could also add:
+<blockquote><tt>*@MAIL.CNN.COM</tt></blockquote>
+<p>to accept mail from any address, so long as it came from the
+  <tt>mail.cnn.com</tt> domain.  Furthermore, you can use TMDA's special
+  wildcard syntax:</p>
+<blockquote><tt>*@=CNN.COM</tt></blockquote>
+<p>To accept any mail from any subdomain at <tt>cnn.com</tt>.  Keep in mind
+  that the more big domains you open up, the more chances spammers have of
+  slipping spam into your mailbox.</p>
+
+<h2><a name="Pending"></a>Checking Pending</h2>
+
+<p>It's a good idea to check your pending directory periodically for the first
+  few weeks or even months to catch any automated mailings that you may have
+  forgotten to whitelist.</p>
+<p>The less often an automated mailer sends you a message, the more likely you
+  are to forget to whitelist it. I personally forgot to whitelist my domain
+  registrar since they only write to me a couple times a year when my domain 
+  name is about to expire!</p>
+<p>When you find something that you forgot to whitelist, you can use the
+  whitelist feature from either the pending list or the pending mail viewer.
+  This will add to your whitelist and release the message simultaneously.</p>

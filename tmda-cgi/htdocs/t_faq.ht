@@ -1,0 +1,106 @@
+Title: Frequently Asked Questions
+
+<h2>Frequently Asked Questions</h2>
+
+<p><a href="#Free">Is it really free?</a><br>
+  <a href="#Annoy">Won't this challenge/response thing annoy people
+  who send me mail?</a><br>
+  <a href="#Quarantine">Can I look at the messages in quarantine to make
+  sure I'm not missing something important?</a><br>
+  <a href="#Automated">What about my mailing list and joke of the day?
+  How will that get past TMDA?</a><br>
+  <a href="#Replies">What about people I send mail to, do they get
+  challenged as well?</a><br>
+  <a href="#Uninstall">What if I change my mind? Can I get rid of TMDA
+  easily?</a></p>
+
+<h3><a name="Free"></a>Is it really free?</h3>
+
+<p>Yes, both TMDA and tmda-cgi (the program that lets you configure TMDA with
+  your web browser) are free. The programmers who created it volunteered their
+  time because they hate spam <b><i>that</i></b> much.</p>
+
+<h3><a name="Annoy"></a>Won't this challenge/response thing annoy people who
+  send me mail?</h3>
+
+<p>A little, perhaps. But I think you'll see that the inconvenience is slight
+  and since other users only have to confirm once, they won't mind doing it to
+  help you stay spam-free. You'd reply to a message to make them spam-free,
+  wouldn't you?<p>
+
+<p>Also, you can edit the list that TMDA uses to determine whether messages get
+  challenged. If you really think that replying to confirmation messages will
+  annoy your friends, you can put their addresses on the list pre-emptively and
+  they'll never notice a difference.</p>
+
+<h3><a name="Quarantine"></a>Can I look at the messages in quarantine to make 
+  sure I'm not missing something important?</h3>
+
+<p>Yes, tmda-cgi has a feature that lets you look at quarantined mail. TMDA
+  calls this your "pending" directory. You can even select the whitelist button
+  associated with a message to release it, and allow future mail from that
+  source to be accepted without challenge.<p>
+
+<h3><a name="Automated"></a>What about my mailing list and joke-of-the-day? How
+  will that get past TMDA?</h3>
+
+<p>There are two simple ways to tell TMDA to accept mail from a particular
+  automated source:<p>
+<ul>
+  <li>For automated mailings that always come from the same e-mail address 
+    (such as a joke-of-the-day mailing), simply add the sender's e-mail address 
+    to your list. Any future mailings from that address will be accepted 
+    without a challenge.<p>
+    If you find an automated message which has been trapped in TMDA's pending 
+    directory, you can even release and whitelist it with a single click.<p>
+    One of the best things about manually whitelisting something like this is
+    that if joke-of-the-day (or whomever) sells off your address to a spammer, 
+    you still won't receive any spam. The spammer will almost certainly send 
+    the spam from a different address than the one you listed.<p></li>
+  <li>Mailing lists require a slightly different tactic. Since the posts come
+    from all sorts of different addresses, the easiest solution is to create a
+    "keyword" address and use that when you sign up for the list.<p>
+    Suppose you wanted to join a mailing list about quilters. Instead of 
+    signing up with your real e-mail address (let's say it is 
+    <tt>joe@ilovequilts.com</tt>), you can use tmda-cgi to generate a keyword 
+    address such as
+    <nobr><tt>joe-keyword-quilters.092a48@ilovequilts.com</tt></nobr> and use 
+    that when you sign up (yes, it is a pretty long address, but you can 
+    generally copy and paste it). Any e-mail that arrives to this address will 
+    be accepted.<p>
+    Keyword addresses are a bit like giving out a key to your mailbox. Anyone
+    can send mail to them. If the a spammer gets a hold of a keyword address,
+    they can start spamming you again. <b><i>However</i></b>, locks are easily
+    changed and keywords are easily revoked. If you start receiving spam
+    directed to
+    <nobr><tt>joe-keyword-quilters.092a48@ilovequilts.com</tt></nobr>, you'll 
+    know it leaked out from your quilters mailing list. You can revoke the 
+    address and either sign up again to the mailing list with a new keyword 
+    address, or revoke the keyword and find some other place to get your fix of 
+    quilting news.</li>
+</ul>
+
+<h3><a name="Replies"></a>What about people I send mail to, do they get 
+  challenged as well?</h3>
+<p>No, people you write to do not generally have to confirm anything. If you
+  send mail from a TMDA-guarded account to someone who is not on your list, 
+  TMDA can be configured to automatically make up a new "dated" address and use 
+  that. Unlike keyword addresses that code a word into the address (see above), 
+  dated addresses code an expiration time into the address (five days, for 
+  example). If the user replies to your e-mail within that time, they won't 
+  have to confirm.<p>
+<p>Dated addresses are generally transparent and fairly safe.  If a spammer 
+  gets a hold of one, they can only use it until it expires. Any mail sent to 
+  an expired address typically generates a confirmation notice, as if they sent 
+  mail to your regular address.</p>
+<p>In other words, you can send mail to someone, they can reply, you can reply
+  to them, and so on for as long as you wish without anyone ever having to
+  confirm. If they take too long to reply, they would have to confirm then, but
+  again, only once. At that point they would be on your list and TMDA would
+  accept mail from them without a challenge.</p>
+
+<h3><a name="Uninstall"></a>What if I change my mind? Can I get rid of TMDA
+easily?</h3>
+
+<p>Yes, there is an uninstall option on the tmda-cgi menu, under 
+  "Settings".</p>

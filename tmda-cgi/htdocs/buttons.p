@@ -4,51 +4,69 @@ p1
 (lp2
 S'Overview'
 p3
-aS'Virtual Users'
+aS'Tutorial'
 p4
-aS'Install'
+aS'Virtual Users'
 p5
-aS'Passwords'
+aS'Install'
 p6
-aS'Config.'
+aS'Passwords'
 p7
-aS'Support'
+aS'Config.'
 p8
-asS'subtopics'
+aS'Support'
 p9
-(lp10
+asS'subtopics'
+p10
+(lp11
 S'What is it?'
-p11
-aS'Screenshots'
 p12
-aS'Requirements'
+aS'Why do I need it?'
 p13
-aS'Download'
+aS'Screenshots'
 p14
-aS'Modes'
+aS'Requirements'
 p15
-aS'Compilation'
+aS'Welcome to TMDA'
 p16
-aS'Centralized no-su'
+aS'Challenge Example'
 p17
-aS'Configuration'
+aS'Frequently Asked/Questions'
 p18
-aS'   TMDA config'
+aS'Getting Started'
 p19
-aS'   defaults.ini'
+aS'Navigation of the/Pending e-mails'
 p20
-aS'   theme.ini'
+aS'Anticipating e-mail'
 p21
-aS'   User prefs.'
+aS'Download'
 p22
-aS'Auto-installation'
+aS'Modes'
 p23
-aS'URL Confirmation'
+aS'Compilation'
 p24
-aS'Surprises & Gotchas'
+aS'Centralized no-su'
 p25
-aS'Contact'
+aS'Configuration'
 p26
-aS'Commercial Support'
+aS'   TMDA config'
 p27
+aS'   defaults.ini'
+p28
+aS'   theme.ini'
+p29
+aS'   User prefs.'
+p30
+aS'Auto-installation'
+p31
+aS'URL Confirmation'
+p32
+aS'Customization'
+p33
+aS'Surprises & Gotchas'
+p34
+aS'Contact'
+p35
+aS'Commercial Support'
+p36
 as.

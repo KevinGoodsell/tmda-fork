@@ -2,7 +2,11 @@ Title: Downloads
 
 <h2>Downloads</h2>
 
-<h3>Released versions</h3>
+<a href="#Releases">Released Versions</a><br>
+<a href="#Patches">Patches</a><br>
+<a href="#CVS">CVS</a><p>
+
+<h3><a name="Releases"></a>Released Versions</h3>
 
 <p>The latest releases of tmda-cgi may be found in the <a 
   href="releases/">download directory</a>.</p>
@@ -49,7 +53,7 @@ tmda-cgi release.</i></b></p>
     $ patch < patch-X.XX-YYYYMMDD</code>
 </blockquote>
 
-<h3>CVS</h3>
+<h3><a name="CVS"></a>CVS</h3>
 
 <p>If you like bleeding edge software, you can pull down the CVS copies either 
   from <a href="http://sourceforge.net/cvs/?group_id=24680">the SourceForge 

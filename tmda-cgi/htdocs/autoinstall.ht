@@ -16,6 +16,8 @@ Title: Auto-installation & Auto-uninstallation
   administrator will need to verify how the installation will be done 
   beforehand!</p>
 
+<a href="#Skel"><tt>skel</tt></a><p>
+
 <h3><a name="Skel"></a><tt>skel</tt></h3>
 
 <p>Before allowing users to auto-install or auto-uninstall, carefully check 
@@ -41,6 +43,10 @@ Title: Auto-installation & Auto-uninstallation
   <tr>
     <td valign="top" nowrap><b><tt>%(CryptKey)s</tt></b></td>
     <td>A new valid, random, cryptographic key.</td>
+  </tr>
+  <tr>
+    <td valign="top" nowrap><b><tt>%(Domain)s</tt></b></td>
+    <td>Best guess of the user's domain.</td>
   </tr>
   <tr>
     <td valign="top" nowrap><b><tt>%(Home)s</tt></b></td>

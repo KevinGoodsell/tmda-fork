@@ -13,7 +13,11 @@ Title: Modes
   "modes". Before compiling the code, you must select the mode that is best for 
   you: system-wide, single-user, and no-su.</p>
 
-<h3>system-wide mode</h3>
+<a href="#SystemWide">system-wide mode</a><br>
+<a href="#SingleUser">single-user mode</a><br>
+<a href="#NoSu">no-su mode</a><p>
+
+<h3><a name="SystemWide"></a>system-wide mode</h3>
 
 <p>In system-wide mode, multiple users can use tmda-cgi to access their TMDA
   system. The program launches as root and then performs a <tt>seteuid</tt>
@@ -32,7 +36,7 @@ Title: Modes
   any security holes in tmda-cgi, then they will be most easily exploitable by 
   users with real user logins.</p>
 
-<h3>single-user mode</h3>
+<h3><a name="SingleUser"></a>single-user mode</h3>
 
 <p>In single-user mode, tmda-cgi is compiled so that only one user can access 
   tmda-cgi (unless that user happens to be the system's virtual user, see <a 
@@ -57,7 +61,7 @@ Title: Modes
 <p>single-user mode is probably the best combination of safety and simplicity, 
   unless you are trying to support multiple real users.</p>
 
-<h3>no-su mode</h3>
+<h3><a name="NoSu"></a>no-su mode</h3>
 
 <p>no-su mode runs the program with no special privileges of any sort. The 
   downside of such an installation is that to allow the program access to your 

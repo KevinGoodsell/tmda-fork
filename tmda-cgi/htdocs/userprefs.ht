@@ -16,3 +16,28 @@ Title: User Preferences
   manually create a blank file (with <tt>touch</tt>) and <tt>chown</tt>, 
   <tt>chgrp</tt>, and/or <tt>chmod</tt> it so that CGI may write updates to 
   it.</p>
+
+<a href="#Override">Overriding Defaults</a><p>
+
+<h3><a name="Override"></a>Overriding Defaults</h3>
+<p>Most user preferences may be changed from within the tmda-cgi interface,
+  a few of them are not, intentionally. However, you may override these 
+  settings with a tmda-cgi program called <tt>override.py</tt>.  The syntax is 
+  as follows:</p>
+<blockquote>
+  <code>./override.py &lt;SettingsFile> &lt;Section:Setting> &lt;Value></code>
+</blockquote>
+<p>Typically, you would use this program to grant a user privileges other than
+  the defaults.  For example, suppose you wanted only user karen to be able to
+  change her templates.  In <tt>defaults.ini</tt> you would set:</p>
+<blockquote>
+  <pre>[NoOverride]
+MayEditTemplates = No</pre>
+</blockquote>
+<p>to disallow users from modifying their templates, and then at the shell you 
+  would type:</p>
+<blockquote>
+  <code><nobr>./override.py /home/karen/.tmda/tmda-cgi.ini 
+    NoOverride:MayEditTemplates Yes</nobr></code>
+</blockquote>
+<p>to grant this right back to karen.</p>

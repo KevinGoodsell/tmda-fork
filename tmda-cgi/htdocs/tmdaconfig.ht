@@ -7,7 +7,10 @@ Title: TMDA Configuration Files
 <p>The contents of these files is described in depth on the <a
   href="/config-vars.html">TMDA Configuration Variables</a> web page. tmda-cgi
   specific variables are the variables beginning with "CGI_". The definitions of
-  these are also listed below, for your convenience:</p>
+  these are also listed below, for your convenience.</p>
+
+<a href="#CGI_SETTINGS">CGI_SETTINGS</a><br>
+<a href="#CGI_URL">CGI_URL</a><p>
 
 <h4><a name="CGI_SETTINGS"></a>CGI_SETTINGS</h4>
 <blockquote>

@@ -1,0 +1,42 @@
+Title: Welcome to TMDA!
+
+<h2>Welcome to TMDA!</h2>
+<p><a href="http://tmda.sourceforge.net">TMDA</a> (tagged message delivery 
+  agent) is the free answer to your spam woes. Unlike other filters that look 
+  for keywords such as &quot;viagra&quot;, &quot;sweepstakes&quot;, and 
+  &quot;lesbians&quot;; TMDA uses a simple, but highly reliable method for 
+  determining which e-mails come from real people... it asks them!</p>
+<p><b><img src="display/diagram.png" width="361" height="237" 
+  align="right">TMDA asks people if they are real?</b></p>
+<p>Yes, it is called a &quot;challenge/response method&quot;. When someone 
+  sends mail to a TMDA guarded e-mail address for the first time, instead of 
+  just blindly dumping the message in your in-box, TMDA puts it in a special 
+  quarantine area and sends a
+  &quot;<a href="t_conf-example.html">challenge</a>&quot; back to the author. 
+  The challenge is just an e-mail that briefly explains the system and asks the 
+  user to reply to the challenge (this is the &quot;response&quot; part). Once 
+  TMDA receives the response, it releases the original message from quarantine 
+  and adds the sender to a list of people from which it will accept mail. Any 
+  future messages from that user will be accepted without another 
+  challenge.</p>
+<p><b>How does that help?</b></p>
+<p>Spammers typically put fake e-mail addresses on their spam. They don't want 
+  you to reply to them. The address they use is bad, so they never receive 
+  TMDA's challenge, they never get to respond, the message is never released 
+  from quarantine, and it never makes it to your in-box. Instead, it sits 
+  around and gathers dust until the system throws it away.</p>
+<p><b>Great! How do I get it!</b></p>
+<p>tmda-cgi is designed to run on your mail server. It does not run on your
+  PC.</p>
+<ul>
+  <li>If you are a system administrator who has not yet installed TMDA, start 
+    by surfing up <a href="/">TMDA's website</a>.<p></li>
+  <li>If you are a system administrator who has installed TMDA, but has not yet 
+    installed tmda-cgi, start by surfing up <a href="download.html">the install 
+    instructions</a>.<p></li>
+  <li>If you are not a system administrator, and you do not know if your mail 
+    server is running tmda-cgi, contact your sysadmin and ask them to install
+    tmda-cgi for you. Give them this URL if they do not have it.<p></li>
+</ul>
+<p>If you've already got tmda-cgi, proceed onto the <a 
+  href="t_faq.html">FAQ</a> to learn more about how it all works!</p>
