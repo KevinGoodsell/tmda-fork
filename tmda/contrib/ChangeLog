@@ -1,3 +1,8 @@
+2003-03-24  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* collectaddys: Use a dictionary instead of a list to guarantee
+	uniqueness.
+	
 2003-03-18  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* update-internaldomains: New script from Jesse Guardiani.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2001,2002 Jason R. Mastaler <jason@mastaler.com>
+# Copyright (C) 2001,2002,2003 Jason R. Mastaler <jason@mastaler.com>
 #
 # This file is part of TMDA.
 #
@@ -22,8 +22,7 @@
 """
 Collect e-mail addresses from mailboxes of various formats.
 Unix-style mbox files, qmail-style Maildirs, and MH/nmh-style folders
-are supported.  Each unique address is printed to stdout in lowercase,
-with the results sorted.
+are supported.  Each unique address is printed to stdout in lowercase.
 
 Every file or directory within the current working directory is
 assumed to be in one of the supported mailbox formats.
@@ -40,7 +39,7 @@ import os
 # Collect addresses from these headers only; season to taste.
 hdrs = [ 'from', 'return-path', 'sender' ]
 
-addys = []
+uniq = {}
 
 for path in os.listdir('.'):
     # If it's a directory, try to guess whether it's a Maildir or an
@@ -65,11 +64,8 @@ for path in os.listdir('.'):
                     address = msg.getaddr(hdr)[1]
                     if address is not None:
                         address = address.lower()
-                        if address not in addys:
-                            addys.append(address)
+                        uniq[address] = address
                     
-addys.sort()
-
-for a in addys:
+for a in uniq.keys():
     if a:
         print a
