@@ -618,8 +618,9 @@ class SMTPChannel(asynchat.async_chat):
             return 501
         self.__auth_username = username.lower()
         self.__auth_password = password
+        localip = self.__conn.getsockname()[0]
+        os.environ['TCPLOCALIP'] = localip
         if remoteauth['enable']:
-            localip = self.__conn.getsockname()[0]
             # Try first with the remote auth
             if run_remoteauth(username, password, localip):
                 return 1
@@ -646,8 +647,9 @@ class SMTPChannel(asynchat.async_chat):
             return 0
         self.__auth_username = username.lower()
         self.__auth_password = password
+        localip = self.__conn.getsockname()[0]
+        os.environ['TCPLOCALIP'] = localip
         if remoteauth['enable']:
-            localip = self.__conn.getsockname()[0]
             # Try first with the remote auth
             if run_remoteauth(username, password, localip):
                 return 1
@@ -1065,7 +1067,7 @@ class VDomainProxy(PureProxy):
         os.environ['TCPLOCALIP'] = self._localip
         # Set up partial tmda-inject command line.
         execdir = os.path.dirname(os.path.abspath(program))
-        inject_path = os.path.join(execdir, 'tmda-inject')
+        inject_cmd = os.path.join(execdir, 'tmda-inject')
         userinfo = auth_username.split('@', 1)
         user = userinfo[0]
         if len(userinfo) > 1:
@@ -1090,7 +1092,7 @@ class VDomainProxy(PureProxy):
                 prepend = self._mta.getvdomainprepend(auth_username,
                                                       vdomainspath)
                 if not prepend:
-                    err = 'Error: "%s" not a virtual domain' % (domain,)
+                    err = 'Error: "%s" is not a virtual domain' % (domain,)
                     print >> DEBUGSTREAM, err
                     os._exit(-1)
                 os.seteuid(0)
@@ -1105,10 +1107,6 @@ class VDomainProxy(PureProxy):
         print >> DEBUGSTREAM, 'vuser homedir: "%s"' % (vhomedir,)
         # This is so "~" will work in the .tmda/* files.
         os.environ['HOME'] = vhomedir
-        # Create the final tmda-inject command line.
-        tmda_configfile = os.path.join(vhomedir, '.tmda', 'config')
-        inject_cmd = '%s --config-file %s' % (inject_path, tmda_configfile)
-
         try:
             Util.pipecmd('%s %s' %
                          (inject_cmd, ' '.join

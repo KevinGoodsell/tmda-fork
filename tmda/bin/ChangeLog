@@ -6,6 +6,10 @@
 	connected to, if no file.  If file exists but server IP cannot be
 	found, fall back to localhost.
 
+	(VDomainProxy.process_message): Removed the --config-file command
+	line parameter to tmda-inject, since tmda-inject can find the
+	config file on its own now, thanks to a properly set $HOME.
+
 	(ipauthmap2dict): Helper function to read ipauthmap and return
 	Python dictionary.
 	
