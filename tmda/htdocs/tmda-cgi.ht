@@ -88,7 +88,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
       shock.</p>
   </li>
   <li>This program wouldn't have been possible without the support and contributions 
-    of Jason Mastaler, David Guerizec, Tim Legant, and others on the <a href="mailto:tmda-cgi-subscribe@wolfhome.com">tmda-gui</a> 
+    of Jason Mastaler, David Guerizec, Tim Legant, and others on the <a href="mailto:tmda-cgi-subscribe@wolfhome.com">tmda-cgi</a> 
     and <a href="lists/listinfo/">tmda-workers</a> lists, but they didn't write 
     the actual code itself. 
     <p>When it doesn't work right, be sure you yell out &quot;Damn that <a href="mailto:gre7g@wolfhome.com">Gre7g 
@@ -96,12 +96,12 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   </li>
   <li>tmda-cgi is discussed some on the <a href="lists/listinfo/">tmda-workers</a> 
     list, but when you have problems, your first point of contact should be the 
-    <a href="mailto:tmda-cgi-subscribe@wolfhome.com">tmda-gui</a> list. At some 
+    <a href="mailto:tmda-cgi-subscribe@wolfhome.com">tmda-cgi</a> list. At some 
     point I will merge this list in with <a href="lists/listinfo/">tmda-workers</a>, 
     but I want to wait until we transition from the &quot;adding features&quot; 
     phase into the &quot;fixing bugs&quot; phase. 
-    <p>tmda-gui is replicated on <a href="http://gmane.org">Gmane</a>. Check out 
-      <a href="news://news.gmane.org/gmane.mail.spam.tmda.web.gui">gmane.mail.spam.tmda.web.gui</a> 
+    <p><a href="mailto:tmda-cgi-subscribe@wolfhome.com">tmda-cgi</a> is replicated 
+      on <a href="http://gmane.org">Gmane</a>. Check out <a href="news://news.gmane.org/gmane.mail.spam.tmda.web.gui">gmane.mail.spam.tmda.web.gui</a> 
       if you prefer using a newsreader over mailing lists.</p>
   </li>
 </ul>
