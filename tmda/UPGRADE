@@ -12,6 +12,17 @@ If you are upgrading from a release of TMDA < 0.45:
 
   See the documentation for more details on filter file syntax.
 
+* 'headers' and 'body' filter file rules now use quotes (single or
+  double) rather than parentheses to delimit the regular expression in
+  the match field.
+
+  # invalid
+  headers (Subject: Site Down:.*) reject
+
+  # valid
+  headers "Subject: Site Down:.*" reject
+  headers 'Subject: Site Down:.*' reject
+
 * tmda-filter no longer looks for the `X-Originally-To' header by
   default.  If you need to retain this feature, set the following in
   your tmdarc:
