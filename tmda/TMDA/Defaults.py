@@ -777,6 +777,32 @@ if not vars().has_key('LOCALDATE'):
 if not vars().has_key('MESSAGE_FROM_STYLE'):
     MESSAGE_FROM_STYLE = "angles"
 
+# MAX_AUTORESPONSES_PER_DAY
+# An integer specifying the maximum number of automatic responses sent
+# to a given sender address in a day.  This includes _all_
+# auto-responses sent by TMDA (confirmation requests, confirmation
+# acceptance notices, failure notices, etc.)
+#
+# This limit prevents response loops between TMDA and misconfigured
+# remote auto-responders.  TMDA already inhibits automatic replies to
+# any message that looks like a mailing list message or a bounce
+# message.  This is a fallback safety valve so it should be set fairly
+# high.  Set to 0 for no limit.
+# Default is 50
+if not vars().has_key('MAX_AUTORESPONSES_PER_DAY'):
+    MAX_AUTORESPONSES_PER_DAY = 50
+
+# RESPONSE_DIR
+# Full path to a directory containing auto-response rate-limiting
+# information.  Only consulted if MAX_AUTORESPONSES_PER_DAY != 0
+#
+# Example:
+# RESPONSE_DIR = "/full/path/to/responses/"
+#
+# Default is ~/.tmda/responses
+if not vars().has_key('RESPONSE_DIR') and MAX_AUTORESPONSES_PER_DAY != 0:
+    RESPONSE_DIR = os.path.join(DATADIR, 'responses')
+
 # DELIVERED_CACHE
 # Path to the cache file used to keep track of which messages have
 # already been delivered.

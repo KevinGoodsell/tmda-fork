@@ -239,37 +239,8 @@ subject = message_headers.getheader('subject', 'None')
 # The directory of pending messages.
 pendingdir = os.path.join(Defaults.DATADIR, 'pending')
 
+# Catchall variable to enable/disable auto-responses.
 auto_reply = 1
-# - Don't respond if:
-#   - SENDER is <>
-if auto_reply and envelope_sender == '<>':
-    auto_reply = 0
-#   - SENDER is <#@[]>
-if auto_reply and envelope_sender == '<#@[]>':
-    auto_reply = 0
-#   - SENDER starts with "mailer-daemon"
-if auto_reply and envelope_sender.lower().startswith('mailer-daemon'):
-    auto_reply = 0
-#   - header "List-ID:" (as per RFC 2919)
-#   - header "Mailing-List:"
-#   - header "X-Mailing-List:"
-#   - header "X-ML-Name:"
-#   - header "List-(Help|Unsubscribe|Subscribe|Post|Owner|Archive):"
-#     (as per RFC 2369)
-if auto_reply:
-    list_headers = ['list-id', 'list-help', 'list-subscribe',
-                    'list-unsubscribe', 'list-post', 'list-owner',
-                    'list-archive', 'mailing-list', 'x-mailing-list',
-                    'x-ml-name']
-    for hdr in list_headers:
-        if message_headers.has_key(hdr):
-            auto_reply = 0
-            break
-#   - header "Precedence:" value junk, bulk, or list
-if auto_reply:
-    precedence = message_headers.getheader('precedence', None)
-    if precedence and precedence.lower() in ('bulk', 'junk', 'list'):
-        auto_reply = 0
 
 
 ###########
@@ -291,9 +262,87 @@ def logit(action_msg):
         logger.write()
 
 
+def normalize_sender(sender):
+    """Return a normalized version of the given sender address for use
+    in ~/.tmda/responses.
+
+    - Any / characters are replaced with : to prevent creation of files
+      outside the directory.
+    - Spaces are replaced with underscores.
+    - The address is lowercased.
+    """
+    sender = sender.replace(' ', '_')
+    sender = sender.replace('/', ':')
+    return sender.lower()
+
+
+def autorespond_to_sender(sender):
+    """Return true if TMDA should auto-respond to this sender."""
+    # Try and detect a bounce message.
+    if envelope_sender == '<>' or \
+           envelope_sender == '<#@[]>' or \
+           envelope_sender.lower().startswith('mailer-daemon'):
+        logit ('DROP (envelope sender = %s)' % envelope_sender)
+        return 0
+    # Try and detect a mailing list message.
+    #   - header "List-ID:" (as per RFC 2919)
+    #   - header "Mailing-List:"
+    #   - header "X-Mailing-List:"
+    #   - header "X-ML-Name:"
+    #   - header "List-(Help|Unsubscribe|Subscribe|Post|Owner|Archive):"
+    #     (as per RFC 2369)
+    guilty_header = None
+    list_headers = ['List-Id', 'List-Help', 'List-Subscribe',
+                    'List-Unsubscribe', 'List-Post', 'List-Owner',
+                    'List-Archive', 'Mailing-List', 'X-Mailing-List',
+                    'X-Ml-Name']
+    for hdr in list_headers:
+        if message_headers.has_key(hdr):
+            guilty_header = '%s: %s' % (hdr, message_headers.getheader(hdr))
+    #   - header "Precedence:" value junk, bulk, or list
+    precedence = message_headers.getheader('precedence', None)
+    if precedence and \
+           precedence.lower() in ('bulk', 'junk', 'list') and \
+           guilty_header is None:
+        guilty_header = 'Precedence: %s' % precedence
+    if guilty_header:
+        logit ('DROP (%s)' % guilty_header)
+        return 0
+    # Auto-response rate limiting.  Algorithm based on Bruce Guenter's
+    # qmail-autoresponder (http://untroubled.org/qmail-autoresponder/).
+    # See qmail-autoresponder(1) for more details.
+    if Defaults.MAX_AUTORESPONSES_PER_DAY == 0:
+        return 1
+    if os.path.isdir(Defaults.RESPONSE_DIR):
+        os.chdir(Defaults.RESPONSE_DIR)
+        files = os.listdir('.')
+        sndrlist = []
+        for file in files:
+            # Ignore foreign files.
+            try:
+                timestamp, pid, address = file.split('.', 2)
+            except ValueError:
+                continue
+            # If file is more than one day old, delete it and continue.
+            now = int(time.time())
+            if now > (int(timestamp) + Util.seconds('1d')):
+                os.unlink(file)
+                continue
+            else:
+                sndrlist.append(address)
+        # Count remaining occurrences of this sender, and don't
+        # respond if that number it exceeds our threshold.
+        if sndrlist.count(normalize_sender(sender)) >= \
+               Defaults.MAX_AUTORESPONSES_PER_DAY:
+            logit('DROP (%s = %s)' % ('MAX_AUTORESPONSES_PER_DAY',
+                                      Defaults.MAX_AUTORESPONSES_PER_DAY))
+            return 0
+    return 1
+
+
 def send_bounce(bounce_message, **vars):
     """Send a confirmation message back to the sender."""
-    if auto_reply:
+    if autorespond_to_sender(envelope_sender) and auto_reply:
         bounce_message = cStringIO.StringIO(bounce_message)
         headers = rfc822.Message(bounce_message)
         # Add some headers.
@@ -323,6 +372,17 @@ def send_bounce(bounce_message, **vars):
         body = bounce_message.read()
         Util.sendmail(headers, body,
                       envelope_sender, Defaults.BOUNCE_ENV_SENDER)
+        # Optionally, record this auto-response.
+        if Defaults.MAX_AUTORESPONSES_PER_DAY != 0:
+            response_filename = '%s.%s.%s' % (int(time.time()),
+                                              Defaults.PID,
+                                              normalize_sender(envelope_sender))
+            # Create ~/.tmda/responses if necessary.
+            if not os.path.exists(Defaults.RESPONSE_DIR):
+                os.makedirs(Defaults.RESPONSE_DIR, 0700)
+            fp = open(os.path.join(Defaults.RESPONSE_DIR,
+                                   response_filename), 'w')
+            fp.close()
 
 
 def send_cc(address):

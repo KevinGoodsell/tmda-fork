@@ -1,3 +1,7 @@
+2002-08-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* features.ht (Links): Add smart auto-responding.
+
 2002-08-19  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* config-links.h: Add sidebar link to TMDA Filter Sources.
