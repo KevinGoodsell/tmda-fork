@@ -1,5 +1,8 @@
 2002-03-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (BOUNCE_TEXT_*): New variables containing the text
+	used in TMDA's various failure notices.
+
 	* Util.py (maketext): Search for the templatefile in a series of
 	directories.  First match wins.
 	

@@ -355,8 +355,7 @@ def verify_confirm_cookie(confirm_cookie):
          confirm_pid, confirm_hmac) = string.split(confirm_cookie,'.')
     except ValueError:
         logit("BOUNCE invalid_confirmation_address")
-        print("Sorry, this confirmation address is invalid.")
-        mta.bounce()
+        bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
     pendingdir = Defaults.DATADIR + 'pending'
     confirmed_message = confirm_timestamp + '.' + confirm_pid + '.msg'
     confirmed_message_pathname = pendingdir + '/' + confirmed_message
@@ -368,12 +367,10 @@ def verify_confirm_cookie(confirm_cookie):
         # message actually exists in the pending queue.
         if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address")
-            print("Sorry, this confirmation address is invalid.")
-            mta.bounce()
+            bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
         elif not (os.path.exists(confirmed_message_pathname)):
             logit("BOUNCE nonexistent_pending_message")
-            print "Sorry, your original message could not be located."
-            mta.bounce()
+            bouncegen('bounce', Defaults.BOUNCE_TEXT_NONEXISTENT_PENDING)
         else:
             logit("CONFIRM accept " + confirmed_message)
             release_pending(confirmed_message_pathname,
@@ -386,12 +383,10 @@ def verify_confirm_cookie(confirm_cookie):
         # message has not already been delivered.
         if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address")
-            print("Sorry, this confirmation address is invalid.")
-            mta.bounce()
+            bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
         elif not (os.path.exists(confirmed_message_pathname)):
             logit("BOUNCE already_confirmed_message")
-            print "Sorry, this message has already been confirmed."
-            mta.bounce()
+            bouncegen('bounce', Defaults.BOUNCE_TEXT_ALREADY_CONFIRMED)
         else:
             logit("OK good_confirm_cookie")
             os.unlink(confirmed_message_pathname)
@@ -442,7 +437,7 @@ def verify_keyword_cookie(keyword_cookie):
         bouncegen('request')
 
 
-def bouncegen(mode):
+def bouncegen(mode, text=None):
     """Bounce a message back to sender."""
     # Stop right away if --discard was specified.
     if discard:
@@ -450,6 +445,7 @@ def bouncegen(mode):
     # Common variables.
     now = time.time()
     recipient_address = globals().get('recipient_address')
+    (recipient_local, recipient_domain) = recipient_address.split('@')
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
     original_message_body = globals().get('message_body')
@@ -479,7 +475,10 @@ def bouncegen(mode):
                                                            envelope_sender)
     if mode == 'accept':                # confirmation acceptance notices
         templatefile = 'confirm_accept.txt'
-    if mode == 'request':               # confirmation requests
+    elif mode == 'bounce':              # failure notices
+        templatefile = 'bounce.txt'
+        bounce_text = Util.wraptext(text)
+    elif mode == 'request':               # confirmation requests
         templatefile = 'confirm_request.txt'
         timestamp = str('%d' %now)
         pid = Defaults.PID
@@ -500,9 +499,11 @@ def bouncegen(mode):
                        os.path.join(pendingdir, pending_message))
     # Create the message and then send it.
     bounce_message = Util.maketext(templatefile, vars())
-    if mode == 'accept':
+    if mode in ('accept', 'bounce'):
         send_bounce(bounce_message, already_confirmed=1)
-    if mode == 'request':
+        if mode == 'bounce':
+            mta.stop()
+    elif mode == 'request':
         if Defaults.CONFIRM_CC:
             send_cc(Defaults.CONFIRM_CC)
         logit("CONFIRM pending " + pending_message)
@@ -565,8 +566,7 @@ def main():
         if Defaults.FILTER_BOUNCE_CC:
             send_cc(Defaults.FILTER_BOUNCE_CC)
         logit('%s (%s)' % ('BOUNCE', matching_line), disposal_time)
-        print 'Message rejected by recipient.'
-        mta.bounce()
+        bouncegen('bounce', Defaults.BOUNCE_TEXT_FILTER_INCOMING)
     elif action in ('drop','exit','stop'):
         if Defaults.FILTER_DROP_CC:
             send_cc(Defaults.FILTER_DROP_CC)
@@ -605,8 +605,7 @@ def main():
     default_action = string.lower(Defaults.ACTION_INCOMING)
     if default_action in ('bounce','reject'):
         logit('%s %s' % ('BOUNCE', 'action_incoming'), disposal_time)
-        print 'Message rejected by recipient.'
-        mta.bounce()
+        bouncegen('bounce', Defaults.BOUNCE_TEXT_FILTER_INCOMING)
     elif default_action in ('drop','exit','stop'):
         logit('%s %s' % ('DROP', 'action_incoming'), disposal_time)
         mta.stop()

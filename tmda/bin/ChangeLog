@@ -2,6 +2,9 @@
 
 	* tmda-rfilter: -t option replaces both -A and -R.
 
+	(bouncegen): Generate our own failure notices by replacing all
+	instances of mta.bounce() with calls to bouncegen('bounce').
+
 	(bouncegen): General cleanup, and also the templatefile searching
 	is now done in Util.maketext() instead of here.
 

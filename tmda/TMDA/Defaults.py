@@ -176,6 +176,31 @@ if not vars().has_key('BOUNCE_ENV_SENDER'):
         BOUNCE_ENV_SENDER = '<>'
     else:
         BOUNCE_ENV_SENDER = ''
+
+# BOUNCE_TEXT_ALREADY_CONFIRMED
+# Text for the failure notice returned to the sender when a
+# confirmation response arrives for a message which has already been
+# confirmed.
+if not vars().has_key('BOUNCE_TEXT_ALREADY_CONFIRMED'):
+    BOUNCE_TEXT_ALREADY_CONFIRMED = """This message has already been confirmed."""
+
+# BOUNCE_TEXT_FILTER_INCOMING
+# Text for the failure notice returned to the sender when a 'bounce'
+# or 'reject' rule is matched in the incoming filter file.
+if not vars().has_key('BOUNCE_TEXT_FILTER_INCOMING'):
+    BOUNCE_TEXT_FILTER_INCOMING = """Message rejected by recipient."""
+
+# BOUNCE_TEXT_INVALID_CONFIRMATION
+# Text for the failure notice returned to the sender when a message is
+# sent to an invalid confirmation address.
+if not vars().has_key('BOUNCE_TEXT_INVALID_CONFIRMATION'):
+    BOUNCE_TEXT_INVALID_CONFIRMATION = """This confirmation address is invalid."""
+
+# BOUNCE_TEXT_NONEXISTENT_PENDING
+# Text for the failure notice returned to the sender when a
+# confirmation response arrives for a message which could not be located.
+if not vars().has_key('BOUNCE_TEXT_NONEXISTENT_PENDING'):
+    BOUNCE_TEXT_NONEXISTENT_PENDING = """Your original message could not be located."""
         
 # BARE_APPEND
 # Filename to which a recipient's e-mail address should be
