@@ -1,5 +1,12 @@
 2003-10-04  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Caught an extra exception in Session.
+
+	* Added a stub for xams.
+
+	* Ignored GID returned by vpopmail's utilities.  It is not the virtual
+	  user's GID.  It is a set of flags.
+
 	* Applied a patch from Dario Gomes which makes select all for SpamCop
 	  work correctly.
 

@@ -286,7 +286,7 @@ rights.""")
       F = open(Filename)
       self.PVars = pickle.load(F)
       F.close()
-    except (IOError, EOFError):
+    except (IOError, EOFError, OSError):
       pass
     os.chdir(CWD)
 

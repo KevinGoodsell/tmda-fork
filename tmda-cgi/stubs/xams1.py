@@ -19,20 +19,41 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"Stub for interfacing to vpopmail."
+"Stub for interfacing to XAMS."
 
+import MySQLdb
 import re
 
-# Constants
-Matcher = re.compile("^([^:]+):\s*(\S.*?)\s*$")
+# *** IMPORTANT NOTE: ***
+# YOU MUST FILL IN THE FOLLOWING INFORMATION SO THAT THIS STUB MAY CONNECT TO
+# MYSQL!!!
+DBLogin    = "xams"
+DBPassword = ""
+DBName     = "xams"
+
+# Other constant
+UserFormat   = "(.+)@(.+)"
+HomeTemplate = "/var/tmda/%s/%s"
 
 def getuserparams(List):
-  # Convert a list returned by vuserinfo into a dictionary
-  Dict = {"uid": "0", "gid": "0", "gecos": None}
-  for Line in List:
-    Match = Matcher.search(Line)
-    if Match:
-      Dict[Match.group(1)] = Match.group(2)
+  # Expects a list of one element, a user name.
+  User, Domain = List[0], ""
 
-  # Return the home directory, UID, and GID
-  return Dict["dir"], Dict["uid"], 0, Dict["gecos"]
+  # Find the domain
+  Match = re.search(UserFormat, User)
+  if Match:
+    User, Domain = Match.group(1), Match.group(2)
+  
+  # Connect to MySQL database
+  DB = MySQLdb.connect(user = DBLogin, passwd = DBPassword, db = DBName)
+
+  # Query  
+  Cursor = DB.cursor()
+  Cursor.execute \
+  ("""
+    SELECT s.name, u.name FROM pm_domains d, pm_sites s, pm_users u
+    WHERE s.ID = d.SiteID AND u.SiteID = s.ID AND u.Name = %s AND d.Name = %s
+  """, (User, Domain))
+  Dir = HomeTemplate % Cursor.fetchone()
+
+  return Dir, 0, 0
