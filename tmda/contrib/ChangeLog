@@ -1,6 +1,7 @@
 2001-11-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda.spec (Url): Removed TODO.
+	Raise version number to 0.42.
 
 2001-11-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
