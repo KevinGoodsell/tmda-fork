@@ -415,23 +415,23 @@ def verify_confirm_cookie(confirm_cookie):
     elif confirm_action == 'done':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
                                                   confirm_pid, 'done')
-        # Accept the message only if the HMAC can be verified,
+        # Accept the message only if the HMAC can be verified.  We
+        # drop instead of bounce, because humans shouldn't be sending
+        # mail to a 'confirm-done' address.
         if not (confirm_hmac == new_confirm_hmac):
-            logit("BOUNCE invalid_confirmation_address")
-            bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
+            logit("DROP bad_confirm_done_cookie")
+            mta.stop()
         else:
             # Cache and deliver the message.
-            incoming_headers = globals().get('message_headers')
-            incoming_body = globals().get('message_body')
-            if incoming_headers.has_key('x-tmda-confirmed'):
+            if message_headers.has_key('x-tmda-confirmed'):
                 msgval = 'c'
-            elif incoming_headers.has_key('x-tmda-released'):
+            elif message_headers.has_key('x-tmda-released'):
                 msgval = 'r'
             else:
                 # Someone must be sending a message directly to a
                 # 'confirm-done' address, possibly in an attempt to
                 # sneak it through.
-                logit("DROP invalid_delivery_method")
+                logit("DROP missing_confirm_done_headers")
                 mta.stop()
             # Record this message in the cache as a dictionary,
             # where the message filename is the key, and how it was
@@ -442,7 +442,7 @@ def verify_confirm_cookie(confirm_cookie):
                 delcache = delcache[:Defaults.DELIVERED_CACHE_LEN]
                 Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
             logit("OK good_confirm_cookie")
-            mta.deliver(incoming_headers, incoming_body)
+            mta.deliver(message_headers, message_body)
 
 
 def verify_dated_cookie(dated_cookie):

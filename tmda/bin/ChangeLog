@@ -2,6 +2,9 @@
 
 	* tmda-rfilter (main): Do all deliveries via mta.deliver().
 
+	(verify_confirm_cookie): Drop instead of bounce 'confirm-done'
+	messages that fail verification.
+
 	(verify_confirm_cookie): Bugfix.  Don't drop already delivered
 	messages in case the first delivery attempt was deferred.
 
