@@ -13,6 +13,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   no-su setup</a><br>
   <a href="#Pass">Passwords</a><br>
   <a href="#Config">Configuration</a><br>
+  <a href="#Surprise">Surprises &amp; gotcha's</a><br>
   <a href="#Template">Templates (URL confirmation)</a></p>
 <hr>
 <h2><a name="What"></a>What is it?</h2>
@@ -495,6 +496,20 @@ ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
   page.</p>
 <p><em><strong>Note:</strong></em> If you change nothing else, you will have to 
   at least set the value for <a href="config-vars.html#CGI_ACTIVE"><tt>CGI_ACTIVE</tt></a>.</p>
+<hr>
+<h2><a name="Surprise" id="Surprise"></a>Surprises &amp; gotcha's</h2>
+<p>This section of the documentation is reserved for functionality and quirks 
+  that, although not erroneous, may not be what you expect. Check this list for 
+  help if you experience problems with tmda-cgi.</p>
+<ol>
+  <li>tmda-cgi's whitelist &amp; URL confirmation features do not update the list 
+    pointed to by configuration variable <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a></tt><tt>.</tt> 
+    <p>tmda-cgi uses configuration variable <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a> 
+      instead of <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a>.</tt> 
+      To use the whitelist feature or to auto-append to a list when the user clicks 
+      a confirmation URL, you must set <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a> 
+      to a list that is handled by your incoming filter.</li>
+</ol>
 <hr>
 <h2><a name="Template" id="Template"></a>Templates</h2>
 <p>By supplying your own templates (see the <a href="howto-template.html">Template 
