@@ -247,8 +247,8 @@ individual user .tmda/config files.  Here's an example:
 <code>
 import os<br>
 <br>
-BARE_APPEND = os.path.expanduser("~/.tmda/whitelist")<br>
-CONFIRM_APPEND = os.path.expanduser("~/.tmda/whitelist")
+BARE_APPEND = "~/.tmda/whitelist"<br>
+CONFIRM_APPEND = "~/.tmda/whitelist"
 </code>
 
 <p>
@@ -335,8 +335,8 @@ individual user .tmda/config files.  Here's an example:
 <code>
 import os<br>
 <br>
-BARE_APPEND = os.path.expanduser("~/.tmda/whitelist")<br>
-CONFIRM_APPEND = os.path.expanduser("~/.tmda/whitelist")
+BARE_APPEND = "~/.tmda/whitelist"<br>
+CONFIRM_APPEND = "~/.tmda/whitelist"
 </code>
 
 <p>

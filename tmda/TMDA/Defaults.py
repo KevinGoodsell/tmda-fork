@@ -75,7 +75,7 @@ if os.path.exists(GLOBAL_TMDARC):
 # to ~/.tmda/config
 TMDARC = os.environ.get('TMDARC')
 if not TMDARC:
-    TMDARC = os.path.expanduser('~/.tmda/config')
+    TMDARC = "~/.tmda/config"
 
 # CONFIG_EXEC
 # If set to 0 in GLOBAL_TMDARC, the user's TMDARC file will be parsed
@@ -121,9 +121,15 @@ TMDA_VERSION = Version.TMDA
 # Top-level directory which TMDA uses to store its files and
 # directories.  TMDA should be free to create files and directories
 # under DATADIR if need be.  Make sure to include a trailing "/".
+#
+# Examples:
+#
+# DATADIR = "/full/path/to/.tmda/"
+# DATADIR = "~/.tmda/"
+#
 # Default is ~/.tmda/
 if not vars().has_key('DATADIR'):
-    DATADIR = os.path.expanduser("~/.tmda/")
+    DATADIR = "~/.tmda/"
 
 # MAIL_TRANSFER_AGENT
 # Defines which mail transfer agent (MTA) software you are running.
@@ -286,7 +292,9 @@ if not vars().has_key('SMTP_MAX_SESSIONS_PER_CONNECTION') and \
 # SENDMAIL_PROGRAM
 # The path to the sendmail program, or sendmail compatibility
 # interface when MAIL_TRANSPORT is "sendmail".
-# Defaults to one of the two standard locations.
+#
+# Defaults to one of the two standard locations (/usr/lib/sendmail,
+# /usr/sbin/sendmail).
 if not vars().has_key('SENDMAIL_PROGRAM') and MAIL_TRANSPORT == 'sendmail':
     for sendmail in ('/usr/sbin/sendmail', '/usr/lib/sendmail'):
         if os.path.exists(sendmail):
@@ -398,8 +406,10 @@ if not vars().has_key('BOUNCE_TEXT_FAIL_KEYWORD'):
 # automatically appended if the outgoing <action> is in the form
 # 'bare=append'.
 #
-# Example:
+# Examples:
+#
 # BARE_APPEND = "/full/path/to/whitelist"
+# BARE_APPEND = "~/.tmda/lists/whitelist"
 #
 # No default
 if not vars().has_key('BARE_APPEND'):
@@ -409,8 +419,10 @@ if not vars().has_key('BARE_APPEND'):
 # Filename for saving various tmda-cgi settings.  This filename can
 # include a full path, otherwise it is relative the user's config file.
 #
-# Example:
+# Examples:
+#
 # CGI_SETTINGS = "/home/jim/.tmda/MyCGISettings"
+# CGI_SETTINGS = "~/.tmda/MyCGISettings"
 #
 # Default is "tmda-cgi.ini".
 if not vars().has_key('CGI_SETTINGS'):
@@ -453,8 +465,10 @@ if not vars().has_key('CONFIRM_ADDRESS'):
 # appended once they confirm a message.  This can be used to implement
 # "auto-whitelisting" functionality.
 #
-# Example:
+# Examples:
+#
 # CONFIRM_APPEND = "/full/path/to/whitelist"
+# CONFIRM_APPEND = "~/.tmda/lists/whitelist"
 #
 # No default
 if not vars().has_key('CONFIRM_APPEND'):
@@ -539,8 +553,10 @@ if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
 # templates found in this directory will be used, otherwise the
 # default templates will be used.
 #
-# Example:
+# Examples:
+#
 # TEMPLATE_DIR = "/full/path/to/templates/"
+# TEMPLATE_DIR = "~/.tmda/templates/"
 #
 # No default.
 if not vars().has_key('TEMPLATE_DIR'):
@@ -929,8 +945,10 @@ if not vars().has_key('HOSTNAME'):
 # LOGFILE_DEBUG
 # Filename which uncaught exceptions should be written to.
 #
-# Example:
+# Examples:
+#
 # LOGFILE_DEBUG = "/path/to/logs/tmda.debug"
+# LOGFILE_DEBUG = "~/.tmda/logs/debug"
 #
 # No default.
 if not vars().has_key('LOGFILE_DEBUG'):
@@ -940,8 +958,10 @@ if not vars().has_key('LOGFILE_DEBUG'):
 # Filename which incoming delivery (i.e, tmda-filter) summaries should
 # be written to.
 #
-# Example:
+# Examples:
+#
 # LOGFILE_INCOMING = "/path/to/logs/tmda.in"
+# LOGFILE_INCOMING = "~/.tmda/logs/incoming"
 #
 # No default.
 if not vars().has_key('LOGFILE_INCOMING'):
@@ -951,8 +971,10 @@ if not vars().has_key('LOGFILE_INCOMING'):
 # Filename which outgoing message (i.e, tmda-sendmail) summaries
 # should be written to.
 #
-# Example:
+# Examples:
+#
 # LOGFILE_OUTGOING = "/path/to/logs/tmda.out"
+# LOGFILE_OUTGOING = "~/.tmda/logs/outgoing"
 #
 # No default.
 if not vars().has_key('LOGFILE_OUTGOING'):
@@ -1003,9 +1025,6 @@ if not vars().has_key('MAX_AUTORESPONSES_PER_DAY'):
 # RESPONSE_DIR
 # Full path to a directory containing auto-response rate-limiting
 # information.  Only consulted if MAX_AUTORESPONSES_PER_DAY != 0
-#
-# Example:
-# RESPONSE_DIR = "/full/path/to/responses/"
 #
 # Default is ~/.tmda/responses
 if not vars().has_key('RESPONSE_DIR') and MAX_AUTORESPONSES_PER_DAY != 0:
@@ -1101,9 +1120,6 @@ if not vars().has_key('DB_BARE_APPEND'):
 # will automatically be created by TMDA with 0700 permissions when the
 # first message arrives.
 #
-# Example:
-# PENDING_DIR = "/full/path/to/pending/"
-#
 # Default is ~/.tmda/pending/
 if not vars().has_key('PENDING_DIR'):
     PENDING_DIR = os.path.join(DATADIR, 'pending')
@@ -1173,8 +1189,10 @@ if not vars().has_key('PENDING_CACHE_LEN'):
 # Filename to which a sender's e-mail address should be appended
 # when a message is "blacklisted" by tmda-pending.
 #
-# Example:
+# Examples:
+#
 # PENDING_BLACKLIST_APPEND = "/full/path/to/blacklist"
+# PENDING_BLACKLIST_APPEND = "~/.tmda/lists/blacklist"
 #
 # No default
 if not vars().has_key('PENDING_BLACKLIST_APPEND'):
@@ -1186,8 +1204,10 @@ if not vars().has_key('PENDING_BLACKLIST_APPEND'):
 # automated pending queue cleanup feature (see PENDING_CLEANUP_ODDS)
 # also respects this setting.
 #
-# Example:
+# Examples:
+#
 # PENDING_DELETE_APPEND = "/full/path/to/blacklist"
+# PENDING_DELETE_APPEND = "~/.tmda/lists/blacklist"
 #
 # No default
 if not vars().has_key('PENDING_DELETE_APPEND'):
@@ -1197,8 +1217,10 @@ if not vars().has_key('PENDING_DELETE_APPEND'):
 # Filename to which a sender's e-mail address should be automatically
 # appended when a message is "released" by tmda-pending.
 #
-# Example:
+# Examples:
+#
 # PENDING_RELEASE_APPEND = "/full/path/to/whitelist"
+# PENDING_RELEASE_APPEND = "~/.tmda/lists/whitelist"
 #
 # No default
 if not vars().has_key('PENDING_RELEASE_APPEND'):
@@ -1208,8 +1230,10 @@ if not vars().has_key('PENDING_RELEASE_APPEND'):
 # Filename to which a sender's e-mail address should be appended
 # when a message is "whitelisted" by tmda-pending.
 #
-# Example:
+# Examples:
+#
 # PENDING_WHITELIST_APPEND = "/full/path/to/whitelist"
+# PENDING_WHITELIST_APPEND = "~/.tmda/lists/whitelist"
 #
 # No default
 if not vars().has_key('PENDING_WHITELIST_APPEND'):
@@ -1491,7 +1515,7 @@ if not vars().has_key('TMDAINJECT'):
 # Examples:
 #
 # MAIL_FOLLOWUP_TO = "/path/to/lists.txt"
-# MAIL_FOLLOWUP_TO = os.path.expanduser("~/.lists")
+# MAIL_FOLLOWUP_TO = "~/.lists"
 # MAIL_FOLLOWUP_TO = ["tmda-users@tmda.net", "postfix-users@postfix.org"]
 #
 # No default.
@@ -1561,6 +1585,48 @@ if not vars().has_key('X_TMDA_IN_SUBJECT'):
 # Default is ~/.tmda/crypt_key
 if not vars().has_key('CRYPT_KEY_FILE'):
     CRYPT_KEY_FILE = os.path.join(DATADIR, 'crypt_key')
+
+###################################
+# END of user configurable settings
+###################################
+
+# Variables that should be run through os.path.expanduser() since they
+# contain pathnames.  Remember to remove variables from this dict when
+# removing them from the code above.
+_path_vars = {
+    'BARE_APPEND': None,
+    'CGI_SETTINGS': None,
+    'CONFIRM_APPEND': None,
+    'CRYPT_KEY_FILE': None,
+    'DATADIR': None,
+    'DELIVERY': None,
+    'FILTER_INCOMING': None,
+    'FILTER_OUTGOING': None,
+    'GLOBAL_TMDARC': None,
+    'LOGFILE_DEBUG': None,
+    'LOGFILE_INCOMING': None,
+    'LOGFILE_OUTGOING': None,
+    'MAIL_FOLLOWUP_TO': None,
+    'PENDING_BLACKLIST_APPEND': None,
+    'PENDING_CACHE': None,
+    'PENDING_DELETE_APPEND': None,
+    'PENDING_DIR': None,
+    'PENDING_RELEASE_APPEND': None,
+    'PENDING_WHITELIST_APPEND': None,
+    'RESPONSE_DIR': None,
+    'SENDMAIL_PROGRAM': None,
+    'TEMPLATE_DIR': None,
+    'TMDARC': None,
+    'VIRTUALDOMAINS': None
+    }
+
+_defaults = globals()
+for var in _path_vars:
+    if isinstance(_defaults[var], str):
+        _defaults[var] = os.path.expanduser(_defaults[var])
+
+
+# Finish processing CRYPT_KEY_FILE/CRYPT_KEY
 if os.path.exists(CRYPT_KEY_FILE):
     crypt_key_filemode = Util.getfilemode(CRYPT_KEY_FILE)
     if crypt_key_filemode not in (400, 600):
@@ -1587,6 +1653,3 @@ except IOError:
     else:
         raise
 
-###################################
-# END of user configurable settings
-###################################

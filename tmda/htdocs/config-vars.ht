@@ -511,9 +511,10 @@ Filename to which a recipient's e-mail address should be
 automatically appended if the outgoing &lt;action&gt; is in the form
 'bare=append'.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>BARE_APPEND = "/full/path/to/whitelist"</code>
+<code>BARE_APPEND = "/full/path/to/whitelist"</code><br>
+<code>BARE_APPEND = "~/.tmda/lists/whitelist"</code>
 <br><br>
 No default
 <dt><hr>
@@ -592,9 +593,10 @@ Default is "Your original message could not be located."
 Filename for saving various tmda-cgi settings.  This filename can
 include a full path, otherwise it is relative the user's config file.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>CGI_SETTINGS = "/home/jim/.tmda/MyCGISettings"</code>
+<code>CGI_SETTINGS = "/home/jim/.tmda/MyCGISettings"</code><br>
+<code>CGI_SETTINGS = "~/.tmda/MyCGISettings"</code>
 <br><br>
 Default is "tmda-cgi.ini".
 <dt><hr>
@@ -688,9 +690,10 @@ Filename to which a sender's e-mail address should be automatically
 appended once they confirm a message.  This can be used to implement
 "auto-whitelisting" functionality.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>CONFIRM_APPEND = "/full/path/to/whitelist"</code>
+<code>CONFIRM_APPEND = "/full/path/to/whitelist"</code><br>
+<code>CONFIRM_APPEND = "~/.tmda/lists/whitelist"</code>
 <br><br>
 No default
 <dt><hr>
@@ -726,6 +729,11 @@ Default is ~/.tmda/crypt_key
 Top-level directory which TMDA uses to store its files and
 directories.  TMDA should be free to create files and directories
 under DATADIR if need be.  Make sure to include a trailing "/".
+<br><br>
+Examples:
+<br><br>
+<code>DATADIR = "/full/path/to/.tmda/"</code><br>
+<code>DATADIR = "~/.tmda/"</code>
 <br><br>
 Default is ~/.tmda/
 <dt><hr>
@@ -961,9 +969,10 @@ Defaults to the fully qualified domain name of the localhost.
 <dd>
 Filename which uncaught exceptions should be written to.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>LOGFILE_DEBUG = "/path/to/logs/tmda.debug"</code>
+<code>LOGFILE_DEBUG = "/path/to/logs/tmda.debug"</code><br>
+<code>LOGFILE_DEBUG = "~/.tmda/logs/debug"</code>
 <br><br>
 No default.
 <dt><hr>
@@ -972,9 +981,10 @@ No default.
 Filename which incoming delivery (i.e, tmda-filter) summaries should
 be written to.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>LOGFILE_INCOMING = "/path/to/logs/tmda.in"</code>
+<code>LOGFILE_INCOMING = "/path/to/logs/tmda.in"</code><br>
+<code>LOGFILE_INCOMING = "~/.tmda/logs/incoming"</code>
 <br><br>
 No default.
 <dt><hr>
@@ -983,9 +993,10 @@ No default.
 Filename which outgoing message (i.e, tmda-sendmail) summaries
 should be written to.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>LOGFILE_OUTGOING = "/path/to/logs/tmda.out"</code>
+<code>LOGFILE_OUTGOING = "/path/to/logs/tmda.out"</code><br>
+<code>LOGFILE_OUTGOING = "~/.tmda/logs/outgoing"</code>
 <br><br>
 No default.
 <dt><hr>
@@ -1008,7 +1019,7 @@ See http://cr.yp.to/proto/replyto.html for more on Mail-Followup-To.
 Examples:
 <br><br>
 <code>MAIL_FOLLOWUP_TO = "/path/to/lists.txt"</code><br>
-<code>MAIL_FOLLOWUP_TO = os.path.expanduser("~/.lists")</code><br>
+<code>MAIL_FOLLOWUP_TO = "~/.lists"</code><br>
 <code>MAIL_FOLLOWUP_TO = ["tmda-users@tmda.net", "postfix-users@postfix.org"]</code>
 <br><br>
 No default.
@@ -1089,9 +1100,10 @@ MESSAGE_FROM_STYLE.
 Filename to which a sender's e-mail address should be appended
 when a message is "blacklisted" by tmda-pending.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>PENDING_BLACKLIST_APPEND = "/full/path/to/blacklist"</code>
+<code>PENDING_BLACKLIST_APPEND = "/full/path/to/blacklist"</code><br>
+<code>PENDING_BLACKLIST_APPEND = "~/.tmda/lists/blacklist"</code>
 <br><br>
 No default
 <dt><hr>
@@ -1142,9 +1154,10 @@ appended when a message is "deleted" by tmda-pending.  tmda-filter's
 automated pending queue cleanup feature (see PENDING_CLEANUP_ODDS)
 also respects this setting.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>PENDING_DELETE_APPEND = "/full/path/to/blacklist"</code>
+<code>PENDING_DELETE_APPEND = "/full/path/to/blacklist"</code><br>
+<code>PENDING_DELETE_APPEND = "~/.tmda/lists/blacklist"</code>
 <br><br>
 No default
 <dt><hr>
@@ -1154,10 +1167,6 @@ Full path to the directory containing messages pending confirmation
 (aka, the "pending queue").  If this directory doesn't exist, it
 will automatically be created by TMDA with 0700 permissions when the
 first message arrives.
-<br><br>
-Example:
-<br><br>
-<code>PENDING_DIR = "/full/path/to/pending/"</code>
 <br><br>
 Default is ~/.tmda/pending/
 <dt><hr>
@@ -1183,9 +1192,10 @@ Default is 14d (14 day lifetime)
 Filename to which a sender's e-mail address should be automatically
 appended when a message is "released" by tmda-pending.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>PENDING_RELEASE_APPEND = "/full/path/to/whitelist"</code>
+<code>PENDING_RELEASE_APPEND = "/full/path/to/whitelist"</code><br>
+<code>PENDING_RELEASE_APPEND = "~/.tmda/lists/whitelist"</code>
 <br><br>
 No default
 <dt><hr>
@@ -1194,9 +1204,10 @@ No default
 Filename to which a sender's e-mail address should be appended
 when a message is "whitelisted" by tmda-pending.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>PENDING_WHITELIST_APPEND = "/full/path/to/whitelist"</code>
+<code>PENDING_WHITELIST_APPEND = "/full/path/to/whitelist"</code><br>
+<code>PENDING_WHITELIST_APPEND = "~/.tmda/lists/whitelist"</code>
 <br><br>
 No default
 <dt><hr>
@@ -1340,10 +1351,6 @@ No default
 Full path to a directory containing auto-response rate-limiting
 information.  Only consulted if MAX_AUTORESPONSES_PER_DAY != 0
 <br><br>
-Example:
-<br><br>
-<code>RESPONSE_DIR = "/full/path/to/responses/"</code>
-<br><br>
 Default is ~/.tmda/responses
 <dt><hr>
 <a name="SENDER_TEMPLATE_VARS"><h4>SENDER_TEMPLATE_VARS</h4></a>
@@ -1358,7 +1365,8 @@ Default is False (turned off)
 The path to the sendmail program, or sendmail compatibility
 interface when MAIL_TRANSPORT is "sendmail".
 <br><br>
-Defaults to one of the two standard locations.
+Defaults to one of the two standard locations (/usr/lib/sendmail,
+/usr/sbin/sendmail).
 <dt><hr>
 <a name="SMTPAUTH_PASSWORD"><h4>SMTPAUTH_PASSWORD</h4></a>
 <dd>
@@ -1503,9 +1511,10 @@ Full path to a directory containing custom TMDA templates.  Any
 templates found in this directory will be used, otherwise the
 default templates will be used.
 <br><br>
-Example:
+Examples:
 <br><br>
-<code>TEMPLATE_DIR = "/full/path/to/templates/"</code>
+<code>TEMPLATE_DIR = "/full/path/to/templates/"</code><br>
+<code>TEMPLATE_DIR = "~/.tmda/templates/"</code>
 <br><br>
 No default.
 <dt><hr>

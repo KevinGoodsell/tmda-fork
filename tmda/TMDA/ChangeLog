@@ -1,5 +1,11 @@
 2004-02-05  Jason R. Mastaler  <jason@mastaler.com>
 
+	* Defaults.py (_path_vars): New dict to hold variables that
+	contain a pathname, and therefore should be run through
+	os.path.expandusers().
+	
+2004-02-05  Jason R. Mastaler  <jason@mastaler.com>
+
 	* Defaults.py (MAIL_FOLLOWUP_TO): New variable.
 
 2004-01-30  Jason R. Mastaler  <jason@mastaler.com>
