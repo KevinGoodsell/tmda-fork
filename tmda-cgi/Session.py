@@ -192,7 +192,11 @@ its partition is marked "nosuid" in /etc/fstab.""")
                               "tmda-cgi")
         else:
           File = os.path.join(self.Vars["HOME"], ".tmda/tmda-cgi")
-        self.__suid__(UID, self.Vars["GID"])
+        try:
+          os.seteuid(0)
+          os.setegid(0)
+        except OSError:
+          pass
         if not Util.CanRead( File, UID, self.Vars["GID"], 0 ):
           File = "/etc/tmda-cgi"
 
