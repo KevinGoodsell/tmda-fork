@@ -537,6 +537,7 @@ class Auth(Util.Debugable):
     def __pipefd3(self, command, *strings):
         """Executes a command, feeding strings into fd#3
         Returns the errorcode"""
+        self.debug( "UID = %d, EUID = %d" % (os.getuid(), os.geteuid()))
         fd3read, fd3write = os.pipe()
         # Attach the pipe to FD 3 if it os not already.
         if fd3read != 3:
@@ -546,6 +547,7 @@ class Auth(Util.Debugable):
             except Exception, err:
                 self.debug( "Pipefd3: %s (%s)" % (err.__class__, err) )
                 raise err
+        self.debug( "Successful pipe()." )
         pid = os.fork()
         if pid == 0:
             # *** Child ***
@@ -558,6 +560,7 @@ class Auth(Util.Debugable):
                 self.debug( "Pipefd3: Execvp %s (%s)" % (err.__class__, err) )
                 os._exit(200)
         # *** Parent ***
+        self.debug( "Successful fork(), PID = %d" % pid )
         # Open pipe into FD3
         os.close(fd3read)
         fd3 = os.fdopen(fd3write, 'w', -1)
@@ -568,6 +571,7 @@ class Auth(Util.Debugable):
         fd3.close()
         # Wait for command to exit
         pid, status = os.waitpid(pid, 0)
+        self.debug( "PID = %d, status = %d" % (pid, status))
         # Return the errorcode
         return status
 

@@ -126,21 +126,37 @@ def getvuserhomedir(user, domain, script):
     return vuserhomedir.strip()
 
 
-def getuserparams(login, script = None):
-    """Return a user's home directory, UID, & GID.
+def getuserparams(login):
+    "Return a user's home directory, UID, & GID."
 
-If the user could be a virtual user, supply the filename of the user lookup 
-script."""
-    if script:
-        cmd = "%s %s" % (script, login)
-        fpin = os.popen(cmd)
-        stats = fpin.readlines()
-        if fpin.close():
-            raise KeyError, "User not found by script: %s" % script
-        return (stats[0].strip(), int(stats[1]), int(stats[2]))
-    else:
-        stats = pwd.getpwnam(login)
-        return (stats[5], stats[2], stats[3])
+    stats = pwd.getpwnam(login)
+    return (stats[5], stats[2], stats[3])
+
+
+def RunTask(Args):
+    """Run a program the "hard way" so we don't lose our UID."""
+
+    # Open a pipe between the parent and a child process
+    Read, Write = os.pipe()
+    if not os.fork():
+        # Child writes only and can close the reader
+        os.close(Read)
+
+        # Capture the STDOUT and stick it in the pipe
+        os.dup2(Write, 1)
+
+        # Launch the program
+        os.execv(Args[0], Args)
+
+    # Parent reads only and can close the writer
+    os.close(Write)
+
+    # Capture contents of pipe
+    Read = os.fdopen(Read)
+    RetVal = Read.readlines()
+    Read.close()
+
+    return RetVal
 
 
 def seconds(timeout):
@@ -210,7 +226,7 @@ def unixdate(timesecs=None):
 def make_msgid(timesecs=None, pid=None):
     """Return an rfc2822 compliant Message-ID: string, composed of
     seconds since the epoch in UTC + process id + 'TMDA' + FQDN. e.g:
-    
+
     <1016659379.10104.TMDA@nightshade.la.mastaler.com>
 
     timesecs is optional, and if not given, the current time is used.
@@ -231,7 +247,7 @@ def make_date(timesecs=None):
     """Return an RFC 2822 compliant Date: string.  e.g,
 
     Thu, 16 May 2002 04:23:10 +1200
-    
+
     timesecs is optional, and if not given, the current time is used.
     """
     if timesecs is None:
@@ -280,7 +296,7 @@ def pipecmd(command, *strings):
     *strings are optional pieces of data to write to command.
 
     return_status will just return the exit status of the command..
-    
+
     Based on code from getmail
     <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
     Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
@@ -338,7 +354,7 @@ def writefile(contents, fullpathname):
         file = open(fullpathname, 'w')
         file.write(contents)
         file.close()
-        
+
 
 def append_to_file(str, fullpathname):
     """Append a string to a text file if it isn't already in there."""
@@ -440,9 +456,9 @@ def confirm_append_address(xp, rp):
 def sendmail(msgstr, envrecip, envsender):
     """Send e-mail via direct SMTP, or by opening a pipe to the
     sendmail program.
-    
+
     msgstr is an rfc2822 message as a string.
-    
+
     envrecip is the envelope recipient address.
 
     envsender is the envelope sender address.
@@ -514,7 +530,7 @@ def body_as_raw_string(msg):
 
 def rename_headers(msg, old, new):
     """Rename all occurances of a message header in a Message object.
-        
+
     msg is an email.Message.Message object.
 
     old is name of the header to rename.
@@ -724,7 +740,7 @@ def maketext(templatefile, vardict):
     The first match found stops the search.  In this way, you can
     specialize templates at the desired level, or, if you use only the
     default templates, you don't need to change anything.
-    
+
     Once the templatefile is found, string substitution is performed
     by interpolation in `localdict'.
 
@@ -767,11 +783,11 @@ def maketext(templatefile, vardict):
         localdict.update(vardict)
         text = template % localdict
         return text
-        
+
 
 def filter_match(filename, recip, sender=None):
     """Check if the give e-mail addresses match lines in filename."""
-    import FilterParser 
+    import FilterParser
     filter = FilterParser.FilterParser()
     filter.read(filename)
     (actions, matchline) = filter.firstmatch(recip, [sender])
