@@ -71,7 +71,7 @@ CGI_USER, as specified in Defaults."""
 Report an error if we can't, but should be able to."""
     if os.environ["TMDA_CGI_MODE"] == "system-wide":
       # If not specified, use misc. user info
-      if not UID or not GID:
+      if not UID:
         PasswordRecord  = pwd.getpwnam(os.environ["TMDA_CGI_USER"])
         UID = PasswordRecord[2]
         GID = PasswordRecord[3]
