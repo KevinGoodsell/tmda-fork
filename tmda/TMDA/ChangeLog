@@ -1,5 +1,8 @@
 2002-02-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Deliver.py (Deliver.__deliver_maildir): New method to reliably
+	deliver a message into a qmail-style Maildir.
+
 	* Util.py (pipecmd): Include getmail copyright for borrowed GPL
 	code.
 

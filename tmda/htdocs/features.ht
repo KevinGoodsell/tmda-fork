@@ -32,8 +32,9 @@ Windows.<br><br>
 allowing fine-grained control over how incoming and outgoing mail is
 disposed of.<br><br>
 
-<li>Local mail delivery, including the ability to deliver to a program
-(pipe), or forward to an e-mail address.<br><br>
+<li>Local mail delivery, including qmail-style Maildirs, mboxrd-format
+mboxes, program (pipe) delivery, and e-mail address
+forwarding.<br><br>
 
 <li>Supports DBM and <a href="http://cr.yp.to/cdb.html" TARGET="Resource Window">
 CDB</a> databases, including on-demand auto-regeneration of DB files.<br><br>

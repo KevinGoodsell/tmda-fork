@@ -23,10 +23,20 @@
 
 
 import os
+import signal
+import socket
+import stat
+import time
 
 import Defaults
 import Errors
 import Util
+
+
+def alarm_handler(signum, frame):
+    """Handle an alarm."""
+    print 'Signal handler called with signal', signum
+    raise IOError, "Couldn't open device!"
 
 
 class Deliver:
@@ -97,7 +107,11 @@ class Deliver:
         elif type == 'mbox':
             self.__deliver_mbox(self.message, dest)
         elif type == 'maildir':
-            self.__deliver_maildir(self.message, dest)
+            if os.path.exists(dest):
+                self.__deliver_maildir(self.message, dest)
+            else:
+                raise Errors.DeliveryError, \
+                      'Destination "%s" does not exist!' % dest
 
     def __deliver_program(self, message, program):
         """Deliver message to /bin/sh -c program."""
@@ -113,6 +127,69 @@ class Deliver:
               'mbox delivery not yet implemented!'
 
     def __deliver_maildir(self, message, maildir):
-        """ """
-        raise Errors.DeliveryError, \
-              'Maildir delivery not yet implemented!'
+        """Reliably deliver a mail message into a Maildir.
+
+        See <URL:http://www.qmail.org/man/man5/maildir.html>
+
+        Based on code from getmail
+        <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
+        Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
+        General Public License version 2.
+        """
+        # e.g, 1014754642.51195.aguirre.la.mastaler.com
+        filename = '%s.%s.%s' % (int(time.time()), Defaults.PID,
+                                 socket.gethostname())
+        # Set a 24-hour alarm for this delivery.
+        signal.signal(signal.SIGALRM, alarm_handler)
+        signal.alarm(24 * 60 * 60)
+
+        dir_tmp = os.path.join(maildir, 'tmp')
+        dir_new = os.path.join(maildir, 'new')
+        if not (os.path.isdir(dir_tmp) and os.path.isdir(dir_new)):
+            raise Errors.DeliveryError, 'not a Maildir! (%s)' % maildir
+
+        fname_tmp = os.path.join(dir_tmp, filename)
+        fname_new = os.path.join(dir_new, filename)
+
+        # File must not already exist.
+        if os.path.exists(fname_tmp):
+            raise Errors.DeliveryError, fname_tmp + 'already exists!'
+        if os.path.exists(fname_new):
+            raise Errors.DeliveryError, fname_new + 'already exists!'
+
+        # Get user & group of maildir.
+        s_maildir = os.stat(maildir)
+        maildir_owner = s_maildir[stat.ST_UID]
+        maildir_group = s_maildir[stat.ST_GID]
+
+        # Open file to write.
+        try:
+            fp = open(fname_tmp, 'wb')
+            try:
+                os.chown(fname_tmp, maildir_owner, maildir_group)
+            except OSError:
+                # Not running as root, can't chown file.
+                pass
+            os.chmod(fname_tmp, 0600)
+            fp.write(message)
+            fp.flush()
+            os.fsync(fp.fileno())
+            fp.close()
+        except IOError:
+            raise Errors.DeliveryError, 'Failure writing file ' + fname_tmp
+
+        # Move message file from Maildir/tmp to Maildir/new
+        try:
+            os.link(fname_tmp, fname_new)
+            os.unlink(fname_tmp)
+        except OSError:
+            try:
+                os.unlink(fname_tmp)
+            except:
+                pass
+            raise Errors.DeliveryError, 'failure renaming "%s" to "%s"' \
+                   % (fname_tmp, fname_new)
+
+        # Cancel the alarm.
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, signal.SIG_DFL)

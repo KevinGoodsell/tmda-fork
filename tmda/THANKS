@@ -22,8 +22,10 @@ Contributions:
     
     * Ron Bickers -- countless suggestions, bugfixes, documentation
       additions, and code patches (too many to list).
-     
+
     * Francisco Sam Castillo -- QAdmin-TMDA web management utility.
+
+    * Charles Cazabon -- Maildir and mbox delivery code from getmail.
 
     * Vincent Danen -- Mandrake Linux RPMs.
 
