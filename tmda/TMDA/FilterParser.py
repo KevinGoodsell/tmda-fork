@@ -29,6 +29,7 @@ Filter file syntax documented in htdocs/config-filter.html
 import os
 import re
 import string
+import sys
 import types
 import time
 
@@ -299,8 +300,32 @@ class FilterParser:
         return None
 
 
+    def __loadedby(self, filename):
+        for idx in range(len(self.files)-1 , -1, -1):
+            if filename == self.files[idx].exception.filename:
+                if idx > 0:
+                    loadername = self.files[idx-1].exception.filename
+                else:
+                    loadername = sys.argv[0]
+                break
+        else:
+            loadername = None
+        return loadername
+
+
     def read(self, filename):
         """Open and read the named filter file if it exists."""
+        filename = os.path.abspath(filename)
+        filename = os.path.normpath(filename)
+        loadername = self.__loadedby(filename)
+
+        if loadername:
+            errstr = '"%s" already included by "%s"' % (filename, loadername)
+            # Get the (still) current file's exception object
+            exception = self.__file().exception
+            exception.append(self.__file().lineno, errstr)
+            raise exception
+
         try:
             fp = open(filename)
             self.__pushfile(_FilterFile(filename))

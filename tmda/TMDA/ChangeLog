@@ -2,6 +2,12 @@
 
 	* FilterParser.py (_FilterFile): New class to hold per-file data.
 
+	(FilterParser.__loadedby): New function to determine if file to be
+	included has already been included (to prevent infinite loops).
+
+	(FilterParser.read): Added code to detect file include loops and
+	prevent infinite loops.
+
 	(FilterParser.__init__): Moved Parser initialization to
 	constructor.
 
