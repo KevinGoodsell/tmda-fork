@@ -1,3 +1,18 @@
+
+If you are upgrading from a release of TMDA < 0.79:
+
+* The PURGED_HEADERS configuration variable has been changed to
+  <URL:http://tmda.net/config-vars.html#PURGED_HEADERS_CLIENT>.  If
+  you use PURGED_HEADERS in your config file you will need to change
+  it to PURGED_HEADERS_CLIENT.
+
+  There are two new variables used to purge headers.
+  <URL:http://tmda.net/config-vars.html#PURGED_HEADERS_SERVER> allows
+  you to remove headers from TMDA-generated autoresponses.
+  <URL:http://tmda.net/config-vars.html#PURGED_HEADERS_DELIVERY> is
+  used when mail is delivered, either to a pipe, mbox or maildir, or
+  when it is forwarded.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.78:
