@@ -1,5 +1,12 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.45:
+
+* tmda-filter will now use the `X-TMDA-Originally-To' header if it
+  exists rather than `X-Originally-To'.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.44:
 
 * LOGFILE has been renamed LOGFILE_INCOMING.

@@ -3,6 +3,9 @@
 	* tmda-rfilter (list_headers): Add `Mailing-List' to the list of
 	headers to check for disabling auto-replies.
 
+	(envelope_recipient): Look for X-TMDA-Originally-To instead of
+	X-Originally-To.
+
 2002-01-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-keygen: Add a command-line option (-d, --device) to specify
