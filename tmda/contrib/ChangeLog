@@ -1,3 +1,7 @@
+2001-06-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.21.
+	
 2001-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda.spec: New RPM spec file from Ron Bickers.
