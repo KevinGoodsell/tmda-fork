@@ -75,7 +75,7 @@ if os.path.exists(GLOBAL_TMDARC):
 # to ~/.tmda/config
 TMDARC = os.environ.get('TMDARC')
 if not TMDARC:
-    TMDARC = "~/.tmda/config"
+    TMDARC = os.path.expanduser('~/.tmda/config')
 
 # CONFIG_EXEC
 # If set to 0 in GLOBAL_TMDARC, the user's TMDARC file will be parsed
@@ -1616,7 +1616,6 @@ _path_vars = {
     'RESPONSE_DIR': None,
     'SENDMAIL_PROGRAM': None,
     'TEMPLATE_DIR': None,
-    'TMDARC': None,
     'VIRTUALDOMAINS': None
     }
 
