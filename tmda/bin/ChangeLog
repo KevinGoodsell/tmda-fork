@@ -1,3 +1,19 @@
+2001-08-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (main): If recipients are provided as command line
+	arguments, tmda-inject now uses those to send the message.
+	Otherwise, the header addresses are used as before.  Also, the
+	from address used to create the tagged address is now taken from
+	the message's From: header, if available.  Otherwise, the .tmdarc
+	settings are used as before.
+	Patch contributed by Ron Bickers.
+	
+	* tmda-dated-address: Add an option to specify the address to base
+	the tagging on vs. the default USERNAME/HOSTNAME settings.
+	Patch contributed by Ron Bickers.
+
+	* tmda-sender-address: Ditto.
+		
 2001-08-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-clean: Added months (M) and years (Y).

@@ -46,12 +46,12 @@ def make_dated_cookie(time):
     return expire_time + '.' + datedmac
 
 
-def make_dated_address():
+def make_dated_address(address):
     """Return a full dated-style e-mail address."""
     now = '%d' % time.time()
     dated_cookie = make_dated_cookie(now)
-    dated_address = Defaults.USERNAME + '-dated-' + dated_cookie + '@' \
-                    + Defaults.HOSTNAME
+    (username, hostname) = string.split(address,'@')
+    dated_address = username + '-dated-' + dated_cookie + '@' + hostname
     return dated_address
 
 
@@ -61,10 +61,11 @@ def make_sender_cookie(address):
     return Util.hexlify(sender_cookie)
 
 
-def make_sender_address(address):
+def make_sender_address(address, sender):
     """Return a full sender-style e-mail address."""
-    address = string.lower(address)
-    sender_cookie = make_sender_cookie(address)
-    sender_address = Defaults.USERNAME + '-sender-' + sender_cookie + \
-                    '@' + Defaults.HOSTNAME
+    sender = string.lower(sender)
+    sender_cookie = make_sender_cookie(sender)
+    (username, hostname) = string.split(address,'@')
+    sender_address = username + '-sender-' + sender_cookie + \
+                    '@' + hostname
     return sender_address

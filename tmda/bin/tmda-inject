@@ -6,7 +6,7 @@
 
 """Tag and send outgoing messages.
 
-Usage:  %(program)s [-c <file>] [-q] [-h]
+Usage:  %(program)s [-c <file>] [-q] [-h] [ recip ... ]
 
 Where:
 	-c <file>
@@ -20,6 +20,11 @@ Where:
 	--help
 	-h
 	   Print this help message and exit.
+	   
+	recip
+	   If one or more recipients are provided, send the message to
+	   all recip arguments.  If none are provided, send the message
+	   to all header recipient addresses.
 """
 
 import getopt
@@ -79,29 +84,27 @@ def inject_message(address,message_headers,message_body):
     pipeline.close()
 
 
-def send_bare(address,message_headers,message_body):
+def send_bare(address,from_address,message_headers,message_body):
     """Send a message with an untagged address."""
-    os.environ['QMAILUSER'] = Defaults.USERNAME
-    inject_message(address,message_headers,message_body)
-
-
-def send_dated(address,message_headers,message_body):
-    """Send a message with a tagged (dated) address."""
-    dated_address = Cookie.make_dated_address()
-    address_split = string.split(dated_address,'@')
-    username = address_split[0]
-    hostname = address_split[1]
+    (username, hostname) = string.split(from_address,'@')
     os.environ['QMAILUSER'] = username
     os.environ['QMAILHOST'] = hostname
     inject_message(address,message_headers,message_body)
 
 
-def send_sender(address,message_headers,message_body):
+def send_dated(address,from_address,message_headers,message_body):
+    """Send a message with a tagged (dated) address."""
+    dated_address = Cookie.make_dated_address(from_address)
+    (username, hostname) = string.split(dated_address,'@')
+    os.environ['QMAILUSER'] = username
+    os.environ['QMAILHOST'] = hostname
+    inject_message(address,message_headers,message_body)
+
+
+def send_sender(address,from_address,message_headers,message_body):
     """Send a message with a tagged (sender) address."""
-    sender_address = Cookie.make_sender_address(address)
-    address_split = string.split(sender_address,'@')
-    username = address_split[0]
-    hostname = address_split[1]
+    sender_address = Cookie.make_sender_address(from_address, address)
+    (username, hostname) = string.split(sender_address,'@')
     os.environ['QMAILUSER'] = username
     os.environ['QMAILHOST'] = hostname
     inject_message(address,message_headers,message_body)
@@ -109,17 +112,17 @@ def send_sender(address,message_headers,message_body):
 
 def send_exp(address,from_address,message_headers,message_body):
     """Send a message with an explicitly defined address."""
-    address_split = string.split(from_address,'@')
-    username = address_split[0]
-    hostname = address_split[1]
+    (username, hostname) = string.split(from_address,'@')
     os.environ['QMAILUSER'] = username
     os.environ['QMAILHOST'] = hostname
     inject_message(address,message_headers,message_body)
 
 
-def send_ext(address,extension,message_headers,message_body):
+def send_ext(address,from_address,extension,message_headers,message_body):
     """Send a message with a tagged (extension added) address."""
-    os.environ['QMAILUSER'] = Defaults.USERNAME + '-' + extension
+    (username, hostname) = string.split(from_address,'@')
+    os.environ['QMAILUSER'] = username + '-' + extension
+    os.environ['QMAILHOST'] = hostname
     inject_message(address,message_headers,message_body)
 
 
@@ -137,12 +140,19 @@ def main():
     
     # qmail-inject variables which are often the same regardless of
     # how the message will be tagged (unless overwritten later).
-    os.environ['QMAILHOST'] = Defaults.HOSTNAME
     os.environ['QMAILINJECT'] = Defaults.INJECT_FLAGS
-    os.environ['QMAILNAME'] = Defaults.FULLNAME
     
     # Header examination and manipulation.
     message_headers = rfc822.Message(message)
+
+    # Use from header as from address if available.
+    header_from = message_headers.getaddr("from")
+    if header_from:
+	os.environ['QMAILNAME'] = header_from[0]
+	from_address = header_from[1]
+    else:
+	os.environ['QMAILNAME'] = Defaults.FULLNAME
+	from_address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
 
     header_to = message_headers.getaddrlist("to")
     header_cc = message_headers.getaddrlist("cc")
@@ -152,17 +162,20 @@ def main():
     # Read in the message body.
     message_body = message.read()
     
+    # If recipients are provided as args, use them.
+    if args:
+	address_list = args
     # If running through qfilter, get recipient list from QMAILRCPTS.
-    if os.environ.has_key('QMAILRCPTS'):
+    elif os.environ.has_key('QMAILRCPTS'):
         address_list = string.split(string.lower
                                     (os.environ['QMAILRCPTS']),'\n')[:-1]
     else:
         # Downcase and then combine To:, Cc:, and Bcc: addresses into one list.
-       address_list = []
-       for list in header_to,header_cc,header_bcc:
-           for a in list:
-               address = string.lower(a[1])
-               address_list.append(address)
+	address_list = []
+	for list in header_to,header_cc,header_bcc:
+	    for a in list:
+		address = string.lower(a[1])
+		address_list.append(address)
                
     # Check for the `X-TMDA' override header.
     if message_headers.has_key('x-tmda'):
@@ -245,15 +258,15 @@ def main():
         # generates its own Message-ID: and Date: headers so they
         # match on multiple recipient messages.
         if address_cookie == 'bare':
-            send_bare(address,str(message_headers),message_body)
+            send_bare(address,from_address,str(message_headers),message_body)
         elif address_cookie == 'dated':
-            send_dated(address,str(message_headers),message_body)
+            send_dated(address,from_address,str(message_headers),message_body)
         elif address_cookie == 'sender':
-            send_sender(address,str(message_headers),message_body)
+            send_sender(address,from_address,str(message_headers),message_body)
         elif address_cookie == 'exp':
             send_exp(address,exp_from_address,str(message_headers),message_body)
         elif address_cookie == 'ext':
-            send_ext(address,ext_extension,str(message_headers),message_body)
+            send_ext(address,from_address,ext_extension,str(message_headers),message_body)
         else:
             print "Unknown cookie type:",address_cookie
             sys.exit(Defaults.ERR_CONFIG)

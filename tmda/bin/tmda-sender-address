@@ -2,13 +2,17 @@
 
 """Generate a tagged (sender-style) e-mail address.
 
-Usage:  %(program)s [-c <file>] [-h] address
+Usage:  %(program)s [-c <file>] [-a <address>] [-h] address
 
 Where:
 	-c <file>
 	--config-file <file>
 	   Specify a different configuration file other than ~/.tmdarc.
 
+	-a <address>
+	--address <address>
+	   Specify a different address as the basis for the tagged address.
+			 
 	--help
 	-h
 	   Print this help message and exit.
@@ -17,6 +21,7 @@ Where:
 import getopt
 import os
 import sys
+import string
 
 
 program = sys.argv[0]
@@ -29,18 +34,21 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                                   'c:h', ['config-file=','help'])
+                                   'c:a:h', ['config-file=','address=','help'])
 except getopt.error, msg:
     usage(1, msg)
 
 if len(args) <> 1:
     usage(1)
 
+address = None
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
+    elif opt in ('-a', '--address'):
+	address = string.split(arg,'@')
 
 
 try:
@@ -49,12 +57,16 @@ except ImportError:
     pass
 
 from TMDA import Cookie
-
+from TMDA import Defaults
 
 def main():
-
-    address = args[0]
-    sender_address = Cookie.make_sender_address(address)
+    
+    global address
+    
+    sender = args[0]
+    if not address:
+	address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
+    sender_address = Cookie.make_sender_address(address, sender)
     sys.stdout.write(sender_address)
 
 
