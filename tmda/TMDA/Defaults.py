@@ -172,11 +172,11 @@ if not vars().has_key('RECIPIENT_DELIMITER'):
     RECIPIENT_DELIMITER = "-"
 
 # ALLOW_MODE_640
-# Set this variable to 1 if you want to allow a mode 640 CRYPT_KEY_FILE.
+# Set this variable to True if you want to allow a mode 640 CRYPT_KEY_FILE.
 #
-# Default is 0 (turned off)
+# Default is False (turned off)
 if not vars().has_key('ALLOW_MODE_640'):
-    ALLOW_MODE_640 = 0
+    ALLOW_MODE_640 = False
 
 # MAIL_TRANSPORT
 # Final delivery method for all outgoing mail (server and client).
@@ -240,14 +240,14 @@ if not vars().has_key('SMTPAUTH_PASSWORD') and MAIL_TRANSPORT == 'smtp':
     SMTPAUTH_PASSWORD = None
 
 # SMTPSSL
-# Set this variable to 1 to put the SMTP connection in TLS (Transport
+# Set this variable to True to put the SMTP connection in TLS (Transport
 # Layer Security) mode. All SMTP commands that follow will be
 # encrypted.  Your Python's socket module must be compiled with SSL
 # support.  Requires Python 2.2 or greater.
 #
-# Default is 0 (turned off)
+# Default is False (turned off)
 if not vars().has_key('SMTPSSL') and MAIL_TRANSPORT == 'smtp':
-    SMTPSSL = 0
+    SMTPSSL = False
 
 # SMTPSSL_KEYFILE
 # When SMTPSSL is enabled, this is the optional name of a PEM
@@ -292,13 +292,13 @@ if not vars().has_key('SENDMAIL_PROGRAM') and MAIL_TRANSPORT == 'sendmail':
             break
 
 # USEVIRTUALDOMAINS
-# Set this variable to 0 if want to turn off TMDA's qmail virtualdomains
+# Set this variable to False if want to turn off TMDA's qmail virtualdomains
 # support.  This should obviously only be done if you are not running
 # any qmail virtualdomains, but it will improve performance.
 #
-# Default is 1 (turned on)
+# Default is True (turned on)
 if not vars().has_key('USEVIRTUALDOMAINS'):
-    USEVIRTUALDOMAINS = 1
+    USEVIRTUALDOMAINS = True
 
 # VIRTUALDOMAINS
 # virtualdomains defaults to /var/qmail/control/virtualdomains, but
@@ -425,12 +425,12 @@ if not vars().has_key('CGI_URL'):
     CGI_URL = None
 
 # CGI_VIRTUALUSER
-# Set this variable to 1 if you wish to enable tmda-cgi's "virtual
+# Set this variable to True if you wish to enable tmda-cgi's "virtual
 # user" support (http://tmda.net/tmda-cgi/virtual.html).
 #
-# Default is 0 (disabled)
+# Default is False (disabled)
 if not vars().has_key('CGI_VIRTUALUSER'):
-    CGI_VIRTUALUSER = 0
+    CGI_VIRTUALUSER = False
 
 # CONFIRM_ADDRESS
 # An optional e-mail address to use for creating confirmation
@@ -470,12 +470,12 @@ if not vars().has_key('CONFIRM_CC'):
     CONFIRM_CC = None
 
 # CONFIRM_ACCEPT_NOTIFY
-# Set this variable to 0 if you do not want to generate any confirmation
+# Set this variable to False if you do not want to generate any confirmation
 # acceptance notices.
 #
-# Default is 1 (turned on)
+# Default is True (turned on)
 if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
-    CONFIRM_ACCEPT_NOTIFY = 1
+    CONFIRM_ACCEPT_NOTIFY = True
 
 # CONFIRM_ACCEPT_TEXT_INITIAL
 # Text for the confirmation acceptance notice returned to the sender
@@ -545,7 +545,7 @@ if not vars().has_key('TEMPLATE_DIR'):
     TEMPLATE_DIR = None
 
 # TEMPLATE_DIR_MATCH_RECIPIENT
-# Set this variable to 1 if you want to use specific templates for
+# Set this variable to True if you want to use specific templates for
 # different recipient addresses.  Be sure to set TEMPLATE_DIR as well.
 #
 # The TEMPLATE_DIR_MATCH_RECIPIENT feature enables TMDA to search for
@@ -573,13 +573,13 @@ if not vars().has_key('TEMPLATE_DIR'):
 # are enabled, the TEMPLATE_DIR_MATCH_RECIPIENT directories are searched
 # after the sender directories.
 #
-# Default is 0 (turned off)
+# Default is False (turned off)
 
 if not vars().has_key('TEMPLATE_DIR_MATCH_RECIPIENT'):
-    TEMPLATE_DIR_MATCH_RECIPIENT = 0
+    TEMPLATE_DIR_MATCH_RECIPIENT = False
 
 # TEMPLATE_DIR_MATCH_SENDER
-# Set this variable to 1 if you want to use sender specific template
+# Set this variable to True if you want to use sender specific template
 # directory matching. Make sure you also have TEMPLATE_DIR set.
 #
 # With this feature enabled, TMDA will look for templates in a
@@ -600,9 +600,9 @@ if not vars().has_key('TEMPLATE_DIR_MATCH_RECIPIENT'):
 # If no sender based templates can be found, TEMPLATE_DIR itself and
 # then the default locations will be tried.
 #
-# Default is 0 (turned off)
+# Default is False (turned off)
 if not vars().has_key('TEMPLATE_DIR_MATCH_SENDER'):
-    TEMPLATE_DIR_MATCH_SENDER = 0
+    TEMPLATE_DIR_MATCH_SENDER = False
 
 # TEMPLATE_EMAIL_HEADERS
 # A list containing the names of headers in your templates that
@@ -630,20 +630,20 @@ if not vars().has_key('TEMPLATE_ENCODED_HEADERS'):
     TEMPLATE_ENCODED_HEADERS = ['subject']
 
 # DATED_TEMPLATE_VARS
-# Set this variable to 1 if you want to use 'dated' address variables
+# Set this variable to True if you want to use 'dated' address variables
 # in your templates.
 #
-# Default is 0 (turned off)
+# Default is False (turned off)
 if not vars().has_key('DATED_TEMPLATE_VARS'):
-    DATED_TEMPLATE_VARS = 0
+    DATED_TEMPLATE_VARS = False
 
 # SENDER_TEMPLATE_VARS
-# Set this variable to 1 if you want to use 'sender' address variables
+# Set this variable to True if you want to use 'sender' address variables
 # in your templates.
 #
-# Default is 0 (turned off)
+# Default is False (turned off)
 if not vars().has_key('SENDER_TEMPLATE_VARS'):
-    SENDER_TEMPLATE_VARS = 0
+    SENDER_TEMPLATE_VARS = False
 
 # FILTER_INCOMING
 # Filter file which controls how incoming messages are tagged.
@@ -690,7 +690,7 @@ if not vars().has_key('FILTER_DROP_CC'):
     FILTER_DROP_CC = None
 
 # ACTION_HEADER_INCOMING
-# Set this variable to 1 if you want TMDA to add an `X-TMDA-Action'
+# Set this variable to True if you want TMDA to add an `X-TMDA-Action'
 # header to your delivered incoming messages. The value of this header
 # is the same as the "Actn:" field in a LOGFILE_INCOMING entry. e.g,
 #
@@ -699,9 +699,9 @@ if not vars().has_key('FILTER_DROP_CC'):
 # NOTE: This will not work if you are running qmail and have not set
 # the DELIVERY variable.
 #
-# Default is 0 (turned off)
+# Default is False (turned off)
 if not vars().has_key('ACTION_HEADER_INCOMING'):
-    ACTION_HEADER_INCOMING = 0
+    ACTION_HEADER_INCOMING = False
 
 # ACTION_INCOMING
 # Specifies how incoming messages should be disposed of by default if
@@ -1509,7 +1509,7 @@ if not vars().has_key('USERNAME'):
     USERNAME = Util.getusername()
 
 # X_TMDA_IN_SUBJECT
-# With this variable set to 1, tmda-inject will parse the Subject
+# With this variable set to True, tmda-inject will parse the Subject
 # header looking for `X-TMDA' actions, and then remove them before
 # sending the message.  This is useful for users that desire the
 # `X-TMDA' override behavior, but don't use an MUA which easily allows
@@ -1528,9 +1528,9 @@ if not vars().has_key('USERNAME'):
 # In all cases, the resulting subject will simply be:
 # Subject: Re: You're fired!
 #
-# Default is 0 (turned off)
+# Default is False (turned off)
 if not vars().has_key('X_TMDA_IN_SUBJECT'):
-    X_TMDA_IN_SUBJECT = 0
+    X_TMDA_IN_SUBJECT = False
 
 # CRYPT_KEY_FILE
 # File which contains your unique TMDA secret key generated by the
