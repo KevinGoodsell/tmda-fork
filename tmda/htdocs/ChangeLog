@@ -1,5 +1,7 @@
 2001-11-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config-filter.ht: Document the <> match expression.
+
 	* config-pre.ht (address_pipe): A better way of setting EXTENSION
 	under Exim.  Removing the leading character from a string is
 	done faster and easier with ${substr rather than ${sg.

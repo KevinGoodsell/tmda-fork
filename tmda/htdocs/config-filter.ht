@@ -93,6 +93,9 @@ size		comparison operator and number of bytes to compare to the
 		size of the message.  Only `<' and `>' are supported.
 
 </blockquote></pre>
+<strong>NOTE:</strong> To match the empty envelope sender such as bounce
+messages are sent with, use <b><code><></code></b> as the expression.
+<br><br>
 
 In addition to explicit e-mail addresses, you can use expressions
 based on UNIX shell-style wildcard characters in either the
@@ -164,8 +167,11 @@ kw,keyword=keyword (tag with a keyword address)
 
 ### ~/.tmda/filters/incoming (first match wins) ###
 
+# Accept all bounces (messages with an empty envelope sender)
+from <> ok
+
 # Accept all messages to postmistress
-to postmistress@* ok
+to postmistress@* accept
 
 # Bounce all messages from badboy.dom
 from *@=badboy.dom bounce
