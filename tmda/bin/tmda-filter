@@ -64,7 +64,7 @@ except:
         from TMDA.Defaults import LOGFILE_DEBUG
         if not LOGFILE_DEBUG:
             raise NameError, 'LOGFILE_DEBUG is not defined'
-        print 'Exception', LOGFILE_DEBUG
+        print 'See', LOGFILE_DEBUG, 'for traceback'
         fp = open(LOGFILE_DEBUG, 'a')
 
     except SystemExit:
@@ -72,9 +72,10 @@ except:
     
     except:
         try:
-            print 'Exception', '~/TMDA_DELIVERY_FAILURE'
+            failure_file = os.path.expanduser('~/TMDA_DELIVERY_FAILURE')
+            print 'See', failure_file, 'for traceback'
             tb2 = sys.exc_info()
-            fp = open(os.path.expanduser('~/TMDA_DELIVERY_FAILURE'), 'a')
+            fp = open(failure_file, 'a')
 
         except SystemExit:
             raise
@@ -85,8 +86,8 @@ except:
 if status:
     try:
         fline = ('%s (%s):' %
-                 ('Uncaught Python ' + sys.version.split()[0] + ' exception',
-                  time.asctime(time.gmtime(time.time())) + ' UTC'))
+                 ('Uncaught Python ' + sys.version.split()[0] + ' Exception',
+                  time.ctime(time.time())))
         log_header = '\n%s\n%s\n' % (fline, '-' * len(fline))
         fp.write(log_header)
         for tb in (tb1, tb2, tb3):
