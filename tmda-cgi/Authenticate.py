@@ -41,6 +41,12 @@ authinit = 0
 def InitProgramAuth( Program ):
   """Initializes the authentication scheme with a checkpw-style program.
     (Implemented by Auth.py)"""
+
+  # Populate TCPLOCALHOST for checkpw-stype programs that need it
+  # (i.e. checkvpw)
+  if os.environ.has_key("HTTP_HOST"):
+    os.putenv('TCPLOCALHOST',os.environ["HTTP_HOST"])
+
   global authinit
   authinit = 0
   try:
