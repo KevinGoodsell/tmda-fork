@@ -449,7 +449,7 @@ try:
   os.unlink(OptD["Target"])
 except: pass
 
-CompStr = "cc %(Path)stmda-cgi.c -o %(Target)s" % OptD
+CompStr = "cc -I . %(Path)stmda-cgi.c -o %(Target)s" % OptD
 if OptD["Compile"] == "Yes":
   # Compile tmda-cgi
   os.system(CompStr)
@@ -504,4 +504,5 @@ elif OptD["AuthType"] == "program":
      *   -rws--s--x    1 vpopmail vchkpw     ### MMM dd hh:mm tmda.cgi  *
      ********************************************************************
 """
-    os.system("ls -l %(Target)s" % OptD)
+    if OptD["Compile"] == "Yes":
+      os.system("ls -l %(Target)s" % OptD)

@@ -21,7 +21,7 @@ along with TMDA; if not, write to the Free Software Foundation, Inc.,
 
 #include <stdlib.h>
 #include <fcntl.h>
-#include "./tmda-cgi.h"
+#include <tmda-cgi.h>
 
 int main(int argc, char *argv[])
 {
