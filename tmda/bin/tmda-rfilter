@@ -625,6 +625,7 @@ def create_pending_msg(timestamp, pid):
     pending_contents = str(message_headers) + '\n' + message_body
     Util.writefile(pending_contents,
                    os.path.join(pendingdir, pending_message))
+    return pending_message
 
 
 def bouncegen(mode, text=None):
@@ -676,9 +677,9 @@ def bouncegen(mode, text=None):
                                                              timestamp,
                                                              pid,
                                                              'accept')
-        create_pending_msg(timestamp, pid)
+        pending_message = create_pending_msg(timestamp, pid)
     elif mode == 'hold':
-        create_pending_msg(str('%d' % now), Defaults.PID)
+        pending_message = create_pending_msg(str('%d' % now), Defaults.PID)
         # Don't send anything for silently held messages
         if Defaults.CONFIRM_CC:
             send_cc(Defaults.CONFIRM_CC)

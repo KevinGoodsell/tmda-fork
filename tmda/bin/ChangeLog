@@ -1,3 +1,11 @@
+2002-09-14  Tim Legant  <tim@catseye.net>
+
+	* tmda-rfilter (create_pending_msg): Return message filename.
+
+	(bouncegen): Assign message filename to 'pending_message' when
+	creating pending message.  Fixes bug when attempting to log
+	confirmation, reported by Jinhyok Heo <novembre@ournature.org>.
+
 2002-09-12  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-inject (message_format): Utilize email.Utils.formataddr().
