@@ -25,7 +25,7 @@ import sys
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.03"
+tmda_cgi = "0.03+"
 
 # tmda-cgi version codename
 Codename = "Lithium"
