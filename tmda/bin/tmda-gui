@@ -112,7 +112,10 @@ def lib_processMessage(msgid, command, **args):
         if type(data) == str:
             return data
         else:
-            return '\n'.join(data)
+            try:
+                return '\n'.join(data)
+            except TypeError:
+                return str(data)
     except AttributeError:
         return None
 
@@ -138,6 +141,7 @@ def connectToServer(host, auth):
     sin = sock.makefile('r', 0)
     sout = sock.makefile('w', 0)
     # eat up greetings from manager
+    ## FIXME: maybe check the protocol version ?
     while sin.readline() and sin.read(1) != '+':
         pass
     sout.write('auth %s %s\n' % auth)
@@ -372,14 +376,20 @@ class MessageList(Frame):
         fo = VSplitterFrame(self, split=0.25)
         fi = VSplitterFrame(fo.two, split=0.33)
         
+        f = Label(fo.one, text="Date", bd=1, relief=RAISED)
+        f.pack(side=TOP, fill=X)
         l = Listbox(fo.one, yscrollcommand=self._set, bd=0)
         l.pack(side=LEFT, fill=BOTH, expand=YES)
         self._cols.append(l)
 
+        f = Label(fi.one, text="From", bd=1, relief=RAISED)
+        f.pack(side=TOP, fill=X)
         l = Listbox(fi.one, yscrollcommand=self._set, bd=0)
         l.pack(side=LEFT, fill=BOTH, expand=YES)
         self._cols.append(l)
 
+        f = Label(fi.two, text="Subject", bd=1, relief=RAISED)
+        f.pack(side=TOP, fill=X)
         l = Listbox(fi.two, yscrollcommand=self._set, bd=0)
         l.pack(side=LEFT, fill=BOTH, expand=YES)
         self._cols.append(l)
@@ -639,25 +649,26 @@ class PendingGUI(Frame):
         self.createMenu()
 
         self.toolbar = Frame(self, relief=GROOVE)
-        b = Button(self.toolbar, text="Rfsh", bd=1, width=1,
+
+        b = Button(self.toolbar, text="Refresh", bd=1,
                    command=self.MessageRefresh)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="Show", bd=1, width=1,
+        b = Button(self.toolbar, text="Show", bd=1,
                    command=self.MessageShow)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="W", bd=1, width=1,
+        b = Button(self.toolbar, text="Whitelist", bd=1,
                    command=self.MessageWhitelist)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="Rel", bd=1, width=1,
+        b = Button(self.toolbar, text="Release", bd=1,
                    command=self.MessageRelease)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="B", bd=1, width=1,
+        b = Button(self.toolbar, text="Blacklist", bd=1,
                    command=self.MessageBlacklist)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="Del", bd=1, width=1,
+        b = Button(self.toolbar, text="Delete", bd=1,
                    command=self.MessageDelete)
         b.pack(side=LEFT, padx=0, pady=0)
-        b = Button(self.toolbar, text="Quit", bd=1, width=1,
+        b = Button(self.toolbar, text="Quit", bd=1,
                    command=self.FileQuit)
         b.pack(side=RIGHT, padx=0, pady=0)
         self.toolbar.pack(side=TOP, fill=X)
