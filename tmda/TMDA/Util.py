@@ -850,9 +850,10 @@ def maketext(templatefile, vardict):
      Several locations are scanned for templatefile, in the following order:
      1. The directory specified by tmda-filter's `-t' option.
      2. Defaults.TEMPLATE_DIR_MATCH_SENDER (if true)
-     3. Defaults.TEMPLATE_DIR
-     4. ../templates/
-     5. The package/RPM template directories.
+     3. Defaults.TEMPLATE_DIR_MATCH_RECIPIENT (if true)
+     4. Defaults.TEMPLATE_DIR
+     5. ../templates/
+     6. The package/RPM template directories.
 
     The first match found stops the search.  In this way, you can
     specialize templates at the desired level, or, if you use only the
@@ -875,6 +876,25 @@ def maketext(templatefile, vardict):
         searchdirs.append(os.path.join(Defaults.TEMPLATE_DIR, sender))
         try:
             domainparts = sender.split('@', 1)[1].split('.')
+            for i in range(len(domainparts)):
+                searchdirs.append(os.path.join
+                                  (Defaults.TEMPLATE_DIR, '.'.join(domainparts)))
+                del domainparts[0]
+        except IndexError:
+            pass
+    if Defaults.TEMPLATE_DIR_MATCH_RECIPIENT and Defaults.TEMPLATE_DIR:
+        recipient = os.environ.get('TMDA_RECIPIENT').lower()
+        searchdirs.append(os.path.join(Defaults.TEMPLATE_DIR, recipient))
+        try:
+            recippart, domainpart = recipient.split('@',1)
+            recipparts = recippart.split(Defaults.RECIPIENT_DELIMITER)
+            for i in range(len(recipparts)):
+                searchdirs.append(os.path.join
+                                  (Defaults.TEMPLATE_DIR,
+                                   Defaults.RECIPIENT_DELIMITER.join(recipparts) +
+                                   "@" + domainpart))
+                del recipparts[-1]
+            domainparts = domainpart.split('.')
             for i in range(len(domainparts)):
                 searchdirs.append(os.path.join
                                   (Defaults.TEMPLATE_DIR, '.'.join(domainparts)))

@@ -550,6 +550,40 @@ if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
 if not vars().has_key('TEMPLATE_DIR'):
     TEMPLATE_DIR = None
 
+# TEMPLATE_DIR_MATCH_RECIPIENT
+# Set this variable to 1 if you want to use specific templates for
+# different recipient addresses.  Be sure to set TEMPLATE_DIR as well.
+#
+# The TEMPLATE_DIR_MATCH_RECIPIENT feature enables TMDA to search for
+# customized template files based on the recipient address.  To continue
+# with the example given for TEMPLATE_DIR_MATCH_SENDER, if a message
+# arrives for foo-lists-guitar@bar.baz.de then TMDA will search for
+# template files in the following directories:
+#
+#  foo-lists-guitars@bar.baz.de/
+#
+#  foo-lists@bar.baz.de/
+#
+#  foo@bar.baz.de/
+#
+#  bar.baz.de/
+#
+#  baz.de/
+#
+#  de/
+#
+# This example assumes that RECIPIENT_DELIMITER is set to `-'.  This
+# feature also works for *-confirm-* addresses.
+#
+# When both TEMPLATE_DIR_MATCH_RECIPIENT and TEMPLATE_DIR_MATCH_SENDER
+# are enabled, the TEMPLATE_DIR_MATCH_RECIPIENT directories are searched
+# after the sender directories.
+#
+# Default is 0 (turned off)
+
+if not vars().has_key('TEMPLATE_DIR_MATCH_RECIPIENT'):
+    TEMPLATE_DIR_MATCH_RECIPIENT = 0
+
 # TEMPLATE_DIR_MATCH_SENDER
 # Set this variable to 1 if you want to use sender specific template
 # directory matching. Make sure you also have TEMPLATE_DIR set.
