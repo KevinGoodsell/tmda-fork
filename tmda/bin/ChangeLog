@@ -1,3 +1,9 @@
+2003-07-01  Tim Legant  <tim@catseye.net>
+
+	* tmda-rfilter (main): Create FilterParser with DB_CONNECTION.
+
+	* tmda-inject (main): Create FilterParser with DB_CONNECTION.
+
 2003-06-25  Tim Legant  <tim@catseye.net>
 
 	* tmda-check-address (main): Imported Defaults.py.  Fixed some

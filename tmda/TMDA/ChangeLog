@@ -1,3 +1,17 @@
+2003-07-01  Tim Legant  <tim@catseye.net>
+
+	* Util.py (filter_match): Create FilterParser with DB_CONNECTION.
+
+	* FilterParser.py (FilterParser): Fixed two regular expressions
+	that were too "greedy".
+	(__create_sql_params, __create_sql_criteria, __get_column_index):
+	New SQL support functions.
+	(__search_sql): Main SQL searching function.
+	(firstmatch): Added from-sql/to-sql rules.  Should work for any
+	SQL database that has a Python DB API 2.0 module.
+
+	* Defaults.py (DB_CONNECTION): New variable.
+
 2003-06-25  Tim Legant  <tim@catseye.net>
 
 	* Address.py: Fixed ConfirmAddress, removed formatting code from
