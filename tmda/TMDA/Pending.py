@@ -64,7 +64,6 @@ class Queue:
         self.verbose = verbose
         self.younger = younger
         self.pretend = pretend
-        self.wantedstdin = 0
 
         self.stdout = sys.stdout
 
@@ -79,14 +78,18 @@ class Queue:
         # via standard input.  (Since it's pointless to call it twice,
         # it's safe to remove any subsequent occurrences in the list after
         # processing.)
+        wantedstdin = 0
         for msgid in self.msgs:
             if msgid == '-':
-                self.wantedstdin = 1
+                wantedstdin = 1
                 for line in sys.stdin.readlines():
-                    self.msgs.append(line.strip())
+                    self.msgs.extend(line.strip().split())
                 self.msgs.remove('-')
+                # re-open stdin on the tty
+                sys.stdin.close()
+                sys.stdin = open('/dev/tty', 'r')
 
-        if not self.msgs and not self.wantedstdin:
+        if not self.msgs and not wantedstdin:
             cwd = os.getcwd()
             os.chdir(self.pendingdir)
             self.msgs = glob.glob('*.*.msg*')
