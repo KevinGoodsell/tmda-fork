@@ -7,7 +7,7 @@ Usage: %(program)s [-b] [-h]
 Where:
     -b
     --batch
-       Output only the CRYPT_KEY line.
+       Output only the CRYPT_KEY.
 
     --help
     -h
@@ -32,7 +32,8 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'bh', ['batch','help'])
+                               'bh',
+                               ['batch','help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -53,13 +54,23 @@ from TMDA import Util
 
 def keygen():
     # Use the kernel's random number generator if available.
-    if os.path.exists("/dev/urandom"):
-        key = open("/dev/urandom","rb").read(20)
-    # Otherwise generate some pseudo-random data from the system
-    # and use the SHA of resulting key as the key.
+    randomdev = '/dev/urandom'
+    if os.path.exists(randomdev):
+        key = open(randomdev,'rb').read(20)
     else:
+        # Otherwise generate some pseudo-random data from the system
+        # and use the SHA of resulting key as the key.
         import sha
-        print "Collecting pseudo-random data from the system..\n"
+        if not batch:
+            # Warn user that use of a cryptographic random number
+            # generator is preferred.
+            warning = ("key generation on a system without a "
+                       + randomdev + " device is not recommended!")
+            print "WARNING:"
+            print '*' * len(warning)
+            print warning
+            print '*' * len(warning)
+            print
         unpredictable = ( "date",
                           "fstat",
                           "iostat",
@@ -76,22 +87,29 @@ def keygen():
             if commands.getstatusoutput(i)[0] == 0:
                 key_data = key_data + os.popen(i).read()
         key = sha.new(key_data + "key").digest()
-
     return Util.hexlify(key)
 
-if not batch:
-    print "Generating a unique, 160-bit private key, please wait a moment.."
-    print
 
-key = keygen()
+def main():
+    
+    if not batch:
+        print "Generating a unique, 160-bit private key, please wait a moment.."
+        print
 
-if len(key) != 40:
-    print "Oops, generated key is not 40-characters long, exiting!"
-    sys.exit()
+    key = keygen()
 
-print "CRYPT_KEY =", '"' + key + '"'
+    if len(key) != 40:
+        print "Oops, generated key is not 40-characters long, exiting!"
+        sys.exit()
 
-if not batch:
-    print
-    print "Now paste this line into your ~/.tmdarc file,"
-    print "and make sure to keep your key secret!"
+    print "CRYPT_KEY =", '"' + key + '"'
+
+    if not batch:
+        print
+        print "Now paste the above line into your ~/.tmdarc file,"
+        print "and make sure to keep your key secret!"
+
+
+# This is the end my friend.
+if __name__ == '__main__':
+    main()
