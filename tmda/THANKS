@@ -52,14 +52,23 @@ Contributions:
     * Brian Lalor -- testing the initial Sendmail support; bugfixes.
 
     * Tim "FilterParser" Legant -- By far the most prolific
-      contributor.  Rewrite of FilterParser.py plus many improvements
-      to the filter file language such as support for multi-line,
-      multi-action filters, support for arguments, new delivery
-      actions, improved error reporting, macros, variable
-      interpolation, sub-filters, and assorted new arguments such as
-      `-autocdb', `-autodbm', and `-optional'. The def2html
-      script. The Address.py module. Also documentation and lots of
-      general bugfixes, suggestions and tmda-users support.
+      contributor, whose work includes:
+
+      - Rewrite of FilterParser.py plus many improvements to the
+        filter file language such as support for multi-line,
+        multi-action filters, support for arguments, new delivery
+        actions, improved error reporting, macros, variable
+        interpolation, sub-filters, and assorted new arguments such as
+        `-autocdb', `-autodbm', and `-optional'.
+
+      - The def2html script. 
+
+      - The Address.py module. 
+
+      - VPopMail/VMailMgr support and HOWTO.
+
+      - Documentation, general bugfixes, design assistance,
+        suggestions and tmda-users support.
 
     * Gre7g Luterman -- tmda-cgi, a web interface to TMDA's pending
       queue.
