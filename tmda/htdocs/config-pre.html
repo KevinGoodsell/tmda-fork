@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Mar 10 12:04:48 2004 -->
+<!-- Wed Mar 10 17:24:24 2004 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -335,10 +335,9 @@ Exim specific instructions for a server-wide TMDA setup.
 <ol>
 
 <li>
-Exim only sets the <strong>SENDER</strong> environment variable
-by default.  You must configure it to also set <strong>RECIPIENT</strong>
-and <strong>EXTENSION</strong> using the <em>environment</em> 
-pipe option.<br><br>
+Exim only sets the <strong>SENDER</strong> and <strong>RECIPIENT</strong>
+environment variables by default.  You must configure it to also set
+<strong>EXTENSION</strong> using the <em>environment</em> pipe option.<br><br>
 
 <li>
 You must also have Exim add a Return-Path: 
@@ -354,8 +353,7 @@ address_pipe:
   driver = pipe 
   return_fail_output 
   return_path_add
-  environment = EXTENSION=${substr_1:$local_part_suffix}:\
-                RECIPIENT=$local_part$local_part_suffix@$domain 
+  environment = EXTENSION=${substr_1:$local_part_suffix}
 </blockquote></pre>
 
 </ol>
