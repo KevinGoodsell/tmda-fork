@@ -409,20 +409,16 @@ if not vars().has_key('BOUNCE_TEXT_FAIL_KEYWORD'):
 if not vars().has_key('BARE_APPEND'):
     BARE_APPEND = None
 
-# CGI_ACTIVE
-# All defaults beginning with "CGI_" configure the behavior of tmda-cgi.
-# tmda-cgi is provided as a contrib package for web-based monitoring and
-# configuration of TMDA accounts.  To use tmda-cgi, you must define
-# CGI_ACTIVE to enable default values for the CGI_* variables.
-#
-# Set this in /etc/tmdarc if you set up tmda-cgi in system-wide mode.
+# CGI_SETTINGS
+# Filename for saving various tmda-cgi settings.  This filename can
+# include a full path, otherwise it is relative the user's config file.
 #
 # Example:
-# CGI_ACTIVE = 1
+# CGI_SETTINGS = "/home/jim/.tmda/MyCGISettings"
 #
-# Default is 0 (disabled)
-if not vars().has_key('CGI_ACTIVE'):
-    CGI_ACTIVE = 0
+# Default is "tmda-cgi.ini".
+if not vars().has_key('CGI_SETTINGS'):
+    CGI_SETTINGS = "tmda-cgi.ini"
 
 # CGI_URL
 # Absolute URL of your tmda-cgi installation.
@@ -431,91 +427,8 @@ if not vars().has_key('CGI_ACTIVE'):
 # CGI_URL = "http://www.domain.dom/cgi-bin/tmda.cgi"
 #
 # No default.
-if CGI_ACTIVE and not vars().has_key('CGI_URL'):
+if not vars().has_key('CGI_URL'):
     CGI_URL = None
-    
-# CGI_CLEANUP_ODDS
-# Chance of cleaning up old sessions when a session object is
-# instantiated.  Keeping this value small will minimize overhead on
-# each page fetch.  Larger values will tidy up the temporary files
-# more often.
-#
-# You probably won't need to adjust this parameter.
-#
-# Example:
-# CGI_CLEANUP_ODDS = 0.1
-#
-# Default is 0.01 (1%).
-if CGI_ACTIVE and not vars().has_key('CGI_CLEANUP_ODDS'):
-    CGI_CLEANUP_ODDS = 0.01
-
-# CGI_CROP_SENDER
-# Maximum length of a sender's e-mail address before it will be cropped in
-# list view.
-#
-# Example:
-# CGI_CROP_SENDER = 40
-#
-# Default is 25.
-if CGI_ACTIVE and not vars().has_key('CGI_CROP_SENDER'):
-  CGI_CROP_SENDER = 25
-
-# CGI_CROP_SUBJECT
-# Maximum length of an e-mail subject before it will be cropped in list view.
-#
-# Example:
-# CGI_CROP_SUBJECT = 50
-#
-# Default is 40.
-if CGI_ACTIVE and not vars().has_key('CGI_CROP_SUBJECT'):
-  CGI_CROP_SUBJECT = 40
-
-# CGI_DATE_FORMAT
-# Format string for time.strftime() used when displaying message dates
-# in pending list view.
-#
-# Example:
-# CGI_DATE_FORMAT = "%m/%d/%y"
-#
-# Default is "%a %1m/%d" (which generates text like: "Mon 12/31")
-if CGI_ACTIVE and not vars().has_key('CGI_DATE_FORMAT'):
-    CGI_DATE_FORMAT = '%a %1m/%d'
-
-# CGI_PAGER_SIZE
-# Number of pending e-mails shown in list format on one page.
-#
-# Example:
-# CGI_PAGER_SIZE = 10
-#
-# Default is 25.
-if CGI_ACTIVE and not vars().has_key('CGI_PAGER_SIZE'):
-    CGI_PAGER_SIZE = 25
-
-# CGI_SESSION_EXP
-# Number of seconds a session is guaranteed to remain on the system
-# before there is a chance of it being cleaned up.  Users who are
-# logged into tmda-cgi and spend more than this amount of time between
-# page accesses may have to log in again.
-#
-# Example:
-# CGI_SESSION_EXP = 600
-#
-# Default is 300 (5 minutes).
-if CGI_ACTIVE and not vars().has_key('CGI_SESSION_EXP'):
-    CGI_SESSION_EXP = 300
-
-# CGI_USE_JS_CONFIRM
-# Enables a pop-up confirmation box before any message is deleted or
-# blacklisted.  Must be disabled if you will be surfing tmda-cgi in
-# a browser without Javascript or where Javascript is disabled.
-# Otherwise you will not be able to delete or blacklist messages.
-#
-# Example:
-# CGI_USE_JS_CONFIRM = 0
-#
-# Default is 1.
-if CGI_ACTIVE and not vars().has_key('CGI_USE_JS_CONFIRM'):
-    CGI_USE_JS_CONFIRM = 1
 
 # CONFIRM_ADDRESS
 # An optional e-mail address to use for creating confirmation

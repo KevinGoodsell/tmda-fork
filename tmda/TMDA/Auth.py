@@ -332,6 +332,7 @@ class Auth(Util.Debugable):
                     self.allowed_authtypes.__repr__() )
         except Errors.AuthError, err:
             raise err
+        self.debug( "Authentication returned: %d" % retval )
         return retval
 
     def authenticate_base64(self, username, password):
@@ -415,8 +416,10 @@ class Auth(Util.Debugable):
             raise Errors.AuthError, \
                 ( "User %s is denied login" % username, \
                   "Blank password in file '%s'" % self.__authfile )
+        self.debug( "Comparing encrypted password." )
         retval = crypt.crypt(password, pw[:2]) == pw
         if not retval and self.__authfile_allows_cleartext:
+            self.debug( "Comparing un-encrypted password." )
             retval = password == pw
         return retval
 
