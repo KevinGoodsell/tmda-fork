@@ -70,7 +70,15 @@ else:
 
 # Only compute defaults for settings not in user's ~/.tmdarc to speed
 # startup.
-    
+
+# DATADIR
+# Top-level directory which TMDA uses to store its files and
+# directories.  TMDA should be free to create subdirectories under
+# DATADIR if need be.  Make sure to include a trailing "/".
+# Default is ~/.tmda/
+if not vars().has_key('DATADIR'):
+    DATADIR = os.path.expanduser("~/.tmda/")
+
 # CONFIRMATION_MODE
 # Set this variable to 0 if you do not want bounces confirmed for
 # validity.
@@ -89,9 +97,9 @@ if not vars().has_key('CONFIRM_ACCEPT_NOTIFY'):
 # Filename which contains a list of e-mail addresses and/or
 # substrings, one per line, which are considered unacceptable and
 # therefore bounced if there is a match.
-# Default is ~/.tmda-blacklist
+# Default is ~/.tmda/blacklist.txt
 if not vars().has_key('BLACKLIST'):
-    BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
+    BLACKLIST = DATADIR + "blacklist.txt"
 
 # BOUNCE_BLACKLIST_CC
 # An optional e-mail address which will be sent a copy of any message
@@ -175,15 +183,6 @@ else:
     # Hex has only 4 bits of entropy per byte as opposed to 8.
     CRYPT_KEY = Util.unhexlify(CRYPT_KEY)
 
-# DATADIR
-# Top-level directory which TMDA uses to store temporary files and
-# directories such as the "pending" queue for yet-to-be-confirmed
-# messages.  TMDA should be free to create subdirectories under
-# DATADIR if need be.  Make sure to include a traling "/".
-# Default is ~/.tmda/
-if not vars().has_key('DATADIR'):
-    DATADIR = os.path.expanduser("~/.tmda/")
-
 # FULLNAME
 # Your full name.
 # Default comes from your environment or the password file.
@@ -249,17 +248,17 @@ if not vars().has_key('USERPREFIX'):
 # BARE_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive untagged (no cookie added) messages.
-# Default is ~/.tmda-bare
+# Default is ~/.tmda/bare.txt
 if not vars().has_key('BARE_FILE'):
-    BARE_FILE = os.path.expanduser("~/.tmda-bare")
+    BARE_FILE = DATADIR + "bare.txt"
 
 # DATED_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive messages with a dated cookie added to your
 # address.
-# Default is ~/.tmda-dated
+# Default is ~/.tmda/dated.txt
 if not vars().has_key('DATED_FILE'):
-    DATED_FILE = os.path.expanduser("~/.tmda-dated")
+    DATED_FILE = DATADIR + "dated.txt"
 
 # EXP_FILE
 # Filename which contains a list of explicit to/from pairs, one per
@@ -269,9 +268,9 @@ if not vars().has_key('DATED_FILE'):
 #  xemacs-announce@xemacs.org jason@xemacs.org
 #  domreg@internic.net        hostmaster@mastaler.com
 #
-# Default is ~/.tmda-exp
+# Default is ~/.tmda/exp.txt
 if not vars().has_key('EXP_FILE'):
-    EXP_FILE = os.path.expanduser("~/.tmda-exp")
+    EXP_FILE = DATADIR + "exp.txt"
 
 # EXT_FILE
 # Filename which contains a list of e-mail address/extension pairs,
@@ -281,25 +280,25 @@ if not vars().has_key('EXP_FILE'):
 #  xemacs-beta@xemacs.org list-xemacs-beta
 #  qmail@list.cr.yp.to    list-qmail
 #
-# Default is ~/.tmda-ext
+# Default is ~/.tmda/ext.txt
 if not vars().has_key('EXT_FILE'):
-    EXT_FILE = os.path.expanduser("~/.tmda-ext")
+    EXT_FILE = DATADIR + "ext.txt"
 
 # SENDER_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive messages with a sender cookie added to your
 # address.
-# Default is ~/.tmda-sender
+# Default is ~/.tmda/sender.txt
 if not vars().has_key('SENDER_FILE'):
-    SENDER_FILE = os.path.expanduser("~/.tmda-sender")
+    SENDER_FILE = DATADIR + "sender.txt"
 
 # WHITELIST
 # Filename which contains a list of e-mail addresses and/or
 # substrings, one per line, which are considered trusted contacts and
 # therefore allowed directly into your mailbox if there is a match.
-# Default is ~/.tmda-whitelist
+# Default is ~/.tmda/whitelist.txt
 if not vars().has_key('WHITELIST'):
-    WHITELIST = os.path.expanduser("~/.tmda-whitelist")
+    WHITELIST = DATADIR + "whitelist.txt"
 
 # WHITELIST_TO_BARE
 # Set this variable to 1 if you want addresses in your
