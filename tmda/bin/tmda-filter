@@ -204,6 +204,19 @@ auto_reply = 1
 if precedence and string.lower(precedence) in ('bulk','junk','list'):
     auto_reply = 0
 
+# Don't generate an auto-reply if the message contains any of the
+# List-XXX: mailing list headers defined in rfc2369.
+list_headers = ['list-help', 'list-subscribe', 'list-unsubscribe',
+                'list-post', 'list-owner', 'list-archive']
+for hdr in list_headers:
+    if message_headers.has_key(hdr):
+        auto_reply = 0
+        break
+
+
+###########
+# Functions
+###########
 
 def logit(action_msg,date):
     """Write delivery statistics to the LOGFILE if enabled."""
