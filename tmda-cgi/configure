@@ -149,12 +149,23 @@ import re
 import string
 import sys
 
+# Tab completion support (if library is present)
+def SetDefault():
+  readline.insert_text(DefaultInput)
+def PlainInput(Default):
+  return raw_input("(%s): " % Default)
+def TabCompInput(Default):
+  global DefaultInput
+  DefaultInput = Default
+  return raw_input("> ")
 try:
   import readline
   readline.set_completer_delims(" |=")
   readline.parse_and_bind("tab: complete")
+  readline.set_startup_hook(SetDefault)
+  Input = TabCompInput
 except ImportError:
-  pass
+  Input = PlainInput
 
 def Ask(Question, Str, ValProg = None, TestStr = None):
   "Ask for a member from the keyboard."
@@ -163,7 +174,7 @@ def Ask(Question, Str, ValProg = None, TestStr = None):
 
   while 1:
     print "\n" + Question
-    Temp = raw_input("(%s): " % OptD[Str]).strip()
+    Temp = Input(OptD[Str]).strip()
     if Temp:
       Limit = re.search("\[(.+,.+)\]", Question)
       if Limit and not (Temp in Limit.group(1).split(", ")): continue
@@ -173,7 +184,7 @@ def Ask(Question, Str, ValProg = None, TestStr = None):
       if not ValProg(Filename):
         print "Warning!  Cannot locate: %s" % Filename
         print "Use this value anyhow? [Yes, No]"
-        Temp = raw_input("(No):").strip().lower()
+        Temp = Input("No").strip().lower()
         if not Temp or (Temp[0] != "y"): continue
     break
 
