@@ -3,7 +3,6 @@
 """General purpose functions."""
 
 
-import binascii
 import fileinput
 import fnmatch
 import os
