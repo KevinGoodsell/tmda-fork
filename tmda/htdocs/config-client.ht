@@ -4,7 +4,7 @@ Links: overview-links.h usage-links.h config-links.h support-links.h
 <h3>TMDA Client Configuration</h3>
 In addition to filtering your incoming e-mail, TMDA can also work with
 your mail client to modify your outgoing address with unique,
-cryptographically enhanced (tagged) e-mail addresses.  This is done to compliment
+cryptographically enhanced (tagged) e-mail addresses.  This is done to complement
 the filter's "whitelist" functionality.<br><br>
 
 <u>Dated Addresses</u><br><br>
