@@ -144,12 +144,7 @@ def main():
     header_cc = message_headers.getaddrlist("cc")
     header_bcc = message_headers.getaddrlist("bcc")
     # Add custom headers.
-    python_version = string.split(sys.version)[0]
-    # e.g, X-Delivery-Agent: TMDA v0.12/Python 2.1 (linux2)
-    message_headers['X-Delivery-Agent'] = 'TMDA ' + 'v' + Defaults.TMDA_VERSION\
-                                          + '/Python ' + python_version \
-                                          + ' (' + sys.platform + ')'
-
+    message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
     # Read in the message body.
     message_body = message.read()
     

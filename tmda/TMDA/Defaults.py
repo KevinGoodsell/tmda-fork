@@ -7,6 +7,7 @@
 
 import os
 import stat
+import string
 import sys
 
 import Util
@@ -18,6 +19,11 @@ import Util
 
 TMDA_VERSION = "0.16"
 TMDA_HOMEPAGE = "<http://tmda.sourceforge.net/>"
+
+PYTHON_VERSION = string.split(sys.version)[0]
+# e.g, X-Delivery-Agent: TMDA v0.12/Python 2.1 (linux2)
+DELIVERY_AGENT = 'TMDA ' + 'v' + TMDA_VERSION + '/Python ' + PYTHON_VERSION \
+                 + ' (' + sys.platform + ')'
 
 # Exit codes: everything except 0, 99 and 100 are soft errors.
 ERR_OK = 0          # Success; look at the next .qmail file instruction.
@@ -94,6 +100,12 @@ if not vars().has_key('BOUNCE_DATED_CC'):
 # No default.
 if not vars().has_key('BOUNCE_SENDER_CC'):
     BOUNCE_SENDER_CC = None
+
+# BOUNCE_ENV_SENDER
+# The envelope sender of the bounce message. For a normal bounce, this
+# should be an empty string.
+if not vars().has_key('BOUNCE_ENV_SENDER'):
+    BOUNCE_ENV_SENDER = ''
 
 # COOKIE_TYPE
 # The default cookie type is dated.  It could be:

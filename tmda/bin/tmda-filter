@@ -75,6 +75,10 @@ message = stdin.getvalue()
 # Calculate the message size.
 message_size = str(len(stdin.read()))
 
+# $SENDER is the envelope sender address.
+envelope_sender = os.environ.get('SENDER')
+
+
 def logit(action_msg,date):
     """Write delivery statistics to the LOGFILE if enabled."""
     if Defaults.LOGFILE and os.environ.get('RECIPIENT'):
@@ -82,7 +86,7 @@ def logit(action_msg,date):
             logfile = open(Defaults.LOGFILE, 'a') # append to the file
             Date = time.asctime(time.localtime(date))
             From = message_headers.getheader('from')
-            if not From:From = os.environ.get('SENDER')
+            if not From:From = envelope_sender
             To = os.environ.get('RECIPIENT')
             Subject = message_headers.getheader('subject', 'None')
             Action = action_msg
@@ -103,6 +107,25 @@ def logit(action_msg,date):
             print error_msg
             sys.exit(Defaults.ERR_IO)
 
+
+def send_bounce(bounce_message):
+    """Send a nice bounce message back to the sender."""
+    bounce_message = cStringIO.StringIO(bounce_message)
+    message_headers = rfc822.Message(bounce_message)
+    # Add headers.
+    message_headers['Return-Path'] = '<' + Defaults.BOUNCE_ENV_SENDER + '>'
+    message_headers['To'] = envelope_sender
+    message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
+    message_body = bounce_message.read()
+    inject = Defaults.INJECT + ' ' + envelope_sender
+    pipeline = os.popen(inject, 'w')
+    pipeline.write(str(message_headers))
+    pipeline.write('\n')
+    pipeline.write(message_body)
+    pipeline.write('\n\n--- Below this line is a copy of the message.\n\n')
+    pipeline.write(message) # original message with headers
+    pipeline.close()
+    
 
 def bounce_cc(address):
     """Send a 'carbon copy' of the bounced message to address."""
@@ -167,8 +190,8 @@ def bounce_dated():
         bounce_cc(Defaults.BOUNCE_DATED_CC)
 
     bounce_message = Util.maketext('bounce_dated.txt',vars())
-    print bounce_message
-    sys.exit(Defaults.ERR_HARD)
+    send_bounce(bounce_message)
+    sys.exit(Defaults.ERR_STOP)
 
 
 def bounce_sender(sender_address,sender_address_cookie):
@@ -179,8 +202,8 @@ def bounce_sender(sender_address,sender_address_cookie):
         bounce_cc(Defaults.BOUNCE_SENDER_CC)
 
     bounce_message = Util.maketext('bounce_sender.txt',vars())
-    print bounce_message
-    sys.exit(Defaults.ERR_HARD)
+    send_bounce(bounce_message)
+    sys.exit(Defaults.ERR_STOP)
 
 
 ######
@@ -240,15 +263,15 @@ def main():
             ext2 = ext3
             ext3 = ext4
             
-    # Extract the e-mail address from Envelope-Sender, From:, and Reply-To:
-    Envelope = os.environ.get('SENDER')
+    # Extract the e-mail address from From:, and Reply-To:
     From = message_headers.getaddr('from')[1]
     ReplyTo = message_headers.getaddr('reply-to')[1]
     
     while 1:
         # Is the sender in the BLACKLIST?
         if os.path.exists(Defaults.BLACKLIST) and \
-           Util.substring_match(Defaults.BLACKLIST, Envelope,From,ReplyTo):
+           Util.substring_match(Defaults.BLACKLIST,
+                                envelope_sender, From, ReplyTo):
             logit("BOUNCE blacklist_match", time.time())
             if Defaults.BOUNCE_BLACKLIST_CC:
                 bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
@@ -256,7 +279,8 @@ def main():
             sys.exit(Defaults.ERR_HARD)
         # Is the sender in the WHITELIST?
         elif os.path.exists(Defaults.WHITELIST) and \
-             Util.substring_match(Defaults.WHITELIST, Envelope,From,ReplyTo):
+             Util.substring_match(Defaults.WHITELIST,
+                                  envelope_sender, From, ReplyTo):
             logit("OK whitelist_match", time.time())
             sys.exit(Defaults.ERR_OK)
         # Dated tag?

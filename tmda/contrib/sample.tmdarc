@@ -22,6 +22,8 @@ import os                                      # don't remove
 
 # BOUNCE_SENDER_CC = "jdoe-bounces-sender@domain.dom"
 
+# BOUNCE_ENV_SENDER = ""
+
 # COOKIE_TYPE = "dated"
 
 # CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394" # generate your own key

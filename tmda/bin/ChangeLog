@@ -1,3 +1,17 @@
+2001-06-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (envelope_sender): The envelope sender is used in
+	more than one place.
+	
+	(bounce_dated): Exit ERR_STOP (99) so qmail no longer sends its
+	own bounce, but .qmail processing still stops.
+
+	(bounce_sender): Ditto.
+
+	(send_bounce): New function that creates and sends a bounce
+	message back to the envelope sender with an 'X-Delivery-Agent'
+	header added for easier identification.
+	
 2001-06-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (main): Fix to make 'QMAILRCPTS' addresses match

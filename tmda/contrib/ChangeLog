@@ -1,3 +1,12 @@
+2001-06-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* bounce_dated.txt: 'From' and 'Subject' headers are now in the
+	templates.  The From address is the new 'dated' or 'sender'
+	address, so the recipient can simply reply to the original
+	message.
+
+	* bounce_sender.txt: Ditto.	
+
 2001-05-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* README.RELAY: Update from Ron Bickers.
