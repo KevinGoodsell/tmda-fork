@@ -153,7 +153,7 @@ def make_date(timesecs=None, localtime=1):
         timetuple = time.gmtime(timesecs)
         tzname = 'UTC'
     try:
-        import email                    # Python >= 2.2 only
+        import email.Utils
         rfc2822date = email.Utils.formatdate(timesecs,localtime)
         rfc2822date_tzname = '%s (%s)' % (rfc2822date, tzname)
     except ImportError:
