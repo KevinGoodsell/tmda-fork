@@ -24,10 +24,10 @@
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.09B+"
+tmda_cgi = "0.10B+"
 
 # tmda-cgi version codename
-Codename = "Fluorine"
+Codename = "Neon"
 
 # TMDA version required
 TMDAReqVer = "0.77"
