@@ -269,6 +269,14 @@ add the following line to your .gnus file:<br>
 </ul>
 <br>
 
+<li>For <a href="http://mahogany.sourceforge.net/" TARGET="Resource Window">Mahogany</a>,
+ Edit --> Preferences --> Network<br>
+<ul>
+<li>Check <em>Use local mail transfer agent</em>
+<li>In the <em>Local MTA command</em> box, enter <em>/path/to/tmda/bin/tmda-sendmail</em>
+</ul>
+<br>
+
 <li>For <a href="http://www.xfmail.org/" TARGET="Resource Window">XFMail</a>,
  Misc --> Config Accounts+Misc --> Send<br>
 <ul>

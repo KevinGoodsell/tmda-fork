@@ -1,7 +1,8 @@
 2001-10-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* config-client.ht: Add XFMail configuration information.
-
+	* config-client.ht: Add configuration information for XFMail and
+	Mahogany.
+	
 2001-10-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-client.ht: Add keyword address information, and also
