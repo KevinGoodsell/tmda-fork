@@ -1,3 +1,7 @@
+2002-02-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (wraptext): New function to wrap and fill text.
+
 2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (pickleit): New helper function to save an object to a
