@@ -1,3 +1,7 @@
+2001-05-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (TMDA_VERSION): Begin 0.12 development.
+
 2001-05-02  Jason R. Mastaler  <jasonrm@nightshade.acl.lanl.gov>
 
 	* Util.py (maketext): New function to make text from a template file.
