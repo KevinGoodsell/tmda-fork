@@ -205,7 +205,7 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
         if line == '' or line[0] in '#':
             continue
         else:
-            (vdomain, prepend) = string.split(line,':')
+            (vdomain, prepend) = string.split(line, ':', 1)
             # domain:prepend
             if vdomain == string.lower(odomain):
                 vdomain_match = 1
