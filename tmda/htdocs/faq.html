@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Oct 18 10:37:52 2001 -->
+<!-- Mon Oct 22 12:38:46 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -192,6 +192,8 @@ How can I delete old, unconfirmed messages from TMDA's pending queue?
 TMDA comes with a utility called `tmda-clean' which does this for you.
 You can run it by hand, or periodically from cron.  Run `tmda-clean'
 without any arguments to get a listing of possible options.
+tmda-clean should be from from the user account that owns the pending
+queue, not from root (unless root is running TMDA).
 <br><br>
 
 For example, to purge unconfirmed messages older than 14 days each

@@ -1,3 +1,8 @@
+2001-10-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht (Links): Clarify that tmda-clean should be run from the
+	user account that owns the pending queue, not from root.
+
 2001-10-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* requirements.ht (Links): Claify that TMDA only uses the local
