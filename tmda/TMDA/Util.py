@@ -314,7 +314,9 @@ def build_dbm(filename):
         dbm.close()
 
         for f in glob.glob(tmpname + '*'):
+            (tmppath, tmpname) = os.path.split(tmpname)
             newf = f.replace(tmpname,dbmname)
+            newf = os.path.join(tmppath, newf)
             os.rename(f, newf)
     except:
         return 0

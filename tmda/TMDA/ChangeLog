@@ -1,5 +1,8 @@
 2002-02-22  Tim Legant  <tim@catseye.net>
 
+	* Util.py (build_dbm): Fixed bug; DBM was renamed to current
+	directory instead of respecting the path.
+
 	* FilterParser.py (FilterParser.firstmatch): If no rule is found,
 	return an empty dictionary instead of None.
 
