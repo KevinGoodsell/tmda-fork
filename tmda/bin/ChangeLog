@@ -1,3 +1,10 @@
+2001-10-08  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-filter (main): Fix a thinko where any incoming message
+	would be delivered if the COOKIE_TYPE was 'bare', and none of the
+	list files were matched.  Instead, send back a confirmation
+	request.
+	
 2001-10-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (inject_pending): For consistency, X-TMDA-Confirmed

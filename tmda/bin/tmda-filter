@@ -538,8 +538,7 @@ def main():
         elif Defaults.COOKIE_TYPE == 'sender':
             cookie_type = 'sender'
         elif Defaults.COOKIE_TYPE == 'bare':
-            logit("OK bare", time.time())
-            mta.deliver(message)
+            bouncegen('request')
         else:
             print "unknown cookie type"
             mta.defer()
