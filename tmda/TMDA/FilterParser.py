@@ -888,6 +888,7 @@ class FilterParser:
                 # Find the Mailman configuration database.
                 # 'config.db' is a Python marshal used in MM 2.0, and
                 # 'config.pck' is a Python pickle used in MM 2.1.
+                try_open = 1  # Try to open file.
                 config_db = os.path.join(match, 'config.db')
                 config_pck = os.path.join(match, 'config.pck')
                 if os.path.exists(config_pck):
@@ -896,7 +897,13 @@ class FilterParser:
                 elif os.path.exists(config_db):
                     dbfile = config_db
                     import marshal as Serializer
-                if not args.has_key('optional'):
+                elif args.has_key('optional'):
+                    # This is the case where neither of the Mailman
+                    # configuration databases exists.  If the -optional flag
+                    # was specified, don't bother trying to open a non-existent
+                    # file.
+                    try_open = 0
+                if try_open:
                     mmdb_file = open(dbfile, 'r')
                     mmdb_data = Serializer.load(mmdb_file)
                     mmdb_file.close()
