@@ -28,14 +28,14 @@ Usage: %(program)s [OPTIONS]
 Where:
    <none>
    <none>
-       Gives a (yet) non functional Address generator interface.
+       Gives a functional (but yet to finish) Address generator interface.
 
    -p
    --pending
        Gives a functionnal (but yet to finish) Pending queue graphical
        interface.
 
-        Tricks:
+        Until I do the Help dialog, here are some tips:
         . you can resize the list columns width
         . you can resize the height of the list
         . double-click on a message and you'll see it's content
@@ -43,8 +43,24 @@ Where:
         . the list is refreshed every 5 mins by default but you can
           change it in Edit/Settings... (not memorized between runs yet)
 
+   -H hostname[:port]
+   --host hostname[:port]
+      Specify a hostname and a port to connect to.
+      This is mandatory if you don't have a local installation of TMDA.
+
+   -U username:password
+   -user username:password
+      Specify a username and a password to authenticate against on the
+      remote host.
+      See the NOTE below for security advisory.
+      This is mandatory if you don't have a local installation of TMDA.
+
 NOTE: This is early alpha software, so please try it, and send your
 comments to the tmda-workers@tmda.net mailing list.
+
+Please note that the options will be visible by any other local user on
+your machine with the 'ps' command, so don't use the -U option if you don't
+want to expose your password.
 """
 
 import getopt
@@ -59,11 +75,149 @@ except ImportError:
                            'site-packages', 'TMDA', 'pythonlib')
     sys.path.insert(0, sitedir)
 
-from TMDA import Version
+## Lib access functions
+def lib_getAddress(tag, option=None, address=None):
+    try:
+        tagged_address = Address.Factory(tag = tag).create(address, option).address
+    except ValueError, msg:
+        return ''
+
+    return tagged_address
+
+def lib_checkAddress(address, sender_address=None):
+    #FIXME: Add localtime support
+    localtime = None
+    status = []
+    try:
+        addr = Address.Factory(address)
+        addr.verify(sender_address)
+        status.append("STATUS: VALID")
+        try:
+            status.append("EXPIRES: %s" % addr.timestamp(1, localtime))
+        except AttributeError:
+            pass
+    except Address.AddressError, msg:
+        status.append("STATUS: " + str(msg))
+
+    return '\n'.join(status)
+
+def lib_processMessage(msgid, command, **args):
+    msg = Pending.Message(msgid)
+    try:
+        try:
+            data = getattr(msg, command)(args)
+        except TypeError:
+            # if command takes no argument
+            data = getattr(msg, command)()
+        if type(data) == str:
+            return data
+        else:
+            return '\n'.join(data)
+    except AttributeError:
+        return None
+
+def lib_processPending(command, **args):
+    Q = Pending.Queue(descending=1).initQueue()
+    if command == 'list':
+        return Q.listPendingIds()
+    return None
+
+## Net access functions
+import socket
+sock = None
+sin = None
+sout = None
+
+def connectToServer(host, auth):
+    global sock, sin, sout
+    if sock:
+        print "Already connected"
+        return 0
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(host)
+    sin = sock.makefile('r', 0)
+    sout = sock.makefile('w', 0)
+    # eat up greetings from manager
+    while sin.readline() and sin.read(1) != '+':
+        pass
+    sout.write('auth %s %s\n' % auth)
+    if sin.read(1) != '+':
+        return 0
+    return 1
+
+def net_command(command):
+    data = []
+    sout.write(str(command)+'\n')
+    cc = sin.read(1)
+    while cc == ' ':
+        data.append(sin.readline()[:-1])
+        cc = sin.read(1)
+    if cc == '-':
+        msg = sin.readline()[:-1]
+        ## FIXME: think about error recovery (check the '+')
+        raise ProtoError, msg
+    return data
+
+def net_getAddress(tag, option=None, address=None):
+    tagged_address = '\n'.join(net_command('address %s %s' % (tag, option)))
+    return tagged_address
+
+def net_checkAddress(address, sender_address=None):
+    status = '\n'.join(net_command('checkaddress %s %s' % (address, sender_address)))
+    print status
+    return status
+
+def net_processMessage(msgid, command, **args):
+    try:
+        data = net_command('message %s %s' % (command, msgid))
+        return '\n'.join(data)
+    except ProtoError, msg:
+        print "%s: %s" % (ProtoError, msg)
+        
+    return ''
+
+ProtoError = "Protocole Error"
+
+def net_processPending(command, **args):
+    if command == 'list':
+        try:
+            data = net_command('pending only')
+            return data
+        except ProtoError, msg:
+            print "%s: %s" % (ProtoError, msg)
+
+    return []
+
+# Let's check if we're running locally or through the network
+
+try:
+    from TMDA import Version
+    from TMDA import Address
+    from TMDA import Pending
+
+    using_network = 0
+    getAddress = lib_getAddress
+    checkAddress = lib_checkAddress
+    processMessage = lib_processMessage
+    processPending = lib_processPending
+
+
+# No TMDA library around, we're not on the server
+except ImportError:
+    using_network = 1
+    # Hack to have the --version flag
+    class VersionObject:
+        ALL = 'unknown'
+        TMDA = 'unknown'
+    Version = VersionObject()
+
+
+
 
 try:
     from Tkinter import *
 except ImportError:
+    ## FIXME: what to do if we don't have TMDA ?
     from TMDA.Util import wraptext
     no_tk = 'It appears your Python is not configured with Tkinter ' + \
             'support. Visit http://python.org/topics/tkinter/trouble.html ' + \
@@ -81,11 +235,58 @@ def usage(code, msg=''):
         print msg
     sys.exit(code)
 
-# getopt crud goes here
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                               'H:U:pVh',
+                                        ['host=',
+                                         'user=',
+                                         'pending',
+                                         'version',
+                                         'help'])
+except getopt.error, msg:
+    usage(1, msg)
 
-# end getopt crud
+pending_first = 0
+host = None
+port = 8765
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    if opt == '-V':
+        print Version.ALL
+        sys.exit()
+    if opt == '--version':
+        print Version.TMDA
+        sys.exit()
+    if opt in ('-p', '--pending'):
+        pending_first = 1
+    elif opt in ('-H', '--host'):
+        using_network=1
+        try:
+            (host, port) = arg.split(':', 1)
+        except ValueError:
+            (host, port) = (arg, 8765)
+    elif opt in ('-U', '--user'):
+        try:
+            (user, passwd) = arg.split(':', 1)
+        except ValueError:
+            print "Error: missing the password"
+            sys.exit()
 
-from TMDA import Pending
+if using_network:
+    if not host:
+        print "Error: no TMDA library available and no host to connect to."
+        sys.exit()
+    if not user or not passwd:
+        print "Error: please provide a user:password pair to connect to remote host."
+        sys.exit()
+
+    # map the accessors to the net_* functions
+    getAddress = net_getAddress
+    checkAddress = net_checkAddress
+    processMessage = net_processMessage
+    processPending = net_processPending
+
 
 
 class HSplitterFrame(Frame):
@@ -213,7 +414,7 @@ class MessageList(Frame):
 
     def WhitelistSelectedMessage(self):
         try:
-            Pending.Message(self.msgs[int(self.curselection()[0])]).whitelist()
+            processMessage(self.msgs[int(self.curselection()[0])], command='whitelist')
         except IndexError:
             return 0
         self.Refresh()
@@ -221,7 +422,7 @@ class MessageList(Frame):
 
     def BlacklistSelectedMessage(self):
         try:
-            Pending.Message(self.msgs[int(self.curselection()[0])]).blacklist()
+            processMessage(self.msgs[int(self.curselection()[0])], command='blacklist')
         except IndexError:
             return 0
         self.Refresh()
@@ -229,7 +430,7 @@ class MessageList(Frame):
 
     def ReleaseSelectedMessage(self):
         try:
-            Pending.Message(self.msgs[int(self.curselection()[0])]).release()
+            processMessage(self.msgs[int(self.curselection()[0])], command='release')
         except IndexError:
             return 0
         self.Refresh()
@@ -237,7 +438,7 @@ class MessageList(Frame):
 
     def DeleteSelectedMessage(self):
         try:
-            Pending.Message(self.msgs[int(self.curselection()[0])]).delete()
+            processMessage(self.msgs[int(self.curselection()[0])], command='delete')
             print "Deleted"
         except IndexError:
             print "No such message"
@@ -253,8 +454,8 @@ class MessageList(Frame):
         
     def GetSelectedMsgContent(self):
         try:
-            return Pending.Message(self.msgs[int(self.curselection()
-                                                 [0])]).show().split('\n\n', 1)
+            return processMessage(self.msgs[int(self.curselection()[0])],
+                                  command='show').split('\n\n', 1)
         except IndexError:
             return ('', '')
         
@@ -262,10 +463,11 @@ class MessageList(Frame):
         for col in self._cols:
             col.delete(0, END)
         self.msgs = []
-        Q = Pending.Queue(descending=1).initQueue()
-        for item in Q.listPendingIds():
+        lst = processPending('list')
+        lst.reverse()
+        for item in lst:
             self.msgs.append(item)
-            msg = Pending.Message(item).terse(date=1)
+            msg = processMessage(item, command='terse', date=1).split('\n')
             i = 0
             for col in self._cols:
                 col.insert(END, msg[i])
@@ -493,40 +695,6 @@ class PendingGUI(Frame):
         self.master.after(1000, self.poll)
 
 
-try:
-    from TMDA import Address
-
-    def getAddress(tag, option=None, address=None):
-        try:
-            tagged_address = Address.Factory(tag = tag).create(address, option).address
-        except ValueError, msg:
-            usage(msg)
-            sys.exit(0)
-
-        return tagged_address
-
-    def checkAddress(address, sender_address=None):
-        #FIXME: Add localtime support
-        localtime = None
-        status = []
-        try:
-            addr = Address.Factory(address)
-            addr.verify(sender_address)
-            status.append("STATUS: VALID")
-            try:
-                status.append("EXPIRES: %s" % addr.timestamp(1, localtime))
-            except AttributeError:
-                pass
-        except Address.AddressError, msg:
-            status.append("STATUS: " + str(msg))
-
-        return '\n'.join(status)
-
-except ImportError:
-    print "Missing TMDA library, and no client mode yet"
-    raise
-
-
 class AddressGUI(Frame):
     def __init__(self, master=None, **args):
         R = 0
@@ -569,8 +737,7 @@ class AddressGUI(Frame):
 
         f = Frame(f)
         f.grid(row=0, column=1)
-        self.m_du = Button(f, text=self.units[self.uidx][0], relief=RAISED)
-        self.m_du.bind('<Button-1>', self.LClick)
+        self.m_du = Button(f, text=self.units[self.uidx][0], relief=RAISED, command=self.LClick)
         self.m_du.bind('<Button-3>', self.RClick)
         self.m_du.pack(fill=BOTH, expand=1)
 
@@ -597,11 +764,11 @@ class AddressGUI(Frame):
         
         self.Calc()
 
-    def RClick(self, ev):
+    def RClick(self, ev=None):
         self.uidx = (len(self.units) + self.uidx - 1) % len(self.units)
         self.m_du.configure(text=self.units[self.uidx][0])
 
-    def LClick(self, ev):
+    def LClick(self, ev=None):
         self.uidx = (len(self.units) + self.uidx + 1) % len(self.units)
         self.m_du.configure(text=self.units[self.uidx][0])
 
@@ -644,7 +811,11 @@ class AddressGUI(Frame):
 
 def main():
     root = Tk()
-    if len(sys.argv) > 1 and sys.argv[1] == '-p':
+    if using_network:
+        r = connectToServer(host=(host, port), auth=(user, passwd))
+        if not r:
+            raise
+    if pending_first:
         PendingGUI(root).pack(fill=BOTH, expand=YES)
     else:
         AddressGUI(root).pack(fill=BOTH, expand=YES)

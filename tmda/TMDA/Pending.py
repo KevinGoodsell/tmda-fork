@@ -236,7 +236,7 @@ class Queue:
             self.Print()
             self.Print(M.summary(self.count, self.total, self.summary))
         if self.terse:
-            self.Print('\t'.join(M.terse()))
+            self.Print(M.terse(tsv=1))
 
     ## Pure virtual method (to be used by InteractiveQueue)
     def endProcessMessage(self, M):
@@ -459,7 +459,7 @@ class Message:
         timestamp = self.msgid.split('.')[0]
         return Util.unixdate(int(timestamp))
 
-    def terse(self, date=0):
+    def terse(self, date=0, tsv=0):
         """Return terse header information."""
         terse_hdrs = []
         for hdr in Defaults.TERSE_SUMMARY_HEADERS:
@@ -478,7 +478,14 @@ class Message:
             terse_hdrs.insert(0,self.getDate())
         else:
             terse_hdrs.insert(0, self.msgid)
-        return [Util.decode_header(hdr) for hdr in terse_hdrs]
+        if tsv:
+            # returns one-line Tab Separated Values (tsv)
+            # carriage returns will be escaped
+            return '\t'.join([Util.decode_header(hdr).replace('\n', r'\n')
+                                                    for hdr in terse_hdrs])
+        else:
+            # return raw list of headers
+            return [Util.decode_header(hdr) for hdr in terse_hdrs]
         
     def getConfirmAddress(self):
         if not self.confirm_accept_address:
