@@ -225,8 +225,8 @@ width="18" height="18" alt="Last">"""
     for Line in CgiUtil.Escape(MsgObj.show()).split("\n"):
       if Line == "": break
       # Decode internationalized headers
-      for tuple in email.Header.decode_header( Line ):
-        Headers += tuple[0] + " "
+      for decoded in email.Header.decode_header( Line ):
+        Headers += decoded[0] + " "
       Headers += "\n"
     T["Headers"] = '<pre class="Headers">%s</pre>' % Headers
   else:
@@ -238,8 +238,8 @@ width="18" height="18" alt="Last">"""
       T["Name"]  = Header.capitalize()
       value = ""
       # Decode internationalazed headers
-      for tuple in email.Header.decode_header( MsgObj.msgobj[Header] ):
-        value += tuple[0] + " "
+      for decoded in email.Header.decode_header( MsgObj.msgobj[Header] ):
+        value += decoded[0] + " "
       T["Value"] = CgiUtil.Escape(value)
       HeaderRow.Add()
 

@@ -222,10 +222,10 @@ width="18" height="18" alt="Last">"""
       else:
         # Decode internationalazed headers
         value = ""
-        for tuple in email.Header.decode_header( MsgObj.msgobj["subject"] ):
-          if tuple[1]:
-            value += "(" + tuple[1] + ") " 
-          value += tuple[0] + " "
+        for decoded in email.Header.decode_header( MsgObj.msgobj["subject"] ):
+          if decoded[1]:
+            value += "(" + decoded[1] + ") " 
+          value += decoded[0] + " "
         Subject = value
         if len(Subject) > int(PVars[("PendingList", "CropSubject")]):
           Subject = \
@@ -241,10 +241,10 @@ width="18" height="18" alt="Last">"""
       else:
         # Decode internationalazed headers
         value = ""
-        for tuple in email.Header.decode_header( MsgObj.msgobj["from"] ):
-          if tuple[1]:
-            value += "(" + tuple[1] + ") " 
-          value += tuple[0] + " "
+        for decoded in email.Header.decode_header( MsgObj.msgobj["from"] ):
+          if decoded[1]:
+            value += "(" + decoded[1] + ") " 
+          value += decoded[0] + " "
         From = value
         Temp = Address.search(From)
         if Temp:
