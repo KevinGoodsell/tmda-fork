@@ -1,5 +1,8 @@
 2001-10-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config-server.ht (Links): Mention that you should add your own
+	e-mail address to the whitelist to facilitate initial testing.
+
 	* config.ht (Links): Emphasize the left sidebar.
 
 	* features.ht (Links): Changed wording, third-party delivery agent
