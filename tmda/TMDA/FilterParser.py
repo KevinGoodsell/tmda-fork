@@ -418,7 +418,7 @@ class FilterParser:
             if source in ('from-file', 'to-file'):
                 match = os.path.expanduser(match)
                 valid_cdb = 0
-                if 'autocdb' in args:
+                if args.has_key('autocdb'):
                     cdbname = match + '.cdb'
                     # If the text file doesn't exist, let the exception
                     #  happen and get passed back to tmda-filter.
@@ -533,7 +533,7 @@ class FilterParser:
                 else:
                     content = None
                 re_flags = re.MULTILINE
-                if 'case' not in args:
+                if not args.has_key('case'):
                     re_flags = re_flags | re.IGNORECASE
                 if content and re.search(match,content,re_flags):
 		    found_match = 1
@@ -548,7 +548,7 @@ class FilterParser:
                 else:
                     content = None
                 re_flags = re.MULTILINE
-                if 'case' not in args:
+                if not args.has_key('case'):
                     re_flags = re_flags | re.IGNORECASE
                 for line in match_list:
                     mo = self.matches.match(line)

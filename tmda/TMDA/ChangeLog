@@ -3,6 +3,8 @@
 	* FilterParser.py (FilterParser.read): Partially restore old
 	behavior: allow missing filter files, but not IOErrors.
 
+	(FilterParser.firstmatch): Correct Python2.2isms.
+
 2002-02-20  Tim Legant  <tim@catseye.net>
 
 	* FilterParser.py (Error): Moved __repr__ and __str__ to
