@@ -3,7 +3,7 @@ Links: overview-links.h usage-links.h support-links.h
 
 <h3>TMDA FREQUENTLY ASKED QUESTIONS</h3>
 <ol>
-<li><a href="#1">How do I setup a whitelist?</a> <br>
+<li><a href="#1">How do I setup a whitelist or an "auto-whitelist"?</a> <br>
 <li><a href="#2">Will TMDA run on non-unix clients such as Microsoft Windows?</a> <br>
 <li><a href="#3">Does TMDA have a web interface?</a> <br>
 <li><a href="#4">How do I setup TMDA with vpopmail?</a> <br>
@@ -21,9 +21,9 @@ Links: overview-links.h usage-links.h support-links.h
 
 <hr>
 <li><b>
-<a name="1">How do I setup a whitelist?</a>  I'd like any address in
-my domain (domain.dom) to be able to send me mail without
-worrying about confirmations.
+<a name="1">How do I setup a whitelist?  I'd like any address in my
+domain (domain.dom) to be able to send me mail without worrying about
+confirmations.  </a> 
 </b>
 <br><br>
 
@@ -70,6 +70,30 @@ can be used to build an initial whitelist from your existing mail archives.
 the Envelope-Sender, the "From:" header and the "Reply-To:" header
 when looking for a match.
 
+<br><br>
+<li><b>Also, is there any way to automagically add confirmed
+addresses to a whitelist?  I'd like each new sender to have to confirm
+only once.</b>
+<br><br>
+
+By default, TMDA doesn't automatically whitelist senders who confirm.
+If you want that behavior, set the <strong>CONFIRM_APPEND</strong>
+variable in your ~/.tmdarc to point to a file, something like:
+
+<blockquote><pre>
+CONFIRM_APPEND = os.path.expanduser("~/.tmda/lists/whitelist_confirmed")
+</blockquote></pre>
+
+and add a rule to your incoming filter:
+
+<blockquote><pre>
+from-file ~/.tmda/lists/whitelist_confirmed ok
+</blockquote></pre>
+
+Then TMDA will the add the senders from successfully confirmed
+messages to the 'whitelist_confirmed' file.  A possible variation on
+this includes setting CONFIRM_APPEND to your main whitelist file rather
+than a secondary file.
 <hr>
 <li><b>
 <a name="2">Will TMDA run on non-unix clients such as Microsoft Windows?</a>

@@ -1,3 +1,7 @@
+2002-05-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht: Extend FAQ #1 to include CONFIRM_APPEND info.
+
 2002-05-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-filter.ht: Update *-ezmlm and *-mailman to show just the
