@@ -4,6 +4,8 @@
 	arguments to tmda-sender-address (e.g. -c /other/.tmdarc), the
 	wrong argument is read.
 
+	* tmda-sender-address (main): Ditto.
+
 2001-05-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-keygen (key): Add some integrity checking to make sure
