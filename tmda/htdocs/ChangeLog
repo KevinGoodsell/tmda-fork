@@ -1,0 +1,5 @@
+2001-10-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* features.ht (Links): Changed wording, third-party delivery agent
+	is required for non-qmail.
+
