@@ -315,7 +315,11 @@ def main():
     global younger
     
 
-    os.chdir(os.path.join(Defaults.DATADIR, 'pending'))
+    pendingdir = os.path.join(Defaults.DATADIR, 'pending')
+    if os.path.exists(pendingdir):
+        os.chdir(pendingdir)
+    else:
+        print '%s does not exist, exiting.' % pendingdir
 
     msgs = args
 
