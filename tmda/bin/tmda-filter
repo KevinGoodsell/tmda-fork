@@ -244,7 +244,7 @@ def inject_pending(pathname,timestamp,pid):
         fileobj.close()
         # Add the date when confirmed in a header.
         message_headers['X-TMDA-Confirmed'] = (
-            time.asctime(time.gmtime(time.time())) + ' UTC')
+            time.asctime(time.localtime(time.time())))
         # Collect the envelope sender to pass to sendmail.
         return_path = message_headers.getaddr('return-path')[1]
         inject = []

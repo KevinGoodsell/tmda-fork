@@ -1,5 +1,8 @@
 2001-10-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-filter (inject_pending): For consistency, X-TMDA-Confirmed
+	now writes date in localtime just like the LOGFILE entries.
+
 	* tmda-sendmail (usage): Set $NAME rather than $QMAILNAME if
 	invoked with `-F'.
 
