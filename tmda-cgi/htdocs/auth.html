@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?xml-stylesheet href="display/styles.css" type="text/css"?>
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Wed Apr 16 16:14:48 2003 -->
+<!-- USING HT2HTML 2.1 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Password Authentication
+
+-->
+
+<head>
+<title>Password Authentication</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.1">
+<link rel="STYLESHEET" href="display/styles.css" type="text/css">
+</head>
+<body bgcolor="#A6A6B3" text="#000000"
+      onload="Preloader()"
+      link="#0000bb"  vlink="#551a8b"
+      alink="#ff0000">
+<!-- start of page table -->
+<table bgcolor="#FFFFFF" width="700" height="100%" border="0"
+cellspacing="0" cellpadding="0"><tr><td valign="top"><table class="matte"
+width="100%" height="100%" border="0" cellspacing="0" cellpadding="0"><tr>
+<td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="194" height="135" valign="middle" bgcolor="#7B7CB6" class="corner"><img src="display/corner.gif" width="194" height="135" alt=""></td>
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td height="135" valign="top" background="display/top_bg.gif" bgcolor="#7B7CB6" class="banner"><img src="display/title.png" width="341" height="135"
+alt="TMDA (http://tmda.net) CGI Interface"></td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="194" background="display/left_bg.gif" bgcolor="#7B7CB6" valign="top" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td><a href="index.html"
+onmouseover="document.images.x37.src='display/dyn_buttons/layout1_r1_c1_h.png'"
+onmouseout="document.images.x37.src='display/dyn_buttons/layout1_r1_c1.png'"><img
+src="display/dyn_buttons/layout1_r1_c1.png" name="x37" height="50" width="194" border="0" alt="Overview"></a></td></tr>
+<tr><td><a href="virtual.html"
+onmouseover="document.images.x115.src='display/dyn_buttons/layout1_r2_c1_h.png'"
+onmouseout="document.images.x115.src='display/dyn_buttons/layout1_r2_c1.png'"><img
+src="display/dyn_buttons/layout1_r2_c1.png" name="x115" height="35" width="194" border="0" alt="Virtual Users"></a></td></tr>
+<tr><td><a href="download.html"
+onmouseover="document.images.x195.src='display/dyn_buttons/layout1_r3_c1_h.png'"
+onmouseout="document.images.x195.src='display/dyn_buttons/layout1_r3_c1.png'"><img
+src="display/dyn_buttons/layout1_r3_c1.png" name="x195" height="35" width="194" border="0" alt="Install"></a></td></tr>
+<tr><td><img src="display/dyn_buttons/layout1_r4_c1_h.png"
+height="35" width="194" border="0" alt="Passwords"></td></tr>
+<tr><td><a href="config.html"
+onmouseover="document.images.x275.src='display/dyn_buttons/layout1_r5_c1_h.png'"
+onmouseout="document.images.x275.src='display/dyn_buttons/layout1_r5_c1.png'"><img
+src="display/dyn_buttons/layout1_r5_c1.png" name="x275" height="35" width="194" border="0" alt="Config."></a></td></tr>
+<tr><td><a href="surprise.html"
+onmouseover="document.images.x355.src='display/dyn_buttons/layout1_r6_c1_h.png'"
+onmouseout="document.images.x355.src='display/dyn_buttons/layout1_r6_c1.png'"><img
+src="display/dyn_buttons/layout1_r6_c1.png" name="x355" height="35" width="194" border="0" alt="Support"></a></td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" class="body"><h2>Password Authentication</h2>
+<p>tmda-cgi currently has three possible authentication mechanisms:</p>
+<ul> 
+  <li><a href="#FileAuth">File authentication</a>
+  <li><a href="#ProgAuth">Program authentication</a> (checkpassword-style)
+  <li><a href="#RemtAuth">Remote authentication</a>
+</ul>
+
+<h3><a name="FileAuth"></a>File authentication:</h3>
+
+<p>This method authenticates logins against user name &amp; password pairs 
+  stored in a password file (or files). tmda-cgi will look either in the 
+  file specified by the compile script, or in the default locations for the 
+  password file, but the file(s) must be readable by the CGI.</p>
+<p>If you are running in system-wide mode, the password file can be owned 
+  by root. If you are running in single-user mode, the password file can be 
+  owned by the user who will be running the CGI. If you are running in no-su
+  mode, the file must either be owned by &quot;nobody&quot; (or whatever 
+  user your web server is configured to run as) or made globally readable. 
+  See the table below for a better breakdown of your options.</p>
+<p>By default, tmda-cgi checks the following locations to find a password file. 
+  It reads and processes the first file it finds:</p>
+<ul>
+  <li><tt>tmda-cgi</tt> in the same directory as the user's configuration file 
+    (if that location has been specified, otherwise it will look in 
+    <tt>~user/.tmda/tmda-cgi</tt>)<p></li> 
+  <li><tt>/etc/tmda-cgi</tt></li>
+</ul>
+<p>This allows the user to override their password once it is set by the system 
+  administrator.</p>
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr> 
+    <td width="35">&nbsp;</td>
+    <td width="10">&nbsp;</td>
+    <td>&nbsp;</td>
+    <td width="10">&nbsp;</td>
+    <td colspan="2" align="center" nowrap bgcolor="#FFFFCC"><tt>~user/.tmda/tmda-cgi</tt></td>
+    <td width="10" align="center" nowrap>&nbsp;</td>
+    <td colspan="2" align="center" nowrap bgcolor="#FFFFCC"><tt>/etc/tmda-cgi</tt></td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td width="80" align="center" bgcolor="#FFFFCC">owner</td>
+    <td width="90" align="center" bgcolor="#FFFFCC">permissions</td>
+    <td align="center">&nbsp;</td>
+    <td width="80" align="center" bgcolor="#FFFFCC">owner</td>
+    <td width="90" align="center" bgcolor="#FFFFCC">permissions</td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td bgcolor="#CCFFFF">&nbsp;</td>
+    <td bgcolor="#CCFFFF">system-wide</td>
+    <td bgcolor="#CCFFFF">&nbsp;</td>
+    <td align="center" bgcolor="#CCFFCC">user</td>
+    <td align="center" bgcolor="#CCFFCC">600</td>
+    <td align="center" bgcolor="#CCFFFF">&nbsp;</td>
+    <td align="center" bgcolor="#CCFFCC">root</td>
+    <td align="center" bgcolor="#CCFFCC">600</td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>single-user</td>
+    <td>&nbsp;</td>
+    <td align="center" bgcolor="#FFFFCC">user</td>
+    <td align="center" bgcolor="#FFFFCC">600</td>
+    <td align="center">&nbsp;</td>
+    <td colspan="2" align="center" bgcolor="#FFFFCC">n/a</td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td bgcolor="#CCFFFF">&nbsp;</td>
+    <td bgcolor="#CCFFFF">no-su</td>
+    <td bgcolor="#CCFFFF">&nbsp;</td>
+    <td align="center" bgcolor="#CCFFCC">user</td>
+    <td align="center" bgcolor="#CCFFCC">644</td>
+    <td align="center" bgcolor="#CCFFFF">&nbsp;</td>
+    <td align="center" bgcolor="#CCFFCC">root<br>
+      nobody </td>
+    <td align="center" bgcolor="#CCFFCC">644<br>
+      600 </td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td colspan="8" align="center">File owner &amp; permission options</td>
+  </tr>
+</table>
+    <p>The password file for tmda-cgi is formatted in much the same way as the 
+      password file for tofmipd. In fact, if you are using a password file with 
+      tofmipd and you wish to run tmda-cgi in system-wide mode, feel free to 
+      make a symbolic link between the two:</p>
+<blockquote>
+  <pre># ln -s /etc/tofmipd /etc/tmda-cgi</pre>
+</blockquote>
+<p>Password files for tmda-cgi look like:</p>
+<blockquote>
+  <pre>&lt;user1&gt;:&lt;password1&gt;
+&lt;user2&gt;:&lt;password2&gt;</pre>
+</blockquote>
+<p>where each item in <tt>&lt;&gt;</tt> is replaced with text.</p>
+<p>The difference between this password file and the one for tofmipd is that 
+  the file does not need to have permissions of 400 or 600. If you, for 
+  example, are running in no-su mode, you will have to make your password file 
+  group or world readable.</p> <p>To keep the passwords secure, tmda-cgi will 
+  assume all passwords are DES encrypted if the file permissions are anything 
+  other than 400 or 600. Plaintext passwords will <i><b>not</b></i> work in 
+  such cases. Encrypted passwords, however, can be used in any tmda-cgi 
+  password file.</p>
+<p>Additionally, any entry with a blank password field, such as:</p> 
+<blockquote>
+  <pre>cantlogin:</pre>
+</blockquote>
+<p>will be prohibited from login, regardless of the file permissions.</p>
+<p><tt>contrib/cgi/genpass.py</tt> is provided for encrypted password 
+  generation. Output from <tt>genpass.py</tt> can be safely piped with 
+  <tt>&gt;</tt> or <tt>&gt;&gt;</tt> into a password file. For example:</p>
+<blockquote>
+  <pre># contrib/cgi/genpass.py joe &gt;&gt; /etc/tmda-cgi</pre>
+</blockquote>
+<p>or</p>
+<blockquote>
+  <pre>$ contrib/cgi/genpass.py joe &gt; /home/joe/.tmda/tmda-cgi</pre> 
+</blockquote>
+<p>If you encounter difficulties logging in, the problem may be a result of 
+  incorrect permissions on your password file(s). To debug this, append a 
+  <tt>?debug=1</tt> onto the end of your CGI URL. This will display some 
+  diagnostic information if the login fails instead of simply saying 
+  &quot;Wrong password. Try again.&quot;</p>
+
+<h3><a name="ProgAuth"></a>Program Authentication</h3>
+
+  <p><b>Warning: This is not heavily tested yet.</b></p>
+<p>tmda-cgi supports authentication by a checkpassword-style program
+  (see <a href="http://cr.yp.to/checkpwd/interface.html">a description</a> of
+  this interface).</p>
+<p>When specifying this method of authentication, you may need to supply
+  additional parameters to your checkpassword program. By default,
+  <tt>compile</tt> will append <tt>/usr/bin/true</tt> or
+  <tt>/usr/bin/true</tt>, but any program that eventually returns
+  &quot;0&quot; will do.</p>
+<p>Some brief explanation may exist in the web server error log if this
+  authentication method fails.</p>
+
+<h3><a name="RemtAuth"></a>Remote Authentication</h3>
+<p><b>Warning: This is not heavily tested yet.</b></p>
+<p>tmda-cgi supports authentication by a remote host, using some common
+existing protocols:</p>
+<ul>
+  <li>imap
+  <li>imaps (secure SSL imap)
+  <li>apop
+  <li>pop3
+  <li>ldap (requires separately obtained python ldap library)
+</ul>
+<p>The authentication mechanism is specified as an URI in the regular URI
+format: <tt>protocol://host.domain.com[:port][/ldap_domain]</tt> where
+&quot;protocol&quot; must be from the list above, and the rest should be
+self-explanatory.</p>
+<p>Some brief explanation may exist in the web server error log if this
+authentication method fails.</p>
+</td>
+<!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table></td></tr></table></td></tr></table><!-- end of page table -->
+<script>
+<!--
+function Preloader()
+{
+  var x37 = new Image();
+x37.src = "display/dyn_buttons/layout1_r1_c1_h.png";
+  var x115 = new Image();
+x115.src = "display/dyn_buttons/layout1_r2_c1_h.png";
+  var x195 = new Image();
+x195.src = "display/dyn_buttons/layout1_r3_c1_h.png";
+  var x275 = new Image();
+x275.src = "display/dyn_buttons/layout1_r5_c1_h.png";
+  var x355 = new Image();
+x355.src = "display/dyn_buttons/layout1_r6_c1_h.png";
+}
+//-->
+</script>
+</body></html>
