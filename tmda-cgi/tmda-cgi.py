@@ -47,7 +47,6 @@ try:
 except ImportError:
   pass
 import os
-import pwd
 import Session
 import sys
 

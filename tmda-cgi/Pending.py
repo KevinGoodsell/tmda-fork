@@ -24,7 +24,6 @@
 import cgi
 import email
 import os
-import pwd
 import re
 import Session
 import time
