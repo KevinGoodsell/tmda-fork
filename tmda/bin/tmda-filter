@@ -34,7 +34,8 @@ def logit(action_msg,date):
         try:
             logfile = open(Defaults.LOGFILE, 'a') # append to the file
             Date = time.asctime(time.localtime(date))
-            From = message_headers.getheader('from',os.environ.get('SENDER'))
+            From = message_headers.getheader('from')
+            if not From:From = os.environ.get('SENDER')
             To = os.environ.get('RECIPIENT')
             Subject = message_headers.getheader('subject', 'None')
             Size = str(len(stdin.read()))
