@@ -123,9 +123,9 @@ from TMDA import MTA
 from TMDA import Util
 
 
-import cStringIO
+from cStringIO import StringIO
+import email
 import fileinput
-import rfc822
 import string
 import time
 
@@ -142,17 +142,28 @@ if filter_match:
 mta = MTA.init()
 
 # Read sys.stdin into a temporary variable for later access.
-stdin = cStringIO.StringIO(sys.stdin.read())
+stdin = StringIO(sys.stdin.read())
 
-# Collect the message headers.
-message_headers = rfc822.Message(stdin)
-# Collect the message body.
-message_body = stdin.read()
+# The incoming message as an email.Message object.
+msgin = email.message_from_file(stdin)
 
-# Collect the entire message.
-message = stdin.getvalue()
-# Calculate the message size.
-message_size = str(len(message_body))
+# Original message contents as a string.
+orig_msgin_as_string = msgin.as_string()
+
+# Original message headers as a string.
+orig_msgin_headers_as_string = Util.headers_as_string(msgin)
+
+# Original message headers as a raw string.
+orig_msgin_headers_as_raw_string = Util.headers_as_raw_string(msgin)
+
+# Original message body.
+orig_msgin_body = msgin.get_payload()
+
+# Original message body as a raw string.
+orig_msgin_body_as_raw_string = Util.body_as_raw_string(msgin)
+
+# Calculate the incoming message size.
+orig_msgin_size = len(orig_msgin_as_string)
 
 # Collect the three essential environment variables, and defer if they
 # are missing.
@@ -165,7 +176,8 @@ if envelope_sender == None:
 # Use Defaults.RECIPIENT_HEADER instead if set.
 recipient_header = None
 if Defaults.RECIPIENT_HEADER:
-    recipient_header = message_headers.getaddr(Defaults.RECIPIENT_HEADER)[1]
+    recipient_header = email.Utils.parseaddr(msgin.get
+                                             (Defaults.RECIPIENT_HEADER))[1]
 envelope_recipient = (recipient_header or os.environ.get('RECIPIENT'))
 if envelope_recipient == None:
     raise Errors.MissingEnvironmentVariable('RECIPIENT')
@@ -237,7 +249,7 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
                     break
 
 # Collect the message's Subject: for later use.
-subject = message_headers.getheader('subject', 'None')
+subject = msgin.get('subject')
 
 # The directory of pending messages.
 pendingdir = os.path.join(Defaults.DATADIR, 'pending')
@@ -257,10 +269,10 @@ def logit(action_msg):
             action_msg = '%s (no reply)' % action_msg
         from TMDA import MessageLogger
         logger = MessageLogger.MessageLogger(Defaults.LOGFILE_INCOMING,
-                                             message_headers,
+                                             msgin,
                                              envsender = envelope_sender,
                                              envrecip = recipient_address,
-                                             msg_size = message_size,
+                                             msg_size = orig_msgin_size,
                                              action_msg = action_msg)
         logger.write()
 
@@ -300,10 +312,10 @@ def autorespond_to_sender(sender):
                     'List-Archive', 'Mailing-List', 'X-Mailing-List',
                     'X-Ml-Name']
     for hdr in list_headers:
-        if message_headers.has_key(hdr):
-            guilty_header = '%s: %s' % (hdr, message_headers.getheader(hdr))
+        if msgin.has_key(hdr):
+            guilty_header = '%s: %s' % (hdr, msgin.get(hdr))
     #   - header "Precedence:" value junk, bulk, or list
-    precedence = message_headers.getheader('precedence', None)
+    precedence = msgin.get('precedence')
     if precedence and \
            precedence.lower() in ('bulk', 'junk', 'list') and \
            guilty_header is None:
@@ -350,34 +362,32 @@ def autorespond_to_sender(sender):
 def send_bounce(bounce_message, **vars):
     """Send a confirmation message back to the sender."""
     if autorespond_to_sender(envelope_sender) and auto_reply:
-        bounce_message = cStringIO.StringIO(bounce_message)
-        headers = rfc822.Message(bounce_message)
+        bounce_msg = email.message_from_string(bounce_message)
         # Add some headers.
         timesecs = time.time()
-        headers['Date'] = Util.make_date(timesecs)
-        headers['Message-ID'] = Util.make_msgid(timesecs)
+        bounce_msg['Date'] = Util.make_date(timesecs)
+        bounce_msg['Message-ID'] = Util.make_msgid(timesecs)
         # References
         refs = []
         for h in ['references', 'message-id']:
-            if message_headers.has_key(h):
-                refs = refs + message_headers.getheader(h).split()
+            if msgin.has_key(h):
+                refs = refs + msgin.get(h).split()
         if refs:
-            headers['References'] = '\n\t'.join(refs)
+            bounce_msg['References'] = '\n\t'.join(refs)
         # In-Reply-To
-        if message_headers.has_key('message-id'):
-            headers['In-Reply-To'] = (
-                message_headers.getheader('message-id'))
-        headers['To'] = envelope_sender
+        if msgin.has_key('message-id'):
+            bounce_msg['In-Reply-To'] =  msgin.get('message-id')
+        bounce_msg['To'] = envelope_sender
         if not vars.has_key('already_confirmed'):
-            headers['Reply-To'] = vars['confirm_accept_address']
-        headers['Precedence'] = 'bulk'
-        headers['X-Delivery-Agent'] = 'TMDA/%s' % Version.TMDA
+            bounce_msg['Reply-To'] = vars['confirm_accept_address']
+        bounce_msg['Precedence'] = 'bulk'
+        bounce_msg['X-Delivery-Agent'] = 'TMDA/%s' % Version.TMDA
         # Optionally, add some headers.
         if Defaults.ADDED_HEADERS_SERVER:
             for hdr in Defaults.ADDED_HEADERS_SERVER.keys():
-                headers[hdr] = Defaults.ADDED_HEADERS_SERVER[hdr]
-        body = bounce_message.read()
-        Util.sendmail(headers, body,
+                del bounce_msg[hdr]
+                bounce_msg[hdr] = Defaults.ADDED_HEADERS_SERVER[hdr]
+        Util.sendmail(bounce_msg.as_string(),
                       envelope_sender, Defaults.BOUNCE_ENV_SENDER)
         # Optionally, record this auto-response.
         if Defaults.MAX_AUTORESPONSES_PER_DAY != 0:
@@ -394,7 +404,7 @@ def send_bounce(bounce_message, **vars):
 
 def send_cc(address):
     """Send a 'carbon copy' of the message to address."""
-    Util.sendmail(message_headers, message_body, address, envelope_sender)
+    Util.sendmail(msgin.as_string(), address, envelope_sender)
     logit('CC ' + address)
 
 
@@ -409,7 +419,7 @@ def do_default_action(action, logname, bouncetext):
         mta.stop()
     elif action in ('accept', 'deliver', 'ok'):
         logit('%s %s' % ('OK', logname))
-        mta.deliver(message_headers, message_body)
+        mta.deliver(msgin)
     elif action == 'hold':
         logit('%s %s' % ('HOLD', logname))
         bouncegen('hold')
@@ -418,28 +428,28 @@ def do_default_action(action, logname, bouncetext):
         bouncegen('request')
 
 
-def release_pending(timestamp, pid, headers, body):
+def release_pending(timestamp, pid, msg):
     """Release a confirmed message from the pending queue."""
     # Remove Return-Path: to avoid duplicates.
-    return_path = headers.getaddr('return-path')[1]
-    del headers['return-path']
+    return_path = return_path = email.Utils.parseaddr(msg.get
+                                                      ('return-path'))[1]
+    del msg['return-path']
     # Remove X-TMDA-Recipient:
-    recipient = headers.getheader('x-tmda-recipient')
-    del headers['x-tmda-recipient']
+    recipient = msg.get('x-tmda-recipient')
+    del msg['x-tmda-recipient']
     # To avoid a mail loop on re-injection, prepend an ``Old-'' prefix
     # to all existing Delivered-To lines.
-    if headers.has_key('delivered-to'):
-        headers.headers = map(lambda h: h.replace('Delivered-To:',
-                                                  'Old-Delivered-To:', 1),
-                              headers.headers)
+    Util.rename_headers(msg, 'Delivered-To', 'Old-Delivered-To')
     # Add an X-TMDA-Confirm-Done: field to the top of the header for
     # later verification.  This includes a timestamp, pid, and HMAC.
-    headers['X-TMDA-Confirm-Done'] = Cookie.make_confirm_cookie(timestamp,
-                                                                pid, 'done')
+    del msg['X-TMDA-Confirm-Done']
+    msg['X-TMDA-Confirm-Done'] = Cookie.make_confirm_cookie(timestamp,
+                                                            pid, 'done')
     # Add the date when confirmed in a header.
-    headers['X-TMDA-Confirmed'] = Util.unixdate()
+    del msg['X-TMDA-Confirmed']
+    msg['X-TMDA-Confirmed'] = Util.unixdate()
     # Reinject the message to the original envelope recipient.
-    Util.sendmail(headers, body, recipient, return_path)
+    Util.sendmail(msg.as_string(), recipient, return_path)
     mta.stop()
 
 
@@ -484,13 +494,10 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         if Defaults.CONFIRM_ACCEPT_CC:
             send_cc(Defaults.CONFIRM_ACCEPT_CC)
         if os.path.exists(confirmed_file):
-            fp = open(confirmed_file, 'r')
-            headers = rfc822.Message(fp)
-            body = fp.read()
-            fp.close()
+            msg = email.message_from_file(open(confirmed_file, 'r'))
             # Optionally append the envelope sender to a file
             if Defaults.CONFIRM_APPEND:
-                return_path = headers.getaddr('return-path')[1]
+                return_path = email.Utils.parseaddr(msg.get('return-path'))[1]
                 if return_path is None:
                     raise IOError, \
                           confirmed_file + ' has no Return-Path header!'
@@ -521,7 +528,7 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                         break
             mta.stop()
         # Release the message for delivery if we get this far.
-        release_pending(confirm_timestamp, confirm_pid, headers, body)
+        release_pending(confirm_timestamp, confirm_pid, msg)
     # post-confirmation
     elif confirm_action == 'done':
         # Regenerate the HMAC for comparison.
@@ -537,9 +544,9 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
             bouncegen('request')
         else:
             # Cache and deliver the message.
-            if message_headers.has_key('x-tmda-confirmed'):
+            if msgin.has_key('x-tmda-confirmed'):
                 msgval = 'c'
-            elif message_headers.has_key('x-tmda-released'):
+            elif msgin.has_key('x-tmda-released'):
                 msgval = 'r'
             # Record this message in the cache as a dictionary,
             # where the message filename is the key, and how it was
@@ -554,8 +561,8 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
             # internally.  This won't work when delivering '_qok_',
             # since another program (qmail-local) is doing the actual
             # writing of the message.
-            del message_headers['x-tmda-confirm-done']
-            mta.deliver(message_headers, message_body)
+            del msgin['x-tmda-confirm-done']
+            mta.deliver(msgin)
 
 
 def verify_dated_cookie(dated_cookie):
@@ -577,7 +584,7 @@ def verify_dated_cookie(dated_cookie):
         if int(cookie_date) >= int('%d' % time.time()):
             logit("OK good_dated_cookie (%s)" % \
                   Util.unixdate(int(cookie_date)))
-            mta.deliver(message_headers, message_body)
+            mta.deliver(msgin)
         else:
             logmsg = "action_expired_dated (%s)" % \
                      Util.unixdate(int(cookie_date))
@@ -591,7 +598,7 @@ def verify_sender_cookie(sender_address,sender_cookie):
     # Accept the message only if the HMAC can be verified.
     if (sender_cookie == sender_address_cookie):
         logit("OK good_sender_cookie")
-        mta.deliver(message_headers, message_body)
+        mta.deliver(msgin)
     else:
         defact = Defaults.ACTION_FAIL_SENDER.lower()
         bouncetext = Defaults.BOUNCE_TEXT_FAIL_SENDER
@@ -607,7 +614,7 @@ def verify_keyword_cookie(keyword_cookie):
     # Accept the message only if the HMAC can be verified.
     if mac == newmac:
         logit("OK good_keyword_cookie \"" + keyword + "\"")
-        mta.deliver(message_headers, message_body)
+        mta.deliver(msgin)
     else:
         defact = Defaults.ACTION_FAIL_KEYWORD.lower()
         bouncetext = Defaults.BOUNCE_TEXT_FAIL_KEYWORD
@@ -620,9 +627,10 @@ def create_pending_msg(timestamp, pid):
     if not os.path.exists(pendingdir):
         os.makedirs(pendingdir, 0700) # stores the unconfirmed messages
     # X-TMDA-Recipient is used by release_pending().
-    message_headers['X-TMDA-Recipient'] = recipient_address
+    del msgin['X-TMDA-Recipient']
+    msgin['X-TMDA-Recipient'] = recipient_address
     # Write ~/.tmda/pending/TIMESTAMP.PID.msg
-    pending_contents = str(message_headers) + '\n' + message_body
+    pending_contents = msgin.as_string()
     Util.writefile(pending_contents,
                    os.path.join(pendingdir, pending_message))
     return pending_message
@@ -639,9 +647,9 @@ def bouncegen(mode, text=None):
     recipient_local, recipient_domain = recipient_address.split('@', 1)
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
-    original_message_body = globals().get('message_body')
-    original_message_headers = globals().get('message_headers')
-    original_message_size = globals().get('message_size')
+    original_message_body = globals().get('orig_msgin_body_as_raw_string')
+    original_message_headers = globals().get('orig_msgin_headers_as_raw_string')
+    original_message_size = globals().get('orig_msgin_size')
     # Don't include message bodies over a certain size.
     if (Defaults.CONFIRM_MAX_MESSAGE_SIZE and
         (int(Defaults.CONFIRM_MAX_MESSAGE_SIZE) < int(original_message_size))):
@@ -649,7 +657,7 @@ def bouncegen(mode, text=None):
                            % (original_message_headers,
                               Defaults.CONFIRM_MAX_MESSAGE_SIZE)
     else:
-        original_message = globals().get('message')
+        original_message = globals().get('orig_msgin_as_string')
     # Optional 'dated' address variables.
     if Defaults.DATED_TEMPLATE_VARS:
         dated_timeout = Util.format_timeout(Defaults.TIMEOUT)
@@ -723,15 +731,15 @@ def main():
     # The list of sender e-mail addresses comes from the envelope
     # sender, the "From:" header and the "Reply-To:" header.
     sender_list = [envelope_sender]
-    from_list = message_headers.getaddrlist("from")
-    replyto_list = message_headers.getaddrlist("reply-to")
-    for list in from_list,replyto_list:
+    from_list = email.Utils.getaddresses(msgin.get_all('from', []))
+    replyto_list = email.Utils.getaddresses(msgin.get_all('reply-to', []))
+    for list in from_list, replyto_list:
         for a in list:
             emaddy = a[1]
             sender_list.append(emaddy)
 
     # Process confirmation messages first.
-    confirm_done_hdr = message_headers.getheader('x-tmda-confirm-done', None)
+    confirm_done_hdr = msgin.get('x-tmda-confirm-done')
     if confirm_done_hdr:
         verify_confirm_cookie(confirm_done_hdr, 'done')
     if (cookie_type in Defaults.TAGS_CONFIRM) and cookie_value:
@@ -740,11 +748,11 @@ def main():
     # Parse the incoming filter file.
     infilter = FilterParser.FilterParser()
     infilter.read(Defaults.FILTER_INCOMING)
-    (actions,matching_line) = infilter.firstmatch(recipient_address,
-                                                  sender_list,
-                                                  message_body,
-                                                  str(message_headers),
-                                                  message_size)
+    (actions, matching_line) = infilter.firstmatch(recipient_address,
+                                                   sender_list,
+                                                   orig_msgin_body_as_raw_string,
+                                                   orig_msgin_headers_as_raw_string,
+                                                   orig_msgin_size)
     (action, option) = actions.get('incoming', (None, None))
     # Dispose of the message now if there was a filter file match.
     # Log the action along with and the matching line in the filter
@@ -762,10 +770,10 @@ def main():
     elif action in ('accept','deliver','ok'):
         if option:
             logit('%s (%s)' % ('DELIVER', matching_line + '=' + option))
-            mta.deliver(message_headers, message_body, option)
+            mta.deliver(msgin, option)
         else:
             logit('%s (%s)' % ('OK', matching_line))
-            mta.deliver(message_headers, message_body)
+            mta.deliver(msgin)
     elif action == 'confirm':
         logit('%s (%s)' % ('CONFIRM', matching_line))
         bouncegen('request')
@@ -784,7 +792,7 @@ def main():
     elif (cookie_type in map(lambda s: s.lower(), Defaults.TAGS_SENDER)) \
              and cookie_value:
         sender_address = globals().get('envelope_sender')
-        verify_sender_cookie(sender_address,cookie_value)
+        verify_sender_cookie(sender_address, cookie_value)
     # Keyword tag?
     elif (cookie_type in map(lambda s: s.lower(), Defaults.TAGS_KEYWORD)) \
              and cookie_value:

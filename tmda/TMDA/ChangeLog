@@ -1,3 +1,21 @@
+2002-09-30  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Util.py (sendmail): Accept a whole message string rather than
+	header and body strings as two separate arguments.
+
+	(body_as_raw_string): New function.
+	(headers_as_list): Ditto.
+	(headers_as_raw_string): Ditto.
+	(headers_as_string): Ditto.
+	(rename_headers): Ditto.
+	
+	* Deliver.py: Use an email.Message object rather than an
+	rfc822.Message object and message body.
+
+	* MTA.py: Ditto.
+
+	* MessageLogger.py: Ditto.
+
 2002-09-26  Tim Legant  <tim@catseye.net>
 
 	* FilterParser.py (FilterParser.__expandmacros): Fixed bug where

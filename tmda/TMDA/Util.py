@@ -348,15 +348,12 @@ def pager(file):
     os.spawnvp(os.P_WAIT, pager_list[0], pager_list)
 
 
-def sendmail(headers, body, envrecip, envsender):
+def sendmail(msgstr, envrecip, envsender):
     """Send e-mail via direct SMTP, or by opening a pipe to the
     sendmail program.
     
-    headers can be either an rfc822.Message instance, or a set of
-    rfc822 compatible message headers as a string.
-
-    body is the message body content as a string.
-
+    msgstr is an rfc2822 message as a string.
+    
     envrecip is the envelope recipient address.
 
     envsender is the envelope sender address.
@@ -365,15 +362,75 @@ def sendmail(headers, body, envrecip, envsender):
     if Defaults.OUTGOINGMAIL == 'smtp':
         import SMTP
         server = SMTP.Connection()
-        server.sendmail(envsender, envrecip, (str(headers) + '\n' + body))
+        server.sendmail(envsender, envrecip, msgstr)
         server.quit()
     elif Defaults.OUTGOINGMAIL == 'sendmail':
         cmd = "%s -f '%s' -- '%s'" % (Defaults.SENDMAIL_PROGRAM,
                                       envsender, envrecip)
-        pipecmd(cmd, str(headers), '\n', body)
+        pipecmd(cmd, msgstr)
     else:
         raise Errors.ConfigError, \
               "Invalid OUTGOINGMAIL method: " + Defaults.OUTGOINGMAIL
+
+
+def decode_header(str):
+    """Accept a possibly encoded message header as a string, and
+    return a decoded string.
+
+    JRM: email.Header has a decode_header method, but it returns a
+    list of decoded pairs, one for each part of the header, which is
+    an awkward interface IMO, especially when the header contains a
+    mix of encoded and non-encoded parts.
+    """
+    from email import Header
+    parts = []
+    pairs = Header.decode_header(str)
+    for pair in pairs:
+        parts.append(pair[0])
+    decoded_string = ' '.join(parts)
+    return decoded_string
+
+
+def headers_as_list(msg):
+    """Return a list containing the entire set of header lines, in the
+    order in which they were read."""
+    return ['%s: %s' % (k, v) for k, v in msg.items()]
+
+
+def headers_as_string(msg):
+    """Return the (decoded) message headers as a string."""
+    return '\n'.join(['%s: %s' %
+                      (k, decode_header(v)) for k, v in msg.items()])
+
+
+def headers_as_raw_string(msg):
+    """Return the headers as a raw (undecoded) string."""
+    msgtext = msg.as_string()
+    idx = msgtext.index('\n\n')
+    return msgtext[:idx+1]
+
+
+def body_as_raw_string(msg):
+    """Return the body as a raw (undecoded) string."""
+    msgtext = msg.as_string()
+    idx = msgtext.index('\n\n')
+    return msgtext[idx+2:]
+
+
+def rename_headers(msg, old, new):
+    """Rename all occurances of a message header in a Message object.
+        
+    msg is an email.Message.Message object.
+
+    old is name of the header to rename.
+
+    new is the new name of the header
+    """
+    if msg.has_key(old):
+        for pair in msg._headers:
+            if pair[0].lower() == old.lower():
+                index = msg._headers.index(pair)
+                msg._headers[index] = (new, '%s' % pair[1])
 
 
 def build_cdb(filename):
@@ -447,24 +504,6 @@ def unpickle(file):
     object = cPickle.load(fp)
     fp.close()
     return object
-
-
-def decode_header(str):
-    """Accept a possibly encoded message header as a string, and
-    return a decoded string.
-
-    JRM: email.Header has a decode_header method, but it returns a
-    list of decoded pairs, one for each part of the header, which is
-    an awkward interface IMO, especially when the header contains a
-    mix of encoded and non-encoded parts.
-    """
-    from email import Header
-    parts = []
-    pairs = Header.decode_header(str)
-    for pair in pairs:
-        parts.append(pair[0])
-    decoded_string = ' '.join(parts)
-    return decoded_string
 
 
 def findmatch(list, addrs):

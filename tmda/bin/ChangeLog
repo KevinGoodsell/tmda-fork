@@ -1,3 +1,11 @@
+2002-09-30  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-inject: Use the email module instead of the rfc822 module.
+	
+	* tmda-pending: Ditto.
+
+	* tmda-rfilter: Ditto.
+	
 2002-09-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-pending (main): Run the headers through an RFC 2047 decoder

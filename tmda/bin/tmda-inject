@@ -126,7 +126,6 @@ from TMDA import Util
 
 
 import email
-import rfc822
 import string
 
 
@@ -138,10 +137,10 @@ if filter_match:
     Util.filter_match(Defaults.FILTER_OUTGOING, recip, sender)
     sys.exit()
 
-message = sys.stdin
-message_headers = rfc822.Message(message)
-message_body = message.read()
-message_size = str(len(message_body))
+msgout = email.message_from_file(sys.stdin)
+orig_msgout_as_string = msgout.as_string()
+orig_msgout_size = len(orig_msgout_as_string)
+orig_msgout_body_as_raw_string = Util.body_as_raw_string(msgout)
 
 def message_format(fsa, ffn, type):
     # "angles" is the default MESSAGE_FROM_STYLE
@@ -197,8 +196,8 @@ def inject_message(resending,
                    to_address,
                    from_address,
 		   full_name,
-                   message_headers,
-                   message_body,
+                   msg,
+                   orig_msgout_body_as_raw_string,
                    actions,
                    log_msg):
     """Hand the message off to sendmail."""
@@ -219,15 +218,17 @@ def inject_message(resending,
                                  from_address, to_address)
     # Set From: or Resent-From: to match the envelope sender address.
     if resending:
-	message_headers['Resent-From'] = message_format(resent_from, full_name,
-                                                        Defaults.MESSAGE_FROM_STYLE)
+        del msg['Resent-From']
+	msg['Resent-From'] = message_format(resent_from, full_name,
+                                            Defaults.MESSAGE_FROM_STYLE)
     else:
-	message_headers['From'] = message_format(magic_from, full_name,
-                                                 Defaults.MESSAGE_FROM_STYLE)
+        del msg['From']
+	msg['From'] = message_format(magic_from, full_name,
+                                     Defaults.MESSAGE_FROM_STYLE)
     # If the MUA has added a `Mail-Followup-To' header that contains
     # the untagged address, we need to tag that as well.
-    if message_headers.has_key('mail-followup-to'):
-	mft_list = message_headers.getaddrlist('mail-followup-to')
+    if msg.has_key('mail-followup-to'):
+	mft_list = email.Utils.getaddresses(msg.get_all('mail-followup-to'))
 	new_mft_list = []
 	for a in mft_list:
 	    emaddy = a[1]
@@ -235,35 +236,38 @@ def inject_message(resending,
 		new_mft_list.append(magic_from)
 	    else:
 		new_mft_list.append(emaddy)
-	message_headers['Mail-Followup-To'] = string.join(new_mft_list, ',\n\t')
+        del msg['Mail-Followup-To']
+	msg['Mail-Followup-To'] = string.join(new_mft_list, ',\n\t')
     # Add `Date' and `Message-ID' headers only if they don't already exist.
-    if not message_headers.has_key('date'):
-	message_headers['Date'] = Util.make_date()
-    if not message_headers.has_key('message-id'):
-	message_headers['Message-ID'] = Util.make_msgid()
+    if not msg.has_key('date'):
+	msg['Date'] = Util.make_date()
+    if not msg.has_key('message-id'):
+	msg['Message-ID'] = Util.make_msgid()
     # Add `X-Delivery-Agent' header.
-    message_headers['X-Delivery-Agent'] = 'TMDA/%s' % Version.TMDA
+    del msg['X-Delivery-Agent']
+    msg['X-Delivery-Agent'] = 'TMDA/%s' % Version.TMDA
     # Optionally, add an `X-TMDA-Fingerprint' header.
     if Defaults.FINGERPRINT:
 	hdrlist = []
 	for hdr in Defaults.FINGERPRINT:
             if hdr == 'body':
-                hdrval = message_body
+                hdrval = orig_msgout_body_as_raw_string
             else:
-                hdrval = message_headers.getheader(hdr, None)
+                hdrval = msg.get(hdr)
 	    if hdrval:
 		hdrlist.append(hdrval)
 	if hdrlist:
-	    message_headers['X-TMDA-Fingerprint'] = (Cookie.make_fingerprint
-                                                     (hdrlist))
+            del msg['X-TMDA-Fingerprint']
+	    msg['X-TMDA-Fingerprint'] = (Cookie.make_fingerprint(hdrlist))
     # Optionally, add some headers.
     if Defaults.ADDED_HEADERS_CLIENT:
         for hdr in Defaults.ADDED_HEADERS_CLIENT.keys():
-            message_headers[hdr] = Defaults.ADDED_HEADERS_CLIENT[hdr]
+            del msg[hdr]
+            msg[hdr] = Defaults.ADDED_HEADERS_CLIENT[hdr]
     # Optionally, remove some headers.
     if Defaults.PURGED_HEADERS:
 	for hdr in Defaults.PURGED_HEADERS:
-	    del message_headers[hdr]
+	    del msg[hdr]
     # Create the custom headers.
     custom_headers = [ h for h in actions.keys()
                         if h not in ('from', 'envelope', 'resent-from') ]
@@ -279,15 +283,14 @@ def inject_message(resending,
     if Defaults.LOGFILE_OUTGOING:
         from TMDA import MessageLogger
         logger = MessageLogger.MessageLogger(Defaults.LOGFILE_OUTGOING,
-                                             message_headers,
+                                             msg,
                                              envsender = envelope_sender,
                                              envrecip = to_address,
-                                             msg_size = message_size,
+                                             msg_size = orig_msgout_size,
                                              action_msg = log_msg)
         logger.write()
     # Inject the message.
-    Util.sendmail(str(message_headers) + ''.join(nice_headers), message_body,
-                  to_address, envelope_sender)
+    Util.sendmail(msg.as_string(), to_address, envelope_sender)
 
 
 ######
@@ -300,13 +303,14 @@ def main():
     actions = None
     log_msg = None
 
-    if message_headers.has_key('resent-from'):
+    if msgout.has_key('resent-from'):
         # We must be resending (bouncing) the message.
-        (fullname, from_address) = message_headers.getaddr('resent-from')
+        fullname, from_address = email.Utils.parseaddr(msgout.get
+                                                       ('resent-from'))
         resending = 1
     else:
         # Use the existing From: header if possible.
-        (fullname, from_address) = message_headers.getaddr("from")
+        fullname, from_address = email.Utils.parseaddr(msgout.get('from'))
         resending = None
     if not fullname:
         fullname = Defaults.FULLNAME
@@ -325,44 +329,49 @@ def main():
         address_list = []
         if resending:
             # Use Resent-To, Resent-Cc, and Resent-Bcc addresses.
-            header_pairs = message_headers.getaddrlist('resent-to') + \
-                           message_headers.getaddrlist('resent-cc') + \
-                           message_headers.getaddrlist('resent-bcc')
+            resent_tos = msgout.get_all('resent-to', [])
+            resent_ccs = msgout.get_all('resent-cc', [])
+            resent_bccs = msgout.get_all('resent-bcc', [])
+            header_pairs = email.Utils.getaddresses(resent_tos +
+                                                    resent_ccs +
+                                                    resent_bccs)
         else:
             # Use To, Cc, Bcc, and Apparently-To addresses.
-            header_pairs = message_headers.getaddrlist('to') + \
-                           message_headers.getaddrlist('cc') + \
-                           message_headers.getaddrlist('bcc') + \
-                           message_headers.getaddrlist('apparently-to')
+            tos = msgout.get_all('to', [])
+            ccs = msgout.get_all('cc', [])
+            bccs = msgout.get_all('bcc', [])
+            apparently_tos = msgout.get_all('apparently-to', [])
+            header_pairs = email.Utils.getaddresses(tos + ccs +
+                                                    bccs + apparently_tos)
         for pair in header_pairs:
             address = pair[1]
             address_list.append(address)
 
     # Check for the `X-TMDA' override header.
-    if message_headers.has_key('x-tmda'):
+    if msgout.has_key('x-tmda'):
         x_tmda_over = 1
-        x_tmda = message_headers.getheader('x-tmda')
+        x_tmda = msgout.get('x-tmda')
         log_msg = '%s: %s' % ('X-TMDA', x_tmda)
         # X-TMDA should only have one field.
         if len(string.split(x_tmda)) == 1:
 	    actions = { 'from' : FilterParser.splitaction(x_tmda) }
         # Delete `X-TMDA' before sending.
-        del message_headers['x-tmda']
-    # Optionally, parse subject for `X-TMDA'.  e.g,
-    # Subject: X-TMDA dated Re: You're fired!
-    if (Defaults.X_TMDA_IN_SUBJECT and message_headers.has_key('subject') and
+        del msgout['x-tmda']
+    # Optionally, parse subject for `X-TMDA'.
+    if (Defaults.X_TMDA_IN_SUBJECT and msgout.has_key('subject') and
         x_tmda_over is None):
-        sub = message_headers.getheader('subject')
+        sub = msgout.get('subject')
         subsplit = sub.split(None, 2)
         if subsplit and subsplit[0].lower() == 'x-tmda':
             x_tmda_over = 1
             actions = { 'from' : FilterParser.splitaction(subsplit[1]) }
             log_msg = '%s: %s' % ('X-TMDA', subsplit[1])
             # Fixup Subject: before sending.
+            del msgout['Subject']
             if subsplit[2:]:
-                message_headers['Subject'] = subsplit[2:][0]
+                msgout['Subject'] = subsplit[2:][0]
             else:
-                message_headers['Subject'] = ''
+                msgout['Subject'] = ''
     # Without `X-TMDA', we need to parse the outgoing filter file.
     if x_tmda_over is None:
         outfilter = FilterParser.FilterParser()
@@ -391,8 +400,8 @@ def main():
                        address,
                        from_address,
 		       fullname,
-                       message_headers,
-                       message_body,
+                       msgout,
+                       orig_msgout_body_as_raw_string,
                        actions,
                        log_msg)
     if qfilter:

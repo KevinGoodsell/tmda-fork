@@ -52,18 +52,15 @@ def unlock_file(fp):
 
 
 class Deliver:
-    def __init__(self, headers, body, delivery_option):
+    def __init__(self, msg, delivery_option):
         """
-        headers is an rfc822.Message instance.
-
-        body is the message content from that instance.
+        msg is an email.Message object.
 
         deliver_option is a delivery action option string returned
         from the TMDA.FilterParser instance.
         """
-        self.headers = headers
-        self.body = body
-        self.message = str(headers) + '\n' + body
+        self.msg = msg
+        self.message = msg.as_string()
         self.option = delivery_option
         self.env_sender = os.environ.get('SENDER')
         
@@ -115,7 +112,7 @@ class Deliver:
         if type == 'program':
             self.__deliver_program(self.message, dest)
         elif type == 'forward':
-            self.__deliver_forward(self.headers, self.body, dest)
+            self.__deliver_forward(self.message, dest)
         elif type == 'mbox':
             # Ensure destination path exists.
             if not os.path.exists(dest):
@@ -140,9 +137,9 @@ class Deliver:
         """Deliver message to /bin/sh -c program."""
         Util.pipecmd(program, message)
 
-    def __deliver_forward(self, headers, body, address):
+    def __deliver_forward(self, message, address):
         """Forward message to address, preserving the existing Return-Path."""
-        Util.sendmail(headers, body, address, self.env_sender)
+        Util.sendmail(message, address, self.env_sender)
         
     def __deliver_mbox(self, message, mbox):
         """Reliably deliver a mail message into an mboxrd-format mbox file.

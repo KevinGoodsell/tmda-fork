@@ -24,20 +24,22 @@ Log statistics about incoming or outgoing messages to a file.
 """
 
 
+from email.Utils import parseaddr
+
 import Util
 
 
 class MessageLogger:
-    def __init__(self, logfile, headers, **vardict):
+    def __init__(self, logfile, msg, **vardict):
         """
         logfile is the full path to the logfile.
         
-        headers is an rfc822.Message instance.
+        msg in an email.Message object.
 
         vardict is a dictionary containing an indefinite number of
         keyword arguments.
         """
-        self.headers = headers
+        self.msg = msg
         self.vardict = vardict
         self.logfile = logfile
         self.log = open(self.logfile, 'a')
@@ -57,16 +59,16 @@ class MessageLogger:
         self.__writeline('Date', Util.unixdate())
         envsender = self.vardict.get('envsender', None)
         if (envsender
-            and self.headers.getaddr('from')[1] != envsender):
+            and parseaddr(self.msg.get('from'))[1] != envsender):
             self.__writeline('Sndr', envsender)
-        From = self.headers.getheader('from')
+        From = self.msg.get('from')
         if From:
             self.__writeline('From', From)
-        ReplyTo = self.headers.getheader('reply-to')
+        ReplyTo = self.msg.get('reply-to')
         if ReplyTo:
             self.__writeline('Rept', ReplyTo)
         self.__writeline('To', self.vardict.get('envrecip'))
-        self.__writeline('Subj', self.headers.getheader('subject', 'None'))
+        self.__writeline('Subj', self.msg.get('subject'))
         Action = self.vardict.get('action_msg')
         sizestr = '(%s)' % self.vardict.get('msg_size')
         wsbuf = 72 - len(Action) - len(sizestr)

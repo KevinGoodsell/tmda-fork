@@ -50,10 +50,10 @@ class MTA:
     def stop(self):
         sys.exit(self.EX_OK)
 
-    def deliver(self, headers, body, instruction=None):
+    def deliver(self, msg, instruction=None):
         if instruction is None:
             instruction = Defaults.DELIVERY
-        msg = Deliver.Deliver(headers, body, instruction)
+        msg = Deliver.Deliver(msg, instruction)
         msg.deliver()
         self.stop()
             
@@ -90,13 +90,13 @@ class Qmail(MTA):
     def stop(self):
         sys.exit(self.EX_STOP)
 
-    def deliver(self, headers, body, instruction=None):
+    def deliver(self, msg, instruction=None):
         if instruction is None:
             instruction = Defaults.DELIVERY
         if instruction == '_qok_':
             sys.exit(self.EX_OK)
         else:
-            msg = Deliver.Deliver(headers, body, instruction)
+            msg = Deliver.Deliver(msg, instruction)
             msg.deliver()
             self.stop()
 
