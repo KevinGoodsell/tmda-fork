@@ -7,7 +7,7 @@ was not delivered because your address was not recognized.
 To release your message for delivery, please send an empty message
 to the following address, or use your mailer's "Reply" feature.
 
-    <mailto:%(confirm_accept_address)s>
+<mailto:%(confirm_accept_address)s>
 
 This confirmation verifies that your message is legitimate and not
 junk-mail.
