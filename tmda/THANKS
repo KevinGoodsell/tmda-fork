@@ -15,7 +15,8 @@ Acknowledgements:
 Contributions:
 --------------
 
-    * Matt Armstrong -- contributed heavily to the Postfix support.
+    * Matt Armstrong -- contributed heavily to the Postfix support,
+      plus many good suggestions, and bugfixes.
 
     * Binesh Bannerjee -- SACRED_FILE feature (now depreciated).
     
@@ -25,6 +26,8 @@ Contributions:
     * Francisco Sam Castillo -- QAdmin-TMDA web management utility.
 
     * Lou Hevly -- documentation (vpopmail tutorial).
+
+    * Brian Lalor -- testing the initial Sendmail support; bugfixes.
 
     * Adam McKenna -- creator/maintainer of the Debian package.
 
