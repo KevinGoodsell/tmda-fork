@@ -423,7 +423,7 @@ class Message:
             raise Errors.MessageError, '%s not found!' % self.msgid
         try:
             self.msgobj = email.message_from_file(open(self.msgfile, 'r'))
-        except email.Errors.BoundaryError:
+        except email.Errors.MessageError:
             self.msgobj = Util.msg_from_file(open(self.msgfile, 'r'))
         self.recipient = recipient
         if self.recipient is None:
