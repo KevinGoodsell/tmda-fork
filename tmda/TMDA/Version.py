@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.72+"
+TMDA = "0.73"
 
 # TMDA version codename
 CODENAME = "Jet Pilot"
