@@ -123,22 +123,6 @@ def Show():
       HTML += ListEntry % listDict
 
   T["Lists"] = HTML
-      
-
-    # OLD--------v
-#    if File == EditFile:
-#      HTML += '<tr><td><img src="%s/' % Template.Template.Dict["ThemeDir"]
-#      HTML += """%(hfn)s" width="%(width)d" height="%(height)d" alt=""" % \
-#        Buttons[File][1]
-#      HTML += '"%s"></td></tr>\n' % Buttons[File][0]
-#    else:
-#      HTML += '<tr><td><a href="%s?cmd=editlist%d&SID=%s"><img src="%s/' % \
-#        (os.environ["SCRIPT_NAME"], FileNum, PVars.SID,
-#        Template.Template.Dict["ThemeDir"])
-#      HTML += """%(fn)s" border="0" width="%(width)d"
-#height="%(height)d" alt=""" % Buttons[File][1]
-#      HTML += '"%s"></td></tr>\n' % Buttons[File][0]
-#  T["Lists"] = HTML
 
   # Any subcommand?
   if Form.has_key("subcmd"):
