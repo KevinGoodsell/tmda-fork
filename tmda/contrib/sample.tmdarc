@@ -12,6 +12,8 @@
 
 import os                                      # don't remove
 
+# ALLOW_MODE_640 = 0
+
 # BLACKLIST = os.path.expanduser("~/.tmda-blacklist")
 
 # BOUNCE_BLACKLIST_CC = "jdoe-bounces-blacklist@domain.dom"

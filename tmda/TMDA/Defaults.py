@@ -38,16 +38,27 @@ if not TMDARC:TMDARC = os.path.expanduser("~/.tmdarc")
 if not os.path.exists(TMDARC):
     print "Can't open configuration file:",TMDARC
     sys.exit(ERR_CONFIG)
+execfile(TMDARC)
+
+# Check for proper file permissions before proceeding.
 
 statinfo = os.stat(TMDARC)
 permbits = stat.S_IMODE(statinfo[stat.ST_MODE])
 mode = int(oct(permbits))
-    
-if mode not in (400, 600):
+
+# ALLOW_MODE_640
+# Set this variable to 1 if you want to allow mode 640 .tmdarc files.
+# Default is 0 (turned off)
+if not vars().has_key('ALLOW_MODE_640'):
+    ALLOW_MODE_640 = 0
+
+if ALLOW_MODE_640 and mode in (400, 600, 640):
+    pass
+elif mode not in (400, 600):
     print TMDARC,"must be permission mode 400 or 600!"
     sys.exit(ERR_CONFIG)
-
-execfile(TMDARC)
+else:
+    pass
 
 ############################
 # User configurable settings

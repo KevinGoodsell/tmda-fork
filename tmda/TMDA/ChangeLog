@@ -1,3 +1,9 @@
+2001-05-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (ALLOW_MODE_640): New variable to support mode 640
+	tmdarc files which are necessary when running TMDA through a qmail
+	relay.
+
 2001-05-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (USERPREFIX): New variable introduced to support

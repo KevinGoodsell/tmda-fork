@@ -6,12 +6,16 @@
 
 """Tag and send outgoing messages.
 
-Usage:  %(program)s [-c <file>] [-h]
+Usage:  %(program)s [-c <file>] [-q] [-h]
 
 Where:
 	-c <file>
 	--config-file <file>
 	   Specify a different configuration file other than ~/.tmdarc.
+
+        -q
+        --qfilter
+           Return 99 to qfilter so it will not run qmail-queue itself.
 
 	--help
 	-h
@@ -27,6 +31,7 @@ import sys
 
 
 program = sys.argv[0]
+qfilter = None
 
 def usage(code, msg=''):
     print __doc__ % globals()
@@ -36,7 +41,7 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                                   'c:h', ['config-file=','help'])
+                               'c:qh', ['config-file=','qfilter','help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -45,6 +50,8 @@ for opt, arg in opts:
         usage(0)
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
+    elif opt in ('-q', '--qfilter'):
+        qfilter = 99
 
 
 import paths
@@ -247,7 +254,10 @@ def main():
             print "Unknown cookie type:",address_cookie
             sys.exit(Defaults.ERR_CONFIG)
 
-    sys.exit(Defaults.ERR_OK)
+    if qfilter:
+        sys.exit(qfilter)
+    else:
+        sys.exit(Defaults.ERR_OK)
 
 
 # This is the end my friend.

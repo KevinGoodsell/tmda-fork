@@ -15,6 +15,8 @@ Acknowledgements:
 Contributions:
 --------------
 
+    * Ron Bickers -- for contributing the `README.RELAY' HOWTO.
+
     * Reuben Sumner -- for contributing the HMAC.py module and for
     suggesting the "blacklist" functionality.
 
