@@ -526,7 +526,7 @@ def Restore():
 def Show():
   "Handle installation."
 
-  import Util
+  from TMDA import Util
 
   # Make a substitution dictionary
   global Dict
@@ -552,7 +552,7 @@ def Show():
   elif Form["cmd"].value == "restore":
     Restore()  # Does not return.
   elif Form["cmd"].value == "uninstall":
-    if self[("NoOverride", "MayInstall")][0].lower() == "n":
+    if PVars[("NoOverride", "MayInstall")][0].lower() == "n":
       CgiUtil.TermError("No permission.",
         "Uninstallation disabled by sysadmin.", "uninstall",
         "", "Contact system administrator.")
