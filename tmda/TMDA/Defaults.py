@@ -65,10 +65,7 @@ PARENTDIR = os.path.split(os.path.dirname(progpath))[0] # '../'
 # Make site-wide configuration changes to this file.
 GLOBAL_TMDARC = '/etc/tmdarc'
 if os.path.exists(GLOBAL_TMDARC):
-    try:
-        execfile(GLOBAL_TMDARC)
-    except:
-        pass                            # just skip it if there is a problem
+    execfile(GLOBAL_TMDARC)
         
 # Look for the user-config-file in the environment first then default
 # to ~/.tmdarc or ~/.tmda/config
