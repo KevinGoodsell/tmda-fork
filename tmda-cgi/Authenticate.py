@@ -34,7 +34,8 @@ from TMDA import Auth
 from TMDA import Errors
 from TMDA import Util
 
-authobj = Auth.Auth( debugObject = Util.StringOutput() )
+DebugStringOutput = Util.StringOutput()
+authobj = Auth.Auth( debugObject = DebugStringOutput )
 
 authinit = 0
 
@@ -91,6 +92,7 @@ def Authenticate(User, Password):
 
 def CheckPassword(Form):
   "Checks a password from a form."
+  global DebugStringOutput
 
   Except = ""
   try:
@@ -99,6 +101,6 @@ def CheckPassword(Form):
     Except = "\n*** EXCEPTION CAUGHT ***: %s" % error.msg
     RetVal = 0
     Template.Template.Dict["ErrMsg"] = "Capturing the debug stream...\n" + \
-      authobj.DEBUGSTREAM.__repr__()
+      DebugStringOutput.__repr__()
 
   return RetVal
