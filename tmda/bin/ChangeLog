@@ -3,8 +3,9 @@
 	* tmda-filter: Replace tmda-filter with a wrapper script, and
 	rename it 'tmda-rfilter'.
 
-	(execdir): Remove time module import.
-
+	(execdir): Import time only right before trying to log the
+	exception so that TZ set in the tmdarc is honored.
+	
 2002-01-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-sendmail (usage): Remove the `-bs' option, since
