@@ -73,11 +73,11 @@ def TranslateToUTF8(CharSet, Str, Errors):
   CharSet = CS.input_charset
 
   # Find appropriate decoder
-  if CharSet == "iso-8859-1":
+  if CharSet in ("iso-8859-1", "us-ascii"):
     Decoder = Iso8859
   else:
     try:
-      Decoder = codecs.getdecoder(CharSet)
+      Decoder = codecs.lookup(CharSet)[1]
     except LookupError:
       try:
         # Is it GB2312?

@@ -183,3 +183,4 @@ else:
   CgiUtil.TermError("No command instruction.", "Program bug.",
     "interpret command", "", "Please contact the programmers and let them "
     "know what you did to reach this message.")
+

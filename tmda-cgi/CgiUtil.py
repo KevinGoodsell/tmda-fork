@@ -51,7 +51,7 @@ class JustLoggedIn(Errors.TMDAError):
 
 def Size(MsgObj = None, MsgSize = 0):
   if MsgObj:
-    MsgSize = os.stat(MsgObj.msgfile).st_size
+    MsgSize = os.stat(MsgObj.msgfile)[6]
   if MsgSize > 512:
     if MsgSize > 5120:
       if MsgSize > 524288:

@@ -70,7 +70,7 @@ function ConfirmSpamCop()
             <table class="Headers" border="0" cellspacing="0" cellpadding="0">
 <!-- var: HeaderRow -->
               <tr>
-                <td><b>%(Name)s:</b></td>
+                <td valign="top"><b>%(Name)s:</b></td>
                 <td width="5"></td>
                 <td>%(Value)s</td>
               </tr>

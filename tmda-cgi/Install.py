@@ -34,8 +34,6 @@ import Template
 from TMDA import Errors
 from TMDA import Util
 
-PermSearch = re.compile("^([^#\s]\S*)\s+(\d+)")
-
 def KeyGen():
   # Generate a random key
   RandomDev = "/dev/urandom"
@@ -61,7 +59,7 @@ def FindFiles(Path, AbsPath):
   Files = os.listdir(AbsPath)
   RetVal = []
   for File in Files:
-    if (File != "CVS") and (File != "permissions.ini"):
+    if (File != "CVS") and (File != "anomalies"):
       FilePath = os.path.join(Path, File)
       AbsFilePath = os.path.join(AbsPath, File)
       L = len(RetVal)
@@ -175,12 +173,14 @@ def Revert(Files, Backup, ErrStr):
   CgiUtil.TermError("Install aborted.", ErrStr, "install TMDA",
     "", "Check file permissions in home directory.")
 
-def ListDiff(a, b):
+def ListDiff(a, b, Dict = None):
   "Take all items in b out of a."
   try:
     i = 0
     while 1:
-      if (a[i] % Dict) in b:
+      Item = a[i]
+      if Dict: Item = Item % Dict
+      if Item in b:
         del a[i]
       else:
         i += 1
@@ -224,36 +224,68 @@ files will be removed."""
       # Install failed, revert!
       Revert(Copied, Backup, "Expanding %%'s in: %s<br>%s" % (Filename,
         ErrStr))
-  ListDiff(FilesToCopy, Failed)
+  ListDiff(FilesToCopy, Failed, Dict)
 
-def SetPerms(SrcDir, Files, Backup):
-  "Set permissions as listed in permissions.ini"
-
-  # Read in permission instructions
-  try:
-    F = open(os.path.join("skel", SrcDir, "permissions.ini"))
-    Lines = F.readlines()
-    F.close()
-  except IOError:
-    return
+def SetPerms(Anomalies, Files, Backup):
+  "Set permissions as listed in anomalies"
 
   # Parse and execute instructions
   try:
-    for Line in Lines:
-      Match = PermSearch.search(Line)
-      if Match:
-        os.chmod(os.path.join(os.environ["HOME"], Match.group(1)),
-          eval("0" + Match.group(2)))
+    for File in Anomalies.keys():
+      os.chmod(os.path.join(os.environ["HOME"], File % Dict), Anomalies[File])
   except OSError, (ErrStr):
     Revert(Files, Backup, "Setting permission %s on: %s<br>%s" % \
-      (Match.group(2), Match.group(1), ErrStr))
+      (Anomalies[File], File % Dict, ErrStr))
+
+def GetAnomalies(Dir):
+  "Find any anomaly instructions."
+  RetVal = \
+  {
+    "PERMISSIONS": {}, "VIRTUAL_TEST": "", "REAL_ONLY": [], "VIRTUAL_ONLY": []
+  }
+  try:
+    execfile(os.path.join("skel", Dir, "anomalies"), RetVal)
+  except IOError:
+    pass
+  return RetVal
+
+def ReimportDefaults(Files, Backup):
+  """During an install/restore, we need to reload Defaults.  This is easy to do
+under Python 2.2, but for some reason Python 2.1 will return a generic 
+Exception. To circumvent this problem, we use execfile and let Defaults be a 
+dictionary instead of a module to access the contents.  Ugly, but effective."""
+  try:
+    CWD = os.getcwd()
+    os.chdir(os.path.join(os.environ["TMDA_BASE_DIR"], "TMDA"))
+    Defaults = {}
+    execfile("Defaults.py", Defaults)
+    os.chdir(CWD)
+
+    # Provide access to Defaults so Session.Save() will work
+    import Session
+    Session.Defaults = Defaults
+
+  except Errors.ConfigError, ErrStr:
+    os.chdir(CWD)
+    Revert(Files, Backup, "Re-importing Defaults<br>%s" % ErrStr)
+
+  return Defaults
 
 def Install():
   "Do the actual installation."
 
+  # Find any anomaly instructions
+  Anomalies = GetAnomalies("install")
+
   # What files do we need to install?
   InstallDir = os.path.join(os.getcwd(), "skel", "install")
   FilesToInstall = FindFiles("", InstallDir)
+
+  # Are we supposed to ignore any of those?
+  if re.search(Anomalies["VIRTUAL_TEST"], PVars["HOME"]):
+    ListDiff(FilesToInstall, Anomalies["REAL_ONLY"])
+  else:
+    ListDiff(FilesToInstall, Anomalies["VIRTUAL_ONLY"])
 
   # What files will that clobber?
   FilesClobbered = FindExisting(FilesToInstall, os.environ["HOME"])
@@ -275,7 +307,7 @@ def Install():
     FilesToInstall[i] = FilesToInstall[i] % Dict
 
   # Set file permissions
-  SetPerms("install", FilesToInstall, Backup)
+  SetPerms(Anomalies["PERMISSIONS"], FilesToInstall, Backup)
 
   # Unlink any restore file
   Archive = os.path.join(os.environ["HOME"],
@@ -286,22 +318,8 @@ def Install():
     except OSError:
       pass
 
-  # At this point, we need to reload Defaults.  This is easy to do under
-  # Python 2.2, but for some reason Python 2.1 will return an ImportError.
-  # To circumvent this problem, we use execfile and let Defaults be a
-  # dictionary instead of a module to access the contents.  Ugly, but
-  # effective.
-
   # Try to import Defaults again.
-  try:
-    CWD = os.getcwd()
-    os.chdir(os.path.join(os.environ["TMDA_BASE_DIR"], "TMDA"))
-    Defaults = {}
-    execfile("Defaults.py", Defaults)
-    os.chdir(CWD)
-  except Errors.ConfigError:
-    os.chdir(CWD)
-    Revert(FilesToInstall, Backup, "Re-importing Defaults<br>%s" % ErrStr)
+  Defaults = ReimportDefaults(FilesToInstall, Backup)
 
   # Prepare template
   T = Template.Template("installed.html")
@@ -330,6 +348,9 @@ def Install():
 def Uninstall():
   "Do the actual uninstallation."
 
+  # Find any anomaly instructions
+  Anomalies = GetAnomalies("uninstall")
+
   # What files do we need to uninstall?
   InstallDir = os.path.join(os.getcwd(), "skel", "install")
   Files = FindFiles("", InstallDir)
@@ -355,12 +376,21 @@ def Uninstall():
   UninstallDir = os.path.join(os.getcwd(), "skel", "uninstall")
   UninstallFiles = FindFiles("", UninstallDir)
 
+  # Are we supposed to ignore any of those?
+  if re.search(Anomalies["VIRTUAL_TEST"], PVars["HOME"]):
+    ListDiff(UninstallFiles, Anomalies["REAL_ONLY"])
+  else:
+    ListDiff(UninstallFiles, Anomalies["VIRTUAL_ONLY"])
+
   # Don't clobber anything.
   FilesClobbered = FindExisting(UninstallFiles, os.environ["HOME"])
-  ListDiff(UninstallFiles, FilesClobbered)
+  ListDiff(UninstallFiles, FilesClobbered, Dict)
 
   # Copy files from skeleton
   CopyFiles(UninstallFiles, UninstallDir, Backup)
+
+  # Set file permissions
+  SetPerms(Anomalies["PERMISSIONS"], UninstallFiles, Backup)
 
   # Unlink any empty directories used
   Dirs = {}
@@ -392,7 +422,7 @@ def Uninstall():
       os.unlink(Archive)
     except OSError:
       pass
-    ListDiff(UninstallFiles, RestoredFiles)
+    ListDiff(UninstallFiles, RestoredFiles, Dict)
   else:
     Archive = None
 
@@ -505,14 +535,11 @@ def Restore():
     pass
 
   # Try to import Defaults again.
-  try:
-    from TMDA import Defaults
-  except Errors.ConfigError:
-    Revert(FilesToInstall, Backup, "Re-importing Defaults<br>%s" % ErrStr)
+  Defaults = ReimportDefaults(FilesToInstall, Backup)
 
   # Prepare template
   T = Template.Template("installed.html")
-  T["EMail"] = "%s@%s" % (Defaults.USERNAME, Defaults.HOSTNAME)
+  T["EMail"] = "%s@%s" % (Defaults["USERNAME"], Defaults["HOSTNAME"])
   Row = T["Row"]
   if len(FilesClobbered):
     # List files clobbered

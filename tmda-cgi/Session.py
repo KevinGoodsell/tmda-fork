@@ -164,10 +164,16 @@ we save Vars or PVars."""
 
     CWD = os.getcwd()
     if self.RealUser:
-      from TMDA import Defaults
-      os.chdir(os.path.split(Defaults.TMDARC)[0])
-      Filename = Defaults.CGI_SETTINGS
-      Data     = self.PVars
+      # Not sure why I have to refer to Defaults via globals(), but it works
+      if globals().has_key("Defaults") and \
+        (type(globals()["Defaults"]) == DictType):
+        os.chdir(os.path.split(globals()["Defaults"]["TMDARC"])[0])
+        Filename = globals()["Defaults"]["CGI_SETTINGS"]
+      else:
+        from TMDA import Defaults
+        os.chdir(os.path.split(Defaults.TMDARC)[0])
+        Filename = Defaults.CGI_SETTINGS
+      Data = self.PVars
     else:
       self.__suid__("web")
       Filename = os.environ["TMDA_SESSION_PREFIX"] + self.SID
@@ -469,7 +475,10 @@ rights.""")
 
   def __delitem__(self, a):
     if type(a) in [StringType, UnicodeType]:
-      del self.PVars[a]
+      if self.PVars.has_key(a):
+        del self.PVars[a]
+      else:
+        del self.Vars[a]
     else:
       ID = ":".join(a)
       if self.PVars.has_key(ID):
@@ -479,7 +488,10 @@ rights.""")
 
   def __getitem__(self, a):
     if type(a) in [StringType, UnicodeType]:
-      return self.PVars[a]
+      if self.PVars.has_key(a):
+        return self.PVars[a]
+      else:
+        return self.Vars[a]
     else:
       ID = ":".join(a)
       if self.PVars.has_key(ID):
@@ -495,7 +507,7 @@ rights.""")
 
   def has_key(self, a):
     if type(a) in [StringType, UnicodeType]:
-      return self.PVars.has_key(a)
+      return self.PVars.has_key(a) or self.Vars.has_key(a)
     else:
       return self.PVars.has_key(":".join(a)) or \
         self.ThemeVars.has_option(a[0], a[1])

@@ -1,3 +1,14 @@
+2003-05-20  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Removed Python 2.2 dependency.
+
+	* Removed permissions.ini from install and added anomalies which will
+	  let the sysadmin configure more stuff.
+
+	* Extended iso-8859-1 codec so it works for us-ascii character set.
+
+	* Minor tweak to the short header format in the e-mail viewer.
+
 2003-05-14  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Changed the configure program so users can do the "make install" as

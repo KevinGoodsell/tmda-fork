@@ -28,6 +28,11 @@ If you are upgrading from a release of tmda-cgi < 0.09:
   NOTE: Later versions of tmda-cgi will NOT support old-style confirm-accept
         URLs (and will require TMDA 0.78 or later).
 
+* Removed skel/install/permissions.ini and added anomalies files to install
+  and uninstall which will let the sysadmin configure more stuff.  If you have
+  made a special skel directory for your system, please consult the docs on
+  "anomalies" so you can adapt it for your needs.
+
 ======================================================================
 
 If you are upgrading from a release of tmda-cgi < 0.08:
