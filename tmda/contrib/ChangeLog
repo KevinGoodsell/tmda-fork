@@ -1,3 +1,7 @@
+2003-04-08  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* smtp-check-sender: New file.
+
 2003-04-08  Gre7g Luterman <gre7g@wolfhome.com>
 
 	* CheckPassword: an optional authentication method for TMDA/Auth.py
