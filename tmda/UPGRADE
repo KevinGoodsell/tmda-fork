@@ -1,5 +1,12 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.68:
+
+* tmda-ofmipd now forks into the background by default. Use the
+  ``--foreground'' option to retain the old behavior.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.66:
 
 * DELIVERED_CACHE and DELIVERED_CACHE_LEN are no longer used to store
