@@ -1,5 +1,9 @@
 2002-07-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config-client.ht: Mention tmda-ofmipd.
+
+	* features.ht (Links): Ditto.
+
 	* howto-links.h, howtos.ht, howtos.html, tmda-ofmipd.ht,
 	tmda-ofmipd.html: New files.
 	

@@ -20,9 +20,8 @@ Python</a>: an interpreted, interactive, object-oriented programming language.
 <li>Optional automatic whitelisting of confirmed senders.
 <br><br>
 
-<li>Supports MUA-independent, site-wide installations using relay
-rewriting, including non-unix clients such as Microsoft
-Windows.<br><br>
+<li>Client-side support for both Unix and non-Unix (e.g, Outlook, Eudora, Mozilla)
+mail clients.<br><br>
 
 <li>Package installation available for Linux, and Free/Net/OpenBSD.<br><br>
 

@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Jul 13 14:35:40 2002 -->
+<!-- Sat Jul 13 18:19:32 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -384,9 +384,14 @@ To have TMDA read your configuration each time you send outgoing mail
 and modify your sender address accordingly, you must arrange for your
 MUA to call the included sendmail compatibility wrapper
 <B>(tmda-sendmail)</B>.  tmda-sendmail will use the address set by
-your MUA as the base for your tagged address.  Here is how to
-accomplish this for a few popular MUAs.  Let me know if you are using
-TMDA with a MUA not listed here.
+your MUA as the base for your tagged address.  See below for how to
+accomplish this for a few popular MUAs.
+<br><br>
+
+<strong>NOTE</strong>: 
+If your MUA does not support a sendmail command-line interface
+as is the case with most non-Unix clients, you should use 
+<a href="tmda-ofmipd.html">tmda-ofmipd</a> instead.
 <br><br>
 
 <ul>
