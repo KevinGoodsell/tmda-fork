@@ -1,7 +1,7 @@
 2002-01-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* Errors.py: Defaults no longer necessary, and leave the exit
-	EX_TEMPFAIL.to tmda-filter.
+	* Errors.py: import of sys and Defaults no longer necessary, and
+	leave the exit EX_TEMPFAIL.to tmda-filter.
 
 2002-01-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
