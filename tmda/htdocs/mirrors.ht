@@ -3,15 +3,11 @@ Links: overview-links.h usage-links.h support-links.h
 
 <h3>TMDA Mirrors</h3>
 
-
 These web pages are mirrored from <a href="http://www.tmda.net/">www.tmda.net</a>
 in several locations for your convenience. Here are the current list of mirrors: 
 <br><br>
 
-<li>North America
-<ul>
-
-United States
+<li>United States
 <ul>
 
 <li><a href="http://www.us.tmda.net/" TARGET="Resource Window">
@@ -24,6 +20,12 @@ tmda.mirrors.summersault.com</a><br>
 mirrors.standblue.net/tmda.net</a><br>
 
 </ul>
+
+<li>Australia
+<ul>
+
+<li><a href="http://www.au.tmda.net/" TARGET="Resource Window">
+www.au.tmda.net</a> (PlanetMirror)<br>
 
 </ul>
 
@@ -48,12 +50,11 @@ the equivalent.
 <li>Drop me a note if you'd like your mirror listed here.
 <br><br>
 
-<li>If your mirror is located outside the United States, you might
-consider running it on its own virtual host so that I can make a
-<em>www.CountryCode.tmda.net</em> host alias for it. e.g, 
-<em>www.au.tmda.net</em>, <em>www.se.tmda.net</em>.
-In this case, please send me the IP address of your virtual host,
-and of course where you are located.
+<li>If you are located in a country not yet represented by a TMDA
+mirror, you might consider running it on its own virtual host so that
+I can make a <em>www.CountryCode.tmda.net</em> host alias for it. In
+this case, please send me the IP address of your virtual host, and of
+course where you are located.
 
 </ol>
 
