@@ -7,6 +7,7 @@
 
 import cStringIO
 import os
+import pwd
 import re
 import rfc822
 import stat
@@ -207,7 +208,21 @@ def main():
     # EXT2 is the portion of EXT following the first dash.
     ext2 = os.environ.get('EXT2') 
     if ext2:ext2 = string.lower(ext2)
-        
+
+    # EXT3 is the portion of EXT following the second dash.
+    # This should normally only be defined under a virtualdomain.
+    ext3 = os.environ.get('EXT3') 
+    if ext3:ext3 = string.lower(ext3)
+
+    # Under a virtualdomain, 'USER' is set to the domain instead of
+    # the username, so this is how we test for it.
+    user = pwd.getpwuid(os.getuid())[0]
+    # If this is a virtualdomain, shift the EXT* variables once left.
+    # (i.e, EXT under normal == EXT2 under a virtualdomain, etc.)
+    if user != os.environ.get('USER'):
+        ext = ext2
+        ext2 = ext3
+            
     while 1:
         # Is the sender in the BLACKLIST?
         if os.path.exists(Defaults.BLACKLIST) and \
