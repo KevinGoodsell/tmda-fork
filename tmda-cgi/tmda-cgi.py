@@ -113,6 +113,7 @@ def main():
     import GenAddr
     import GlobalConfig
     import PendList
+    import TestAddr
     import Theme
     import View
     
@@ -122,6 +123,8 @@ def main():
     GenAddr.Form   = Form
     PendList.PVars = PVars
     PendList.Form  = Form
+    TestAddr.PVars = PVars
+    TestAddr.Form  = Form
     Theme.PVars    = PVars
     Theme.Form     = Form
     View.PVars     = PVars
@@ -141,6 +144,8 @@ def main():
       GlobalConfig.Show()
     elif Form["cmd"].value == "gen_addr":
       GenAddr.Show()
+    elif Form["cmd"].value == "test_addr":
+      TestAddr.Show()
     else:
       CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
         Form["cmd"].value, "interpret command", "", "Please be patient while "

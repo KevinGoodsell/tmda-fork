@@ -1,3 +1,7 @@
+2003-04-20  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added code for "generate address" and "test address" buttons.
+
 2003-04-19  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Added code for "theme picker", "logout", and "global config" buttons.

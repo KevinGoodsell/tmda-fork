@@ -1,14 +1,33 @@
 Title: Test Dynamic Address
 
 <p><strong>Use this page to test one of your addresses.</strong></p>
+<!-- var: Instructions -->
 <p>This diagnostic page will verify one of your addresses and answer the 
   following nagging questions:</p>
 <ul>
   <li>Is this a properly formed address?</li>
   <li>When does this dated address expire?</li>
-  <li>Has this keyword been revoked?</li>
   <li>Does this "sender" address work for this sender?</li>
 </li>
+<!-- /var (Instructions) -->
+<!-- var: ShowResults -->
+<table width="475">
+  <tr>
+    <td width="1%"><b>Address:</b></td>
+    <td class="TextField">%(To)s</td>
+  </tr>
+<!-- var: Sender -->
+  <tr>
+    <td><b>Sender:</b></td>
+    <td class="TextField">%(From)s</td>
+  </tr>
+<!-- /var (Sender) -->
+  <tr>
+    <td valign="baseline"><b>Results:</b></td>
+    <td class="TextField">%(Results)s</td>
+  </tr>
+</table>
+<!-- /var (ShowResults) -->
 <table align="center" cellpadding="10">
   <form action="%(Script)s" method="post">
     <tr>
@@ -29,6 +48,7 @@ Title: Test Dynamic Address
         <input type="submit" value=" Test ">
         <input name="SID" type="hidden" value="%(SID)s">
         <input name="cmd" type="hidden" value="test_addr">
+        <input name="subcmd" type="hidden" value="test">
       <td>
     </tr>
   </form>

@@ -19,7 +19,7 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"Global config file viewer for tmda-cgi."
+"Generate dynamic addresses for tmda-cgi."
 
 import os
 import Template
@@ -51,7 +51,6 @@ def Show():
   #
 
   # Default is "dated"
-  Option  = None
   Tag = Defaults.TAGS_DATED[0].lower()
   DestField = "DatedAddr"
 
@@ -63,10 +62,12 @@ def Show():
       DestField = "SenderAddr"
       if Form.has_key("sender"):
         Option = T["Sender"] = PVars[("GenAddr", "Sender")] = \
-          Form["sender"].value
+          PVars[("TestAddr", "From")] = Form["sender"].value
       else:
         if PVars.has_key(("GenAddr", "Sender")):
           del PVars[("GenAddr", "Sender")]
+        if PVars.has_key(("TestAddr", "From")):
+          del PVars[("TestAddr", "From")]
         T["Sender"] = ""
         DestField = ""
       PVars.Save()
@@ -83,6 +84,8 @@ def Show():
         if PVars.has_key(("GenAddr", "Keyword")):
           del PVars[("GenAddr", "Keyword")]
         T["Keyword"] = ""
+      if PVars.has_key(("TestAddr", "From")):
+        del PVars[("TestAddr", "From")]
       PVars.Save()
     
     else:
@@ -97,14 +100,25 @@ def Show():
       else:
         if PVars.has_key(("GenAddr", "ExpireNum")):
           del PVars[("GenAddr", "ExpireNum")]
+      if PVars.has_key(("TestAddr", "From")):
+        del PVars[("TestAddr", "From")]
       PVars.Save()
+
+  # Default to dated
+  else:
+    if PVars.has_key(("TestAddr", "From")):
+      del PVars[("TestAddr", "From")]
+    Option = "%d%s" % (PVars[("GenAddr", "ExpireNum")],
+      PVars[("GenAddr", "ExpireUnit")])
 
   # Show correct units
   T["%sSel" % PVars[("GenAddr", "ExpireUnit")]] = " selected"
 
   # Create the address
   try:
-    T[DestField] = Address.Factory(tag = Tag).create(None, Option).address
+    T[DestField] = PVars[("TestAddr", "To")] = \
+      Address.Factory(tag = Tag).create(None, Option).address
+    PVars.Save()
   except TypeError:
     pass
 
