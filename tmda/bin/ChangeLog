@@ -1,3 +1,14 @@
+2002-05-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (release_pending): Reorganize the release process.
+	Add an X-TMDA-Confirm-Done header for later verification and
+	reinject to the original recipient instead of
+	RECIPIENT-confirm-done.A.B.C.
+
+	(verify_confirm_cookie): Verify the confirmed/reinjected message
+	by recalculating the HMAC contained in the X-TMDA-Confirm-Done
+	field.
+	
 2002-05-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (bouncegen): dated_cookie_address and

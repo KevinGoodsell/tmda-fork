@@ -3,10 +3,9 @@ Cryptography in TMDA
 
 For crypto-cookie generation and verification, TMDA uses HMAC, which
 is a mechanism for message authentication using cryptographic hash
-functions such as SHA and MD5.
+functions such as SHA-1 and MD5.
 
-For all the relevant papers and RFCs see:
-    <URL:http://www-cse.ucsd.edu/users/mihir/papers/hmac.html>
+For more information, see <URL:http://www.faqs.org/rfcs/rfc2104.html>
 
 
 Dated Addresses:
@@ -75,9 +74,9 @@ Confirmation Requests:
 
 The format for a confirmation request address is:
 
-    USERNAME-confirm-accept.TIMESTAMP.PID.CONFIRMMAC@DOMAIN.DOM
+    USERNAME-confirm-TIMESTAMP.PID.CONFIRMMAC@DOMAIN.DOM
 
-    (For example, jason-confirm-accept.995399954.1345.c08f32@mastaler.com)
+    (For example, jason-confirm-995399954.1345.c08f32@mastaler.com)
 
     TIMESTAMP the arrival time of the message in seconds since the
     epoch.
@@ -91,6 +90,12 @@ Confirmation request acknowledgments are accepted if:
 
     1.  CONFIRMMAC is verified by matching it with a new HMAC
 	generated against TIMESTAMP, PID, and 'accept'.
+
+Once accepted, an 'X-TMDA-Confirm-Done:' header containing an HMAC of
+the original message headers (including Received) is added to the
+message, and then it is reinjected to the original recipient.  Upon
+reception, TMDA verifies the HMAC by recalculation before delivering
+the message.
 
 
 HMAC Advantages:

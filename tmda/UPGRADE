@@ -2,13 +2,27 @@
 
 If you are upgrading from a release of TMDA < 0.56:
 
+* The format for a confirmation request address is now:
+
+  RECIPIENT-confirm-TIMESTAMP.PID.HMAC, instead of
+  RECIPIENT-confirm-accept.TIMESTAMP.PID.HMAC
+  
+  The new format is detailed in CRYPTO.
+
+* Confirmed messages are now reinjected to the original envelope
+  recipient address (RECIPIENT) rather than to:
+  RECIPIENT-confirm-done.TIMESTAMP.PID.HMAC
+
+  See CRYPTO for more details.
+
 * TMDA now sends outgoing mail by handing it off to an SMTP server
   instead of the /usr/sbin/sendmail program.  By default it will use
   the standard SMTP port (25) on the local host.  You can modify this
   by setting the "SMTPHOST" variable in your tmdarc.  See
   TMDA/Defaults.py for further information.
 
-* tmdarc variable SENDMAIL has been renamed SENDMAIL_PROGRAM.
+* tmdarc variable SENDMAIL has been renamed SENDMAIL_PROGRAM, but is
+  irrelevant unless OUTGOINGMAIL = "sendmail".
 
 * tmdarc variable PURGED_HEADERS now lists "Bcc:" and "Resent-Bcc" by
   default.  If you define this variable in your tmdarc, be sure to add

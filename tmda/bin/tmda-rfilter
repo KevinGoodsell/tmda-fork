@@ -334,26 +334,37 @@ def send_cc(address):
     logit('CC ' + address)
 
 
-def release_pending(timestamp, pid, message_headers, message_body):
+def release_pending(timestamp, pid, headers, body):
     """Release a confirmed message from the pending queue."""
-    return_path = message_headers.getaddr('return-path')[1]
-    confirm_done_address = Cookie.make_confirm_address(
-        message_headers.getheader('x-tmda-recipient'), timestamp, pid, 'done')
-    del message_headers['x-tmda-recipient']
+    return_path = headers.getaddr('return-path')[1]
+    # Remove Return-Path: to avoid duplicates.
+    del headers['return-path']
+    recipient = headers.getheader('x-tmda-recipient')
+    # Remove X-TMDA-Recipient:
+    del headers['x-tmda-recipient']
+    # Remove the first Delivered-To: line to avoid a mail loop on reinjection.
+    delivered_to = headers.getfirstmatchingheader('delivered-to')
+    if delivered_to:
+        headers.headers.remove(delivered_to[0])    
     # Add the date when confirmed in a header.
-    message_headers['X-TMDA-Confirmed'] = Util.unixdate()
-    # Reinject the message.
-    Util.sendmail(message_headers, message_body,
-                  confirm_done_address, return_path)
+    headers['X-TMDA-Confirmed'] = Util.unixdate()
+    # Add an X-TMDA-Confirm-Done: field to the top of the header for
+    # later verification.  This includes an HMAC of the full message
+    # headers.  Since this includes at least one locally-added
+    # Received field, the hash is not reusable or forgeable.
+    headers.headers.insert(0, 'X-TMDA-Confirm-Done: %s.%s.%s\n' % (
+        timestamp, pid, Cookie.make_fingerprint(headers.headers)))
+    # Reinject the message to the original envelope recipient.
+    Util.sendmail(headers, body, recipient, return_path)
     mta.stop()
 
 
-def verify_confirm_cookie(confirm_cookie):
+def verify_confirm_cookie(confirm_cookie, confirm_action):
     """Verify a confirmation cookie."""
     # Save some time if the cookie is bogus.
     try:
-        (confirm_action, confirm_timestamp,
-         confirm_pid, confirm_hmac) = confirm_cookie.split('.')
+        confirm_timestamp, confirm_pid, confirm_hmac = \
+                           confirm_cookie.split('.')
     except ValueError:
         logit("BOUNCE invalid_confirmation_address")
         bouncegen('bounce', Defaults.BOUNCE_TEXT_INVALID_CONFIRMATION)
@@ -374,7 +385,7 @@ def verify_confirm_cookie(confirm_cookie):
     # pre-confirmation
     if confirm_action == 'accept':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
-                                                  confirm_pid, 'accept')
+                                                  confirm_pid, confirm_action)
         # Accept the message only if the HMAC can be verified.
         if not (confirm_hmac == new_confirm_hmac):
             logit("BOUNCE invalid_confirmation_address")
@@ -425,30 +436,45 @@ def verify_confirm_cookie(confirm_cookie):
                         Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
                         break
             mta.stop()
-        # Release the message if we get this far.
+        # Release the message for delivery if we get this far.
         release_pending(confirm_timestamp, confirm_pid, headers, body)
     # post-confirmation
     elif confirm_action == 'done':
-        new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
-                                                  confirm_pid, 'done')
-        # Accept the message only if the HMAC can be verified.  We
-        # drop instead of bounce, because humans shouldn't be sending
-        # mail to a 'confirm-done' address.
+        # Use a copy of the real headers list for the hash work, so
+        # we can munge headers without affecting the real message.
+        hash_headers_list = message_headers.headers[:]
+        # Find the X-TMDA-Confirm-Done field; any header fields
+        # following this were present in the original message and
+        # can be included in the hash.
+        hash_start = (hash_headers_list.index
+                      (message_headers.getfirstmatchingheader
+                       ('x-tmda-confirm-done')[0]) + 1)
+        # Trim off all headers before and including X-TMDA-Confirm-Done:
+        hash_headers_list = hash_headers_list[hash_start:]
+        # Regenerate the hash for comparison.
+        new_confirm_hmac = Cookie.make_fingerprint(hash_headers_list)
+        # Accept the message only if the HMAC can be verified.  If the
+        # message has an X-TMDA-Confirm-Done field, but the hash isn't
+        # right, then ignore (but preserve) the field and make the
+        # sender confirm the message.  This means that after the
+        # message is confirmed, there will be multiple
+        # X-TMDA-Confirm-Done fields, so the first field is the one
+        # that should be verified.  Any later occurrences of the field
+        # are treated like plain data, and will just be included in
+        # the new hash.  In normal use, this isn't likely to occur,
+        # except when someone perhaps bounces a message containing an
+        # X-TMDA-Confirm-Done field to a TMDA user.  And this is
+        # possible only under qmail where we can't remove the field
+        # before delivery.
         if not (confirm_hmac == new_confirm_hmac):
-            logit("DROP bad_confirm_done_cookie")
-            mta.stop()
+            logit("CONFIRM bad_confirm_done_cookie")
+            bouncegen('request')
         else:
             # Cache and deliver the message.
             if message_headers.has_key('x-tmda-confirmed'):
                 msgval = 'c'
             elif message_headers.has_key('x-tmda-released'):
                 msgval = 'r'
-            else:
-                # Someone must be sending a message directly to a
-                # 'confirm-done' address, possibly in an attempt to
-                # sneak it through.
-                logit("DROP missing_delivery_header")
-                mta.stop()
             # Record this message in the cache as a dictionary,
             # where the message filename is the key, and how it was
             # delivered is the value. e.g, {'1017186412.798.msg':'c'}
@@ -457,7 +483,12 @@ def verify_confirm_cookie(confirm_cookie):
                 # Trim tail entries off if necessary, and then write the cache.
                 delcache = delcache[:Defaults.DELIVERED_CACHE_LEN]
                 Util.pickleit(delcache, Defaults.DELIVERED_CACHE)
-            logit("OK good_confirm_cookie")
+            logit("OK good_confirm_done_cookie")
+            # Remove X-TMDA-Confirm-Done: since it's only used
+            # internally.  This won't work when delivering '_qok_',
+            # since another program (qmail-local) is doing the actual
+            # writing of the message.
+            del message_headers['x-tmda-confirm-done']
             mta.deliver(message_headers, message_body)
 
 
@@ -605,7 +636,7 @@ def main():
                 cookie_type = cookie_value = None
     else:
         cookie_type = cookie_value = None
-    
+
     # The list of sender e-mail addresses comes from the envelope
     # sender, the "From:" header and the "Reply-To:" header.
     sender_list = [envelope_sender]
@@ -617,8 +648,12 @@ def main():
             sender_list.append(emaddy)
 
     # Process confirmation messages first.
+    confirm_done_hdr = message_headers.getrawheader('x-tmda-confirm-done')
+    # getheader() doesn't always fetch the first matching header; bug?
+    if confirm_done_hdr:
+        verify_confirm_cookie(confirm_done_hdr.strip(), 'done')
     if cookie_type == 'confirm' and cookie_value:
-        verify_confirm_cookie(cookie_value)
+        verify_confirm_cookie(cookie_value, 'accept')
 
     # Parse the incoming filter file.
     infilter = FilterParser.FilterParser()

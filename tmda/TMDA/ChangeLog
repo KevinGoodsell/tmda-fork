@@ -1,3 +1,8 @@
+2002-05-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Cookie.py: Replace all uses of the string module with string
+	methods.
+	
 2002-05-22  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Util.py (sendmail): Terminate commandline switch processing with

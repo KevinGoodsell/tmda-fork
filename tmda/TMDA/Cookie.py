@@ -25,7 +25,6 @@
 import binascii
 import os
 import re
-import string
 import time
 
 import Defaults
@@ -33,7 +32,7 @@ import HMAC
 import Util
 
 
-def confirmationmac(time,pid,keyword=None):
+def confirmationmac(time, pid, keyword=None):
     """Expects time, pid and optionally keyword as strings,
     and returns an HMAC in hex."""
     chmac = HMAC.hmac(Defaults.CRYPT_KEY)
@@ -44,23 +43,24 @@ def confirmationmac(time,pid,keyword=None):
     return binascii.hexlify(chmac.digest()[:Defaults.HMAC_BYTES])
 
 
-def make_confirm_cookie(time,pid,keyword=None):
+def make_confirm_cookie(time, pid, keyword=None):
     """Return a confirmation-cookie (timestamp.process_id.HMAC)."""
     timestamp = str(time)
     process_id = str(pid)
-    chmac = confirmationmac(timestamp,process_id,keyword)
-    return timestamp + '.' + process_id + '.' + chmac
+    chmac = confirmationmac(timestamp, process_id, keyword)
+    return '%s.%s.%s' % (timestamp, process_id, chmac)
 
 
-def make_confirm_address(address,time,pid,keyword):
+def make_confirm_address(address, time, pid, keyword=None):
     """Return a full confirmation-style e-mail address."""
-    confirm_cookie = make_confirm_cookie(time,pid,keyword)
+    confirm_cookie = make_confirm_cookie(time, pid, keyword)
     if Defaults.CONFIRM_ADDRESS:
         address = Defaults.CONFIRM_ADDRESS
-    (username, hostname) = string.split(address,'@')
-    confirm_address = username + Defaults.RECIPIENT_DELIMITER + 'confirm' \
-                      + Defaults.RECIPIENT_DELIMITER + keyword + '.' \
-                      + confirm_cookie + '@' + hostname
+    username, hostname = address.split('@')
+    confirm_address = '%s%sconfirm%s%s@%s' % (username,
+                                              Defaults.RECIPIENT_DELIMITER,
+                                              Defaults.RECIPIENT_DELIMITER,
+                                              confirm_cookie, hostname)
     return confirm_address
 
 
@@ -83,7 +83,7 @@ def make_dated_address(address):
     """Return a full dated-style e-mail address."""
     now = '%d' % time.time()
     dated_cookie = make_dated_cookie(now)
-    (username, hostname) = string.split(address,'@')
+    username, hostname = address.split('@')
     dated_address = username + Defaults.RECIPIENT_DELIMITER + 'dated' + \
                     Defaults.RECIPIENT_DELIMITER + dated_cookie + '@' + hostname
     return dated_address
@@ -91,7 +91,7 @@ def make_dated_address(address):
 
 def make_sender_cookie(address):
     """Return a sender-style cookie based on the given address."""
-    address = string.lower(address)
+    address = address.lower()
     sender_cookie = HMAC.new(Defaults.CRYPT_KEY,
                              address).digest()[:Defaults.HMAC_BYTES]
     return binascii.hexlify(sender_cookie)
@@ -100,7 +100,7 @@ def make_sender_cookie(address):
 def make_sender_address(address, sender):
     """Return a full sender-style e-mail address."""
     sender_cookie = make_sender_cookie(sender)
-    (username, hostname) = string.split(address,'@')
+    username, hostname = address.split('@')
     sender_address = username + Defaults.RECIPIENT_DELIMITER + 'sender' + \
                      Defaults.RECIPIENT_DELIMITER + sender_cookie + '@' + hostname
     return sender_address
@@ -122,9 +122,9 @@ def make_keyword_cookie(keyword):
 
 def make_keyword_address(address, keyword):
     """Return a full keyword-style e-mail address."""
-    keyword = string.lower(keyword)
+    keyword = keyword.lower()
     keyword_cookie = make_keyword_cookie(keyword)
-    (username, hostname) = string.split(address,'@')
+    username, hostname = address.split('@')
     keyword_address = username + Defaults.RECIPIENT_DELIMITER + \
                      keyword_cookie + '@' + hostname
     return keyword_address
