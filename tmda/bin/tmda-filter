@@ -202,6 +202,13 @@ if Defaults.USEVIRTUALDOMAINS and os.path.exists(Defaults.VIRTUALDOMAINS):
                 if prepend:
                     nusername = string.replace(ousername,prepend + '-','')
                     recipient_address = nusername + '@' + odomain
+                    # also strip off the prepend and the virtual
+                    # username from address_extension
+                    address_extension = (
+                        string.join(string.split
+                                    (nusername,
+                                     Defaults.RECIPIENT_DELIMITER)[1:],
+                                    Defaults.RECIPIENT_DELIMITER))
                     fileinput.close()
                     break
 

@@ -1,3 +1,9 @@
+2002-01-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (address_extension): If we are running a qmail
+	virtualdomain, address_extension needs to have both the "prepend"
+	and virtual username stripped off to be accurate.
+
 2001-12-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (logit): Use Util.unixdate() for the Date: field.
