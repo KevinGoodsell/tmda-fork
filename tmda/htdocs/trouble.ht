@@ -11,6 +11,9 @@ assistance on the appropriate TMDA mailing list.<br><br>
 <li>Read the <a href="faq.html">FAQ</a> to make sure your question
 has not already been answered.<br>
 
+<li>Unless you are installing TMDA for the first time, make sure you
+are caught up with the <b>UPGRADE</b> file which comes with the distribution.<br>
+
 <li>For delivery problems, check your LOGFILE_DEBUG file for errors, or 
 if that isn't defined, look in ~/TMDA_DELIVERY_FAILURE.<br>
 
