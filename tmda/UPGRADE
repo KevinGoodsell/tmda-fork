@@ -28,9 +28,14 @@ If you are upgrading from a release of TMDA < 0.56:
   RECIPIENT-confirm-accept.TIMESTAMP.PID.HMAC
   
   The new format is detailed in CRYPTO.  Because of this change, it's
-  recommended that you upgrade after your queue is free of pending
-  confirmations, since the old confirmation addresses will no longer
-  work.
+  recommended that you run tmda-pending to make sure your queue is
+  free of legitimate messages, since the old confirmation addresses
+  will no longer work.  
+
+  If you are unable to do this and need temporary backward
+  compatibility with the old format, there is a patch against 0.56
+  available at:
+  <URL:http://mla.libertine.org/tmda-users/200206/msg00193.html>
 
 * Confirmed messages are now reinjected to the original envelope
   recipient address (RECIPIENT) rather than to:
