@@ -126,7 +126,7 @@ if not vars().has_key('MAIL_TRANSFER_AGENT'):
 # DELIVERY = "~/Mailbox"
 # DELIVERY = "/var/mail/jasonrm"
 # DELIVERY = "|/usr/bin/maildrop"
-# DELIVERY = "|/usr/bin/procmail ~/.procmailrc-tmda"
+# DELIVERY = "|/usr/bin/procmail -f $SENDER ~/.procmailrc-tmda"
 # DELIVERY = "me@new.job.com"
 #
 # No default for non-qmail users.
