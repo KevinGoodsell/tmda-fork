@@ -3,12 +3,30 @@
 If you are upgrading from a release of tmda-cgi < 0.09:
 
 * Confirm accept URLs (read: URL confirmations) have changed format.
+
   This version of tmda-cgi will accept both old-style (TMDA 0.77 and earlier)
-  and new-style (TMDA 0.78 and later) confirm accept URLs.  tmda-cgi requires
-  TMDA-0.78 to support URL confirmation for virtual users.
+  and new-style (TMDA 0.78 and later) confirm accept URLs, and TMDA 0.78 is
+  required to support URL confirmation for virtual users.
+
+  In other words, the compatibility works like this:
+
+  +----------------+----------------+------------------------------+
+  | TMDA           | tmda-cgi       | Confirm-accept URLs support  |
+  +----------------+----------------+------------------------------+
+  | 0.77 (or less) | 0.08 (or less) | Real-users only              |
+  | 0.77 (or less) | 0.09           | Broken                       |
+  | 0.78           | 0.08 (or less) | Real-users only              |
+  | 0.78           | 0.09           | Real-users and virtual-users |
+  +----------------+----------------+------------------------------+
+
+  IMPORTANT: If you are using TMDA 0.78 with tmda-cgi 0.08, ALL confirm-accept
+             URLs are broken.  To fix, upgrade tmda-cgi to 0.09.  To avoid any
+             problems, the upgrade sequence should go like this:
+             1) Upgrade tmda-cgi to 0.09
+             2) Upgrade TMDA to 0.78
   
   NOTE: Later versions of tmda-cgi will NOT support old-style confirm-accept
-  URLs.
+        URLs (and will require TMDA 0.78 or later).
 
 ======================================================================
 
