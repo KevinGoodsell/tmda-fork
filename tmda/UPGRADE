@@ -1,5 +1,11 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.36:
+
+* The `setup' script was renamed `compileall'.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.35:
 
 * Be aware that `WHITELIST_TO_BARE' is now turned on by default.

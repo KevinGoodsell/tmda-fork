@@ -25,7 +25,7 @@ your incoming e-mail, and tag your outgoing address.
 %setup
 
 %build
-python ./setup
+python ./compileall
 
 %install
 %define pyprefix %(python -c 'import sys; print sys.prefix')
@@ -50,6 +50,9 @@ rm -rf %{buildroot}
 %doc ChangeLog COPYRIGHT CRYPTO FAQ INSTALL README THANKS TODO UPGRADE contrib/ doc/
 
 %changelog
+
+* Wed Sep 12 2001 Jason R. Mastaler <jason@mastaler.com>
+  - Updated %build to call "compileall" instead of "setup".
 
 * Wed Jun 06 2001 Ron Bickers <rbickers@logicetc.com>
   - initial RPM of TMDA 0.18
