@@ -8,4 +8,50 @@ If you are upgrading from a release of tmda-cgi < 0.01:
 
 * CGI_USER has been abandoned.  This is now compiled in.
 
+* New authentication mechanisms (some of which may work).  To
+  facilitate this there are new parameters in the ./compile script.
+  These are:
+    -f <authfile>
+    --file-auth <authfile>
+      Specify a different authentication file than the default.
+      - The default is either <config_directory>/tmda-cgi, ~/.tmda/tmda-cgi
+        for the authenticating user, or /etc/tmda-cgi, whichever is found
+        first.
+
+    -p <checkpassword>
+    --program-auth <checkpassword>
+      Specify checkpassword-style authentication
+       - Must conform exactly to the checkpassword stardard
+            http://cr.yp.to/checkpwd/interface.html
+        - Any program that returns '0' (true) is acceptable as the command
+          run by the checkpassword program upon successful authentication.
+        - If "program" requires commandline switches, you must supply the
+          command to be run upon successful authentication.
+          If "program" does not, the default program (/usr)/bin/true is
+          automatically appended if not specified.
+        Examples: -p "/usr/sbin/checkpassword-pam -s id -- /bin/true"
+                  -p /usr/local/vpopmair/vchkpw
+                     (/usr/bin/true or /bin/true is automatically used)
+
+    -r protocol[://host[:port]][/dn]
+    --remote-auth protocol[://host[:port]][/dn]
+        Host to connect to to check username and password.
+        - Allowed protocols are:
+            imap, imaps, apop, pop3, ldap
+        - Host defaults to localhost
+        - Port defaults to default port for the protocol
+        - dn is manditory for ldap and must contain a '%(user)s'
+          identifying the username
+        Examples: -r imap
+                  -r imaps://myimapserver.net
+                  -r pop3://mypopserver.net:2110
+                  -r ldap://host.com/cn=%(user)s,dc=host,dc=com
+
+* Please note that program authentication and remote authentication are
+  subject to change as the code implementing these methods is alpha
+  stable and not thoroughly tested.
+  
+* Please remember to delete ./compile.ini if it exists before you
+  recompile
+
 ======================================================================

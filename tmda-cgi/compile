@@ -200,7 +200,7 @@ def Interactive(OptD):
     Ask('Authentication File (or "None" for system default)', OptD, "AuthFile")
     OptD["AuthArg"] = OptD["AuthFile"]
   elif OptD["AuthType"] == "program":
-    Ask('Authentication (checkpassword-style) program (full path, including any switches or arguments)', OptD,
+    Ask('Authentication (checkpassword-style) program (full path and args)\n * For more details, see config --help option -p *', OptD,
       "AuthProg")
     OptD["AuthArg"] = OptD["AuthProg"]
   elif OptD["AuthType"] == "remote":
