@@ -19,6 +19,10 @@ Python</a>: an interpreted, interactive, object-oriented programming language.
 <li>Optional automatic whitelisting of confirmed senders.
 <br><br>
 
+<li><a href="tmda-cgi" TARGET="Resource Window">tmda-cgi</a>, 
+a comprehensive web-management facility for TMDA.
+<br><br>
+
 <li>Easy customization of auto-responses through a
 <a href="howto-template.html">template system</a> with complete I18N support, 
 including multi-byte character sets (e.g, Chinese, Japanese, Korean).<br><br>
