@@ -117,6 +117,9 @@ SentHeaders = 0
 
 def Debug(Str):
   "Output a debugging string."
+
+  global SentHeaders
+
   if not SentHeaders: print "Content-Type: text/html\n\n"
   SentHeaders = 1
   print Str

@@ -42,9 +42,10 @@ sys.path.insert(0, os.path.join(os.environ["TMDA_BASE_DIR"], "TMDA",
   "pythonlib"))
 from TMDA import Errors
 
-import CharSetAlias
 import CgiUtil
+import CharSetAlias
 import Session
+import Unicode
 def Call(Library, Str = None):
   "Launch a library with the appropriate globals."
   Library.Form  = Form
@@ -98,6 +99,7 @@ except CgiUtil.JustLoggedIn, (ErrStr, PVars):
 
 # Share "globals"
 CgiUtil.PVars = PVars
+Unicode.PVars = PVars
 
 # First visit to any page?
 if not Form.keys():

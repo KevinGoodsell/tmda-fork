@@ -29,6 +29,7 @@ import re
 import time
 import CgiUtil
 import Template
+import Unicode
 from TMDA import Defaults
 from TMDA import Errors
 from TMDA import Pending
@@ -229,11 +230,11 @@ width="18" height="18" alt="Last">"""
         for decoded in email.Header.decode_header( MsgObj.msgobj["subject"] ):
           if decoded[1]:
             try:
-              value += CgiUtil.TranslateToUTF8(decoded[1], decoded[0], "strict")
+              value += Unicode.TranslateToUTF8(decoded[1], decoded[0], "strict")
             except UnicodeError:
-              value += CgiUtil.TranslateToUTF8(CharSet, decoded[0], "ignore")
+              value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
           else:
-            value += CgiUtil.TranslateToUTF8(CharSet, decoded[0], "ignore")
+            value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
         Subject = value
         if len(Subject) > int(PVars[("PendingList", "CropSubject")]):
           Subject = \
@@ -252,11 +253,11 @@ width="18" height="18" alt="Last">"""
         for decoded in email.Header.decode_header( MsgObj.msgobj["from"] ):
           if decoded[1]:
             try:
-              value += CgiUtil.TranslateToUTF8(decoded[1], decoded[0], "strict")
+              value += Unicode.TranslateToUTF8(decoded[1], decoded[0], "strict")
             except UnicodeError:
-              value += CgiUtil.TranslateToUTF8(CharSet, decoded[0], "ignore")
+              value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
           else:
-            value += CgiUtil.TranslateToUTF8(CharSet, decoded[0], "ignore")
+            value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
         From = value
         Temp = Address.search(From)
         if Temp:
