@@ -31,7 +31,17 @@
 # outgoing mail but not for incoming mail, in the spirit of
 # http://cr.yp.to/proto/ofmip.html
 
-"""An authenticated ofmip proxy for TMDA.  Tag your outgoing mail through SMTP.
+"""An async I/O based authenticated ofmip proxy for TMDA.  This allows
+users of any SMTP AUTH capable mail client (e.g, Outlook, Eudora,
+Mozilla) to "tag" their outgoing mail.
+
+tmda-ofmipd can either be run under your non-privileged TMDA user
+account for your own personal use, or by your system administrator to
+serve all TMDA users on the system with once instance of the daemon.
+
+For more on ofmip, see <URL:http://cr.yp.to/proto/ofmip.html>.  Also
+there are several tmda-ofmipd related entries under section 5 of the
+TMDA FAQ.  Please read them.
 
 Usage: %(program)s [OPTIONS]
 
@@ -51,8 +61,9 @@ OPTIONS:
     -u <username>
     --username <username>
 	The username that this program should run under.  The default
-	is to setuid `tofmipd' which will fail if not running as root
-	(in which case, use this flag to specify your own username).
+	is to run as the user who starts the program unless that is
+	root, in which case an attempt to seteuid user `tofmipd' will be
+	made.  Use this option to override these defaults.
 
     -p <host:port>
     --proxyport <host:port>
@@ -64,13 +75,16 @@ OPTIONS:
     --authfile <file>
         Path to the file holding authentication information for this
         proxy.  Each line should contain a username and password
-        separated by a colon; one entry per line. e.g,
+        separated by a colon; one entry per line. The password
+        should NOT be the same as your system password! e.g,
 
 	bobby:FooBar
 	chloe:baz_bap
 	   
 	The file should be chmod 600 or 400, and be owned by the user
-	running the daemon.  Default location is /etc/tofmipd
+	running the daemon.  Default location is /etc/tofmipd if
+	running as root/tofmipd, otherwise ~user/.tmda/tofmipd.  Use
+	this option to override these defaults.
 
     -c <directory>
     --configdir <directory>
@@ -82,9 +96,43 @@ OPTIONS:
         `-c /var/tmda' will have tmda-ofmipd search for
         `/var/tmda/bobby/config'.  If this option is not used,
         `~user/.tmda/config' will be assumed.
+
+        Examples:
+
+        * running as TMDA user `johndoe'
+
+        johndoe$ echo 'johndoe:MyPassword' > ~/.tmda/tofmipd     
+        johndoe$ chmod 600 ~/.tmda/tofmipd  
+
+        johndoe$ %(program)s -d
+        tmda-ofmipd started at Sat Jul 13 12:24:43 NZST 2002
+                Listening on nightshade.la.mastaler.com:8025
+
+        (Now configure your mail client to send outgoing mail using
+        nightshade.la.mastaler.com, port 8025)
+
+        * running as `tofmipd' to serve all TMDA users on the system
+        
+        root# pw groupadd tofmipd
+        root# pw useradd tofmipd -g tofmipd -s /nonexistent
+
+        (now create the /etc/tofmipd password file)
+
+        root# chown tofmipd:tofmipd /etc/tofmipd
+        root# chmod 600 /etc/tofmipd
+
+        root# %(program)s -d
+        tmda-ofmipd started at Fri Jul 12 18:54:44 MDT 2002
+               Listening on nightshade.la.mastaler.com:8025
+
+        (daemon will be running seteuid user `tofmipd')
+
+        (Now have your users configure their mail clients to send
+        outgoing mail using nightshade.la.mastaler.com, port 8025)
 """
 
 import getopt
+import os
 import socket
 import sys
 
@@ -93,6 +141,7 @@ try:
 except ImportError:
     pass
 
+from TMDA import Util
 from TMDA import Version
 
 class Devnull:
@@ -103,15 +152,49 @@ class Devnull:
 FQDN = socket.getfqdn()
 DEBUGSTREAM = Devnull()
 proxyport = '%s:%s' % (FQDN, 8025)
-username = 'tofmipd'
 program = sys.argv[0]
-authfile = '/etc/tofmipd'
 configdir = None
 
-def usage(code, msg=''):
-    print >> sys.stderr, __doc__ % globals()
+if os.getuid() == 0:
+    running_as_root = 1
+else:
+    running_as_root = 0
+
+if running_as_root:
+    username = 'tofmipd'
+    authfile = '/etc/tofmipd'
+else:
+    username = None
+    authfile = os.path.join(os.path.expanduser('~'), '.tmda', 'tofmipd')
+
+
+def warning(msg='', exit=1):
+    delimiter = '*' * 70
     if msg:
-        print >> sys.stderr, msg
+        msg = Util.wraptext(msg)
+        print >> sys.stderr, '\n', delimiter, '\n', msg, '\n', delimiter, '\n'
+    if exit:
+        sys.exit()
+
+# check whether we are running a recent enough Python
+if not Version.PYTHON >= '2.2':
+    msg = 'Python 2.2 or greater is required to run ' + program + \
+          ' -- Visit http://python.org/download/ to upgrade.'
+    warning(msg)
+
+# provide disclaimer if running as root
+if running_as_root:
+    msg = 'WARNING: The security implications and risks of running ' + \
+          program + ' in "seteuid" mode have not been fully evaluated.  ' + \
+          'If you are uncomfortable with this, quit now and instead run ' + \
+          program + ' under your non-privileged TMDA user account.'
+    warning(msg, exit=0)
+    
+    
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
     sys.exit(code)
 
 try:
@@ -147,15 +230,12 @@ for opt, arg in opts:
 	configdir = arg
         
 
-from TMDA import Util
-
 import asynchat
 import asyncore
 import base64
 import fileinput
 import hmac
 import md5
-import os
 import random
 import time
 
@@ -662,7 +742,7 @@ class TMDAProxy(PureProxy):
         inject_cmd = '%s --config-file %s' % (inject_path, tmda_configfile)
         # If running as uid 0, fork the tmda-inject process, and
         # then change UID and GID to the authenticated user.
-        if os.getuid() == 0:
+        if running_as_root:
             pid = os.fork()
             if pid == 0:
                 os.seteuid(0)
@@ -689,17 +769,17 @@ class TMDAProxy(PureProxy):
 
 
 def main():
-    pw_uid = Util.getuid(username)
-    # check ownership of authfile
-    if Util.getfileuid(authfile) != pw_uid:
-        raise IOError, \
-              authfile + ' must be owned by UID ' + str(pw_uid)
     # check permissions of authfile
     authfile_mode = Util.getfilemode(authfile)
     if authfile_mode not in (400, 600):
         raise IOError, \
               authfile + ' must be chmod 400 or 600!'
-    if os.getuid() == 0:
+    if running_as_root:
+        pw_uid = Util.getuid(username)
+        # check ownership of authfile
+        if Util.getfileuid(authfile) != pw_uid:
+            raise IOError, \
+                  authfile + ' must be owned by UID ' + str(pw_uid)
         # try setegid()
         os.setegid(Util.getgid(username))
         # try setting the supplemental group ids
