@@ -31,7 +31,8 @@ Title: Pending E-mail
             <td align="center"><font color="#FFFFFF">%(DispRange)s</font></td>
           </tr>
           <tr bgcolor="#DADCEB">
-            <td colspan="6"><table cellpadding="0">
+            <td colspan="6"><table width="100%" border="0" cellspacing="0" 
+              cellpadding="0">
                 <tr valign="bottom">
                   <td height="24">
                     <img src="%(ThemeDir)s/buttons/options_r1_c1.gif"
