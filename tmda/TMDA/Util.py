@@ -6,6 +6,7 @@
 import fileinput
 import fnmatch
 import os
+import random
 import re
 import string
 import sys
@@ -131,9 +132,10 @@ def unixdate(timesecs=None):
 
 
 def make_msgid(timesecs=None, pid=None):
-    """Return an rfc2822 compliant Message-ID string.  e.g,
+    """Return an rfc2822 compliant Message-ID string, composed of
+    date + random integer + process id + 'tmda' + FQDN  e.g:
     
-    <20011130190055.12345.tmda@nightshade.la.mastaler.com>
+    <20011130190055.12345.1234.tmda@nightshade.la.mastaler.com>
 
     timesecs is optional, and if not given, the current time is used.
 
@@ -148,7 +150,8 @@ def make_msgid(timesecs=None, pid=None):
     if not idhost:
         idhost = gethostname()
     date = time.strftime("%Y%m%d%H%M%S", time.gmtime(timesecs))
-    message_id = "<%s.%s.tmda@%s>" % (date, pid, idhost)
+    randint = random.randrange(100000)
+    message_id = "<%s.%s.%s.tmda@%s>" % (date, randint, pid, idhost)
     return message_id
 
 

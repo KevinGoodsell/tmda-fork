@@ -1,3 +1,8 @@
+2002-01-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (make_msgid): Add a random integer to the message id to
+	strengthen its uniqueness.
+
 2002-01-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (LOGFILE_INCOMING): Replaces LOGFILE.
