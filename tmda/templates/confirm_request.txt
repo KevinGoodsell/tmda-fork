@@ -1,5 +1,5 @@
-From: %(original_recipient)s
-Subject: Confirmation required for your message to %(original_recipient)s
+From: %(recipient_address)s
+Subject: Please confirm your message
 
 Your e-mail message with the subject of "%(subject)s"
 was not delivered because your address was not recognized.

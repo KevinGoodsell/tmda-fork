@@ -2,7 +2,9 @@
 
 	* tmda-filter (original_recipient): USEVIRTUALDOMAINS replaces
 	QMAILVIRTUALDOMAINS.
-	
+
+	(bouncegen): Renamed original_recipient to recipient_address.
+
 2001-08-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (original_recipient): original_recipient is the

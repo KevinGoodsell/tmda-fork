@@ -1,5 +1,12 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.33:
+
+* If you maintain your own templates, make sure to replace all
+  instances of `envelope_recipient' with `recipient_address'.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.31:
 
 * You can remove LOCALS and USERPREFIX from your .tmdarc as they are

@@ -105,10 +105,10 @@ envelope_sender = os.environ.get('SENDER')
 envelope_recipient = (message_headers.getheader('x-originally-to') or
                       os.environ.get('RECIPIENT'))
 
-# original_recipient is the original address the message was sent to,
+# recipient_address is the original address the message was sent to,
 # not qmail-send's rewritten interpretation.  This will be the same as
 # envelope_recipient if we are not running under a virtualdomain.
-original_recipient = envelope_recipient
+recipient_address = envelope_recipient
 if Defaults.USEVIRTUALDOMAINS:
     (ousername, odomain) = string.split(envelope_recipient,'@')
     for line in fileinput.input(Defaults.VIRTUALDOMAINS):
@@ -122,7 +122,7 @@ if Defaults.USEVIRTUALDOMAINS:
                 # strip off the prepend
                 if prepend:
                     nusername = string.replace(ousername,prepend + '-','')
-                    original_recipient = nusername + '@' + odomain
+                    recipient_address = nusername + '@' + odomain
                     fileinput.close()
                     break
 
@@ -132,13 +132,13 @@ subject = message_headers.getheader('subject', 'None')
 
 def logit(action_msg,date):
     """Write delivery statistics to the LOGFILE if enabled."""
-    if Defaults.LOGFILE and original_recipient:
+    if Defaults.LOGFILE and recipient_address:
         try:
             logfile = open(Defaults.LOGFILE, 'a') # append to the file
             Date = time.asctime(time.localtime(date))
             From = message_headers.getheader('from')
             if not From:From = envelope_sender
-            To = original_recipient
+            To = recipient_address
             Subject = subject
             Action = action_msg
             actionstr = 'Actn: ' + Action
@@ -189,7 +189,7 @@ def bounce_cc(address):
 
 def inject_pending(pathname,timestamp,pid):
     """Reinject then unlink a sucessfully confirmed message."""
-    (username, hostname) = string.split(original_recipient,'@')
+    (username, hostname) = string.split(recipient_address,'@')
     # Strip off the '-confirm-accept.TIMESTAMP.PID.HMAC' from username.
     base_username = string.join((string.split(username,'-')[:-2]),'-')
     base_recipient = base_username + '@' + hostname
@@ -315,7 +315,7 @@ def bouncegen(mode):
     """Bounce a message back to sender."""
     # Common variables.
     now = time.time()
-    original_recipient = globals().get('original_recipient')
+    recipient_address = globals().get('recipient_address')
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
     original_message = globals().get('message')
@@ -345,7 +345,7 @@ def bouncegen(mode):
         pkg_template = pkg_template_dir + 'confirm_request.txt'
         timestamp = str('%d' %now)
         pid = str(os.getpid())
-        confirm_accept_address = Cookie.make_confirm_address(original_recipient,
+        confirm_accept_address = Cookie.make_confirm_address(recipient_address,
                                                              timestamp,
                                                              pid,
                                                              'accept')
