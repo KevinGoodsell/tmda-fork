@@ -1,3 +1,9 @@
+2003-02-22  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
+
+	* tmda-inject (inject_message): Bugfix. Remove all tag action
+	headers after each SMTP transmission so they aren't
+	unconditionally inherited by subsequent recipients.
+		
 2003-02-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
         * tmda-inject (msgout): Create the message object from our own

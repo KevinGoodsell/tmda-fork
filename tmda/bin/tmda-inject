@@ -298,6 +298,12 @@ def inject_message(resending,
         logger.write()
     # Inject the message.
     Util.sendmail(msg.as_string(), to_address, envelope_sender)
+    # Remove any custom headers we added for this recipient from the
+    # message object, else all subsequent recipients will receive them
+    # unconditionally.
+    if nice_headers:
+        for h, v in nice_headers:
+            del msg[h]
 
 
 ######
