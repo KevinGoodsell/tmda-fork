@@ -1,0 +1,526 @@
+<HTML>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Mon Jan 20 18:20:02 2003 -->
+<!-- USING HT2HTML 1.2 -->
+<!-- SEE http://barry.wooz.org/software/ht2html -->
+<!-- User-specified headers:
+Title: tmda-ofmipd + VPopMail/VMailMgr HOWTO
+
+-->
+
+<HEAD>
+<TITLE>tmda-ofmipd + VPopMail/VMailMgr HOWTO</TITLE>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff" TEXT="#000000"
+      TOPMARGIN="0" LEFTMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0"
+      LINK="#0000bb"  VLINK="#551a8b"
+      ALINK="#ff0000">
+<!-- start of page table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=0>
+<!-- start of banner row -->
+<TR>
+<!-- start of corner cells -->
+<TD WIDTH=150 VALIGN=CENTER BGCOLOR="#afeeee">
+<center><font size="+2"
+        >&gt;&gt;&gt;&nbsp;TMDA&nbsp</font></center> </TD>
+<TD WIDTH=15 BGCOLOR="#cccccc">&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of corner cells -->
+<!-- start of banner -->
+<TD WIDTH="90%" BGCOLOR="#cccccc">
+<!-- start of site links table -->
+<TABLE WIDTH="100%" BORDER=0
+CELLSPACING=0 CELLPADDING=0
+       COLS=4 ROWS=1 BGCOLOR="#ffffff">
+<TR>
+    <TD BGCOLOR="#cccccc">
+<a href="./index.html">TMDA Homepage</a>
+    </TD>
+    <TD BGCOLOR="#cccccc">
+<a href="http://sourceforge.net/projects/tmda">TMDA @ SourceForge</a>
+    </TD>
+    <TD BGCOLOR="#cccccc">
+&nbsp;&nbsp;</TD>
+    <TD BGCOLOR="#cccccc">
+&nbsp;&nbsp;</TD>
+</TR>
+</TABLE><!-- end of site links table -->
+
+</TD><!-- end of banner -->
+</TR><!-- end of banner row -->
+<TR><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<TD WIDTH=150 VALIGN=TOP BGCOLOR="#cccccc">
+<!-- start of sidebar table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=3
+       BGCOLOR="#ffffff">
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Overview
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="index.html">Introduction</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="history.html">History</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="features.html">Features</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="results.html">Results &amp; Testimonials</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="inuse.html">TMDA In Use</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="press.html">Press Coverage</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Usage
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="requirements.html">Requirements</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="download.html">Download</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="install.html">Installation</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="config.html">Configuration</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="howtos.html">HOWTOs</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+HOWTOs
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="howtos.html">Overview</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="howto-template.html">Templates</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="tmda-ofmipd.html">tmda-ofmipd</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="tmda-cgi.html">tmda-cgi</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Support
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="trouble.html">Troubleshooting</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<a href="http://tmda.net/faq.cgi" TARGET="Resource Window">FAQ</a>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="bugs.html">Bugs &amp; Patches</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<a href="http://tmda.net/lists/listinfo/" TARGET="Resource Window">Mailing Lists</a>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<a href="http://mla.libertine.org/" TARGET="Resource Window">List Archive</a> 
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="support-commercial.html">Commercial Support</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="resources.html">External Resources</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Author
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="mailto:jason@mastaler.com">Jason R. Mastaler</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+&nbsp;
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+&copy; 2001-2003
+</TD></TR>
+</TABLE><!-- end of sidebar table -->
+
+</TD>
+<TD WIDTH=15>&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<TD VALIGN=TOP WIDTH="90%"><BR>
+<h1>tmda-ofmipd + VPopMail or VMailMgr</h1>
+
+<hr>
+
+In this HOWTO I will assume you are comfortable with basic UNIX skills
+and understand things like UIDs, home directories and so forth.  If
+you are not, you should get a good UNIX tutorial/reference and
+learn about the basics.  You should definitely not try to administer
+something as complicated as a mail server, particularly one serving
+multiple domains, until you are on speaking terms with UNIX.
+
+<h2>Virtual Domains Background</h2>
+
+Virtual domains are a neat feature of qmail where a single UID
+(/etc/passwd user) can control all the email addresses within a given
+domain.  VPopMail and VMailMgr are add-ons to qmail's virtual domain
+system that provide POP/IMAP authentication and user/password
+management.
+
+<p>
+
+In the simple case, the name of the domain, say example.org, is placed
+in qmail's 'virtualdomains' file followed by a colon (<b>:</b>) and
+the name of the system user who controls the domain.  Let's say that
+that user is 'example'.  Just to clarify, I mean that there is an
+entry for the 'example' user in /etc/passwd and 'example' has a home
+directory, say '/home/example'.
+
+<p>
+
+All email coming in to &lt;anything&gt;@example.org will be forwarded
+to example-&lt;anything&gt;@example.org and delivered according to the
+rules found in /home/example/.qmail-&lt;anything&gt; or
+/home/example/.qmail-default.
+
+<p>
+
+A common situation on the Internet today is that people don't read
+mail from shell accounts.  Instead, they are often running Windows
+machines and retrieve their mail via POP or IMAP.  Thus the concept of
+a mailhub, where mail is delivered to a POP or IMAP mailbox but the
+individual users never log in to a shell.
+
+<p>
+
+Going back to our example, if we have the email users biff and fred in
+the example.org domain, they can give their email addresses to their
+friends as biff@example.org and fred@example.org.  All email to both
+of these addresses will be delivered to the 'example' user.  So we
+have two problems.  1) How do we sort out the email to different users
+and 2) How do we provide POP/IMAP access?
+
+<p>
+
+In the qmail-only case, we can create .qmail-* files for each user
+that deliver to a private maildir.  In biff's case we could have:
+
+<p>
+
+<i>/home/example/.qmail-biff</i>:<br>
+<code>
+/home/example/biff-maildir/
+</code>
+
+<p>
+
+and in fred's case:
+
+<p>
+
+<i>/home/example/.qmail-fred</i>:<br>
+<code>
+/home/example/fred-maildir/
+</code>
+
+<p>
+
+The /home/example/.qmail-biff-default file would be a link to
+/home/example/.qmail-biff if you wanted to allow biff to receive, not
+only mail to biff@example.org, but also mail to
+biff-&lt;anything&gt;@example.org.  The
+/home/example/.qmail-fred-default file is analogous.
+
+<p>
+
+You can see that managing these files would soon become overwhelming,
+especially with multiple domains.  The virtual domain managers (VDMs)
+provide a solution.  A /home/example/.qmail-default file is created
+(this is oversimplified; VPopMail works a little differently, but the
+idea is the same), which handles all addresses in the example.org
+domain.  Each VDM comes with a delivery program that 1) runs from that
+.qmail-default file, 2) determines to which user the mail is directed
+and 3) delivers the mail to the appropriate user's maildir.
+
+<p>
+
+Both VDMs also provide a program that can authenticate a user/password
+combination as provided by the user's MUA.  This makes it possible to
+set up a POP or IMAP server with authentication provided by the VDM.
+So by using one of the VDMs, you can have private, authenticated
+POP/IMAP mailboxes in one or more domains on a single mailhub.
+
+<p>
+
+VMailMgr implements virtual domains more or less as described.  A
+separate UID is used for each domain.  In a typical VPopMail
+installation, however, all virtual domains are under a single UID,
+usually 'vpopmail'.  VPopMail then uses the qmail-users(5) mechanism
+to deliver all mail for a particular domain to the .qmail-default file
+found in a subdirectory named for the domain.  This means you will
+find a .qmail-default file in each domain's directory:
+
+<p>
+
+<code>
+/home/vpopmail/domains/example.org/.qmail-default
+</code>
+
+<h2>tmda-ofmipd and Virtual Domains</h2>
+
+The tmda-ofmipd program has two command-line options to assist in
+running it in a virtual domain environment.  The first is:
+
+<p>
+
+<blockquote><code>
+-S &lt;script&gt;<br>
+--vhome-script &lt;script&gt;
+</code></blockquote>
+
+<p>
+
+Each of the VDMs comes with a utility program that can provide the
+virtual user's home directory.  In VPopMail's case, it is the
+directory that is named after the user and that contains the private
+Maildir directory.  VMailMgr, on the other hand, names the maildir
+itself after the user account ('biff' rather than 'Maildir') and it is
+that maildir directory that we will consider the home directory under
+VMailMgr.
+
+<p>
+
+A simple script can parse the output of these utility programs and
+provide the full pathname of the home directory to tmda-ofmipd.  Once
+we have the virtual user's home directory, we set the $HOME
+environment variable to that directory before running tmda-inject.
+From that point on, the '~' notation in TMDA's config file and filter
+files will work as expected, referring to the virtual home directory.
+
+<p>
+
+Two sample scripts are provided in the tmda/contrib directory, called
+vpopmail-vdir.sh and vmailmgr-vdir.sh, that will work in most
+installations.  If you wish to store your users' TMDA configuration
+files somewhere other than &lt;virtual_home_dir&gt;/.tmda, you can
+easily write a different script.
+
+<p>
+
+You give the name of the script as the argument to this command line
+option.  If this option is given on the command line, it signals to
+tmda-ofmipd that you are using virtual domains.
+
+<p>
+
+The second command line option is normally not necessary.  Some Linux
+distributions, such as Debian, may need it, though.  It is:
+
+<p>
+
+<blockquote><code>
+-v &lt;path_to_qmails_virtualdomains_file&gt;<br>
+--vdomains-path &lt;path_to_qmails_virtualdomains_file&gt;
+</code></blockquote>
+
+<p>
+
+This is the path to qmail's 'virtualdomains' file.
+Qmail is normally installed in /var/qmail and 'virtualdomains' is
+found in /var/qmail/control/virtualdomains.  This is the location that
+tmda-ofmipd assumes, so if this is the correct path for your system,
+you don't need to set this option.
+
+<p>
+
+Some Linux distributions place qmail in /usr/local instead.  If your
+qmail installation is not in /var/qmail, you will need to give this
+option to tmda-ofmipd and specify the full pathname of the qmail
+'virtualdomains' file.
+
+<p>
+
+The rest of this HOWTO is divided into two sections: one for <a
+href="vpopmail">VPopMail</a> and one for <a
+href="vmailmgr">VMailMgr</a>.  Please read the appropriate one for
+your installation, as the configuration is somewhat different for
+each.
+
+<h2><a name="vpopmail">VPopMail</a></h2>
+
+All files, including the per-user TMDA configuration, filter and log
+files, are owned by the vpopmail user.  Therefore, you should run
+tmda-ofmipd as the vpopmail user.  This does not mean that you should
+use the -u (--username) switch.  If you do this, the VPopMail support
+will not work!
+
+<p>
+
+Instead, use 'su' or 'sudo' to start tmda-ofmipd as the vpopmail
+user.  In the simplest case, as root, you can start tmda-ofmipd like
+this:
+
+<code><pre>
+# su -l vpopmail -c '/usr/local/tmda/bin/tmda-ofmipd -S /usr/local/tmda/contrib/vpopmail-vdir.sh
+</pre></code>
+
+<p>
+
+This assumes that the vpopmail user has a login shell.  It also
+assumes the default authentication mechanism, where tmda-ofmipd
+searches the /home/vpopmail/.tmda/tofmipd file.  You can use any of
+the other authentication options (vchkpw, POP/IMAP/LDAP/etc.) and, if
+you use the IP-based domains option in VPopMail, you can bind to all
+IP addresses on the machine by specifying '-p&nbsp;0.0.0.0:8025'.
+
+<p>
+
+Be sure to create a .tmda subdirectory in each user's home directory.
+In a small VPopMail installation, this will typically be:
+
+<p>
+
+<code>
+/home/vpopmail/domains/example.com/&lt;username&gt;/.tmda
+</code>
+
+<p>
+
+Then, run tmda-keygen for each user, placing the generated key in
+.tmda/crypt_key as usual.
+
+<p>
+
+If you are willing to use TMDA's default file locations for filters,
+you can create a simple /etc/tmdarc and avoid creating and maintaining
+individual user .tmda/config files.  Here's an example:
+
+<p>
+
+<i>/etc/tmdarc</i>:<br>
+<code>
+import os<br>
+<br>
+CONFIRM_APPEND = os.path.expanduser("~/.tmda/whitelist")
+</code>
+
+<p>
+
+Finally, create an outgoing filter file, '~/.tmda/filters/outgoing'.
+The default outgoing action is 'dated'.  A simple filter for a typical
+virtual user might look something like this:
+
+<p>
+
+<i>~/.tmda/filters/outgoing</i>:<br>
+<code>
+to-file ~/.tmda/whitelist bare
+</code>
+
+<p>
+
+This will cause email to all addresses in the whitelist to be sent
+with a 'bare' From header field.  Any addresses not found in the
+whitelist will have a 'dated' From field.
+
+<p>
+
+Please report any problems with the VPopMail support to the
+tmda-workers@tmda.net mailing list.
+
+<h2><a name="vmailmgr">VMailMgr</a></h2>
+
+Since each virtual domain is under the control of a different system
+UID in the VMailMgr model, you should run tmda-ofmipd as root, so that
+it can setuid to the correct user before running tmda-inject.  A
+typical command line might be:
+
+<code><pre>
+# /usr/local/tmda/bin/tmda-ofmipd -S /usr/local/tmda/contrib/vmailmgr-vdir.sh
+</pre></code>
+
+<p>
+
+This assumes the default authentication mechanism, where tmda-ofmipd
+searches the /etc/tofmipd file.  You can use any of the other
+authentication options (vchkpw, POP/IMAP/LDAP/etc.) and, if you use
+IP-based domains, you can bind to all IP addresses on the machine by
+specifying '-p&nbsp;0.0.0.0:8025'.
+
+<p>
+
+In a VMailMgr configuration, the system user that controls the virtual
+domain has a home directory, e.g. for a username of 'example.com', the
+home directory would typically be /home/example.com.  In that
+directory is a 'users' subdirectory that contains a maildir for each
+user with the same name as the user's email address: for instance,
+/home/example.com/users/biff.  As mentioned above, the directory that
+tmda-ofmipd considers to be the user's home directory is the actual
+maildir.
+
+<p>
+
+Be sure to create a .tmda subdirectory in each user's home directory.
+In a typical VMailMgr installation, this will be:
+
+<p>
+
+<code>
+/home/example.com/users/&lt;username&gt;/.tmda
+</code>
+
+<p>
+
+Then, run tmda-keygen for each user, placing the generated key in
+&lt;username&gt;/.tmda/crypt_key as usual.
+
+<p>
+
+If you are willing to use TMDA's default file locations for filters,
+you can create a simple /etc/tmdarc and avoid creating and maintaining
+individual user .tmda/config files.  Here's an example:
+
+<p>
+
+<i>/etc/tmdarc</i>:<br>
+<code>
+import os<br>
+<br>
+CONFIRM_APPEND = os.path.expanduser("~/.tmda/whitelist")
+</code>
+
+<p>
+
+Finally, create an outgoing filter file, '~/.tmda/filters/outgoing'.
+The default outgoing action is 'dated'.  A simple filter for a typical
+virtual user might look something like this:
+
+<p>
+
+<i>~/.tmda/filters/outgoing</i>:<br>
+<code>
+to-file ~/.tmda/whitelist bare
+</code>
+
+<p>
+
+This will cause email to all addresses in the whitelist to be sent
+with a 'bare' From header field.  Any addresses not found in the
+whitelist will have a 'dated' From field.
+
+<p>
+
+Please report any problems with the VMailMgr support to the
+tmda-workers@tmda.net mailing list.
+
+</TD><!-- end of body cell -->
+</TR><!-- end of sidebar/body row -->
+</TABLE><!-- end of page table -->
+</BODY></HTML>
