@@ -5,3 +5,6 @@ Installation instructions and usage information can be found under the
 
 A local copy of the HTML documentation is included in the "doc"
 directory.
+
+If you are upgrading from an earlier release of TMDA, make sure to
+consult the `UPGRADE' file.
