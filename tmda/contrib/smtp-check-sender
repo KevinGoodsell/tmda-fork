@@ -69,11 +69,16 @@ import smtplib
 import socket
 import sys
 
+# we read stdin, but don't actually use it
+data = sys.stdin.read()
+
+# bail out here if no address is specified
+if len(sys.argv) < 2:
+    sys.exit(1)
+
 mail_from_address = 'user@example.com'
 address_to_verify = sys.argv[1]
 verify_hostname = address_to_verify.split('@', 1)[1]
-# we read stdin, but don't actually use it
-data = sys.stdin.read()
 
 DNS.DiscoverNameServers()
 
