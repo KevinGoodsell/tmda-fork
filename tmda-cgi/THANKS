@@ -22,6 +22,8 @@ Contributions:
                          setup and the proper way to interface to the
                          libraries, suggesting a way to simplify anomalies
 
+    * Samuel Hill -- bug fixing
+
     * Bernard Johnson -- RPM & RPM guidance, bug finding, feature suggestions
 
     * Rob Leachman -- bug finding

@@ -26,3 +26,8 @@ VIRTUAL_ONLY = \
   {"qmail":
     ["%(Parent)s/.qmail-%(User)s", "%(Parent)s/.qmail-%(User)s-default"]
   }
+
+# PARENT_RE is a regular expression used to verify that we have a valid parent
+# directory.  If invalid, try ascending again until we run out of directories
+# or match.
+PARENT_RE = "^" + VPop + "/domains/[^/]+\.[^/]+$"

@@ -94,12 +94,13 @@ Return 0 on success, error code on error."""
   for Filename in Filelist:
     SrcFn = os.path.join(os.environ["HOME"], Filename)
     if os.path.isfile(SrcFn):
-      if Filename[:3] == "../":
+      if (Filename[:len(Dict["Parent"])] == Dict["Parent"]) and \
+        (Filename[:len(Dict["Home"])] != Dict["Home"]):
         try:
           os.mkdir(os.path.join(os.environ["HOME"], "%(Parent)s"))
         except OSError:
           pass
-        NewFilename = "%(Parent)s/" + Filename[3:]
+        NewFilename = "%(Parent)s" + Filename[len(Dict["Parent"]):]
         DstFn = os.path.join(os.environ["HOME"], NewFilename)
         Parents.append((SrcFn, DstFn))
         os.rename(SrcFn, DstFn)
@@ -143,8 +144,8 @@ Return file list on success, None on error."""
     return None
   Files = ReadTgz(Archive)
   for i in range(len(Files)):
-    if Files[i][:11] == "%(Parent)s/":
-      NewFilename = "../" + Files[i][11:]
+    if Files[i][:10] == "%(Parent)s":
+      NewFilename = Dict["Parent"] + Files[i][10:]
       SrcFn = os.path.join(os.environ["HOME"], Files[i])
       DstFn = os.path.join(os.environ["HOME"], NewFilename)
       os.rename(SrcFn, DstFn)
@@ -246,6 +247,7 @@ def SetPerms(Anomalies, Files, Backup):
 
 def GetAnomalies(Dir):
   "Find any anomaly instructions."
+  global Dict
   Filename = os.path.join("skel", Dir, "anomalies")
   RetVal = \
   {
@@ -260,6 +262,16 @@ def GetAnomalies(Dir):
       "Contact system administrator.")
   except IOError:
     pass
+  if RetVal.has_key("PARENT_RE"):
+    # PARENT_RE explains how to find a valid parent directory.  Simply remove
+    # directories one at a time until this regular expression matches.
+    Parent = ""
+    Path = Dict["Home"]
+    Test = re.compile(RetVal["PARENT_RE"])
+    while (Path != "/") and not Test.search(Path):
+      Parent += "../"
+      Path, Junk = os.path.split(Path)
+    Dict["Parent"] = Parent[:-1]
   return RetVal
 
 def ReimportDefaults(Files, Backup):

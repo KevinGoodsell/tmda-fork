@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sun Jul 13 13:27:15 2003 -->
+<!-- Thu Aug  7 00:17:03 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -114,7 +114,8 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
 &nbsp;&nbsp;&nbsp;<a href="#PERMISSIONS"><tt>PERMISSIONS</tt></a><br>
 &nbsp;&nbsp;&nbsp;<a href="#VIRTUAL_TEST"><tt>VIRTUAL_TEST</tt></a><br>
 &nbsp;&nbsp;&nbsp;<a href="#REAL_ONLY"><tt>REAL_ONLY</tt></a><br>
-&nbsp;&nbsp;&nbsp;<a href="#VIRTUAL_ONLY"><tt>VIRTUAL_ONLY</tt></a><p>
+&nbsp;&nbsp;&nbsp;<a href="#VIRTUAL_ONLY"><tt>VIRTUAL_ONLY</tt></a><br>
+&nbsp;&nbsp;&nbsp;<a href="#PARENT_RE"><tt>PARENT_RE</tt></a><p>
 
 <h3><a name="Skel"></a><tt>skel</tt></h3>
 
@@ -285,6 +286,21 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
       <tr>
         <td>VIRTUAL_ONLY = {"qmail":
           ["%(Parent)s/.qmail-%(User)s-default"]}</td>
+      </tr>
+    </table>
+</blockquote>
+
+<h4><a name="#PARENT_RE"></a><tt>PARENT_RE</tt></h4>
+<blockquote>
+  <p><tt>PARENT_RE</tt> is a regular expression which tests if we are in the
+    user's "parent" directory.  Finding the parent directory is not as simple
+    as doing a ".." because virtual user systems with many users may stack the
+    domain multiple layers down.  By using this test we can tell when we have
+    removed enough directories.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>PARENT_RE = "^" + VPop + "/domains/[^/]+\.[^/]+$"</td>
       </tr>
     </table>
 </blockquote>

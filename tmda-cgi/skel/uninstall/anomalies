@@ -1,10 +1,10 @@
-# Installation anomalies describes any special instructions to follow when
-# installing files from the skel/install directory.
+# Uninstallation anomalies describes any special instructions to follow when
+# installing files from the skel/uninstall directory.
 
 # VIRT_TEST is a regular expression test which can be applied to a user's HOME
 # directory.  If the test matches, then the user is assumed to be a virtual
 # user.
-VIRTUAL_TEST = "^/home/vpopmail/domains/"
+VIRTUAL_TEST = "^" + VPop
 
 # REAL_ONLY is a list of files which should only be copied if the user logging
 # in is "real" (i.e. VIRTUAL_TEST did not match the user's HOME directory).
@@ -14,3 +14,8 @@ REAL_ONLY    = [".qmail-default"]
 # logging in is a virtual user (i.e. VIRTUAL_TEST matched the user's HOME 
 # directory).
 VIRTUAL_ONLY = ["%(Parent)s/.qmail-%(User)s-default"]
+
+# PARENT_RE is a regular expression used to verify that we have a valid parent
+# directory.  If invalid, try ascending again until we run out of directories
+# or match.
+PARENT_RE = "^" + VPop + "/domains/[^/]+\.[^/]+$"
