@@ -59,8 +59,6 @@ except ImportError:
                            'site-packages', 'TMDA', 'pythonlib')
     sys.path.insert(0, sitedir)
 
-from TMDA import Defaults
-from TMDA import Cookie
 from TMDA import Version
 
 
@@ -96,111 +94,31 @@ for opt, arg in opts:
     elif opt in ('-l', '--localtime'):
         localtime = 1
 
-
-def valid_dated_cookie(cookie):
-    """Check a dated cookie"""
-
-    # Split date and cookie parts
-    cookie_split = string.split(cookie,'.')
-    if len(cookie_split) != 2:
-	return None
-
-    cookie_date = cookie_split[0]
-    datemac = cookie_split[1]
-    newdatemac = Cookie.datemac(cookie_date)
-
-    # If a valid cookie, return the expire time
-    if datemac == newdatemac:
-	return int(cookie_date)
-    else:
-	return None
-
-    
-def valid_sender_cookie(cookie, sender_address):
-    """Check a sender cookie"""
-
-    sender_address_cookie = Cookie.make_sender_cookie(sender_address)
-    return cookie == sender_address_cookie
-
-
-def valid_keyword_cookie(cookie):
-    """Check a keyword cookie"""
-    parts = string.split(cookie, '.')
-    if len(parts) != 2:
-        return None
-    keyword = parts[0]
-    mac = parts[1]
-    newmac = Cookie.make_keywordmac(keyword)
-    return mac == newmac
-
+from TMDA import Address
 
 def main():
-
     # Address to check is required
     try:
-	address = args[0]
+        address = args[0]
     except IndexError:
-	usage(0)
+        usage(0)
 
-    # Get cookie part of address
-    local_part = string.split(address,'@')[0]
-    address_split = string.split(local_part, Defaults.RECIPIENT_DELIMITER, 1)
-    if len(address_split) <= 1:
-        print 'ERROR: Not a tagged address. (1)'
-        sys.exit()
-    address_split = string.split(address_split[1],
-                                 Defaults.RECIPIENT_DELIMITER)
-    cookie = address_split[-1]
-    
-    # Get address tag style
     try:
-	ext = address_split[-2]
+        sender_address = args[1]
     except IndexError:
-        print 'ERROR: Not a tagged address. (2)'
-        sys.exit()
+        sender_address = None
 
-    if ext in map(lambda s: s.lower(), Defaults.TAGS_DATED):
-	expires = valid_dated_cookie(cookie)
-	if not expires:
-	    print 'STATUS: INVALID COOKIE'
-	    sys.exit()
-
-	now = time.time()
-
-        if localtime:
-            local_tz = time.strftime("%Z", time.localtime(expires))
-            expires_str = time.asctime(time.localtime(expires)) + ' ' + local_tz
-        else:
-            expires_str = time.asctime(time.gmtime(expires)) + ' UTC'
-
-	if now > expires:
-	    print 'STATUS:  EXPIRED'
-	    print 'EXPIRED: %s' % (expires_str)
-	else:
-	    print 'STATUS:  VALID'
-	    print 'EXPIRES: %s' % (expires_str)
-
-    elif ext in map(lambda s: s.lower(), Defaults.TAGS_SENDER):
-	try:
-	    sender_address = args[1]
-	except IndexError:
-	    usage(0)
+    try:
+        addr = Address.Factory(address)
+        addr.verify(sender_address)
+        print "STATUS: VALID"
+        try:
+            print "EXPIRES: %s" % addr.timestamp(1, localtime)
+        except AttributeError:
+            pass
+    except Address.AddressError, msg:
+        print "STATUS:", msg
         
-	if valid_sender_cookie(cookie, sender_address):
-	    print 'STATUS: VALID'
-	else:
-	    print 'STATUS: INVALID COOKIE'
-
-    elif ext in map(lambda s: s.lower(), Defaults.TAGS_KEYWORD):
-        if valid_keyword_cookie(cookie):
-            print 'STATUS: VALID'
-        else:
-            print 'STATUS: INVALID COOKIE'
-        
-    else:
-	print 'ERROR: Not a tagged address. (3)'
-    
-
 if __name__ == '__main__':
     main()
 

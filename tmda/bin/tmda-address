@@ -30,7 +30,7 @@ OPTIONS:
 
 	-V
 	--version
-           Print TMDA version information and exit.
+	   Print TMDA version information and exit.
 
 	-c <file>
 	--config-file <file>
@@ -39,7 +39,7 @@ OPTIONS:
 	-a <address>
 	--address <address>
 	   Specify a different address as the basis for the tagged address.
-           
+	   
 	-n
 	--no-newline
 	   Do not print a newline after the address.
@@ -76,8 +76,6 @@ except ImportError:
 from TMDA import Version
 
 program = sys.argv[0]
-print_newline = 1
-tag = None
 
 def usage(code, msg=''):
     print __doc__ % globals()
@@ -99,6 +97,9 @@ except getopt.error, msg:
     usage(1, msg)
 
 address = None
+tag = 'dated'
+option = None
+print_newline = 1
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
@@ -112,7 +113,7 @@ for opt, arg in opts:
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
     elif opt in ('-a', '--address'):
-	address = arg
+        address = arg
     elif opt in ('-d', '--dated'):
         tag = 'dated'
         try:                            # check for timeout override
@@ -121,34 +122,34 @@ for opt, arg in opts:
             pass
     elif opt in ('-k', '--keyword'):
         tag = 'keyword'
-        keyword = arg
+        option = arg
     elif opt in ('-s', '--sender'):
         tag = 'sender'
-        sender = arg
+        option = arg
     elif opt in ('-n', '--no-newline'):
         print_newline = 0
 
 
 from TMDA import Cookie
-from TMDA import Defaults
-
+from TMDA import Address
 
 def main():
-    global address
-    if not address:
-	address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
-    if tag == 'dated':
-        tagged_address = Cookie.make_dated_address(address)
-    elif tag == 'keyword':
-        tagged_address = Cookie.make_keyword_address(address, keyword)
-    elif tag == 'sender':
-        tagged_address = Cookie.make_sender_address(address, sender)
-    else:
+    global address, tag, option, print_newline
+
+    try:
+        tagged_address = Address.Factory(tag = tag).create(address, option).address
+    except ValueError, msg:
+        usage(msg)
+        sys.exit(0)
+
+    if not tagged_address:
         usage(0)
+
     sys.stdout.write(tagged_address)
+
     if print_newline:
         sys.stdout.write("\n")
-
+    
 # This is the end my friend.
 if __name__ == '__main__':
     main()

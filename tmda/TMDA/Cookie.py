@@ -71,9 +71,9 @@ def datemac(time):
     return binascii.hexlify(datemac)
 
 
-def make_dated_cookie(time):
+def make_dated_cookie(time, timeout = None):
     """Return a dated-style cookie (expire date + HMAC)."""
-    tmda_timeout = os.environ.get('TMDA_TIMEOUT')
+    tmda_timeout = timeout or os.environ.get('TMDA_TIMEOUT')
     if not tmda_timeout:tmda_timeout = Defaults.TIMEOUT
     expire_time = str(int(time) + Util.seconds(tmda_timeout))
     datedmac = datemac(expire_time)

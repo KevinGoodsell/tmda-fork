@@ -41,3 +41,20 @@ class MissingEnvironmentVariable(TMDAError):
         TMDAError.__init__(self)
         self.varname = varname
         print 'Missing environment variable:', self.varname
+
+class AddressError(TMDAError):
+    """Address errors."""
+    def __init__(self, errmsg = ''):
+        self.args = errmsg
+
+    def __repr__(self):
+        return self.args
+
+class BadCryptoError(AddressError):
+    """Bad (or no) cryptographic information in address."""
+    pass
+
+class ExpiredAddressError(AddressError):
+    """Expired 'dated' address."""
+    pass
+
