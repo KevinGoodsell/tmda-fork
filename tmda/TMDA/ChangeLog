@@ -1,3 +1,8 @@
+2002-03-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (make_date): Use the formatdate() method from
+	email.Utils (if available) or rfc822 instead of doing it ourselves.
+
 2002-03-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (pipecmd): Bugfix.  A program that exits 0 but outputs
