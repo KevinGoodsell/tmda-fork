@@ -15,11 +15,33 @@ import string
 import Util
 
 
+# exception classes
+class Error(Exception):
+    def __init__(self, msg=''):
+        self._msg = msg
+        Exception.__init__(self, msg)
+    def __repr__(self):
+        return self._msg
+    __str__ = __repr__
+
+class ParsingError(Error):
+    """Exception raised on parsing errors in the filter file."""
+    def __init__(self, filename):
+        Error.__init__(self, 'Filter contains parsing errors: %s' % filename)
+        self.filename = filename
+        self.errors = []
+
+    def append(self, lineno, line):
+        self.errors.append((lineno, line))
+        self._msg = self._msg + '\n\t[line %2d]: %s' % (lineno, line)
+
+
 class FilterParser:
-    def __init__(self):
+    def __init__(self, checking=None):
         self.action = None
         self.action_option = None
- 
+        self.checking = checking
+        
 
     def read(self, filename):
         """Open and read the named filter file.  Files that cannot be opened
@@ -42,12 +64,13 @@ class FilterParser:
         take place.
         """
         lineno = 0
+        e = None                        # None, or an exception
         while 1:
             line = fp.readline()
             if not line:                # exit loop if out of lines
                 break
-            line = string.strip(line)
             lineno = lineno + 1
+            line = string.strip(line)
             # comment or blank line?
             if line == '' or line[0] in '#':
                 continue
@@ -58,6 +81,19 @@ class FilterParser:
             # Skip line if it's not composed of exactly 3 elements.
             if len(string.split(line,None)) == 3:
                 self.filterlist.append(line)
+            else:
+                # A non-fatal parsing error occurred.  Set up the
+                # exception but keep going. The exception will be
+                # raised at the end of the file and will contain a
+                # list of all bogus lines.
+                if not e and self.checking:
+                    e = ParsingError(fpname)
+                if self.checking:
+                    e.append(lineno, `line`)
+        # If any parsing errors occurred and we are running in check
+        # mode, raise an exception.
+        if e:
+            raise e
 
 
     def firstmatch(self, recipient, senders=None,
@@ -74,9 +110,9 @@ class FilterParser:
             source = string.lower(source)
             if source in ('from', 'to'):
                 findmatch = None
-                if source == 'from':
+                if source == 'from' and senders:
                     findmatch = Util.findmatch([string.lower(match)],senders)
-                elif source == 'to':
+                elif source == 'to' and recipient:
                     findmatch = Util.findmatch([string.lower(match)],[recipient])
                 if findmatch:
                     self.action = action
@@ -87,9 +123,9 @@ class FilterParser:
                 if os.path.exists(match):
                     match_list = Util.file_to_list(match,match_list)
                     file_match = None
-                    if source == 'from-file':
+                    if source == 'from-file' and senders:
                         file_match = Util.findmatch(match_list,senders)
-                    elif source == 'to-file':
+                    elif source == 'to-file' and recipient:
                         file_match = Util.findmatch(match_list,[recipient])
                     if file_match:
                         # The second column of the line may contain an
@@ -109,7 +145,7 @@ class FilterParser:
                     try:
                         dbm = anydbm.open(match,'c')
                         for key in keys:
-                            if dbm.has_key(string.lower(key)):
+                            if key and dbm.has_key(string.lower(key)):
                                 dbm_value = dbm[string.lower(key)]
                                 # If there is an entry for this key,
                                 # we consider it an overriding action
@@ -118,16 +154,19 @@ class FilterParser:
                                     self.action = dbm_value
                                 else:
                                     self.action = action
+                                dbm.close()
                                 break
-                    except:
+                        if self.action: break
+                    except anydbm.error:
                         pass
-                    dbm.close()
             if source in ('body', 'headers'):
-                if source == 'body':
+                if source == 'body' and msg_body:
                     content = msg_body
-                if source == 'headers':
+                elif source == 'headers' and msg_headers:
                     content = msg_headers
-                if re.search(match,content,(re.M|re.I)):
+                else:
+                    content = None
+                if content and re.search(match,content,(re.M|re.I)):
                     self.action = action
                     break
             if source in ('body-file','headers-file'):
@@ -135,15 +174,18 @@ class FilterParser:
                 match = os.path.expanduser(match)
                 if os.path.exists(match):
                     match_list = Util.file_to_list(match,match_list)
-                    if source == 'body-file':
+                    if source == 'body-file' and msg_body:
                         content = msg_body
-                    elif source == 'headers-file':
+                    elif source == 'headers-file' and msg_headers:
                         content = msg_headers
+                    else:
+                        content = None
                     for expr in match_list:
-                        if re.search(expr,content,(re.M|re.I)):
+                        if content and re.search(expr,content,(re.M|re.I)):
                             self.action = action
                             break
-            if source == 'size':
+                    if self.action: break
+            if source == 'size' and msg_size:
                 match_list = list(match)
                 operator = match_list[0] # first character should be < or >
                 bytes = string.join(match_list,'')[1:] # rest is the size

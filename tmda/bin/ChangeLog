@@ -1,3 +1,13 @@
+2001-11-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (usage): Added `-M', `--filter-match' command-line
+	option.  Used to match addresses against the outgoing filter file
+	from the command-line for testing/debugging purposes
+
+	* tmda-filter (usage): Added `-M', `--filter-match' command-line
+	option.  Used to match addresses against the incoming filter file
+	from the command-line for testing/debugging purposes.
+
 2001-11-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (usage): Add `-O' to name the outgoing filter file.

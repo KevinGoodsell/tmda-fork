@@ -6,9 +6,13 @@
 
 """Tag and send outgoing messages.
 
-Usage:  %(program)s [-c <file>] [-f <sender>] [-q] [-O <file>] [-h] [ recip ... ]
+Usage:  %(program)s [OPTIONS] [ recip ... ]
 
-Where:
+OPTIONS:
+	-h
+	--help
+	   Print this help message and exit.
+
 	-c <file>
 	--config-file <file>
 	   Specify a different configuration file other than ~/.tmdarc.
@@ -25,10 +29,13 @@ Where:
            Full pathname to your outgoing filter file.  Overrides
            FILTER_OUTGOING in ~/.tmdarc.
 
-	--help
-	-h
-	   Print this help message and exit.
-	   
+        -M <recipient>
+        --filter-match <recipient>
+           Check whether the given e-mail address matches a line in your outgoing
+           filter and then exit.  The address given should be that of the message
+           recipient.  This option will also check for parsing errors in the
+           filter file.
+           
 	recip
 	   If one or more recipients are provided, send the message to
 	   all recip arguments.  If none are provided, send the message
@@ -47,8 +54,9 @@ import sys
 envelope_sender_address = []
 sender_full_name = []
 
-program = sys.argv[0]
+filter_match = None
 qfilter = None
+program = sys.argv[0]
 
 def usage(code, msg=''):
     print __doc__ % globals()
@@ -58,17 +66,20 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:O:qhf:', ['config-file=',
-                                            'filter-outgoing-file=',
-                                            'qfilter',
-                                            'help'])
+                               'c:O:M:qhf:', ['config-file=',
+                                              'filter-outgoing-file=',
+                                              'filter-match=',
+                                              'qfilter',
+                                              'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
-    elif opt in ('O', '--filter-outgoing-file'):
+    elif opt in ('-M', '--filter-match'):
+	filter_match = 1
+    elif opt in ('-O', '--filter-outgoing-file'):
 	os.environ['TMDA_FILTER_OUTGOING'] = arg
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
@@ -88,6 +99,13 @@ from TMDA import Defaults
 from TMDA import FilterParser
 from TMDA import Util
 
+
+# Just check Defaults.FILTER_OUTGOING for syntax errors and possible
+# matches, and then exit.
+if filter_match:
+    recip = sys.argv[-1]
+    Util.filter_match(Defaults.FILTER_OUTGOING, recip)
+    sys.exit()
 
 message = sys.stdin
 message_headers = rfc822.Message(message)

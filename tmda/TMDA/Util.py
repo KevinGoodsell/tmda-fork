@@ -270,3 +270,24 @@ def append_to_file(str,fullpathname):
         import Defaults
         print error_msg
         sys.exit(Defaults.EX_TEMPFAIL)
+
+
+def filter_match(filename, recip, sender=None):
+    """Check if the give e-mail addresses match lines in filename."""
+    import FilterParser 
+    filter = FilterParser.FilterParser(checking=1)
+    filter.read(filename)
+    (action,action_option,matchline) = filter.firstmatch(recip, [sender])
+    # print the results
+    checking_msg = 'Checking ' + filename
+    print checking_msg
+    print '-' * len(checking_msg)
+    if recip:
+        print 'To:',recip
+    if sender:
+        print 'From:',sender
+    print '-' * len(checking_msg)
+    if action:
+        print 'MATCH:', matchline
+    else:
+        print 'Sorry, no matching lines.'

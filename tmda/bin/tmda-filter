@@ -6,9 +6,13 @@
 
 """Filter incoming messages on standard input.
 
-Usage:  %(program)s [-c <file>] [-d] [-A <file>] [-R <file>] [-I <file>] [-h]
+Usage:  %(program)s [OPTIONS]
 
-Where:
+OPTIONS:
+	-h
+ 	--help
+	   Print this help message and exit.
+           
 	-c <file>
 	--config-file <file>
 	   Specify a different configuration file other than ~/.tmdarc.
@@ -17,11 +21,11 @@ Where:
 	--discard
 	   Discard message if address is invalid instead of bouncing it.
 
-        -A
+        -A <file>
 	--confirm-accept-template <file>
 	   Full pathname to a custom template for confirmation acceptance notices.
 
-        -R
+        -R <file>
 	--confirm-request-template <file>
 	   Full pathname to a custom template for confirmation requests.
 
@@ -30,9 +34,12 @@ Where:
            Full pathname to your incoming filter file.  Overrides FILTER_INCOMING
            in ~/.tmdarc.
            
-	--help
-	-h
-	   Print this help message and exit.
+        -M <recipient> <sender>
+        --filter-match <recipient> <sender>
+           Check whether the given e-mail addresses match a line in your incoming
+           filter and then exit.  The first address given should be the message
+           recipient (you), and the second is the sender.  This option will also
+           check for parsing errors in the filter file.
 """
 
 import cStringIO
@@ -46,6 +53,7 @@ import sys
 import time
 
 
+filter_match = None
 discard = None
 program = sys.argv[0]
 
@@ -57,19 +65,22 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:dA:R:I:h',['config-file=',
-                                             'discard',
-                                             'confirm-accept-template=',
-                                             'confirm-request-template=',
-                                             'filter-incoming-file=',
-                                             'help'])
+                               'c:dA:R:I:M:h',['config-file=',
+                                               'discard',
+                                               'confirm-accept-template=',
+                                               'confirm-request-template=',
+                                               'filter-incoming-file=',
+                                               'filter-match=',
+                                               'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
-    elif opt in ('I', '--filter-incoming-file'):
+    elif opt in ('-M', '--filter-match'):
+	filter_match = 1
+    elif opt in ('-I', '--filter-incoming-file'):
 	os.environ['TMDA_FILTER_INCOMING'] = arg
     elif opt in ('-R', '--confirm-request-template'):
         os.environ['TMDA_CONFIRM_REQUEST_TEMPLATE'] = arg
@@ -92,7 +103,14 @@ from TMDA import FilterParser
 from TMDA import MTA
 from TMDA import Util
 
-
+# Just check Defaults.FILTER_INCOMING for syntax errors and possible
+# matches, and then exit.
+if filter_match:
+    sender = sys.argv[-1]
+    recip = sys.argv[-2]
+    Util.filter_match(Defaults.FILTER_INCOMING, recip, sender)
+    sys.exit()
+    
 # We use this MTA instance to control the fate of the message.
 mta = MTA.init()
 
@@ -499,7 +517,7 @@ def main():
     From = message_headers.getaddr('from')[1]
     ReplyTo = message_headers.getaddr('reply-to')[1]
     sender_list = [EnvelopeSender, From, ReplyTo]
-
+    
     # Parse the incoming filter file.
     infilter = FilterParser.FilterParser()
     infilter.read(Defaults.FILTER_INCOMING)

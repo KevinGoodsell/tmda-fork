@@ -1,3 +1,19 @@
+2001-11-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (filter_match): New function to open a filter file and
+	try to match the given addresses.  Used to test addresses against
+	your filter files with tmda-filter/inject --filter-match.
+
+	* FilterParser.py: Add some exception classes that will be
+	utilized only if an instance is created with checking=1, which at
+	the moment is only if tmda-filter/inject are using the
+	`--filter-match' option.
+
+	Also, 'break' within nested for loops only exits one level.  For
+	those cases, added a second break if self.action was set.  This
+	oversight was causing to/from-dbm and body/header-file matches to
+	be ignored.
+	
 2001-11-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Look for FILTER_INCOMING and FILTER_OUTGOING in the
