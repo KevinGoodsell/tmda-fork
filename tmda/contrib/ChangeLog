@@ -1,5 +1,7 @@
 2001-10-31  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda.spec: Raise version number to 0.40.
+
 	* sample.tmdarc: Change Postfix references to non-qmail since they
 	are the same for Exim.
 

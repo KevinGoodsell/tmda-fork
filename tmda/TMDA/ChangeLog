@@ -9,6 +9,8 @@
 	functionality.  The Qmail subclass then overrides all of it since
 	it's unique.  Also, add an Exim subclass.
 
+	(TMDA_VERSION): Begin 0.40 development.
+
 2001-10-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (findmatch): Downcase each address for case-insensitive
