@@ -1,5 +1,9 @@
 2003-10-09  Jason R. Mastaler  <jason@mastaler.com>
 
+	* Util.py (sendmail): If using /usr/sbin/sendmail, pass a tuple of
+	arguments into pipecmd() instead of a string to avoid the shell
+	completely.  Also, add '-i' to the list of args.
+	
 	* Version.py (PLATFORM): Use the more descriptive 'platform'
 	module if it's available.
 

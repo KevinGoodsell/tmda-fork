@@ -1044,15 +1044,7 @@ Possible values include:
 "<code>sendmail</code>"
 <blockquote>
    Deliver messages via the command line interface to the sendmail
-   program (/usr/sbin/sendmail).  Use at your own risk.  "smtp" is
-   highly recommended.
-<br><br>
-   SECURITY WARNING: The 'sendmail' method is not secure.  Because
-   this method uses popen(), it goes through the shell.  It does not
-   scan the arguments for potential exploits and so it should be
-   considered unsafe.  For performance reasons, it's not recommended
-   either -- use the 'smtp' method instead, even if
-   MAIL_TRANSFER_AGENT is "sendmail".
+   program (/usr/sbin/sendmail).
 </blockquote>
 <br>
 Default is "smtp"

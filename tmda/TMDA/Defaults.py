@@ -189,15 +189,7 @@ if not vars().has_key('ALLOW_MODE_640'):
 #
 # "sendmail"
 #    Deliver messages via the command line interface to the sendmail
-#    program (/usr/sbin/sendmail).  Use at your own risk.  "smtp" is
-#    highly recommended.
-#
-#    SECURITY WARNING: The 'sendmail' method is not secure.  Because
-#    this method uses popen(), it goes through the shell.  It does not
-#    scan the arguments for potential exploits and so it should be
-#    considered unsafe.  For performance reasons, it's not recommended
-#    either -- use the 'smtp' method instead, even if
-#    MAIL_TRANSFER_AGENT is "sendmail".
+#    program (/usr/sbin/sendmail).
 #
 # Default is "smtp"
 if not vars().has_key('OUTGOINGMAIL'):
