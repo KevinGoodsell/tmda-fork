@@ -1,3 +1,7 @@
+2001-09-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add WHITELIST_AUTO_APPEND.
+
 2001-09-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add CONFIRM_MAX_MESSAGE_SIZE.

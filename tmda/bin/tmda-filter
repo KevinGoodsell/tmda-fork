@@ -258,9 +258,14 @@ def locate_pending(timestamp,pid):
     pending_message_pathname = pendingdir + '/' + pending_message
     if os.path.exists(pending_message_pathname):
         logit("CONFIRM accept " + pending_message, time.time())
+        # Optionally append the envelope sender to the whitelist.
+        if Defaults.WHITELIST_AUTO_APPEND:
+            if Util.append_to_file(envelope_sender, Defaults.WHITELIST) != 0:
+                logit("APPEND whitelist " + envelope_sender, time.time())
+        # Optionally generate the confirmation acceptance notice.
         if Defaults.CONFIRM_ACCEPT_NOTIFY:
             bouncegen('accept')
-        # Reinject the original, now confirmed message.
+        # Reinject the original (now confirmed) message.
         inject_pending(pending_message_pathname,timestamp,pid)
     else:
         print "Sorry, your original message could not be located, please resend."

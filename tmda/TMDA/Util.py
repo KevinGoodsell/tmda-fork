@@ -244,3 +244,25 @@ def writefile(contents,fullpathname):
             import Defaults
             print error_msg
             sys.exit(Defaults.ERR_IO)
+
+
+def append_to_file(str,fullpathname):
+    """Append a string to a text file if it isn't already in there."""
+    try:
+        if os.path.exists(fullpathname):
+            for line in fileinput.input(fullpathname):
+                line = string.lower(string.strip(line))
+                # Comment or blank line?
+                if line == '' or line[0] in '#':
+                    continue
+                else:
+                    if string.lower(string.strip(str)) == line:
+                        fileinput.close()
+                        return 0
+        file = open(fullpathname,'a+')
+        file.write(string.strip(str) + '\n')
+        file.close()
+    except IOError, error_msg:
+        import Defaults
+        print error_msg
+        sys.exit(Defaults.ERR_IO)

@@ -80,5 +80,7 @@ import os                                      # don't remove
 
 # WHITELIST = "/full/path/to/whitelist.txt"
 
+# WHITELIST_AUTO_APPEND = 0
+
 # WHITELIST_TO_BARE = 0
 

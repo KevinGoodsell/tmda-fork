@@ -296,6 +296,13 @@ if not vars().has_key('SENDER_FILE'):
 if not vars().has_key('WHITELIST'):
     WHITELIST = DATADIR + "lists/" + "whitelist"
 
+# WHITELIST_AUTO_APPEND
+# If you set this variable to 1, once a sender confirms a message, their
+# e-mail address will be automatically appended to WHITELIST.
+# Default is 0 (turned off)
+if not vars().has_key('WHITELIST_AUTO_APPEND'):
+    WHITELIST_AUTO_APPEND = 0
+
 # WHITELIST_TO_BARE
 # Set this variable to 1 if you want addresses in your
 # WHITELIST to receive untagged (no cookie added) messages.

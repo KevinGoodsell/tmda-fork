@@ -1,3 +1,7 @@
+2001-09-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (locate_pending): Support WHITELIST_AUTO_APPEND.
+	
 2001-09-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (bouncegen): Add `original_message_headers' as an
