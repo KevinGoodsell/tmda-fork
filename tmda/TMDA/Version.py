@@ -39,7 +39,7 @@ try:
     UNAME = os.uname()
     SYSNAME = UNAME[0].replace(' ', '_').replace('/', '_') # OSF1
     MACHINE = UNAME[4].replace(' ', '_').replace('/', '_') # alpha
-    PLATFORM = os.path.join(SYSNAME, MACHINE) # OSF1/alpha
+    PLATFORM = SYSNAME + '/' + MACHINE  # OSF1/alpha
 except AttributeError:
     # Fall back to using just sys.platform for PLATFORM if uname isn't
     # available on this host.
