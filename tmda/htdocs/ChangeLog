@@ -1,3 +1,9 @@
+2001-12-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-client.ht: Mention that tmda-sendmail will use the
+	address in the "From" header created by the MUA as the basis for
+	the tagged address.
+
 2001-12-14  Jason R. Mastaler  <jason@mastaler.com>
 
 	* history.ht (Links): Add a timeline for the non-qmail support.
