@@ -137,12 +137,13 @@ class AutoResponse:
                 textpart['Content-Description'] = 'Confirmation Acceptance'
             elif self.responsetype == 'bounce':
                 textpart['Content-Description'] = 'Failure Notice'
+            textpart['Content-Disposition'] = 'inline'
             self.mimemsg.attach(textpart)
             if Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY == 1:
                 # include the headers only as a text/rfc822-headers part.
                 rfc822part = MIMEText(
                     self.msgin_as_string[:self.msgin_as_string.index('\n\n')+1],
-                    'rfc822-headers', self.msgin.get_charsets()[0])
+                    'rfc822-headers', self.msgin.get_charsets(DEFAULT_CHARSET)[0])
                 rfc822part['Content-Description'] = 'Original Message Headers'
             elif Defaults.AUTORESPONSE_INCLUDE_SENDER_COPY == 2:
                 # include the entire message as a message/rfc822 part.
@@ -150,7 +151,11 @@ class AutoResponse:
                 # been truncated appropriately in the constructor.
                 rfc822part = MIMEMessage(self.msgin)
                 rfc822part['Content-Description'] = 'Original Message'
+            rfc822part['Content-Disposition'] = 'inline'
             self.mimemsg.attach(rfc822part)
+        # RFC 2183 section 2.10 permits the use Content-Disposition in
+        # the main body of the message.
+        self.mimemsg['Content-Disposition'] = 'inline'
         # fold the template headers into the main entity.
         for k, v in self.bouncemsg.items():
             ksplit = k.split('.', 1)
@@ -208,7 +213,7 @@ class AutoResponse:
             self.mimemsg['Auto-Submitted'] = 'auto-generated (failure)'
         self.mimemsg['X-Delivery-Agent'] = 'TMDA/%s (%s)' % (Version.TMDA,
                                                              Version.CODENAME)
-        # Optionally, add some headers.
+        # Optionally, add some custom headers.
         Util.add_headers(self.mimemsg, Defaults.ADDED_HEADERS_SERVER)
         # Optionally, remove some headers.
         Util.purge_headers(self.mimemsg, Defaults.PURGED_HEADERS_SERVER)

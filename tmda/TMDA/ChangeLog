@@ -1,3 +1,14 @@
+2003-12-03  Jason R. Mastaler  <jason@mastaler.com>
+
+	* AutoResponse.py (AutoResponse.create): Add an RFC 2183
+	Content-Disposition = 'inline' header to the main header of the
+	message, as well as each of the MIME bodyparts if
+	AUTORESPONSE_INCLUDE_SENDER_COPY is a positive value.
+
+	(AutoResponse.create): Add a default charset for get_charsets() to
+	fall back to in case the triggering message lacks its own charset
+	parameter.
+
 2003-12-03  Tim Legant  <tim@catseye.net>
 
 	* AutoResponse.py (AutoResponse.__init__): Made msgin_as_string a
