@@ -6,7 +6,7 @@ Jason R. Mastaler <jason@mastaler.com>
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
-TMDA is a software program designed to significantly reduce (or
+TMDA is a software application designed to significantly reduce (or
 eliminate) the amount of SPAM/UCE you receive by using unique,
 cryptographically enhanced (tagged) e-mail addresses.  TMDA can both
 filter your incoming e-mail, and tag your outgoing address.
