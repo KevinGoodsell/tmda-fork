@@ -42,5 +42,5 @@ except ImportError:
     PLATFORM = sys.platform
 
 # Summary of all the version identifiers
-# e.g, TMDA/0.52 (Python 2.2.1 on osf1-V5.1-alpha)
-ALL = "TMDA/%s (Python %s on %s)" % (TMDA, PYTHON, PLATFORM)
+# e.g, TMDA/0.78+ "Dark Star" (Python/2.3b1+ on darwin-6.6-Power_Macintosh)
+ALL = 'TMDA/%s "%s" (Python/%s on %s)' % (TMDA, CODENAME, PYTHON, PLATFORM)
