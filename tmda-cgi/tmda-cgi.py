@@ -91,18 +91,17 @@ def main():
         return
     except KeyError:
       pass
-    # Initial, non-debug login
+    # Initial login
     import Login
     Login.Show()
 
   # Logged in yet?
   elif not PVars.Valid:
     import Login
-    if Form.has_key("cmd"):
+    if Form.has_key("cmd") and (Form["cmd"].value != "logout"):
       Login.Show("Wrong password.")
     else:
-      if Form.has_key("debug"):
-        Login.Show(Debug = Form["debug"].value)
+      Login.Show()
 
   elif Form.has_key("cmd"):
     # Just log in?

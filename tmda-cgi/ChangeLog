@@ -1,5 +1,9 @@
 2003-04-19  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* Added code for "theme picker" and "logout" buttons.
+
+2003-04-19  Gre7g Luterman  <gre7g@wolfhome.com>
+
 	* tmda-cgi 0.03 is released.
 
 	* What hasn't changed?  Tons of bug fixes.  New display templates.

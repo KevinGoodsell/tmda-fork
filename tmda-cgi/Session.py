@@ -242,7 +242,11 @@ rights.""")
             "Your IP address has changed. This is not allowed.",
             "read session data", "%s->%s" %
             (self.Vars["IP"], os.environ["REMOTE_ADDR"]), "Log back in.")
-        self.Valid = 1
+
+        # Are they logging out?
+        if Form.has_key("cmd") and (Form["cmd"].value == "logout"):
+          os.unlink(Filename)
+          return
 
         # Touch session file to keep it from getting cleaned too soon
         os.utime(Filename, None)
@@ -259,6 +263,7 @@ rights.""")
         # Claim our new identity
         os.environ["HOME"] = self.Vars["HOME"]
         os.environ["USER"] = self.Vars["User"]
+        self.Valid = 1
         self.__suid__("user")
 
         # Now that we know who we are, get our defaults
@@ -280,7 +285,7 @@ rights.""")
         return
 
       # Failed to resurrect session, fall through to make new SID
-      except IOError:
+      except (IOError, OSError):
         pass
 
     # New session
