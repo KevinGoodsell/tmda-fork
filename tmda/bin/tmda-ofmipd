@@ -1,0 +1,693 @@
+#!/usr/bin/env python
+#
+# Copyright (C) 2001,2002 Jason R. Mastaler <jason@mastaler.com>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+# Based on code from Python's (undocumented) smtpd module
+# Copyright (C) 2001,2002 Python Software Foundation.
+
+# This program implements the minimal SMTP protocol as defined in RFC
+# 2821, the ESMTP EHLO command defined in RFC 1869, and SMTP
+# Authentication (PLAIN, LOGIN, CRAM-MD5) as defined in RFC 2554.  The
+# proxy cannot be used by an unauthenticated user.
+#
+# It's called tmda-ofmipd to indicate that it's appropriate for
+# outgoing mail but not for incoming mail, in the spirit of
+# http://cr.yp.to/proto/ofmip.html
+
+"""An authenticated ofmip proxy for TMDA.  Tag your outgoing mail through SMTP.
+
+Usage: %(program)s [OPTIONS]
+
+OPTIONS:
+    -h
+    --help
+        Print this message and exit.
+
+    -V
+    --version
+	Print TMDA version information and exit.
+
+    -d
+    --debug
+	Turn on debugging prints.
+
+    -u <username>
+    --username <username>
+	The username that this program should run under.  The default
+	is to setuid `tofmipd' which will fail if not running as root
+	(in which case, use this flag to specify your own username).
+
+    -p <host:port>
+    --proxyport <host:port>
+	The host:port to listen for incoming connections on.  The
+	default is FQDN:8025 (i.e, port 8025 on the fully qualified
+	domain name for the local host).
+
+    -a <file>
+    --authfile <file>
+        Path to the file holding authentication information for this
+        proxy.  Each line should contain a username and password
+        separated by a colon; one entry per line. e.g,
+
+	bobby:FooBar
+	chloe:baz_bap
+	   
+	The file should be chmod 600 or 400, and be owned by the user
+	running the daemon.  Default location is /etc/tofmipd
+
+    -c <directory>
+    --configdir <directory>
+        Base directory to search for the authenticated user's TMDA
+        configuration file in.  This might be useful if you wish to
+        maintain TMDA files outside the user's home directory.
+        
+        'username/config' will be appended to form the path.  e.g,
+        `-c /var/tmda' will have tmda-ofmipd search for
+        `/var/tmda/bobby/config'.  If this option is not used,
+        `~user/.tmda/config' will be assumed.
+"""
+
+import getopt
+import socket
+import sys
+
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Version
+
+class Devnull:
+    def write(self, msg): pass
+    def flush(self): pass
+
+# Some defaults
+FQDN = socket.getfqdn()
+DEBUGSTREAM = Devnull()
+proxyport = '%s:%s' % (FQDN, 8025)
+username = 'tofmipd'
+program = sys.argv[0]
+authfile = '/etc/tofmipd'
+configdir = None
+
+def usage(code, msg=''):
+    print >> sys.stderr, __doc__ % globals()
+    if msg:
+        print >> sys.stderr, msg
+    sys.exit(code)
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                               'p:u:a:c:dVh', ['proxyport=',
+                                               'username=',
+                                               'authfile=',
+                                               'configdir=',
+                                               'debug'
+                                               'version',
+                                               'help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    if opt == '-V':
+        print Version.ALL
+        sys.exit()
+    if opt == '--version':
+        print Version.TMDA
+        sys.exit()
+    elif opt in ('-d', '--debug'):
+        DEBUGSTREAM = sys.stderr
+    elif opt in ('-p', '--proxyport'):
+	proxyport = arg
+    elif opt in ('-u', '--username'):
+	username = arg
+    elif opt in ('-a', '--authfile'):
+	authfile = arg
+    elif opt in ('-c', '--configdir'):
+	configdir = arg
+        
+
+from TMDA import Util
+
+import asynchat
+import asyncore
+import base64
+import fileinput
+import hmac
+import md5
+import os
+import pwd
+import random
+import time
+
+
+__version__ = Version.TMDA
+NEWLINE = '\n'
+EMPTYSTRING = ''
+COMMASPACE = ', '
+
+
+# Utility functions
+
+def authfile2dict(file):
+    """Read a tmda-ofmipd authentication file, and return a dictionary
+    containing username:password pairs.  Username returned in
+    lowercase."""
+    authdict = {}
+    for line in fileinput.input(file):
+        fields = line.split(':', 1)
+        authdict[fields[0].lower().strip()] = fields[1].strip()
+    fileinput.close()
+    return authdict
+
+
+def b64_encode(s):
+    """base64 encoding without the trailing newline."""
+    return base64.encodestring(s)[:-1]
+
+
+def b64_decode(s):
+    """base64 decoding."""
+    return base64.decodestring(s)
+
+
+
+# Classes
+
+class SMTPChannel(asynchat.async_chat):
+    COMMAND = 0
+    DATA = 1
+    AUTH = 2
+    
+    def __init__(self, server, conn, addr):
+        asynchat.async_chat.__init__(self, conn)
+        # SMTP AUTH
+        self.__smtpauth = 0
+        self.__auth_resp1 = None
+        self.__auth_resp2 = None
+        self.__auth_username = None
+        self.__auth_password = None
+        self.__auth_sasl = None
+        self.__sasl_types = ['login', 'cram-md5', 'plain']
+        self.__auth_cram_md5_ticket = '<%s.%s@%s>' % (random.randrange(10000),
+                                                      int(time.time()), FQDN)
+        self.__server = server
+        self.__conn = conn
+        self.__addr = addr
+        self.__line = []
+        self.__state = self.COMMAND
+        #self.__greeting = 0
+        self.__mailfrom = None
+        self.__rcpttos = []
+        self.__data = ''
+        self.__fqdn = FQDN
+        self.__peer = conn.getpeername()
+        print >> DEBUGSTREAM, 'Peer:', repr(self.__peer)
+        self.push('220 %s ESMTP tmda-ofmipd' % (self.__fqdn))
+        self.set_terminator('\r\n')
+
+    # Overrides base class for convenience
+    def push(self, msg):
+        asynchat.async_chat.push(self, msg + '\r\n')
+
+    # Implementation of base class abstract method
+    def collect_incoming_data(self, data):
+        self.__line.append(data)
+
+    def verify_login(self, b64username, b64password):
+        """The LOGIN SMTP authentication method is an undocumented,
+        unstandardized Microsoft invention.  Needed to support MS
+        Outlook clients."""
+        try:
+            username = b64_decode(b64username)
+            password = b64_decode(b64password)
+        except:
+            return 501
+        self.__auth_username = username.lower()
+        self.__auth_password = password
+        authdict = authfile2dict(authfile)
+        if authdict.get(username.lower(), 0) != password:
+            return 0
+        else:
+            return 1
+
+    def verify_plain(self, response):
+        """PLAIN is described in RFC 2595."""
+        try:
+            response = b64_decode(response)
+        except:
+            return 501
+        try:
+            username, username, password = response.split('\0')
+        except ValueError:
+            return 0
+        self.__auth_username = username.lower()
+        self.__auth_password = password
+        authdict = authfile2dict(authfile)
+        if authdict.get(username.lower(), 0) != password:
+            return 0
+        else:
+            return 1
+
+    def verify_cram_md5(self, response, ticket):
+        """CRAM-MD5 is described in RFC 2195."""
+        try:
+            response = b64_decode(response)
+        except:
+            return 501
+        try:
+            username, hexdigest = response.split()
+        except ValueError:
+            return 0
+        authdict = authfile2dict(authfile)
+        password = authdict.get(username.lower(), 0)
+        self.__auth_username = username.lower()
+        self.__auth_password = password
+        if password == 0:
+            return 0
+        newhexdigest = hmac.HMAC(password, ticket, digestmod=md5).hexdigest()
+        if newhexdigest != hexdigest:
+            return 0
+        else:
+            return 1
+
+    def auth_reset_state(self):
+        """As per RFC 2554, the SMTP state is reset if the AUTH fails,
+        and once it succeeds."""
+        self.__auth_sasl = None
+        self.__auth_resp1 = None
+        self.__auth_resp2 = None
+        self.__state = self.COMMAND
+
+    def auth_notify_required(self):
+        """Send a 530 reply.  RFC 2554 says this response may be
+        returned by any command other than AUTH, EHLO, HELO, NOOP,
+        RSET, or QUIT. It indicates that server policy requires
+        authentication in order to perform the requested action."""
+        self.push('530 Error: Authentication required')
+        
+    def auth_notify_fail(self, failcode=0):
+        if failcode == 501:
+            # base64 decoding failed
+            self.push('501 malformed AUTH input')
+        else:
+            self.push('535 AUTH failed')
+        print >> DEBUGSTREAM, 'Auth: ', 'failed for user', \
+              "'%s'" % self.__auth_username
+        self.__smtpauth = 0
+
+    def auth_notify_succeed(self):
+        self.push('235 AUTH successful')
+        print >> DEBUGSTREAM, 'Auth: ', 'succeeded for user', \
+              "'%s'" % self.__auth_username
+        self.__smtpauth = 1
+
+    def auth_verify(self, sasl=None):
+        if sasl is None:
+            sasl = self.__auth_sasl
+        verify = 0
+        if sasl == 'plain':
+            verify = self.verify_plain(self.__auth_resp1)
+        elif sasl == 'cram-md5':
+            verify = self.verify_cram_md5(self.__auth_resp1,
+                                          self.__auth_cram_md5_ticket)
+        elif sasl == 'login':
+            verify =  self.verify_login(self.__auth_resp1,
+                                        self.__auth_resp2)
+        if verify == 1:
+            self.auth_notify_succeed()
+        else:
+            self.auth_notify_fail(verify)
+        self.auth_reset_state()
+            
+    def auth_challenge(self):
+        line = EMPTYSTRING.join(self.__line)
+        if not self.__auth_resp1:
+            # No initial response, issue first server challenge
+            if self.__auth_sasl == 'plain':
+                self.push('334 ')
+            elif self.__auth_sasl == 'cram-md5':
+                self.push('334 ' + b64_encode(self.__auth_cram_md5_ticket))
+            elif self.__auth_sasl == 'login':
+                self.push('334 VXNlcm5hbWU6')
+            return
+        if self.__auth_resp1 and not self.__auth_resp2:
+            # Client sent an initial response
+            if self.__auth_sasl == 'plain':
+                # Perform authentication
+                self.auth_verify()
+            elif self.__auth_sasl == 'cram-md5':
+                # Perform authentication
+                self.auth_verify()
+            elif self.__auth_sasl == 'login':
+                # Issue second server challenge
+                self.push('334 UGFzc3dvcmQ6')
+            return
+        if self.__auth_resp1 and self.__auth_resp2:
+            # Client sent a second response (only if AUTH=LOGIN),
+            # perform authentication
+            self.auth_verify()
+            return
+
+    # Implementation of base class abstract method
+    def found_terminator(self):
+        line = EMPTYSTRING.join(self.__line)
+        print >> DEBUGSTREAM, 'Data:', repr(line)
+        self.__line = []
+        if self.__state == self.COMMAND:
+            if not line:
+                self.push('500 Error: bad syntax')
+                return
+            method = None
+            i = line.find(' ')
+            if i < 0:
+                command = line.upper()
+                arg = None
+            else:
+                command = line[:i].upper()
+                arg = line[i+1:].strip()
+            method = getattr(self, 'smtp_' + command, None)
+            if not method:
+                self.push('502 Error: command "%s" not implemented' % command)
+                return
+            method(arg)
+            return
+        elif self.__state == self.DATA:
+            # Remove extraneous carriage returns and de-transparency according
+            # to RFC 2821, Section 4.5.2.
+            data = []
+            for text in line.split('\r\n'):
+                if text and text[0] == '.':
+                    data.append(text[1:])
+                else:
+                    data.append(text)
+            self.__data = NEWLINE.join(data)
+            status = self.__server.process_message(self.__peer,
+                                                   self.__mailfrom,
+                                                   self.__rcpttos,
+                                                   self.__data,
+                                                   self.__auth_username)
+            self.__rcpttos = []
+            self.__mailfrom = None
+            self.__state = self.COMMAND
+            self.set_terminator('\r\n')
+            if not status:
+                self.push('250 Ok')
+            else:
+                self.push(status)
+        elif self.__state == self.AUTH:
+            if line == '*':
+                # client canceled the authentication attempt
+                self.push('501 AUTH exchange cancelled')
+                self.auth_reset_state()
+                return
+            if not self.__auth_resp1:
+                self.__auth_resp1 = line
+            else:
+                self.__auth_resp2 = line
+            self.auth_challenge()
+        else:
+            self.push('451 Internal confusion')
+            return
+
+    # ESMTP/SMTP commands
+
+    def smtp_EHLO(self, arg):
+        if not arg:
+            self.push('501 Syntax: EHLO hostname')
+            return
+        #self.__greeting = arg
+        self.push('250-%s' % self.__fqdn)
+        self.push('250 AUTH %s' % (' '.join(map(lambda s: s.upper(),
+                                                self.__sasl_types))))
+
+    def smtp_NOOP(self, arg):
+        if arg:
+            self.push('501 Syntax: NOOP')
+        else:
+            self.push('250 Ok')
+
+    def smtp_QUIT(self, arg):
+        # args is ignored
+        self.push('221 Bye')
+        self.close_when_done()
+
+    # factored
+    def __getaddr(self, keyword, arg):
+        address = None
+        keylen = len(keyword)
+        if arg[:keylen].upper() == keyword:
+            address = arg[keylen:].strip()
+            if not address:
+                pass
+            elif address[0] == '<' and address[-1] == '>' and address != '<>':
+                # Addresses can be in the form <person@dom.com> but watch out
+                # for null address, e.g. <>
+                address = address[1:-1]
+        return address
+
+    def smtp_MAIL(self, arg):
+        # Authentication required first
+        if not self.__smtpauth:
+            self.auth_notify_required()
+            return
+        print >> DEBUGSTREAM, '===> MAIL', arg
+        address = self.__getaddr('FROM:', arg)
+        if not address:
+            self.push('501 Syntax: MAIL FROM:<address>')
+            return
+        if self.__mailfrom:
+            self.push('503 Error: nested MAIL command')
+            return
+        self.__mailfrom = address
+        print >> DEBUGSTREAM, 'sender:', self.__mailfrom
+        self.push('250 Ok')
+
+    def smtp_RCPT(self, arg):
+        print >> DEBUGSTREAM, '===> RCPT', arg
+        if not self.__mailfrom:
+            self.push('503 Error: need MAIL command')
+            return
+        address = self.__getaddr('TO:', arg)
+        if not address:
+            self.push('501 Syntax: RCPT TO: <address>')
+            return
+        self.__rcpttos.append(address)
+        print >> DEBUGSTREAM, 'recips:', self.__rcpttos
+        self.push('250 Ok')
+
+    def smtp_RSET(self, arg):
+        if arg:
+            self.push('501 Syntax: RSET')
+            return
+        # Resets the sender, recipients, and data, but not the greeting
+        self.__mailfrom = None
+        self.__rcpttos = []
+        self.__data = ''
+        self.__state = self.COMMAND
+        self.push('250 Ok')
+
+    def smtp_DATA(self, arg):
+        if not self.__rcpttos:
+            self.push('503 Error: need RCPT command')
+            return
+        if arg:
+            self.push('501 Syntax: DATA')
+            return
+        self.__state = self.DATA
+        self.set_terminator('\r\n.\r\n')
+        self.push('354 End data with <CR><LF>.<CR><LF>')
+
+    def smtp_AUTH(self, arg):
+        """RFC 2554 - SMTP Service Extension for Authentication"""
+        if self.__smtpauth:
+            # After an successful AUTH, no more AUTH commands may be
+            # issued in the same session.
+            self.push('503 Duplicate AUTH')
+            return
+        if arg:
+            args = arg.split()
+            if len(args) == 2:
+                self.__auth_sasl = args[0]
+                self.__auth_resp1 = args[1]
+            else:
+                self.__auth_sasl = args[0]
+        if self.__auth_sasl:
+            self.__auth_sasl = self.__auth_sasl.lower()
+        if not arg or self.__auth_sasl not in self.__sasl_types:
+            self.push('504 AUTH type unimplemented')
+            return
+        self.__state = self.AUTH
+        self.auth_challenge()
+
+
+class SMTPServer(asyncore.dispatcher):
+    """The base class for the backend.  Raises NotImplementedError if
+    you try to use it."""
+    def __init__(self, localaddr, remoteaddr):
+        self._localaddr = localaddr
+        self._remoteaddr = remoteaddr
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        # try to re-use a server port if possible
+        self.set_reuse_addr()
+        self.bind(localaddr)
+        self.listen(5)
+        print >> DEBUGSTREAM, \
+              'tmda-ofmipd started at %s\n\tListening on %s' % \
+              (Util.unixdate(), proxyport)
+
+    def handle_accept(self):
+        conn, addr = self.accept()
+        print >> DEBUGSTREAM, 'Incoming connection from %s' % repr(addr)
+        channel = SMTPChannel(self, conn, addr)
+
+    # API for "doing something useful with the message"
+    def process_message(self, peer, mailfrom, rcpttos, data):
+        """Override this abstract method to handle messages from the client.
+
+        peer is a tuple containing (ipaddr, port) of the client that made the
+        socket connection to our smtp port.
+
+        mailfrom is the raw address the client claims the message is coming
+        from.
+
+        rcpttos is a list of raw addresses the client wishes to deliver the
+        message to.
+
+        data is a string containing the entire full text of the message,
+        headers (if supplied) and all.  It has been `de-transparencied'
+        according to RFC 821, Section 4.5.2.  In other words, a line
+        containing a `.' followed by other text has had the leading dot
+        removed.
+
+        This function should return None, for a normal `250 Ok' response;
+        otherwise it returns the desired response string in RFC 821 format.
+
+        """
+        raise NotImplementedError
+
+
+class DebuggingServer(SMTPServer):
+    """Simply prints each message it receives on stdout."""
+    # Do something with the gathered message
+    def process_message(self, peer, mailfrom, rcpttos, data):
+        inheaders = 1
+        lines = data.split('\n')
+        print '---------- MESSAGE FOLLOWS ----------'
+        for line in lines:
+            # headers first
+            if inheaders and not line:
+                print 'X-Peer:', peer[0]
+                inheaders = 0
+            print line
+        print '------------ END MESSAGE ------------'
+
+
+class PureProxy(SMTPServer):
+    """Proxies all messages to a real smtpd which does final
+    delivery."""
+    def process_message(self, peer, mailfrom, rcpttos, data):
+        lines = data.split('\n')
+        # Look for the last header
+        i = 0
+        for line in lines:
+            if not line:
+                break
+            i += 1
+        lines.insert(i, 'X-Peer: %s' % peer[0])
+        data = NEWLINE.join(lines)
+        refused = self._deliver(mailfrom, rcpttos, data)
+        # TBD: what to do with refused addresses?
+        print >> DEBUGSTREAM, 'we got some refusals:', refused
+
+    def _deliver(self, mailfrom, rcpttos, data):
+        import smtplib
+        refused = {}
+        try:
+            s = smtplib.SMTP()
+            s.connect(self._remoteaddr[0], self._remoteaddr[1])
+            try:
+                refused = s.sendmail(mailfrom, rcpttos, data)
+            finally:
+                s.quit()
+        except smtplib.SMTPRecipientsRefused, e:
+            print >> DEBUGSTREAM, 'got SMTPRecipientsRefused'
+            refused = e.recipients
+        except (socket.error, smtplib.SMTPException), e:
+            print >> DEBUGSTREAM, 'got', e.__class__
+            # All recipients were refused.  If the exception had an associated
+            # error code, use it.  Otherwise,fake it with a non-triggering
+            # exception code.
+            errcode = getattr(e, 'smtp_code', -1)
+            errmsg = getattr(e, 'smtp_error', 'ignore')
+            for r in rcpttos:
+                refused[r] = (errcode, errmsg)
+        return refused
+
+
+class TMDAProxy(PureProxy):
+    """Using this server for outgoing smtpd, the authenticated user
+    will have his mail tagged using his TMDA config file."""
+    def process_message(self, peer, mailfrom, rcpttos, data, auth_username):
+        if configdir is None:
+            # ~user/.tmda/
+            tmda_configdir = os.path.join(os.path.expanduser
+                                          ('~' + auth_username), '.tmda')
+        else:
+            tmda_configdir = os.path.join(os.path.expanduser
+                                          (configdir), auth_username)
+        tmda_configfile = os.path.join(tmda_configdir, 'config')
+        execdir = os.path.dirname(os.path.abspath(program))
+        inject_path = os.path.join(execdir, 'tmda-inject')
+        inject_cmd = '%s --config-file %s' % (inject_path, tmda_configfile)
+        Util.pipecmd('%s %s' % (inject_cmd, ' '.join(rcpttos)), data)
+
+
+def main():
+    pw_uid = pwd.getpwnam(username)[2]
+    # check ownership of authfile
+    if Util.getfileuid(authfile) != pw_uid:
+        raise IOError, \
+              authfile + ' must be owned by UID ' + str(pw_uid)
+    # check permissions of authfile
+    authfile_mode = Util.getfilemode(authfile)
+    if authfile_mode not in (400, 600):
+        raise IOError, \
+              authfile + ' must be chmod 400 or 600!'
+    # try setuid()
+    os.setuid(pw_uid)
+    # try binding to the specified host:port
+    host, port = proxyport.split(':', 1)
+    proxy = TMDAProxy((host, int(port)),
+                      ('localhost', 25))
+    # Start the event loop
+    try:
+        asyncore.loop()
+    except KeyboardInterrupt:
+        pass
+
+
+# This is the end my friend.
+if __name__ == '__main__':
+    main()
