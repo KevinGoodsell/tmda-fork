@@ -11,6 +11,16 @@
 	(add_headers): New function.
 	(purge_headers): New function.
 
+	* AutoResponse.py (AutoResponse.create): Used add_headers in place
+	of loop.  Added ability to purge headers (PURGED_HEADERS_SERVER).
+
+	* Defaults.py (PURGED_HEADERS_CLIENT): Renamed from
+	PURGED_HEADERS.
+	(PURGED_HEADERS_SERVER, PURGED_HEADERS_DELIVERY): New variables.
+
+	* Deliver.py (Deliver.deliver): Added ability to purge headers
+	during delivery (PURGED_HEADERS_DELIVERY).
+
 2003-05-22  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Version.py (ALL): Add CODENAME.
