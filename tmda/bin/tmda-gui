@@ -460,8 +460,8 @@ class PendingGUI(Frame):
         b.pack(side=RIGHT, padx=0, pady=0)
         self.toolbar.pack(side=TOP, fill=X)
         
-        self.split = HSplitterFrame(self, width=100, height=100,
-                                    relief=GROOVE, bg='red')
+        self.split = HSplitterFrame(self, width=600, height=400,
+                                    relief=GROOVE)
         self.split.pack(fill=BOTH, expand=YES)
 
         self.listbox = MessageList(self.split.one)
@@ -491,6 +491,40 @@ class PendingGUI(Frame):
             self.counter = 0
             self.MessageRefresh()
         self.master.after(1000, self.poll)
+
+
+try:
+    from TMDA import Address
+
+    def getAddress(tag, option=None, address=None):
+        try:
+            tagged_address = Address.Factory(tag = tag).create(address, option).address
+        except ValueError, msg:
+            usage(msg)
+            sys.exit(0)
+
+        return tagged_address
+
+    def checkAddress(address, sender_address=None):
+        #FIXME: Add localtime support
+        localtime = None
+        status = []
+        try:
+            addr = Address.Factory(address)
+            addr.verify(sender_address)
+            status.append("STATUS: VALID")
+            try:
+                status.append("EXPIRES: %s" % addr.timestamp(1, localtime))
+            except AttributeError:
+                pass
+        except Address.AddressError, msg:
+            status.append("STATUS: " + str(msg))
+
+        return '\n'.join(status)
+
+except ImportError:
+    print "Missing TMDA library, and no client mode yet"
+    raise
 
 
 class AddressGUI(Frame):
@@ -574,21 +608,35 @@ class AddressGUI(Frame):
     def Calc(self, ev=None):
         self.r_dated['state'] = NORMAL
         self.r_dated.delete(0, END)
-        self.r_dated.insert(END, 'Dated: ')
-        self.r_dated.insert(END, self.e_dated.get() + self.units[self.uidx][1])
+        date = self.e_dated.get().strip()
+        if date:
+            self.r_dated.insert(END, getAddress('dated', date + self.units[self.uidx][1]))
         self.r_dated['state'] = DISABLED
 
         self.r_keyword['state'] = NORMAL
         self.r_keyword.delete(0, END)
-        self.r_keyword.insert(END, 'Keyword: ')
-        self.r_keyword.insert(END, self.e_keyword.get())
+        keyword = self.e_keyword.get().strip()
+        if keyword:
+            self.r_keyword.insert(END, getAddress('keyword', keyword))
         self.r_keyword['state'] = DISABLED
 
         self.r_sender['state'] = NORMAL
         self.r_sender.delete(0, END)
-        self.r_sender.insert(END, 'Sender: ')
-        self.r_sender.insert(END, self.e_sender.get())
+        sender = self.e_sender.get().strip()
+        if sender:
+            self.r_sender.insert(END, getAddress('sender', sender))
         self.r_sender['state'] = DISABLED
+
+        tagged_addr = self.e_check.get().strip()
+        if tagged_addr:
+            sender_addr = self.e_check_sa.get().strip()
+            if not sender_addr:
+                sender_addr = None
+            status = checkAddress(tagged_addr, sender_addr)
+        else:
+            status = "Enter an address to check"
+        self.r_check.configure(text=status)
+
 
     def LaunchPending(self):
         p = PendingGUI(Toplevel(self)).pack(fill=BOTH, expand=YES)
@@ -597,9 +645,9 @@ class AddressGUI(Frame):
 def main():
     root = Tk()
     if len(sys.argv) > 1 and sys.argv[1] == '-p':
-        PendingGUI(root, bg="red").pack(fill=BOTH, expand=YES)
+        PendingGUI(root).pack(fill=BOTH, expand=YES)
     else:
-        AddressGUI(root).pack(fill=BOTH)
+        AddressGUI(root).pack(fill=BOTH, expand=YES)
     root.mainloop()
 
 if __name__ == '__main__':
