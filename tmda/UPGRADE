@@ -3,6 +3,24 @@ this file.
 
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.87:
+
+* The OUTGOINGMAIL variable has been renamed MAIL_TRANSPORT, and its
+  default value has also been changed from 'smtp' to 'sendmail'.
+
+  If you desire SMTP transport, you need to set 
+  MAIL_TRANSPORT = 'smtp' in your /etc/tmdarc or ~/.tmdarc.
+
+  If you desire /usr/sbin/sendmail transport, you can take the
+  default, and don't need to set MAIL_TRANSPORT.
+
+  If you are running qmail and have previously set 
+  SENDMAIL_PROGRAM = '/var/qmail/bin/qmail-inject', you need to change
+  this to '/var/qmail/bin/sendmail', or simply comment this out and
+  take the default value of '/usr/sbin/sendmail'.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.83:
 
 * The unmaintained tmda-gui and tmda-manager programs have been

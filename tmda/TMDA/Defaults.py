@@ -178,7 +178,7 @@ if not vars().has_key('RECIPIENT_DELIMITER'):
 if not vars().has_key('ALLOW_MODE_640'):
     ALLOW_MODE_640 = 0
 
-# OUTGOINGMAIL
+# MAIL_TRANSPORT
 # Final delivery method for all outgoing mail (server and client).
 # Possible values include:
 # 
@@ -189,14 +189,14 @@ if not vars().has_key('ALLOW_MODE_640'):
 #
 # "sendmail"
 #    Deliver messages via the command line interface to the sendmail
-#    program (/usr/sbin/sendmail).
+#    program (e.g, /usr/sbin/sendmail).
 #
-# Default is "smtp"
-if not vars().has_key('OUTGOINGMAIL'):
-    OUTGOINGMAIL = "smtp"
+# Default is "sendmail"
+if not vars().has_key('MAIL_TRANSPORT'):
+    MAIL_TRANSPORT = "sendmail"
 
 # SMTPHOST
-# SMTP host and optional port, when OUTGOINGMAIL is "smtp".
+# SMTP host and optional port, when MAIL_TRANSPORT is "smtp".
 # If the hostname or IP address ends with a colon (":") followed by a
 # number, that suffix will be stripped off and the number interpreted
 # as the port number to use.  Otherwise, the standard SMTP port (25)
@@ -210,7 +210,7 @@ if not vars().has_key('OUTGOINGMAIL'):
 # SMTPHOST = "mailhost.company.com:1234"
 #
 # Default is "localhost" (port 25 on the local host)
-if not vars().has_key('SMTPHOST') and OUTGOINGMAIL == 'smtp':
+if not vars().has_key('SMTPHOST') and MAIL_TRANSPORT == 'smtp':
     SMTPHOST = "localhost"
 
 # SMTPAUTH_USERNAME
@@ -223,7 +223,7 @@ if not vars().has_key('SMTPHOST') and OUTGOINGMAIL == 'smtp':
 # SMTPAUTH_USERNAME = "johndoe"
 #
 # No default.
-if not vars().has_key('SMTPAUTH_USERNAME') and OUTGOINGMAIL == 'smtp':
+if not vars().has_key('SMTPAUTH_USERNAME') and MAIL_TRANSPORT == 'smtp':
     SMTPAUTH_USERNAME = None
 
 # SMTPAUTH_PASSWORD
@@ -236,7 +236,7 @@ if not vars().has_key('SMTPAUTH_USERNAME') and OUTGOINGMAIL == 'smtp':
 # SMTPAUTH_PASSWORD = "6Yu_9iKzs"
 #
 # No default.
-if not vars().has_key('SMTPAUTH_PASSWORD') and OUTGOINGMAIL == 'smtp':
+if not vars().has_key('SMTPAUTH_PASSWORD') and MAIL_TRANSPORT == 'smtp':
     SMTPAUTH_PASSWORD = None
 
 # SMTPSSL
@@ -246,7 +246,7 @@ if not vars().has_key('SMTPAUTH_PASSWORD') and OUTGOINGMAIL == 'smtp':
 # support.  Requires Python 2.2 or greater.
 #
 # Default is 0 (turned off)
-if not vars().has_key('SMTPSSL') and OUTGOINGMAIL == 'smtp':
+if not vars().has_key('SMTPSSL') and MAIL_TRANSPORT == 'smtp':
     SMTPSSL = 0
 
 # SMTPSSL_KEYFILE
@@ -255,7 +255,7 @@ if not vars().has_key('SMTPSSL') and OUTGOINGMAIL == 'smtp':
 #
 # No default.
 if not vars().has_key('SMTPSSL_KEYFILE') and \
-       OUTGOINGMAIL == 'smtp' and SMTPSSL:
+       MAIL_TRANSPORT == 'smtp' and SMTPSSL:
     SMTPSSL_KEYFILE = None
 
 # SMTPSSL_CERTFILE
@@ -265,12 +265,12 @@ if not vars().has_key('SMTPSSL_KEYFILE') and \
 #
 # No default.
 if not vars().has_key('SMTPSSL_CERTFILE') and \
-       OUTGOINGMAIL == 'smtp' and SMTPSSL:
+       MAIL_TRANSPORT == 'smtp' and SMTPSSL:
     SMTPSSL_CERTFILE = None
 
 # SMTP_MAX_SESSIONS_PER_CONNECTION
 # An integer specifying a ceiling on the number of SMTP sessions to
-# perform on a single socket connection, when OUTGOINGMAIL is
+# perform on a single socket connection, when MAIL_TRANSPORT is
 # "smtp".  Some MTAs have limits.  Set this to 0 to do as many
 # as we like (i.e. your MTA has no limits).  Set this to some number
 # great than 0 and TMDA will close the SMTP connection and re-open it
@@ -278,14 +278,14 @@ if not vars().has_key('SMTPSSL_CERTFILE') and \
 #
 # Default is 0
 if not vars().has_key('SMTP_MAX_SESSIONS_PER_CONNECTION') and \
-       OUTGOINGMAIL == 'smtp':
+       MAIL_TRANSPORT == 'smtp':
     SMTP_MAX_SESSIONS_PER_CONNECTION = 0
 
 # SENDMAIL_PROGRAM
 # The path to the sendmail program, or sendmail compatibility
-# interface when OUTGOINGMAIL is "sendmail".
+# interface when MAIL_TRANSPORT is "sendmail".
 # Defaults to one of the two standard locations.
-if not vars().has_key('SENDMAIL_PROGRAM') and OUTGOINGMAIL == 'sendmail':
+if not vars().has_key('SENDMAIL_PROGRAM') and MAIL_TRANSPORT == 'sendmail':
     for sendmail in ('/usr/sbin/sendmail', '/usr/lib/sendmail'):
         if os.path.exists(sendmail):
             SENDMAIL_PROGRAM = sendmail
@@ -317,7 +317,7 @@ if not vars().has_key('VIRTUALDOMAINS'):
 #
 # Default is an empty envelope sender <>.
 if not vars().has_key('BOUNCE_ENV_SENDER'):
-    if OUTGOINGMAIL == 'sendmail' and \
+    if MAIL_TRANSPORT == 'sendmail' and \
            MAIL_TRANSFER_AGENT in ('qmail', 'postfix'):
         # qmail/Postfix's /usr/sbin/sendmail doesn't like -f '<>'
         BOUNCE_ENV_SENDER = ''

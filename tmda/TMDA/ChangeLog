@@ -1,3 +1,8 @@
+2003-10-13  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Defaults.py (OUTGOINGMAIL): Change default to 'sendmail'.
+	(MAIL_TRANSPORT): OUTGOINGMAIL renamed.
+
 2003-10-09  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Util.py (sendmail): If using /usr/sbin/sendmail, pass a tuple of

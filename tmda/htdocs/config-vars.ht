@@ -129,12 +129,12 @@ Each variable definition below contains one or more examples.
 <td><a href="#MAIL_TRANSFER_AGENT">MAIL_TRANSFER_AGENT</a></td>
 </tr>
 <tr>
+<td><a href="#MAIL_TRANSPORT">MAIL_TRANSPORT</a></td>
 <td><a href="#MAX_AUTORESPONSES_PER_DAY">MAX_AUTORESPONSES_PER_DAY</a></td>
-<td><a href="#MESSAGE_FROM_STYLE">MESSAGE_FROM_STYLE</a></td>
 </tr>
 <tr>
+<td><a href="#MESSAGE_FROM_STYLE">MESSAGE_FROM_STYLE</a></td>
 <td><a href="#MESSAGE_TAG_HEADER_STYLE">MESSAGE_TAG_HEADER_STYLE</a></td>
-<td><a href="#OUTGOINGMAIL">OUTGOINGMAIL</a></td>
 </tr>
 <tr>
 <td><a href="#PENDING_BLACKLIST_APPEND">PENDING_BLACKLIST_APPEND</a></td>
@@ -985,6 +985,26 @@ Possible choices are "exim", "postfix", "qmail", or "sendmail".
 <br><br>
 Default is qmail
 <dt><hr>
+<a name="MAIL_TRANSPORT"><h4>MAIL_TRANSPORT</h4></a>
+<dd>
+Final delivery method for all outgoing mail (server and client).
+Possible values include:
+<br><br>
+"<code>smtp</code>"
+<blockquote>
+   Deliver messages by handing them off to an SMTP server (i.e,
+   smarthost).  Be sure that the "SMTPHOST" variable (see below) is
+   set correctly.
+</blockquote>
+<br>
+"<code>sendmail</code>"
+<blockquote>
+   Deliver messages via the command line interface to the sendmail
+   program (e.g, /usr/sbin/sendmail).
+</blockquote>
+<br>
+Default is "sendmail"
+<dt><hr>
 <a name="MAX_AUTORESPONSES_PER_DAY"><h4>MAX_AUTORESPONSES_PER_DAY</h4></a>
 <dd>
 An integer specifying the maximum number of automatic responses sent
@@ -1028,26 +1048,6 @@ action in your FILTER_OUTGOING file.
 <br><br>
 The valid values and default value is identical to that of
 MESSAGE_FROM_STYLE.
-<dt><hr>
-<a name="OUTGOINGMAIL"><h4>OUTGOINGMAIL</h4></a>
-<dd>
-Final delivery method for all outgoing mail (server and client).
-Possible values include:
-<br><br>
-"<code>smtp</code>"
-<blockquote>
-   Deliver messages by handing them off to an SMTP server (i.e,
-   smarthost).  Be sure that the "SMTPHOST" variable (see below) is
-   set correctly.
-</blockquote>
-<br>
-"<code>sendmail</code>"
-<blockquote>
-   Deliver messages via the command line interface to the sendmail
-   program (/usr/sbin/sendmail).
-</blockquote>
-<br>
-Default is "smtp"
 <dt><hr>
 <a name="PENDING_BLACKLIST_APPEND"><h4>PENDING_BLACKLIST_APPEND</h4></a>
 <dd>
@@ -1302,7 +1302,7 @@ Default is 0 (turned off)
 <a name="SENDMAIL_PROGRAM"><h4>SENDMAIL_PROGRAM</h4></a>
 <dd>
 The path to the sendmail program, or sendmail compatibility
-interface when OUTGOINGMAIL is "sendmail".
+interface when MAIL_TRANSPORT is "sendmail".
 <br><br>
 Defaults to one of the two standard locations.
 <dt><hr>
@@ -1332,7 +1332,7 @@ No default.
 <dt><hr>
 <a name="SMTPHOST"><h4>SMTPHOST</h4></a>
 <dd>
-SMTP host and optional port, when OUTGOINGMAIL is "smtp".
+SMTP host and optional port, when MAIL_TRANSPORT is "smtp".
 If the hostname or IP address ends with a colon (":") followed by a
 number, that suffix will be stripped off and the number interpreted
 as the port number to use.  Otherwise, the standard SMTP port (25)
@@ -1374,7 +1374,7 @@ No default.
 <a name="SMTP_MAX_SESSIONS_PER_CONNECTION"><h4>SMTP_MAX_SESSIONS_PER_CONNECTION</h4></a>
 <dd>
 An integer specifying a ceiling on the number of SMTP sessions to
-perform on a single socket connection, when OUTGOINGMAIL is
+perform on a single socket connection, when MAIL_TRANSPORT is
 "smtp".  Some MTAs have limits.  Set this to 0 to do as many
 as we like (i.e. your MTA has no limits).  Set this to some number
 great than 0 and TMDA will close the SMTP connection and re-open it
