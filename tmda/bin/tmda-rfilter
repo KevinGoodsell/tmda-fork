@@ -504,10 +504,9 @@ def verify_dated_cookie(dated_cookie):
                           'action_fail_dated',
                           Defaults.BOUNCE_TEXT_FAIL_DATED)
     else:
-        now = time.time()
-        if int(cookie_date) >= int('%d' % now):
+        if int(cookie_date) >= int('%d' % time.time()):
             logit("OK good_dated_cookie (%s)" % \
-                  Util.unixdate(int(cookie_date)), now)
+                  Util.unixdate(int(cookie_date)))
             mta.deliver(message_headers, message_body)
         else:
             logmsg = "action_expired_dated (%s)" % \
