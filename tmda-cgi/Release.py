@@ -66,6 +66,7 @@ and validate the pending email in question."""
       # Check for old-style format
       UID, Cookie = QueryString.split(".", 1)
       UID = int(UID)
+      User = pwd.getpwduid(UID)[0]
       OldStyle = 1
     except (ValueError, KeyError):
       CgiUtil.TermError("Unable to parse query string.",
