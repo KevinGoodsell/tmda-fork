@@ -293,9 +293,8 @@ def inject_message(resending,
             msg[h] = v
     # Prepend tmda-ofmipd's Received header.
     if os.environ.has_key('TMDA_OFMIPD_RECEIVED') and injections == 0:
-        from email.Header import Header
         msg._headers.insert(0, ('Received',
-                                Header(os.environ.get('TMDA_OFMIPD_RECEIVED'))))
+                                (os.environ.get('TMDA_OFMIPD_RECEIVED'))))
     # Optionally, log this transmission.
     if Defaults.LOGFILE_OUTGOING:
         from TMDA import MessageLogger
