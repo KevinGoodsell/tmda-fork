@@ -255,6 +255,8 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
                     fileinput.close()
                     break
 
+os.environ['TMDA_RECIPIENT'] = recipient_address
+
 # Collect some header values for later use.
 subject = msgin.get('subject')
 x_primary_address = parseaddr(msgin.get('x-primary-address'))[1]

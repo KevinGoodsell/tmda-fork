@@ -401,8 +401,8 @@ def main():
     # accordingly, otherwise it is tagged with the default cookie
     # type.
     for address in address_list:
-        os.environ['TMDA_INJECT_RECIPIENT'] = address
-        os.environ['TMDA_INJECT_VRECIPIENT'] = address.replace('@', '=')
+        os.environ['TMDA_RECIPIENT'] = address
+        os.environ['TMDA_VRECIPIENT'] = address.replace('@', '=')
         # If `X-TMDA' is present we are done here.
         if x_tmda_over:
             pass                        

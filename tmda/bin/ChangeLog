@@ -1,3 +1,11 @@
+2003-05-30  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-rfilter (recipient_address): export TMDA_RECIPIENT to the
+	environment.
+	
+	* tmda-inject (main): TMDA_INJECT_RECIPIENT renamed
+	TMDA_RECIPIENT, TMDA_INJECT_VRECIPIENT renamed TMDA_VRECIPIENT.
+	
 2003-05-25  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (pendingdir): Use Defaults.PENDING_DIR.
