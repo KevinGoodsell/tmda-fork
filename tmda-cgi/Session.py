@@ -191,14 +191,19 @@ its partition is marked "nosuid" in /etc/fstab.""")
           File = os.path.join(os.path.split(os.environ["TMDARC"])[0],
                               "tmda-cgi")
         else:
-          File = os.path.expanduser("~/.tmda/tmda-cgi")
-        if not os.access( File, os.F_OK ):
+          File = os.path.join(self.Vars["HOME"], ".tmda/tmda-cgi")
+        self.__suid__(UID, self.Vars["GID"])
+        if not Util.CanRead( File, UID, self.Vars["GID"], 0 ):
           File = "/etc/tmda-cgi"
 
         Authenticate.InitFileAuth( File )
     except ValueError, err:
+      if os.environ.has_key("TMDA_AUTH_TYPE"):
+        AuthType = os.environ["TMDA_AUTH_TYPE"]
+      else:
+        AuthType = "<b><i>not set</i></b>"
       CgiUtil.TermError( "Auth Initialization Failed", "ValueError caught", 
-        "init auth type %s" % os.environ["TMDA_AUTH_TYPE"], err, "Fix the code." )
+        "init auth type %s" % AuthType, err, "Fix the code." )
 
     # Validate the new session
     if not Form.has_key("password"): return
@@ -234,6 +239,7 @@ modify<br>file permissions to allow them to be read.""")
 
       self.Vars["CLEANUP"] = Defaults.CGI_CLEANUP_ODDS;
       self.Save() # Save session & set user
+    self.__suid__()
 
   def Save(self):
     """Save all session variables to disk and change user.  Possibly clean up 
