@@ -129,6 +129,7 @@ elif Form.has_key("cmd"):
   EditList.Form     = Form
   GenAddr.PVars     = PVars
   GenAddr.Form      = Form
+  Info.PVars        = PVars
   Install.PVars     = PVars
   Install.Form      = Form
   LocalConfig.PVars = PVars

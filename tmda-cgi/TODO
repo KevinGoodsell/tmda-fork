@@ -15,9 +15,6 @@ Things left to do:
 
     * Hide Nasty -- need a way to hide the nasty HTML in viewed e-mails
 
-    * Install / Uninstall -- options to allow users to add or remove TMDA
-                             filtering from their e-mail account
-
     * Language Support -- code to recognize the language an e-mail is in and
                           include the appropriate language identifiers in the
                           viewer

@@ -14,6 +14,23 @@ Title: About tmda-cgi
 
 <hr width="50%">
 
+<h2>Compile Params</h2>
+<table cellspacing="7">
+<!-- var: Params -->
+  <tr>
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+    <td>%(Detail)s</td>
+  </tr>
+<!-- /var -->
+</table><p>
+
+<hr width="50%">
+
+<h2>Special Instructions</h2>
+<p>%(Instruct)s</p>
+
+<hr width="50%">
+
 <h2>Authors</h2>
 <p>tmda-cgi was written by <a href="mailto:gre7g@wolfhome.com">Gre7g 
   Luterman</a> and <a href="mailto:i.am@jimramsay.com">Jim Ramsay</a></p>
@@ -48,6 +65,20 @@ Title: About tmda-cgi
   </tr>
 <!-- /var -->
 </table><p>
+
+<hr width="50%">
+
+<h2>Bug Finders</h2>
+<table cellspacing="7" width="100%">
+<!-- var: BugRow -->
+  <tr>
+<!-- var: BugCell -->
+    <td nowrap valign="baseline"><b>%(Name)s</b></td>
+<!-- /var -->
+  </tr>
+<!-- /var -->
+</table><p>
+<!-- var: BugCols="3" -->
 
 <hr width="50%">
 

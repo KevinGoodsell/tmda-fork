@@ -21,6 +21,7 @@
 
 "Info for tmda-cgi."
 
+import os
 import re
 import Template
 from Version import All
@@ -33,17 +34,40 @@ ToDoSearch    = re.compile("^Things left to do:")
 ItemSearch    = re.compile("^\s+\*\s+(.+)\s+--\s+(.+)")
 ContdSearch   = re.compile("^\s+(\s.+)")
 
-def AddFile(Filename, T, AckRow, ContRow, ToDoRow):
+def Add(Name, Detail):
+  "Add an entry."
+
+  global T, BugCell, BugRow, BugCol, BugCols, Section
+
+  if Name:
+    T["Name"] = Name
+    T["Detail"] = Detail
+    if Detail == "bug finding":
+      BugCell.Add()
+      BugCol += 1
+      if BugCol == BugCols:
+        BugRow.Add()
+        BugCell.Clear()
+        BugCol = 0
+      Name = None
+    else:
+      Section.Add()
+
+def AddFile(Filename):
   "Add a file to template."
+
+  global T, AckRow, ContRow, ToDoRow, BugCell, BugRow, BugCol, BugCols, Section
 
   # Read file
   F = open(Filename)
   Thanks = F.readlines()
   F.close()
-  
+
   Section = None
   Name    = None
   Detail  = None
+  BugCol  = 0
+
   for Line in Thanks:
     AckMatch     = AckSearch.search(Line)
     ContribMatch = ContribSearch.search(Line)
@@ -51,42 +75,32 @@ def AddFile(Filename, T, AckRow, ContRow, ToDoRow):
     ItemMatch    = ItemSearch.search(Line)
     ContdMatch   = ContdSearch.search(Line)
     if AckMatch:
-      if Name:
-        T["Name"] = Name
-        T["Detail"] = Detail
-        Section.Add()
+      Add(Name, Detail)
       Section = AckRow
       Name = None
     elif ContribMatch:
-      if Name:
-        T["Name"] = Name
-        T["Detail"] = Detail
-        Section.Add()
+      Add(Name, Detail)
       Section = ContRow
       Name = None
     elif ToDoMatch:
-      if Name:
-        T["Name"] = Name
-        T["Detail"] = Detail
-        Section.Add()
+      Add(Name, Detail)
       Section = ToDoRow
       Name = None
     elif ItemMatch:
-      if Name:
-        T["Name"] = Name
-        T["Detail"] = Detail
-        Section.Add()
+      Add(Name, Detail)
       Name = ItemMatch.group(1)
       Detail = ItemMatch.group(2)
     elif ContdMatch:
       Detail += ContdMatch.group(1)
   if Name:
-    T["Name"] = Name
-    T["Detail"] = Detail
-    Section.Add()
+    Add(Name, Detail)
+  if BugCol:
+    BugRow.Add()
 
 def Show():
   "Show info."
+
+  global T, AckRow, ContRow, ToDoRow, BugCell, BugRow, BugCols
 
   # Load the display template
   T = Template.Template("info.html")
@@ -96,13 +110,29 @@ def Show():
   T["TmdaVersion"] = Version.ALL
 
   # Get rows
-  AckRow  = T["AckRow"]
-  ContRow = T["ContRow"]
-  ToDoRow = T["ToDoRow"]
-  
+  ParamRow = T["Params"]
+  AckRow   = T["AckRow"]
+  ContRow  = T["ContRow"]
+  ToDoRow  = T["ToDoRow"]
+  BugCell  = T["BugCell"]
+  BugRow   = T["BugRow"]
+  BugCols  = int(T["BugCols"])
+
+  # Add compile parameters
+  Keys = os.environ.keys()
+  Keys.sort()
+  for Param in Keys:
+    if Param[:5] == "TMDA_":
+      T["Name"]   = Param[5:]
+      T["Detail"] = os.environ[Param]
+      ParamRow.Add()
+
   # Add Acknowledgements, Contributions, & ToDo's
-  AddFile("THANKS", T, AckRow, ContRow, ToDoRow)
-  AddFile("TODO", T, AckRow, ContRow, ToDoRow)
+  AddFile("THANKS")
+  AddFile("TODO")
+
+  # Special instructions
+  T["Instruct"] = PVars[("NoOverride", "InstallInstruct")]
 
   # Display template
   print T
