@@ -181,15 +181,15 @@ rights.""")
 
     # If user doesn't have a theme or the theme has been deleted, get the first
     # one (alphabetically)
-    if not self.PVars.has_key("Theme") or \
-      not os.access(os.path.join(self.ThemesDir, self.PVars["Theme"]), os.R_OK):
+    if not self.has_key(("General", "Theme")) or not os.access \
+      (os.path.join(self.ThemesDir, self[("General", "Theme")]), os.R_OK):
       # Pick the first theme in the themes directory
       Themes = os.listdir(self.ThemesDir)
       Themes.sort()
-      self.PVars["Theme"] = Themes[0]
+      self[("General", "Theme")] = Themes[0]
 
     # Set up the template to use the theme and load the theme's .ini
-    ThemeDir = os.path.join(self.ThemesDir, self.PVars["Theme"])
+    ThemeDir = os.path.join(self.ThemesDir, self[("General", "Theme")])
     Filename = os.path.join(ThemeDir, "theme.ini")
     Default  = os.path.join(os.getcwd(), "defaults.ini")
     self.ThemeVars.read([Default, Filename])
@@ -202,7 +202,7 @@ rights.""")
     Template.Template.BaseDir = os.path.join(ThemeDir, "template")
     Template.Template.Dict["ThemeDir"] = \
       os.path.join(os.environ["TMDA_CGI_DISP_DIR"], "themes",
-        self.PVars["Theme"])
+        self[("General", "Theme")])
 
   def __init__(self, Form):
     "Reload an existing SID or create a new one."
