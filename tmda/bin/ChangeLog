@@ -7,6 +7,10 @@
 	it's a bounce and we tag only the envelope sender and
 	Resent-From:.  Otherwise, we tag the envelope sender and From:.
 
+	(inject_message): Give the sender action an option.  When
+	sender=address, address is used to create the sender cookie rather
+	than the message recipient.
+
 2001-11-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (inject_message): When checking for bare=append,
