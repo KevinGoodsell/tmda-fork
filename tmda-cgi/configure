@@ -446,8 +446,14 @@ if OptD["VLookup"] != "None":
   F.write('#define VLOOKUP  "TMDA_VLOOKUP=%(VLookup)s"\n' % OptD)
 if OptD["Config"] != "None":
   if OptD["Config"].find("~") >= 0:
+    if os.environ.has_key( "USER" ):
+      user = os.environ["USER"]
+    elif os.environ.has_key( "LOGNAME" ):  
+      user = os.environ["LOGNAME"]
+    else:
+      user = os.getlogin()
     OptD["Config"] = \
-      string.replace(OptD["Config"], "/%s/" % os.environ["USER"], "/~/")
+      string.replace(OptD["Config"], "/%s/" % user, "/~/")
     print """NOTE:
 tmda-cgi will look for config files at: %s
 Where <user> will be replaced by the user's login name.

@@ -639,6 +639,10 @@ def Show():
   from TMDA import Util
 
   # Make a substitution dictionary
+  if os.environ.has_key( "USER" ):
+    user = os.environ["USER"]
+  elif os.environ.has_key( "LOGNAME" )  
+    user = os.environ["LOGNAME"]
   global Dict
   Dict = \
   {
@@ -650,7 +654,7 @@ def Show():
     "Parent":    "..",
     "RealHome":  pwd.getpwuid(os.geteuid())[5],
     "UrlDomain": os.environ["SERVER_NAME"],
-    "User":      os.environ["USER"],
+    "User":      user,
     "VPop":      PVars[("NoOverride", "VPop")],
     "VPopBin":   PVars[("NoOverride", "VPopBin")]
   }

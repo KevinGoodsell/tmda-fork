@@ -133,6 +133,7 @@ of this error, or try confirming your message using an alternate method.""")
 
   # We now have the home directory and the User.  Set this in the environment.
   os.environ["USER"] = User
+  os.environ["LOGNAME"] = User
   os.environ["HOME"] = Home
 
   # Is there a TMDARC variable?

@@ -221,8 +221,10 @@ rights.""")
     Match = re.search(self[("NoOverride", "UserSplit")], self.Vars["User"])
     if Match:
       os.environ["USER"] = Match.group(1)
+      os.environ["LOGNAME"] = Match.group(1)
     else:
       os.environ["USER"] = self.Vars["User"]
+      os.environ["LOGNAME"] = self.Vars["User"]
 
     # Clean up
     self.CleanUp()
