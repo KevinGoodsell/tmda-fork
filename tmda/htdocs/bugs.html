@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Dec 19 13:04:57 2003 -->
+<!-- Fri Dec 19 13:30:59 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -208,9 +208,9 @@ Reporting bugs and contributing code are both encouraged, but to make
 things easier on the developers, please adhere to the following guidelines.
 <br><br>
 
-Bug reports and patch submissions should be sent to the
-<a href="http://tmda.net/lists/listinfo/tmda-workers"
-TARGET="Resource Window">tmda-workers</a> mailing list. 
+Bug reports and patch submissions for TMDA 1.0.x should be sent to the
+<a href="http://tmda.net/lists/listinfo/tmda-users"
+TARGET="Resource Window">tmda-users</a> mailing list. 
 You <strong>do not</strong> need to be subscribed to post a message there.
 
 <h4>Reporting Bugs:</h4>
@@ -230,12 +230,7 @@ In your report, please include at least the following information:
 <ul>
 
 <li>Please make sure your patch works with the earliest supported
-version of Python. See the <a href="requirements.html">requirements</a> 
-page for what we currently support. For example, if TMDA supports
-Python 2.1 and above, you should test your changes with Python 2.1,
-even if you normally use a more recent version of Python. If you plan
-to contribute code on a frequent basis, you should get into the habit of using
-the earliest supported Python for all of your TMDA development.
+version of Python, which is Python 2.1.x.
 <br><br>
 
 <li>As far as preferred coding style, I try to follow the general 
@@ -256,46 +251,9 @@ patch included as an attachment.
 When making patches with <strong>diff</strong>, please use the <b>-u</b>
 option, or if your diff doesn't support it, <b>-c</b>.  Also, it is helpful
 if you create the patch from the top level of the TMDA source
-directory:
-<br><br>
-
-<li>
-Diffs should be made against the current development source from CVS rather
-than the particular TMDA release you happen to be using.
-<br><br>
+directory.
 
 </ul>
-Here is an example illustrating some of the above concepts:
-
-<ol>
-
-<li>Checkout the latest developement sources from TMDA's CVS repository.
-This will create a `tmda' subdirectory in your current working directory
-containing the source:
-
-<blockquote><pre>
-% cd /usr/local/src
-% cvs -d:pserver:anonymous@cvs.tmda.sf.net:/cvsroot/tmda login
-[press return at the password prompt]
-
-% cvs -z3 -d:pserver:anonymous@cvs.tmda.sf.net:/cvsroot/tmda co tmda
-</blockquote></pre>
-
-<li>Make the necessary changes:
-
-<blockquote><pre>
-% cd /usr/local/src/tmda
-(hack, hack, hack....)
-</blockquote></pre>
-
-<li>Create your patch called "tmda.diff":
-
-<blockquote><pre>
-% cd /usr/local/src/tmda
-% cvs diff -u > tmda.diff
-</blockquote></pre>
-
-</ol>
 
 If you wish, accompany your patch with an update to the apropriate
 ChangeLog file.  If you use Emacs, you can use the <em>M-x

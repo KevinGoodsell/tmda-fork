@@ -276,11 +276,6 @@ with a 'bare' From: header field.  Unknown address will also be sent
 with a 'bare' From: field and will tag the envelope sender with a
 dated address so that bounces do not get stuck in the pending queue.
 
-<p>
-
-Please report any problems with the VPopMail support to the
-tmda-workers@tmda.net mailing list.
-
 <h2><a name="vmailmgr">VMailMgr</a></h2>
 
 Since each virtual domain is under the control of a different system
@@ -369,7 +364,3 @@ with a 'bare' From: header field.  Unknown address will also be sent
 with a 'bare' From: field and will tag the envelope sender with a
 dated address so that bounces do not get stuck in the pending queue.
 
-<p>
-
-Please report any problems with the VMailMgr support to the
-tmda-workers@tmda.net mailing list.
