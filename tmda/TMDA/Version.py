@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.79+"
+TMDA = "0.80"
 
 # TMDA version codename
 CODENAME = "Determine"
