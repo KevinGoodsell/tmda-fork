@@ -2,7 +2,11 @@
 
 	* tmda-filter (auto_reply): Consolidate the Precedence checking
 	code.
-	
+
+	(locate_pending): Append the original envelope sender address
+	contained in the message to CONFIRM_APPEND rather than the
+	envelope sender of the subsequent confirmation reply.
+
 2001-12-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (locate_pending): Optionally copy the confirmation

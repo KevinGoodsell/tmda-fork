@@ -318,9 +318,17 @@ def locate_pending(timestamp,pid):
         logit("CONFIRM accept " + pending_message, time.time())
         # Optionally append the envelope sender to the whitelist.
         if Defaults.CONFIRM_APPEND:
-            if Util.append_to_file(envelope_sender,
-                                   Defaults.CONFIRM_APPEND) != 0:
-                logit("APPEND " + envelope_sender, time.time())
+            try:
+                # Grab the original envelope sender to append.
+                fileobj = open(pending_message_pathname,'r')
+                message_headers = rfc822.Message(fileobj)
+                fileobj.close()
+                orig_env_sender = message_headers.getaddr('return-path')[1]
+            except IOError, error_msg:
+                print error_msg
+                mta.defer()
+            if Util.append_to_file(orig_env_sender,Defaults.CONFIRM_APPEND) != 0:
+                logit("APPEND " + orig_env_sender, time.time())
         # Optionally generate the confirmation acceptance notice.
         if Defaults.CONFIRM_ACCEPT_NOTIFY:
             bouncegen('accept')
