@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.67+"
+TMDA = "0.68"
 
 # TMDA version codename
 CODENAME = "Shut Out"
