@@ -26,7 +26,7 @@ import platform
 
 
 # TMDA version
-TMDA = "1.1.3+"
+TMDA = "1.1.4"
 
 # TMDA version codename
 CODENAME = "Edradour"
