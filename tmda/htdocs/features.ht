@@ -23,7 +23,7 @@ Python</a>: an interpreted, interactive, object-oriented programming language.
 <li>Supports MUA-independent, site-wide installations using relay rewriting, including
     non-unix clients such as Microsoft Windows.<br><br>
 
-<li>Package installation available for Linux and FreeBSD.<br><br>
+<li>Package installation available for Linux, FreeBSD, and NetBSD.<br><br>
 
 <li>Supports vpopmail and vmailmgr.<br><br>
 

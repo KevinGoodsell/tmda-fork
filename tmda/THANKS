@@ -41,6 +41,8 @@ Contributions:
     * Ted Rathkopf -- support for "pre-extension" definitions in
       /var/qmail/users/assign (now depreciated).
 
+    * Amitai Schlair -- NetBSD package.
+
     * Reuben Sumner -- the HMAC.py module.
 
 --------------
