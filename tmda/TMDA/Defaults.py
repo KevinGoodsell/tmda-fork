@@ -1227,6 +1227,20 @@ if not vars().has_key('TAGS_SENDER'):
 if not vars().has_key('TERSE_SUMMARY_HEADERS'):
     TERSE_SUMMARY_HEADERS = ['from_name', 'subject']
 
+# SUMMARY_HEADERS
+# A list containing one or more message headers that should be
+# displayed by tmda-pending's interactive mode. Listed headers are
+# case-insensitive.
+#
+# Examples:
+#
+# SUMMARY_HEADERS = ['from', 'subject', 'x-spam-status']
+# SUMMARY_HEADERS = ['date', 'from', 'to', 'subject']
+#
+# Default is Date, From, To, and Subject.
+if not vars().has_key('SUMMARY_HEADERS'):
+    SUMMARY_HEADERS = ['date', 'from', 'to', 'subject']
+
 # TIMEOUT
 # The timeout interval for 'dated' addresses.  The available units are
 # (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).

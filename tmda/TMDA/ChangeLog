@@ -1,5 +1,7 @@
 2002-11-08  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
+	* Defaults.py (SUMMARY_HEADERS): New variable.
+
 	* Deliver.py (Deliver.deliver): Retain From_ when doing a program
 	delivery.
 

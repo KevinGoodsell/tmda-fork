@@ -413,7 +413,7 @@ def main():
                                                    total,
                                                    msg_size,
                                                    bytes)
-                for hdr in ('date', 'from', 'to', 'subject'):
+                for hdr in Defaults.SUMMARY_HEADERS:
                     print "%s %s: %s" % ('  >>',
                                          hdr.capitalize()[:4].rjust(4),
                                          Util.decode_header(msgobj.get(hdr)))
