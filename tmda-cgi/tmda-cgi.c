@@ -37,7 +37,9 @@ int main(int argc, char *argv[])
   putenv(DISP_DIR);
   putenv(BASE_DIR);
   putenv(VUSER);
-  putenv(VBIN);
+#ifdef VLOOKUP
+  putenv(VLOOKUP);
+#endif
 
   fd = open("/dev/null", O_RDONLY);
 

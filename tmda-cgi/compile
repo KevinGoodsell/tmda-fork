@@ -33,10 +33,6 @@ Where:
     --base-dir <path>
        Specify a path to TMDA.
 
-    -B <path>
-    --vbin-dir <path>
-       Specify a path to virtual user's bin directory.
-
     -c <file>
     --config-file <file>
        Specify a different configuration file other than ~/.tmda/config.
@@ -60,6 +56,12 @@ Where:
     -i <path>
     --install-prefix <path>
        Specify path to tmda-cgi.py other than the current directory.
+
+    -l <path>
+    --virtual-lookup <path>
+       Specify a path to virtual user lookup script.
+       - The lookup script should take user login as a parameter and return
+         <homedir>\n<UID>\n<GID>
 
     -m system-wide|single-user|no-su
     --mode system-wide|single-user|no-su
@@ -200,7 +202,8 @@ def Interactive(OptD):
     Ask('Authentication File (or "None" for system default)', OptD, "AuthFile")
     OptD["AuthArg"] = OptD["AuthFile"]
   elif OptD["AuthType"] == "program":
-    Ask('Authentication (checkpassword-style) program (full path and args)\n * For more details, see config --help option -p *', OptD,
+    Ask("""Authentication (checkpassword-style) program (full path and args)
+ * For more details, see config --help option -p *""", OptD,
       "AuthProg")
     OptD["AuthArg"] = OptD["AuthProg"]
   elif OptD["AuthType"] == "remote":
@@ -214,8 +217,10 @@ def Interactive(OptD):
   Ask("CGI mode [system-wide, single-user, no-su]", OptD, "Mode")
   if OptD["Mode"] == "system-wide":
     Ask("User name to use while accessing session data", OptD, "User")
-    Ask("Real user name to use when login is a virtual user", OptD, "VUser")
-  Ask("Path to virtual user's bin directory", OptD, "VBin")
+    Ask("""Real user name to use when login is a virtual user (or "None" if no virtual
+users)""", OptD, "VUser")
+  Ask('Path to a virtual user lookup script (or "None" if no virtual users)',
+    OptD, "VLookup")
   print
 
 Program = sys.argv[0]
@@ -236,7 +241,7 @@ OptD["AuthProg"] = "/usr/sbin/checkpassword"
 OptD["AuthURI"]  = "imap://localhost"
 OptD["AuthArg"]  = "None"
 OptD["VUser"]    = "vpopmail"
-OptD["VBin"]     = "/home/vpopmail/bin/"
+OptD["VLookup"]  = "/home/vpopmail/bin/getuserinfo-vpopmail.sh"
 if os.geteuid():
   OptD["Mode"] = "single-user"
 else:
@@ -253,7 +258,7 @@ def Usage(Code, Msg=""):
   sys.exit(Code)
 
 try:
-  Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:f:i:m:nhp:r:t:u:",
+  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:f:i:l:m:nhp:r:t:u:",
     ["base-dir=", "config-file=", "display-dir=", "file-auth=", "help",
      "install-prefix=", "mode=", "no-su", "program-auth=", "remote-auth=",
      "target=", "user="])
@@ -264,8 +269,6 @@ except getopt.error, Msg:
 for Opt, Arg in Opts:
   if Opt in ("-h", "--help"):
     Usage(0)
-  elif Opt in ("-b", "--base-dir"):
-    OptD["Base"] = Arg
   elif Opt in ("-c", "--config-file"):
     OptD["Config"] = Arg
   elif Opt in ("-d", "--display-dir"):
@@ -276,6 +279,8 @@ for Opt, Arg in Opts:
     OptD["AuthArg"] = Arg
   elif Opt in ("-i", "--install-prefix"):
     OptD["Path"] = Arg
+  elif Opt in ("-l", "--virtual-lookup"):
+    OptD["Base"] = Arg
   elif Opt in ("-p", "--program-auth"):
     OptD["AuthType"] = "program"
     OptD["AuthProg"] = Arg
@@ -351,7 +356,6 @@ privileged user with the -u option."""
 OptD["Path"] = os.path.abspath(OptD["Path"])
 
 if OptD["DispDir"][-1] != "/": OptD["DispDir"] += "/"
-if OptD["VBin"][-1] != "/": OptD["VBin"] += "/"
 if OptD["Path"][-1] != "/": OptD["Path"] += "/"
 
 if OptD["Mode"] == "no-su": Perm = 0755
@@ -366,7 +370,9 @@ F.write("""
 #define DISP_DIR "TMDA_CGI_DISP_DIR=%(DispDir)s"
 #define BASE_DIR "TMDA_BASE_DIR=%(Base)s"
 #define VUSER    "TMDA_VUSER=%(VUser)s"
-#define VBIN     "TMDA_VBIN=%(VBin)s"
+""" % OptD)
+if OptD["VLookup"] != "None":
+  F.write("""#define VLOOKUP  "TMDA_VLOOKUP=%(VLookup)s"
 """ % OptD)
 if OptD["Config"] != "None":
   if OptD["Config"].find("~") >= 0:
