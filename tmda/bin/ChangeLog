@@ -3,6 +3,8 @@
 	* tmda-filter (fp): Re-raise the exception when SystemExit is
 	encountered, and catch all exceptions otherwise.
 
+	(fp): Remove import of TMDA.Errors (no longer necessary).
+
 2002-01-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (envelope_recipient): We no longer look for an

@@ -26,8 +26,6 @@ try:
     except ImportError:
         pass
 
-    from TMDA import Errors
-    
     program = sys.argv[0]
     execdir = os.path.dirname(os.path.abspath(program))
     execfile(os.path.join(execdir, 'tmda-rfilter'))
