@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sun Dec 30 01:09:29 2001 -->
+<!-- Sun Dec 30 19:16:19 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -136,6 +136,7 @@ Author
 <li><a href="#6">How do I allow my ezmlm mailing lists to pass through TMDA?</a> <br>
 <li><a href="#7">How can I prevent BBDB from asking about 'dated' addresses?</a><br>
 <li><a href="#8">Why don't my user+detail addresses work with Sendmail virtualdomains?</a><br>
+<li><a href="#9">Why don't my user+detail addresses work with Sendmail /etc/aliases?</a><br>
 </ol>
 
 <hr>
@@ -310,6 +311,27 @@ bobby+*@peru.com  bobby+%2
 
 See the virtusertable section in your Sendmail's cf/README for the
 full details.
+<hr>
+
+<li><b>
+<a name="9">I'm running Sendmail, and noticed that my user+detail addresses don't
+work if the message is sent to a one of my aliases.  What's the problem?</a>
+</b>
+<br><br>
+If you have the following in /etc/aliases:
+
+<blockquote><pre>
+webmaster: johndoe
+</blockquote></pre>
+
++detail is preserved for mail to johndoe+detail, but not for
+webmaster+detail.
+<br><br>
+
+Unfortunately, there is no way to preserve the +detail portion in
+/etc/aliases.  You must use the virtusertable for this (see previous
+question).
+
 <hr>
 
 </TD><!-- end of body cell -->
