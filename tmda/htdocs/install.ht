@@ -29,9 +29,9 @@ installs.
 </pre></blockquote>
 </ol>
 
-<u>Installation from RedHat Linux RPMs</u><br><br>
+<u>Installation from Linux RPMs</u><br><br>
 
-If you are running RedHat Linux, you may wish to install TMDA via RPM
+If you are running Linux, you may wish to install TMDA via RPM
 instead.  A binary RPM can be built and installed directly from the source
 tarball:
 
@@ -39,6 +39,18 @@ tarball:
 
 # rpm -tb tmda-0.01.tgz 
 # rpm -Uvh /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
+
+</pre></blockquote>
+
+If your system lacks a <b>/usr/bin/python2</b>, you may get a
+dependency warning from RPM.  If you're sure your Python meets the 
+<a href="requirements.html">requirements</a>, then you can override this
+dependency check using the <em>--nodeps</em> option to RPM:
+
+<blockquote><pre>
+
+# rpm --nodeps -tb tmda-0.01.tgz 
+# rpm --nodeps -Uvh /usr/src/redhat/RPMS/noarch/tmda-0.01-1.noarch.rpm
 
 </pre></blockquote>
 

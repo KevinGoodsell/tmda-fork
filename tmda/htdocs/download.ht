@@ -10,7 +10,7 @@ latest release</a> as a gzipped tarball.
 
 <u>Packages:</u><br>
 <ul>
-<li>RedHat Linux RPM: See the <a href="install.html">installation</a> page for how to 
+<li>Linux RPM: See the <a href="install.html">installation</a> page for how to 
 easily build an RPM directly from the source tarball.<br><br>
 
 <li><a href="http://packages.debian.org/tmda" TARGET="Resource Window">
