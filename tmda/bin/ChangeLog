@@ -5,6 +5,9 @@
 
 	(bounce_cc): Ditto.
 
+	(logit): Add a `Sndr' line to the logfile when the message's
+	envelope sender differs from the From: address.
+
 2001-10-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-sendmail (main): Bugfix.  Recipients being passed to
