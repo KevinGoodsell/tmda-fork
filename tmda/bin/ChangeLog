@@ -3,6 +3,9 @@
 	* tmda-check-address: New program to check the validity of tagged
 	addresses.  Contributed by Ron Bickers.
 
+	(usage): Add an optional flag to display dates in the local time
+	zone instead of UTC.
+
 2001-06-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (envelope_recipient): Use the `X-Originally-To'

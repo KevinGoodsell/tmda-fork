@@ -9,6 +9,10 @@ Where:
     --config-file <file>
        Specify a different configuration file other than ~/.tmdarc.
 
+    -l
+    --localtime
+       Display dates in the local time zone instead of UTC.
+
     --help
     -h
        Print this help message and exit.
@@ -26,6 +30,7 @@ import time
 
 
 program = sys.argv[0]
+localtime = None
 
 def usage(code, msg=''):
     print __doc__ % globals()
@@ -35,7 +40,7 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                                   'c:h', ['config-file=','help'])
+                                   'c:lh', ['config-file=','localtime','help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -44,6 +49,8 @@ for opt, arg in opts:
         usage(0)
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
+    elif opt in ('-l', '--localtime'):
+        localtime = 1
 
 
 try:
@@ -107,7 +114,13 @@ def main():
 	    sys.exit()
 
 	now = time.time()
-        expires_str = time.asctime(time.gmtime(expires)) + ' UTC'
+
+        if localtime:
+            local_tz = time.strftime("%Z", time.localtime(expires))
+            expires_str = time.asctime(time.localtime(expires)) + ' ' + local_tz
+        else:
+            expires_str = time.asctime(time.gmtime(expires)) + ' UTC'
+
 	if now > expires:
 	    print 'STATUS:  EXPIRED'
 	    print 'EXPIRED: %s' % (expires_str)
