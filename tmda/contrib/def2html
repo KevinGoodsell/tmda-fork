@@ -56,11 +56,10 @@ def escape(text):
         text = text.replace(char, entity)
     return text
 
-def is_all_caps(text):
-    for ch in list(text):
-        if ch not in string.uppercase + '_':
-            return 0
-    return 1
+def looks_like_term(text):
+    if re.match(r'^\w+$', text):
+        return 1
+    return 0
 
 def is_indented(text):
     return text[0] == ' '
@@ -73,7 +72,7 @@ def is_next_line_blank(idx, section):
 def is_line_header(idx, section):
     if idx < len(section):
         line = section[idx]
-        if (re.match(r'[\w_-]+:', line, re.IGNORECASE) and
+        if (re.match(r'[\w-]+:', line) and
             not line.startswith('Example') and
             not line.startswith('NOTE') and
             not line.startswith('WARNING')):
@@ -115,7 +114,7 @@ def read_section(fp):
                 break
         else:
             line = line[2:].rstrip()
-            if not in_section and line and is_all_caps(line):
+            if not in_section and line and looks_like_term(line):
                 name = line
                 in_section = 1
             elif in_section:
