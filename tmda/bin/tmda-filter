@@ -288,7 +288,7 @@ def verify_confirm_cookie(confirm_cookie):
             locate_pending(confirm_timestamp,confirm_pid)
         else:
             logit("BOUNCE confirm_accept",time.time())
-            print("Sorry, your confirmation is invalid.")
+            print("Sorry, this confirmation address is invalid.")
             sys.exit(Defaults.ERR_HARD)
     # post-confirmation
     elif confirm_action == 'done':
@@ -300,7 +300,7 @@ def verify_confirm_cookie(confirm_cookie):
             sys.exit(Defaults.ERR_OK)
         else:
             logit("BOUNCE confirm_done")
-            print("Sorry, your confirmation is invalid.",time.time())
+            print("Sorry, this confirmation address is invalid.",time.time())
             sys.exit(Defaults.ERR_HARD)
 
 
