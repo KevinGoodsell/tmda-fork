@@ -191,6 +191,13 @@ COMMASPACE = ', '
 
 # Utility functions
 
+def quote_rcpts(rcpttos):
+    rcpttos_quoted = []
+    for rcptto in rcpttos:
+        rcpttos_quoted.append("'%s'" % rcptto)
+    return rcpttos_quoted
+
+
 def authfile2dict(file):
     """Read a tmda-ofmipd authentication file, and return a dictionary
     containing username:password pairs.  Username returned in
@@ -696,7 +703,8 @@ class TMDAProxy(PureProxy):
                 os.environ['HOME'] = Util.gethomedir(auth_username)
                 try:
                     Util.pipecmd('%s %s' %
-                                 (inject_cmd, ' '.join(rcpttos)), data)
+                                 (inject_cmd, ' '.join
+                                  (quote_rcpts(rcpttos))), data)
                 except Exception, err:
                     print >> DEBUGSTREAM, 'Error:', err
                     os._exit(-1)
@@ -708,7 +716,8 @@ class TMDAProxy(PureProxy):
                     raise IOError, 'tmda-inject failed!'
         else:
             # no need to fork
-            Util.pipecmd('%s %s' % (inject_cmd, ' '.join(rcpttos)), data)
+            Util.pipecmd('%s %s' % (inject_cmd, ' '.join
+                                    (quote_rcpts(rcpttos))), data)
 
 
 def main():

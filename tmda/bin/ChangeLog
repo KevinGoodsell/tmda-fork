@@ -1,3 +1,8 @@
+2002-07-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-ofmipd (TMDAProxy.process_message): Single-quote each
+	recipient on the tmda-inject command line.
+
 2002-07-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-ofmipd: Documentation updates.
