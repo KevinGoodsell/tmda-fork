@@ -113,7 +113,6 @@ for opt, arg in opts:
 
 
 from TMDA import Defaults
-from TMDA import Deliver
 from TMDA import Cookie
 from TMDA import Errors
 from TMDA import FilterParser
@@ -431,7 +430,7 @@ def verify_confirm_cookie(confirm_cookie):
                 # Someone must be sending a message directly to a
                 # 'confirm-done' address, possibly in an attempt to
                 # sneak it through.
-                logit("DROP missing_confirm_done_headers")
+                logit("DROP missing_delivery_header")
                 mta.stop()
             # Record this message in the cache as a dictionary,
             # where the message filename is the key, and how it was
