@@ -48,6 +48,7 @@ MODE_EXEC = 01
 MODE_READ = 04
 MODE_WRITE = 02
 NL = '\n'
+POSIX_NAME_MAX = 255                    # maximum length of a file name
 
 
 def gethostname():
@@ -449,10 +450,14 @@ def normalize_sender(sender):
       outside the directory.
     - Spaces are replaced with underscores.
     - The address is lowercased.
+    - Truncate sender at 233 chars to insure the full filename
+    (including time, pid, and two dots) fits within the POSIX limit of
+    255 chars for a filename.
     """
     sender = sender.replace(' ', '_')
     sender = sender.replace('/', ':')
-    return sender.lower()
+    sender = sender.lower()
+    return sender[:POSIX_NAME_MAX - 22]
 
 
 def confirm_append_address(xp, rp):
