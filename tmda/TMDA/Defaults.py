@@ -199,8 +199,8 @@ if not vars().has_key('LOGFILE'):
     LOGFILE = 0
 
 # TIMEOUT
-# The timeout interval for 'dated' addresses.  The units can be
-# (w=weeks, d=days, h=hours, m=minutes, s=seconds).
+# The timeout interval for 'dated' addresses.  The available units are
+# (Y=years, M=months, w=weeks, d=days, h=hours, m=minutes, s=seconds).
 # Default is 5d (5 days).
 if not vars().has_key('TIMEOUT'):
     TIMEOUT = "5d"
