@@ -88,6 +88,8 @@ def Show():
       Key = "%s%s" % tuple(Parts[0:2])
       if Form.has_key(Key):
         PVars[Parts[0:2]] = Form[Key].value
+      else:
+        PVars[Parts[0:2]] = ""
     PVars.Save()
 
   # Find any theme vars they let us configure

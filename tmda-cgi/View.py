@@ -145,6 +145,9 @@ def Show():
         elif Form["subcmd"].value == "black":
           MsgObj.blacklist()
           MsgObj.delete()
+        elif Form["subcmd"].value == "spamcop":
+          CgiUtil.ReportToSpamCop(MsgObj)
+          MsgObj.delete()
         del Msgs[MsgIdx]
       except IOError: pass
 
@@ -196,10 +199,13 @@ width="18" height="18" alt="Last">"""
   if PVars[("General", "UseJSConfirm")] == "Yes":
     T["DeleteURL"]    = "javascript:ConfirmDelete()"
     T["BlacklistURL"] = "javascript:ConfirmBlacklist()"
+    T["SpamCopURL"]   = "javascript:ConfirmSpamCop()"
   else:
     T["DeleteURL"]    = "%s?cmd=view&subcmd=delete&SID=%s" % \
       (os.environ["SCRIPT_NAME"], PVars.SID)
     T["BlacklistURL"] = "%s?cmd=view&subcmd=black&SID=%s" % \
+      (os.environ["SCRIPT_NAME"], PVars.SID)
+    T["SpamCopURL"]   = "%s?cmd=view&subcmd=spamcop&SID=%s" % \
       (os.environ["SCRIPT_NAME"], PVars.SID)
 
   # Read in e-mail
@@ -238,16 +244,20 @@ width="18" height="18" alt="Last">"""
   ShowPart(MsgObj.msgobj)
 
   # Remove unneeded bits?
-  Columns = 9
+  NumCols = int(T["NumCols"])
   if not Defaults.PENDING_BLACKLIST_APPEND:
-    Columns -= 1
+    NumCols -= 1
     T["BlIcon1"]
     T["BlIcon2"]
   if not Defaults.PENDING_WHITELIST_APPEND:
-    Columns -= 1
+    NumCols -= 1
     T["WhIcon1"]
     T["WhIcon2"]
-  T["Columns"] = Columns
+  if not PVars[("General", "SpamCopAddr")]:
+    NumCols -= 1
+    T["SCIcon1"]
+    T["SCIcon2"]
+  T["NumCols"] = NumCols
   if len(Attachment.HTML) == 0:
     T["NoAttachments"]
 

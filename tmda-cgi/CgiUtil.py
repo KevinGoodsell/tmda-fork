@@ -138,3 +138,16 @@ the open and close tag should be removed as well."""
         Str = Str[Match.end():]
     else:
       return RetVal + Str
+
+def ReportToSpamCop(MsgObj):
+  "Report a given message to SpamCop."
+  
+  if PVars[("NoOverride", "Sendmail")]:
+    Sendmail = "-s %s" % PVars[("NoOverride", "Sendmail")]
+  else:
+    Sendmail = ""
+  Command = "%s reporter.py %s%s" % (sys.executable, Sendmail,
+    PVars[("General", "SpamCopAddr")])
+  P = os.popen(Command, "w")
+  P.write(MsgObj.msgobj.as_string(1))
+  P.close()

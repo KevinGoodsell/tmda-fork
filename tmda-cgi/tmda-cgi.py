@@ -21,6 +21,8 @@
 
 "Web interface to TMDA tools."
 
+import MyCgiTb
+
 import cgi
 import os
 import sys
@@ -34,7 +36,6 @@ sys.path.insert(0, os.path.join(os.environ["TMDA_BASE_DIR"], "TMDA",
 from TMDA import Errors
 
 import CgiUtil
-import MyCgiTb
 import Session
 import Template
 
@@ -161,6 +162,9 @@ elif Form.has_key("cmd"):
     except Errors.MessageError:  # No messages left?
       import PendList
       Call(PendList)
+  elif Cmd == "templates":
+    import Templates
+    Call(Templates)
   elif Cmd == "test_addr":
     import TestAddr
     Call(TestAddr)

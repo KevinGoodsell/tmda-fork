@@ -6,6 +6,7 @@ function TestConfirm()
 {
   ToBlacklist = 0
   ToDelete = 0
+  ToSpamCop = 0
   for (i = 0; i < %(PagerSize)s; i++)
   {
     action = document.forms.actions["a" + i]
@@ -14,29 +15,38 @@ function TestConfirm()
       {
         if (action[j].checked && (action[j].value == "blacklist")) ToBlacklist++
         if (action[j].checked && (action[j].value == "delete")) ToDelete++
+        if (action[j].checked && (action[j].value == "spamcop")) ToSpamCop++
       }
   }
   if (ToDelete)
-    if (ToBlacklist) Msg = "Permanently delete and blacklist"
-    else Msg = "Permanently delete"
+    if (ToBlacklist)
+      if (ToSpamCop) Msg = "Permanently delete, blacklist, and report"
+      else Msg = "Permanently delete and blacklist"
+    else
+      if (ToSpamCop) Msg = "Permanently delete and report"
+      else Msg = "Permanently delete"
   else
-    if (ToBlacklist) Msg = "Permanently blacklist"
-    else return true
-  if ((ToDelete + ToBlacklist) == 1) Msg += " this pending message?"
+    if (ToBlacklist)
+      if (ToSpamCop) Msg = "Blacklist and report"
+      else Msg = "Blacklist"
+    else
+      if (ToSpamCop) Msg = "Report"
+      else return true
+  if ((ToDelete + ToBlacklist + ToSpamCop) == 1) Msg += " this pending message?"
   else Msg += " these pending messages?"
-  if (ToDelete) Msg += "\nAny confirmation that follows will fail."
+  if (ToDelete + ToSpamCop) Msg += "\nAny confirmation that follows will fail."
   return confirm(Msg)
 }
 
 function Set(Value)
 {
-  G = 0
-  while (document.forms[0]["a" + G])
+  i = 0
+  while (document.forms[0]["a" + i])
   {
-    Group = document.forms[0]["a" + G]
-    for (i = 0; i < Group.length; i++)
-      if (Group[i].value == Value) Group[i].checked = 1
-    G++
+    group = document.forms.actions["a" + i]
+    for (j = 0; j < group.length; j++)
+      if (group[j].value == Value) group[j].checked = 1
+    i++
   }
 }
 // -->
@@ -101,6 +111,12 @@ function Set(Value)
                   width="20" height="15" alt="Blacklist" 
                   title="Blacklist"></a></td>
               <!-- /var -->
+              <!-- var: SCIcon -->
+                <td width="1%"><a href="javascript:Set('spamcop')"><img
+                  src="%(ThemeDir)s/buttons/options_r1_c6.gif" border="0" 
+                  width="20" height="15" alt="Report to SpamCop" 
+                  title="Report to SpamCop"></a></td>
+              <!-- /var -->
                 <th width="150" align="left" style="padding-left: 20px">
                   Sender
                 </th>
@@ -114,7 +130,7 @@ function Set(Value)
                   Size
                 </th>
               </tr>
-<!-- var: NumCols="8" --><!-- var: NumBlankCols="3" -->
+<!-- var: NumCols="9" --><!-- var: NumBlankCols="3" -->
 <!-- var: Row -->
       <tr>
         <td colspan="%(NumCols)s" bgcolor="#7A7AB6" height="1"></td>
@@ -138,6 +154,11 @@ function Set(Value)
        <!-- var: BlRadio -->
         <td valign="top">
           <input type="radio" name="%(RadioName)s" value="blacklist">
+        </td>
+       <!-- /var -->
+       <!-- var: SCRadio -->
+        <td valign="top">
+          <input type="radio" name="%(RadioName)s" value="spamcop">
         </td>
        <!-- /var -->
         <td valign="top" style="padding-left: 8px">%(Sender)s</td>

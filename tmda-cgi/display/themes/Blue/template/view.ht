@@ -11,6 +11,11 @@ function ConfirmBlacklist()
   if (confirm("Blacklist sender and permanently delete this pending message?"))
     document.location.href = "%(Script)s?cmd=view&subcmd=black&msgid=%(MsgID)s&SID=%(SID)s"
 }
+function ConfirmSpamCop()
+{
+  if (confirm("Permanently delete this pending message and report to SpamCop?"))
+    document.location.href = "%(Script)s?cmd=view&subcmd=spamcop&msgid=%(MsgID)s&SID=%(SID)s"
+}
 </script>
 <table width="100%" border="2" cellpadding="0" cellspacing="0"
   bordercolor="#4E508F">
@@ -41,6 +46,11 @@ function ConfirmBlacklist()
               src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59"
               height="18" alt="Whitelist & Release" title="Whitelist & Release"></a></td>
           <!-- /var -->
+          <!-- var: SCIcon1 -->
+            <td><a href="%(SpamCopURL)s"><img
+              src="%(ThemeDir)s/buttons/subnav_r1_c16.gif" border="0" width="53"
+              height="18" alt="Report to SpamCop & Delete" title="Report to SpamCop & Delete"></a></td>
+          <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56"
             height="18" alt="Toggle Headers" title="Toggle Headers"></a></td>
@@ -54,7 +64,8 @@ function ConfirmBlacklist()
             height="18" alt="Last" title="Last"></a><!-- /var --></td>
         </tr>
         <tr bgcolor="#DADCEB">
-          <td colspan="%(Columns)d" class="%(EmailClass)s">
+          <!-- var: NumCols="10" -->
+          <td colspan="%(NumCols)d" class="%(EmailClass)s">
 <!-- var: ShortHeaders -->
             <table class="Headers" border="0" cellspacing="0" cellpadding="0">
 <!-- var: HeaderRow -->
@@ -117,6 +128,11 @@ function ConfirmBlacklist()
             <td><a href="%(Script)s?cmd=view&subcmd=white&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59"
               height="18" alt="Whitelist & Release" title="Whitelist & Release"></a></td>
+          <!-- /var -->
+          <!-- var: SCIcon2 -->
+            <td><a href="%(SpamCopURL)s"><img
+              src="%(ThemeDir)s/buttons/subnav_r1_c16.gif" border="0" width="53"
+              height="18" alt="Report to SpamCop & Delete" title="Report to SpamCop & Delete"></a></td>
           <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56"

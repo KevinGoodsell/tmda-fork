@@ -238,17 +238,17 @@ Not safe to proceed in form mode.
         else:
           if len(Parts) == 2:
             Value = repr(Value)
-          elif len(Parts) > 1:
-            for Part in Parts[1:]:
-              if str(Value) == Part:
-                T["%s%sSelected" % (Parts[0], Part)] = " selected"
-                T["%s%sChecked" % (Parts[0], Part)] = " checked"
-              else:
-                T["%s%sSelected" % (Parts[0], Part)] = ""
-                T["%s%sChecked" % (Parts[0], Part)] = ""
           else:
             Value = str(Value)
         T[Parts[0]] = Value
+        if len(Parts) > 2:
+          for Part in Parts[1:]:
+            if str(Value) == Part:
+              T["%s%sSelected" % (Parts[0], Part)] = " selected"
+              T["%s%sChecked" % (Parts[0], Part)] = " checked"
+            else:
+              T["%s%sSelected" % (Parts[0], Part)] = ""
+              T["%s%sChecked" % (Parts[0], Part)] = ""
   else:
     FileContents = "".join(FileContents)
 

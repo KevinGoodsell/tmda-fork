@@ -1,0 +1,28 @@
+Title: Autoresponse Templates
+
+<table align="center">
+  <form method="post" action="%(Script)s">
+<!-- var: Row -->
+    <tr>
+      <td height="30" align="center"><b>%(FilePath)s:</b></td>
+    </tr>
+    <tr>
+      <td>&nbsp;<textarea name="%(Var)s" cols="72" 
+        rows="10">%(FileContents)s</textarea>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><hr color="#4E508F"></td>
+    </tr>
+<!-- /var -->
+    <tr align="center">
+      <td height="30" valign="bottom">
+<!-- var: SaveButton -->
+        <input type="submit" value="Save">
+        <input type="hidden" name="subcmd" value="save">
+        <input type="hidden" name="cmd" value="templates">
+        <input type="hidden" name="SID" value="%(SID)s">
+<!-- /var (SaveButton) -->
+      </td>
+    </tr>
+  </form>
+</table>

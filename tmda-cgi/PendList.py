@@ -69,6 +69,9 @@ def Show():
             elif Form["a%d" % Count].value == "blacklist":
               MsgObj.blacklist()
               MsgObj.delete()
+            elif Form["a%d" % Count].value == "spamcop":
+              CgiUtil.ReportToSpamCop(MsgObj)
+              MsgObj.delete()
           except IOError: pass
 
   # Locate messages in pending dir
@@ -158,6 +161,7 @@ width="18" height="18" alt="Last">"""
   NumBlankCols = int(T["NumBlankCols"])
   WhRadio = T["WhRadio"]
   BlRadio = T["BlRadio"]
+  SCRadio = T["SCRadio"]
   if not Defaults.PENDING_WHITELIST_APPEND:
     T["WhIcon"]
   else:
@@ -165,6 +169,11 @@ width="18" height="18" alt="Last">"""
     NumBlankCols += 1
   if not Defaults.PENDING_BLACKLIST_APPEND:
     T["BlIcon"]
+  else:
+    NumCols += 1
+    NumBlankCols += 1
+  if not PVars[("General", "SpamCopAddr")]:
+    T["SCIcon"]
   else:
     NumCols += 1
     NumBlankCols += 1
@@ -192,8 +201,8 @@ width="18" height="18" alt="Last">"""
       # Print a single message record inside list loop
       try:
         MsgObj = Pending.Message(Msg)
-      except IOError:
-        pass
+      except IOError, ErrStr:
+        continue
 
       # Message size
       T["Size"] = CgiUtil.Size(MsgObj)
@@ -276,6 +285,9 @@ width="18" height="18" alt="Last">"""
         if Defaults.PENDING_BLACKLIST_APPEND:
           BlRadio.Clear()
           BlRadio.Add()
+        if PVars[("General", "SpamCopAddr")]:
+          SCRadio.Clear()
+          SCRadio.Add()
 
         Row.Add()
         Count = Count + 1

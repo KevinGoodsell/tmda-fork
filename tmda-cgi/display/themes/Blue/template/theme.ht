@@ -40,7 +40,7 @@ border="0"></a><br>
   PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db,
   Login:InitPage:pending:gen_addr, PendingList:CropSender,
   PendingList:CropSubject, PendingList:ShowAddr:Name:Address:All,
-  ViewPending:AllowTags, ViewPending:BlockRemove" -->
+  ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr" -->
 <table>
   <form method="post" action="%(Script)s">
     <tr>
@@ -77,7 +77,6 @@ border="0"></a><br>
       <td>&nbsp;</td>
       <td>Number of pending e-mails to show in list form</td>
     </tr>
-:Name:Address:All
     <tr>
       <td align="center"><select name="PendingListShowAddr">
           <option %(PendingListShowAddrNameSelected)s
@@ -139,6 +138,12 @@ border="0"></a><br>
       <td>&nbsp;</td>
       <td><input type="text" name="ViewPendingBlockRemove"
         value="%(ViewPendingBlockRemove)s" size="45"></td>
+    </tr>
+    <tr>
+      <td><a href="http://spamcop.net">SpamCop</a> Addr.</td>
+      <td>&nbsp;</td>
+      <td><input type="text" name="GeneralSpamCopAddr"
+        value="%(GeneralSpamCopAddr)s" size="45"></td>
     </tr>
     <tr>
       <td colspan="3" align="center"><br>
