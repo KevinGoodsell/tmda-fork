@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
   putenv(MODE);
   putenv(USER);
   putenv(DISP_DIR);
+  putenv(BASE_DIR);
 
   if (!chdir(INSTALL))
   {
