@@ -1,3 +1,11 @@
+2001-12-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-pre.ht (href): Clarify the required format of SENDER,
+	RECIPIENT, and EXTENSION.
+
+	* config-server.ht: Update the sample procmail recipe for Sendmail
+	to remove angle brackets from the SENDER and RECIPIENT vars.
+
 2001-12-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-client.ht: Mention that tmda-sendmail will use the

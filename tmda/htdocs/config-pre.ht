@@ -123,14 +123,29 @@ from a .forward file.  In order to be reliable, TMDA needs these
 might be in the To: or From: headers.<br><br>
 
 So in order to use TMDA, you need some way to obtain the necessary
-envelope information and set the corresponding environment variables.
+envelope information and set the above mentioned environment
+variables.  It matters not how you do this, just as long as these
+variables are properly set by the time TMDA sees the message.  TMDA
+expects these variables to be in the following format:
+
+<blockquote><pre>
+SENDER=sender@domain.dom
+RECIPIENT=recipient@domain.dom
+EXTENSION=foo
+</blockquote></pre>
+
+That is, just the e-mail address or recipient address extension, with no
+trailing or leading whitespace, or any other extraneous characters.
+<br><br>
+
 If your Sendmail installation is using <a
 href="http://www.procmail.org/" TARGET="Resource Window">procmail</a>
-as its local mailer, you can do this by configuring Sendmail to add
+as its local mailer, one way to do this is to have Sendmail to add
 the envelope information as headers in the message.  Your
 <b>.procmailrc</b> can then set the environment variables from these
 headers.  The necessary Sendmail configuration changes are
-covered below.  <br><br>
+covered below, and a sample .procmailrc is shown in the next section.
+<br><br>
 
 <ol>
 

@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Dec 14 20:22:21 2001 -->
+<!-- Mon Dec 17 10:25:48 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -422,8 +422,9 @@ to do final delivery:
 <blockquote><pre>
 
 # Set the necessary environment variables.
-SENDER=`formail -x X-Envelope-From | sed 's/^[ ]*//'`
-RECIPIENT=`formail -x X-Envelope-To | sed 's/^[ ]*//'`
+# Remove the angle brackets and leading whitespace.
+SENDER=`formail -x X-Envelope-From | sed 's/[<>]//g;s/^[ ]*//'`
+RECIPIENT=`formail -x X-Envelope-To | sed 's/[<>]//g;s/^[ ]*//'`
 EXTENSION="$1"
 
 # Run the message through tmda-filter.
