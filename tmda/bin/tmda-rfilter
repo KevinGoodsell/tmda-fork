@@ -320,11 +320,12 @@ def send_bounce(bounce_message, **vars):
         headers['Date'] = Util.make_date(timesecs)
         headers['Message-ID'] = Util.make_msgid(timesecs)
         # References
-        refs = [message_headers.getheader(h)
-                for h in ['references', 'message-id']
-                if message_headers.has_key(h)]
+        refs = []
+        for h in ['references', 'message-id']:
+            if message_headers.has_key(h):
+                refs = refs + message_headers.getheader(h).split()
         if refs:
-            headers['References'] = ' '.join(refs)
+            headers['References'] = '\n\t'.join(refs)
         # In-Reply-To
         if message_headers.has_key('message-id'):
             headers['In-Reply-To'] = (
