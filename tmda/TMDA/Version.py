@@ -3,7 +3,6 @@
 """ Various versioning information."""
 
 
-import string
 import sys
 
 
@@ -11,15 +10,11 @@ import sys
 TMDA = "0.46+"
 
 # Python version
-PYTHON = string.split(sys.version)[0]
+PYTHON = sys.version.split()[0]
 
 # Platform identifier
-try:
-    import distutils.util
-    PLATFORM = distutils.util.get_platform()
-except ImportError:
-    PLATFORM = sys.platform
+PLATFORM = sys.platform
 
 # A summary of all the version identifiers.  e.g,
-# TMDA/0.43 (Python 2.2; linux-sparc64)
+# TMDA/0.46 (Python 2.2; freebsd4)
 ALL = "TMDA/%s (Python %s; %s)" % (TMDA, PYTHON, PLATFORM)
