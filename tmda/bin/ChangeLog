@@ -1,3 +1,7 @@
+2003-04-18  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-ofmipd (main): Ignore SIGHUP if not in foreground.
+	
 2003-03-11  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-inject (inject_message): Prepend a Received header if

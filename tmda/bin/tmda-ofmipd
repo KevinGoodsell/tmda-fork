@@ -161,6 +161,7 @@ OPTIONS:
 
 import getopt
 import os
+import signal
 import socket
 import sys
 
@@ -1243,6 +1244,7 @@ def main():
     #    print "could be changed in a future version."
     # Try to fork to go to daemon unless foreground mode
     if not foreground:
+        signal.signal(signal.SIGHUP, signal.SIG_IGN) # ignore SIGHUP
         if os.fork() != 0:
             sys.exit()
 
