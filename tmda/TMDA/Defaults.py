@@ -16,7 +16,7 @@ import Util
 # General system-wide defaults
 ##############################
 
-TMDA_VERSION = "0.15"
+TMDA_VERSION = "0.16"
 TMDA_HOMEPAGE = "<http://tmda.sourceforge.net/>"
 
 # Exit codes: everything except 0, 99 and 100 are soft errors.
