@@ -1,5 +1,11 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.72:
+
+* contrib/vipmap-to-authmap has been removed.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.69:
 
 * tmda-ofmipd now disables CRAM-MD5 negotiation when the -R or -A

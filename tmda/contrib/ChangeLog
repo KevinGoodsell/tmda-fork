@@ -1,3 +1,8 @@
+2003-03-18  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* update-internaldomains: New script from Jesse Guardiani.
+	Removed vipmap-to-authmap.
+
 2003-02-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tofmipd.init, tofmipd.sysconfig, cgi/tmda-cgi.conf: New support
