@@ -144,11 +144,12 @@ def file_to_list(file,list):
 
 def findmatch(list, *addrs):
     """Determine whether any of the passed e-mail addresses match a
-    Unix shell-style wildcard pattern contained in list.  Also, return
-    the second half of the string if it exists (for exp and ext
-    addresses only)."""
+    Unix shell-style wildcard pattern contained in list.  The
+    comparison is case-insensitive.  Also, return the second half of
+    the string if it exists (for exp and ext addresses only)."""
     for address in addrs:
         if address:
+            address = string.lower(address)
             for p in list:
                 stringparts = string.split(p)
                 p = stringparts[0]

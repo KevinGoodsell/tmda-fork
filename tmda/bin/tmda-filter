@@ -486,11 +486,9 @@ def main():
         cookie_value = None
     
     # Extract the e-mail address from From:, and Reply-To:
-    EnvelopeSender = string.lower(envelope_sender)
+    EnvelopeSender = envelope_sender
     From = message_headers.getaddr('from')[1]
-    if From:From = string.lower(From)
     ReplyTo = message_headers.getaddr('reply-to')[1]
-    if ReplyTo:ReplyTo = string.lower(ReplyTo)
     
     # Is the sender in the BLACKLIST?
     if os.path.exists(Defaults.BLACKLIST):

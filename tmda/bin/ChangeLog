@@ -1,3 +1,11 @@
+2001-10-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (main): Don't downcase address_list since
+	Util.findmatch now does case-insensitive comparisons.
+
+	* tmda-filter (main): Remove downcasing of addresses here since
+	Util.findmatch now does case-insensitive comparisons.
+
 2001-10-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (inject_message): Support MESSAGE_FROM_STYLE.
