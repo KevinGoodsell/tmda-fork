@@ -1,3 +1,8 @@
+2003-03-11  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-inject (inject_message): Prepend a Received header if
+	injecting via tmda-inject.
+
 2003-03-05  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-ofmipd (SMTPChannel.smtp_EHLO): Add a Received header
