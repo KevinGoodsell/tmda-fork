@@ -54,13 +54,6 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
         self.__d = {'rootdir': rootdir}
         p.process_sidebar()
         p.sidebar.append(BLANKCELL)
-        # It is important not to have newlines between the img tag and the end
-        # end center tags, otherwise layout gets messed up.
-#        p.sidebar.append(('%(rootdir)s', '''
-#<center>
-#    <img alt="[Python Powered]" border=0
-#         src="PythonPoweredSmall.png"></center>
-#''' % self.__d))
         self.__linkfixer.massage(p.sidebar, self.__d)
         Sidebar.__init__(self, p.sidebar)
         #p.sidebar.append(BLANKCELL)
@@ -99,18 +92,8 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
     def get_corner(self):
         # It is important not to have newlines between the img tag and the end
         # anchor and end center tags, otherwise layout gets messed up
-#        return '''
-#<center>
-#    <a href="index.html">
-#    <img alt="ht2html" border=0
-#         src="ht2html.png"></a></center>''' % \
-#self.__d
-        return '''
-        <font color="#191970">
-        <h3> T M D A </h3>
-        </font>''' % \
-        self.__d
-        
+        return '''<center><font size="+2"
+        >&gt;&gt;&gt;&nbsp;TMDA&nbsp</font></center>'''
 
     def get_body(self):
         self.__grokbody()
@@ -135,7 +118,7 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
     # python.org color scheme overrides
     def get_lightshade(self):
         return '#cccccc'
-
+        
     def get_mediumshade(self):
         return '#9862cb'
 
@@ -143,8 +126,8 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
         return '#191970'
 
     def get_corner_bgcolor(self):
-        return '#191970'
-
+        return '#afeeee'
+    
 # jython.org color scheme
 #     def get_lightshade(self):
 #         return '#cccccc'
