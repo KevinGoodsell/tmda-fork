@@ -36,34 +36,42 @@ OPTIONS:
 
     -V
     --version
-	Print TMDA version information and exit.
+        Print TMDA version information and exit.
 
     -d
     --debug
-	Turn on debugging prints.
+        Turn on debugging prints.
+
+    -f
+    --foreground
+        Run in foreground.
+
+    -b
+    --background
+        Run in background (default).
 
     -u <username>
     --username <username>
-	The username that this program should run under.  The default
-	is to run as the user who starts the program unless that is
-	root, in which case an attempt to seteuid user `tofmipd' will be
-	made.  Use this option to override these defaults.
+        The username that this program should run under.  The default
+        is to run as the user who starts the program unless that is
+        root, in which case an attempt to seteuid user `tofmipd' will be
+        made.  Use this option to override these defaults.
 
     -p <host:port>
     --proxyport <host:port>
-	The host:port to listen for incoming connections on.  The
-	default is FQDN:8025 (i.e, port 8025 on the fully qualified
-	domain name for the local host).
+        The host:port to listen for incoming connections on.  The
+        default is FQDN:8025 (i.e, port 8025 on the fully qualified
+        domain name for the local host).
 
     -R proto[://host[:port]]
     --remoteauth proto[://host[:port]][/dn]
         Host to connect to to check username and password.
         - proto can be one of the following:
-	  `imap' (IMAP4 server)
-	  'imaps' (IMAP4 server over SSL)
-	  `pop3' (POP3 server)
-	  `apop' (POP3 server with APOP authentication)
-	  `ldap' (LDAP server)
+          `imap' (IMAP4 server)
+          'imaps' (IMAP4 server over SSL)
+          `pop3' (POP3 server)
+          `apop' (POP3 server with APOP authentication)
+          `ldap' (LDAP server)
         - host defaults to localhost
         - port defaults to 143 (imap), 993 (imaps), 110 (pop3/apop), 389 (ldap)
         - dn is mandatory for ldap and should contain a `%%s' identifying
@@ -76,8 +84,8 @@ OPTIONS:
     --authprog <program>
         checkpassword compatible command used to check username/password. e.g,
               `-A /usr/sbin/checkpassword-pam -s id --stdin -- /bin/true'
-	The program must be able to receive the username/password pair
-	on its stdin, and in the following format:
+        The program must be able to receive the username/password pair
+        on its stdin, and in the following format:
               `username\\0password\\0'
 
     -a <file>
@@ -132,6 +140,7 @@ proxyport = '%s:%s' % (FQDN, 8025)
 program = sys.argv[0]
 configdir = None
 authprog = None
+foreground = None
 remoteauth = { 'proto': None,
                'host':  'localhost',
                'port':  None,
@@ -191,7 +200,7 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'p:u:R:A:a:c:C:dVh', ['proxyport=',
+                             'p:u:R:A:a:c:C:dVhfb', ['proxyport=',
                                                      'username=',
                                                      'authfile=',
                                                      'remoteauth=',
@@ -200,7 +209,9 @@ try:
                                                      'connections=',
                                                      'debug',
                                                      'version',
-                                                     'help'])
+                                                     'help',
+                                                     'foreground',
+                                                     'background'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -215,10 +226,14 @@ for opt, arg in opts:
         sys.exit()
     elif opt in ('-d', '--debug'):
         DEBUGSTREAM = sys.stderr
+    elif opt in ('-f', '--foreground'):
+        foreground = 1
+    elif opt in ('-b', '--background'):
+        foreground = 0
     elif opt in ('-p', '--proxyport'):
 	proxyport = arg
     elif opt in ('-u', '--username'):
-	username = arg
+        username = arg
     elif opt in ('-R', '--remoteauth'):
         # arg is like: imap://host:port
         try:
@@ -250,13 +265,13 @@ for opt, arg in opts:
                remoteauth['port'], remoteauth['dn'])
         remoteauth['enable'] = 1
     elif opt in ('-A', '--authprog'):
-	authprog = arg
+        authprog = arg
     elif opt in ('-a', '--authfile'):
-	authfile = arg
+        authfile = arg
     elif opt in ('-c', '--configdir'):
-	configdir = arg
+        configdir = arg
     elif opt in ('-C', '--connections'):
-	connections = arg
+        connections = arg
         
 
 import asynchat
@@ -539,7 +554,7 @@ class SMTPChannel(asynchat.async_chat):
             # Then with the authprog
             if run_authprog(username, password) == 0:
                 return 1
-	    # Now we can fall back on the authfile
+        # Now we can fall back on the authfile
         authdict = authfile2dict(authfile)
         if authdict.get(username.lower(), 0) != password:
             return 0
@@ -566,7 +581,7 @@ class SMTPChannel(asynchat.async_chat):
             # Then with the authprog
             if run_authprog(username, password) == 0:
                 return 1
-	    # Now we can fall back on the authfile
+        # Now we can fall back on the authfile
         authdict = authfile2dict(authfile)
         if authdict.get(username.lower(), 0) != password:
             return 0
@@ -1024,6 +1039,18 @@ def main():
         os.setgroups(Util.getgrouplist(username))
         # try seteuid()
         os.seteuid(pw_uid)
+
+    # Issue a warning if neither -f nor -b options specified
+    #if foreground is None:
+    #    print "WARNING: you should specify -b",
+    #    print "(background) or -f (foreground) option."
+    #    print "The default (background) behavior",
+    #    print "could be changed in a future version."
+    # Try to fork to go to daemon unless foreground mode
+    if not foreground:
+        if os.fork() != 0:
+            sys.exit()
+
     # Start the event loop
     try:
         asyncore.loop()
