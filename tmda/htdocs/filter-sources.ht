@@ -34,9 +34,9 @@ The <code>to-*</code> sources examine the envelope recipient address but
 href="#email_address">below</a>. <br>
     <br>
   <dt> <code> from-file [ <a href="#autoflags">-autocdb</a> | <a href="#autoflags">-autodbm</a> 
-    ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a><br>
+    ] [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a><br>
     to-file [ <a href="#autoflags">-autocdb</a> | <a href="#autoflags">-autodbm</a> 
-    ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a> </code> 
+    ] [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a> </code> 
   <dd> The <code>from-file</code> and <code>to-file</code> sources expect the 
     name of a textfile as the match field. You can specify the entire path explicitly 
     or use a leading '~' to represent the user's home directory, like the shell 
@@ -51,13 +51,16 @@ href="#email_file">below</a>. <br>
     <a
 href="#autoflags">below</a>. <br>
     <br>
+    <code>-domains</code> tells the parser that the target file might also
+    contain <a href="#domains">domains</a>.<br>
+    <br>
     If the <code>-optional</code> flag is given, the non-existence of the file 
     is not an error. If the file should exist, don't specify this flag; the parser 
     will log an error and will defer the mail so that you have a chance to fix 
     the problem. <br>
     <br>
-  <dt> <code> from-cdb [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a><br>
-    to-cdb [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a> </code> 
+  <dt> <code> from-cdb [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a><br>
+    to-cdb [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a> </code> 
   <dd> The <code>from-cdb</code> and <code>to-cdb</code> sources expect a match 
     field of a CDB database filename. You can specify the entire path or use a 
     leading '~' to represent the user's home directory. You should specify the 
@@ -65,19 +68,25 @@ href="#autoflags">below</a>. <br>
     contents are documented <a
 href="#db_file">below</a>. <br>
     <br>
+    <code>-domains</code> tells the parser that the target CDB might also
+    contain <a href="#domains">domains</a>.<br>
+    <br>
     If the <code>-optional</code> flag is given, the non-existence of the file 
     is not an error. If the file should exist, don't specify this flag; the parser 
     will log an error and will defer the mail so that you have a chance to fix 
     the problem. <br>
     <br>
-  <dt> <code> from-dbm [ -optional ] <a href="#db_file">&lt;database.db&gt;</a><br>
-    to-dbm [ -optional ] <a href="#db_file">&lt;database.db&gt;</a> </code> 
+  <dt> <code> from-dbm [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#db_file">&lt;database.db&gt;</a><br>
+    to-dbm [ <a href="#domains">-domains</a> ] [ -optional ] <a href="#db_file">&lt;database.db&gt;</a> </code> 
   <dd> The <code>from-dbm</code> and <code>to-dbm</code> sources expect the name 
     of a DBM database in the match field. You can specify the entire path or use 
     a leading '~' to represent the user's home directory. You should specify the 
     <b>.db</b> extension as part of the filename. The DBM format and expected 
     contents are documented <a
 href="#db_file">below</a>. <br>
+    <br>
+    <code>-domains</code> tells the parser that the target DBM might also
+    contain <a href="#domains">domains</a>.<br>
     <br>
     If the <code>-optional</code> flag is given, the non-existence of the file 
     is not an error. If the file should exist, don't specify this flag; the parser 
@@ -248,9 +257,16 @@ contains whitespace, it should be quoted.
     DBM file. <br>
     <br>
     The special characters are: 
-    <blockquote><pre> Characters(s) Description ------------- ----------- * Matches 
-      everything. ? Matches any single character. [seq] Matches any character 
-      in seq. [!seq] Matches any character not in seq. </blockquote></pre>
+
+	<blockquote><pre>
+Characters(s)    Description
+-------------    -----------
+*                Matches everything.
+?                Matches any single character.
+[seq]            Matches any character in seq.
+[!seq]           Matches any character not in seq.
+	</blockquote></pre>
+
     In addition, `<code>@=</code>' (a custom rule) will expand to match both <code>@</code> 
     and <code>@*.</code> <br>
     <br>
@@ -269,12 +285,41 @@ jdoe@domain.dom
     <strong>NOTE:</strong> To match the empty envelope sender such as bounce messages 
     are sent with, use <b><code><></code></b> as the expression. <br>
     <br>
+
+  <dt> <a name="domains"><b>Domains</b></a> 
+  <dd> The portion after the first <code>@</code> in an e-mail
+	address is considered the "domain". i.e,
+<blockquote><pre>
+jason@mastaler.com -> mastaler.com
+mastaler@cs.yale.edu -> cs.yale.edu
+</blockquote></pre>
+
+Domains must be listed one per line when used in a file. e.g,
+<blockquote><pre>
+wingnet.net
+mastaler.com
+tmda.net
+cs.yale.edu
+</blockquote></pre>
+
+The matching is exact. This isn't wildcarding, so with the above list, 
+<code>mastaler@cs.yale.edu</code> <strong>would</strong> match, but 
+<code>mastaler@wopr.cs.yale.edu</code> <strong>would not</strong> match.  
+You'd have to add <code>wopr.cs.yale.edu</code> to the list first.<br><br>
+
+This feature may be useful for sites that wish to check a large number
+of domain names, but don't want the overhead of the wildcard
+code. This feature is less flexible than wildcarding, but is much
+faster since the list of domains can be stored in a CDB or DBM (either directly, 
+or by using <code>-autocdb</code> / <code>-autodbm</code>).
+<br><br>
+
   <dt> <a name="email_file"><b>Email Address Files</b></a> 
-  <dd> Email address files are textfiles containing an email address on each line. 
+  <dd> Email address files are textfiles containing an email address, domain, or
+    wildcarded email address on each line. 
     When using the <code>from-file</code> and <code>to-file</code> sources, the 
     textfile is searched sequentially, with the first match terminating the search. 
-    Wildcarded email addresses are supported in textfiles. <br>
-    <br>
+    <br><br>
     Address files may contain an optional second field on each line that specifies 
     an action (<code>ok, drop, bounce, etc.</code>). If the action is specified, 
     it overrides the action given in the filter rule. <br>
@@ -300,11 +345,11 @@ Window">python-cdb</a> extension module installed. <br>
     <br>
   <dt> <a name="db_file"><b>Database Files</b></a> 
   <dd> CDB and DBM files are hashed databases. TMDA can look up email addresses 
-    in these files. Lookup in these files is much faster than in a textfile. On 
+    or domains in these files. Lookup in these files is much faster than in a textfile. On 
     the other hand, wildcards are not supported in database files -- only in textfiles. 
     <br>
     <br>
-    In a CDB or DBM, the keys should be the email addresses to match, and their 
+    In a CDB or DBM, the keys should be the email addresses or domain to match, and their 
     corresponding values (or records) should be empty unless you want to override 
     the action specified in the filter file. <br>
     <br>
