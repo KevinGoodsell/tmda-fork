@@ -1,3 +1,8 @@
+2001-06-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (verify_dated_cookie): Check for the discard
+	variable before calling bounce_dated() in all 3 cases.
+
 2001-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (bounce_dated): If the template doesn't exist in

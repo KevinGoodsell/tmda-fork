@@ -165,16 +165,22 @@ def verify_dated_cookie(dated_cookie):
     """Verify a dated cookie."""
     # Save some time if the dated_cookie doesn't exist or is bogus.
     if not dated_cookie:
-        bounce_dated()
+        if discard:
+            sys.exit(Defaults.ERR_STOP)
+        else:
+            bounce_dated()
     dated_cookie_split = string.split(dated_cookie,'.')
     if len(dated_cookie_split) != 2:
-        bounce_dated()
+        if discard:
+            sys.exit(Defaults.ERR_STOP)
+        else:
+            bounce_dated()
 
     cookie_date = dated_cookie_split[0]
     datemac = dated_cookie_split[1]
     newdatemac = Cookie.datemac(cookie_date)
 
-    # Accept the message only if the address has not expired AND the HMAC
+    # Accept the message only if the address has not expired *and* the HMAC
     # can be verified.
     now = time.time()
     if ((int(cookie_date) >= int('%d' % now)) and (datemac == newdatemac)):
