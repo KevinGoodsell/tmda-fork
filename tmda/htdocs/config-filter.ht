@@ -1,0 +1,201 @@
+Title: TMDA Filter Specification
+Links: overview-links.h usage-links.h config-links.h support-links.h
+
+<h3>TMDA Filter Specification</h3>
+
+TMDA filter files are used to control mail both coming in to and going
+out of TMDA.  For incoming, the filter controls how the message is
+disposed of.  For outgoing, it controls how the message is tagged.
+The incoming filter file default is <b>~/.tmda/filters/incoming</b>,
+which can be changed by setting <b>FILTER_INCOMING</b> in your
+<b>tmdarc</b>.  The outgoing filter file default is
+<b>~/.tmda/filters/outgoing</b>, which can be changed by setting
+<b>FILTER_OUTGOING</b>.  
+<br><br>
+
+<u><b>Format of Filter Files</u></b>:
+<br><br>
+
+Each line of a filter file is expected to be a string containing three
+unquoted fields separated by whitespace.  Everything after
+<code><b>#</b></code> on a line is considered a comment and ignored.
+Blank lines and lines with invalid syntax are also ignored:
+Lines are read sequentially from top to bottom, and the first match
+wins.  The three fields are:
+<br>
+
+<blockquote><pre><b>
+source match action
+
+</blockquote></pre></b>
+
+<li><b>source</b>: specifices the source of the match and can be one of:
+<br><br>
+
+(for both incoming and outgoing):
+<blockquote><pre>
+to (recipient address)
+to-file
+to-dbm
+
+</blockquote></pre>
+
+(for incoming only):
+<blockquote><pre>
+from (sender address)
+from-file
+from-dbm
+body (message body)
+body-file
+headers (message headers)
+headers-file
+size (message size)
+
+</blockquote></pre>
+
+<li><b>match</b>: 
+should be an expression, or the full path to a textfile or
+DBM database containing more expressions if <b>source</b> was suffixed
+with `-file' or `-dbm'.  The second field within a textfile or DBM is
+optional, but overrides action if present.  The following table shows
+what the <b>match</b> expression should contain for a given <b>source</b>:
+<br><br>
+
+<blockquote><pre>
+source:		match:
+-------		------
+to*		recipient e-mail address or wildcard expression.
+from*		sender e-mail address or wildcard expression.
+body*		regular expression matching message body content.
+headers*	regular expression matching message header content.
+size		comparison operator and number of bytes to compare to the
+		size of the message.  Only `<' and `>' are supported.
+
+</blockquote></pre>
+
+In addition to explicit e-mail addresses, you can use expressions
+based on UNIX shell-style wildcard characters in either the
+<b>match</b> field of a line, or within the textfile in the
+<b>match</b> field.  The special characters are:
+
+<blockquote><pre>
+
+Characters(s)    Description
+-------------    -----------
+*                Matches everything.
+?                Matches any single character.
+[seq]            Matches any character in seq.
+[!seq]           Matches any character not in seq.
+
+</blockquote></pre>
+
+In addition, <code>`@='</code> (a custom rule) will expand to match
+both <code>@</code> and <code>@*.</code>
+<br><br>
+
+Here are some common examples:
+<blockquote><pre>   
+# match only jdoe@domain.dom
+jdoe@domain.dom
+# match anyone@domain.dom, but not anyone@sub.domain.dom
+*@domain.dom 
+# match anyone@sub.domain.dom, but not anyone@domain.dom
+*@*.domain.dom
+# match both anyone@domain.dom, and anyone@sub.domain.dom
+*@=domain.dom   
+
+</blockquote></pre>
+
+<li><b>action</b>: 
+action specifies what action to take on the message.  An optional
+<code><b>=</b></code> separates the action from the action's option.
+Possible values differ based on whether the message is incoming or
+outgoing.
+<br><br>
+
+(for incoming, action can be one of):
+<blockquote><pre>
+bounce,reject (bounce the message)
+drop,exit,stop (silently drop the message)
+ok,accept,deliver (deliver the message)
+confirm (request confirmation for the message)
+
+</blockquote></pre>
+
+(for outgoing, action can be one of):
+<blockquote><pre>
+bare (don't tag)
+bare=append (don't tag, and also add recipient to your BARE_APPEND file)
+sender (tag with a sender address based on recipient)
+sender=address (tag with a sender address based on address instead)
+dated (tag with a dated address)
+dated=timeout_interval 
+exp,explicit,as=full_address (use an explicit address)
+ext,extension=address_extension (add an extension to the address)
+kw,keyword=keyword (tag with a keyword address)
+
+</blockquote></pre>
+
+<u><b>Example Incoming Filter</u></b>:
+
+<pre>
+
+### ~/.tmda/filters/incoming (first match wins) ###
+
+# Accept all messages to postmistress
+to postmistress@* ok
+
+# Bounce all messages from badboy.dom
+from *@=badboy.dom bounce
+
+# Accept all messages from mycorp.dom
+from *@=mycorp.dom ok
+
+# Include my blacklist and whitelist
+from-dbm ~/.tmda/lists/blacklist.db drop
+from-file ~/.tmda/lists/whitelist accept
+
+# Revoked addresses
+to jason-stupid-promo.289076@mastaler.com bounce
+to jason-jcrew.832234@mastaler.com confirm
+
+# Examine the message content
+body (viagra|ginseng) confirm
+headers (Precedence:.*junk) reject
+
+# Accept all messages smaller than 10KB, but drop messages larger than 1MB
+size <10000 deliver
+size >1000000 exit
+
+</pre>
+
+<u><b>Example Outgoing Filter</u></b>:
+<pre>
+
+#### ~/.tmda/filters/outgoing (first match wins) ###
+
+# All whitelisted contacts receive untagged messages
+to-file ~/.tmda/lists/whitelist bare
+
+# Keyword Addresses
+to *@myisp.net kw=myisp
+to king@grassland.com keyword=elvis_parsley
+
+# Dated addresses (some with a non-default timeout interval)
+to bobby@peru.com dated
+to-dbm /var/dbm/slowpokes.db dated=6M
+
+# Several ways of handling subscriber-only mailing lists
+to *postfix-users*@postfix.org keyword=postfix-users
+to exim-users@exim.org extension=mlist-exim-users
+to-file ~/.lists ext=mlists
+to owner-python-crypto@nic.surfnet.nl sender
+to python-crypto@* sender=owner-python-crypto@nic.surfnet.nl
+
+# Use a different username and/or domain
+to *@gnus.org exp=jason@gnus.org
+to xemacs-binary-kits* explicit=binkit-manager@XEmacs.ORG
+to *mail*@=xemacs.org as=postmaster@XEmacs.ORG
+to *@=xemacs.org as=jasonrm@xemacs.org
+
+</pre>

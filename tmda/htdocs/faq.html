@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Nov  2 11:07:25 2001 -->
+<!-- Sat Nov 17 11:00:00 2001 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -130,6 +130,53 @@ Author
 
 <hr>
 <li><b>
+How do I setup a whitelist?  I'd like any address in
+my domain (domain.dom) to be able to send me mail without
+worrying about confirmations.
+</b>
+<br><br>
+
+You can allow senders, or groups of senders directly into your mailbox
+by adding lines to your incoming filter file.  By default this is
+~/.tmda/filters/incoming.    
+<br><br>
+
+For example, the following line will allow both anyone@domain.dom,
+and anyone@sub.domain.dom into your mailbox:
+
+<blockquote><pre>
+from *@=domain.dom ok
+</blockquote></pre>
+
+If you have many individual addresses and/or expressions you'd like to
+whitelist, you may keep them in a seperate file and then have TMDA access it
+using the following line:
+
+<blockquote><pre>
+from-file ~/.tmda/lists/whitelist ok
+</blockquote></pre>
+
+~/.tmda/lists/whitelist would contain e-mail addresses and/or
+wildcard expressions, one per line.  e.g,
+
+<blockquote><pre>
+king@grassland.com
+*@myisp.net
+*@cs.myuni.edu
+*@=mycompany.com
+bobby*@peru.com
+</blockquote></pre>
+
+See the <a href="config-filter.html">TMDA Filter Specification</a> 
+for details on filter file syntax, options, and more examples.
+<br><br>
+
+<b>NOTE</b>: For incoming mail, tmda-filter compares the address in
+the Envelope-Sender, the "From:" header and the "Reply-To:" header
+when looking for a match.
+
+<hr>
+<li><b>
 Will TMDA run on non-unix clients such as Microsoft Windows?
 </b>
 <br><br>
@@ -145,46 +192,6 @@ Also, here is one user's
 <a href="http://mla.libertine.org/tmda-users/200108/msg00002.html" TARGET="Resource Window">
 configuration details</a> 
 for a site-wide TMDA install using smtpd-auth, vpopmail and qmailadmin.
-
-<hr>
-<li><b>
-Can you clarify the syntax for the whitelist?  I'd like any address in
-my domain (domain.dom) to be able to send me mail directly without
-worrying about confirmations.
-</b>
-<br><br>
-
-In addition to explicit e-mail addresses, TMDA supports matching
-patterns in the list files which use Unix shell-style wildcard
-characters.  The special characters are:
-<blockquote><pre>
-Characters(s)    Description
--------------    -----------
-*                Matches everything.
-?                Matches any single character.
-[seq]            Matches any character in seq.
-[!seq]           Matches any character not in seq.
-</blockquote></pre>
-
-In addition, <code>`@='</code> (a custom rule) will expand to match
-both <code>@</code> and <code>@*.</code> in one shot.
-<br><br>
-
-Here are some common examples:
-<blockquote><pre>   
-# match only jdoe@domain.dom
-jdoe@domain.dom
-# match anyone@domain.dom, but not anyone@sub.domain.dom
-*@domain.dom 
-# match anyone@sub.domain.dom, but not anyone@domain.dom
-*@*.domain.dom
-# match both anyone@domain.dom, and anyone@sub.domain.dom
-*@=domain.dom   
-</blockquote></pre>
-
-<b>NOTE</b>: For incoming mail, tmda-filter compares the address in
-the Envelope-Sender, the "From:" header and the "Reply-To:" header
-when looking for a match.
 
 <hr>
 <li><b>

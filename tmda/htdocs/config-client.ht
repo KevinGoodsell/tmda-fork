@@ -79,8 +79,9 @@ automated mailings (your ISP, your Amazon.COM account, etc.).
 
 The caveat of course is that since keyword addresses are essentially
 keys to your inbox, you must manually intervene if the address starts
-getting spammed.  An easy way to do this is to add the harvested
-keyword address to your <b>~/.tmda/lists/revoked</b> file.
+getting spammed.  An easy way to do this is to add an entry for the
+harvested keyword address to your <b>~/.tmda/filters/incoming</b>
+file.  e.g, <code>to jason-promos.8d06eu@mastaler.com confirm</code>
 </ul><br>
 </ul>
 
@@ -90,41 +91,43 @@ of addresses from the command line.  Run the utility with the <b>-h</b> flag
 to get usage information (e.g, <code>tmda-dated-address -h</code>).
 <br><br> 
 
-<li>list files:<br><br>
+<li>outgoing filter file:<br><br>
 
-TMDA determines how to tag your outgoing mail by scanning though a set of
-text files in <b>~/.tmda/lists/</b>.  Here are the available list files:
+TMDA determines how to tag your outgoing mail by parsing your outgoing
+filter file.  Set one up by reading through the <a
+href="config-filter.html">TMDA Filter Specification</a> (especially
+the examples section at the end).
+<br><br>
+
+If you don't have an outgoing filter file, or the destination address
+doesn't match any lines in your filter file, the message will be
+tagged with a dated address by default.  The lines in your filter make
+exceptions to that rule.  You can also change the default by setting
+<strong>ACTION_OUTGOING</strong> in your tmdarc.
+<br><br>
+
+<strong>TIP:</strong>
+
+Many users prefer that their "whitelisted" addresses receive untagged
+(no cookie added) messages.  This way their trusted contacts are not
+even be aware of TMDA.  If you are whitelisting as
+described in the <a href="faq.html">FAQ</a>, you can accomplish this
+by adding one of the following lines to your ~/.tmda/filters/outgoing filter
+file:
 
 <blockquote><pre>
-bare (don't tag)
-dated (tag with a dated address)
-sender (tag with a sender address)
-keyword (tag with a keyword address)
-exp (use an explicit address)
-ext (add an extension to the address)
-</pre></blockquote>
 
-See the "User configurable settings" section in
-<strong>Defaults.py</strong> for more information on these files.
-<br><br>
+to *@=domain.dom bare
 
-Similar to the whitelist, the list files contain e-mail addresses
-and/or wildcard patterns, one per line.  See the 
-<a href="faq.html">FAQ</a> for details on matching syntax.  
-A match in one of the list files determines the tag.  For example, if
-<em>you@domain.dom</em> is listed in <b>sender</b>, mail sent there will
-be tagged with a sender address.  If the destination address isn't 
-listed in any of the files, or if the list files don't exist, the 
-message will be tagged with a dated address.  You can change this default
-by defining <strong>COOKIE_TYPE</strong> in your .tmdarc
-<br><br>
+to-file ~/.tmda/lists/whitelist bare
+
+</blockquote></pre>
 
 <li>X-TMDA header:<br><br>
-You can override any declarations you might have in your list files by
-adding this header when composing a message.
-TMDA will look for it first when determining how to
-tag the message.  The header will be removed just before the message is
-sent.  Here is how it can be used:
+You can override any declarations you might have in your filter file
+by adding this header when composing a message.  TMDA will look for it
+first when determining how to tag the message.  The header will then be
+removed just before the message is sent.  Here is how it can be used:
 <br>
 <ul>
 <table cellpadding=8 cellspacing=2>
@@ -140,6 +143,16 @@ Send the message to all recipients with your address untagged (no cookie added)
 
 <tr>
 <td><code>
+X-TMDA: bare=append
+</td></code>
+<td>
+Send the message to all recipients with your address untagged (no cookie added), and
+also append the recipient addresses to your BARE_APPEND file.
+</td>
+</tr>
+
+<tr>
+<td><code>
 X-TMDA: dated
 </td></code>
 <td>
@@ -149,7 +162,7 @@ Send the message to all recipients with a dated address (default timeout interva
 
 <tr>
 <td><code>
-X-TMDA: dated 3M
+X-TMDA: dated=3M
 </td></code>
 <td>
 Send the message to all recipients with a dated address that expires in 3 months
@@ -161,13 +174,24 @@ Send the message to all recipients with a dated address that expires in 3 months
 X-TMDA: sender
 </td></code>
 <td>
-Send the message to all recipients with a sender cookie added to your address
+Send the message to all recipients with a sender cookie that is based
+on the recipient address.
 </td>
 </tr>
 
 <tr>
 <td><code>
-X-TMDA: keyword promos
+X-TMDA: sender=owner-xemacs-beta@xemacs.org
+</td></code>
+<td>
+Send the message to all recipients with a sender cookie based on
+owner-xemacs-beta@xemacs.org instead of the recipient address.
+</td>
+</tr>
+
+<tr>
+<td><code>
+X-TMDA: keyword=promos
 </td></code>
 <td>
 Send the message to all recipients with a keyword (promos) cookie added to your address
@@ -176,7 +200,7 @@ Send the message to all recipients with a keyword (promos) cookie added to your 
 
 <tr>
 <td><code>
-X-TMDA: exp postmaster@xemacs.org
+X-TMDA: exp=postmaster@xemacs.org
 </td></code>
 <td>
 Send the message to all recipients from postmaster@xemacs.org
@@ -184,7 +208,7 @@ Send the message to all recipients from postmaster@xemacs.org
 </tr>
 <tr>
 <td><code>
-X-TMDA: ext mlist-xemacs-beta
+X-TMDA: ext=mlist-xemacs-beta
 </td></code>
 <td>
 Send the message to all recipients from jason-mlist-xemacs-beta@mastaler.com
@@ -198,19 +222,9 @@ Send the message to all recipients from jason-mlist-xemacs-beta@mastaler.com
 
 Make sure that your <b>.tmdarc</b> contains the same <b>CRYPT_KEY</b>
 on both your mail server and your mail client -- they must match.
+See <b>sample.tmdarc</b> for more client options.
 <br><br>
 
-<strong>NOTE:</strong>
-
-The <em>bare</em> <strong>COOKIE_TYPE</strong> is especially useful
-when maintaining a "whitelist" of trusted contacts to filter your
-incoming mail against as described in the above sections.  By default,
-addresses matching your <strong>WHITELIST</strong> will receive
-untagged (no cookie added) messages.  This way your trusted contacts
-will not even be aware of TMDA.  Set <strong>WHITELIST_TO_BARE = 0</strong>
-in your <b>.tmdarc</b> to reverse this behavior.
-
-<br><br>
 
 <li>Mail User Agent (MUA) configuration:<br><br>
 
@@ -294,6 +308,8 @@ add the following line to your .gnus file:<br>
 
 </ul>
 </ul>
+
+<br>
 
 <li>USENET News Client configuration:<br><br>
 

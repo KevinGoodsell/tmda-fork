@@ -2,22 +2,40 @@
 
 If you are upgrading from a release of TMDA < 0.41:
 
-TMDA filter file support necessitates several configuration changes:
+Version 0.41 introduced TMDA filter files which are used to control
+both incoming and outgoing mail (one filter file for incoming, and a
+second for outgoing).  These obsolete all files in ~/.tmda/lists/*
+
+TMDA filter file support necessitates several configuration changes.
+You will also need to rename/add/delete several variables in your
+tmdarc:
 
 * BLACKLIST, WHITELIST, SACRED_FILE, and REVOKED_FILE were replaced by
-  FILTER_INCOMING.
+  FILTER_INCOMING.  Create your ~/.tmda/filters/incoming filter file
+  as explained in "TMDA Server Configuration" (config-server.html).
 
 * BARE_FILE, DATED_FILE, EXP_FILE, EXT_FILE, KEYWORD_FILE,
-  SENDER_FILE, and WHITELIST_TO_BARE were replaced by FILTER_OUTGOING.
+  SENDER_FILE, were replaced by FILTER_OUTGOING.  Create your
+  ~/.tmda/filters/outgoing filter file as explained in "TMDA Client
+  Configuration" (config-client.html).
+
+* WHITELIST_TO_BARE was removed as it is no longer relevant.  You can
+  retain this functionality by adding the following line to your
+  ~/.tmda/filters/outgoing filter file:
+
+  to-file ~/.tmda/lists/whitelist bare
 
 * BOUNCE_BLACKLIST_CC, BOUNCE_CONFIRM_CC, and BOUNCE_REVOKED_CC were
-  replaced by FILTER_DROP_CC, CONFIRM_CC, FILTER_BOUNCE_CC.
+  replaced by FILTER_DROP_CC, CONFIRM_CC, and FILTER_BOUNCE_CC.
 
 * WHITELIST_AUTO_APPEND was replaced by CONFIRM_APPEND.
 
 * COOKIE_TYPE was replaced by ACTION_OUTGOING.
 
-See Defaults.py and FilterParser.py for more details.
+* X-TMDA headers should now contain only one field.  Separate
+  multi-word entries with `='.  e.g,
+
+  X-TMDA: ext=mlists
 
 ======================================================================
 

@@ -35,17 +35,20 @@ key-generation utility is included with the distribution.  Simply run
 <b>tmda-keygen</b> and follow its instructions.
 <br><br>
 
-<li>Populate your "whitelist" with e-mail addresses and/or wildcard
-patterns, one per line, which are considered trusted contacts and
-therefore allowed directly into your mailbox if the sender of an
-incoming message matches the list.  You might also add your own e-mail
-address to make initial testing easier.  By default your whitelist is
-<b>~/.tmda/lists/whitelist</b>.  See <strong>FAQ</strong> for details
-on matching syntax.  <br><br>
+<li>Optionally create an incoming filter file by reading through the
+<a href="config-filter.html">TMDA Filter Specification</a> (especially
+the examples section at the end).  If you don't have an incoming
+filter file, or the sender address doesn't match any lines in your
+filter file, the incoming message will require confirmation.  The
+lines in your filter make exceptions to that rule.  You can also
+change the default by setting <strong>ACTION_INCOMING</strong> in your
+tmdarc.  <br><br>
 
-<li>If necessary, create a <b>~/.tmda/lists/blacklist</b> containing e-mail
-addresses and/or wildcard patterns of senders you want to refuse mail from.
-The blacklist syntax rules are the same as for the whitelist.<br><br>
+The most common use for the incoming filter is to create both a 
+<a href="faq.html">"whitelist"</a> to allow your trusted contacts
+directly into your mailbox, as well as a "blacklist" for those senders
+you want to refuse mail from.
+<br><br>
 
 </ol>
 <hr>

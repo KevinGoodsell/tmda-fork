@@ -1,3 +1,15 @@
+2001-11-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht (Links): Amend "whitelist" Q to reflect use of filter
+	files.  Also moved the wildcard docs into config-filter.
+
+	* config-client.ht: Update documentation to reflect new TMDA
+	filter files.
+
+	* config-server.ht: Ditto.
+
+	* config-filter.ht: New file documenting TMDA filter files.
+	
 2001-11-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-client.ht: Add tmda-dated-address configuration

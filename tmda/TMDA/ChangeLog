@@ -1,3 +1,8 @@
+2001-11-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py: Moved filter file documentation into
+	config-filter.html.
+	
 2001-11-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Change default location of FILTER_INCOMING and
