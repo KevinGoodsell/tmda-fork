@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Aug 19 11:29:09 2002 -->
+<!-- Sun Sep  1 19:20:55 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -209,7 +209,6 @@ TMDA FAQ 5.6 contains a preliminary list of MUAs known to work with tmda-ofmipd.
 <br><br>
 NOTE: If your MUA only supports a sendmail command-line interface, but you still
 want to use tmda-ofmipd, see below for some options.
-<br><br>
 
 </ul>
 
@@ -221,9 +220,12 @@ tmda-ofmipd implements the minimal SMTP protocol as defined in RFC
 2821, the ESMTP EHLO command defined in RFC 1869, and SMTP
 Authentication (PLAIN, LOGIN, CRAM-MD5 methods) as defined in RFC
 2554.  The proxy <strong>cannot</strong> be used by an unauthenticated user.
-<br><br>
 
-tmda-ofmipd gets its authentication information from a "password"
+<h4>Authentication Sources</h4>
+tmda-ofmipd can get its authentication information from several different sources.
+<ol>
+
+<li>From a "password"
 file that you create.  The format of this file is simple.  Each line
 of the file should contain a username and password separated by a
 colon; one entry per line.  e.g,
@@ -234,30 +236,36 @@ chloe:baz_bap
 johndoe:8i9/hjuy+33
 
 </pre></blockquote>
-<li>The username fields should match the usernames of the TMDA users on your mail
+
+The username fields should match the usernames of the TMDA users on your mail
 server.<br><br>
 
-<li>The passwords need not be the same as any other passwords on the system.
+The passwords need not be the same as any other passwords on the system.
 In fact, for security reasons, they should remain distinct!
 <br><br>
 
-<li>The default location for the authentication file /etc/tofmipd if
+The default location for the authentication file /etc/tofmipd if
 running in global mode (see below), otherwise ~user/.tmda/tofmipd.
 These defaults can be overridden using tmda-ofmipd's `-a' flag.
 <br><br>
 
-<li>The authentication file must be chmod 600 or 400, and be owned by the
+The authentication file must be chmod 600 or 400, and be owned by the
 user running the daemon.  tmda-ofmipd will fail to start otherwise.
 <br><br>
 
-Instead of using an authentication file, you can also authenticate against
-checkpassword compatible programs such as 
+<li>
+A checkpassword compatible programs such as 
 <a href="http://checkpasswd-pam.sourceforge.net/" TARGET="Resource Window">checkpassword-pam</a>.
 This would allow you to utilize your existing password database.
 Use tmda-ofmipd's `-A' flag to specify the program and arguments.  The help output
 contains such an example.
 <br><br>
 
+<li>Against a pop3, imap and imaps server.
+Use tmda-ofmipd's `-R' flag to specify the protocol, and optionally
+the hostname and port of the server.  See the help output for example usage.
+
+</ol>
 <hr>
 
 <h2>Running</h2>
@@ -274,7 +282,6 @@ tmda-ofmipd can be run in two modes.  "Personal" by your
 non-privileged TMDA user account for your own personal use, or
 "Global" by your system administrator to serve multiple TMDA users on the
 system with once instance of the daemon.
-<br><br>
 
 <h4>Personal mode</h4>
 <ol>

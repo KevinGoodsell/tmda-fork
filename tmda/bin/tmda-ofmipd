@@ -55,6 +55,14 @@ OPTIONS:
 	default is FQDN:8025 (i.e, port 8025 on the fully qualified
 	domain name for the local host).
 
+    -R proto[://host[:port]]
+    --remoteauth proto[://host[:port]]
+        Host to connect to to check username and password.
+        - proto can be one of imap, imaps (ssl) or pop3
+        - host defaults to localhost
+        - port defaults to 143 (imap), 993 (imaps) or 110 (pop3)
+        Example: -R imaps://myimapserver.net
+
     -A <program>
     --authprog <program>
         checkpassword compatible command used to check username/password. e.g,
@@ -112,6 +120,16 @@ proxyport = '%s:%s' % (FQDN, 8025)
 program = sys.argv[0]
 configdir = None
 authprog = None
+remoteauth = { 'proto': None,
+               'host':  'localhost',
+               'port':  None,
+               'enable': 0,
+               }
+defaultauthports = { 'imap':  143,
+                     'imaps': 993,
+                     'pop3':  110,
+                     #                     'pop3s': 995,
+                     }
 connections = 20
 
 if os.getuid() == 0:
@@ -158,15 +176,16 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-			       'p:u:A:a:c:C:dVh', ['proxyport=',
-                                                   'username=',
-                                                   'authfile=',
-                                                   'authprog=',
-                                                   'configdir=',
-                                                   'connections=',
-                                                   'debug',
-                                                   'version',
-                                                   'help'])
+                               'p:u:R:A:a:c:C:dVh', ['proxyport=',
+                                                     'username=',
+                                                     'authfile=',
+                                                     'remoteauth=',
+                                                     'authprog=',
+                                                     'configdir=',
+                                                     'connections=',
+                                                     'debug',
+                                                     'version',
+                                                     'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -185,6 +204,30 @@ for opt, arg in opts:
 	proxyport = arg
     elif opt in ('-u', '--username'):
 	username = arg
+    elif opt in ('-R', '--remoteauth'):
+        # arg is like: imap://host:port
+        try:
+            authproto, arg = arg.split('://', 1)
+        except ValueError:
+            authproto, arg = arg, None
+        remoteauth['proto'] = authproto
+        remoteauth['port'] = defaultauthports[authproto]
+        if authproto not in defaultauthports.keys():
+            raise ValueError, 'Protocole not supported: ' + authproto + \
+                    '\nPlease pick one of ' + repr(defaultauthports.keys())
+        if arg:
+            try:
+                authhost, authport = arg.split(':', 1)
+            except ValueError:
+                authhost = arg
+                authport = defaultauthports[authproto]
+            if authhost:
+                remoteauth['host'] = authhost
+            if authport:
+                remoteauth['port'] = authport
+        print >> DEBUGSTREAM, "auth method: %s://%s:%s" % \
+              (remoteauth['proto'], remoteauth['host'], remoteauth['port'])
+        remoteauth['enable'] = 1
     elif opt in ('-A', '--authprog'):
 	authprog = arg
     elif opt in ('-a', '--authfile'):
@@ -235,6 +278,7 @@ def pipecmd(command, *strings):
 def run_authprog(username, password):
     """authprog should return 0 for auth ok, and a positive integer in
     case of a problem."""
+    print >> DEBUGSTREAM, "Trying authprog method"
     return pipecmd('%s' % authprog, '%s\0%s\0' % (username, password))
 
 
@@ -247,6 +291,104 @@ def quote_rcpts(rcpttos):
                               rcptto.replace
                               ("\\", "\\\\").replace("'", "'\\\\\\''"))
     return rcpttos_quoted
+
+if remoteauth['proto'] == 'imaps':
+    vmaj, vmin = sys.version_info[:2]
+    # Python version 2.2 and before don't have IMAP4_SSL
+    import imaplib
+    if vmaj <= 2 or (vmaj == 2 and vmin <= 2):
+        class IMAP4_SSL(imaplib.IMAP4):
+            # extends IMAP4 class to talk SSL cause it's not yet
+            # implemented in python 2.2
+            def open(self, host, port):
+                """Setup connection to remote server on "host:port".
+                This connection will be used by the routines:
+                read, readline, send, shutdown.
+                """
+                self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.sock.connect((self.host, self.port))
+                self.sslsock = socket.ssl(self.sock)
+                self.file = self.sock.makefile('rb')
+        
+            def read(self, size):
+                """Read 'size' bytes from remote."""
+                buf = self.sslsock.read(size)
+                return buf
+        
+            def readline(self):
+                """Read line from remote."""
+                line = [ ]
+                c = self.sslsock.read(1)
+                while c:
+                    line.append(c)
+                    if c == '\n':
+                        break
+                    c = self.sslsock.read(1)
+                buf = ''.join(line)
+                return buf
+        
+            def send(self, data):
+                """Send data to remote."""
+                bytes = len(data)
+                while bytes > 0:
+                    sent = self.sslsock.write(data)
+                    if sent == bytes:
+                        break   # avoid copy
+                    data = data[sent:]
+                    bytes = bytes - sent
+    else:
+        IMAP4_SSL = imaplib.IMAP4_SSL
+
+
+def run_remoteauth(username, password):
+    print >> DEBUGSTREAM, "trying %s connection to %s@%s:%s" % \
+            (remoteauth['proto'], username, remoteauth['host'],
+             remoteauth['port'])
+    port = defaultauthports[remoteauth['proto']]
+    if remoteauth['proto'] == 'imap':
+        import imaplib
+        if remoteauth['port']:
+            port = int(remoteauth['port'])
+        M = imaplib.IMAP4(remoteauth['host'], port)
+        try:
+            M.login(username, password)
+            M.logout()
+            return 1
+        except:
+            print >> DEBUGSTREAM, "imap connection to %s@%s failed" % \
+                    (username, remoteauth['host'])
+            return 0
+    elif remoteauth['proto'] == 'pop3':
+        import poplib
+        if remoteauth['port']:
+            port = int(remoteauth['port'])
+        M = poplib.POP3(remoteauth['host'], port)
+        try:
+            M.user(username)
+            M.pass_(password)
+            M.quit()
+            return 1
+        except:
+            print >> DEBUGSTREAM, "pop3 connection to %s@%s failed" % \
+                    (username, remoteauth['host'])
+            return 0
+    elif remoteauth['proto'] == 'imaps':
+        import imaplib
+        if remoteauth['port']:
+            port = int(remoteauth['port'])
+        M = IMAP4_SSL(remoteauth['host'], port)
+        try:
+            M.login(username, password)
+            M.logout()
+            return 1
+        except:
+            print >> DEBUGSTREAM, "imaps connection to %s@%s failed" % \
+                    (username, remoteauth['host'])
+            return 0
+    # proto not implemented
+    print >> DEBUGSTREAM, "Error: protocole %s not implemented" % \
+            remoteauth['proto']
+    return 0
 
 
 def authfile2dict(authfile):
@@ -330,8 +472,12 @@ class SMTPChannel(asynchat.async_chat):
             return 501
         self.__auth_username = username.lower()
         self.__auth_password = password
+        if remoteauth['enable']:
+            # Try first with the remote auth
+            if run_remoteauth(username, password):
+                return 1
         if authprog:
-            # Try first with the authprog
+            # Then with the authprog
             if run_authprog(username, password) == 0:
                 return 1
 	    # Now we can fall back on the authfile
@@ -353,8 +499,12 @@ class SMTPChannel(asynchat.async_chat):
             return 0
         self.__auth_username = username.lower()
         self.__auth_password = password
+        if remoteauth['enable']:
+            # Try first with the remote auth
+            if run_remoteauth(username, password):
+                return 1
         if authprog:
-            # Try first with the authprog
+            # Then with the authprog
             if run_authprog(username, password) == 0:
                 return 1
 	    # Now we can fall back on the authfile
