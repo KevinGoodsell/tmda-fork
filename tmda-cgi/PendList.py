@@ -220,9 +220,10 @@ width="18" height="18" alt="Last">"""
         Subject = "None"
       else:
         Subject = MsgObj.msgobj["subject"]
-        if len(Subject) > PVars[("PendingList", "CropSubject")]:
+        if len(Subject) > int(PVars[("PendingList", "CropSubject")]):
           Subject = \
-            cgi.escape(Subject[:PVars[("PendingList", "CropSubject")] - 1]) + "&#8230;"
+            cgi.escape(Subject[:int(PVars[("PendingList", "CropSubject")])
+              - 1]) + "&#8230;"
         else:
           Subject = cgi.escape(Subject)
       T["Subject"] = Subject

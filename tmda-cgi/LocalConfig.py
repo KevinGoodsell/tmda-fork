@@ -43,16 +43,16 @@ ReturnSub     = "\\\\n"
 # Well, all symbols are really ALLOWED, but if we find any outside these sets
 # then we will reject them.  It is too risky to go messing with stuff like
 # that.
-StdSyms = ( 0, 3, 4, 12, symbol.and_expr, symbol.and_test, symbol.arith_expr, 
-  symbol.atom, symbol.comparison, symbol.expr, symbol.expr_stmt, symbol.factor, 
-  symbol.not_test, symbol.power, symbol.shift_expr, symbol.simple_stmt, 
+StdSyms = ( 0, 3, 4, 12, symbol.and_expr, symbol.and_test, symbol.arith_expr,
+  symbol.atom, symbol.comparison, symbol.expr, symbol.expr_stmt, symbol.factor,
+  symbol.not_test, symbol.power, symbol.shift_expr, symbol.simple_stmt,
   symbol.small_stmt, symbol.term, symbol.test, symbol.testlist,
   symbol.xor_expr )
 ConfigSyms = StdSyms + ( 1, 2, 7, 8, 9, 10, 11, 14, 22, 26, 27,
   symbol.dictmaker, symbol.listmaker )
-DictSyms = StdSyms + ( 1, 11, 14, 26, 27, symbol.dictmaker, 
+DictSyms = StdSyms + ( 1, 11, 14, 26, 27, symbol.dictmaker,
   symbol.file_input, symbol.stmt )
-ListSyms = StdSyms + ( 7, 8, 9, 10, symbol.file_input, symbol.listmaker, 
+ListSyms = StdSyms + ( 7, 8, 9, 10, symbol.file_input, symbol.listmaker,
   symbol.stmt )
 
 # Track the line number
@@ -60,7 +60,7 @@ LineNum = None
 
 def Parse(ASP, AllowSym):
   """Parse an ASP statement.
-  
+
 Given one ASP statement, parse it into text, verify that it is not "dangerous",
 and set global variables to track what is assigned where."""
 
@@ -100,7 +100,7 @@ def Set(Var, Value):
   "Set a variable to a given value."
 
   global LastLine, Assignments, Config
-  
+
   if Assignments.has_key(Var):
     Line = Assignments[Var]
   else:
@@ -143,6 +143,7 @@ def Show():
 
     # Extract any comments & blank lines
     Config = {}
+    LastLine = 1
     for LastLine in range(len(FileContents)):
       if CommentSearch.search(FileContents[LastLine]):
         Config[LastLine + 1] = FileContents[LastLine].strip()
