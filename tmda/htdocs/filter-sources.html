@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Feb  6 10:40:29 2004 -->
+<!-- Fri Feb 20 13:55:40 2004 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -616,6 +616,20 @@ pipe &lt;command_string&gt;
 
 The <code>pipe</code> source expects a shell command string to which the 
 full contents of the incoming message will be piped to. A match is found
+if <code>command_string</code> returns a zero exit status. Any non-zero
+exit status is interpreted as a non-match. If <code>command_string</code>
+contains whitespace, it should be quoted.
+
+<br><br>
+
+<dt>
+<code>
+pipe-headers &lt;command_string&gt;
+</code>
+<dd>
+
+The <code>pipe-headers</code> source expects a shell command string to which the 
+contents of the incoming message headers only will be piped to. A match is found
 if <code>command_string</code> returns a zero exit status. Any non-zero
 exit status is interpreted as a non-match. If <code>command_string</code>
 contains whitespace, it should be quoted.

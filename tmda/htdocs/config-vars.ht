@@ -526,7 +526,7 @@ Example:
 <br><br>
 <code>BOUNCE_ENV_SENDER = "devnull@domain.dom"</code>
 <br><br>
-Default is an empty envelope sender &lt;&gt;.
+Default is "&lt;&gt;", a null envelope sender.
 <dt><hr>
 <a name="BOUNCE_TEXT_EXPIRED_DATED"><h4>BOUNCE_TEXT_EXPIRED_DATED</h4></a>
 <dd>

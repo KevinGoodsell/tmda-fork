@@ -414,6 +414,20 @@ contains whitespace, it should be quoted.
 
 <br><br>
 
+<dt>
+<code>
+pipe-headers &lt;command_string&gt;
+</code>
+<dd>
+
+The <code>pipe-headers</code> source expects a shell command string to which the 
+contents of the incoming message headers only will be piped to. A match is found
+if <code>command_string</code> returns a zero exit status. Any non-zero
+exit status is interpreted as a non-match. If <code>command_string</code>
+contains whitespace, it should be quoted.
+
+<br><br>
+
 </dl>
 
 <h3>Miscellaneous Notes</h3>
