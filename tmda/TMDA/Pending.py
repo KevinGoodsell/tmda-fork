@@ -29,6 +29,7 @@ import os
 import sys
 import time
 
+from email import message_from_file
 from email.Utils import parseaddr
 import Defaults
 import Errors
@@ -385,7 +386,7 @@ class Message:
         self.msgfile = os.path.join(Defaults.DATADIR, 'pending', self.msgid)
         if not os.path.exists(self.msgfile):
             raise Errors.MessageError, '%s not found!' % self.msgid
-        self.msgobj = Util.msg_from_file(open(self.msgfile, 'r'))
+        self.msgobj = message_from_file(open(self.msgfile, 'r'))
         self.recipient = recipient
 
     def initMessage(self, recipient = None):

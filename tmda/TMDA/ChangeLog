@@ -1,7 +1,5 @@
 2003-04-26  Jason R. Mastaler  <jason@mastaler.com>
 
-	* Pending.py (Message.__init__): Use Util.msg_from_file().
-	
 	* Util.py (msg_from_file): New function.
 
 2003-04-23  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
