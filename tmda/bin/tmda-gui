@@ -1,0 +1,524 @@
+#!/usr/bin/python
+
+import os, sys
+
+from Tkinter import *
+
+try:
+    import paths
+except ImportError:
+    # Prepend /usr/lib/python2.x/site-packages/TMDA/pythonlib
+    sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
+                           'site-packages', 'TMDA', 'pythonlib')
+    sys.path.insert(0, sitedir)
+
+import email
+
+
+class HSplitterFrame(Frame):
+    def __init__(self, master, **args):
+        Frame.__init__(self, master, args)
+
+        self.one = Frame(self, bd=1, relief=SUNKEN)
+        self.two = Frame(self, bd=1, relief=SUNKEN)
+        self.split = 0.5
+        self.one.place(rely=0, relheight=self.split, relwidth=1)
+        self.two.place(rely=self.split, relheight=1.0-self.split, relwidth=1)
+
+        self.sep = Frame(self, bd=2, relief=RAISED, width=8, height=2, cursor="sb_v_double_arrow")
+        self.sep.place(relx=0, rely=self.split, anchor=W, relwidth=1)
+        self.sep.bind('<ButtonPress>', self.Start)
+        self.sep.bind('<ButtonRelease>', self.Stop)
+
+    def Start(self, ev):
+        self.splitpx = int(self.split * self.winfo_height())
+        self.rsz = self.splitpx
+        self.sep.bind('<B1-Motion>', self.Move)
+        self.sep.place(relx=2) # hide the splitter during the move
+        
+    def Move(self, ev):
+        self.splitpx = self.rsz + ev.y
+        self.split = (1.0 * self.splitpx) / self.winfo_height()
+        self.one.place(relheight=self.split)
+        self.two.place(rely=self.split, relheight=1.0-self.split)
+
+    def Stop(self, ev):
+        self.bind('<B1-Motion>', lambda e: "break")
+        self.sep.place(relx=0, rely=self.split, anchor=W)
+
+
+class VSplitterFrame(Frame):
+    def __init__(self, master, **args):
+        try:
+            self.split = args['split']
+            del args['split']
+        except KeyError:
+            self.split = 0.5
+        
+        Frame.__init__(self, master, args)
+        self.one = Frame(self, bd=1, relief=SUNKEN)
+        self.two = Frame(self, bd=1, relief=SUNKEN)
+        self.one.place(relx=0, relwidth=self.split, relheight=1)
+        self.two.place(relx=self.split, relwidth=1.0-self.split, relheight=1)
+
+        self.sep = Frame(self, bd=2, relief=RAISED, height=8, width=2, cursor="sb_h_double_arrow")
+        self.sep.place(rely=0, relx=self.split, anchor=N, relheight=1)
+        self.sep.bind('<ButtonPress>', self.Start)
+        self.sep.bind('<ButtonRelease>', self.Stop)
+
+    def Start(self, ev):
+        self.splitpx = int(self.split * self.winfo_width())
+        self.rsz = self.splitpx
+        self.sep.bind('<B1-Motion>', self.Move)
+        self.sep.place(rely=2) # hide the splitter during the move
+        
+    def Move(self, ev):
+        self.splitpx = self.rsz + ev.x
+        self.split = (1.0 * self.splitpx) / self.winfo_width()
+        self.one.place(relwidth=self.split)
+        self.two.place(relx=self.split, relwidth=1.0-self.split)
+
+    def Stop(self, ev):
+        self.bind('<B1-Motion>', lambda e: "break")
+        self.sep.place(rely=0, relx=self.split, anchor=N)
+
+
+class MessageList(Frame):
+    def __init__(self, master, **args):
+        Frame.__init__(self, master, args)
+        self._sb = Scrollbar(self, orient=VERTICAL)
+        self._sb.config(command=self._yview)
+        
+        self._colnames = [ 'msgid', 'from_name', 'subject' ]
+
+        self._cols = []
+
+        fo = VSplitterFrame(self, split=0.25)
+        fi = VSplitterFrame(fo.two, split=0.33)
+        
+        l = Listbox(fo.one, yscrollcommand=self._set, bd=0)
+        l.pack(side=LEFT, fill=BOTH, expand=YES)
+        self._cols.append(l)
+
+        l = Listbox(fi.one, yscrollcommand=self._set, bd=0)
+        l.pack(side=LEFT, fill=BOTH, expand=YES)
+        self._cols.append(l)
+
+        l = Listbox(fi.two, yscrollcommand=self._set, bd=0)
+        l.pack(side=LEFT, fill=BOTH, expand=YES)
+        self._cols.append(l)
+
+        fi.pack(fill=BOTH, expand=YES)
+        fo.pack(side=LEFT, fill=BOTH, expand=YES)
+        self._sb.pack(side=RIGHT, fill=Y)
+
+        
+    def curselection(self):
+        for col in self._cols:
+            selindex = col.curselection()
+            if selindex:
+                break
+        return selindex
+
+    def bind(self, key, action):
+        for col in self._cols:
+            col.bind(key, action)
+        return None
+
+    def _set(self, *args):
+        for col in self._cols:
+            col.yview(MOVETO, args[0])
+        apply(self._sb.set, args)
+        return None
+        
+    def _yview(self, *args):
+        for col in self._cols:
+            apply(col.yview, args)
+        return None
+
+    def WhitelistSelectedMessage(self):
+        from TMDA import Pending
+        try:
+            Pending.Message(self.msgs[int(self.curselection()[0])]).whitelist()
+        except IndexError:
+            return 0
+        self.Refresh()
+        return 1
+
+    def BlacklistSelectedMessage(self):
+        from TMDA import Pending
+        try:
+            Pending.Message(self.msgs[int(self.curselection()[0])]).blacklist()
+        except IndexError:
+            return 0
+        self.Refresh()
+        return 1
+
+    def ReleaseSelectedMessage(self):
+        from TMDA import Pending
+        try:
+            Pending.Message(self.msgs[int(self.curselection()[0])]).release()
+        except IndexError:
+            return 0
+        self.Refresh()
+        return 1
+
+    def DeleteSelectedMessage(self):
+        from TMDA import Pending
+        try:
+            Pending.Message(self.msgs[int(self.curselection()[0])]).delete()
+            print "Deleted"
+        except IndexError:
+            print "No such message"
+            return 0
+        self.Refresh()
+        return 1
+
+    def GetSelectedMsgId(self):
+        try:
+            return self.msgs[int(self.curselection()[0])]
+        except IndexError:
+            return ''
+        
+    def GetSelectedMsgContent(self):
+        from TMDA import Pending
+        try:
+            return Pending.Message(self.msgs[int(self.curselection()[0])]).show().split('\n\n', 1)
+        except IndexError:
+            return ('', '')
+        
+    def Refresh(self):
+        from TMDA import Pending
+        for col in self._cols:
+            col.delete(0, END)
+        self.msgs = []
+        Q = Pending.Queue(descending=1).initQueue()
+        for item in Q.listPendingIds() + Q.listReleasedIds() + Q.listConfirmedIds():
+            self.msgs.append(item)
+            msg = Pending.Message(item).terse()
+            i = 0
+            for col in self._cols:
+                col.insert(END, msg[i])
+                i = i + 1
+
+class PendingGUI(Frame):
+    AppName = "tmda-gui"
+    refresh_interval = 300
+    def __init__(self, master=None, **args):
+        if master:
+            master.title(self.AppName)
+            master.protocol("WM_DELETE_WINDOW", self.FileQuit)
+
+        self.menudef = [
+            [
+                { 'text': 'File', },
+                { 'label': 'Open...',
+                                'command': self.FileOpen, 'state': DISABLED, },
+                { 'label': 'Save',
+                                'command': self.FileSave, 'state': DISABLED, },
+                { 'label': 'Save as...',
+                                'command': self.FileSaveAs, 'state': DISABLED, },
+                { 'label': 'Quit',
+                                'command': self.FileQuit, },
+            ],
+            [
+                { 'text': 'Edit', },
+                { 'label': 'Undo',
+                                'command': self.EditUndo, 'state': DISABLED, },
+                { 'label': 'Settings...',
+                                'command': self.EditSettings, },
+            ],
+            [
+                { 'text': 'Message', },
+                { 'label': 'Refresh',
+                                'command': self.MessageRefresh, },
+                { 'label': 'Show',
+                                'command': self.MessageShow, },
+                { 'label': 'Whitelist',
+                                'command': self.MessageWhitelist, },
+                { 'label': 'Release',
+                                'command': self.MessageRelease, },
+                { 'label': 'Blacklist',
+                                'command': self.MessageBlacklist, },
+                { 'label': 'Delete',
+                                'command': self.MessageDelete, },
+            ],
+            [
+                { 'text': 'Help', },
+                { 'label': 'Help',
+                                'command': self.HelpHelp, 'state': DISABLED, },
+                { 'label': 'About',
+                                'command': self.HelpAbout, },
+            ],
+        ]
+        self.master=master
+        Frame.__init__(self, master, args)
+        self.createWidgets()
+        self.counter = 0
+        self.poll()
+
+    def FileOpen(self):
+        print "opening file"
+        from FileDialog import LoadFileDialog
+        fd = LoadFileDialog(self)
+        self.filename = fd.go(key="FIXME")
+    
+    def FileSave(self):
+        print "saving file",
+        try:
+            print self.filename
+        except AttributeError:
+            self.FileSaveAs()
+    
+    def FileSaveAs(self):
+        from FileDialog import SaveFileDialog
+        fd = SaveFileDialog(self)
+        self.filename = fd.go(key="FIXME")
+        print "saved file as", self.filename
+    
+    def FileQuit(self):
+        print "Exiting..."
+        self.master.destroy()
+    
+    def EditUndo(self):
+        print "undoing stuff"
+    
+    def EditSettings(self):
+        self.ws = Toplevel(self)
+        Label(self.ws, text="Refresh interval (sec)").grid()
+        self.ws.ri = Entry(self.ws)
+        self.ws.ri.insert(END, self.refresh_interval)
+        self.ws.ri.grid(row=0, column=1)
+        Button(self.ws, text="OK", command=self.UpdateSettings, relief=GROOVE).grid(columnspan=2)
+        self.ws.transient(self)
+        
+    def UpdateSettings(self):
+        try:
+            self.refresh_interval = int(self.ws.ri.get())
+        except:
+            pass
+        self.ws.destroy()
+        del self.ws
+    
+    def HelpHelp(self):
+        print "Help: blah blah blah..."
+    
+    def HelpAbout(self):
+        abouttxt = """Copyright 2002 David Guerizec <david@guerizec.net>\n""" + \
+                   """Copyright 2002 TMDA Project http://www.tmda.net/"""
+        print abouttxt
+        about = Toplevel()
+        about.title("About %s" % self.AppName)
+        f = Frame(about, bd=15, relief=FLAT)
+        f.pack(side=TOP, fill=BOTH, expand=1)
+        about.txt = Label(f, text=abouttxt, relief=GROOVE, padx=15, pady=15)
+        about.txt.pack(side=TOP, fill=BOTH, expand=1)
+        f = Frame(about, bd=10, relief=FLAT)
+        f.pack(side=TOP, fill=BOTH, expand=1)
+        about.ok = Button(f, text="OK", command=about.destroy, relief=GROOVE)
+        about.ok.pack(side=TOP)
+    
+    def createMenu(self):
+        self.menu = Frame(self, relief=RAISED, bd=1)
+        self.menu.pack(side=TOP, fill=X)
+        self.menu.buttons = [] 
+        for button in self.menudef:
+            m = Menubutton(self.menu, button[0])
+            m.pack(side=LEFT, padx="2m")
+            m.menu = Menu(m)
+            for cmd in button[1:]:
+                m.menu.add_command(cmd)
+            m['menu'] = m.menu
+            self.menu.buttons.append(m)
+
+    def MessageRefresh(self, ev=None):
+        self.listbox.Refresh()
+        self.message.text.delete(1.0, END)
+        self.status.label['text'] = "%d messages in pending queue" % len(self.listbox.msgs)
+
+    def MessageShow(self, ev=None):
+        self.message.text.delete(1.0, END)
+        (hdr, bdy) = self.listbox.GetSelectedMsgContent()
+        self.message.text.tag_configure('header', font=('Courier', 10, 'bold'), foreground='blue', background='#CCCCCC')
+        self.message.text.tag_configure('body', font=('Courier', 10))
+        self.message.text.insert(END, hdr+'\n', ('header',))
+        self.message.text.insert(END, '\n'+bdy, ('body',))
+
+    def MessageWhitelist(self, ev=None):
+        self.MessageShow()
+        self.listbox.WhitelistSelectedMessage()
+
+    def MessageBlacklist(self, ev=None):
+        self.MessageShow()
+        self.listbox.BlacklistSelectedMessage()
+
+    def MessageRelease(self, ev=None):
+        self.MessageShow()
+        self.listbox.ReleaseSelectedMessage()
+
+    def MessageDelete(self, ev=None):
+        self.message.text.delete(1.0, END)
+        self.listbox.DeleteSelectedMessage()
+
+    def createWidgets(self):
+        self.createMenu()
+
+        self.toolbar = Frame(self, relief=GROOVE)
+        b = Button(self.toolbar, text="Rfsh", bd=1, width=1, command=self.MessageRefresh)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="Show", bd=1, width=1, command=self.MessageShow)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="W", bd=1, width=1, command=self.MessageWhitelist)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="Rel", bd=1, width=1, command=self.MessageRelease)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="B", bd=1, width=1, command=self.MessageBlacklist)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="Del", bd=1, width=1, command=self.MessageDelete)
+        b.pack(side=LEFT, padx=0, pady=0)
+        b = Button(self.toolbar, text="Quit", bd=1, width=1, command=self.FileQuit)
+        b.pack(side=RIGHT, padx=0, pady=0)
+        self.toolbar.pack(side=TOP, fill=X)
+        
+        self.split = HSplitterFrame(self, width=100, height=100, relief=GROOVE, bg='red')
+        self.split.pack(fill=BOTH, expand=YES)
+
+        self.listbox = MessageList(self.split.one)
+        self.listbox.bind("<Double-Button-1>", self.MessageShow)
+        self.listbox.pack(fill=BOTH, expand=YES)
+
+
+        self.message = self.split.two
+        self.message.text = Text(self.message, bd=1, relief=GROOVE)#, anchor=W)
+        scrollbar = Scrollbar(self.message, orient=VERTICAL)
+        self.message.text.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=self.message.text.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
+        self.message.text.scrollbar=scrollbar
+        self.message.text.bind('<Key>', lambda ev: 'break')
+        self.message.text.pack(fill=BOTH, expand=YES)
+
+        self.status = Frame(self)
+        self.status.label = Label(self.status, bd=1, relief=SUNKEN)#, anchor=W)
+        self.status.label.pack(side=LEFT, fill=X)
+        self.status.pack(side=BOTTOM, fill=X)
+        self.MessageRefresh()
+
+    def poll(self):
+        self.counter += 1
+        if self.counter > self.refresh_interval:
+            self.counter = 0
+            self.MessageRefresh()
+        self.master.after(1000, self.poll)
+
+
+class AddressGUI(Frame):
+    def __init__(self, master=None, **args):
+        R = 0
+        Frame.__init__(self, master, args)
+
+        R += 1
+        Label(self, text="Keyword:").grid(row=R, sticky=W)
+        self.e_keyword = Entry(self)
+        self.e_keyword.grid(row=R, column=1, sticky=W)
+        self.r_keyword = Entry(self, state=DISABLED)
+        self.r_keyword.grid(row=R, column=2, sticky=NW)
+        
+        R += 1
+        Label(self, text="Sender:").grid(row=R, sticky=W)
+        self.e_sender = Entry(self)
+        self.e_sender.grid(row=R, column=1, sticky=W)
+        self.r_sender = Entry(self, state=DISABLED)
+        self.r_sender.grid(row=R, column=2, sticky=NW)
+        
+        R += 1
+        Label(self, text="Dated:").grid(row=R, sticky=NW)
+        f = Frame(self)
+        f.grid(row=R, column=1, sticky=NW)
+        self.e_dated = Entry(f, width=4)
+        self.e_dated.insert(END, "5")
+        self.e_dated.grid(row=0, column=0, sticky=NW)
+
+        self.units = [
+            ("years",  "Y"),
+            ("months", "M"),
+            ("weeks",  "w"),
+            ("days",   "d"),
+            ("hours",  "h"),
+            ("mins",   "i"),
+            ("secs",   "s"),
+        ]
+        self.uidx = 3 # default to days
+        self.e_dated_unit = StringVar()
+        self.e_dated_unit.set('d')
+
+        f = Frame(f)
+        f.grid(row=0, column=1)
+        self.m_du = Button(f, text=self.units[self.uidx][0], relief=RAISED)
+        self.m_du.bind('<Button-1>', self.LClick)
+        self.m_du.bind('<Button-3>', self.RClick)
+        self.m_du.pack(fill=BOTH, expand=1)
+
+        self.r_dated = Entry(self, state=DISABLED)
+        self.r_dated.grid(row=R, column=2, sticky=NW)
+        
+        R += 1
+        f = Frame(self)
+        f.grid(row=R, columnspan=3)
+        Button(f, text="Calc", command=self.Calc).grid(row=0, column=0)
+        Button(f, text="Pending", command=self.LaunchPending).grid(row=0, column=1)
+        Button(f, text="Exit", command=master.destroy).grid(row=0, column=2)
+
+        R += 1
+        Label(self, text="Check:").grid(row=R, sticky=W)
+        self.e_check = Entry(self)
+        self.e_check.grid(row=R, column=1, sticky=NW)
+        self.e_check_sa = Entry(self)
+        self.e_check_sa.grid(row=R, column=2, sticky=NW)
+        R += 1
+        self.r_check = Label(self, text="Enter an address to check")
+        self.r_check.grid(row=R, column=1, columnspan=2, sticky=NW)
+        
+        self.Calc()
+
+    def RClick(self, ev):
+        self.uidx = (len(self.units) + self.uidx - 1) % len(self.units)
+        self.m_du.configure(text=self.units[self.uidx][0])
+
+    def LClick(self, ev):
+        self.uidx = (len(self.units) + self.uidx + 1) % len(self.units)
+        self.m_du.configure(text=self.units[self.uidx][0])
+
+    def Calc(self, ev=None):
+        self.r_dated['state'] = NORMAL
+        self.r_dated.delete(0, END)
+        self.r_dated.insert(END, 'Dated: ')
+        self.r_dated.insert(END, self.e_dated.get() + self.units[self.uidx][1])
+        self.r_dated['state'] = DISABLED
+
+        self.r_keyword['state'] = NORMAL
+        self.r_keyword.delete(0, END)
+        self.r_keyword.insert(END, 'Keyword: ')
+        self.r_keyword.insert(END, self.e_keyword.get())
+        self.r_keyword['state'] = DISABLED
+
+        self.r_sender['state'] = NORMAL
+        self.r_sender.delete(0, END)
+        self.r_sender.insert(END, 'Sender: ')
+        self.r_sender.insert(END, self.e_sender.get())
+        self.r_sender['state'] = DISABLED
+
+    def LaunchPending(self):
+        p = PendingGUI(Toplevel(self)).pack(fill=BOTH, expand=YES)
+        
+
+def main():
+    root = Tk()
+    if len(sys.argv) > 1 and sys.argv[1] == '-p':
+        PendingGUI(root, bg="red").pack(fill=BOTH, expand=YES)
+    else:
+        AddressGUI(root).pack(fill=BOTH)
+    root.mainloop()
+
+if __name__ == '__main__':
+    main()
