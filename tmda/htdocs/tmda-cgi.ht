@@ -531,7 +531,22 @@ ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
     <p>tmda-cgi uses configuration variable <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a> 
       instead of <tt><a href="/config-vars.html#CONFIRM_APPEND">CONFIRM_APPEND</a>.</tt> 
       To use the whitelist feature, you must set <a href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a> 
-      to a list that is handled by your incoming filter.</li>
+      to a list that is handled by your incoming filter.<p></li>
+  <li>TMDA requires Python version 2.1 but some flavors of Linux (such as <a href="http://redhat.com">RedHat</a>) 
+    come with two different versions of Python installed, one older and one newer. 
+    <p>If tmda-cgi tries to run using the wrong version of Python, then you must 
+      specify the correct version at compile time. Instead of typing:
+    <blockquote>
+	  <pre>$ ./compile &lt;options&gt;</pre>
+	</blockquote>
+    <p>Type:</p>
+	<blockquote>
+	  <pre>$ /usr/bin/python2 compile &lt;options&gt;</pre>
+	</blockquote>
+    <p>(Assuming that your Python 2.1+ can be found at <tt>/usr/bin/python2</tt>.) 
+      The compiler will save the correct version of the Python interpreter and 
+      use it when tmda-cgi is run.</p>
+	</li>
 </ol>
 <hr>
 <h2><a name="Template" id="Template"></a>Templates</h2>
