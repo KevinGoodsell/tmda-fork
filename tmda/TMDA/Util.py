@@ -452,6 +452,7 @@ def build_cdb(filename):
     import cdb
     try:
         cdbname = filename + '.cdb'
+        tempfile.tempdir = os.path.dirname(filename)
         tmpname = os.path.split(tempfile.mktemp())[1]
         cdb = cdb.cdbmake(cdbname, cdbname + '.' + tmpname)
         for line in file_to_list(filename):
