@@ -112,6 +112,7 @@ def lib_processMessage(msgid, command, **args):
         if type(data) == str:
             return data
         else:
+            print "Debug: type of data in lib_processMessage -> " + string(type(data))
             try:
                 return '\n'.join(data)
             except TypeError:
@@ -185,7 +186,9 @@ ProtoError = "Protocole Error"
 def net_processPending(command, **args):
     if command == 'list':
         try:
+            ## FIXME: add reverse option pending command
             data = net_command('pending only')
+            data.reverse()
             return data
         except ProtoError, msg:
             print "%s: %s" % (ProtoError, msg)
@@ -474,7 +477,6 @@ class MessageList(Frame):
             col.delete(0, END)
         self.msgs = []
         lst = processPending('list')
-        lst.reverse()
         for item in lst:
             self.msgs.append(item)
             msg = processMessage(item, command='terse', date=1).split('\n')
