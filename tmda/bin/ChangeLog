@@ -1,3 +1,8 @@
+2002-01-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (main): Take recipients from the Resent-* headers if
+	none are given as arguments, and we are resending the message.
+
 2002-01-19  Tim Legant  <tim@catseye.net>
 
 	* tmda-rfilter (main): Account for change in

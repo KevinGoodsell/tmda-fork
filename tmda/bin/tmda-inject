@@ -268,27 +268,34 @@ def main():
     if not from_address or len(string.split(from_address,'@')) != 2:
         from_address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
     
-    header_to = message_headers.getaddrlist("to")
-    header_cc = message_headers.getaddrlist("cc")
-    header_bcc = message_headers.getaddrlist("bcc")
     # Read in the message body.
     message_body = message.read()
     
-    # If recipients were provided as args, use them.
+    # If recipients were provided as arguments, use them.
     if args:
         address_list = args
     # If running through qfilter, get recipient list from QMAILRCPTS.
     elif os.environ.has_key('QMAILRCPTS'):
         address_list = string.split(string.lower
                                     (os.environ['QMAILRCPTS']),'\n')[:-1]
+    # Otherwise get recipients from the headers.
     else:
-        # Combine To:, Cc:, and Bcc: addresses into one list.
-	address_list = []
-	for list in header_to,header_cc,header_bcc:
-	    for a in list:
-                address = a[1]
-                address_list.append(address)
-               
+        address_list = []
+        if resending:
+            # Use Resent-To, Resent-Cc, and Resent-Bcc addresses.
+            header_pairs = message_headers.getaddrlist('resent-to') + \
+                           message_headers.getaddrlist('resent-cc') + \
+                           message_headers.getaddrlist('resent-bcc')
+        else:
+            # Use To, Cc, Bcc, and Apparently-To addresses.
+            header_pairs = message_headers.getaddrlist('to') + \
+                           message_headers.getaddrlist('cc') + \
+                           message_headers.getaddrlist('bcc') + \
+                           message_headers.getaddrlist('apparently-to')
+        for pair in header_pairs:
+            address = pair[1]
+            address_list.append(address)
+
     # Check for the `X-TMDA' override header.
     if message_headers.has_key('x-tmda'):
         x_tmda_over = 1
