@@ -51,8 +51,10 @@ Sender addresses are often used to subscribe to mailing lists.  This
 way, you don't have to worry that the subscription list might get
 harvested by spammers since only the mailing list software will be
 able to send messages there.  The address to use can be found in the
-<b>Return-Path</b> header of a mailing list message (e.g, subscribe
-to the Python list with a sender address based on <python-list-admin@python.org>.
+<b>Return-Path</b> header of a mailing list message (e.g, subscribe to
+the Python list with a sender address based upon
+<em>python-list-admin@python.org</em>).
+
 </ul><br>
 </ul>
 
