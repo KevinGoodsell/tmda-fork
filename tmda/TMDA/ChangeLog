@@ -1,3 +1,11 @@
+2002-02-21  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py (FilterParser): Modified 'in_action' and
+	'action_option' regexps to handle new option on 'deliver' action.
+	
+	(FilterParser.__buildactions): Allowed incoming filter actions to
+	have options.
+
 2002-02-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: raise TMDA.Errors.ConfigError for tmdarc problems

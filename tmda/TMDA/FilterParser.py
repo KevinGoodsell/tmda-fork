@@ -72,15 +72,17 @@ class FilterParser:
     | ( \S+ ) )
     """, re.VERBOSE)
 
-    in_action = re.compile(r'(bounce|reject|drop|exit|stop|ok|accept|deliver|confirm)',
-                           re.IGNORECASE)
+    in_action = re.compile(r"""
+    (bounce|reject|drop|exit|stop|ok|accept|confirm
+    | deliver(?:\s*=.*$)? )
+    """, re.VERBOSE | re.IGNORECASE)
     
     out_action = re.compile(r"""
     ( (?:(?:bare|sender|dated)(?:=\S+)?)
     | (?:(?:exp(?:licit)?|as|ext(?:ension)?|kw|keyword)=\S+)
     | default )""", re.VERBOSE | re.IGNORECASE)
     
-    action_option = re.compile(r'(\w+)(?:=(\S+))?')
+    action_option = re.compile(r'(\w+)(?:\s*=\s*(.*)$)?')
 
     arg_option = re.compile(r'(\w+)(=?)')
 
@@ -252,10 +254,19 @@ class FilterParser:
                       filename or a regular expression enclosed within
                       parentheses
 	  actions   - dictionary: a dictionary with a key of 'action' and
-                      a value that is a tuple. The value tuple contains
-                      the 'cookie' type and the 'cookie' option. Ex:
-                        { 'accept' : ( None, None ) }           # incoming
-                        { 'from' : ( 'exp', 'tim@catseye.net' ) # outgoing
+                      a value that is a tuple.
+
+                      Incoming actions have key 'incoming' and the tuple
+                      contains the action and an optional parameter.
+
+                        { 'incoming' : ( 'deliver', '&tim@catseye.net' ) }
+
+                      Outgoing actions have the relevant header as the key and
+                      the tuple contains the 'cookie' type and the 'cookie'
+                      option.
+
+                        { 'from' : ( 'exp', 'tim@catseye.net' ) }
+
                       In the case of the outgoing filter, the dictionary may have
                       more than one entry. In fact, that's the reason we use a
                       dictionary. The rather silly looking incoming entry is a
@@ -319,7 +330,7 @@ class FilterParser:
 	    mo = self.in_action.match(action_line)
 	    if mo:
 		if len(action_line) == len(mo.group(1)):
-                    actions = { action_line.lower() : (None, None) }
+                    actions = { 'incoming' : splitaction(action_line) }
 		else:
 		    # invalid incoming action (extra stuff on line)
 		    raise Error, '"%s": garbage at end of line' % source
