@@ -412,7 +412,7 @@ def build_dbm(filename):
 def pickleit(object, file, bin=0):
     """Store object in a pickle file.
     Optional bin specifies whether to use binary or text pickle format."""
-    tempfile.tempdir = os.curdir
+    tempfile.tempdir = os.path.dirname(file)
     tmpname = tempfile.mktemp()
     fp = open(tmpname, 'w')
     cPickle.dump(object, fp, bin)

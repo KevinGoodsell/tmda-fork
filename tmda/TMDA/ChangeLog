@@ -1,3 +1,8 @@
+2002-04-02  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
+
+	* Util.py (pickleit): Bugfix. Insure the tempfile directory is the
+	same one which we are writing to pickle to.
+
 2002-04-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Version.py (ALL): Fall back to using sys.platform if os.uname()
