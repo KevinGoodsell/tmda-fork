@@ -147,19 +147,20 @@ class AutoResponse:
                 hdrcharset = ksplit[1]
             # headers like `From:' which contain e-mail addresses
             # might need the "Fullname" portion encoded, but the
-            # address portion must _not_ be encoded.
+            # address portion must never be encoded.
             if k.lower() in map(lambda s: s.lower(),
                                 Defaults.TEMPLATE_EMAIL_HEADERS):
                 name, addr = parseaddr(v)
-                if name:
+                if name and hdrcharset.lower() not in ('ascii', 'us-ascii'):
                     h = Header(name, hdrcharset)
                     name = h.encode()
                 self.mimemsg[k] = formataddr((name, addr))
             # headers like `Subject:' might contain an encoded string,
             # so we need to decode that first before encoding the
             # entire header value.
-            elif k.lower() in map(lambda s: s.lower(),
-                                  Defaults.TEMPLATE_ENCODED_HEADERS):
+            elif hdrcharset.lower() not in ('ascii', 'us-ascii') and \
+                     k.lower() in map(lambda s: s.lower(),
+                                      Defaults.TEMPLATE_ENCODED_HEADERS):
                 h = Header(charset=hdrcharset, header_name=k)
                 decoded_seq = decode_header(v)
                 for s, charset in decoded_seq:
