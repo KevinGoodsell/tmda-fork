@@ -111,7 +111,7 @@ def TranslateToUTF8(CharSet, Str, Errors):
   # Decode string to Unicode
   try:
     Uni = Decoder(Str, errors = Errors)[0]
-  except TypeError:
+  except:
     Uni = Decoder(Str)[0]
 
   # Encode for UTF-8
