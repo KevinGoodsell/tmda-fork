@@ -46,5 +46,5 @@ PLATFORM = UNAME[0].replace(' ', '_')
 ARCH = UNAME[4].replace(' ', '_')
 
 # Summary of all the version identifiers
-# e.g, TMDA/0.49 (Python 2.2 on OSF1-alpha)
-ALL = "TMDA/%s (Python %s on %s-%s)" % (TMDA, PYTHON, PLATFORM, ARCH)
+# e.g, TMDA/0.49 (Python 2.2 on OSF1/alpha)
+ALL = "TMDA/%s (Python %s on %s/%s)" % (TMDA, PYTHON, PLATFORM, ARCH)
