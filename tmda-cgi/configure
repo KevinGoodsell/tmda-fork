@@ -294,7 +294,7 @@ try:
   Opts, Args = getopt.getopt(sys.argv[1:], "c:d:e:f:l:m:nho:p:r:s:t:",
     ["base-dir=", "config-file=", "display-dir=", "session-exp", "file-auth=", 
      "help", "mode=", "no-su", "cleanup-odds", "program-auth=", "remote-auth=", 
-     "session-prefix", "target=", "virtual-lookup="])
+     "session-prefix=", "target=", "virtual-lookup="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
