@@ -34,7 +34,7 @@ def Show():
 
   global ThemesDir
 
-  if Form.has_key("subcmd"):
+  if Form.has_key("subcmd") and Form["subcmd"].value != "save":
     PVars[("General", "Theme")] = Form["subcmd"].value
     PVars.Save()
     if PVars.has_key(("Theme", "Info")):
@@ -82,7 +82,7 @@ def Show():
 
   # Save changes?
   FormVars = re.split("[,\s]+", T["FormVars"])
-  if Form.has_key("subcmd"):
+  if Form.has_key("subcmd") and Form["subcmd"].value == "save":
     for Var in FormVars:
       Parts = Var.split(":")
       Key = "%s%s" % tuple(Parts[0:2])
