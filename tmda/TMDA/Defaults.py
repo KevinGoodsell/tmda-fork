@@ -480,19 +480,6 @@ if CGI_ACTIVE and not vars().has_key('CGI_DATE_FORMAT'):
 if CGI_ACTIVE and not vars().has_key('CGI_PAGER_SIZE'):
     CGI_PAGER_SIZE = 25
 
-# CGI_PATH_TO_PENDING
-# *REQUIRED* path to tmda-pending.  tmda-cgi will not function if this
-# variable is set wrong.
-#
-# Example:
-# CGI_PATH_TO_PENDING = "/usr/bin/tmda-pending"
-#
-# Default is "../../bin/tmda-pending" (which assumes you are running
-# directly out of the source tree).
-if CGI_ACTIVE and not vars().has_key('CGI_PATH_TO_PENDING'):
-    CGI_PATH_TO_PENDING = os.path.split(PARENTDIR)[0] # '../../'
-    CGI_PATH_TO_PENDING = os.path.join(CGI_PATH_TO_PENDING, 'bin', 'tmda-pending')
-
 # CGI_SESSION_EXP
 # Number of seconds a session is guaranteed to remain on the system
 # before there is a chance of it being cleaned up.  Users who are
