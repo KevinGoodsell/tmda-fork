@@ -1,10 +1,15 @@
 Title: Challenge Example
 
-<h2>A Sample Challenge E-mail</h2>
+<table width="100%">
+  <tr>
+    <td><h2>A Sample Challenge E-mail</h2></td>
+    <td valign="top" align="center">[ <a href="/">Official</a> ]</td>
+  </tr>
+</table>
 
-<p>Once you install TMDA, your friends will receive a challenge e-mail the 
-  first time they write to you. Here's an example of what they will 
-  receive:</p>
+Once you install TMDA, your friends will receive a challenge e-mail the first
+time they write to you. Here's an example of what they will receive:<p>
+
 <table border="1" align="center" cellpadding="10" bgcolor="#DEDEEE">
   <tr>
     <td><img src="display/paperclip.gif" width="61" height="77" align="right">
@@ -32,7 +37,7 @@ Title: Challenge Example
       <p>Your message attached below is being held because the address<br>
         &lt;daves@email.addy&gt; has not been verified.</p>
       <p>To release your message for delivery, please send an empty message<br>
-        to the following address, or use your mailer's &quot;Reply&quot; 
+        to the following address, or use your mailer's &quot;Reply&quot;
         feature.</p>
       <p>your-confirm-1051074793.30114.823365@email.addy</p>
       <p>This confirmation verifies that your message is legitimate and not<br>

@@ -1,10 +1,15 @@
 Title: Getting Started With TMDA
 
-<h2>Getting Started With TMDA</h2>
+<table width="100%">
+  <tr>
+    <td><h2>Getting Started With TMDA</h2></td>
+    <td valign="top" align="center">[ <a href="/">Official</a> ]</td>
+  </tr>
+</table>
 
-<p>Creating your TMDA account is a no-brainer once you get the URL from your
+Creating your TMDA account is a no-brainer once you get the URL from your
   system administrator.  Simply log in (this is generally the same password as
-  used for checking your e-mail) and follow the on-screen prompts.</p>
+  used for checking your e-mail) and follow the on-screen prompts.<p>
 
 <a href="#Special">Special Instructions</a><br>
 <a href="#FULLNAME"><tt>FULLNAME</tt></a><br>
