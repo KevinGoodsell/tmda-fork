@@ -490,7 +490,6 @@ def bouncegen(mode):
         if not os.path.exists(pendingdir):
             os.makedirs(pendingdir,0700) # stores the unconfirmed messages
         # Write ~/.tmda/pending/TIMESTAMP.PID.msg
-        message_headers['Return-Path'] = '<' + envelope_sender + '>'
         # X-TMDA-Recipient is used by release_pending().
         message_headers['X-TMDA-Recipient'] = recipient_address
         pending_contents = str(message_headers) + '\n' + message_body

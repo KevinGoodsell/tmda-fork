@@ -1,3 +1,8 @@
+2002-02-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-server.ht (Links): Include 'preline' in dot-qmail
+	instructions.
+	
 2002-02-22  Tim Legant  <tim@catseye.net>
 
 	* config-filter.ht: Docs and an example for new -autodbm flag on

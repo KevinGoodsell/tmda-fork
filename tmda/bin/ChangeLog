@@ -3,7 +3,10 @@
 	* tmda-rfilter (main): Support local mail delivery when the
 	ok,accept,deliver action contains an option specifying delivery
 	instructions.
-	
+
+	(bouncegen): We no longer need to add Return-Path ourselves, as
+	the MTA's local delivery agent should do this for us.
+
 2002-02-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (inject_message): Send mail with Util.sendmail().

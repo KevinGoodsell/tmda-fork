@@ -2,6 +2,11 @@
 
 If you are upgrading from a release of TMDA < 0.48:
 
+* qmail users now must invoke tmda-filter with 'preline' from their
+  dot-qmail files.  e.g,
+
+  |preline /usr/bin/tmda-filter
+
 * The 'to-autocdb' and 'from-autocdb' sources have been removed.  If
   you use the autocdb functionality, you will need to change these
   sources to 'to-file' or 'from-file', respectively, and add the
