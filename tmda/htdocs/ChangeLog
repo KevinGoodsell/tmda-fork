@@ -1,3 +1,8 @@
+2002-09-12  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* requirements.ht (Links): Update Python minimum requirement to
+	version 2.1.2.
+
 2002-09-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-ofmipd.ht: Document `-R' option.

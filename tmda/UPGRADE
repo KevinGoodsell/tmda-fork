@@ -1,5 +1,12 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.63:
+
+* Python version 2.1.2 or greater is now required.  Upgrade at
+  <URL:http://www.python.org/download/>
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.59:
 
 * TMDA's auto-replies now include your FULLNAME in the From: header
