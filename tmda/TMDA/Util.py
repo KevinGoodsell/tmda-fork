@@ -61,7 +61,7 @@ def gethostname():
 
 
 def getfullname():
-    """The user's personal name"""
+    """The user's personal name.  Default is an empty value."""
     fullname = os.environ.get('TMDANAME') or \
                os.environ.get('QMAILNAME') or \
                os.environ.get('NAME') or \
@@ -70,8 +70,6 @@ def getfullname():
         fullname = pwd.getpwuid(os.getuid())[4]
         if fullname:
             fullname = fullname.split(',')[0]
-    if not fullname:
-        fullname = 'Jane Doe'
     return fullname
 
 

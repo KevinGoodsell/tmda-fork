@@ -1,3 +1,8 @@
+2003-10-01  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Util.py (getfullname): Change default fallback value to an empty
+	string instead of 'Jane Doe'.
+
 2003-09-22  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Util.py (append_to_file): Strip inline comments before checking
