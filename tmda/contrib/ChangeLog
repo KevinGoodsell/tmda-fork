@@ -1,5 +1,8 @@
 2003-02-03  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
+	* sendit.sh: New script from Jesse Guardiani that allows sqwebmail
+	to send mail using tmda-sendmail.
+
 	* vipmap-to-authmap: New script from Jesse Guardiani for
 	converting vpopmail 'vipmap' output into tmda-ofmipd's 'ipauthmap'
 	file.
