@@ -66,7 +66,10 @@ def Show():
       (PVars[("NoOverride", "MayEditTemplates")][0].lower() == "y"):
       try:
         # Make sure the list is properly formatted
-        FileContents = re.sub("\r\n", "\n", Form[BaseName].value)
+        try:
+          FileContents = re.sub("\r\n", "\n", Form[BaseName].value)
+        except KeyError:
+          FileContents = ""
         FileContents = re.sub("\n*$", "", FileContents)
         FileContents += "\n"
 

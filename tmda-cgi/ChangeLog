@@ -1,3 +1,7 @@
+2003-08-09  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Submitting a form with a blank template threw an uncaught exception.
+
 2003-08-06  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Fixed a bug that broke virtual user installs if there are many users
