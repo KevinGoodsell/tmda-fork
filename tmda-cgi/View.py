@@ -226,7 +226,8 @@ def Show():
       for decoded in email.Header.decode_header( Line ):
         Headers += decoded[0] + " "
         if decoded[1]:
-          T["CharSet"] = email.Charset.Charset(decoded[1]).input_charset
+          cset = email.Charset.Charset(decoded[1]).input_charset.split()
+          T["CharSet"] = cset[0]
       Headers += "\n"
     T["Headers"] = '<pre class="Headers">%s</pre>' % Headers
   else:
@@ -241,7 +242,8 @@ def Show():
       for decoded in email.Header.decode_header( MsgObj.msgobj[Header] ):
         value += decoded[0] + " "
         if decoded[1]:
-          T["CharSet"] = email.Charset.Charset(decoded[1]).input_charset
+          cset = email.Charset.Charset(decoded[1]).input_charset.split()
+          T["CharSet"] = cset[0]
       T["Value"] = CgiUtil.Escape(value)
       HeaderRow.Add()
 
@@ -351,8 +353,8 @@ def ShowPart(Part):
     if Type == "text/plain":
       # Check if there's a character set for this part.
       if Part.get_content_charset():
-        T["CharSet"] = \
-          email.Charset.Charset(Part.get_content_charset()).input_charset
+        cset = email.Charset.Charset(Part.get_content_charset()).input_charset.split()
+        T["CharSet"] = cset[0]
       # Escape & display
       try:
         Str = Part.get_payload(decode=1).strip()
@@ -366,8 +368,8 @@ def ShowPart(Part):
       # Sterilize & display
       # Check if there's a character set for this part.
       if Part.get_content_charset():
-        T["CharSet"] = \
-          email.Charset.Charset(Part.get_content_charset()).input_charset
+        cset = email.Charset.Charset(Part.get_content_charset()).input_charset.split()
+        T["CharSet"] = cset[0]
       try:
         T["Content"] = \
           CgiUtil.Sterilize(Part.get_payload(decode=1), Allow, Remove)

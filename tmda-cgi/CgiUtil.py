@@ -168,7 +168,7 @@ def FindCharSet(MsgObj):
   RetVal = None
   for Part in MsgObj.msgobj.walk():
     CS = Part.get_content_charset()
-    if CS: RetVal = CS
+    if CS: RetVal = CS.split()[0]
   return RetVal
 
 def getFilterOptions():
