@@ -64,7 +64,16 @@ CVS through module <b>tmda</b>.<br><br>
 
 <li><a href="http://tmda.net/snapshots/" TARGET="Resource Window">
 Nightly Snapshots:</a><br> Snapshots of the current development sources are checked out from CVS
-and tarballed each morning at 05:00 UTC.<br><br>
+and tarballed each morning at 05:00 UTC.
 
 </ul>
 
+<u>rsync access:</u><br>
+
+<ul>
+<li>The TMDA web site is available via anonymous rsync at 
+<em>rsync://tmda.net/tmdaweb/</em><br>
+This includes all the HTML pages as well as the <em>releases/</em> 
+and <em>snapshots/</em> directories.
+<br><br>
+</ul>
