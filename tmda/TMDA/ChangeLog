@@ -1,5 +1,8 @@
 2002-02-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (BOUNCE_ENV_SENDER): Fix quoting to comply with
+	Util.sendmail().
+	
         * Util.py (pipecmd): New function that runs child processes with
         error checking.
 
