@@ -638,7 +638,7 @@ class Auth(Util.Debugable):
 
     def __update_authdict(self, Force = 0 ):
         """Updates __authdict if __authfile has changed since last update"""
-        filemodtime = os.stat( self.__authfile ).st_mtime
+        filemodtime = os.stat( self.__authfile )[8]
         if Force or self.__authdictupdate is None or \
             self.__authdictupdate < filemodtime:
             self.__authdict = self.__authfile2dict( self.__authfile )
