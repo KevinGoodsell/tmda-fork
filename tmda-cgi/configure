@@ -43,7 +43,7 @@ Where:
     -C <executable name>
     --cc <executable name>
        Specify a different C compiler besides the two defaults we check for
-       (cc and gcc)
+       (gcc and then cc)
        Current default: %(CC)s
 
     -d <path>
@@ -307,7 +307,7 @@ if not os.path.isdir("../tmda"):
   elif os.path.isdir("/usr/local/lib/python2.2/site-packages/TMDA"):
     OptD["Base"] = "/usr/local/lib/python2.2/site-packages/"
 
-for compiler in ( "cc", "gcc" ):
+for compiler in ( "gcc", "cc" ):
   cmdline = "which %s" % compiler
   ( i, o, e ) = os.popen3( cmdline )
   if len( o.read() ) > 0:
