@@ -1,5 +1,11 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.46:
+
+* Python version 2.0 or greater is now required.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.45:
 
 * Filter file rules must now start at the beginning of a line.  e.g,
