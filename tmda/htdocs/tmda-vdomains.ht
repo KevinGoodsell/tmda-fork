@@ -213,7 +213,7 @@ user.  In the simplest case, as root, you can start tmda-ofmipd like
 this:
 
 <code><pre>
-# su -l vpopmail -c '/usr/local/tmda/bin/tmda-ofmipd -S /usr/local/tmda/contrib/vpopmail-vdir.sh
+# su -l vpopmail -c '/usr/local/tmda/bin/tmda-ofmipd -S /usr/local/tmda/contrib/vpopmail-vdir.sh'
 </pre></code>
 
 <p>
@@ -240,6 +240,12 @@ In a small VPopMail installation, this will typically be:
 
 Then, run tmda-keygen for each user, placing the generated key in
 .tmda/crypt_key as usual.
+
+<p>
+Alternately, TMDA can be automatically added to VPopMail accounts 
+using the vadduser-tmda script. Installation and usage instructions
+are listed in the top of the script, which can be found in the
+contrib directory of the TMDA source.
 
 <p>
 
