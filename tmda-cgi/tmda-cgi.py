@@ -47,10 +47,10 @@ try:
 except ImportError:
   pass
 import os
-import Session
 import sys
 
 sys.path.insert(0, os.environ["TMDA_BASE_DIR"])
+import Session
 
 # Process any CGI fields
 Form = cgi.FieldStorage()
