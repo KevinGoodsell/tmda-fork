@@ -279,11 +279,9 @@ def release(headers, body, msg):
     recipient = headers.getheader('x-tmda-recipient')
     # Remove X-TMDA-Recipient:
     del headers['x-tmda-recipient']
-    # Remove the first Delivered-To: line if it points to recipient to
-    # avoid a mail loop on reinjection.
+    # Remove the first Delivered-To: line to avoid a mail loop on reinjection.
     delivered_to = headers.getfirstmatchingheader('delivered-to')
-    if delivered_to and (headers.getrawheader('delivered-to').strip().lower()
-                         == recipient.strip().lower()):
+    if delivered_to:
         headers.headers.remove(delivered_to[0])    
     # Add an X-TMDA-Confirm-Done: field to the top of the header for
     # later verification.  This includes a timestamp, pid, and HMAC.
