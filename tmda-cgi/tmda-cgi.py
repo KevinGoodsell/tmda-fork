@@ -21,11 +21,18 @@
 
 "Web interface to TMDA tools."
 
-import MyCgiTb
-
-import cgi
+# Prepare the traceback in case of uncaught exception
 import os
 import sys
+import MyCgiTb
+import Template
+MyCgiTb.ErrTemplate = "prog_err2.html"
+Template.Template.Dict["ThemeDir"] = "%s/themes/Blue" % \
+  os.environ["TMDA_CGI_DISP_DIR"]
+Template.Template.BaseDir = "%s/display/themes/Blue/template" % \
+  os.path.abspath(os.path.split(sys.argv[0])[0])
+
+import cgi
 
 # Pick up the TMDA and TMDA/pythonlib directories to get any overrides of
 # standard modules and packages.  Note that these must go at the very front of
@@ -38,8 +45,6 @@ from TMDA import Errors
 import CharSetAlias
 import CgiUtil
 import Session
-import Template
-
 def Call(Library, Str = None):
   "Launch a library with the appropriate globals."
   Library.Form  = Form
@@ -52,17 +57,10 @@ def Call(Library, Str = None):
 # Capture WebUID
 Session.WebUID = os.getuid()
 
-# Prepare the traceback in case of uncaught exception
-MyCgiTb.ErrTemplate = "prog_err2.html"
-
 # Make some global stuff available to all
-Template.Template.BaseDir = "%s/display/themes/Blue/template" % \
-  os.path.abspath(os.path.split(sys.argv[0])[0])
 Template.Template.Dict["Script"]   = os.environ["SCRIPT_NAME"]
 Template.Template.Dict["SID"]      = ""
 Template.Template.Dict["DispDir"]  = os.environ["TMDA_CGI_DISP_DIR"]
-Template.Template.Dict["ThemeDir"] = "%s/themes/Blue" % \
-  os.environ["TMDA_CGI_DISP_DIR"]
 Template.Template.Dict["ErrMsg"]   = "No error message returned.  Sorry!"
 
 # Check version information
