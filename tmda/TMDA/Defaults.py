@@ -107,7 +107,7 @@ if os.path.exists(TMDARC):
 import Util
 import Version
 
-TMDA_HOMEPAGE = "(http://tmda.sf.net/)"
+TMDA_HOMEPAGE = "(http://tmda.net/)"
 TMDA_VERSION = Version.TMDA
 
 ############################

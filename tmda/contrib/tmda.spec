@@ -13,7 +13,7 @@ BuildRoot: /var/tmp/%{name}-buildroot
 BuildArchitectures: noarch
 Vendor: Jason R. Mastaler <jason@mastaler.com>
 Packager: Ron Bickers <rbickers@logicetc.com>
-Url: http://tmda.sourceforge.net/
+Url: http://tmda.net/
 BuildRequires: /usr/bin/python2
 Requires: /usr/bin/python2
 
