@@ -474,6 +474,13 @@ if not vars().has_key('LOGFILE_DEBUG'):
 if not vars().has_key('LOGFILE_INCOMING'):
     LOGFILE_INCOMING = None
 
+# LOCALDATE
+# Set this variable to 0 if you want TMDA to generate ``Date:''
+# headers in UTC instead of the local time zone.
+# Default is 1 (local time zone)
+if not vars().has_key('LOCALDATE'):
+    LOCALDATE = 1
+
 # MESSAGE_FROM_STYLE
 # Specifies how `From' headers should look when tagging outgoing
 # messages with tmda-sendmail.  There are two valid values:

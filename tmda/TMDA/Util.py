@@ -157,13 +157,10 @@ def make_msgid(timesecs=None, pid=None):
     return msgid
 
 
-def make_date(timesecs=None, localtime=1):
+def make_date(timesecs=None):
     """Return an RFC 2822 compliant Date: string.
     
     timesecs is optional, and if not given, the current time is used.
-
-    Optional localtime is a flag that when true, returns a date
-    relative to the local timezone instead of UTC where possible.
 
     JRM: Once the email mod is included within TMDA, we can nuke this
     function and use email.Utils.formatdate.
@@ -174,6 +171,8 @@ def make_date(timesecs=None, localtime=1):
     """
     if not timesecs:
         timesecs = time.time()
+    import Defaults
+    localtime = Defaults.LOCALDATE
     if localtime:
         now = time.localtime(timesecs)
         # Calculate timezone offset, based on whether the local zone has
