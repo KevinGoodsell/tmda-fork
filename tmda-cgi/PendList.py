@@ -589,6 +589,15 @@ def Show():
 
   # No messages to display
   else:
+    T["ReadArray"] = ""
+    T["FirstButton1Active"]
+    T["PrevButton1Active"]
+    T["FirstButton2Active"]
+    T["PrevButton2Active"]
+    T["NextButton1Active"]
+    T["LastButton1Active"]
+    T["NextButton2Active"]
+    T["LastButton2Active"]
     if Searching:
       T["Row"] = '<tr><td colspan="%s" align="center" class="InProcess"><i>No messages match the search criteria</i></td></tr>' % NumCols
     else: 
