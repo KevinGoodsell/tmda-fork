@@ -126,7 +126,9 @@ Title: Default Settings
 
 <h4><a name="NoOverrideMayEditLocalConfig"></a>NoOverride:MayEditLocalConfig</h4>
 <blockquote>
-  <p>Allow users to edit their local config files with tmda-cgi.</p>
+  <p>Allow users to edit their local config files <b><i>in file view
+    mode</b></i> with tmda-cgi. Setting this to "No" will still allow users
+    to edit in form view mode or view (but not save) in file view mode.</p>
   <p>Example:
     <table class="example">
       <tr>
