@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed May 14 10:05:14 2003 -->
+<!-- Wed May 21 14:29:00 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -85,7 +85,6 @@ name="subtopic25"></a></td></tr>
 
 <p><a href="#Whitelist">Whitelist Woes</a><br>
 <a href="#Python">Python Problems</a><br>
-<a href="#Confirm">URL Confirmation Catastrophes</a><br>
 <a href="#Authentication">Authentication Ailments</a><br>
 <a href="#Attach">Attachment Anxiety</a><br>
 <a href="#WhiteBlack">Whitelist, Blacklist... where are the options?</a><br>
@@ -122,10 +121,6 @@ name="subtopic25"></a></td></tr>
 <p>(Assuming that your Python 2.1+ can be found at
   <tt>/usr/bin/python2</tt>.) The compiler will save the correct version of
   the Python interpreter and use it when tmda-cgi is run.</p>
-
-<h3><a name="Confirm"></a>URL Confirmation Catastrophes</h3>
-<p>URL confirmation does not work for virtual users.</p>
-<p>We hope to add support for this soon.</p>
 
 <h3><a name="Authentication"></a>Authentication Ailments</h3>
 <p>If no username/password combination lets you log in, your problem may be due
@@ -238,10 +233,7 @@ Can't find key file:<br>
   won't work because the user I'm compiling as doesn't have the needed
   permissions to put a file in the web tree. Can I do <tt>make install</tt> as
   root?</p>
-<p>No, don't do <tt>make install</tt> as root.  That will put the wrong
-  owner on the binary.  Instead, use the *nix <tt>mv</tt> command to move the
-  <tt>tmda.cgi</tt> file to its final destination.  That will keep the owner
-  and group intact.</p>
+<p>Yes, you may do <tt>make install</tt> as root.</p>
 
 <h3><a name="International"></a>International Intrigue</h3>
 <p>Instead of Chinese characters in the pending list, the subject lines are

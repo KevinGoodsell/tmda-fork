@@ -32,5 +32,4 @@ Title: URL Confirmation
       <a href="/config-vars.html#ALLOW_MODE_640">ALLOW_MODE_640</a>.
     </li>
   </ul><p>
-  <li>URL confirmation does not currently work for virtual users.</li>
 </ul>

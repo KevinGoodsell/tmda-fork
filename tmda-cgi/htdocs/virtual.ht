@@ -1,42 +1,40 @@
 Title: Virtual Users
 
 <h2><a name="Virtual" id="Virtual"></a>Virtual users</h2>
-<p>Virtual users are now mostly* supported. tmda-cgi uses a "stub" program
+<p>Virtual users are now fully supported. tmda-cgi uses a "stub" program
   which converts the output of a virtual user information package into a
-  format that tmda-cgi can handle. In other words, you must have the 
+  format that tmda-cgi can handle. In other words, you must have the
   appropriate stub program for tmda-cgi to work on your system.</p>
 <p>The current tmda-cgi release includes the following stub:</p>
 <ul>
   <li>vpopmail1 - compatible with vpopmail 5.2.1</li>
 </ul>
-<p>If you use a different program to handle your virtual mail system, you will 
-  either need to write a stub (they're pretty darn simple) or work with one of 
-  the developers to get one written. Either way, you'll want to contact the 
+<p>If you use a different program to handle your virtual mail system, you will
+  either need to write a stub (they're pretty darn simple) or work with one of
+  the developers to get one written. Either way, you'll want to contact the
   developers on the
-  <a href="http://tmda.net/lists/listinfo/tmda-workers">tmda-workers mailing 
+  <a href="http://tmda.net/lists/listinfo/tmda-workers">tmda-workers mailing
   list</a> so that your new stub can be included in future releases.</p>
-<p>If you have a listed virtual mail system, but the version you are using is 
-  different, try picking the stub with the closest version number.  We don't 
-  have a good way to test these stubs against every version ever created, so 
-  there's no saying for sure whether your version will work or not. If you 
-  can't find a stub that works, you will either need to write one or work with 
-  one of the developers to get one written. Either way, you'll want to contact 
+<p>If you have a listed virtual mail system, but the version you are using is
+  different, try picking the stub with the closest version number.  We don't
+  have a good way to test these stubs against every version ever created, so
+  there's no saying for sure whether your version will work or not. If you
+  can't find a stub that works, you will either need to write one or work with
+  one of the developers to get one written. Either way, you'll want to contact
   the developers on the
-  <a href="http://tmda.net/lists/listinfo/tmda-workers">tmda-workers mailing 
+  <a href="http://tmda.net/lists/listinfo/tmda-workers">tmda-workers mailing
   list</a> so that your new stub can be included in future releases.</p>
-<p>If you wish to write your own stub, see <tt>tmda-cgi/stubs/vpopmail1.py</tt> 
-  as an example of what data will be provided and what data should be 
+<p>If you wish to write your own stub, see <tt>tmda-cgi/stubs/vpopmail1.py</tt>
+  as an example of what data will be provided and what data should be
   returned.</p>
-<p>Virtual user support must be configured when you <a 
-  href="compile.html">compile</a> tmda-cgi. You will be asked for a "virtual 
+<p>Virtual user support must be configured when you <a
+  href="compile.html">compile</a> tmda-cgi. You will be asked for a "virtual
   user stub and parameters". For vpopmail, this is typically:</p>
 <blockquote>
   <tt>vpopmail1 /home/vpopmail/bin/vuserinfo ~</tt>
 </blockquote>
-<p><tt>vpopmail1</tt> is the stub name, <tt>/home/vpopmail/bin/vuserinfo</tt> 
-  is the vpopmail program which provides user information, and <tt>~</tt> means 
-  to pass the login name in as the first and only parameter to 
-  <tt>vuserinfo</tt>. If you use a different stub or keep vuserinfo located 
+<p><tt>vpopmail1</tt> is the stub name, <tt>/home/vpopmail/bin/vuserinfo</tt>
+  is the vpopmail program which provides user information, and <tt>~</tt> means
+  to pass the login name in as the first and only parameter to
+  <tt>vuserinfo</tt>. If you use a different stub or keep vuserinfo located
   somewhere else, you will need to specify a different string.</p>
-<hr width="50%">
-<p>* URL confirmation does not currently work for virtual users.</p>

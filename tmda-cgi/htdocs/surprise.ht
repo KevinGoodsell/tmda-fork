@@ -7,7 +7,6 @@ Title: Surprises & Gotcha's
 
 <p><a href="#Whitelist">Whitelist Woes</a><br>
 <a href="#Python">Python Problems</a><br>
-<a href="#Confirm">URL Confirmation Catastrophes</a><br>
 <a href="#Authentication">Authentication Ailments</a><br>
 <a href="#Attach">Attachment Anxiety</a><br>
 <a href="#WhiteBlack">Whitelist, Blacklist... where are the options?</a><br>
@@ -44,10 +43,6 @@ Title: Surprises & Gotcha's
 <p>(Assuming that your Python 2.1+ can be found at
   <tt>/usr/bin/python2</tt>.) The compiler will save the correct version of
   the Python interpreter and use it when tmda-cgi is run.</p>
-
-<h3><a name="Confirm"></a>URL Confirmation Catastrophes</h3>
-<p>URL confirmation does not work for virtual users.</p>
-<p>We hope to add support for this soon.</p>
 
 <h3><a name="Authentication"></a>Authentication Ailments</h3>
 <p>If no username/password combination lets you log in, your problem may be due

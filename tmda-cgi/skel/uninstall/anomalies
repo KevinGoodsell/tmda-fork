@@ -1,7 +1,7 @@
 # Installation anomalies describes any special instructions to follow when
 # installing files from the skel/install directory.
 
-# VIRT_TEST is regular expression test which can be applied to a user's HOME
+# VIRT_TEST is a regular expression test which can be applied to a user's HOME
 # directory.  If the test matches, then the user is assumed to be a virtual
 # user.
 VIRTUAL_TEST = "^/home/vpopmail/domains/"

@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sun May  4 13:25:31 2003 -->
+<!-- Wed May 21 15:22:13 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -109,7 +109,12 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
   administrator will need to verify how the installation will be done 
   beforehand!</p>
 
-<a href="#Skel"><tt>skel</tt></a><p>
+<a href="#Skel"><tt>skel</tt></a><br>
+<a href="#Anomalies"><tt>anomalies</tt></a><br>
+&nbsp;&nbsp;&nbsp;<a href="#PERMISSIONS"><tt>PERMISSIONS</tt></a><br>
+&nbsp;&nbsp;&nbsp;<a href="#VIRTUAL_TEST"><tt>VIRTUAL_TEST</tt></a><br>
+&nbsp;&nbsp;&nbsp;<a href="#REAL_ONLY"><tt>REAL_ONLY</tt></a><br>
+&nbsp;&nbsp;&nbsp;<a href="#VIRTUAL_ONLY"><tt>VIRTUAL_ONLY</tt></a><p>
 
 <h3><a name="Skel"></a><tt>skel</tt></h3>
 
@@ -175,6 +180,78 @@ src="display/dyn_buttons/layout1_r7_c1.png" name="x1044" height="35" width="194"
   for them files here. For example, qmail users should add a
   <tt>.qmail-default</tt> file after uninstallation so that any future mail 
   that comes in for a tagged address will still be accepted.</p>
+
+<h3><a name="Anomalies"></a><tt>anomalies</tt></h3>
+
+<p><tt>skel</tt> directories may optionally have a file called
+  <tt>anomalies</tt>. This file contains <a href="http://python.org">Python</a>
+  code which tells the installer/uninstaller what it should do beyond simply
+  copying the files to the users directory.</p>
+
+<p><tt>anomalies</tt> supports the following variables:</p>
+
+<h4><a name="#PERMISSIONS"></a><tt>PERMISSIONS</tt></h4>
+<blockquote>
+  <p>A dictionary of filenames and what octal permissions should be assigned to
+    them.</p>
+  <p>Install example:
+    <table class="example">
+      <tr>
+        <td>PERMISSIONS = {".tmda/crypt_key": 0600}</td>
+      </tr>
+    </table>
+</blockquote>
+
+<h4><a name="#VIRTUAL_TEST"></a><tt>VIRTUAL_TEST</tt></h4>
+<blockquote>
+  <p>A regular expression test which can be applied to a user's HOME directory.
+    If the test matches, then the user is assumed to be a virtual user.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>VIRTUAL_TEST = "^/home/vpopmail/domains/"</td>
+      </tr>
+    </table>
+</blockquote>
+
+<h4><a name="#REAL_ONLY"></a><tt>REAL_ONLY</tt></h4>
+<blockquote>
+  <p>A list of files which should only be copied if the user logging in is
+    "real" (i.e. <tt>VIRTUAL_TEST</tt> did not match the user's HOME
+    directory).</p>
+  <p>Install example:
+    <table class="example">
+      <tr>
+        <td>REAL_ONLY = [".qmail", ".qmail-default"]</td>
+      </tr>
+    </table>
+  <p>Uninstall example:
+    <table class="example">
+      <tr>
+        <td>REAL_ONLY = [".qmail-default"]</td>
+      </tr>
+    </table>
+</blockquote>
+
+<h4><a name="#VIRTUAL_ONLY"></a><tt>VIRTUAL_ONLY</tt></h4>
+<blockquote>
+  <p>A list of files which should only be copied if the user logging in is a
+    virtual user (i.e. <tt>VIRTUAL_TEST</tt> matched the user's HOME
+    directory).</p>
+  <p>Install example:
+    <table class="example">
+      <tr>
+        <td>VIRTUAL_ONLY = ["%(Parent)s/.qmail-%(User)s",<br>
+          &nbsp;&nbsp;"%(Parent)s/.qmail-%(User)s-default"]</td>
+      </tr>
+    </table>
+  <p>Uninstall example:
+    <table class="example">
+      <tr>
+        <td>VIRTUAL_ONLY = ["%(Parent)s/.qmail-%(User)s-default"]</td>
+      </tr>
+    </table>
+</blockquote>
 </td>
 <!-- end of body cell -->
 </tr><!-- end of sidebar/body row -->
