@@ -442,93 +442,94 @@ if not vars().has_key('BARE_APPEND'):
 # Example:
 # CGI_ACTIVE = 1
 #
-# No default
-if vars().has_key('CGI_ACTIVE'):
+# Default is 0 (disabled)
+if not vars().has_key('CGI_ACTIVE'):
+    CGI_ACTIVE = 0
     
-    # CGI_CLEANUP_ODDS
-    # Chance of cleaning up old sessions when a session object is
-    # instantiated.  Keeping this value small will minimize overhead on
-    # each page fetch.  Larger values will tidy up the temporary files
-    # more often.
-    #
-    # Example:
-    # CGI_CLEANUP_ODDS = 0.1
-    #
-    # Default is 0.01 (1%).
-    if not vars().has_key('CGI_CLEANUP_ODDS'):
-        CGI_CLEANUP_ODDS = 0.01
+# CGI_CLEANUP_ODDS
+# Chance of cleaning up old sessions when a session object is
+# instantiated.  Keeping this value small will minimize overhead on
+# each page fetch.  Larger values will tidy up the temporary files
+# more often.
+#
+# Example:
+# CGI_CLEANUP_ODDS = 0.1
+#
+# Default is 0.01 (1%).
+if CGI_ACTIVE and not vars().has_key('CGI_CLEANUP_ODDS'):
+    CGI_CLEANUP_ODDS = 0.01
 
-    # CGI_DATE_FORMAT
-    # Format string for time.strftime() used when displaying message dates
-    # in pending list view.
-    #
-    # Example:
-    # CGI_DATE_FORMAT = "%m/%d/%y"
-    #
-    # Default is "%a %1m/%d" (which generates text like: "Mon 12/31")
-    if not vars().has_key('CGI_DATE_FORMAT'):
-        CGI_DATE_FORMAT = '%a %1m/%d'
-    
-    # CGI_PAGER_SIZE
-    # Number of pending e-mails shown in list format on one page.
-    #
-    # Example:
-    # CGI_PAGER_SIZE = 10
-    #
-    # Default is 25.
-    if not vars().has_key('CGI_PAGER_SIZE'):
-        CGI_PAGER_SIZE = 25
+# CGI_DATE_FORMAT
+# Format string for time.strftime() used when displaying message dates
+# in pending list view.
+#
+# Example:
+# CGI_DATE_FORMAT = "%m/%d/%y"
+#
+# Default is "%a %1m/%d" (which generates text like: "Mon 12/31")
+if CGI_ACTIVE and not vars().has_key('CGI_DATE_FORMAT'):
+    CGI_DATE_FORMAT = '%a %1m/%d'
 
-    # CGI_PATH_TO_PENDING
-    # *REQUIRED* path to tmda-pending.  tmda-cgi will not function if this
-    # variable is set wrong.
-    #
-    # Example:
-    # CGI_PATH_TO_PENDING = "/usr/bin/tmda-pending"
-    #
-    # Default is "../../bin/tmda-pending" (which assumes you are running
-    # directly out of the source tree).
-    if not vars().has_key('CGI_PATH_TO_PENDING'):
-        CGI_PATH_TO_PENDING = os.path.split(PARENTDIR)[0] # '../../'
-        CGI_PATH_TO_PENDING = os.path.join(CGI_PATH_TO_PENDING, 'bin', 'tmda-pending')
+# CGI_PAGER_SIZE
+# Number of pending e-mails shown in list format on one page.
+#
+# Example:
+# CGI_PAGER_SIZE = 10
+#
+# Default is 25.
+if CGI_ACTIVE and not vars().has_key('CGI_PAGER_SIZE'):
+    CGI_PAGER_SIZE = 25
 
-    # CGI_SESSION_EXP
-    # Number of seconds a session is guaranteed to remain on the system
-    # before there is a chance of it being cleaned up.  Users who are
-    # logged into tmda-cgi and spend more than this amount of time between
-    # page accesses may have to log in again.
-    #
-    # Example:
-    # CGI_SESSION_EXP = 600
-    #
-    # Default is 300 (5 minutes).
-    if not vars().has_key('CGI_SESSION_EXP'):
-        CGI_SESSION_EXP = 300
+# CGI_PATH_TO_PENDING
+# *REQUIRED* path to tmda-pending.  tmda-cgi will not function if this
+# variable is set wrong.
+#
+# Example:
+# CGI_PATH_TO_PENDING = "/usr/bin/tmda-pending"
+#
+# Default is "../../bin/tmda-pending" (which assumes you are running
+# directly out of the source tree).
+if CGI_ACTIVE and not vars().has_key('CGI_PATH_TO_PENDING'):
+    CGI_PATH_TO_PENDING = os.path.split(PARENTDIR)[0] # '../../'
+    CGI_PATH_TO_PENDING = os.path.join(CGI_PATH_TO_PENDING, 'bin', 'tmda-pending')
 
-    # CGI_USE_JS_CONFIRM
-    # Enables a pop-up confirmation box before any message is deleted or
-    # blacklisted.  Must be disabled if you will be surfing tmda-cgi in
-    # a browser without Javascript or where Javascript is disabled.
-    # Otherwise you will not be able to delete or blacklist messages.
-    #
-    # Example:
-    # CGI_USE_JS_CONFIRM = 0
-    #
-    # Default is 1.
-    if not vars().has_key('CGI_USE_JS_CONFIRM'):
-        CGI_USE_JS_CONFIRM = 1
+# CGI_SESSION_EXP
+# Number of seconds a session is guaranteed to remain on the system
+# before there is a chance of it being cleaned up.  Users who are
+# logged into tmda-cgi and spend more than this amount of time between
+# page accesses may have to log in again.
+#
+# Example:
+# CGI_SESSION_EXP = 600
+#
+# Default is 300 (5 minutes).
+if CGI_ACTIVE and not vars().has_key('CGI_SESSION_EXP'):
+    CGI_SESSION_EXP = 300
 
-    # CGI_USER
-    # Defines the user name to use at non-critical times (such as reading
-    # and writing session files.  CGI_USER is only signifigant when running
-    # in system-wide mode.  See contrib/cgi/INSTALL for more about modes.
-    #
-    # Example:
-    # CGI_USER = "apache"
-    #
-    # Default is "nobody".
-    if not vars().has_key('CGI_USER'):
-        CGI_USER = "nobody"
+# CGI_USE_JS_CONFIRM
+# Enables a pop-up confirmation box before any message is deleted or
+# blacklisted.  Must be disabled if you will be surfing tmda-cgi in
+# a browser without Javascript or where Javascript is disabled.
+# Otherwise you will not be able to delete or blacklist messages.
+#
+# Example:
+# CGI_USE_JS_CONFIRM = 0
+#
+# Default is 1.
+if CGI_ACTIVE and not vars().has_key('CGI_USE_JS_CONFIRM'):
+    CGI_USE_JS_CONFIRM = 1
+
+# CGI_USER
+# Defines the user name to use at non-critical times (such as reading
+# and writing session files.  CGI_USER is only signifigant when running
+# in system-wide mode.  See contrib/cgi/INSTALL for more about modes.
+#
+# Example:
+# CGI_USER = "apache"
+#
+# Default is "nobody".
+if CGI_ACTIVE and not vars().has_key('CGI_USER'):
+    CGI_USER = "nobody"
 
 # CONFIRM_ADDRESS
 # An optional e-mail address to use for creating confirmation
