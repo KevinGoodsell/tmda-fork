@@ -89,15 +89,6 @@ if not vars().has_key('DATADIR'):
 if not vars().has_key('MAIL_TRANSFER_AGENT'):
     MAIL_TRANSFER_AGENT = "qmail"
 
-# RECIPIENT_DELIMITER
-# A single character which specifies the separator between user names
-# and address extensions (e.g, user-ext).
-# The default under qmail is `-', while the default for Sendmail and
-# friends is likely `+'.
-# Default is "-"
-if not vars().has_key('RECIPIENT_DELIMITER'):
-    RECIPIENT_DELIMITER = "-"
-
 # LOCAL_DELIVERY_AGENT
 # The full path to the program used to deliver a sucessful message to
 # your mailbox.  Only necessary if you are NOT running qmail!
@@ -110,6 +101,15 @@ if not vars().has_key('LOCAL_DELIVERY_AGENT'):
 if MAIL_TRANSFER_AGENT != 'qmail' and not LOCAL_DELIVERY_AGENT:
     print "Not running qmail: you must define LOCAL_DELIVERY_AGENT in",TMDARC
     sys.exit(EX_TEMPFAIL)
+
+# RECIPIENT_DELIMITER
+# A single character which specifies the separator between user names
+# and address extensions (e.g, user-ext).
+# The default under qmail is `-', while the default for Sendmail and
+# friends is likely `+'.
+# Default is "-"
+if not vars().has_key('RECIPIENT_DELIMITER'):
+    RECIPIENT_DELIMITER = "-"
 
 # SENDMAIL
 # The path to the sendmail program, or sendmail compatibility
