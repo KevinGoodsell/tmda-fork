@@ -15,7 +15,7 @@ function TestConfirm()
       {
         if (action[j].checked && (action[j].value == "blacklist")) ToBlacklist++
         if (action[j].checked && (action[j].value == "delete")) ToDelete++
-        if (action[j].checked && (action[j].value == "spamcop")) ToSpamCop++
+        if (action[j].checked && (action[j].value == "report")) ToSpamCop++
       }
   }
   if (ToDelete)

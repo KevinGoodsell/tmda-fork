@@ -1,3 +1,8 @@
+2003-10-04  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Applied a patch from Dario Gomes which makes select all for SpamCop
+	  work correctly.
+
 2003-09-22  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Bugfix to avoid spilling errors if a message is repeatedly deleted.
