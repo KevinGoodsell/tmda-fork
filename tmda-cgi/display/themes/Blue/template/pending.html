@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Apr 14 15:24:08 2003 -->
+<!-- Mon Apr 14 15:55:53 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -78,6 +78,9 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x549" height="35" width="
   <tr>
     <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
         <form name="actions" method="post" %(OnSubmit)s action="%(Script)s">
+          <input type="hidden" name="SID" value="%(SID)s">
+          <input type="hidden" name="cmd" value="list">
+          <input type="hidden" name="subcmd" value="batch">
           <tr bgcolor="#7A7AB6" height="24">
             <td width="20%"><input type="image"
               src="%(ThemeDir)s/buttons/subnav_r1_c14.gif" width="98" height="18"
@@ -124,9 +127,9 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x549" height="35" width="
                     name="%(RadioName)s" value="release"><input type="radio" 
                     name="%(RadioName)s" value="delete"><!-- var: WhRadio
                     --><input type="radio" name="%(RadioName)s"
-                    value="white"><!-- /var --><!-- var: BlRadio --><input
-                    type="radio" name="%(RadioName)s" value="black"><!-- /var
-                    --><input type="hidden" name="%(MsgName)s"
+                    value="whitelist"><!-- /var --><!-- var: BlRadio --><input
+                    type="radio" name="%(RadioName)s" value="blacklist"><!--
+                    /var --><input type="hidden" name="%(MsgName)s" 
                     value="%(MsgID)s"></td>
                   <td>%(Sender)s</td>
                   <td><a
@@ -173,18 +176,22 @@ href="%(Script)s?cmd=view&msgid=%(MsgID)s&SID=%(SID)s">%(Subject)s</a></td>
           </tr>
         </form>
       </table>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <!-- var: InProcess -->
-      <table>
         <tr>
-          <td class="Note">Note:</td>
+          <td colspan="2" bgcolor="#DADCEB" height="1"></td>
+        </tr>
+        <tr bgcolor="#7A7AB6">
+          <td valign="top" width="45"><font
+            color="#FFFFFF"><b><i>Note:</i></b></font></td>
           <td>
-            <span class="InProcess">Marked</span> messages are being 
-              processed by the mail server.<br>
-            They will be removed from the pending list when released.
+            <font color="#FFFFFF"><span class="InProcess">Marked</span> messages 
+              are being processed by the mail server. They will be removed from 
+              the pending list when released.</font>
           </td>
         </tr>
-      </table>
 <!-- /var -->
+      </table>
     </td>
   </tr>
 </table>
