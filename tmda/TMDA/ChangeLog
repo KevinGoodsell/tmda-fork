@@ -2,7 +2,11 @@
 
 	* Defaults.py: Remove BOUNCE_DATED_CC, BOUNCE_SENDER_CC, and add
 	BOUNCE_CONFIRM_CC.
-	
+
+	(DATED_TEMPLATE_VARS,SENDER_TEMPLATE_VARS): New variables to allow
+	'dated' and 'sender' address variables to be included in the
+	templates.
+
 2001-07-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py: Remove CONFIRMATION_MODE, BOUNCE_DATED_TEMPLATE,

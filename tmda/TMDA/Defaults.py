@@ -131,7 +131,21 @@ if not vars().has_key('CONFIRM_REQUEST_TEMPLATE'):
     CONFIRM_REQUEST_TEMPLATE = os.path.split(os.path.dirname
                                             (os.path.abspath
                                              (sys.argv[0])))[0] + cr_template 
-    
+
+# DATED_TEMPLATE_VARS
+# Set this variable to 1 if you want to use 'dated' address variables
+# in your templates.
+# Default is 0 (turned off)
+if not vars().has_key('DATED_TEMPLATE_VARS'):
+    DATED_TEMPLATE_VARS = 0
+
+# SENDER_TEMPLATE_VARS
+# Set this variable to 1 if you want to use 'sender' address variables
+# in your templates.
+# Default is 0 (turned off)
+if not vars().has_key('SENDER_TEMPLATE_VARS'):
+    SENDER_TEMPLATE_VARS = 0
+
 # COOKIE_TYPE
 # The default cookie type is dated.  It could be:
 #       dated   can only be replied to for TIMEOUT

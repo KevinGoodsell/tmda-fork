@@ -285,7 +285,7 @@ def verify_sender_cookie(sender_address,sender_cookie):
         bouncegen('request')
 
 
-def bouncegen(mode,passed_cookie=None):
+def bouncegen(mode):
     """Bounce a message back to sender."""
     # Common variables.
     now = time.time()
@@ -293,6 +293,19 @@ def bouncegen(mode,passed_cookie=None):
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
     original_message = globals().get('message')
+    # Opional 'dated' address variables.
+    if Defaults.DATED_TEMPLATE_VARS:
+        timeout = Util.format_timeout(Defaults.TIMEOUT)
+        expire_date = time.asctime(time.gmtime
+                                   (now + Util.seconds(Defaults.TIMEOUT)))
+        dated_cookie = Cookie.make_dated_cookie('%d' % now)
+        dated_cookie_address = Defaults.USERNAME + '-dated-' + dated_cookie \
+                               + '@' + Defaults.HOSTNAME
+    # Optional 'sender' address variables.
+    if Defaults.SENDER_TEMPLATE_VARS:
+        sender_cookie = Cookie.make_sender_cookie(envelope_sender)
+        sender_cookie_address = Defaults.USERNAME + '-sender-' + sender_cookie \
+                                + '@' + Defaults.HOSTNAME
     if mode == 'accept':                # confirmation acceptance notices
         env_template = os.environ.get('TMDA_CONFIRM_ACCEPT_TEMPLATE')
         def_template = Defaults.CONFIRM_ACCEPT_TEMPLATE

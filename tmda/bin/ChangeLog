@@ -3,6 +3,9 @@
 	* tmda-filter (locate_pending): Send confirmation acceptance
 	notice from bouncegen() instead of here.
 
+	(bouncegen): Add optional 'dated' and 'sender' variables if
+	specified in the .tmdarc.
+
 2001-07-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: Make confirmation mode the only option.
