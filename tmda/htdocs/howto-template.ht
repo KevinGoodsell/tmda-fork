@@ -22,8 +22,8 @@ There are currently three templates:
 If you downloaded a TMDA source tarball, these files will be located
 in the <strong>templates/</strong> subdirectory of the
 distribution. If you are using a TMDA package, the template files will
-be in a global directory such as <strong>/etc/tmda/</strong> or
-<strong>/usr/share/tmda/</strong>.
+be in a global directory such as <strong>/etc/tmda/</strong>,
+<strong>/usr/share/tmda/</strong> or <strong>/usr/local/share/tmda/</strong>.
 
 <hr>
 
