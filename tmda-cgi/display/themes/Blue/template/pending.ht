@@ -33,26 +33,26 @@ Title: Pending E-mail
           <tr bgcolor="#DADCEB">
             <td colspan="6"><table cellspacing="0" width="100%" border=0>
               <tr valign="bottom">
-                <td height="24" width="20">
+                <td height="24" width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c1.gif"
                    width="20" height="15" alt="Leave">
                 </td>
-                <td width="20">
+                <td width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c2.gif"
                    width="20" height="15" alt="Release">
                 </td>
-                <td width="20">
+                <td width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c3.gif"
                    width="20" height="15" alt="Delete">
                 </td>
               <!-- var: WhIcon -->
-                <td width="20">
+                <td width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c4.gif"
                    width="20" height="15" alt="Whitelist">
                 </td>
               <!-- /var -->
               <!-- var: BlIcon -->
-                <td width="20">
+                <td width="1%">
                   <img src="%(ThemeDir)s/buttons/options_r1_c5.gif"
                    width="20" height="15" alt="Blacklist">
                 </td>
