@@ -23,6 +23,7 @@
 
 import os
 import Template
+import CgiUtil
 from TMDA import Address
 from TMDA import Defaults
 
@@ -49,9 +50,14 @@ def Show():
   #
   # What shall we create?
   #
+  T["defaultAddress"] = Address.Factory().create(None).address
 
   # Default is "dated"
   Tag = Defaults.TAGS_DATED[0].lower()
+  if Form.has_key("dated_addr"):
+    Base = Form["dated_addr"].value
+  else:
+    Base = None
   DestField = "DatedAddr"
 
   if Form.has_key("subcmd"):
@@ -59,6 +65,10 @@ def Show():
 
       # Make a "sender" address
       Tag = Defaults.TAGS_SENDER[0].lower()
+      if Form.has_key("sender_addr"):
+        Base = Form["sender_addr"].value
+      else:
+        Base = None
       DestField = "SenderAddr"
       if Form.has_key("sender"):
         Option = T["Sender"] = PVars[("GenAddr", "Sender")] = \
@@ -76,6 +86,10 @@ def Show():
 
       # Make a "keyword" address
       Tag = Defaults.TAGS_KEYWORD[0].lower()
+      if Form.has_key("keyword_addr"):
+        Base = Form["keyword_addr"].value
+      else:
+        Base = None
       DestField = "KeywordAddr"
       if Form.has_key("keyword"):
         Option = T["Keyword"] = PVars[("GenAddr", "Keyword")] = \
@@ -114,10 +128,28 @@ def Show():
   # Show correct units
   T["%sSel" % PVars[("GenAddr", "ExpireUnit")]] = " selected"
 
+  # Strip the Base if it is already a tagged address.
+  if Base is not None:
+    try:
+      at = Base.rindex('@')
+      local = Base[:at].lower()
+      domain = Base[at+1:].lower()
+    except ValueError:
+      CgiUtil.TermError("Value Error", 
+        "'%s' is not a valid email address" % Base,
+        "generate address", "",
+        "Try again with a valid email address in the <i>Use Address</i> blank."
+        )
+    addr = Address.Factory(Base)
+    addrTag = addr.tag()
+    if addrTag != "":
+      tagindex = local.rindex( addrTag )
+      Base = local[:tagindex - 1] + "@" + domain
+
   # Create the address
   try:
     T[DestField] = PVars[("TestAddr", "To")] = \
-      Address.Factory(tag = Tag).create(None, Option).address
+      Address.Factory(tag = Tag).create(Base, Option).address
     PVars.Save()
   except TypeError:
     pass

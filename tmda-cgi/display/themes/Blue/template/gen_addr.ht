@@ -58,7 +58,7 @@ Title: Generate Dynamic E-mail Addresses
           </tr>
           <tr>
             <td>Use address:</td>
-            <td><input type="text" value="%(DatedAddr)s" size="45"></td>
+            <td><input name="dated_addr" type="text" value="%(DatedAddr)s" size="45"></td>
           </tr>
         </table>
         Users will typically have to confirm once a dated address expires.</td>
@@ -94,3 +94,7 @@ Title: Generate Dynamic E-mail Addresses
     </tr>
   </form>
 </table>
+<p><b>Note:</b>
+  If you would like to use an email different from your default email address
+  (%(defaultAddress)s), you may type it in the "Use Address" box before
+  clicking the "Generate" button.</p>
