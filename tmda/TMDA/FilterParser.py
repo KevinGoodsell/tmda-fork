@@ -10,6 +10,7 @@ Filter file syntax documented in htdocs/config-filter.html
 import os
 import re
 import string
+import types
 
 import Util
 
@@ -183,6 +184,44 @@ class FilterParser:
                     if self.action: break
                 except (ImportError, IOError):
                     pass
+            # Extract addresses from a Mailman list-configuration `database'.
+            if (source[:len('from-mailman')] == 'from-mailman' or
+                source[:len('to-mailman')] == 'to-mailman'):
+                match = os.path.expanduser(match)
+                if os.path.exists(match):
+                    try:
+                        (mm_source, mmdb_key) = string.split(source, '.')
+                        if mm_source == 'from-mailman':
+                            keys = senders
+                        elif mm_source == 'to-mailman':
+                            keys = [recipient]
+                        # The filename is expected to be in the format of
+                        # either 'filename.db', or 'filename.pck'.
+                        dbsuffix = string.split(match, '.')[-1]
+                        # If the filename ends with `.db', then it is
+                        # assumed that the file contains a Python marshal
+                        # (MM 2.0).  If the file ends with `.pck' then it
+                        # is assumed to contain a Python pickle (MM 2.1).
+                        if dbsuffix == 'db':
+                            import marshal
+                            Serializer = marshal
+                        elif dbsuffix == 'pck':
+                            import cPickle
+                            Serializer = cPickle
+                        mmdb_file = open(match, 'r')
+                        mmdb_data = Serializer.load(mmdb_file)
+                        mmdb_file.close()
+                        mmdb_addylist = mmdb_data[mmdb_key]
+                        # Make sure mmdb_addylist is a list of e-mail addresses.
+                        if type(mmdb_addylist) is types.DictType:
+                             mmdb_addylist = mmdb_data[mmdb_key].keys()
+                        for addy in keys:
+                            if string.lower(addy) in mmdb_addylist:
+                                self.action = action
+                                break
+                        if self.action: break
+                    except:
+                        pass
             if source in ('body', 'headers'):
                 if source == 'body' and msg_body:
                     content = msg_body

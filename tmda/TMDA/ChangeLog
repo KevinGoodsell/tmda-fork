@@ -1,3 +1,9 @@
+2002-01-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* FilterParser.py (FilterParser.firstmatch): Add support for
+	matching lists of addresses contained within a Mailman
+	configuration database.
+
 2002-01-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Version.py (TMDA): 0.43+ --> 0.44.
