@@ -262,8 +262,8 @@ function TestConfirm()
           BlRadio.Clear()
           BlRadio.Add()
 
-      Row.Add()
-      Count = Count + 1
+        Row.Add()
+        Count = Count + 1
   
   # No messages to display
   else:

@@ -48,6 +48,8 @@ import MyCgiTb
 import Session
 import Template
 
+from TMDA import Errors
+
 # Prepare the traceback in case of uncaught exception
 MyCgiTb.Content()
 MyCgiTb.ErrTemplate = "prog_err.html"
@@ -124,12 +126,10 @@ def main():
     if Form["cmd"].value == "pending":
       Pending.Show()
     elif Form["cmd"].value == "view":
-      if Form.has_key("msgid"):
-        PVars["MsgID"] = Form["msgid"].value
-      if Form.has_key("headers"):
-        PVars["Headers"] = Form["headers"].value
-      PVars.Save()
-      View.Show()
+      try:
+        View.Show()
+      except Errors.MessageError:  # No messages left?
+        Pending.Show()
     else:
       CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
         Form["cmd"].value, "interpret command", "", "Please be patient while "

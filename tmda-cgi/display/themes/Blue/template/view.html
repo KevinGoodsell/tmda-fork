@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Apr 14 16:57:51 2003 -->
+<!-- Mon Apr 14 20:03:25 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -76,7 +76,7 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x638" height="35" width="
 </td>
 <!-- end of sidebar cell -->
 <!-- start of body cell -->
-<td valign="top" class="body"><table width="100%" border="2" cellpadding="0" cellspacing="0"
+<td valign="top" class="body">%(ConfirmScript)s<table width="100%" border="2" cellpadding="0" cellspacing="0"
   bordercolor="#4E508F">
   <tr>
     <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -87,17 +87,22 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x638" height="35" width="
           <td><a href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19" 
             height="18" alt="Prev"></a></td>
-          <td><a href="%(DeleteURL)s"><img src="%(ThemeDir)s/buttons/subnav_r1_c3.gif"
-            border="0" width="21" height="18" alt="Delete"></a></td>
-          <td><a href="%(BlacklistURL)s"><img 
-            src="%(ThemeDir)s/buttons/subnav_r1_c4.gif" border="0" width="59" 
-            height="18" alt="Blacklist & Delete"></a></td>
+          <td><a href="%(DeleteURL)s"><img
+            src="%(ThemeDir)s/buttons/subnav_r1_c3.gif" border="0" width="21" 
+            height="18" alt="Delete"></a></td>
+          <!-- var: BlIcon1 -->
+            <td><a href="%(BlacklistURL)s"><img 
+              src="%(ThemeDir)s/buttons/subnav_r1_c4.gif" border="0" width="59" 
+              height="18" alt="Blacklist & Delete"></a></td>
+          <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=release&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c5.gif" border="0" width="21" 
             height="18" alt="Release"></a></td>
-          <td><a href="%(Script)s?cmd=view&subcmd=white&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59" 
-            height="18" alt="Whitelist & Release"></a></td>
+          <!-- var: WhIcon1 -->
+            <td><a href="%(Script)s?cmd=view&subcmd=white&SID=%(SID)s"><img
+              src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59" 
+              height="18" alt="Whitelist & Release"></a></td>
+          <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56" 
             height="18" alt="Toggle Headers"></a></td>
@@ -109,7 +114,7 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x638" height="35" width="
             height="18" alt="Last"></a></td>
         </tr>
         <tr bgcolor="#DADCEB"> 
-          <td colspan="9" class="email"><!-- var: Headers --><table
+          <td colspan="%(Columns)d" class="email"><!-- var: Headers --><table
               class="Headers" border="0" cellspacing="0" cellpadding="0">
 <!-- var: HeaderRow -->
               <tr> 
@@ -118,35 +123,41 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x638" height="35" width="
                 <td>%(Value)s</td>
               </tr>
 <!-- /var (HeaderRow) -->
-            </table><!-- /var (Headers) -->
-            <span class="%(ContentClass)s">%(Content)s</span></td>
+            </table><br><!-- /var (Headers) -->
+            %(Content)s</td>
         </tr>
         <tr align="center" bgcolor="#7A7AB6" height="24"> 
           <td><a href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
             height="18" alt="First"></a></td>
           <td><a href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19" height="18"
-            alt="Prev"></a></td>
-          <td><a href="%(DeleteURL)s"><img src="%(ThemeDir)s/buttons/subnav_r1_c3.gif"
-            border="0" width="21" height="18" alt="Delete"></a></td>
-          <td><a href="%(BlacklistURL)s"><img src="%(ThemeDir)s/buttons/subnav_r1_c4.gif"
-            border="0" width="59" height="18" alt="Blacklist & Delete"></a></td>
+            src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19"
+            height="18" alt="Prev"></a></td>
+          <td><a href="%(DeleteURL)s"><img
+            src="%(ThemeDir)s/buttons/subnav_r1_c3.gif" border="0" width="21" 
+            height="18" alt="Delete"></a></td>
+          <!-- var: BlIcon2 -->
+            <td><a href="%(BlacklistURL)s"><img 
+              src="%(ThemeDir)s/buttons/subnav_r1_c4.gif" border="0" width="59" 
+              height="18" alt="Blacklist & Delete"></a></td>
+          <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=release&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c5.gif" border="0" width="21" height="18"
-            alt="Release"></a></td>
-          <td><a href="%(Script)s?cmd=view&subcmd=white&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59" height="18"
-            alt="Whitelist & Release"></a></td>
+            src="%(ThemeDir)s/buttons/subnav_r1_c5.gif" border="0" width="21" 
+            height="18" alt="Release"></a></td>
+          <!-- var: WhIcon2 -->
+            <td><a href="%(Script)s?cmd=view&subcmd=white&SID=%(SID)s"><img
+              src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59" 
+              height="18" alt="Whitelist & Release"></a></td>
+          <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56" height="18"
-            alt="Toggle Headers"></a></td>
+            src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56" 
+            height="18" alt="Toggle Headers"></a></td>
           <td><a href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18" height="18"
-            alt="Next"></a></td>
+            src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18" 
+            height="18" alt="Next"></a></td>
           <td><a href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24" height="18"
-            alt="Last"></a></td>
+            src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24" 
+            height="18" alt="Last"></a></td>
         </tr>
       </table></td>
   </tr>

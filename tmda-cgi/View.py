@@ -25,8 +25,13 @@ import cgi
 import email
 import os
 import re
+
 import CgiUtil
+import MyCgiTb
+import Template
+
 from TMDA import Defaults
+from TMDA import Errors
 from TMDA import Pending
 from TMDA import Util
 
@@ -69,6 +74,11 @@ def Attachment(Part):
 def Show():
   "Show an e-mail in HTML."
 
+  # Deal with a particular message?
+  if Form.has_key("msgid"):
+    PVars["MsgID"] = Form["msgid"].value
+    PVars.Save()
+
   # Check to make sure they're not trying to access anything other than email
   if not re.compile("^\d+\.\d+\.msg$").search(PVars["MsgID"]):
     CgiUtil.TermError("<tt>%s</tt> is not a valid message ID." % PVars["MsgID"],
@@ -76,10 +86,13 @@ def Show():
       "Recheck link or contact TMDA programmers.")
 
   # Fetch the queue
-  Queue = Pending.Queue(descending = (PVars["SortDir"] == "desc"), cache = 1)
+  Queue = Pending.Queue(descending = 1, cache = 1)
   Queue.initQueue()
   Queue._loadCache()
-  
+
+  # Get e-mail template
+  T = Template.Template("view.html")
+
   # Any subcommands?
   if Form.has_key("subcmd"):
     # Locate messages in pending dir
@@ -87,10 +100,8 @@ def Show():
     try:
       MsgIdx = Msgs.index(PVars["MsgID"])
     except ValueError: # Oops.  Perhaps they released the message?  Get the list!
-      print "Location: %s?cmd=pending&SID=%s\n" % \
-        (os.environ["SCRIPT_NAME"], PVars.SID)
-      return
-    
+      raise Errors.MessageError
+
     # first/prev/next/last subcommands
     if Form["subcmd"].value == "first":
       PVars["MsgID"] = Msgs[0]
@@ -106,12 +117,19 @@ def Show():
     elif Form["subcmd"].value == "last":
       PVars["MsgID"] = Msgs[-1]
       PVars["Pager"] = len(Msgs)
-    
+
+    # Toggle headers?
+    elif Form["subcmd"].value == "headers":
+      if PVars["Headers"] == "short":
+        PVars["Headers"] = "all"
+      else:
+        PVars["Headers"] = "short"
+
     else:
       # Read in e-mail
       try:
         MsgObj = Pending.Message(PVars["MsgID"])
-  
+
         if Form["subcmd"].value == "delete":
           MsgObj.delete()
         elif Form["subcmd"].value == "release":
@@ -126,13 +144,11 @@ def Show():
           MsgObj.delete()
         del Msgs[MsgIdx]
       except IOError: pass
-      
+
       # So which message are we on now?
       if len(Msgs) == 0: # Oops! None left!
-        print "Location: %s?cmd=pending&SID=%s\n" % \
-          (os.environ["SCRIPT_NAME"], PVars.SID)
         PVars.Save()
-        return
+        raise Errors.MessageError
       if MsgIdx >= len(Msgs): PVars["MsgID"] = Msgs[-1]
       else:                   PVars["MsgID"] = Msgs[MsgIdx]
 
@@ -141,62 +157,59 @@ def Show():
 
   # Use Javascript confirmation?
   if Defaults.CGI_USE_JS_CONFIRM:
-    DeleteLink = "javascript:ConfirmDelete()"
-    BlackLink  = "javascript:ConfirmBlacklist()"
+    T["DeleteURL"]    = "javascript:ConfirmDelete()"
+    T["BlacklistURL"] = "javascript:ConfirmBlacklist()"
   else:
-    DeleteLink = "%s?cmd=view&subcmd=delete&SID=%s" % \
+    T["DeleteURL"]    = "%s?cmd=view&subcmd=delete&SID=%s" % \
       (os.environ["SCRIPT_NAME"], PVars.SID)
-    BlackLink  = "%s?cmd=view&subcmd=black&SID=%s" % \
+    T["BlacklistURL"] = "%s?cmd=view&subcmd=black&SID=%s" % \
       (os.environ["SCRIPT_NAME"], PVars.SID)
-  
+
   # Read in e-mail
   MsgObj = Pending.Message(PVars["MsgID"])
   Queue._addCache(PVars["MsgID"])
   Queue._saveCache()
-  
+
   if PVars["Headers"] == "all":
+    # Remove header table
+    T["HeaderRow"]
+    T["Headers"]
+
     # Generate all headers
-    MsgHTML = """<a href="%s?cmd=view&headers=short&SID=%s"><img 
-  src="%sshorthead.gif" width="100" height="65" align="right" border="0" 
-  alt="Show Short Headers"></a><pre>""" % (os.environ["SCRIPT_NAME"],
-      PVars.SID, CgiUtil.DispDir)
+    Headers = ""
     for Line in CgiUtil.Escape(MsgObj.show()).split("\n"):
       if Line == "": break
-      MsgHTML += Line + "\n"
-    MsgHTML += "</pre>"
+      Headers += Line + "\n"
+    T["Headers"] = '<pre class="Headers">%s</pre>' % Headers
   else:
+    # Extract header row
+    HeaderRow = T["HeaderRow"]
+
     # Generate short headers
-    MsgHTML = """<a href="%s?cmd=view&headers=all&SID=%s"><img 
-  src="%sallhead.gif" width="100" height="65" align="right" border="0" 
-  alt="Show All Headers"></a>
-<table class="Headers" border="0" cellspacing="0" cellpadding="0">
-""" % (os.environ["SCRIPT_NAME"], PVars.SID, CgiUtil.DispDir)
     for Header in Defaults.SUMMARY_HEADERS:
-      MsgHTML += """  <tr>
-    <th>%s:</th>
-    <td width="5"></td>
-    <td>%s</td>
-  </tr>
-""" % (Header.capitalize(), CgiUtil.Escape(MsgObj.msgobj[Header]))
-    MsgHTML += "</table><p>"
-  
+      T["Name"]  = Header.capitalize()
+      T["Value"] = CgiUtil.Escape(MsgObj.msgobj[Header])
+      HeaderRow.Add()
+
   # Go through each part and generate HTML
   TextParts = 0
   Attachments = ""
+  HTML = ""
   for Part in MsgObj.msgobj.walk():
     Type = Part.get_type("text/plain")
     # Display the easily display-able parts
     if TextType.search(Type):
       TextParts += 1
-      if TextParts > 1: MsgHTML += "<hr class=PartDiv>"
+      if TextParts > 1: HTML += '<hr class="PartDiv">'
       if Type == "text/plain":
         try:
-          MsgHTML += "<span class=EmailText>%s</span>" % \
-            CgiUtil.Escape(Part.get_payload(decode=1).strip()).replace("\n", "&nbsp;<br>")
+          HTML += \
+            CgiUtil.Escape(Part.get_payload(decode=1).strip()).replace("\n",
+              "&nbsp;<br>")
         except AttributeError:
           pass
       else:
-        MsgHTML += Part.get_payload(decode=1)
+        HTML += Part.get_payload(decode=1)
     # Don't show anything if the part contains other parts
     # (those parts will be recursed seperately)
     elif not MessageType.search(Type):
@@ -205,79 +218,30 @@ def Show():
   # Show any attachments at the bottom of the email
   if Attachments != "":
     TextParts += 1
-    if TextParts > 1: MsgHTML += "<hr class=PartDiv>"
-    MsgHTML += """<table class=Attachments>
+    if TextParts > 1: HTML += '<hr class="PartDiv">'
+    HTML += """<table class=Attachments>
   <tr>
     %s
   </tr>
 </table>
 """ % Attachments
+  T["Content"] = HTML
 
-  # Any extra icons?
-  Columns = 7
-  ExtraIcon1 = ""
-  ExtraIcon2 = ""
-  if Defaults.PENDING_BLACKLIST_APPEND:
-    Columns += 1
-  if Defaults.PENDING_WHITELIST_APPEND:
-    Columns += 1
-  ColWidth = "%d%%" % int(100 / Columns)
-  if Defaults.PENDING_BLACKLIST_APPEND:
-    ExtraIcon1 = """<td width="%s"><a href="%s"><img alt="Blacklist & Delete" 
-      src="%sblack.gif" width="38" height="42" border="0"></a></td>
-""" % (ColWidth, BlackLink, CgiUtil.DispDir)
-  if Defaults.PENDING_WHITELIST_APPEND:
-    ExtraIcon2 = """<td width="%s"><a href="%s?cmd=view&subcmd=white&SID=%s"><img 
-      alt="Whitelist & Release" src="%swhite.gif" width="40" height="42" 
-      border="0"></a></td>
-""" % (ColWidth, os.environ["SCRIPT_NAME"], PVars.SID, CgiUtil.DispDir)
-
-  # Precalculate the navigation bar (since we'll use it twice)
-  NavBarHTML = """  <tr align="center" class="NavBar">
-    <td width="%(width)s"><a href="%(script)s?cmd=view&subcmd=first&SID=%(SID)s"><img alt="First"
-      src="%(dir)sfirst.gif" width="24" height="42" border="0"></a></td>
-    <td width="%(width)s"><a href="%(script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img alt="Prev"
-      src="%(dir)sprev.gif" width="21" height="42" border="0"></a></td>
-    <td width="%(width)s"><a href="%(delete)s"><img alt="Delete" src="%(dir)skill.gif" 
-      width="30" height="42" border="0"></a></td>%(icon1)s
-    <td width="%(width)s"><a href="%(script)s?cmd=list&SID=%(SID)s"><img alt="Entire List"
-      src="%(dir)sall.gif" width="45" height="42" border="0"></a></td>
-    <td width="%(width)s"><a href="%(script)s?cmd=view&subcmd=release&msgid=%(msgid)s&SID=%(SID)s"><img alt="Release"
-      src="%(dir)saccept.gif" width="38" height="42" border="0"></a></td>%(icon2)s
-    <td width="%(width)s"><a href="%(script)s?cmd=view&subcmd=next&SID=%(SID)s"><img alt="Next"
-      src="%(dir)snext.gif" width="21" height="42" border="0"></a></td>
-    <td width="%(width)s"><a href="%(script)s?cmd=view&subcmd=last&SID=%(SID)s"><img alt="Last"
-      src="%(dir)slast.gif" width="24" height="42" border="0"></a></td>
-  </tr>""" % {"width": ColWidth, "script": os.environ["SCRIPT_NAME"],
-    "SID": PVars.SID, "delete": DeleteLink, "icon1": ExtraIcon1,
-    "msgid": PVars["MsgID"], "icon2": ExtraIcon2, "dir": CgiUtil.DispDir}
-
-
-  # Display HTML page with email included.
-  print """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<title>View E-mail</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="%sstyles.css" rel="stylesheet" type="text/css">
-</head>
-
-<body class="ViewPage">
-<table>
-%s
-  <tr>
-    <td colspan="%d" class="Email">
-      <hr class=NavDiv>
-      %s
-      <hr class=NavDiv>
-    </td>
-  </tr>
-%s
-</table>""" % (CgiUtil.DispDir, NavBarHTML, Columns, MsgHTML, NavBarHTML)
+  # Remove unneeded icons?
+  Columns = 9
+  if not Defaults.PENDING_BLACKLIST_APPEND:
+    Columns -= 1
+    T["BlIcon1"]
+    T["BlIcon2"]
+  if not Defaults.PENDING_WHITELIST_APPEND:
+    Columns -= 1
+    T["WhIcon1"]
+    T["WhIcon2"]
+  T["Columns"] = Columns
 
   # Javascript confirmation for delete and blacklist?
   if Defaults.CGI_USE_JS_CONFIRM:
-    print """<script>
+    T["ConfirmScript"] = """<script>
 function ConfirmDelete()
 {
   if (confirm("Permanently delete this pending message?\\nAny confirmation that follows will fail."))
@@ -291,5 +255,5 @@ function ConfirmBlacklist()
 </script>""" % {"script": os.environ["SCRIPT_NAME"], "msgid": PVars["MsgID"],
     "SID": PVars.SID}
 
-  print """</body>
-</html>"""
+  # Display HTML page with email included.
+  print T
