@@ -1,3 +1,7 @@
+2002-03-27  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
+
+	* Add collectaddys.
+
 2002-03-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add DELIVERED_CACHE & DELIVERED_CACHE_LEN.
