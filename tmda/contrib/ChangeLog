@@ -1,3 +1,8 @@
+2003-10-01  Jason R. Mastaler  <jason@mastaler.com>
+
+	* smtp-check-sender (data): Change the default probe address to
+	the empty envelope sender <>.
+	
 2003-07-31  Tim Legant  <tim@catseye.net>
 
 	* vmailmgr-vdir.sh: Apparently the listvdomain program doesn't

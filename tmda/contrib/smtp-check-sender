@@ -76,7 +76,11 @@ data = sys.stdin.read()
 if len(sys.argv) < 2:
     sys.exit(1)
 
-mail_from_address = 'user@example.com'
+# Make sure you either take the default of '' (meaning probe with an
+# empty envelope sender <>), or use a valid address for this variable,
+# otherwise you risk losing mail.
+mail_from_address = ''
+
 address_to_verify = sys.argv[1]
 verify_hostname = address_to_verify.split('@', 1)[1]
 
