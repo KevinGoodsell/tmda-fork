@@ -744,6 +744,7 @@ class SMTPChannel(asynchat.async_chat):
         self.push('235 AUTH successful')
         print >> DEBUGSTREAM, 'Auth: ', 'succeeded for user', \
               "'%s'" % self.__auth_username
+        os.environ['LOGIN'] = self.__auth_username
         self.__smtpauth = 1
 
     def auth_verify(self, sasl=None):
