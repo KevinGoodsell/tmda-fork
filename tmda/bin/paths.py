@@ -19,16 +19,14 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""
-Hack the path to include the parent directory of the $prefix/TMDA
-package directory.
-"""
+"""Fixup sys.path."""
 
 import os
 import sys
 
 progpath = os.path.abspath(sys.argv[0])
 
+# Handle symbolic links.
 if os.path.islink(progpath):
     progdir = os.path.dirname(progpath)
     linkpath = os.readlink(progpath)
@@ -37,6 +35,11 @@ if os.path.islink(progpath):
     else:
         progpath = os.path.normpath(progdir + '/' + linkpath)
 
-prefix = os.path.split(os.path.dirname(progpath))[0] # '../'
+# Hack the path to include the parent directory ('../')
+prefix = os.path.split(os.path.dirname(progpath))[0]
+sys.path.insert(0, prefix)
 
-sys.path.insert(1, prefix)
+# We also need the TMDA/pythonlib directory on the path to pick up any
+# overrides of standard modules and packages.  Note that these must go
+# at the very front of the path for this reason.
+sys.path.insert(0, os.path.join(prefix, 'TMDA', 'pythonlib'))

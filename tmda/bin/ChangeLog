@@ -1,3 +1,10 @@
+2002-09-11  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-*: Prepend prefix/site-packages/TMDA/pythonlib if the
+	import of paths fails in order to support package installations.
+	
+	* paths.py: Prepend prefix/TMDA/pythonlib to the sys.path.
+	
 2002-09-03  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-ofmipd (run_remoteauth): Add support for APOP
