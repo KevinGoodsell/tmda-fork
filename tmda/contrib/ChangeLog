@@ -1,3 +1,13 @@
+2003-04-08  Gre7g Luterman <gre7g@wolfhome.com>
+
+	* CheckPassword: an optional authentication method for TMDA/Auth.py
+
+	Auth.py has a checkpassword authentication method, but it won't work
+	if the permissions on checkpassword are the recommended 700 instead of
+	4755 and you are not running as real user root.  This module can be
+	used in that case, but is being moved to the contrib directory because
+	it is written in C instead of Python.
+
 2003-03-24  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* collectaddys: Use a dictionary instead of a list to guarantee
