@@ -16,7 +16,8 @@ You <strong>do not</strong> need to be subscribed to post a message there.
 In your report, please include at least the following information:
 <ul>
 
-<li>Your TMDA version, your Python version, and your operating system.<br>
+<li>Your TMDA version, your Python version, and your operating system 
+(i.e, <code><b>tmda-keygen -V</b></code>).<br>
 <li>Your type of TMDA installation (tarball, Linux RPM, FreeBSD port, etc.).<br>
 <li>Which MTA you are running (qmail, Postfix, etc.)<br>
 <li>If you are running TMDA from procmail or maildrop.<br>
