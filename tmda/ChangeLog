@@ -1,5 +1,7 @@
 2001-04-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* README: TMDA 0.10 is released.
+
 	* CRYPTO: New file.  Explains the cryptography functions used in
 	TMDA.
 
