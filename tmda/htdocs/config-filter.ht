@@ -502,10 +502,10 @@ headers -case 'MAKE MONEY FAST' drop
 size <10000 deliver
 size >1000000 exit
 
-# Throw the message away if Razor says it's SPAM
+# Throw the message away if Razor says it's spam
 pipe /usr/bin/razor-check drop
 
-# Save the message to a special mbox if Razor says it's SPAM
+# Save the message to a special mbox if Razor says it's spam
 pipe "/usr/bin/razor-check -rs=razor.server.com" deliver=~/mbox.spam
 
 </pre>

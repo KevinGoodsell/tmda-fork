@@ -374,7 +374,7 @@ SqWebMail + vpopmail.
 <li>USENET News Client configuration:<br><br>
 
 If you still read <a href="http://www.usenet.org/" TARGET="Resource Window">USENET</a> 
-(a notorious source of SPAM), you might find it useful to post using a
+(a notorious source of spam), you might find it useful to post using a
 dated address.  Simply have your newsreader call
 <strong>tmda-address -dn</strong> and use the result as your
 posting address.

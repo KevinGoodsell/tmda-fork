@@ -18,7 +18,7 @@ BuildRequires: /usr/bin/python2
 Requires: /usr/bin/python2
 
 %description
-TMDA is an OSI certified local mail delivery agent and SPAM
+TMDA is an OSI certified local mail delivery agent and spam
 reduction system.
 
 %prep

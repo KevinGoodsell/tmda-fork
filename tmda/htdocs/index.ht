@@ -6,15 +6,15 @@ TMDA is an
 <a href="http://www.opensource.org/" TARGET="Resource Window">
 open source</a> software application designed to significantly
 reduce the amount of 
-<a href="http://spam.abuse.net/" TARGET="Resource Window">SPAM</a>
+<a href="http://spam.abuse.net/" TARGET="Resource Window">spam</a>
 (Internet junk-mail) you receive.  TMDA strives to be more effective, 
-yet less time-consuming than traditional SPAM filters. 
+yet less time-consuming than traditional spam filters. 
 TMDA can also be used as a general purpose 
 <a href="config-filter.html">local mail delivery agent</a> 
 to filter, sort, deliver and dispose of incoming mail.
 <br><br>
 
-The technical countermeasures used by TMDA to thwart SPAM include:
+The technical countermeasures used by TMDA to thwart spam include:
 
 <ul>
 
@@ -25,7 +25,7 @@ The technical countermeasures used by TMDA to thwart SPAM include:
 <li><b><a href="challengeresponse.html">challenge/response</a></b>: 
 allows unknown senders which
 aren't on the whitelist or blacklist the chance to confirm that their message 
-is legitimate (non-SPAM).<br><br>
+is legitimate (non-spam).<br><br>
 
 <li<b><a href="config-client.html">tagged addresses</a></b>: 
 special-purpose e-mail addresses such as time-dependent addresses, or
@@ -35,12 +35,12 @@ to safely circumvent the challenge/response system.
 </ul>
 
 This combination was chosen based on the following assumptions about the
-current state of SPAM on the Internet:<br>
+current state of spam on the Internet:<br>
 
 <ol>
 <li>You cannot keep your email address secret from spammers.<br><br>
 
-<li>Content-based filters can't distinguish SPAM from legitimate mail with sufficient accuracy.<br><br>
+<li>Content-based filters can't distinguish spam from legitimate mail with sufficient accuracy.<br><br>
 
 <li>To maintain economies of scale, bulk-mailing is generally:
 <ul>
@@ -48,6 +48,6 @@ current state of SPAM on the Internet:<br>
     <li>A one-way communication channel (from spammer to victim).<br><br>
 </ul>
 
-<li>SPAM will not cease until it becomes prohibitively expensive for spammers to operate.
+<li>spam will not cease until it becomes prohibitively expensive for spammers to operate.
 </ol>
 

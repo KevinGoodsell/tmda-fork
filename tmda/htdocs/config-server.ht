@@ -106,7 +106,7 @@ address, but would still like to set aside a secondary address which
 does.  This would be useful not only for testing purposes, but also
 for using in public forums such as newgroups and mailing lists where
 the "harvesting" potential is high.  This is a much better alternative
-than using a munged address such as <em>jasonNOSPAM@mastaler.com</em>
+than using a munged address such as <em>jasonNOspam@mastaler.com</em>
 or <em>jason@REMOVE_THIS.mastaler.com</em> which is confusing, error
 prone, and inconvenient for those trying to reply to your messages.
 

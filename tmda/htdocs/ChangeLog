@@ -514,7 +514,7 @@
 
 2001-12-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* resources.ht (Links): Link to Vincent Danen's "Controlling SPAM
+	* resources.ht (Links): Link to Vincent Danen's "Controlling spam
 	under Mandrake Linux, Part 2".
 	
 2001-12-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
@@ -542,7 +542,7 @@
 
 	* config-filter.ht: Document CDB support.
 
-	* results.ht (Links): Update personal SPAM statistics.
+	* results.ht (Links): Update personal spam statistics.
 
 	* faq.ht (Links): Add cygwin usage information to the Windows
 	client section.
