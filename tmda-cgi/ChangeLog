@@ -4,8 +4,10 @@
 
 	* Added login cookie to TODO list.
 
-	* Tweaked pending list code so it won't complain if it can't find a batch
-	  message.
+	* Tweaked pending list code so it won't complain if it can't find a
+	  batch message.
+
+	* Don't automatically save list on sort.
 
 2003-06-06  Gre7g Luterman  <gre7g@wolfhome.com>
 

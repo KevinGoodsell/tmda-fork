@@ -127,22 +127,22 @@ height="%(height)d" alt=""" % Buttons[File][1]
       else:
         List = ""
 
-    # Make sure the list is properly formatted
-    List = re.sub("\r\n", "\n", List)
-    List = re.sub("\n*$", "", List)
-    List = re.sub("^\n*", "", List)
-    List += "\n"
+      # Make sure the list is properly formatted
+      List = re.sub("\r\n", "\n", List)
+      List = re.sub("\n*$", "", List)
+      List = re.sub("^\n*", "", List)
+      List += "\n"
 
-    try:
-      F = open(EditFile, "w")
-      F.write(List)
-      F.close()
-      T["FileContents"] = List
-    except IOError, ErrStr:
-      CgiUtil.TermError("Unable to save filter list.",
-      "Insufficient privileges", "save list", "%s<br>%s" % (ErrStr,
-      CgiUtil.FileDetails("Filter list", EditFile)),
-      "Change file permissions on <tt>%s</tt>" % EditFile)
+      try:
+        F = open(EditFile, "w")
+        F.write(List)
+        F.close()
+      except IOError, ErrStr:
+        CgiUtil.TermError("Unable to save filter list.",
+        "Insufficient privileges", "save list", "%s<br>%s" % (ErrStr,
+        CgiUtil.FileDetails("Filter list", EditFile)),
+        "Change file permissions on <tt>%s</tt>" % EditFile)
 
   # Display template
+  T["FileContents"] = List
   print T
