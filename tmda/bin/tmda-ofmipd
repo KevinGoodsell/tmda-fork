@@ -615,7 +615,8 @@ class SMTPChannel(asynchat.async_chat):
         self.__data = ''
         self.__fqdn = FQDN
         self.__peer = conn.getpeername()
-        self.__peername = socket.getfqdn(self.__peer[0])
+        self.__peerip = self.__peer[0]
+        self.__peername = socket.getfqdn(self.__peerip)
         self.__sockip = conn.getsockname()[0]
         print >> DEBUGSTREAM, 'Peer:', repr(self.__peer)
         self.push('220 %s ESMTP tmda-ofmipd' % (self.__fqdn))
@@ -866,9 +867,9 @@ class SMTPChannel(asynchat.async_chat):
         rh = []
         rh.append('from %s' % (arg))
         if arg.lower() != self.__peername.lower():
-            rh.append('(%s [%s])' % (self.__peername, self.__sockip))
+            rh.append('(%s [%s])' % (self.__peername, self.__peerip))
         else:
-            rh.append('(%s)' % (self.__sockip))
+            rh.append('(%s)' % (self.__peerip))
         rh.append('by %s (tmda-ofmipd) with ESMTP;' % (self.__fqdn))
         rh.append(Util.make_date())
         os.environ['TMDA_OFMIPD_RECEIVED'] = ' '.join(rh)
