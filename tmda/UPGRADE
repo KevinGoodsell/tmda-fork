@@ -26,6 +26,8 @@ are necessary:
   ~/.tmda-sender    -->  ~/.tmda/lists/sender
   ~/.tmda-whitelist -->  ~/.tmda/lists/whitelist
 
+* The copy of the original message is now added through the templates.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.21:
