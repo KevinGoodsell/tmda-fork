@@ -28,7 +28,6 @@ import pickle
 import pwd
 import random
 import re
-import string
 import sys
 import time
 from types import *
@@ -345,7 +344,8 @@ rights.""")
         pass
 
     # New session
-    SessionChars = string.ascii_letters + string.digits
+    SessionChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" \
+      "0123456789"
     self.SID = ""
     for i in range(8):
       self.SID += SessionChars[self.Rands.randrange(len(SessionChars))]
