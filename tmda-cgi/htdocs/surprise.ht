@@ -10,6 +10,7 @@ Title: Surprises & Gotcha's
 <a href="#Confirm">URL Confirmation Catastrophes</a><br>
 <a href="#Authentication">Authentication Ailments</a><br>
 <a href="#Attach">Attachment Anxiety</a></p>
+<a href="#WhiteBlack">Whitelist, Blacklist... where are the options?</a></p>
 
 <h3><a name="Whitelist"></a>Whitelist Woes</h3>
 <p>tmda-cgi's whitelist feature does not update the list pointed to by
@@ -92,3 +93,14 @@ Authentication returned: 0<br>
   the sender had confirmed the message, and view the attachment. Remember, 
   tmda-cgi lets you manage your pending messages.  It is not a web-based mail 
   client.</p>
+
+<h3><a name="WhiteBlack"></a>Whitelist, Blacklist... where are the options?</h3>
+<p>The screenshots show whitelist and blacklist options, but I don't see 
+  these!</p>
+<p>The whitelist and blacklist options are only available if you have 
+  configured them in your config file. Try setting <a
+  href="/config-vars.html#PENDING_WHITELIST_APPEND"><tt>PENDING_WHITELIST_APPEND</tt></a>
+  and <a
+  href="/config-vars.html#PENDING_BLACKLIST_APPEND"><tt>PENDING_BLACKLIST_APPEND</tt></a>. 
+  The radio buttons and option buttons should appear on the pending list and 
+  pending e-mail viewer once you do.</p>

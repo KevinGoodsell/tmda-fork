@@ -7,22 +7,31 @@ TMDA account over the web. At the time of this writing, tmda-cgi
 can:</p>
 <ul>
   <li>Page through lists of pending e-mail (mail received by your MTA, but
-    still awaiting confirmation)
+    still awaiting confirmation)</li>
   <li>View the text content (and see what sorts of attachments are included) in
-    any of your pending e-mails
+    any of your pending e-mails</li>
   <li>Release (move into your mail folder as if a confirmation had been
-    received) any of your pending e-mails
-  <li>Delete any pending e-mail
-  <li>Whitelist or blacklist the author of any pending e-mails
+    received) any of your pending e-mails</li>
+  <li>Delete any pending e-mail</li>
+  <li>Whitelist or blacklist the author of any pending e-mails</li>
+  <li>Generate dynamic ("keyword", "dated", and "sender") addresses</li>
+  <li>Test dynamic addresses</li>
+  <li>Edit both incoming and outgoing filter files (disable-able)</li>
+  <li>Edit any of your text-file based lists</li>
+  <li>Edit your local TMDA configuration file (disable-able)</li>
+  <li>View the global TMDA configuration file</li>
+  <li>Select a theme (although only one theme is currently included in the 
+    releases)</li>
+  </li>View version information and pertinent links</li>
 </ul>
-<p>At the moment, tmda-cgi's focus is clearly manipulating pending e-mails. In 
-  the near future, we plan for tmda-cgi to become more of a general system 
-  tool. Features we hope to add soon include:</p>
+<p>Features we hope to add soon include:</p>
 <ul>
-  <li>Filter configuration</li>
-  <li>List editing</li>
   <li>Automated clean-ups of pending e-mails</li>
-  <li>E-mail address generation (keyword, dated, or sender)</li>
+  <li>Automated account filtering install and uninstall</li>
+  <li>Filter testing</li>
+  <li>The ability to change your login password</li>
+  <li>The ability to report spammers to services such as <a 
+    href="http://spamcop.com">SpamCop</a></li>
 </ul>
 <hr>
 <p>tmda-cgi provides quick and easy access to your pending e-mails. This is an

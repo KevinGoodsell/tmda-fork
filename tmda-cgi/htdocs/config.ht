@@ -64,29 +64,30 @@ Title: Configuration
 <table width="100%">
   <tr>
     <td><a href="#NoOverrideUserSplit">NoOverride:UserSplit</a></td>
+    <td><a href="#NoOverrideMayEditFilters">NoOverride:MayEditFilters</a><br>
+  </tr>
+  <tr>
     <td><a href="#NoOverrideMayEditLocalConfig">NoOverride:MayEditLocalConfig</a><br>
-  </tr>
-  <tr>
     <td><a href="#GeneralTheme">General:Theme</a><br>
-    <td><a href="#GeneralUseJSConfirm">General:UseJSConfirm</a><br>
   </tr>
   <tr>
-    <td><a href="#GenAddrKeyword">GenAddr:Keyword</a><br>
+    <td><a href="#GeneralUseJSConfirm">General:UseJSConfirm</a><br>
     <td><a href="#GenAddrExpireNum">GenAddr:ExpireNum</a><br>
   </tr>
   <tr>
     <td><a href="#GenAddrExpireUnit">GenAddr:ExpireUnit</a><br>
+    <td><a href="#GenAddrKeyword">GenAddr:Keyword</a><br>
+  </tr>
+  <tr>
     <td><a href="#GenAddrSender">GenAddr:Sender</a><br>
-  </tr>
-  <tr>
     <td><a href="#PendingListCropSender">PendingList:CropSender</a><br>
+  </tr>
+  <tr>
     <td><a href="#PendingListCropSubject">PendingList:CropSubject</a><br>
-  </tr>
-  <tr>
     <td><a href="#PendingListDateFormat">PendingList:DateFormat</a><br>
-    <td><a href="#PendingListPagerSize">PendingList:PagerSize</a><br>
   </tr>
   <tr>
+    <td><a href="#PendingListPagerSize">PendingList:PagerSize</a><br>
     <td><a href="#ViewPendingHeaders">ViewPending:Headers</a><p>
   </tr>
 </table>
@@ -95,6 +96,19 @@ Title: Configuration
 <blockquote>
   <p>Regular expression to split virtual user login names.</p>
   <p>Default: <tt>^(.+)[%@](.+)$</tt> (split on "@" or "%")</p>
+</blockquote>
+
+<h4><a name="NoOverrideMayEditFilters"></a>NoOverride:MayEditFilters</h4>
+<blockquote>
+  <p>Allow users to edit their filter files with tmda-cgi.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[NoOverride]<br>
+          MayEditFilters = No</td>
+      </tr>
+    </table>
+  <p>Default: <tt>Yes</tt></p>
 </blockquote>
 
 <h4><a name="NoOverrideMayEditLocalConfig"></a>NoOverride:MayEditLocalConfig</h4>
