@@ -1,0 +1,310 @@
+#!/usr/bin/env python
+
+"""Pending queue manipulation tool.
+
+Usage:  %(program)s [OPTIONS] [messages ... ]
+
+Where:
+    -c <file>
+    --config-file <file>
+       Specify a different configuration file other than ~/.tmdarc.
+
+    -i
+    --interactive
+       Display a summary of each pending message and prompt for
+       disposal (skip, release, delete, quit).  Implies --verbose.
+       (default)
+
+    -p
+    --pretend
+      Don't actually operate on messages, just show what would have happened.
+      Implies --verbose.
+       
+    -b
+    --batch
+       Operate non-interactively.  Use with caution.
+       
+    -r
+    --release
+       Release messages.
+
+    -d
+    --delete
+       Delete messages.
+
+    -s
+    --summary
+       Print a summary of pending messages along with a release address link.
+       Implies --verbose.
+
+    -A
+    --ascending
+       Operate on messages in ascending order (default).
+
+    -D
+    --descending
+       Operate on messages in descending order.
+      
+    -R <user@host>
+    --recipient <user@host>
+       Override the address used to create the magic release address.
+       Normally, this is determined by parsing the `X-TMDA-Recipient'
+       header which every pending message should contain.
+
+    -v
+    --verbose
+       Display output (default).
+
+    -q
+    --quiet
+       Suppress output.  Not compatible with --interactive.
+
+    -h
+    --help
+       Print this help message and exit.
+
+    messages
+       If one or more messages are provided, operate just on them.
+       Otherwise, operate on all messages in the pending queue.
+       
+    Examples:
+
+    (interactively operate on all pending messages)
+    $ %(program)s 
+
+    (interactively operate on just these messages)
+    $ %(program)s 1012182077.5803.msg 1012939546.7870.msg
+
+    (immediately release these messages from the pending queue)
+    $ %(program)s -b -r 1012182077.5803.msg 1012939546.7870.msg
+
+    (immediately delete all messages from the pending queue)
+    $ %(program)s -b -d
+    
+    (mail a summary report of all pending messages)
+    $ %(program)s -b -s | mail -s 'TMDA pending summary' jason
+"""
+
+import cStringIO
+import getopt
+import glob
+import os
+import popen2
+import rfc822
+import sys
+
+
+program = sys.argv[0]
+# Defaults
+command_recipient = None
+descending = None
+dispose = None
+interactive = 1
+pretend = None
+summary = None
+verbose = 1
+
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                               'c:ipbrdsADR:vqh', ['config-file=',
+                                                   'interactive',
+                                                   'pretend',
+                                                   'batch',
+                                                   'release',
+                                                   'delete',
+                                                   'summary',
+                                                   'ascending',
+                                                   'descending',
+                                                   'recipient=',
+                                                   'verbose',
+                                                   'quiet',
+                                                   'help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    elif opt in ('-c', '--config-file'):
+        os.environ['TMDARC'] = arg
+    elif opt in ('-i', '--interactive'):
+        interactive = verbose = 1
+    elif opt in ('-p', '--pretend'):
+        pretend = verbose = 1
+    elif opt in ('-b', '--batch'):
+        interactive = 0
+    elif opt in ('-r', '--release'):
+        dispose = 'release'
+    elif opt in ('-d', '--delete'):
+        dispose = 'delete'
+    elif opt in ('-s', '--summary'):
+        summary = 1
+    elif opt in ('-A', '--ascending'):
+        descending = 0
+    elif opt in ('-D', '--descending'):
+        descending = 1
+    elif opt in ('-R', '--recipient'):
+        command_recipient = arg
+    elif opt in ('-q', '--quiet'):
+        verbose = 0
+    elif opt in ('-v', '--verbose'):
+        verbose = 1
+
+
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Cookie
+from TMDA import Defaults
+from TMDA import Util
+
+
+def cprint(verbose=1, *strings):
+    """Conditionally print one or more strings."""
+    if verbose:
+        for s in strings:
+            print s,
+        print
+    else:
+        return
+
+
+def confirm_accept_address(recipient, msg):
+    (timestamp, pid, suffix) = msg.split('.')
+    return Cookie.make_confirm_address(recipient, timestamp, pid, 'accept')
+
+
+def confirm_done_address(recipient, msg):
+    (timestamp, pid, suffix) = msg.split('.')
+    return Cookie.make_confirm_address(recipient, timestamp, pid, 'done')
+
+
+def release(headers, body, recipient):
+    """Release a message from the pending queue."""
+    del headers['x-tmda-recipient']
+    # Add the released date in a header.
+    headers['X-TMDA-Released'] = Util.unixdate()
+    # Collect the envelope sender to pass to sendmail.
+    return_path = headers.getaddr('return-path')[1]
+    inject = []
+    inject.append(Defaults.SENDMAIL)
+    inject.append('-f')
+    inject.append(return_path)
+    inject.append(recipient)
+    pipeline = popen2.popen2(inject)[1]
+    pipeline.write(str(headers))
+    pipeline.write('\n')
+    pipeline.write(body)
+    pipeline.close()
+
+
+def main():
+    global command_recipient
+    global descending
+    global dispose
+    global interactive
+    global summary
+    global verbose
+
+    os.chdir(Defaults.DATADIR + 'pending')
+
+    msgs = args
+    if not msgs:
+        msgs = glob.glob('*.*.msg')
+
+    msgs.sort()
+    if descending:
+        msgs.reverse()
+    total = len(msgs)
+    count = 0
+    
+    if dispose is None:
+        dispose_def = 'skip'
+    else:
+        dispose_def = dispose
+    
+    for msg in msgs:
+        count = count + 1
+        if not os.path.exists(msg):
+            cprint(verbose, msg, 'not found!')
+        else:
+            fp = cStringIO.StringIO(open(msg, 'r').read())
+            headers = rfc822.Message(fp)
+            body = fp.read()
+            msg_size = len(body)
+            bytes = 'bytes'
+            if msg_size == 1:
+                bytes = bytes[:-1]
+            recipient_address = command_recipient
+            if not recipient_address:
+                recipient_address = headers.getheader('x-tmda-recipient')
+            # Pass over the message if it lacks X-TMDA-Recipient and we
+            # aren't using `-R'.
+            if not recipient_address:
+                cprint(verbose,
+                       "can't determine recipient address, skipping", msg)
+                continue
+            if summary or interactive:
+                print
+                print msg, "(%s of %s / %s %s)" % (count,
+                                                   total,
+                                                   msg_size,
+                                                   bytes)
+                #print 'Sent:', Util.unixdate(int(msg.split('.')[0]))
+                for hdr in ('date', 'from', 'to', 'subject'):
+                    print "%s %s: %s" % ('  >>',
+                                         hdr.capitalize()[:4].rjust(4),
+                                         headers.getheader(hdr, 'None'))
+                if summary:
+                    print '<mailto:%s>' % (confirm_accept_address
+                                           (recipient_address, msg))
+            if interactive:
+                try:
+                    inp = raw_input(
+                        '(s[kip] / r[elease] / d[elete] / q[uit]) [%s]: '
+                        % dispose_def)
+                    ans = inp[0:1].lower()
+                    if ans == "":
+                        dispose = dispose_def
+                    elif ans == "s":
+                        dispose = 'skip'
+                    elif ans == "r":
+                        dispose = 'release'
+                    elif ans == 'd':
+                        dispose = 'delete'
+                    elif ans == "q":
+                        break
+                    else:
+                        print '\n', "I don't understand %s" % (`inp`)
+                        dispose = 'skip'
+                except KeyboardInterrupt:
+                    print
+                    break
+            # Optionally dispose of the message
+            message = '%s %s' % (dispose, msg)
+            if pretend:
+                message = message + ' (not)'
+            if dispose:
+                cprint(verbose, '\n', message)
+            if not pretend:
+                if dispose == 'release':
+                    release(headers, body,
+                            confirm_done_address(recipient_address, msg))
+                elif dispose == 'delete':
+                    os.unlink(msg)
+                elif dispose == 'skip':
+                    continue
+
+
+# This is the end my friend.
+if __name__ == '__main__':
+    main()
