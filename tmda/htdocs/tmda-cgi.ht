@@ -36,11 +36,12 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
     but you're not interested in any follow-up e-mail they will likely send you 
     in the future (and you don't feel like generating a dated address). 
     <p> Simply fill out the web form like you normally would and give your regular, 
-      filtered e-mail address. Their server will send the e-mail to your server, 
-      and your server will send a confirmation request to their server (which 
-      will most likely never be seen by a human being). Then log into tmda-cgi 
-      and manually release their letter. Any further mail they send you will sit 
-      quietly in your pending directory like the one you released. </li>
+      filtered e-mail address. The web site will send the e-mail to your mail 
+      server, and your mail server will send a confirmation request back to the 
+      web site (which will most likely never be seen by a human being). Then log 
+      into tmda-cgi and manually release their letter. Any further mail they send 
+      you will sit quietly in your pending directory like the one you released. 
+  </li>
   <li>To search your incoming mail for automated mailings you want to receive. 
     <p> Using tmda-cgi regularly for a few weeks or months after you begin filtering 
       your e-mail is a good way to make sure your filters are configured correctly. 
@@ -56,18 +57,17 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
       what it was. 
   <li> 
     <p>To remind you <em><strong>why</strong></em> you got TMDA in the first place. 
-    <p> Wow, I would have gotten 100 e-mails about Viagara, cheap cigarettes, 
+    <p> &quot;Wow, I would have gotten 100 e-mails about Viagara, cheap cigarettes, 
       weight loss drugs, penis enlargement, and Nigerian swindles today! Now I 
-      remember why the rest of my family thinks that e-mail is a pain. 
-</ul>
+      remember why the rest of my family thinks that e-mail is a pain.&quot;</ul>
 <hr width="90%">
 <h2>Requirements</h2>
 <p>TBD. Until we do more testing it isn't clear what systems have problems with 
   tmda-cgi.</p>
 <hr width="90%">
 <h2>Installation</h2>
-<p>tmda-cgi is provided in your distribution's contrib/cgi directory, however 
-  with this being alpha-revision software, revisions come out quite frequently. 
+<p>tmda-cgi is provided in your distribution's <tt>contrib/cgi</tt> directory, 
+  however with this being alpha-revision software, revisions come out quite frequently. 
   You should consider downloading from <a href="http://sourceforge.net/cvs/?group_id=24680" target="_blank">CVS</a> 
   and joining the <a href="mailto:tmda-cgi-subscribe@wolfhome.com">tmda-cgi mailing 
   list</a> to keep up on the sub-project's current state of development.</p>
@@ -76,10 +76,10 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   single-user, and in no-su modes.</p>
 <ul>
   <li>In system-wide mode, multiple users can use tmda-cgi to access their TMDA 
-    system. The program launches as root and then performs a seteuid to run as 
-    the requested user once password authentication has been accomplished. This 
-    is the best solution for system administrators who wish to set up their TMDA 
-    system for use by multiple users.<br>
+    system. The program launches as root and then performs a <tt>seteuid</tt> 
+    to run as the requested user once password authentication has been accomplished. 
+    This is the best solution for system administrators who wish to set up their 
+    TMDA system for use by multiple users.<br>
   </li>
   <li>In single-user mode, only one user can access tmda-cgi. That user will still 
     need to authenticate their access with a password, but the program runs as 
@@ -91,13 +91,13 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
     or for users who don't trust any program running as root that does not absolutely 
     have to run as root.<br>
   </li>
-  <li>no-su mode, which is still facing some developmental challenges, runs the 
-    program with no special privileges of any sort. The downside of such an installation 
-    is that to allow the program access to your personal files (pending e-mails) 
-    you will have to make them world readable and writable. no-su mode will be 
-    a good solution for an odd breed of user: someone who doesn't trust software, 
-    but trusts every other user that shares the server (since they will have read/write 
-    access to his/er pending e-mail)</li>
+  <li>no-su mode, which is in testing, runs the program with no special privileges 
+    of any sort. The downside of such an installation is that to allow the program 
+    access to your personal files (pending e-mails) you will have to make them 
+    group or world readable and writable. no-su mode is a good solution for an 
+    odd breed of user: someone who doesn't trust software, but trusts the other 
+    users on the server (since they could get read/write access to his/er pending 
+    e-mail)</li>
 </ul>
 <p><b><i>Note:</i></b> tmda-cgi assumes it will run from within the source tree. 
   No testing has been done to date to see if it will work in other locations.</p>
@@ -108,7 +108,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 </blockquote>
 <p>Compile tmda-cgi</p>
 <blockquote> 
-  <pre># make</pre>
+  <pre># ./compile</pre>
 </blockquote>
 <p>Move the binary file to a web directory that is configured to execute CGI. 
   The filename you use is completely up to you. For example:</p>
@@ -122,6 +122,15 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 <p>I recommend you use <tt>mv</tt> instead of <tt>cp</tt>. If you prefer to copy 
   the file instead of moving it, be sure you use the <tt>-p</tt> option to copy 
   the permissions as well.</p>
+<p>Finally, tmda-cgi expects to find a variety of visual elements in a subdirectory 
+  called &quot;display&quot;. This directory should be located directly below 
+  the CGI itself. Sample files are provided in <tt>contrib/cgi/display</tt>. Feel 
+  free to use these files as-is or modify/replace them to personalize the program.</p>
+<p>The simplest way to provide this directory is with a symbolic link (assuming 
+  you have you web server configured to follow symbolic links). For example:</p>
+<blockquote>
+  <pre># ln -s display /path/to/webpage/directory</pre>
+</blockquote>
 <h3>Installing single-user</h3>
 <p>As the (only) user who will be able to access tmda-cgi, change to the cgi directory.</p>
 <blockquote> 
@@ -129,7 +138,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 </blockquote>
 <p>Compile tmda-cgi</p>
 <blockquote> 
-  <pre>$ make</pre>
+  <pre>$ ./compile</pre>
 </blockquote>
 <p>Move the binary file to a web directory that is configured to execute CGI. 
   The filename you use is completely up to you. For example:</p>
@@ -143,15 +152,23 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 <p>I recommend you use <tt>mv</tt> instead of <tt>cp</tt>. If you prefer to copy 
   the file instead of moving it, be sure you use the <tt>-p</tt> option to copy 
   the permissions as well.</p>
+<p>Finally, tmda-cgi expects to find a variety of visual elements in a subdirectory 
+  called &quot;display&quot;. This directory should be located directly below 
+  the CGI itself. Sample files are provided in <tt>contrib/cgi/display</tt>. Feel 
+  free to use these files as-is or modify/replace them to personalize the program.</p>
+<p>The simplest way to provide this directory is with a symbolic link (assuming 
+  you have you web server configured to follow symbolic links). For example:</p>
+<blockquote> 
+  <pre>$ ln -s display /path/to/webpage/directory</pre>
+</blockquote>
 <h3>Installing no-su</h3>
-<p>This mode does not work correctly yet, but to compile tmda-cgi for no-su mode, 
-  first change to the cgi directory.</p>
+<p>To compile tmda-cgi for no-su mode, first change to the cgi directory.</p>
 <blockquote> 
   <pre>$ cd contrib/cgi</pre>
 </blockquote>
 <p>Compile tmda-cgi</p>
 <blockquote> 
-  <pre>$ make no-su</pre>
+  <pre>$ ./compile no-su</pre>
 </blockquote>
 <p>Copy or move the binary file to a web directory that is configured to execute 
   CGI. The filename you use is completely up to you. For example:</p>
@@ -162,8 +179,100 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 <blockquote> 
   <pre>$ cp tmda-cgi /path/to/webpage/directory/index.cgi</pre>
 </blockquote>
-<p>At this point you will have to change permissions on some files. I'm not sure 
-  what yet. This is TBD.</p>
+<p>tmda-cgi expects to find a variety of visual elements in a subdirectory called 
+  &quot;display&quot;. This directory should be located directly below the CGI 
+  itself. Sample files are provided in <tt>contrib/cgi/display</tt>. Feel free 
+  to use these files as-is or modify/replace them to personalize the program.</p>
+<p>The simplest way to provide this directory is with a symbolic link (assuming 
+  you have you web server configured to follow symbolic links). For example:</p>
+<blockquote> 
+  <pre>$ ln -s display /path/to/webpage/directory</pre>
+</blockquote>
+<p>At this point you will have to change permissions on any existing pending mail 
+  and change the value of <tt>PENDING_FILE_PERM</tt> to make sure any new mail 
+  that is placed in the pending directory is given the correct permissions.</p>
+<p>If you multiple users plan on using tmda-cgi in no-su mode, then you might 
+  consider moving all of your TMDA files into one central location. This will 
+  make it easier to keep group permissions on your directories and files. Here's 
+  some sample directories and file contents I set up for my user <tt>cgitest</tt>:</p>
+<blockquote> 
+  <pre>/etc:
+-rw-r--r--    1 root     root           22 Nov 24 23:54 tmda-cgi
+-rw-r--r--    1 root     root          557 Nov 27 15:05 tmdarc
+-rw-------    1 tofmipd  tofmipd        49 Nov 10 11:02 tofmipd
+
+/var:
+drwxr-s--x    3 root     nobody         72 Nov 27 11:24 tmda
+
+/var/tmda:
+drwxr-s---    6 cgitest  nobody        200 Nov 27 11:39 cgitest
+
+/var/tmda/cgitest:
+-rw-r-----    1 cgitest  nobody          0 Nov 27 11:39 config
+-rw-r-----    1 cgitest  nobody         41 Nov 27 11:39 crypt_key
+drwxr-s---    2 cgitest  nobody         96 Nov 27 12:55 filters
+drwxr-s---    2 cgitest  nobody        144 Nov 27 12:59 lists
+drwxr-s---    2 cgitest  nobody        120 Nov 27 12:57 logs
+drwxr-s---    2 cgitest  nobody         48 Nov 27 11:37 pending
+
+/var/tmda/cgitest/filters:
+-rw-rw----    1 cgitest  nobody        153 Nov 27 12:54 incoming
+-rw-rw----    1 cgitest  nobody        150 Nov 27 12:55 outgoing
+
+/var/tmda/cgitest/lists:
+-rw-rw----    1 cgitest  nobody          0 Nov 27 12:59 blacklist
+-rw-rw----    1 cgitest  nobody          0 Nov 27 12:59 confirmed
+-rw-rw----    1 cgitest  nobody          0 Nov 27 12:59 whitelist
+
+/var/tmda/cgitest/logs:
+-rw-r-----    1 cgitest  nobody          0 Nov 27 12:57 debug
+-rw-r-----    1 cgitest  nobody          0 Nov 27 12:57 in
+-rw-r-----    1 cgitest  nobody          0 Nov 27 12:57 out
+
+/etc/tmda-cgi:
+cgitest:XPkY0q/9Uge9I
+
+/var/tmda/cgitest/filters/incoming:
+from-file /var/tmda/cgitest/lists/blacklist reject
+from-file /var/tmda/cgitest/lists/whitelist accept
+from-file /var/tmda/cgitest/lists/confirmed accept
+
+/var/tmda/cgitest/filters/outgoing:
+to-file /var/tmda/cgitest/lists/whitelist tag envelope dated=10d from bare
+to-file /var/tmda/cgitest/lists/confirmed tag envelope dated=10d from bare
+
+/etc/tmdarc:
+import Util
+
+DATADIR = &quot;/var/tmda/%s/&quot; % Util.getusername()
+CGI_ACTIVE = 1
+FILTER_INCOMING          = DATADIR + &quot;filters/incoming&quot;
+FILTER_OUTGOING          = DATADIR + &quot;filters/outgoing&quot;
+LOGFILE_DEBUG            = DATADIR + &quot;logs/debug&quot;
+LOGFILE_INCOMING         = DATADIR + &quot;logs/in&quot;
+LOGFILE_OUTGOING         = DATADIR + &quot;logs/out&quot;
+PENDING_BLACKLIST_APPEND = DATADIR + &quot;lists/blacklist&quot;
+PENDING_WHITELIST_APPEND = DATADIR + &quot;lists/whitelist&quot;
+PENDING_FILE_PERM = 0660
+ADDED_HEADERS_CLIENT = { &quot;X-Primary-Address&quot;: &quot;%s@%s&quot; % \
+  (Util.getusername(), Util.gethostname()) }</pre>
+</blockquote>
+<h3>Moving your configuration files</h3>
+<p>Compiling tmda-cgi tests to see if you have relocated your configuration file 
+  by setting the <tt>TMDARC</tt> environment variable.</p>
+<p>Suppose I have set <tt>TMDARC</tt> to <tt>/var/tmda/cgitest/config</tt>, as 
+  would be appropriate for the previous example. Compiling tmda-cgi will show 
+  the following:</p>
+<blockquote> 
+  <pre>$ ./compile no-su<br>NOTE: User configuration files have been relocated by setting TMDARC.
+tmda-cgi will look for config files at: /var/tmda/&lt;user&gt;/config
+Where &lt;user&gt; will be replaced by the user's login name.
+
+Compilation done.</pre>
+</blockquote>
+<p>Double-check where tmda-cgi will look for configuration files.</p>
+<p>You will have to recompile tmda-cgi if you move your configuration files or 
+  source tree.</p>
 <h3>Passwords</h3>
 <p>tmda-cgi currently authenticate logins against user name &amp; password pairs 
   stored in a password file (or files). tmda-cgi will look in two different places 
@@ -174,10 +283,11 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   must either be owned by &quot;nobody&quot; (or whatever user your web server 
   is configured to run as) or made globally readable See the table below for a 
   better breakdown of your options.</p>
-<p>tmda-cgi first checks <tt>~user/.tmda/tmda-cgi</tt> for a readable file and 
-  then tries <tt>/etc/tmda-cgirc</tt> if it can't find a match or cannot read 
-  the file. This allows the system administrator to keep a list of access passwords 
-  while allowing the user to override what the sysadmin has set.</p>
+<p>tmda-cgi first checks for a readable file called <tt>tmda-cgi</tt> in the same 
+  directory as the user's <tt>.tmdarc</tt> or <tt>config</tt> file. It then tries 
+  <tt>/etc/tmda-cgi</tt> if it can't find a match or cannot read the file. This 
+  allows the system administrator to keep a list of access passwords while allowing 
+  the user to override what the sysadmin has set.</p>
 <table border="0" cellpadding="0" cellspacing="0">
   <tr> 
     <td width="35">&nbsp;</td>
@@ -186,7 +296,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
     <td width="10">&nbsp;</td>
     <td colspan="2" align="center" nowrap bgcolor="#FFFFCC"><tt>~user/.tmda/tmda-cgi</tt></td>
     <td width="10" align="center" nowrap>&nbsp;</td>
-    <td colspan="2" align="center" nowrap bgcolor="#FFFFCC"><tt>/etc/tmda-cgirc</tt></td>
+    <td colspan="2" align="center" nowrap bgcolor="#FFFFCC"><tt>/etc/tmda-cgi</tt></td>
   </tr>
   <tr> 
     <td>&nbsp;</td>
@@ -201,14 +311,14 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   </tr>
   <tr> 
     <td>&nbsp;</td>
-    <td bgcolor="#FFFF99">&nbsp;</td>
-    <td bgcolor="#FFFF99">system-wide</td>
-    <td bgcolor="#FFFF99">&nbsp;</td>
-    <td align="center" bgcolor="#FFFF99">user</td>
-    <td align="center" bgcolor="#FFFF99">600</td>
-    <td align="center" bgcolor="#FFFF99">&nbsp;</td>
-    <td align="center" bgcolor="#FFFF99">root</td>
-    <td align="center" bgcolor="#FFFF99">600</td>
+    <td bgcolor="#CCFFFF">&nbsp;</td>
+    <td bgcolor="#CCFFFF">system-wide</td>
+    <td bgcolor="#CCFFFF">&nbsp;</td>
+    <td align="center" bgcolor="#CCFFCC">user</td>
+    <td align="center" bgcolor="#CCFFCC">600</td>
+    <td align="center" bgcolor="#CCFFFF">&nbsp;</td>
+    <td align="center" bgcolor="#CCFFCC">root</td>
+    <td align="center" bgcolor="#CCFFCC">600</td>
   </tr>
   <tr> 
     <td>&nbsp;</td>
@@ -222,15 +332,15 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   </tr>
   <tr> 
     <td>&nbsp;</td>
-    <td bgcolor="#FFFF99">&nbsp;</td>
-    <td bgcolor="#FFFF99">no-su</td>
-    <td bgcolor="#FFFF99">&nbsp;</td>
-    <td align="center" bgcolor="#FFFF99">user</td>
-    <td align="center" bgcolor="#FFFF99">644</td>
-    <td align="center" bgcolor="#FFFF99">&nbsp;</td>
-    <td align="center" bgcolor="#FFFF99">root<br>
+    <td bgcolor="#CCFFFF">&nbsp;</td>
+    <td bgcolor="#CCFFFF">no-su</td>
+    <td bgcolor="#CCFFFF">&nbsp;</td>
+    <td align="center" bgcolor="#CCFFCC">user</td>
+    <td align="center" bgcolor="#CCFFCC">644</td>
+    <td align="center" bgcolor="#CCFFFF">&nbsp;</td>
+    <td align="center" bgcolor="#CCFFCC">root<br>
       nobody </td>
-    <td align="center" bgcolor="#FFFF99">644<br>
+    <td align="center" bgcolor="#CCFFCC">644<br>
       600 </td>
   </tr>
   <tr> 
@@ -254,7 +364,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
 <p>The difference between this password file and the one for tofmipd is that the 
   file does not need to have <br>
   permissions of 400 or 600. If you, for example, are running in no-su mode, you 
-  will have to make your password file globally readable.</p>
+  will have to make your password file group or world readable.</p>
 <p>To keep the passwords secure, tmda-cgi will assume all passwords are DES encrypted 
   if the file permissions are anything other than 400 or 600. Plaintext passwords 
   will <i><b>not</b></i> work in such cases.</p>
@@ -267,7 +377,7 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   Output from <tt>genpass.py</tt> can be safely piped with <tt>&gt;</tt> or <tt>&gt;&gt;</tt> 
   into a password file. For example:</p>
 <blockquote> 
-  <pre># contrib/cgi/genpass.py joe &gt;&gt; /etc/tmda-cgirc</pre>
+  <pre># contrib/cgi/genpass.py joe &gt;&gt; /etc/tmda-cgi</pre>
 </blockquote>
 <p> or</p>
 <blockquote> 
