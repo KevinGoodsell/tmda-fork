@@ -1,5 +1,8 @@
 2003-01-29  Tim Legant  <tim@catseye.net>
 
+	* FilterStore.py (FlatFileStore.__init__): Added code to lowercase
+	the list of email addresses.
+
 	* Util.py (findmatch): Fix bug where the for loop just kept going,
 	regardless of whether a match was found or not.
 

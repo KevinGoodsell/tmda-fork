@@ -35,7 +35,9 @@ class FlatFileStore:
     """
     def __init__(self, name, optional):
         try:
-            self.key_list = Util.file_to_list(name)
+            match_list = Util.file_to_list(name)
+            self.key_list = [line.split(None, 1)[0].lower()
+                             for line in match_list]
         except:
             if optional:
 ##                e_type, e_value = sys.exc_info()[:2]
