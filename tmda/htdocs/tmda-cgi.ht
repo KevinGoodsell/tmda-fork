@@ -1,0 +1,331 @@
+Title: tmda-cgi HOWTO
+Links: overview-links.h usage-links.h howto-links.h support-links.h
+
+<h1>tmda-cgi</h1>
+<hr width="90%">
+<h2>What is it?</h2>
+<p>tmda-cgi is an alpha-release program for managing your TMDA account over the 
+  web. At the time of this writing, tmda-cgi can:</p>
+<ul>
+  <li>Page through lists of pending e-mail (mail received by your MTA, but still 
+    awaiting confirmation) 
+  <li>View the text content (and see what sorts of attachments are included) in 
+    any of your pending e-mails 
+  <li>Release (move into your mail folder as if a confirmation had been received) 
+    any of your pending e-mails. 
+  <li>Delete any pending e-mail 
+  <li>Whitelist or blacklist the author of any pending e-mails. 
+</ul>
+<p>At the moment, tmda-cgi's focus is clearly manipulating pending e-mails. At 
+  some point, I would like tmda-cgi to become more of a general system tool. Features 
+  I hope to add soon include:</p>
+<ul>
+  <li>Filter configuration</li>
+  <li>List editing</li>
+  <li>Automated clean-ups of pending e-mails</li>
+  <li>E-mail address generation (keyword, dated, or sender)</li>
+</ul>
+<p>tmda-cgi provides quick and easy access to your pending e-mails. This is an 
+  ideal tool for users who either do not have access to a shell account or are 
+  intimidated by operating in a command-line environment.</p>
+<p>Although TMDA users do not generally need to mess with their pending e-mails, 
+  there are times when this is the most convenient way to go. For instance:</p>
+<ul>
+  <li>When you use a web site that says it will automatically mail you a password, 
+    authentication link, or a receipt for a transaction you are making right now, 
+    but you're not interested in any follow-up e-mail they will likely send you 
+    in the future (and you don't feel like generating a dated address). 
+    <p> Simply fill out the web form like you normally would and give your regular, 
+      filtered e-mail address. Their server will send the e-mail to your server, 
+      and your server will send a confirmation request to their server (which 
+      will most likely never be seen by a human being). Then log into tmda-cgi 
+      and manually release their letter. Any further mail they send you will sit 
+      quietly in your pending directory like the one you released. </li>
+  <li>To search your incoming mail for automated mailings you want to receive. 
+    <p> Using tmda-cgi regularly for a few weeks or months after you begin filtering 
+      your e-mail is a good way to make sure your filters are configured correctly. 
+  <li> 
+    <p>To look for &quot;lost&quot; e-mail. 
+    <p> It's really rare that e-mail will get lost, but it's bound to happen sometimes. 
+      Perhaps Aunt Margaret can't figure out what the confirmation e-mail meant 
+      (even though it is written in a very obvious way). Perhaps your boss was 
+      in a hurry and deleted the confirmation request thinking <em><strong>it</strong></em> 
+      was spam (or perhaps he has a really crappy spam filter that mistook the 
+      confirmation for spam). Perhaps Grandpa Joe sent you some e-mail from someone 
+      else's e-mail account and they deleted the confirmation request, not realizing 
+      what it was. 
+  <li> 
+    <p>To remind you <em><strong>why</strong></em> you got TMDA in the first place. 
+    <p> Wow, I would have gotten 100 e-mails about Viagara, cheap cigarettes, 
+      weight loss drugs, penis enlargement, and Nigerian swindles today! Now I 
+      remember why the rest of my family thinks that e-mail is a pain. 
+</ul>
+<hr width="90%">
+<h2>Requirements</h2>
+<p>TBD. Until we do more testing it isn't clear what systems have problems with 
+  tmda-cgi.</p>
+<hr width="90%">
+<h2>Installation</h2>
+<p>tmda-cgi is provided in your distribution's contrib/cgi directory, however 
+  with this being alpha-revision software, revisions come out quite frequently. 
+  You should consider downloading from <a href="http://sourceforge.net/cvs/?group_id=24680" target="_blank">CVS</a> 
+  and joining the <a href="mailto:tmda-cgi-subscribe@wolfhome.com">tmda-cgi mailing 
+  list</a> to keep up on the sub-project's current state of development.</p>
+<p>Once you've obtained a copy of tmda-cgi, you need to decide how you want to 
+  use tmda-cgi. tmda-cgi has been designed to run three different ways: system-wide, 
+  single-user, and in no-su modes.</p>
+<ul>
+  <li>In system-wide mode, multiple users can use tmda-cgi to access their TMDA 
+    system. The program launches as root and then performs a seteuid to run as 
+    the requested user once password authentication has been accomplished. This 
+    is the best solution for system administrators who wish to set up their TMDA 
+    system for use by multiple users.<br>
+  </li>
+  <li>In single-user mode, only one user can access tmda-cgi. That user will still 
+    need to authenticate their access with a password, but the program runs as 
+    the user who compiled it and therefore cannot access anyone else's personal 
+    data. If multiple users wish to install tmda-cgi in single-user mode (strange, 
+    but not absurd) then each user can compile a different 14k shell that launches 
+    the Python code. This method is less convenient than the system-wide installation, 
+    but it is the best solution for users without root access to their server, 
+    or for users who don't trust any program running as root that does not absolutely 
+    have to run as root.<br>
+  </li>
+  <li>no-su mode, which is still facing some developmental challenges, runs the 
+    program with no special privileges of any sort. The downside of such an installation 
+    is that to allow the program access to your personal files (pending e-mails) 
+    you will have to make them world readable and writable. no-su mode will be 
+    a good solution for an odd breed of user: someone who doesn't trust software, 
+    but trusts every other user that shares the server (since they will have read/write 
+    access to his/er pending e-mail)</li>
+</ul>
+<p><b><i>Note:</i></b> tmda-cgi assumes it will run from within the source tree. 
+  No testing has been done to date to see if it will work in other locations.</p>
+<h3>Installing system-wide</h3>
+<p>As root, change to the cgi directory.</p>
+<blockquote> 
+  <pre># cd contrib/cgi</pre>
+</blockquote>
+<p>Compile tmda-cgi</p>
+<blockquote> 
+  <pre># make</pre>
+</blockquote>
+<p>Move the binary file to a web directory that is configured to execute CGI. 
+  The filename you use is completely up to you. For example:</p>
+<blockquote> 
+  <pre># mv tmda-cgi /path/to/cgi-bin/directory</pre>
+</blockquote>
+<p> or</p>
+<blockquote> 
+  <pre># mv tmda-cgi /path/to/webpage/directory/index.cgi</pre>
+</blockquote>
+<p>I recommend you use <tt>mv</tt> instead of <tt>cp</tt>. If you prefer to copy 
+  the file instead of moving it, be sure you use the <tt>-p</tt> option to copy 
+  the permissions as well.</p>
+<h3>Installing single-user</h3>
+<p>As the (only) user who will be able to access tmda-cgi, change to the cgi directory.</p>
+<blockquote> 
+  <pre>$ cd contrib/cgi</pre>
+</blockquote>
+<p>Compile tmda-cgi</p>
+<blockquote> 
+  <pre>$ make</pre>
+</blockquote>
+<p>Move the binary file to a web directory that is configured to execute CGI. 
+  The filename you use is completely up to you. For example:</p>
+<blockquote> 
+  <pre>$ mv tmda-cgi /path/to/cgi-bin/directory</pre>
+</blockquote>
+<p> or</p>
+<blockquote> 
+  <pre>$ mv tmda-cgi /path/to/webpage/directory/index.cgi</pre>
+</blockquote>
+<p>I recommend you use <tt>mv</tt> instead of <tt>cp</tt>. If you prefer to copy 
+  the file instead of moving it, be sure you use the <tt>-p</tt> option to copy 
+  the permissions as well.</p>
+<h3>Installing no-su</h3>
+<p>This mode does not work correctly yet, but to compile tmda-cgi for no-su mode, 
+  first change to the cgi directory.</p>
+<blockquote> 
+  <pre>$ cd contrib/cgi</pre>
+</blockquote>
+<p>Compile tmda-cgi</p>
+<blockquote> 
+  <pre>$ make no-su</pre>
+</blockquote>
+<p>Copy or move the binary file to a web directory that is configured to execute 
+  CGI. The filename you use is completely up to you. For example:</p>
+<blockquote> 
+  <pre>$ cp tmda-cgi /path/to/cgi-bin/directory</pre>
+</blockquote>
+<p> or</p>
+<blockquote> 
+  <pre>$ cp tmda-cgi /path/to/webpage/directory/index.cgi</pre>
+</blockquote>
+<p>At this point you will have to change permissions on some files. I'm not sure 
+  what yet. This is TBD.</p>
+<h3>Passwords</h3>
+<p>tmda-cgi currently authenticate logins against user name &amp; password pairs 
+  stored in a password file (or files). tmda-cgi will look in two different places 
+  for password file(s), but it (they) must be readable by the CGI.</p>
+<p>If you are running in system-wide mode, the password file can be owned by root. 
+  If you are running in single-user mode, the password file can be owned by the 
+  user who will be running the CGI. If you are running in no-su mode, the file 
+  must either be owned by &quot;nobody&quot; (or whatever user your web server 
+  is configured to run as) or made globally readable See the table below for a 
+  better breakdown of your options.</p>
+<p>tmda-cgi first checks <tt>~user/.tmda/tmda-cgi</tt> for a readable file and 
+  then tries <tt>/etc/tmda-cgirc</tt> if it can't find a match or cannot read 
+  the file. This allows the system administrator to keep a list of access passwords 
+  while allowing the user to override what the sysadmin has set.</p>
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr> 
+    <td width="35">&nbsp;</td>
+    <td width="10">&nbsp;</td>
+    <td>&nbsp;</td>
+    <td width="10">&nbsp;</td>
+    <td colspan="2" align="center" nowrap bgcolor="#FFFFCC"><tt>~user/.tmda/tmda-cgi</tt></td>
+    <td width="10" align="center" nowrap>&nbsp;</td>
+    <td colspan="2" align="center" nowrap bgcolor="#FFFFCC"><tt>/etc/tmda-cgirc</tt></td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td width="80" align="center" bgcolor="#FFFFCC">owner</td>
+    <td width="90" align="center" bgcolor="#FFFFCC">permissions</td>
+    <td align="center">&nbsp;</td>
+    <td width="80" align="center" bgcolor="#FFFFCC">owner</td>
+    <td width="90" align="center" bgcolor="#FFFFCC">permissions</td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td bgcolor="#FFFF99">&nbsp;</td>
+    <td bgcolor="#FFFF99">system-wide</td>
+    <td bgcolor="#FFFF99">&nbsp;</td>
+    <td align="center" bgcolor="#FFFF99">user</td>
+    <td align="center" bgcolor="#FFFF99">600</td>
+    <td align="center" bgcolor="#FFFF99">&nbsp;</td>
+    <td align="center" bgcolor="#FFFF99">root</td>
+    <td align="center" bgcolor="#FFFF99">600</td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>single-user</td>
+    <td>&nbsp;</td>
+    <td align="center" bgcolor="#FFFFCC">user</td>
+    <td align="center" bgcolor="#FFFFCC">600</td>
+    <td align="center">&nbsp;</td>
+    <td colspan="2" align="center" bgcolor="#FFFFCC">n/a</td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td bgcolor="#FFFF99">&nbsp;</td>
+    <td bgcolor="#FFFF99">no-su</td>
+    <td bgcolor="#FFFF99">&nbsp;</td>
+    <td align="center" bgcolor="#FFFF99">user</td>
+    <td align="center" bgcolor="#FFFF99">644</td>
+    <td align="center" bgcolor="#FFFF99">&nbsp;</td>
+    <td align="center" bgcolor="#FFFF99">root<br>
+      nobody </td>
+    <td align="center" bgcolor="#FFFF99">644<br>
+      600 </td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td colspan="8" align="center">File owner &amp; permission options</td>
+  </tr>
+</table>
+<p>The password file for tmda-cgi is formatted in much the same way as the password 
+  file for tofmipd. In fact, if you are using a password file with tofmipd and 
+  you wish to run tmda-cgi in system-wide mode, feel free to make a symbolic link 
+  between the two:</p>
+<blockquote> 
+  <pre> # ln -s /etc/tofmipd /etc/tmda-cgi</pre>
+</blockquote>
+<p>Password files for tmda-cgi look like:</p>
+<blockquote> 
+  <pre>&lt;user1&gt;:&lt;password1&gt;
+&lt;user2&gt;:&lt;password2&gt;</pre>
+</blockquote>
+<p>where each item in <tt>&lt;&gt;</tt> is replaced with text.</p>
+<p>The difference between this password file and the one for tofmipd is that the 
+  file does not need to have <br>
+  permissions of 400 or 600. If you, for example, are running in no-su mode, you 
+  will have to make your password file globally readable.</p>
+<p>To keep the passwords secure, tmda-cgi will assume all passwords are DES encrypted 
+  if the file permissions are anything other than 400 or 600. Plaintext passwords 
+  will <i><b>not</b></i> work in such cases.</p>
+<p>Additionally, any entry with a blank password field, such as:</p>
+<blockquote> 
+  <pre>cantlogin:</pre>
+</blockquote>
+<p>will be prohibited from login, regardless of the file permissions.</p>
+<p><tt>contrib/cgi/genpass.py</tt> is provided for encrypted password generation. 
+  Output from <tt>genpass.py</tt> can be safely piped with <tt>&gt;</tt> or <tt>&gt;&gt;</tt> 
+  into a password file. For example:</p>
+<blockquote> 
+  <pre># contrib/cgi/genpass.py joe &gt;&gt; /etc/tmda-cgirc</pre>
+</blockquote>
+<p> or</p>
+<blockquote> 
+  <pre>$ contrib/cgi/genpass.py joe &gt; /home/joe/.tmda/tmda-cgi</pre>
+</blockquote>
+<hr width="90%">
+<h2>Configuration</h2>
+<p>tmda-cgi is configured by a set of parameters in your <tt>/etc/tmdarc</tt>, 
+  <tt>~user/.tmdarc</tt>, or <tt>~user/.tmda/config</tt> files. More details on 
+  these variables can be found in your <tt>Defaults.py</tt>, but <b><i>do not 
+  edit <tt>Defaults.py</tt></i></b>. Place your variables in your configuration 
+  file(s) and they will override the defaults in <tt>Defaults.py</tt>.</p>
+<dl>
+  <dt><tt>CGI_ACTIVE</tt></dt>
+  <br>
+  &nbsp; 
+  <dd>Must be set to 1 to use the tmda-cgi. Set this in <tt>/etc/tmdarc</tt> if 
+    you set up tmda-cgi in system-wide mode.</dd>
+  <br>
+  &nbsp; 
+  <dt><tt>CGI_CLEANUP_ODDS</tt></dt>
+  <br>
+  &nbsp; 
+  <dd>Chance of cleaning up temporary session files. You probably won't need to 
+    adjust this parameter.</dd>
+  <br>
+  &nbsp; 
+  <dt><tt>CGI_DATE_FORMAT</tt></dt>
+  <br>
+  &nbsp; 
+  <dd>Configuration string which sets the date format you see when viewing a list 
+    of pending e-mails. It defaults to &quot;<tt>%a %1m/%d</tt>&quot; which generates 
+    American-style dates like &quot;Mon 12/31&quot;.</dd>
+  <br>
+  &nbsp; 
+  <dt><tt>CGI_PAGER_SIZE</tt><br>
+    &nbsp; </dt>
+  <dd>Maximum number of e-mails shown on a listing page.</dd>
+  <br>
+  &nbsp; 
+  <dt><tt>CGI_SESSION_EXP</tt><br>
+    &nbsp; </dt>
+  <dd>The number of seconds a session may sit idle before it can expire. Set this 
+    to a larger number if you surf pages so slowly that the program makes you 
+    log in again.</dd>
+  <br>
+  &nbsp; 
+  <dt><tt>CGI_USE_JS_CONFIRM</tt><br>
+    &nbsp; </dt>
+  <dd>Set this to 0 if your browser cannot use Javascript or you don't like having 
+    to confirm when you delete or blacklist an item.</dd>
+  <br>
+  &nbsp; 
+  <dt><tt>CGI_USER</tt><br>
+    &nbsp; </dt>
+  <dd>Set this to the user name used by your web server. The default is &quot;nobody&quot;, 
+    but some systems are configured to run as &quot;apache&quot; or other low-privilege 
+    user.</dd>
+  <br>
+  &nbsp; 
+</dl>
