@@ -192,16 +192,6 @@ if not os.path.exists(INJECT):
 if not vars().has_key('INJECT_FLAGS'):
     INJECT_FLAGS = "f"
 
-# LOCALS
-# locals defaults to /var/qmail/crontrol/locals, but this lets you
-# override it in case it is installed elsewhere.
-# Used for virtualdomain detection in tmda-filter.
-if not vars().has_key('LOCALS'):
-     LOCALS = "/var/qmail/control/locals"
-if not os.path.exists(LOCALS):
-    print "file not found:",LOCALS
-    sys.exit(ERR_CONFIG)
-
 # LOGFILE
 # Filename which delivery statistics should be written to.
 # Default is 0 (no logging)
@@ -221,13 +211,6 @@ if not vars().has_key('TIMEOUT'):
 if not vars().has_key('USERNAME'):
     USERNAME = Util.getusername()
 
-# USERPREFIX
-# The prefix to the address as specified in the last field of the
-# /var/qmail/users/assign. (without a trailing `-')
-# No default.
-if not vars().has_key('USERPREFIX'):
-    USERPREFIX = None
-    
 # BARE_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive untagged (no cookie added) messages.

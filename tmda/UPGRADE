@@ -1,5 +1,12 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.31:
+
+* You can remove LOCALS and USERPREFIX from your .tmdarc as they are
+  no longer used.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.30:
 
 Version 0.30 introduced "confirmation mode" where instead of just
@@ -63,10 +70,10 @@ motivations behind this, see `CRYPTO'.
   built-in `sha' module for hashing.
 
 * You need to generate a new CRYPT_KEY by running bin/tmda-keygen and
-  replace your current key in ~/.tmdarc.
+  replace your current key in .tmdarc.
 
 * You can remove BLOCK_CIPHER, CRYPT_IV, and HASH_FUNCTION from your
-  ~/.tmdarc as they are no longer used.
+  .tmdarc as they are no longer used.
 
 * Again, the new 'dated' and 'sender' addresses are not compatible
   with those generated prior to v0.10, so re-issue addresses as
