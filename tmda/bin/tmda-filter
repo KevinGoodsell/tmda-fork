@@ -35,7 +35,10 @@ try:
 except KeyboardInterrupt:
     pass
 
-except (StandardError, Errors.TMDAError):
+except SystemExit:
+    raise
+
+except:
     try:
         status = 75
         tb1 = sys.exc_info()
@@ -47,12 +50,19 @@ except (StandardError, Errors.TMDAError):
         print 'Exception', LOGFILE_DEBUG
         fp = open(LOGFILE_DEBUG, 'a')
 
-    except (StandardError, Errors.TMDAError):
+    except SystemExit:
+        raise
+    
+    except:
         try:
             print 'Exception', '~/TMDA_DELIVERY_FAILURE'
             tb2 = sys.exc_info()
             fp = open(os.path.expanduser('~/TMDA_DELIVERY_FAILURE'), 'a')
-        except (StandardError, Errors.TMDAError):
+
+        except SystemExit:
+            raise
+
+        except:
             tb3 = sys.exc_info()
 
 if status:
