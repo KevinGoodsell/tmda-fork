@@ -819,8 +819,7 @@ class FilterParser:
             if db_mtime <= txt_mtime:
                 if build_func(basename):
                     if os.path.exists(surrogate):
-                        mtime = time.time()
-                        os.utime(surrogate, (mtime, mtime))
+                        os.utime(surrogate, None)
                     else:
                         os.close(os.open(surrogate, os.O_CREAT, 0600))
                 else:
