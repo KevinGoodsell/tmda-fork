@@ -78,7 +78,6 @@ from TMDA import Version
 
 
 filter_match = None
-injections = 0
 qfilter = None
 program = sys.argv[0]
 
@@ -220,8 +219,6 @@ def inject_message(resending,
                    actions,
                    log_msg):
     """Hand the message off to sendmail."""
-    global injections
-    
     # Default, if no From: is specified, is bare.
     (cookie_type, cookie_option) = actions.get('from', ('bare', None))
     magic_from = make_field(cookie_type, cookie_option,
@@ -246,26 +243,6 @@ def inject_message(resending,
         del msg['From']
 	msg['From'] = message_format(magic_from, full_name,
                                      Defaults.MESSAGE_FROM_STYLE)
-    # Add a Mail-Followup-To field if one doesn't exist
-    if Defaults.MAIL_FOLLOWUP_TO and not msg.has_key('mail-followup-to'):
-        if isinstance(Defaults.MAIL_FOLLOWUP_TO, str):
-            if os.path.isfile(Defaults.MAIL_FOLLOWUP_TO):
-                mft_addrs = file(Defaults.MAIL_FOLLOWUP_TO, 'r').readlines()
-            else:
-                mft_addrs = None
-        else:
-            # assume a list
-            mft_addrs = Defaults.MAIL_FOLLOWUP_TO
-        if mft_addrs:
-            mft_addrs_lower = [a.lower().strip() for a in mft_addrs]
-            toccs = getaddresses(msg.get_all('to', [])
-                                 + msg.get_all('cc', []))
-            tocc_addrs = [a[1].strip() for a in toccs]
-            tocc_addrs_lower = [a.lower() for a in tocc_addrs]
-            for a in tocc_addrs_lower:
-                if a in mft_addrs_lower:
-                    msg['Mail-Followup-To'] = ', '.join(tocc_addrs)
-                    break
     # If the Mail-Followup-To header contains an untagged address, we
     # need to tag that as well.
     if msg.has_key('mail-followup-to'):
@@ -279,19 +256,6 @@ def inject_message(resending,
 		new_mft_list.append(emaddy)
         del msg['Mail-Followup-To']
 	msg['Mail-Followup-To'] = ', '.join(new_mft_list)
-    # Possibly add a `Date' field.
-    if ((Defaults.TMDAINJECT and 'd' in list(Defaults.TMDAINJECT))
-        or not msg.has_key('date')):
-        del msg['Date']
-	msg['Date'] = Util.make_date()
-    # Possibly add a `Message-ID' field.
-    if ((Defaults.TMDAINJECT and 'i' in list(Defaults.TMDAINJECT))
-        or not msg.has_key('message-id')):
-        del msg['Message-ID']
-	msg['Message-ID'] = Util.make_msgid()
-    # Add `X-Delivery-Agent' header.
-    del msg['X-Delivery-Agent']
-    msg['X-Delivery-Agent'] = 'TMDA/%s (%s)' % (Version.TMDA, Version.CODENAME)
     # Optionally, add an `X-TMDA-Fingerprint' header.
     if Defaults.FINGERPRINT:
 	hdrlist = []
@@ -322,19 +286,6 @@ def inject_message(resending,
         nice_header = string.capwords(header.replace('-', ' ')).replace(' ', '-')
         nice_headers[nice_header] = field
     Util.add_headers(msg, nice_headers)
-    # Prepend a Received header.
-    if injections == 0:
-        if os.environ.has_key('TMDA_OFMIPD_RECEIVED'):
-            # tmda-ofmipd
-            msg._headers.insert(0, ('Received',
-                                    (os.environ.get('TMDA_OFMIPD_RECEIVED'))))
-        else:
-            # tmda-sendmail/inject
-            msg._headers.insert(0, ('Received',
-                                    'by %s (tmda-sendmail, from uid %s); %s' \
-                                    % (socket.getfqdn(), os.getuid(),
-                                       Util.make_date())))
-            
     # Optionally, log this transmission.
     if Defaults.LOGFILE_OUTGOING:
         from TMDA import MessageLogger
@@ -347,7 +298,6 @@ def inject_message(resending,
         logger.write()
     # Inject the message.
     Util.sendmail(Util.msg_as_string(msg, 78), to_address, envelope_sender)
-    injections += 1
     # Remove any custom headers we added for this recipient from the
     # message object, else all subsequent recipients will receive them
     # unconditionally.
@@ -434,6 +384,54 @@ def main():
                 msgout['Subject'] = subsplit[2:][0]
             else:
                 msgout['Subject'] = ''
+
+    # Transformations that should happen a total of once for the
+    # message, not once per recipient of the message.
+
+    # Prepend a Received header.
+    if os.environ.has_key('TMDA_OFMIPD_RECEIVED'):
+        # tmda-ofmipd
+        msgout._headers.insert(0, ('Received',
+                                   (os.environ.get('TMDA_OFMIPD_RECEIVED'))))
+    else:
+        # tmda-sendmail/inject
+        msgout._headers.insert(0, ('Received',
+                                   'by %s (tmda-sendmail, from uid %s); %s' \
+                                   % (socket.getfqdn(), os.getuid(),
+                                      Util.make_date())))
+    # Possibly add a `Date' field.
+    if ((Defaults.TMDAINJECT and 'd' in list(Defaults.TMDAINJECT))
+        or not msgout.has_key('date')):
+        del msgout['Date']
+	msgout['Date'] = Util.make_date()
+    # Possibly add a `Message-ID' field.
+    if ((Defaults.TMDAINJECT and 'i' in list(Defaults.TMDAINJECT))
+        or not msgout.has_key('message-id')):
+        del msgout['Message-ID']
+	msgout['Message-ID'] = Util.make_msgid()
+    # Add an `X-Delivery-Agent' header.
+    del msgout['X-Delivery-Agent']
+    msgout['X-Delivery-Agent'] = 'TMDA/%s (%s)' % (Version.TMDA, Version.CODENAME)
+    # Possibly add a Mail-Followup-To field if one doesn't exist.
+    if Defaults.MAIL_FOLLOWUP_TO and not msgout.has_key('mail-followup-to'):
+        if isinstance(Defaults.MAIL_FOLLOWUP_TO, str):
+            if os.path.isfile(Defaults.MAIL_FOLLOWUP_TO):
+                mft_addrs = file(Defaults.MAIL_FOLLOWUP_TO, 'r').readlines()
+            else:
+                mft_addrs = None
+        else:
+            # assume a list
+            mft_addrs = Defaults.MAIL_FOLLOWUP_TO
+        if mft_addrs:
+            mft_addrs_lower = [a.lower().strip() for a in mft_addrs]
+            toccs = getaddresses(msgout.get_all('to', [])
+                                 + msgout.get_all('cc', []))
+            tocc_addrs = [a[1].strip() for a in toccs]
+            tocc_addrs_lower = [a.lower() for a in tocc_addrs]
+            for a in tocc_addrs_lower:
+                if a in mft_addrs_lower:
+                    msgout['Mail-Followup-To'] = ', '.join(tocc_addrs)
+                    break
 
     # If the address matches a line in the filter file, it is tagged
     # accordingly, otherwise it is tagged with the default cookie

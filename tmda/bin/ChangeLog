@@ -1,3 +1,10 @@
+2004-02-11  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-inject (main): Add Received, Date, Message-ID,
+	X-Delivery-Agent and Mail-Followup-To outside of inject_message()
+	so that they are added only once per message, not once per
+	recipient of that message.
+
 2004-02-05  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-inject (inject_message): Support Defaults.MAIL_FOLLOWUP_TO.
