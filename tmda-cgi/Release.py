@@ -56,7 +56,6 @@ and validate the pending email in question."""
   try:
     UID, Recipient, Cookie = QueryString.split("&")
     UID = int(UID)
-    GID = int(pwd.getpwuid(UID)[3])
     OldStyle = 0
 
     # Get base address from Recipient
@@ -67,9 +66,6 @@ and validate the pending email in question."""
       # Check for old-style format
       UID, Cookie = QueryString.split(".", 1)
       UID = int(UID)
-      UserRec = pwd.getpwuid(UID)
-      User = UserRec[0]
-      GID = int(UserRec[3])
       OldStyle = 1
     except (ValueError, KeyError):
       CgiUtil.TermError("Unable to parse query string.",
@@ -115,19 +111,19 @@ make sure that it is typed in exactly as it was sent to you.""")
           "TMDA_VLOOKUP = %s" % os.environ["TMDA_VLOOKUP"],
           """Contact this message's sender by an alternate means and inform them
 of this error, or try confirming your message using an alternate method.""")
-      Home, Uid, Gid = Sandbox["getuserparams"](List)
+      Home, UID, GID = Sandbox["getuserparams"](List)
     else:
-      Home, Uid, Gid = Util.getuserparams( User )
+      Home, UID, GID = Util.getuserparams(pwd.getpwuid(UID)[0])
   except KeyError:
     CgiUtil.TermError("No such user", "User %s not found" % User, 
-        "find user %s" % User, "", 
-        """Contact this message's sender by an alternate means and inform them
+      "find user %s" % User, "", 
+      """Contact this message's sender by an alternate means and inform them
 of this error, or try confirming your message using an alternate method.""")
-  if Uid < 2:
+  if UID < 2:
     PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
-    Uid = PasswordRecord[2]
-    Gid = PasswordRecord[3]
-    if not int(Uid):
+    UID = PasswordRecord[2]
+    GID = PasswordRecord[3]
+    if not int(UID):
       CgiUtil.TermError("TMDA_VUSER is UID 0.", "It is not safe to run "
         "tmda-cgi as root.", "set euid",
         "TMDA_VUSER = %s" % os.environ["TMDA_VUSER"],
@@ -147,8 +143,8 @@ of this error, or try confirming your message using an alternate method.""")
   try:
     os.seteuid(0)
     os.setegid(0)
-    os.setgid(int(Gid))
-    os.setuid(int(Uid))
+    os.setgid(int(GID))
+    os.setuid(int(UID))
   except OSError:
     pass
 

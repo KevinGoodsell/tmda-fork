@@ -1,3 +1,10 @@
+2003-06-14  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Fixed a bug that messed up URL confirmations for real users with
+	  virtual user URL format.
+
+	* Added a link to log back in to the "IP has changed error".
+
 2003-06-11  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Added %(Name)s as a substitution variable during auto-install.
