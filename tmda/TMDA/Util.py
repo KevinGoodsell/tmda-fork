@@ -126,6 +126,23 @@ def getvuserhomedir(user, domain, script):
     return vuserhomedir.strip()
 
 
+def getuserparams(login, script = None):
+    """Return a user's home directory, UID, & GID.
+
+If the user could be a virtual user, supply the filename of the user lookup 
+script."""
+    if script:
+        cmd = "%s %s" % (script, login)
+        fpin = os.popen(cmd)
+        stats = fpin.readlines()
+        if fpin.close():
+            raise KeyError, "User not found by script: %s" % script
+        return (stats[0].strip(), int(stats[1]), int(stats[2]))
+    else:
+        stats = pwd.getpwnam(login)
+        return (stats[5], stats[2], stats[3])
+
+
 def seconds(timeout):
     """Translate the defined timeout interval into seconds."""
     match = re.match("^([0-9]+)([YMwdhms])$", timeout)
