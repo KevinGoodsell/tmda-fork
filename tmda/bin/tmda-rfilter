@@ -55,6 +55,19 @@ OPTIONS:
            filter and then exit.  The first address given should be the message
            recipient (you), and the second is the sender.  This option will also
            check for parsing errors in the filter file.
+
+    -S <script>
+    --vhome-script <script>
+        Full pathname of script that prints a virtual email user's home
+        directory on standard output.  tmda-filter will read that path and set
+        $HOME to that path so that '~' expansion works properly for virtual
+        users.
+
+        The script takes two arguments, the user name and the domain, on its
+        command line.
+
+        This option is for use only with the VPopMail and VMailMgr add-ons to
+        qmail.  See the tmda0.XX/contrib directory for sample scripts.
 """
 
 import getopt

@@ -4,7 +4,9 @@
 	argument processing if the -S (--vhome-script) flag is given to
 	update $HOME with the virtual user's home directory.
 
-	* tmda-rfilter (USEVIRTUALDOMAINS): Small fix to make wildcard
+	* (usage docstring): Added documentation for -S / --vhome-script.
+
+	* (USEVIRTUALDOMAINS): Small fix to make wildcard
 	domains in VIRTUALDOMAINS work properly.
 
 2003-06-15  Gre7g Luterman  <gre7g@wolfhome.com>
