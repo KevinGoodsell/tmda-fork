@@ -148,7 +148,7 @@ function Set(Value)
                   title="Blacklist"></a></td>
               <!-- /var -->
               <!-- var: SCIcon -->
-                <td width="1%"><a href="javascript:Set('spamcop')"><img
+                <td width="1%"><a href="javascript:Set('report')"><img
                   src="%(ThemeDir)s/buttons/options_r1_c6.gif" border="0" 
                   width="20" height="15" alt="Report to SpamCop" 
                   title="Report to SpamCop"></a></td>
@@ -162,11 +162,17 @@ function Set(Value)
                 <th width="80" align="left" style="padding-left: 20px">
                   Date
                 </th>
-                <th width="50" align="right" style="padding-right: 10px">
+                <th width="50" align="right" style="padding-right: 20px">
                   Size
                 </th>
+                <!-- var: SsTh -->
+                <th width="50" align="right" style="padding-right: 10px">
+                  Score
+                </th>
+                <!-- /var -->
               </tr>
-<!-- var: NumCols="10" --><!-- var: NumBlankCols="6" -->
+<!-- var: NumCols="11" --><!-- var: NumBlankCols="6" -->
+<!-- var: NumMainCols="6" -->
 <!-- var: EvenRowColor="#DADCEB" --><!-- var: OddRowColor="#DADCEB" -->
 <!-- var: Row -->
       <tr>
@@ -208,6 +214,11 @@ function Set(Value)
         </td>
         <td nowrap valign="top" style="padding-left: 8px">%(Date)s</td>
         <td align="right" valign="top" style="padding-right: 5px">%(Size)s</td>
+        <!-- var: SsTd -->
+        <td width="50" align="right" style="padding-right: 5px">
+          %(Score)s
+        </td>
+        <!-- /var -->
       </tr>
 <!-- /var -->
 <!-- var: InProcessRow -->
@@ -220,6 +231,9 @@ function Set(Value)
         <td style="padding-left: 8px">%(Subject)s</td>
         <td nowrap style="padding-left: 8px">%(Date)s</td>
         <td align="right" style="padding-right: 5px">%(Size)s</td>
+        <!-- var: SsPr -->
+        <td>&nbsp;</td>
+        <!-- /var -->
       </tr>
 <!-- /var -->
     </table></td>

@@ -1,3 +1,17 @@
+2004-04-07  Jared Wangen    <xeo@silter.org>
+
+	* Added Spam score column to TMDA-X and Blue themes
+
+	* Added the ability to select "Spam" in TMDA-X theme for spam which 
+	  scored above a user-defined threshold
+
+	* Modified reporter.py (SpamCop reporter) and CgiUtil.ReportToSpamCop() 
+	  to send multiple reported spam in one e-mail.
+	  CgiUtil.ReportToSpamCop() now expects arrays of message objects.
+
+	* Fixed bug in Blue theme so the selection of all SpamCop radios works 
+	  now
+
 2004-03-18  Jim Ramsay      <i.am@jimramsay.com>
 
 	* Made text-size in TMDA-X theme user-configurable

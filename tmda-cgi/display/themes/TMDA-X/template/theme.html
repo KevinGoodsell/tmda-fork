@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Mar 19 08:52:04 2004 -->
+<!-- Wed Apr  7 20:54:50 2004 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -135,7 +135,8 @@ function unhover( name )
   PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db:Ymd:BZd:DaysAgo,
   Login:InitPage:pending:gen_addr, PendingList:CropSender,
   PendingList:CropSubject, PendingList:ShowAddr:Name:Address:All,
-  ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr" -->
+  ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr,
+  PendingList:ShowSpamScore:No:Yes, General:SpamScoreThreshold" -->
 <table>
   <form method="post" action="%(Script)s">
     <tr>
@@ -250,6 +251,23 @@ function unhover( name )
         value="%(PendingListCropSubject)s" size="2"></td>
       <td>&nbsp;</td>
       <td>Width of subject field in list view</td>
+    </tr>
+    <tr>
+      <td align="right"><input type="text" name="GeneralSpamScoreThreshold"
+        value="%(GeneralSpamScoreThreshold)s" size="3"></td>
+      <td>&nbsp;</td>
+      <td>Spam score threshold to use when considering spam 
+          (blank if not used)</td>
+    </tr>
+    <tr>
+      <td align="right"><select name="PendingListShowSpamScore">
+          <option %(PendingListShowSpamScoreNoSelected)s
+            value="No">No</option>
+          <option %(PendingListShowSpamScoreYesSelected)s
+            value="Yes">Yes</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Show spam score column</td>
     </tr>
     <tr>
       <td>OK HTML tag</td>

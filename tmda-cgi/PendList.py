@@ -51,6 +51,7 @@ def Show():
       WhiteList   = []
       BlackList   = []
       DeleteList  = []
+      SpamList    = []
       OtherList   = []
       OtherAction = "Pass"
       for Count in range(int(PVars[("PendingList", "PagerSize")])):
@@ -78,8 +79,7 @@ def Show():
               BlackList.append(MsgObj)
               DeleteList.append(MsgObj)
             elif Form["a%d" % Count].value == "report":
-              OtherAction = "Report"
-              OtherList.append(MsgObj)
+              SpamList.append(MsgObj)
             elif Form["a%d" % Count].value == "other":
               if Form["Action"].value == "Release":
                 ReleaseList.append(MsgObj)
@@ -87,12 +87,15 @@ def Show():
                 DeleteList.append(MsgObj)
               elif Form["Action"].value == "Whitelist":
                 WhiteList.append(MsgObj)
+		# TODO: Separate release not needed for TMDA 1.1.x
                 ReleaseList.append(MsgObj)
               elif Form["Action"].value == "Blacklist":
                 BlackList.append(MsgObj)
                 DeleteList.append(MsgObj)  
               elif Form["Action"].value == "Read":
                 ReadList.append(MsgObj)
+              elif Form["Action"].value == "Report":
+                SpamList.append(MsgObj)
               else:
                 OtherList.append(MsgObj)
                 OtherAction = Form["Action"].value
@@ -118,10 +121,10 @@ def Show():
               DeleteList.append( MsgObj )
             elif Form.has_key("WhitelistButton"):
               WhiteList.append( MsgObj )
+              # TODO: Separate release not needed for TMDA 1.1.x
               ReleaseList.append( MsgObj )
             elif Form.has_key("ReportButton"):
-              OtherAction = "Report"
-              OtherList.append( MsgObj )
+              SpamList.append( MsgObj )
             elif Form.has_key("ExecuteButton"):
               OtherAction = Form["Action"].value
               if OtherAction == "Release":
@@ -136,19 +139,25 @@ def Show():
                 DeleteList.append( MsgObj )
               elif OtherAction == "Read":
                 ReadList.append( MsgObj )
+              elif OtherAction == "Report":
+                SpamList.append( MsgObj )
               else: 
                 OtherList.append( MsgObj )
           except IOError: pass
+      
       # Process the messages found:
-      # Apply "other" action... May be Report or a custom filter
+      # Apply "other" action...
       for MsgObj in OtherList:
-        if OtherAction == "Report":
-          CgiUtil.ReportToSpamCop(MsgObj)
+        if OtherAction == "someotheraction":
           DeleteList.append(MsgObj)
         # TODO: Check if OtherAction is a custom filter
         #       If so, run it on the message and check the return value
         #       and add the MsgObj to the appropriate action list based on the
         #       filter output.
+      if SpamList:
+        CgiUtil.ReportToSpamCop(SpamList)
+      for MsgObj in SpamList:
+        DeleteList.append(MsgObj)
       for MsgObj in WhiteList:
         # Whitelist (and release) each message
         MsgObj.whitelist()
@@ -328,6 +337,7 @@ def Show():
 
   NumCols = int(T["NumCols"])
   NumBlankCols = int(T["NumBlankCols"])
+  NumMainCols = int(T["NumMainCols"])
 
   # Grab the radiobuttons if they exist
   RlRadio = T["RlRadio"]
@@ -344,12 +354,14 @@ def Show():
   WhAllowed = 1 and Defaults.PENDING_WHITELIST_APPEND
   BlAllowed = 1 and Defaults.PENDING_BLACKLIST_APPEND
   ScAllowed = 1 and PVars[("General", "SpamCopAddr")]
+  SsAllowed = 1
   FltAllowed = 1
   RlShow    = RlAllowed and 1
   DlShow    = DlAllowed and (PVars[("PendingList", "ShowDelete")] == "Yes")
   WhShow    = WhAllowed and 1
   BlShow    = BlAllowed and (PVars[("PendingList", "ShowBlack")] == "Yes")
   ScShow    = ScAllowed and 1
+  SsShow    = SsAllowed and (PVars[("PendingList", "ShowSpamScore")] == "Yes")
  
   if not RlAllowed:
     T["RlAction"]
@@ -381,6 +393,12 @@ def Show():
     T["SCIcon"]
     NumCols -= 1
     NumBlankCols -= 1
+  if not SsShow:
+    T["SsTh"].Clear()
+    T["SsTd"].Clear()
+    T["SsPr"].Clear()
+    NumCols -= 1
+    NumMainCols -= 1
     
   if FltAllowed:
     T["FilterOptions"] = CgiUtil.getFilterOptions() 
@@ -389,6 +407,7 @@ def Show():
 
   T["NumCols"] = NumCols
   T["NumBlankCols"] = NumBlankCols
+  T["NumMainCols"] = NumMainCols
 
   # Javascript confirmation?
   if PVars[("General", "UseJSConfirm")] == "Yes":
@@ -398,6 +417,16 @@ def Show():
   T["PagerSize"] = PVars[("PendingList", "PagerSize")]
 
   ReadArray = []
+  SpamArray = []
+  
+  # get Spam related vars
+  SpamSearch = re.compile(PVars[("NoOverride", "SpamScoreRegEx")])
+  SpamThreshold = PVars[("General", "SpamScoreThreshold")]
+  SpamHeader = PVars[("NoOverride", "SpamScoreHeader")]
+  
+  if not SpamThreshold:
+    if T["ShowSelectSpam"]:
+      T["ShowSelectSpam"].Clear()
 
   # Parse out embedded variables from template
   Row          = T["Row"]
@@ -554,6 +583,33 @@ def Show():
         else:
           T["MsgClass"] = "NewMsg"
           ReadArray.append(0)
+        
+        # Grab this specific header
+        SpamScoreHead = MsgObj.msgobj[SpamHeader]
+        
+        if not SpamScoreHead:
+          SpamArray.append(0)
+          Score = "-"
+        else:
+          Temp = SpamSearch.search(SpamScoreHead)
+          if not SpamThreshold:
+            SpamArray.append(0)
+            if not Temp:
+              Score = "-"
+            else:
+              Score = Temp.group(1)
+          else:
+            if not Temp:
+              SpamArray.append(0)
+              Score = "-"
+            else:
+              Score = Temp.group(1)
+              if not float(Score) >= float(SpamThreshold):
+                SpamArray.append(0)
+              else:
+                SpamArray.append(1)
+        
+        T["Score"] = Score
 
         if RlShow and RlRadio:
           RlRadio.Clear()
@@ -585,6 +641,18 @@ def Show():
       else:
         ReadArrayText += ", "
     T["ReadArray"] = ReadArrayText
+    
+    SpamArrayText = "SpamArray = new Array("
+    for SubCount in range( 0, Count ):
+      if SpamArray[SubCount]:
+        SpamArrayText += "true"
+      else:
+        SpamArrayText += "false"
+      if SubCount == ( Count - 1 ):
+        SpamArrayText += ")"
+      else:
+        SpamArrayText += ", "
+    T["SpamArray"] = SpamArrayText
 
     # Disallow searching if defaults.ini prohibits
     if not Searching and PVars[("NoOverride", "MaySearchPendList")][0].lower() == "n":
@@ -593,6 +661,7 @@ def Show():
   # No messages to display
   else:
     T["ReadArray"] = ""
+    T["SpamArray"] = ""
     T["FirstButton1Active"]
     T["PrevButton1Active"]
     T["FirstButton2Active"]

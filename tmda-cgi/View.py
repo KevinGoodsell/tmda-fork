@@ -145,7 +145,9 @@ def Show():
           MsgObj.blacklist()
           MsgObj.delete()
         elif Form["subcmd"].value == "spamcop":
-          CgiUtil.ReportToSpamCop(MsgObj)
+          SpamArr = []
+          SpamArr.append(MsgObj)
+          CgiUtil.ReportToSpamCop(SpamArr)
           MsgObj.delete()
         # TODO: Check if subcmd is a custom filter and process accordingly
         del Msgs[MsgIdx]

@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Thu Mar 18 16:20:17 2004 -->
+<!-- Thu Apr  8 08:58:39 2004 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -60,6 +60,7 @@ cellspacing="0" cellpadding="0" border="0" cellspacing="0" cellpadding="0">
 <!-- Some unused variables -->
 
 <!-- var: NumCols="5" --><!-- var: NumBlankCols="1" -->
+<!-- var: NumMainCols="6" -->
 
 <script>
 <!-- Hide script
@@ -127,6 +128,9 @@ function TestConfirm()
 // ReadArray[0] is FALSE If the message has not been read.
 %(ReadArray)s
 
+// SpamArray is an array mapping messages the same way as ReadArray
+%(SpamArray)s
+
 function Set(Value)
 {
   if (Value != "Selected")
@@ -156,6 +160,12 @@ function Set(Value)
           break
         case "Unread":
           shouldCheck = !ReadArray[i]
+          break
+        case "Spam":
+          shouldCheck = SpamArray[i]
+          break
+        case "Ham":
+          shouldCheck = !SpamArray[i]
           break
         default:
       }
@@ -196,7 +206,7 @@ function clickRow( rownum )
   <input type="hidden" name="SID" value="%(SID)s">
   <input type="hidden" name="cmd" value="pending">
   <input type="hidden" name="subcmd" value="batch">
-<table cellpadding="0" cellspacing="0" align="center" width="100%"
+<table cellpadding="0" cellspacing="0" align="center"
   style="border: 2px solid #000000; -moz-border-radius: 10px"
   >
   <tr>
@@ -328,6 +338,10 @@ function clickRow( rownum )
                     <option value="Inverse">Inverse
                     <option value="Unread">Unread
                     <option value="Read">Read
+                    <!-- var: ShowSelectSpam -->
+                    <option value="Spam">Spam
+                    <option value="Ham">Ham
+                    <!-- /var -->
                   </select>
                 </th>
                 <th width="150" align="left" style="padding-left: 10px">
@@ -342,9 +356,14 @@ function clickRow( rownum )
                 <th width="50" align="right" style="padding-right: 10px">
                   Size
                 </th>
+                <!-- var: SsTh -->
+                <th width="50" align="right" style="padding-right: 10px">
+                  Score
+                </th>
+                <!-- /var -->
               </tr>
       <tr>
-        <td colspan="5" bgcolor="#000000" height="1"></td>
+        <td colspan="%(NumMainCols)s" bgcolor="#000000" height="1"></td>
       </tr>
 <!-- var: Row -->
       <tr class="%(MsgClass)s" bgcolor="%(RowBgColor)s"
@@ -375,6 +394,11 @@ function clickRow( rownum )
          onclick="clickRow(%(MsgNum)d)">
           %(Size)s
         </td>
+        <!-- var: SsTd -->
+        <td width="50" align="right" style="padding-right: 5px">
+          %(Score)s
+        </td>
+        <!-- /var -->
       </tr>
 <!-- /var -->
 <!-- var: InProcessRow -->
@@ -392,6 +416,9 @@ function clickRow( rownum )
         <td align="right" valign="top" style="padding-right: 5px">
           %(Size)s
         </td>
+        <!-- var: SsPr -->
+        <td>&nbsp;</td>
+        <!-- /var -->
       </tr>
 <!-- /var -->
     </table></td>

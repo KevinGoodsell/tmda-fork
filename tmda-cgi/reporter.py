@@ -63,6 +63,9 @@ BSD license with my copyright.
 # 2003/11/12 - Tim Legant
 #   Ripped out all address/domain hiding code.  SpamCop is now complaining
 #   about that.
+# 2004/04/07 - Jared Wangen
+#   Modified code to send multiple spams in one e-mail for processing instead
+#   of one e-mail for every spam. There is enough clog on the net as it is! :)
 # 
 
 import getopt
@@ -107,14 +110,14 @@ Notes:
 """
     sys.exit(ec)
    
-def sendspam(spam, seq, conf):
+def sendspam(spams, conf):
     if conf.mailto:
         mailto = conf.mailto
         outfile = os.popen("%s -oi -t" % (conf.sendmail,), 'w')
     else:
         mailto = 'SPAMCOP'
         outfile = sys.stdout
-    subjstr = "%s #%03d" % (conf.subject, seq)
+    subjstr = "%s" % (conf.subject)
     # headers
     outfile.write("""To: %s
 Subject: %s
@@ -123,31 +126,34 @@ Content-Type: multipart/mixed; boundary="%s"
 
 This is a multi-part message in MIME format.
 
---%s
-Content-Type: message/rfc822
-Content-Disposition: attachment
+""" % (mailto, subjstr, conf.MIME_delim))
 
-""" % (mailto, subjstr, conf.MIME_delim, conf.MIME_delim))
-    # copy message
-    skip = 0
-    body = 0
-    for l in spam:
-        if re.match(r"^Subject:\s+\*+SPAM\*+\s+", l):
-            outfile.write(re.sub(r"\s+\*+SPAM\*+", "", l, 1))
-        elif re.match(r"^X-Spam-", l):
-            skip = 1
-        elif re.match(r"^SPAM:\s+", l):
-            skip = 2
-        elif skip and re.match(r"^\s+\S", l):
-            pass
-        elif skip > 1 and re.match(r"^\s*$", l):
-            skip = 0
-            body = 1
-        else:
-            skip = 0
-            outfile.write(l)
+    for spam in spams: 
+        outfile.write("""--%s
+Content-Type: message/rfc822
+Content-Disposition: attachment""" % (conf.MIME_delim))
+
+        # copy message
+        skip = 0
+        body = 0
+        outfile.write("\n\n")
+        for l in spam:
+            if re.match(r"^Subject:\s+\*+SPAM\*+\s+", l):
+                outfile.write(re.sub(r"\s+\*+SPAM\*+", "", l, 1))
+            elif re.match(r"^X-Spam-", l):
+                skip = 1
+            elif re.match(r"^SPAM:\s+", l):
+                skip = 2
+            elif skip and re.match(r"^\s+\S", l):
+                pass
+            elif skip > 1 and re.match(r"^\s*$", l):
+                skip = 0
+                body = 1
+            else:
+                skip = 0
+                outfile.write(l)
     # finish MIME part
-    outfile.write("\n\n--%s\n\n" % (conf.MIME_delim,))
+    outfile.write("\n\n--%s--\n\n" % (conf.MIME_delim,))
     # report success
     sys.stderr.write("Message '%s' sent to %s\n"
                      % (subjstr, mailto))
@@ -163,10 +169,8 @@ def write_mail(spam, conf):
         currspam.append(l)
     if len(currspam):
         spams.append(currspam)
-    cnt = 0
-    for currspam in spams:
-        cnt = cnt + 1
-        sendspam(currspam, cnt, conf)
+    if len(spams):
+        sendspam(spams, conf)
 
 # main()
 

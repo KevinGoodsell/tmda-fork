@@ -42,7 +42,8 @@ border="0"></a><br>
   Login:InitPage:pending:gen_addr, PendingList:CropSender,
   PendingList:CropSubject, PendingList:ShowAddr:Name:Address:All,
   ViewPending:AllowTags, ViewPending:BlockRemove, General:SpamCopAddr,
-  PendingList:ShowDelete:No:Yes, PendingList:ShowBlack:No:Yes" -->
+  PendingList:ShowDelete:No:Yes, PendingList:ShowBlack:No:Yes,
+  PendingList:ShowSpamScore:No:Yes, General:SpamScoreThreshold" -->
 <table>
   <form method="post" action="%(Script)s">
     <tr>
@@ -166,6 +167,16 @@ border="0"></a><br>
         </select></td>
       <td>&nbsp;</td>
       <td>Show blacklist column in pending list.</td>
+    </tr>
+    <tr>
+      <td align="center"><select name="PendingListShowSpamScore">
+          <option %(PendingListShowSpamScoreNoSelected)s
+            value="No">No</option>
+          <option %(PendingListShowSpamScoreYesSelected)s
+            value="Yes">Yes</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Show spam score column in pending list.</td>
     </tr>
     <tr>
       <td>OK HTML tag</td>

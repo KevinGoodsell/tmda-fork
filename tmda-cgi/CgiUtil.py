@@ -146,7 +146,7 @@ the open and close tag should be removed as well."""
     else:
       return RetVal + Str
 
-def ReportToSpamCop(MsgObj):
+def ReportToSpamCop(MsgObjs):
   "Report a given message to SpamCop."
 
   if PVars[("NoOverride", "Sendmail")]:
@@ -160,7 +160,8 @@ def ReportToSpamCop(MsgObj):
   Command = "%s%s reporter.py %s%s" % (Filter, sys.executable, Sendmail,
     PVars[("General", "SpamCopAddr")])
   P = os.popen(Command, "w")
-  P.write(MsgObj.msgobj.as_string(1))
+  for MsgObj in MsgObjs:
+    P.write(MsgObj.msgobj.as_string(1))
   P.close()
 
 def FindCharSet(MsgObj):

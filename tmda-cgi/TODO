@@ -33,10 +33,6 @@ Things left to do:
     * Sort -- Allow the Pending List to be sorted by other methods than Date:
               Size, subject, etc.
 
-    * SpamAssassin -- Mark every email with a spam score greater than some
-                      threshold as "spam", not unlike "read"/"unread" done 
-		      currently.  (Idea from Jared <xeo@silter.org>)
-
     * Un-ugly Errors -- Samuel Hill writes:
         Those python errors just freak normal people out when there is not
         really a serious problem.  Maybe tmda-cgi, instead of dumping
