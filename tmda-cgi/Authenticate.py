@@ -27,18 +27,21 @@ import os
 import os.path
 import pwd
 import random
-import string
 import sys
 
 import Template
-import StreamCapture
 from TMDA import Auth
 from TMDA import Errors
 from TMDA import Util
 
 authobj = Auth.Auth()
-Stream = StreamCapture.StreamCapture()
-authobj.DEBUGSTREAM = Stream.Stream
+try:
+  import StreamCapture
+  Stream = StreamCapture.StreamCapture()
+  authobj.DEBUGSTREAM = Stream.Stream
+except ImportError:
+  authobj.DEBUGSTREAM = sys.stderr
+  Stream = None
 
 authinit = 0
 
@@ -103,8 +106,9 @@ def CheckPassword(Form):
   except Errors.AuthError, error:
     Except = "\n*** EXCEPTION CAUGHT ***: %s" % error.msg
     RetVal = 0
-  Stream.Stream.close()
-  Template.Template.Dict["ErrMsg"] = "Capturing the debug stream...\n" + \
-    string.join(Stream.GetCapture(), "") + Except
+  if Stream:
+    Stream.Stream.close()
+    Template.Template.Dict["ErrMsg"] = "Capturing the debug stream...\n" + \
+      "".join(Stream.GetCapture()) + Except
 
   return RetVal

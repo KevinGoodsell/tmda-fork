@@ -64,9 +64,11 @@ Where:
 
     -l <path>
     --virtual-lookup <path>
-       Specify a path to virtual user lookup script.
-       - The lookup script should take user login as a parameter and return
-         <homedir>\\n<UID>\\n<GID>
+       Specify a stub and parameters for a virtual user lookup.
+       - This is generally "<stub> <program> <params...>" where <stub> is the
+         Python stub, <program> is the program that must be run to feed the
+         stub, and <params...> are any parameters needed by <program>.  Any
+         parameter that is a ~ will be replaced by the login name.
 
     -m system-wide|single-user|no-su
     --mode system-wide|single-user|no-su
@@ -96,7 +98,7 @@ Where:
           If "program" does not, the default program (/usr)/bin/true is
           automatically appended if not specified.
         Examples: -p "/usr/sbin/checkpassword-pam -s id -- /bin/true"
-                  -p /usr/local/vpopmair/vchkpw
+                  -p /home/vpopmail/bin/vchkpw
                      (/usr/bin/true or /bin/true is automatically used) 
 
     -r protocol[://host[:port]][/dn]
@@ -232,7 +234,7 @@ def Interactive(OptD):
     Ask("User name to use while accessing session data", OptD, "User")
     Ask("""Real user name to use when login is a virtual user (or "None" if no virtual
 users)""", OptD, "VUser")
-  Ask('Path to a virtual user lookup script (or "None" if no virtual users)',
+  Ask('Virtual user stub and parameters (or "None" if no virtual users)',
     OptD, "VLookup")
   Ask('Session path/file prefix', OptD, "SessionPrefix")
   Ask('Session expiration (seconds)', OptD, "SessionExp")
@@ -241,7 +243,7 @@ users)""", OptD, "VUser")
 
 Program = sys.argv[0]
 
-Perm = 04755
+Perm = 06711
 
 # Keep options in one handy dictionary
 OptD = {}
@@ -257,7 +259,7 @@ OptD["AuthProg"]      = "/usr/sbin/checkpassword"
 OptD["AuthURI"]       = "imap://localhost"
 OptD["AuthArg"]       = "None"
 OptD["VUser"]         = "vpopmail"
-OptD["VLookup"]       = "/home/vpopmail/bin/getuserinfo-vpopmail.sh"
+OptD["VLookup"]       = "vpopmail1 /home/vpopmail/bin/vuserinfo ~"
 OptD["SessionPrefix"] = "/tmp/TMDASession."
 OptD["SessionExp"]    = "300"
 OptD["SessionOdds"]   = "0.01"
@@ -280,7 +282,8 @@ try:
   Opts, Args = getopt.getopt(sys.argv[1:], "c:d:e:f:i:l:m:nho:p:r:s:t:u:",
     ["base-dir=", "config-file=", "display-dir=", "session-exp", "file-auth=", 
      "help", "install-prefix=", "mode=", "no-su", "cleanup-odds",
-     "program-auth=", "remote-auth=", "session-prefix", "target=", "user="])
+     "program-auth=", "remote-auth=", "session-prefix", "target=", "user=",
+     "virtual-lookup="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
@@ -288,6 +291,8 @@ except getopt.error, Msg:
 for Opt, Arg in Opts:
   if Opt in ("-h", "--help"):
     Usage(0)
+  elif Opt in ("-b", "--base-dir"):
+    OptD["Base"] = Arg
   elif Opt in ("-c", "--config-file"):
     OptD["Config"] = Arg
   elif Opt in ("-d", "--display-dir"):
@@ -301,7 +306,7 @@ for Opt, Arg in Opts:
   elif Opt in ("-i", "--install-prefix"):
     OptD["Path"] = Arg
   elif Opt in ("-l", "--virtual-lookup"):
-    OptD["Base"] = Arg
+    OptD["VLookup"] = Arg
   elif Opt in ("-o", "--cleanup-odds"):
     OptD["SessionOdds"] = Arg
   elif Opt in ("-p", "--program-auth"):
@@ -330,7 +335,7 @@ if not len(Opts):
   # Try to load options from last interactive run
   try:
     F = open("compile.ini")
-    OptD = pickle.load(F)
+    OptD.update(pickle.load(F))
     F.close()
   except IOError:
     pass
@@ -392,7 +397,7 @@ OptD["Path"] = os.path.abspath(OptD["Path"])
 if OptD["DispDir"][-1] != "/": OptD["DispDir"] += "/"
 if OptD["Path"][-1] != "/": OptD["Path"] += "/"
 
-if OptD["Mode"] == "no-su": Perm = 0755
+if OptD["Mode"] == "no-su": Perm = 0711
 
 # Create dirs.h
 F = open("dirs.h", "w")
@@ -452,7 +457,7 @@ compileall.compile_dir(OptD["Path"])
 
 print "Compilation done."
 
-# Unsafe authentication type warnings!
+# Print warnings
 if OptD["AuthType"] == "remote":
   print """
      ** Warning *********************************************************
@@ -471,3 +476,12 @@ elif OptD["AuthType"] == "program":
      * not relay on this functionality yet.
      ********************************************************************
 """
+  if (OptD["VLookup"] != "None") and (OptD["Mode"] == "single-user"):
+    print \
+"""     ** Warning *********************************************************
+     * Doublecheck the permissions/owner/group on your new CGI.         *
+     * vchkpw is very picky and tends to fail silently.  Look for:      *
+     *   -rws--s--x    1 vpopmail vchkpw     ### MMM dd hh:mm tmda.cgi  *
+     ********************************************************************
+"""
+    os.system("ls -l %(Target)s" % OptD)

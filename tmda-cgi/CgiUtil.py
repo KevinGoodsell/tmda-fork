@@ -21,17 +21,19 @@
 
 "Utilities for tmda-cgi."
 
-ErrTemplate = "error.html"
-
 import cgi
 import os
+import re
 import sys
 import time
 
 import Template
 
 # Handy values
-DispDir = os.environ["TMDA_CGI_DISP_DIR"]
+DispDir        = os.environ["TMDA_CGI_DISP_DIR"]
+ErrTemplate    = "error.html"
+QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*")
+UnquotedString = re.compile(r"^(\S+)\s*")
 
 def Size(MsgObj):
   MsgSize = len(MsgObj.as_string())
@@ -73,3 +75,23 @@ Attempted to %s with euid %d, egid %d.<br>
   T["Recommendation"] = Recommend
   print T
   sys.exit(0)
+
+def ParseString(Str, User):
+  "Parse a string (possibly with quoted arguments) into a list."
+  RetVal = []
+  while 1:
+    Match = QuotedString.search(Str)
+    if Match:
+      Arg = Match.group(2)
+    else:
+      Match = UnquotedString.search(Str)
+      if Match:
+        Arg = Match.group(1)
+    if Match:
+      if Arg == "~":
+        Arg = User
+      RetVal.append(Arg)
+      Str = Str[Match.end():]
+    else:
+      break
+  return RetVal

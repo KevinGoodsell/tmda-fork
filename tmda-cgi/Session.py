@@ -102,26 +102,29 @@ giving up an throwing an exception.
   def __suid__(self, User):
     """Try to change to a new user.
 
-User can be "root", "web", or "user".  "root" attempts to seteuid to root.
+User can be "root", "web", or "user".  "root" attempts to setuid to root.
 "web" attempts to seteuid to TMDA_CGI_USER.  "user" attempt to setuid to
 Vars["UID"].  An exception will be thrown if __suid_ is called after
 __suid__("user").  __suid__ reports an error if we can't change IDs, but should
 be able to."""
+
     # Don't allow "user" to be called twice
     if User == "user":
       if self.RealUser: raise OSError, "Cannot setuid twice."
       self.RealUser = 1
+
     if os.environ["TMDA_CGI_MODE"] == "system-wide":
       try:
-        # Switch back to root so we can change
+        # First, strip off other users
         os.seteuid(0)
         os.setegid(0)
 
         # If they wanted "root", we're done
-        if User == "root": return
+        if User == "root":
+          os.setuid(0)
 
         # If they want "web", go find out who that is
-        if User == "web":
+        elif User == "web":
           PasswordRecord = pwd.getpwnam(os.environ["TMDA_CGI_USER"])
           UID = PasswordRecord[2]
           GID = PasswordRecord[3]
@@ -134,7 +137,7 @@ be able to."""
 
         # If they want "user", go do it
         elif User == "user":
-          os.setuid(self.Vars["UID"])
+          os.setuid(int(self.Vars["UID"]))
 
       except OSError:
         CgiUtil.TermError("Cannot SUID.", "File permissions on the CGI have "
@@ -290,26 +293,38 @@ rights.""")
       return
 
     # Get IP, User, UID, & Home directory
-    if os.environ.has_key("TMDA_VLOOKUP"):
-      VLookup = os.environ["TMDA_VLOOKUP"]
-    else:
-      VLookup = None
+    self.Vars["IP"]   = os.environ["REMOTE_ADDR"]
+    self.Vars["User"] = Form["user"].value
+    self.__suid__("root")
     try:
-      self.Vars["IP"]   = os.environ["REMOTE_ADDR"]
-      self.Vars["User"] = Form["user"].value
-      self.Vars["HOME"], self.Vars["UID"], GID = \
-        Util.getuserparams(self.Vars["User"], VLookup)
+      if os.environ.has_key("TMDA_VLOOKUP"):
+        VLookup = \
+          CgiUtil.ParseString(os.environ["TMDA_VLOOKUP"], self.Vars["User"])
+        List = Util.RunTask(VLookup[1:])
+        Sandbox = {}
+        Filename = os.path.join("stubs", "%s.py" % VLookup[0])
+        try:
+          execfile(Filename, Sandbox)
+        except IOError:
+          CgiUtil.TermError("Can't load virtual user stub.",
+            "Cannot execute %s" % Filename, "execute stub",
+            "TMDA_VLOOKUP = %s" % os.environ["TMDA_VLOOKUP"], "Recompile CGI.")
+        self.Vars["HOME"], self.Vars["UID"], GID = \
+          Sandbox["getuserparams"](List)
+      else:
+        self.Vars["HOME"], self.Vars["UID"], GID = \
+          Util.getuserparams(self.Vars["User"])
       os.environ["HOME"] = self.Vars["HOME"]
-    except KeyError:
+    except KeyError, str:
       Template.Template.Dict["ErrMsg"] = \
-        "Username %s not found in system." % self.Vars["User"]
+        "Username %s not found in system.\nstr=%s" % (self.Vars["User"], str)
       return
     # When getuserparams returns a UID of 0 or 1, assume it is a virtual user
-    if self.Vars["UID"] < 2:
+    if int(self.Vars["UID"]) < 2:
       PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
       self.Vars["UID"] = PasswordRecord[2]
       GID = PasswordRecord[3]
-      if not self.Vars["UID"]:
+      if not int(self.Vars["UID"]):
         CgiUtil.TermError("TMDA_VUSER is UID 0.", "It is not safe to run "
           "tmda-cgi as root.", "set euid",
           "TMDA_VUSER = %s" % os.environ["TMDA_VUSER"], "Recompile CGI.")
@@ -342,7 +357,7 @@ rights.""")
         else:
           File = os.path.join(self.Vars["HOME"], ".tmda/tmda-cgi")
         self.__suid__("root")
-        if not Util.CanRead( File, self.Vars["UID"], GID, 0 ):
+        if not Util.CanRead( File, int(self.Vars["UID"]), int(GID), 0 ):
           File = "/etc/tmda-cgi"
 
         Authenticate.InitFileAuth( File )
