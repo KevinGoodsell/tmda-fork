@@ -246,8 +246,8 @@ class FilterParser:
 
     in_action = re.compile(r"""
     ( drop | exit | stop
-    | confirm | hold
-    | (?: bounce | reject | deliver | ok | accept)(?:\s*=.*$)? )
+    | hold
+    | (?: confirm | bounce | reject | deliver | ok | accept)(?:\s*=.*$)? )
     """, re.VERBOSE | re.IGNORECASE)
     
     out_action = re.compile(r"""

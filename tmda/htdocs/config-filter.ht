@@ -121,12 +121,13 @@ drop,exit,stop (silently drop the message)
 ok,accept,deliver (deliver the message)
 ok,accept,deliver=&lt;instruction&gt; (deliver to a Maildir, mbox, program, or address)
 confirm (request confirmation for the message)
+confirm=&lt;template&gt; (request confirmation for the message using a specific template)
 hold (store the message in the pending queue but do not send a confirmation request)
 </blockquote></pre>
 
-The <b>template</b> option to <b>bounce,reject</b> can be used
-to bounce the message using a specific template file rather than the
-default (bounce.txt).  The option can be an absolute pathname to the
+The <b>template</b> option to <b>bounce,reject</b> and <b>confirm</b> can be used
+to bounce or confirm the message using a specific template file rather than the
+default (bounce.txt or confirm_request.txt).  The option can be an absolute pathname to the
 template file (e.g, <i>/path/to/template.txt</i>).  Pathnames
 starting with a tilde will be expanded.  It can also be
 a relative pathname, in which case the template will be searched for

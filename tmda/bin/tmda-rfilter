@@ -721,7 +721,10 @@ def bouncegen(mode, text=None, template=None):
                 templatefile = 'bounce.txt'
             bounce_text = Util.wraptext(text)
     elif mode == 'request':               # confirmation requests
-        templatefile = 'confirm_request.txt'
+        if template:
+            templatefile = template
+        else:
+            templatefile = 'confirm_request.txt'
         timestamp = str('%d' %now)
         pid = Defaults.PID
         confirm_accept_address = Cookie.make_confirm_address(recipient_address,
@@ -831,7 +834,7 @@ def main():
         if Defaults.FILTER_BOUNCE_CC:
             send_cc(Defaults.FILTER_BOUNCE_CC)
         if option:
-            logit('BOUNCE', '(%s)' % matching_line + '=' + option)
+            logit('BOUNCE', '(%s)' % (matching_line + '=' + option))
             bouncegen('bounce', Defaults.BOUNCE_TEXT_FILTER_INCOMING,
                       template=option)
         else:
@@ -850,8 +853,12 @@ def main():
             logit('OK', '(%s)' % matching_line)
             mta.deliver(msgin)
     elif action == 'confirm':
-        logit('CONFIRM', '(%s)' % matching_line)
-        bouncegen('request')
+        if option:
+            logit('CONFIRM', '(%s)' % (matching_line + '=' + option))
+            bouncegen('request', template=option)
+        else:
+            logit('CONFIRM', '(%s)' % matching_line)
+            bouncegen('request')
     elif action == 'hold':
         logit('HOLD', '(%s)' % matching_line)
         bouncegen('hold')
