@@ -1,3 +1,11 @@
+2003-05-24  Tim Legant  <tim@catseye.net>
+
+	* tmda-inject (inject_message): Use Util.add_headers and
+	Util.purge_headers instead of local loops to process the
+	configuration variables ADDED_HEADERS_CLIENT and
+	PURGED_HEADERS_CLIENT.  Use Util.add_headers to add custom headers
+	and Util.purge_headers to clean them out between recipients.
+
 2003-04-29  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-rfilter (main): Perform an automated cleanup of the pending
