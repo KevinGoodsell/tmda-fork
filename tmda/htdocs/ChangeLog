@@ -1,3 +1,8 @@
+2001-12-30  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* faq.ht: New entry: "Why don't my user+detail addresses work with
+	Sendmail virtualdomains?"
+	
 2001-12-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* config-client.ht: Rename `tmda-make-address' to

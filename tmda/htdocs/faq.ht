@@ -10,6 +10,7 @@ Links: overview-links.h usage-links.h support-links.h
 <li><a href="#5">How can I delete old, unconfirmed messages from TMDA's pending queue?</a> <br>
 <li><a href="#6">How do I allow my ezmlm mailing lists to pass through TMDA?</a> <br>
 <li><a href="#7">How can I prevent BBDB from asking about 'dated' addresses?</a><br>
+<li><a href="#8">Why don't my user+detail addresses work with Sendmail virtualdomains?</a><br>
 </ol>
 
 <hr>
@@ -160,4 +161,28 @@ You can either set <em>bbdb-always-add-addresses</em> to
 <a href="http://forums.my.gnus.org/viewtopic.php?topic=46&forum=7&0" TARGET="Resource Window">BBDB hook</a>
 to filter the addresses before adding them to the database.
 
+<hr>
+
+<li><b>
+<a name="8">I'm running Sendmail, and noticed that my user+detail addresses don't
+work if the message is sent to a virtual domain.  What's the problem?
+</b>
+<br><br>
+You need some special entries in the virtusertable (and a modern version
+of sendmail - at least 8.10.1 to get full functionality) to preserve the
++detail portion of the address.  For example, if you currently have
+the following in your virtusertable:
+
+<blockquote><pre>
+bobby@peru.com    bobby
+</blockquote></pre>
+
+you can change this to:
+
+<blockquote><pre>
+bobby+*@peru.com  bobby+%2
+</blockquote></pre>
+
+See the virtusertable section in your Sendmail's cf/README for the
+full details.
 <hr>
