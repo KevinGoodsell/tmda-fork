@@ -5,6 +5,7 @@
 
 import base64
 import os
+import re
 import string
 import time
 
@@ -92,6 +93,8 @@ def make_keywordmac(keyword):
 
 def make_keyword_cookie(keyword):
     """Return a keyword-style cookie (keyword + HMAC)."""
+    # Characters outside of an RFC2822 atom token are changed to '?'
+    keyword = re.sub("[^a-zA-Z0-9!#$%&'*+-/=?^_`{|}~-]", "?", keyword)
     keywordmac = make_keywordmac(keyword)
     return keyword + '.' + keywordmac
 
