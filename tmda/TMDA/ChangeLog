@@ -1,3 +1,8 @@
+2002-06-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Cookie.py (make_keyword_cookie): Replace RECIPIENT_DELIMITER
+	with `?' in the keyword.
+
 2002-06-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Util.py (getfileuid): New function that returns the numerical

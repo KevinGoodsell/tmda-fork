@@ -561,7 +561,7 @@ def bouncegen(mode, text=None):
     # Common variables.
     now = time.time()
     recipient_address = globals().get('recipient_address')
-    (recipient_local, recipient_domain) = recipient_address.split('@')
+    recipient_local, recipient_domain = recipient_address.split('@', 1)
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
     original_message_body = globals().get('message_body')
@@ -635,17 +635,17 @@ def main():
 
     # Get the cookie type and value by parsing the extension address.
     ext = address_extension
+    cookie_type = cookie_value = None
     if ext:
         ext = ext.lower()
         ext_split = ext.split(Defaults.RECIPIENT_DELIMITER)
         cookie_value = ext_split[-1]
         try:
-            cookie_type = ext_split[-2].lower()
+            cookie_type = ext_split[-2]
         except IndexError:
-            cookie_type = None
-    else:
-        cookie_type = cookie_value = None
-
+            # not a tagged address
+            pass
+            
     # The list of sender e-mail addresses comes from the envelope
     # sender, the "From:" header and the "Reply-To:" header.
     sender_list = [envelope_sender]

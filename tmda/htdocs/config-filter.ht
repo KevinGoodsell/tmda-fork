@@ -491,7 +491,7 @@ from-ezmlm ~alias/all-acl-users ok
 from-ezmlm ~alias/all-acl-users/digest ok
 
 # Revoked addresses
-to jason-stupid-promo.289076@mastaler.com bounce
+to jason-stupid_promo.289076@mastaler.com bounce
 to jason-jcrew.832234@mastaler.com confirm
 
 # Examine the message content

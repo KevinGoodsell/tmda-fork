@@ -12,9 +12,11 @@ If you are upgrading from a release of TMDA < 0.57:
   FILTER_INCOMING.  e.g,
 
   to jason-promos.8d06eu@mastaler.com ok
-  to jason-stupid-promo.289j76@mastaler.com ok
+  to jason-stupid_promo.289j76@mastaler.com ok
 
-* 
+* RECIPIENT_DELIMITER is no longer allowed to be part of the keyword
+  in a keyword address.  `?' will be substituted for it when a new
+  keyword address is created.
 
 ======================================================================
 
