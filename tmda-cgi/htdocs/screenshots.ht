@@ -41,3 +41,33 @@ Title: Screenshots
   With tmda-cgi, you can modify your confirmation template and allow the 
   original sender to confirm either by replying or by clicking an included URL.
 </blockquote>
+<p><a href="screenshots/addr_gen.png" target="_blank">Dynamic address 
+  generation</a></p>
+<blockquote>
+  tmda-cgi will generate "keyword", "dated", and "sender" addresses. The output 
+  in placed in input boxes so you can copy and paste them into web forms. This 
+  is handy when you need to sign up for accounts on various services.
+</blockquote>
+<p><a href="screenshots/addr_test.png" target="_blank">Dynamic address 
+  testing</a></p>
+<blockquote>
+  tmda-cgi will test "keyword", "dated", and "sender" addresses to make sure 
+  they are valid.
+</blockquote>
+<p><a href="screenshots/globalconfig.png" target="_blank">Global configuration 
+  viewer</a></p>
+<blockquote>
+  With tmda-cgi, you can view the contents of TMDA's global configuration file.
+</blockquote>
+<p><a href="screenshots/localconfig.png" target="_blank">Local configuration 
+  editor</a></p>
+<blockquote>
+  tmda-cgi will let you edit your local configuration file. This function can
+  be disabled (and made view-only) by the system administrator.
+</blockquote>
+<p><a href="screenshots/theme.png" target="_blank">Theme picker</a></p>
+<blockquote>
+  Although tmda-cgi only comes (currently) with a single theme, it is set up
+  to allow as many as you wish to create or download.  Each user can pick their
+  own from the list.
+</blockquote>

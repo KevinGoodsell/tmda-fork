@@ -82,8 +82,8 @@ Title: Compiling tmda-cgi
   <li>Mode</li>
   <li>Unprivileged user to use when writing session data (system-wide mode 
     only)</li>
-  <li>Real user to use when someone logs in with a virtual e-mail account</li> 
   <li><a href="virtual.html">Virtual user stub and parameters</a></li>
+  <li>Real user to use when someone logs in with a virtual e-mail account</li> 
 </ol>
 
 <h3><a name="Display"></a><tt>display</tt> Directory</h3>

@@ -2,7 +2,7 @@
 <?xml-stylesheet href="display/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Apr 19 11:40:55 2003 -->
+<!-- Sun Apr 20 17:35:17 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -132,7 +132,56 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x442" height="35" width="194" 
 <p>The default settings file is broken into sections for easy organization. The 
   value of each parameter is as follows:</p>
 
-<h4>General:Theme</h4>
+<table width="100%">
+  <tr>
+    <td><a href="#NoOverrideUserSplit">NoOverride:UserSplit</a></td>
+    <td><a href="#NoOverrideMayEditLocalConfig">NoOverride:MayEditLocalConfig</a><br>
+  </tr>
+  <tr>
+    <td><a href="#GeneralTheme">General:Theme</a><br>
+    <td><a href="#GeneralUseJSConfirm">General:UseJSConfirm</a><br>
+  </tr>
+  <tr>
+    <td><a href="#GenAddrKeyword">GenAddr:Keyword</a><br>
+    <td><a href="#GenAddrExpireNum">GenAddr:ExpireNum</a><br>
+  </tr>
+  <tr>
+    <td><a href="#GenAddrExpireUnit">GenAddr:ExpireUnit</a><br>
+    <td><a href="#GenAddrSender">GenAddr:Sender</a><br>
+  </tr>
+  <tr>
+    <td><a href="#PendingListCropSender">PendingList:CropSender</a><br>
+    <td><a href="#PendingListCropSubject">PendingList:CropSubject</a><br>
+  </tr>
+  <tr>
+    <td><a href="#PendingListDateFormat">PendingList:DateFormat</a><br>
+    <td><a href="#PendingListPagerSize">PendingList:PagerSize</a><br>
+  </tr>
+  <tr>
+    <td><a href="#ViewPendingHeaders">ViewPending:Headers</a><p>
+  </tr>
+</table>
+
+<h4><a name="NoOverrideUserSplit"></a>NoOverride:UserSplit</h4>
+<blockquote>
+  <p>Regular expression to split virtual user login names.</p>
+  <p>Default: <tt>^(.+)[%@](.+)$</tt> (split on "@" or "%")</p>
+</blockquote>
+
+<h4><a name="NoOverrideMayEditLocalConfig"></a>NoOverride:MayEditLocalConfig</h4>
+<blockquote>
+  <p>Allow users to edit their local config files with tmda-cgi.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[NoOverride]<br>
+          MayEditLocalConfig = No</td>
+      </tr>
+    </table>
+  <p>Default: <tt>Yes</tt></p>
+</blockquote>
+
+<h4><a name="GeneralTheme"></a>General:Theme</h4>
 <blockquote>
   <p>Theme to use if the user has not yet selected one of their own.</p>
   <p>Example:
@@ -145,7 +194,7 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x442" height="35" width="194" 
   <p>Default: <tt>Blue</tt></p>
 </blockquote>
 
-<h4>General:UseJSConfirm</h4>
+<h4><a name="GeneralUseJSConfirm"></a>General:UseJSConfirm</h4>
 <blockquote>
   <p>Enables a pop-up confirmation box before any message is deleted or 
     blacklisted. Disable this option if most of your users have browsers without 
@@ -161,7 +210,31 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x442" height="35" width="194" 
   <p>Default: <tt>1</tt> (enabled)</p>
 </blockquote>
 
-<h4>PendingList:CropSender</h4>
+<h4><a name="GenAddrKeyword"></a>GenAddr:Keyword</h4>
+<blockquote>
+  <p>Default keyword to use on first run.</p>
+  <p>Default: <i>None.</i></p>
+</blockquote>
+
+<h4><a name="GenAddrExpireNum"></a>GenAddr:ExpireNum</h4>
+<blockquote>
+  <p>Default expiration to use on first run.</p>
+  <p>Default: <tt>30</tt></p>
+</blockquote>
+
+<h4><a name="GenAddrExpireUnit"></a>GenAddr:ExpireUnit</h4>
+<blockquote>
+  <p>Default expiration to use on first run.</p>
+  <p>Default: <tt>d</tt> (days)</p>
+</blockquote>
+
+<h4><a name="GenAddrSender"></a>GenAddr:Sender</h4>
+<blockquote>
+  <p>Default to keyword to use on first run.</p>
+  <p>Default: <i>None.</i></p>
+</blockquote>
+
+<h4><a name="PendingListCropSender"></a>PendingList:CropSender</h4>
 <blockquote>
   <p>Maximum length of a sender's e-mail address before it will be cropped in 
     list view.</p>
@@ -175,7 +248,7 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x442" height="35" width="194" 
   <p>Default: <tt>25</tt></p>
 </blockquote>
 
-<h4>PendingList:CropSubject</h4>
+<h4><a name="PendingListCropSubject"></a>PendingList:CropSubject</h4>
 <blockquote>
   <p>Maximum length of an e-mail subject before it will be cropped in list 
     view.<p>
@@ -189,7 +262,7 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x442" height="35" width="194" 
   <p>Default: <tt>40</tt></p>
 </blockquote>
 
-<h4>PendingList:DateFormat</h4>
+<h4><a name="PendingListDateFormat"></a>PendingList:DateFormat</h4>
 <blockquote>
   <p>Format string for <a
     href="http://python.org/doc/current/lib/module-time.html#l2h-1386">time.strftime()</a>,
@@ -207,7 +280,7 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x442" height="35" width="194" 
   <p>Default: <tt>%a Z-%m/Z-%d</tt></p>
 </blockquote>
 
-<h4>PendingList:PagerSize</h4>
+<h4><a name="PendingListPagerSize"></a>PendingList:PagerSize</h4>
 <blockquote>
   <p>Number of e-mails to show on a page.</p>
   <p>Example:
@@ -220,7 +293,7 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x442" height="35" width="194" 
   <p>Default: <tt>15</tt></p>
 </blockquote>
 
-<h4>ViewPending:Headers</h4>
+<h4><a name="ViewPendingHeaders"></a>ViewPending:Headers</h4>
 <blockquote>
   <p>Show only headers listed in <a 
     href="/config-vars.html#SUMMARY_HEADERS"><tt>SUMMARY_HEADERS</tt></a> 
@@ -242,7 +315,27 @@ src="display/dyn_buttons/layout1_r6_c1.png" name="x442" height="35" width="194" 
   tmda-cgi's root directory. No error will be reported if this file does not 
   exist.</p>
 <p>The format and variables supported is identical to that of the 
-  <tt>defaults.ini</tt> file.</p>
+  <tt>defaults.ini</tt> file. <tt>theme.ini</tt> may not override any variables
+  in the <tt>[NoOverride]</tt> section. Additional variables allowed in 
+  <tt>theme.ini</tt> are:</p>
+
+<table width="100%">
+  <tr>
+    <td><a href="#ThemeInfo">Theme:Info</a></td>
+  </tr>
+</table>
+
+<h4><a name="ThemeInfo"></a>Theme:Info</h4>
+<blockquote>
+  <p>General information on the theme.</p>
+  <p>Example:
+    <table class="example">
+      <tr>
+        <td>[Theme]<br>
+          Info = &amp;copy;2003 Graham Chapman, all rights reserved.</td>
+      </tr>
+    </table>
+</blockquote>
 
 <h3><a name="User"></a>User Preferences</h3>
 <p>User preferences are set by user actions while running tmda-cgi, and override 
