@@ -39,6 +39,7 @@ sitelinks = [
     <a href="http://www.us.tmda.net/">US</a> \
     mirror ]'),
     ('http://sourceforge.net/projects/tmda', 'TMDA @ SourceForge'),
+    ('%(rootdir)s/tmda-cgi', 'tmda-cgi'),
     ]
 
 
