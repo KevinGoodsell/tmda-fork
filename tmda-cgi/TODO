@@ -15,7 +15,15 @@ Things left to do:
 
     * Remember Me -- set a cookie to skip login
 
-    * Search -- For lists and/or filters
+    * Search -- Implement Cacheing for Pending List, and implement Search for 
+                lists and/or filters
 
     * Sort -- Allow the Pending List to be sorted by other methods than Date:
               Size, subject, etc.
+
+    * Un-ugly Errors -- Samuel Hill writes:
+        Those python errors just freak normal people out when there is not
+        really a serious problem.  Maybe tmda-cgi, instead of dumping
+        information to the user, could dump it to a log file instead.  Then,
+        tmda-cgi just goes back to pending or displays a friendly message like
+        "error occurred, please log in again".
