@@ -20,12 +20,76 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 """
-Recursively byte-compile all .py files even if the timestamps are up to date.
+Recursively byte-compile all .py files in the given directory tree.
+
+Based on code from Python's compileall module
+Copyright (C) Python Software Foundation.
 """
 
-import compileall
 import os
 import sys
+import py_compile
 
-tmda_tld = os.path.dirname(sys.argv[0])
-compileall.compile_dir(tmda_tld, force=1)
+
+# If running Python 2.1, skip compilation of these files.
+py21_ignore = ['_compat22.py']
+
+
+def compile_dir(dir, maxlevels=10, ddir=None):
+    major, minor = sys.version_info[0:2]
+    if major == 2 and minor == 1:
+        py21 = 1
+    else:
+        py21 = 0
+    #print 'Listing', dir, '...'
+    try:
+        names = os.listdir(dir)
+    except os.error:
+        print "Can't list", dir
+        names = []
+    names.sort()
+    success = 1
+    for name in names:
+        if py21 and name in py21_ignore:
+            continue
+        fullname = os.path.join(dir, name)
+        if ddir:
+            dfile = os.path.join(ddir, name)
+        else:
+            dfile = None
+        if os.path.isfile(fullname):
+            head, tail = name[:-3], name[-3:]
+            if tail == '.py':
+                cfile = fullname + (__debug__ and 'c' or 'o')
+                print 'Compiling', fullname, '...'
+                try:
+                    py_compile.compile(fullname, None, dfile)
+                except KeyboardInterrupt:
+                    raise KeyboardInterrupt
+                except:
+                    if type(sys.exc_type) == type(''):
+                        exc_type_name = sys.exc_type
+                    else: exc_type_name = sys.exc_type.__name__
+                    print 'Sorry:', exc_type_name + ':',
+                    print sys.exc_value
+                    success = 0
+        elif maxlevels > 0 and \
+             name != os.curdir and name != os.pardir and \
+             os.path.isdir(fullname) and \
+             not os.path.islink(fullname):
+            compile_dir(fullname, maxlevels - 1, dfile)
+    return success
+
+
+def main():
+    dir = os.path.dirname(sys.argv[0])
+    success = 1
+    try:
+        success = success and compile_dir(dir)
+    except KeyboardInterrupt:
+        print "\n[interrupt]"
+        success = 0
+    return success
+
+if __name__ == '__main__':
+    sys.exit(not main())
