@@ -117,6 +117,13 @@ if not vars().has_key('BOUNCE_BLACKLIST_CC'):
 if not vars().has_key('BOUNCE_CONFIRM_CC'):
     BOUNCE_CONFIRM_CC = None
 
+# BOUNCE_REVOKED_CC
+# An optional e-mail address which will be sent a copy of any message
+# that bounces because of a REVOKED match.
+# No default.
+if not vars().has_key('BOUNCE_REVOKED_CC'):
+    BOUNCE_REVOKED_CC = None
+
 # BOUNCE_ENV_SENDER
 # The envelope sender of the bounce message. For a normal bounce, this
 # should be an empty string.
@@ -274,6 +281,13 @@ if not vars().has_key('EXP_FILE'):
 if not vars().has_key('EXT_FILE'):
     EXT_FILE = DATADIR + "lists/" + "ext"
 
+# REVOKED_FILE
+# Filename which contains a list of recipient e-mail addresses, one
+# per line, which have been "revoked" and will therefore bounce.
+# Default is ~/.tmda/lists/revoked
+if not vars().has_key('REVOKED_FILE'):
+    REVOKED_FILE = DATADIR + "lists/" + "revoked"
+    
 # SACRED_FILE
 # Filename which contains a list of sacred keywords, the presence
 # of which automatically zaps the mail into your mailbox.

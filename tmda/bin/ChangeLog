@@ -1,5 +1,8 @@
 2001-09-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-filter (main): Support a "revoked" list of recipient
+	addresses that are to be bounced.
+
 	* tmda-sendmail (usage): Compact the options with list expansion
 	for brevity.  Thanks to Ron Bickers for the hint.
 

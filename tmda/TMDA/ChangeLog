@@ -1,3 +1,11 @@
+2001-09-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (REVOKED_FILE): New variable pointing to the file
+	which contains "revoked" recipient addresses.
+
+	(BOUNCE_REVOKED_CC): New variable specifying the address to CC
+	"revoked" bounces.
+
 2001-09-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (TMDA_VERSION): Begin 0.36 development.

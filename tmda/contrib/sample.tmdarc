@@ -20,6 +20,8 @@ import os                                      # don't remove
 
 # BOUNCE_CONFIRM_CC = "jdoe-bounces-confirm@domain.dom"
 
+# BOUNCE_REVOKED_CC = "jdoe-bounces-revoked@domain.dom"
+
 # BOUNCE_ENV_SENDER = ""
 
 # CONFIRM_ACCEPT_NOTIFY = 1
@@ -75,6 +77,8 @@ import os                                      # don't remove
 # EXP_FILE = "/full/path/to/exp"
 
 # EXT_FILE = "/full/path/to/ext"
+
+# REVOKED_FILE = "/full/path/to/revoked"
 
 # SACRED_FILE = "/full/path/to/sacred"
 

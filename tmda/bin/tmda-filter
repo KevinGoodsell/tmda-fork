@@ -461,7 +461,8 @@ def main():
         # Is the sender in the BLACKLIST?
         if os.path.exists(Defaults.BLACKLIST):
             blacklist_list = []
-            blacklist_list = Util.file_to_list(Defaults.BLACKLIST,blacklist_list)
+            blacklist_list = Util.file_to_list(Defaults.BLACKLIST,
+                                               blacklist_list)
             if Util.findmatch(blacklist_list, EnvelopeSender,From,ReplyTo):
                 logit("DROP blacklist_match", time.time())
                 if Defaults.BOUNCE_BLACKLIST_CC:
@@ -481,10 +482,24 @@ def main():
         # Is the sender in the WHITELIST?
         if os.path.exists(Defaults.WHITELIST):
             whitelist_list = []
-            whitelist_list = Util.file_to_list(Defaults.WHITELIST,whitelist_list)
+            whitelist_list = Util.file_to_list(Defaults.WHITELIST,
+                                               whitelist_list)
             if Util.findmatch(whitelist_list, EnvelopeSender,From,ReplyTo):
                 logit("OK whitelist_match", time.time())
                 sys.exit(Defaults.ERR_OK)
+                pass
+
+        # Is the recipient in the REVOKED_FILE?
+        if os.path.exists(Defaults.REVOKED_FILE):
+            revoked_file_list = []
+            revoked_file_list = Util.file_to_list(Defaults.REVOKED_FILE,
+                                                  revoked_file_list)
+            if Util.findmatch(revoked_file_list, recipient_address):
+                logit("BOUNCE revoked_file_match", time.time())
+                if Defaults.BOUNCE_REVOKED_CC:
+                    bounce_cc(Defaults.BOUNCE_REVOKED_CC)
+                print "Sorry, this address has been revoked."
+                sys.exit(Defaults.ERR_HARD)
                 pass
 
         # Is the message sacred?
