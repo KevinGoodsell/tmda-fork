@@ -32,8 +32,8 @@ prerequisite software installed first.<br>
 <ol>
 
 <li>The <a href="http://www.python.org/download/" TARGET="Resource Window">Python</a> 
-programming language.  Versions 2.1 and higher are supported, but
-2.3 is recommended.  Many UNIX/Linux distributions now come
+programming language.  Versions 2.1 and higher, <strong>except for 2.3.1</strong>,
+are supported.  2.3 is the recommended version.  Many UNIX/Linux distributions now come
 with Python pre-installed.  To check whether it is and what version
 you have installed, try typing <strong>python</strong> and/or
 <strong>python2</strong> at your shell's command line:
