@@ -88,12 +88,12 @@ Title: Pending E-mail
         </td>
        <!-- var: WhRadio -->
         <td valign="top">
-          <input type="radio" name="%(RadioName)s" value="white">
+          <input type="radio" name="%(RadioName)s" value="whitelist">
         </td>
        <!-- /var -->
        <!-- var: BlRadio -->
         <td valign="top">
-          <input type="radio" name="%(RadioName)s" value="black">
+          <input type="radio" name="%(RadioName)s" value="blacklist">
         </td>
        <!-- /var -->
         <td valign="top" style="padding-left: 8px">%(Sender)s</td>

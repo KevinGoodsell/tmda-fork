@@ -22,3 +22,6 @@ Things left to do:
                           of an e-mail are equivilant (i.e. text & HTML)
 
     * Hide Nasty -- need a way to hide the nasty HTML in viewed e-mails
+
+    * Remove JS -- Javascript code should not be in PendList.py.  It should be
+                   in the template pending.ht.

@@ -95,7 +95,7 @@ def Show():
       if Form.has_key("exp_amt"):
         T["ExpAmt"] = PVars[("GenAddr", "ExpireNum")] = \
           int(Form["exp_amt"].value)
-        Option = "%d%s" % (PVars[("GenAddr", "ExpireNum")],
+        Option = "%d%s" % (int(PVars[("GenAddr", "ExpireNum")]),
           PVars[("GenAddr", "ExpireUnit")])
       else:
         if PVars.has_key(("GenAddr", "ExpireNum")):
@@ -108,7 +108,7 @@ def Show():
   else:
     if PVars.has_key(("TestAddr", "From")):
       del PVars[("TestAddr", "From")]
-    Option = "%d%s" % (PVars[("GenAddr", "ExpireNum")],
+    Option = "%d%s" % (int(PVars[("GenAddr", "ExpireNum")]),
       PVars[("GenAddr", "ExpireUnit")])
 
   # Show correct units
