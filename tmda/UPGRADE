@@ -5,6 +5,11 @@ If you are upgrading from a release of TMDA < 0.69:
 * tmda-ofmipd now disables CRAM-MD5 negotiation when the -R or -A
   options are specified. See TMDA FAQ 5.8 for why.
 
+* tmda-cgi now expects to find support files in the subdirectory
+  ../display instead of display.  This better supports users who
+  install tmda-cgi in their cgi-bin directory.  Use compile's -d
+  option to override this default.
+
 ======================================================================
 
 If you are upgrading from a release of TMDA < 0.68:
