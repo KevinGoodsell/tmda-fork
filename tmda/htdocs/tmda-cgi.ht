@@ -179,8 +179,12 @@ Links: overview-links.h usage-links.h howto-links.h support-links.h
   <pre>$ ln -s display /path/to/webpage/directory</pre>
 </blockquote>
 <p>At this point you will have to change permissions on any existing pending mail 
-  and change the value of <tt>PENDING_FILE_PERM</tt> to make sure any new mail 
-  that is placed in the pending directory is given the correct permissions.</p>
+  and add something akin to:</p>
+<blockquote>
+  <pre>os.umask(027)</pre>
+</blockquote>
+<p>to your configuration file. That will make sure that future pending e-mails 
+  are written such that they can be read by group members (i.e. the CGI).</p>
 <p>If you multiple users plan on using tmda-cgi in no-su mode, then you might 
   consider moving all of your TMDA files into one central location. This will 
   make it easier to keep group permissions on your directories and files. Here's 
@@ -244,7 +248,7 @@ LOGFILE_INCOMING         = DATADIR + &quot;logs/in&quot;
 LOGFILE_OUTGOING         = DATADIR + &quot;logs/out&quot;
 PENDING_BLACKLIST_APPEND = DATADIR + &quot;lists/blacklist&quot;
 PENDING_WHITELIST_APPEND = DATADIR + &quot;lists/whitelist&quot;
-PENDING_FILE_PERM = 0660
+os.umask(027)
 ADDED_HEADERS_CLIENT = { &quot;X-Primary-Address&quot;: &quot;%s@%s&quot; % \
   (Util.getusername(), Util.gethostname()) }
 
