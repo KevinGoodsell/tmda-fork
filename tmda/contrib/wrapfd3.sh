@@ -1,6 +1,35 @@
 #!/bin/sh
 #
-# This file is part of TMDA
+# -----------------------------------------------------------------------------
+#
+# wrapfd3.sh - A wrapper for python program which use Auth.py to guarantee
+#              that File Discriptor 3 is available.
+#
+# Version: 0.1                                            
+#
+# Copyright (C) 2003 Jim Ramsay <i.am@jimramsay.com>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+# -----------------------------------------------------------------------------
+#  
+# Usage and rationale:
+# ===================
 #
 # This wrapper is to be used in systems where FD3 is used by the threading
 # library (FreeBSD is known to be affected, among others)
@@ -31,6 +60,14 @@
 # Please note that if your system is not affected, running this wrapper will
 # not be harmful.  Probably.
 #
+# -----------------------------------------------------------------------------
+#
+# Release History:
+# ===============
+#
+# 0.1 - First release
+#
+# -----------------------------------------------------------------------------
 
 # Make sure that there's at least one arg, and check for "help"
 if [ -z "$1" -o "$1" = "-h" -o "$1" = "--help" ]; then
