@@ -1,7 +1,7 @@
 2001-04-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* tmda-inject (main): Changed X-TMDA to include the Python version
-	instead of the TMDA URL.
+	* tmda-inject (main): Changed X-Delivery-Agent to include the
+	Python version instead of the TMDA URL.
 
 2001-04-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
