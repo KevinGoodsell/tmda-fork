@@ -1,3 +1,10 @@
+2003-04-27  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-inject (main): Add TMDA_INJECT_RECIPIENT and
+	TMDA_INJECT_VRECIPIENT to the environment.
+
+	(main): Read FILTER_OUTGOING once per message recipient.
+		
 2003-04-26  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-inject (msgout): Use Util.msg_from_file().

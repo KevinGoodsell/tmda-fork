@@ -408,19 +408,20 @@ def main():
                 msgout['Subject'] = subsplit[2:][0]
             else:
                 msgout['Subject'] = ''
-    # Without `X-TMDA', we need to parse the outgoing filter file.
-    if x_tmda_over is None:
-        outfilter = FilterParser.FilterParser()
-        outfilter.read(Defaults.FILTER_OUTGOING)
 
     # If the address matches a line in the filter file, it is tagged
     # accordingly, otherwise it is tagged with the default cookie
     # type.
     for address in address_list:
+        os.environ['TMDA_INJECT_RECIPIENT'] = address
+        os.environ['TMDA_INJECT_VRECIPIENT'] = address.replace('@', '=')
         # If `X-TMDA' is present we are done here.
         if x_tmda_over:
             pass                        
         else:
+            # Without `X-TMDA', we need to parse the outgoing filter file.
+            outfilter = FilterParser.FilterParser()
+            outfilter.read(Defaults.FILTER_OUTGOING)
             (actions, matching_line) = outfilter.firstmatch(address,
                                                             [from_address])
             log_msg = matching_line
