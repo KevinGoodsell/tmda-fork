@@ -32,7 +32,7 @@ GENERATED_HTML= $(SOURCES:.ht=.html)
 DEST =          jasonrm@tmda.sourceforge.net:/home/groups/t/tm/tmda/htdocs/
 EXCLUDES =      --exclude "*"
 INCLUDES =	--include "*.html"
-ARGS =          -v -a -z --delete $(INCLUDES) $(EXCLUDES)
+ARGS =          -e ssh -v -a -z --delete $(INCLUDES) $(EXCLUDES)
 
 
 .SUFFIXES:	.ht .html
