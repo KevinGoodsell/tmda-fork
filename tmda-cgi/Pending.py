@@ -84,7 +84,6 @@ def Show():
 
   # Load the display template
   T = Template.Template("pending.html")
-  T["SID"] = PVars.SID
   
   # Find the message numbers we'll display
   FirstMsg = PVars["Pager"]

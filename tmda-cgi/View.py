@@ -87,7 +87,7 @@ def Show():
     try:
       MsgIdx = Msgs.index(PVars["MsgID"])
     except ValueError: # Oops.  Perhaps they released the message?  Get the list!
-      print "Location: %s?cmd=list&SID=%s\n" % \
+      print "Location: %s?cmd=pending&SID=%s\n" % \
         (os.environ["SCRIPT_NAME"], PVars.SID)
       return
     
@@ -129,7 +129,7 @@ def Show():
       
       # So which message are we on now?
       if len(Msgs) == 0: # Oops! None left!
-        print "Location: %s?cmd=list&SID=%s\n" % \
+        print "Location: %s?cmd=pending&SID=%s\n" % \
           (os.environ["SCRIPT_NAME"], PVars.SID)
         PVars.Save()
         return

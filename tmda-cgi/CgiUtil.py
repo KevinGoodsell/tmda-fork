@@ -26,6 +26,8 @@ import os
 import sys
 import time
 
+import Template
+
 # Handy values
 DispDir = os.environ["TMDA_CGI_DISP_DIR"]
 
@@ -60,37 +62,12 @@ def FileDetails(Desc, Filename):
   return "%s file <tt>%s</tt>, permissions %s" % (Desc, Filename, Perm)
 
 def TermError(Err, Cause, Failed, Other, Recommend):
-  print """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<title>tmda-cgi Error</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-
-<body>
-<p>tmda-cgi cannot continue because a terminal error has been encountered.</p>
-<table>
-  <tr> 
-    <td width="100" valign="top"><b>Error:</b></td>
-    <td>%s</td>
-  </tr>
-  <tr> 
-    <td valign="top"><b>Cause:</b></td>
-    <td>%s</td>
-  </tr>
-  <tr> 
-    <td valign="top"><b>Additional:</b></td>
-    <td>Running in %s mode.<br>
-      Attempted to %s with euid %d, egid %d.<br>
-      %s
-    </td>
-  </tr>
-  <tr>
-    <td valign="top"><b>Recommend:</b></td>
-    <td>%s</td>
-  </tr>
-</table>
-</body>
-</html>""" % (Err, Cause, os.environ["TMDA_CGI_MODE"], Failed, os.geteuid(),
-  os.getegid(), Other, Recommend)
+  T = Template.Template("error.html")
+  T["ErrorName"]  = Err
+  T["Cause"]      = Cause
+  T["Additional"] = """Running in %s mode.<br>
+Attempted to %s with euid %d, egid %d.<br>
+%s""" % (os.environ["TMDA_CGI_MODE"], Failed, os.geteuid(), os.getegid(), Other)
+  T["Recommendation"] = Recommend
+  print T
   sys.exit(0)

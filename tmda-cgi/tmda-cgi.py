@@ -55,8 +55,9 @@ MyCgiTb.ErrTemplate = "prog_err.html"
 # Make some global stuff available to all
 Template.Template.BaseDir = "%s/display/themes/Blue/template" % \
   os.path.abspath(os.path.split(sys.argv[0])[0])
-Template.Template.Dict["Script"]  = os.environ["SCRIPT_NAME"]
-Template.Template.Dict["DispDir"] = os.environ["TMDA_CGI_DISP_DIR"]
+Template.Template.Dict["Script"]   = os.environ["SCRIPT_NAME"]
+Template.Template.Dict["SID"]      = ""
+Template.Template.Dict["DispDir"]  = os.environ["TMDA_CGI_DISP_DIR"]
 Template.Template.Dict["ThemeDir"] = "%s/themes/Blue" % \
   os.environ["TMDA_CGI_DISP_DIR"]
 
@@ -120,7 +121,7 @@ def main():
     CgiUtil.PVars = PVars
     
     # View?
-    if Form["cmd"].value == "list":
+    if Form["cmd"].value == "pending":
       Pending.Show()
     elif Form["cmd"].value == "view":
       if Form.has_key("msgid"):
@@ -129,8 +130,16 @@ def main():
         PVars["Headers"] = Form["headers"].value
       PVars.Save()
       View.Show()
+    else:
+      CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
+        Form["cmd"].value, "interpret command", "", "Please be patient while "
+        "we release newer versions of the code which will implement this "
+        "function.")
 
-  else: print "No command.<p>"
+  else:
+    CgiUtil.TermError("No command instruction.", "Program bug.",
+      "interpret command", "", "Please contact the programmers and let them "
+      "know what you did to reach this message.")
 
   #print "<hr> Everything below this line is experimental.<p>"
   #cgi.print_environ()

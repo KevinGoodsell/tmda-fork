@@ -106,7 +106,7 @@ its partition is marked "nosuid" in /etc/fstab.""")
     # Existing, valid looking session?
     if Form.has_key("SID") and \
       re.compile("^[a-zA-Z0-9]{8}$").search(Form["SID"].value):
-      self.SID = Form["SID"].value
+      Template.Template.Dict["SID"] = self.SID = Form["SID"].value
 
       # Resurrect session
       try:
@@ -152,6 +152,7 @@ its partition is marked "nosuid" in /etc/fstab.""")
     self.SID = ""
     for i in range(8):
       self.SID += SessionChars[Rands.randrange(len(SessionChars))]
+    Template.Template.Dict["SID"] = self.SID
     self.Vars = {}
     if Form.has_key("user"):
       if os.environ.has_key("TMDA_VLOOKUP"):
