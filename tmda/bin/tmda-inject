@@ -201,6 +201,16 @@ def make_field(cookie_type, cookie_option, from_address, to_address):
     elif cookie_type in ('kw','keyword') and cookie_option:
 	# Send a message with a tagged (keyword) address.
 	field = Cookie.make_keyword_address(from_address, cookie_option)
+    elif cookie_type == 'python':
+        # this is currently broken, and needs more work
+        field = str(eval(cookie_option))
+    elif cookie_type == 'shell':
+        import commands
+        shell_stat, shell_out = commands.getstatusoutput(cookie_option)
+        if shell_stat == 0:
+            field = shell_out
+        else:
+            raise IOError, shell_out
     elif not cookie_type:
         # cookie_type == None means field is a text string
         field = cookie_option
@@ -280,7 +290,7 @@ def inject_message(resending,
     for header in custom_headers:
         (cookie_type, cookie_option) = actions[header]
         field = make_field(cookie_type, cookie_option, from_address, to_address)
-        if cookie_type:
+        if not (cookie_type in ('python','shell', None)):
             field = message_format(field, full_name,
                                    Defaults.MESSAGE_TAG_HEADER_STYLE)
         nice_header = string.capwords(header.replace('-', ' ')).replace(' ', '-')

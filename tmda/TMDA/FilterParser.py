@@ -238,12 +238,15 @@ class FilterParser:
     """, re.VERBOSE)
         
     tag_action = re.compile(r"""
-    ( [A-Za-z][-\w]+ )
-    \s+
-    (?: ([\'\"]) ( (?: \\\2 | . )+? ) \2
-    | ( \S+ ) )
+    ( [A-Za-z][-\w]+ ) 
+    \s+ 
+    (\w+\s*=\s*)?
+    (?: 
+    ([\'\"]) ( (?: \\\3 | . )+? ) \3
+    | ( \S+ ) 
+    )
     """, re.VERBOSE)
-
+    
     in_action = re.compile(r"""
     ( drop | exit | stop
     | hold
@@ -252,7 +255,7 @@ class FilterParser:
     
     out_action = re.compile(r"""
     ( (?:(?:bare|sender|domain|dated)(?:=\S+)?)
-    | (?:(?:exp(?:licit)?|as|ext(?:ension)?|kw|keyword)=\S+)
+    | (?:(?:exp(?:licit)?|as|ext(?:ension)?|kw|keyword|shell|python)=\S+)
     | default )""", re.VERBOSE | re.IGNORECASE)
     
     arg_option = re.compile(r'(\w+)(=?)')
@@ -649,8 +652,8 @@ class FilterParser:
                     errstr = '"%s": ' % source
                     errstr += 'malformed header field or missing <action>'
                     raise Error, errstr
-		header = string.lower(mo.group(1))
-		action = mo.group(3) or mo.group(4)
+                header = string.lower(mo.group(1))
+                action = (mo.group(2) or "") + (mo.group(4) or mo.group(5))
                 if action:
                     if not actions:
                         actions = {}

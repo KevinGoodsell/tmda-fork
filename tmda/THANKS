@@ -39,6 +39,9 @@ Contributions:
     * Ed Blackman -- bugfixes, and enchancement of the sender style
       tagged address to support domains.
 
+    * David Bremner -- Added shell= and python= tag actions to the
+      outgoing filter.
+
     * Francisco Sam Castillo -- QAdmin-TMDA web management utility.
 
     * Charles Cazabon -- Maildir and mbox delivery code from getmail.
