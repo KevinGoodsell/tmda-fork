@@ -1,3 +1,8 @@
+2001-12-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (unixdate): New function to return a date string in the
+	same format as the UNIX `date' command.
+
 2001-12-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Version.py (TMDA): 0.42+ --> 0.43.

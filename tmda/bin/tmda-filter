@@ -235,7 +235,7 @@ def logit(action_msg,date):
     if Defaults.LOGFILE and recipient_address:
         try:
             logfile = open(Defaults.LOGFILE, 'a') # append to the file
-            Date = time.asctime(time.localtime(date))
+            Date = Util.unixdate(date)
             From = message_headers.getheader('from')
             EnvelopeSender = envelope_sender
             To = recipient_address
@@ -326,8 +326,7 @@ def inject_pending(pathname,timestamp,pid):
         message_body = fileobj.read()
         fileobj.close()
         # Add the date when confirmed in a header.
-        message_headers['X-TMDA-Confirmed'] = (
-            time.asctime(time.localtime(time.time())))
+        message_headers['X-TMDA-Confirmed'] = Util.unixdate()
         # Collect the envelope sender to pass to sendmail.
         return_path = message_headers.getaddr('return-path')[1]
         inject = []

@@ -114,6 +114,22 @@ def format_timeout(timeout):
     return timeout
 
 
+def unixdate(timesecs=None):
+    """Return a date string in the format of the UNIX `date' command.  e.g,
+
+    Thu Dec 27 17:54:04 MST 2001
+
+    timesecs is optional, and if not given, the current time is used.
+    """
+    if not timesecs:
+        timesecs = time.time()
+    timetuple = time.localtime(timesecs)
+    tzname = time.tzname[timetuple[-1]]
+    asctime_list = string.split(time.asctime(timetuple))
+    asctime_list.insert(len(asctime_list)-1, tzname)
+    return string.join(asctime_list)
+
+
 def make_msgid(timesecs=None, pid=None):
     """Return an rfc2822 compliant Message-ID string.  e.g,
     

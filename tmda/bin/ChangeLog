@@ -1,5 +1,9 @@
 2001-12-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-filter (logit): Use Util.unixdate() for the Date: field.
+
+	(inject_pending): Use Util.unixdate() for X-TMDA-Confirmed.
+
 	* tmda-address: Rename tmda-make-address tmda-address.
 
 2001-12-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
