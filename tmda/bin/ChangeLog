@@ -3,6 +3,10 @@
 	* tmda-filter (locate_pending): Send confirmation acceptance
 	notice from bouncegen() instead of here.
 
+	(main): Check for 'confirm' addresses before looking at the
+	whitelist in case a confirmation is sent from a whitelisted
+	sender.
+		
 	(bouncegen): Add optional 'dated' and 'sender' variables if
 	specified in the .tmdarc.
 

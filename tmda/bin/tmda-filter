@@ -429,15 +429,6 @@ def main():
                 sys.exit(Defaults.ERR_HARD)
                 pass
 
-        # Is the sender in the WHITELIST?
-        if os.path.exists(Defaults.WHITELIST):
-            whitelist_list = []
-            whitelist_list = Util.file_to_list(Defaults.WHITELIST,whitelist_list)
-            if Util.findmatch(whitelist_list, EnvelopeSender,From,ReplyTo):
-                logit("OK whitelist_match", time.time())
-                sys.exit(Defaults.ERR_OK)
-                pass
-
         # Confirm tag?
         if ext and (ext == 'confirm' or re.match("^confirm-\w+",ext)):
             confirm_cookie = ext2
@@ -446,6 +437,15 @@ def main():
                 pass
             else:
                 verify_confirm_cookie(confirm_cookie)
+                pass
+
+        # Is the sender in the WHITELIST?
+        if os.path.exists(Defaults.WHITELIST):
+            whitelist_list = []
+            whitelist_list = Util.file_to_list(Defaults.WHITELIST,whitelist_list)
+            if Util.findmatch(whitelist_list, EnvelopeSender,From,ReplyTo):
+                logit("OK whitelist_match", time.time())
+                sys.exit(Defaults.ERR_OK)
                 pass
             
         # Dated tag?
