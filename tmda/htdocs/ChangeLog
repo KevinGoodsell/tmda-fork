@@ -1,6 +1,11 @@
 2001-11-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* resources.ht (Links): Link to Francisco Sam Castillo's
+	QAdmin-TMDA.
+	
 	* faq.ht (Links): Added "How do I setup TMDA with vpopmail?"
+	and "Does TMDA have a web interface?".  Also added summary of
+	questions at the top.
 
 	* resources.ht (Links): Link to Lou Hevly's TMDA/vpopmail
 	tutorial.
