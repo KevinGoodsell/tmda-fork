@@ -12,6 +12,10 @@ OPTIONS:
 	-h
  	--help
 	   Print this help message and exit.
+
+        -V
+        --version
+           Print TMDA version information and exit.
            
 	-c <file>
 	--config-file <file>
@@ -46,6 +50,14 @@ import getopt
 import os
 import sys
 
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Version
+
+
 filter_match = None
 discard = None
 program = sys.argv[0]
@@ -58,19 +70,26 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:dA:R:I:M:h',['config-file=',
-                                               'discard',
-                                               'confirm-accept-template=',
-                                               'confirm-request-template=',
-                                               'filter-incoming-file=',
-                                               'filter-match=',
-                                               'help'])
+                               'c:dA:R:I:M:Vh', ['config-file=',
+                                                 'discard',
+                                                 'confirm-accept-template=',
+                                                 'confirm-request-template=',
+                                                 'filter-incoming-file=',
+                                                 'filter-match=',
+                                                 'version',
+                                                 'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
+    if opt == '-V':
+        print Version.ALL
+        sys.exit()
+    if opt == '--version':
+        print Version.TMDA
+        sys.exit()
     elif opt in ('-M', '--filter-match'):
 	filter_match = 1
     elif opt in ('-I', '--filter-incoming-file'):
@@ -85,18 +104,13 @@ for opt, arg in opts:
         os.environ['TMDARC'] = arg
 
 
-try:
-    import paths
-except ImportError:
-    pass
-
 from TMDA import Defaults
 from TMDA import Cookie
 from TMDA import Errors
 from TMDA import FilterParser
 from TMDA import MTA
 from TMDA import Util
-from TMDA import Version
+
 
 import cStringIO
 import fileinput

@@ -12,6 +12,13 @@ import getopt
 import os
 import sys
 
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Version
+
 
 program = sys.argv[0]
 header_recipients = None
@@ -26,13 +33,20 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'hvimte:f:p:o:B:F:EJx', ['help'])
+                               'Vhvimte:f:p:o:B:F:EJx', ['version',
+                                                         'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
+    if opt == '-V':
+        print Version.ALL
+        sys.exit()
+    if opt == '--version':
+        print Version.TMDA
+        sys.exit()
     elif opt in list('BpvixmeoEJ'):
         pass 
     elif opt == '-t':

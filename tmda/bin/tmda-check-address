@@ -2,7 +2,7 @@
 
 """Check a tagged (dated, or sender style only) e-mail address.
 
-Usage:  %(program)s [-c <file>] [-h] address [senderaddr]
+Usage:  %(program)s [-c <file>] [-V] [-h] address [senderaddr]
 
 Where:
     -c <file>
@@ -12,6 +12,10 @@ Where:
     -l
     --localtime
        Display dates in the local time zone instead of UTC.
+
+    -V
+    --version
+       Print TMDA version information and exit.
 
     --help
     -h
@@ -35,6 +39,7 @@ except ImportError:
 
 from TMDA import Defaults
 from TMDA import Cookie
+from TMDA import Version
 
 
 program = sys.argv[0]
@@ -48,13 +53,22 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                                   'c:lh', ['config-file=','localtime','help'])
+                                   'c:lVh', ['config-file=',
+                                             'localtime',
+                                             'version',
+                                             'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
+    if opt == '-V':
+        print Version.ALL
+        sys.exit()
+    if opt == '--version':
+        print Version.TMDA
+        sys.exit()
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
     elif opt in ('-l', '--localtime'):

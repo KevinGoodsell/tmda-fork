@@ -2,7 +2,7 @@
 
 """Generate a unique 160-bit hex key.
 
-Usage: %(program)s [-d <device>] [-b] [-h]
+Usage: %(program)s [-d <device>] [-b] [-V] [-h]
 
 Where:
     -d <device>
@@ -12,6 +12,10 @@ Where:
     -b
     --batch
        Output only the CRYPT_KEY.
+
+    -V
+    --version
+       Print TMDA version information and exit.
        
     --help
     -h
@@ -24,6 +28,13 @@ import commands
 import getopt
 import os
 import sys
+
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Version
 
 
 batch = None
@@ -39,26 +50,26 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'bd:h',
-                               ['batch',
-                                'device=',
-                                'help'])
+                               'bd:Vh', ['batch',
+                                         'device=',
+                                         'version',
+                                         'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
+    if opt == '-V':
+        print Version.ALL
+        sys.exit()
+    if opt == '--version':
+        print Version.TMDA
+        sys.exit()
     if opt in ('-d', '--device'):
         randomdev = arg
     elif opt in ('-b', '--batch'):
         batch = 1
-
-
-try:
-    import paths
-except ImportError:
-    pass
 
 
 def keygen():

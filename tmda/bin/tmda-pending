@@ -78,6 +78,10 @@ Where:
     --quiet
        Suppress output.  Not compatible with --interactive.
 
+    -V
+    --version
+       Print TMDA version information and exit.
+ 
     -h
     --help
        Print this help message and exit.
@@ -116,6 +120,13 @@ import rfc822
 import sys
 import time
 
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Version
+
 
 program = sys.argv[0]
 # Defaults
@@ -140,28 +151,35 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'c:ipbrdsCADR:Y:O:vqh', ['config-file=',
-                                                        'interactive',
-                                                        'pretend',
-                                                        'batch',
-                                                        'release',
-                                                        'delete',
-                                                        'summary',
-                                                        'cache',
-                                                        'ascending',
-                                                        'descending',
-                                                        'recipient=',
-                                                        'younger=',
-                                                        'older=',
-                                                        'verbose',
-                                                        'quiet',
-                                                        'help'])
+                               'c:ipbrdsCADR:Y:O:vqVh', ['config-file=',
+                                                         'interactive',
+                                                         'pretend',
+                                                         'batch',
+                                                         'release',
+                                                         'delete',
+                                                         'summary',
+                                                         'cache',
+                                                         'ascending',
+                                                         'descending',
+                                                         'recipient=',
+                                                         'younger=',
+                                                         'older=',
+                                                         'verbose',
+                                                         'quiet',
+                                                         'version',
+                                                         'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
+    if opt == '-V':
+        print Version.ALL
+        sys.exit()
+    if opt == '--version':
+        print Version.TMDA
+        sys.exit()
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
     elif opt in ('-i', '--interactive'):
@@ -195,11 +213,6 @@ for opt, arg in opts:
     elif opt in ('-v', '--verbose'):
         verbose = 1
 
-
-try:
-    import paths
-except ImportError:
-    pass
 
 from TMDA import Cookie
 from TMDA import Defaults

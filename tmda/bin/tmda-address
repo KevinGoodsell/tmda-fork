@@ -9,6 +9,10 @@ OPTIONS:
         --help
            Print this help message and exit.
 
+       -V
+        --version
+           Print TMDA version information and exit.
+
 	-c <file>
 	--config-file <file>
 	   Specify a different configuration file other than ~/.tmdarc.
@@ -41,6 +45,12 @@ import getopt
 import os
 import sys
 
+try:
+    import paths
+except ImportError:
+    pass
+
+from TMDA import Version
 
 program = sys.argv[0]
 print_newline = 1
@@ -54,13 +64,14 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                                   'c:a:dk:s:hn', ['config-file=',
-                                                   'address=',
-                                                   'dated',
-                                                   'keyword=',
-                                                   'sender=',
-                                                   'help',
-                                                   'no-newline'])
+                                   'c:a:dk:s:hVn', ['config-file=',
+                                                    'address=',
+                                                    'dated',
+                                                    'keyword=',
+                                                    'sender=',
+                                                    'help',
+                                                    'version',
+                                                    'no-newline'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -69,6 +80,12 @@ address = None
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
+    if opt == '-V':
+        print Version.ALL
+        sys.exit()
+    if opt == '--version':
+        print Version.TMDA
+        sys.exit()
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
     elif opt in ('-a', '--address'):
@@ -88,10 +105,6 @@ for opt, arg in opts:
     elif opt in ('-n', '--no-newline'):
         print_newline = 0
 
-try:
-    import paths
-except ImportError:
-    pass
 
 from TMDA import Cookie
 from TMDA import Defaults
