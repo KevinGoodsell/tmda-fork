@@ -6,12 +6,16 @@
 
 """Filter incoming messages on standard input.
 
-Usage:  %(program)s [-c <file>] [-h]
+Usage:  %(program)s [-c <file>] [-d] [-h]
 
 Where:
 	-c <file>
 	--config-file <file>
 	   Specify a different configuration file other than ~/.tmdarc.
+	   
+	-d
+	--discard
+	   Discard message if address is invalid instead of bouncing it.
 
 	--help
 	-h
@@ -30,6 +34,7 @@ import sys
 import time
 
 
+discard = None
 program = sys.argv[0]
 
 def usage(code, msg=''):
@@ -40,7 +45,7 @@ def usage(code, msg=''):
     
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                                   'c:h', ['config-file=','help'])
+                                   'c:dh', ['config-file=','discard','help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -49,6 +54,8 @@ for opt, arg in opts:
         usage(0)
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
+    elif opt in ('-d', '--discard'):
+	discard = 1
 
 
 import paths
@@ -125,6 +132,8 @@ def verify_dated_cookie(dated_cookie):
     if ((int(cookie_date) >= int('%d' % now)) and (datemac == newdatemac)):
         logit("OK good_dated_cookie",now)
         sys.exit(Defaults.ERR_OK)
+    elif discard:
+        sys.exit(Defaults.ERR_STOP)
     else:
         bounce_dated()
 
@@ -137,6 +146,8 @@ def verify_sender_cookie(sender_address,sender_cookie):
     if (sender_cookie == sender_address_cookie):
         logit("OK good_sender_cookie", time.time())
         sys.exit(Defaults.ERR_OK)
+    elif discard:
+        sys.exit(Defaults.ERR_STOP)
     else:
         bounce_sender(sender_address,sender_address_cookie)
 

@@ -1,5 +1,9 @@
 2001-05-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-filter (main): Add the '-d' option to silently discard the
+	message and stop processing of the .qmail file (ERR_STOP) instead
+	of bouncing the message back to sender.
+	
 	* tmda-inject (main): When using TMDA with qfilter, Bcc recipients
 	are silently ignored since they aren't in the headers at the time
 	qfilter passes the message to tmda-inject.  Fix this by making
