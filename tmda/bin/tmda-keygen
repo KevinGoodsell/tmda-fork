@@ -1,8 +1,45 @@
 #!/usr/bin/env python
 
+"""Generate a unique 160-bit hex key.
+
+Usage: %(program)s [-b] [-h]
+
+Where:
+    -b
+    --batch
+       Output only the CRYPT_KEY line.
+
+    --help
+    -h
+       Print this help message and exit.
+"""
+
+
 import commands
+import getopt
 import os
 import sys
+
+program = sys.argv[0]
+batch = None
+
+def usage(code, msg=''):
+    print __doc__ % globals()
+    if msg:
+        print msg
+    sys.exit(code)
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                               'bh', ['batch','help'])
+except getopt.error, msg:
+    usage(1, msg)
+
+for opt, arg in opts:
+    if opt in ('-h', '--help'):
+        usage(0)
+    elif opt in ('-b', '--batch'):
+        batch = 1
 
 
 try:
@@ -14,11 +51,10 @@ from TMDA import Util
 
 
 def keygen():
-    """Create and return a unique 160-bit key in hex."""
     # Use the kernel's random number generator if available.
     if os.path.exists("/dev/urandom"):
         key = open("/dev/urandom","rb").read(20)
-    # Otherwise generate some pseudo-random data from the command-line
+    # Otherwise generate some pseudo-random data from the system
     # and use the SHA of resulting key as the key.
     else:
         import sha
@@ -41,18 +77,20 @@ def keygen():
         key = sha.new(key_data + "key").digest()
 
     return Util.hexlify(key)
-        
-print "Generating a unique, 160-bit private key, please wait a moment.."
-print
+
+if not batch:
+    print "Generating a unique, 160-bit private key, please wait a moment.."
+    print
 
 key = keygen()
 
 if len(key) != 40:
     print "Oops, generated key is not 40-characters in length, exiting!"
     sys.exit()
-    
-print "CRYPT_KEY =", '"' + key + '"'
-print
-print "Now paste this line into your ~/.tmdarc file,"
-print "and make sure to keep your key secret!"
 
+print "CRYPT_KEY =", '"' + key + '"'
+
+if not batch:
+    print
+    print "Now paste this line into your ~/.tmdarc file,"
+    print "and make sure to keep your key secret!"

@@ -1,5 +1,8 @@
 2001-09-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-keygen (usage): Add a "batch" (-b) option to output only
+	the CRYPT_KEY line.
+
 	* tmda-inject (main): Add some error checking.  tmda-inject was
 	failing when the message contained no "From:" header.
 
