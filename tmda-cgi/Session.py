@@ -32,6 +32,8 @@ import sys
 import time
 import CgiUtil
 
+from TMDA import Util
+
 Rands = random.Random()
 
 # Constants
@@ -93,32 +95,6 @@ should be 4755 (-rwsr-xr-x) and the owner should be root.<br>Also check in which
 partition you placed the CGI.  You cannot run the CGI in system-wide mode if
 its partition is marked "nosuid" in /etc/fstab.""")
 
-  def __getpwnam___(self, User):
-    # Virtual users have @ in the user name
-    if User.find("@") >= 0:
-      try:
-        PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
-        UID = PasswordRecord[2]
-        GID = PasswordRecord[3]
-        F = os.popen \
-        (
-          '%svuserinfo -d "%s" 2>&1' % (os.environ["TMDA_VBIN"], User)
-        )
-        Home = F.read().strip()
-        if (F.close()):
-          UID = GID = Home = ""
-      except KeyError:
-        UID = GID = Home = ""
-    else:
-      try:
-        PasswordRecord = pwd.getpwnam(User)
-        UID  = PasswordRecord[2]
-        GID  = PasswordRecord[3]
-        Home = PasswordRecord[5]
-      except KeyError:
-        UID = GID = Home = ""
-    return UID, GID, Home
-
   def __init__(self, Form):
     "Reload an existing SID or create a new one."
     
@@ -171,10 +147,20 @@ its partition is marked "nosuid" in /etc/fstab.""")
       self.SID += SessionChars[Rands.randrange(len(SessionChars))]
     self.Vars = {}
     if Form.has_key("user"):
-      UID, self.Vars["GID"], self.Vars["HOME"] = \
-        self.__getpwnam___(Form["user"].value)
+      if os.environ.has_key("TMDA_VLOOKUP"):
+        VLookup = os.environ["TMDA_VLOOKUP"]
+      else:
+        VLookup = None
+      try:
+        self.Vars["HOME"], UID, self.Vars["GID"] = \
+          Util.getuserparams(Form["user"].value, VLookup)
+      except KeyError:
+        return
+      if not UID:
+        PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
+        UID = PasswordRecord[2]
+        GID = PasswordRecord[3]
       os.environ["HOME"] = self.Vars["HOME"]
-      if not UID: return
 
     # Logging in?
     if not Form.has_key("user"): return
@@ -217,8 +203,8 @@ its partition is marked "nosuid" in /etc/fstab.""")
     # Validate the new session
     if not Form.has_key("password"): return
     if Authenticate.CheckPassword(Form):
-      self.Vars["User"]  = Form["user"].value
       self.Vars["UID"]   = UID
+      self.Vars["User"]  = Form["user"].value
       self.__suid__(self.Vars["UID"], self.Vars["GID"])
       os.environ["USER"] = self.Vars["User"]
       self.Vars["IP"]    = os.environ["REMOTE_ADDR"]
