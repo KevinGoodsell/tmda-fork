@@ -24,7 +24,7 @@
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.10B+"
+tmda_cgi = "0.10B"
 
 # tmda-cgi version codename
 Codename = "Neon"
