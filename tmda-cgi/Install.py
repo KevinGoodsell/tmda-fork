@@ -654,7 +654,8 @@ def Show():
     "VPop":      PVars[("NoOverride", "VPop")],
     "VPopBin":   PVars[("NoOverride", "VPopBin")]
   }
-  Dict["ShortUrlDom"] = re.sub("^www.", "", Dict["UrlDomain"], re.I)
+  Dict["ShortUrlDom"] = re.sub("^www\.", "", Dict["UrlDomain"], re.I)
+  Dict["qUser"] = re.sub("\.", ":", Dict["User"])
   Match = re.search(".*/domains?/([^\./]+\.[^/]+)/", Dict["Home"])
   if Match: Dict["Domain"] = Match.group(1)
 

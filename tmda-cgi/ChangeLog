@@ -1,3 +1,10 @@
+2003-08-11  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Modified autoinstaller so it can handle user names with dots in them
+	  (qmail requires specific .qmail filenames!).
+	* Added horizontal scrolls to text input boxes, so wide text blocks can be
+	  more easily manipulated.
+
 2003-08-09  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* tmda-cgi 0.11B is released.

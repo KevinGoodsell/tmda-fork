@@ -68,6 +68,12 @@ Title: Auto-installation & Auto-uninstallation
     <td>The constant string "<tt>..</tt>".</td>
   </tr>
   <tr>
+    <td valign="top" nowrap><b><tt>%(qUser)s</tt></b></td>
+    <td>Same as <tt>%(qUser)s</tt> below, except that any "." characters have
+      been replaced with ":" characters.  .qmail files require user names to be
+      renamed in this fashion.</td>
+  </tr>
+  <tr>
     <td valign="top" nowrap><b><tt>%(RealHome)s</tt></b></td>
     <td>The home directory for the real user in use. If a real user is logging
       in, then this is their home directory. If a virtual user is logging in,

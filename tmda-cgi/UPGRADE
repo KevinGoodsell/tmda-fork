@@ -1,5 +1,14 @@
 ======================================================================
 
+If you are upgrading from a release of tmda-cgi < 0.12:
+
+* IF YOU ARE INSTALLING OVER AN EXISTING COPY OF tmda-cgi, DELETE
+  skel/install/%\(Parent\)s/.qmail-* AND THEN REINSTALL.
+  These files have been renamed and installing the new version over the
+  old will result in extra files.
+
+======================================================================
+
 If you are upgrading from a release of tmda-cgi < 0.11:
 
 * IF YOU ARE INSTALLING OVER AN EXISTING COPY OF tmda-cgi, DELETE

@@ -24,7 +24,7 @@ REAL_ONLY = {"qmail": [".qmail", ".qmail-default"], "sendmail": [".procmail"]}
 # the user's HOME directory).
 VIRTUAL_ONLY = \
   {"qmail":
-    ["%(Parent)s/.qmail-%(User)s", "%(Parent)s/.qmail-%(User)s-default"]
+    ["%(Parent)s/.qmail-%(qUser)s", "%(Parent)s/.qmail-%(qUser)s-default"]
   }
 
 # PARENT_RE is a regular expression used to verify that we have a valid parent
