@@ -1,3 +1,12 @@
+2001-10-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (inject_message): Add support for keyword message
+	tagging.
+
+	(main): Add X-TMDA: keyword support.  Also convert the first
+	section of X-TMDA to lowercase before evaluating.  Previously, a
+	non-lowercase tag type (e.g, X-TMDA: SENDER) would break things.
+	
 2001-10-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (verify_keyword_cookie): New function.

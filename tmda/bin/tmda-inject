@@ -107,6 +107,10 @@ def inject_message(to_address,
         (username, hostname) = string.split(from_address,'@')
         envelope_sender_address.append(username + Defaults.RECIPIENT_DELIMITER  
                                        + extension + '@' + hostname)
+    elif cookie_type == 'keyword':
+        # Send a message with a tagged (keyword) address.
+        envelope_sender_address.append(Cookie.make_keyword_address
+                                       (from_address, extension))
     # Set From: to match the envelope sender address.
     message_headers['From'] = '"%s" <%s>' % (sender_full_name[0],
                                              envelope_sender_address[-1:][0])
@@ -169,20 +173,24 @@ def main():
         x_tmda_over = 1
         x_tmda = message_headers.getheader('x-tmda')
         fields = string.split(x_tmda)
-        if fields[0] == 'dated':
-            address_cookie = fields[0]
+        tagtype = string.lower(fields[0])
+        if tagtype == 'dated':
+            address_cookie = tagtype
             try:                        # check for timeout override
                 os.environ['TMDA_TIMEOUT'] =  fields[1]
             except IndexError:
                 pass
-        elif fields[0] in ('bare','sender'):
-            address_cookie = fields[0]
-        elif fields[0] == 'exp':
-            address_cookie = fields[0]
+        elif tagtype in ('bare','sender'):
+            address_cookie = tagtype
+        elif tagtype == 'exp':
+            address_cookie = tagtype
             exp_from_address = fields[1]
-        elif fields[0] == 'ext':
-            address_cookie = fields[0]
+        elif tagtype == 'ext':
+            address_cookie = tagtype
             ext_extension = fields[1]
+        elif tagtype in ('kw','keyword'):
+            address_cookie = 'keyword'
+            keyword_extension = fields[1]
         else:
             pass
         # Delete `X-TMDA' before sending.
@@ -275,6 +283,13 @@ def main():
                            message_body,
                            address_cookie,
                            ext_extension)
+        elif address_cookie == 'keyword':
+            inject_message(address,
+                           from_address,
+                           message_headers,
+                           message_body,
+                           address_cookie,
+                           keyword_extension)
         else:
             print "Unknown cookie type:",address_cookie
             sys.exit(Defaults.EX_TEMPFAIL)
