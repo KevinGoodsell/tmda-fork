@@ -94,6 +94,12 @@ can:</p>
   feedback</a></p>
 <hr>
 <h2><a name="Require"></a>Requirements</h2>
+<ul>
+  <li><a href="http://python.org/">Python</a> 2.1 or later. 
+  <li><a href="/releases">TMDA</a> 0.74 or later. 
+  <li>A webserver capable of running CGI (such as
+<a href="http://httpd.apache.org/">Apache</a>)
+</ul>
 <p>TBD. Until we do more testing it isn't clear what systems have problems with 
   tmda-cgi.</p>
 <hr>
@@ -114,7 +120,12 @@ can:</p>
 </ul>
 <hr>
 <h2><a name="Install"></a>Installation</h2>
-<p>tmda-cgi is provided in your distribution's <tt>contrib/cgi</tt> directory.</p>
+<p>Download the <a href="/tmda-cgi/releases/">latest release</a> of tmda-cgi.</p>
+<p>Uncompress the archive where you plan to keep tmda-cgi:</p>
+<blockquote> 
+  <p><code>$ tar -xzf tmda-cgi-X.XX.tgz<br>
+    $ cd tmda-cgi-X.XX</code></p>
+</blockquote>
 <p>Once you've obtained a copy of tmda-cgi, you need to decide how you want to 
   use tmda-cgi. tmda-cgi has been designed to run three different ways: system-wide, 
   single-user, and in no-su modes.</p>
@@ -135,97 +146,80 @@ can:</p>
     or for users who don't trust any program running as root that does not absolutely 
     have to run as root.<br>
   </li>
-  <li>no-su mode, which is in testing, runs the program with no special privileges 
-    of any sort. The downside of such an installation is that to allow the program 
-    access to your personal files (such as pending e-mails) you will have to make 
-    some of your files and directories group or world readable and writable. no-su 
-    mode is a good solution for an unusual breed of user: someone who doesn't 
-    trust the software, but trusts the other users on the server (since they could 
-    get read/write access to his/er pending e-mail)</li>
+  <li>no-su mode, runs the program with no special privileges of any sort. The 
+    downside of such an installation is that to allow the program access to your 
+    personal files (such as pending e-mails) you will have to make some of your 
+    files and directories group or world readable and writable. no-su mode is 
+    a good solution for an unusual breed of user: someone who doesn't trust the 
+    software, but trusts the other users on the server (since they could get read/write 
+    access to his/er pending e-mail).</li>
 </ul>
 <p><b><i>Notes:</i></b></p>
 <ul>
-  <li>tmda-cgi assumes it will run from within the source tree. No testing has 
-    been done to date to see if it will work in other locations.<br>
-  </li>
   <li>You will have to recompile tmda-cgi if you move your configuration files, 
-    supplimental display files (icons and style sheet), or source tree.<br>
+    supplimental display files (icons and style sheet), or either the tmda-cgi 
+    or TMDA source trees.<br>
   </li>
   <li>You will have to recompile tmda-cgi if you change which mode (system-wide, 
     single-user, or no-su) you run in.</li>
 </ul>
 <h3><a name="SystemWide"></a>Installing system-wide</h3>
-<p>As root, change to the cgi directory.</p>
+<p>As root, run the <tt>compile</tt> program. You can specify all of your options 
+  on the command line, but I find it more convenient to run in interactive mode:</p>
 <blockquote> 
-  <pre># cd contrib/cgi</pre>
+  <pre># ./compile</pre>
 </blockquote>
-<p>Compile tmda-cgi to a web directory that is configured to execute CGI. The 
-  filename you use is completely up to you. For example:</p>
-<blockquote> 
-  <pre># ./compile -t /path/to/cgi-bin/directory</pre>
-</blockquote>
-<p> or</p>
-<blockquote> 
-  <pre># ./compile -t /path/to/webpage/directory/index.cgi</pre>
-</blockquote>
-<p>Finally, tmda-cgi expects to find a variety of visual elements in web directory 
-  <tt>../display/</tt>, relative to the CGI itself. The location of this directory 
-  may be changed with <tt>compile</tt>'s <tt>-d</tt> flag. Sample files are provided 
-  in <tt>contrib/cgi/display</tt>. Feel free to use these files as-is or modify/replace 
-  them to personalize the program.</p>
-<p>The simplest way to provide this directory is with a symbolic link (assuming 
-  you have you web server configured to follow symbolic links). For example:</p>
-<blockquote> 
-  <pre># ln -s display /path/to/webpage/directory</pre>
-</blockquote>
+<p><tt>compile</tt> asks you a bunch of questions and provides its best-guess 
+  at the answers where possible. If you are not sure of an answer when running 
+  in interactive mode, hit control-C to break out. <tt>compile</tt> will remember 
+  the answers you have already given it and will use those as the default next 
+  time. compile will want to know:</p>
+<ol>
+  <li>The location of your Python interpreter</li>
+  <li>Where to save the CGI</li>
+  <li>The path to the TMDA's root directory</li>
+  <li>The path to tmda-cgi's root directory</li>
+  <li>An optional path or &quot;formula&quot; to find the user <tt>config</tt> 
+    files</li>
+  <li>The web path from the CGI to the <tt>display</tt> directory</li>
+  <li>Mode</li>
+</ol>
+<p>Finally, tmda-cgi requires a variety of visual elements to be saved in a <tt>display</tt> 
+  directory (see #6, above). This directory comes with the tmda-cgi source and 
+  will need to be manually copied or linked (make sure your web server is configured 
+  to follow links!) into the appropriate web directory. Please note that #6 specifies 
+  the relative <i>web path</i> from the CGI to the <tt>display</tt> directory, 
+  which may be different than the actual path. For example:</p>
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="35">&nbsp;</td>
+    <th>Web path</th>
+    <td width="15">&nbsp;</td>
+    <th>Actual path</th>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td>http://your.domain/cgi-bin/tmda.cgi</td>
+    <td>&nbsp;</td>
+    <td>/www/tmda/cgi-bin/tmda.cgi</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>http://your.domain/display/</td>
+    <td>&nbsp;</td>
+    <td>/www/tmda/htdocs/display</td>
+  </tr>
+</table>
+<p>In the above example, the actual path from the CGI to the display directory 
+  is <tt>../htdocs/display/</tt> but the web path is <tt>../display/</tt>. The 
+  web path is the path that should be entered in question #6.</p>
 <h3><a name="SingleUser"></a>Installing single-user</h3>
-<p>As the (only) user who will be able to access tmda-cgi, change to the cgi directory.</p>
-<blockquote> 
-  <pre>$ cd contrib/cgi</pre>
-</blockquote>
-<p>Compile tmda-cgi to a web directory that is configured to execute CGI. The 
-  filename you use is completely up to you. For example:</p>
-<blockquote> 
-  <pre>$ ./compile -t /path/to/cgi-bin/directory</pre>
-</blockquote>
-<p>or</p>
-<blockquote> 
-  <pre>$ ./compile -t /path/to/webpage/directory/index.cgi</pre>
-</blockquote>
-<p>Finally, tmda-cgi expects to find a variety of visual elements in web directory 
-  <tt>../display/</tt>, relative to the CGI itself. The location of this directory 
-  may be changed with <tt>compile</tt>'s <tt>-d</tt> flag. Sample files are provided 
-  in <tt>contrib/cgi/display</tt>. Feel free to use these files as-is or modify/replace 
-  them to personalize the program.</p>
-<p>The simplest way to provide this directory is with a symbolic link (assuming 
-  you have you web server configured to follow symbolic links). For example:</p>
-<blockquote> 
-  <pre>$ ln -s display /path/to/webpage/directory</pre>
-</blockquote>
+<p>To install in single user mode, follow the exact same instructions as for system-wide 
+  mode, but instead of running compile as root, run compile as the single user 
+  who will be able to use the CGI.</p>
 <h3><a name="nosu"></a>Installing no-su</h3>
-<p>To compile tmda-cgi for no-su mode, first change to the cgi directory.</p>
-<blockquote> 
-  <pre>$ cd contrib/cgi</pre>
-</blockquote>
-<p>Compile tmda-cgi to a web directory that is configured to execute CGI. The 
-  filename you use is completely up to you. For example:</p>
-<blockquote> 
-  <pre>$ ./compile -nt /path/to/cgi-bin/directory</pre>
-</blockquote>
-<p> or</p>
-<blockquote> 
-  <pre>$ ./compile -nt /path/to/webpage/directory/index.cgi</pre>
-</blockquote>
-<p> tmda-cgi expects to find a variety of visual elements in web directory <tt>../display/</tt>, 
-  relative to the CGI itself. The location of this directory may be changed with 
-  <tt>compile</tt>'s <tt>-d</tt> flag. Sample files are provided in <tt>contrib/cgi/display</tt>. 
-  Feel free to use these files as-is or modify/replace them to personalize the 
-  program.</p>
-<p>The simplest way to provide this directory is with a symbolic link (assuming 
-  you have you web server configured to follow symbolic links). For example:</p>
-<blockquote> 
-  <pre>$ ln -s display /path/to/webpage/directory</pre>
-</blockquote>
+<p>To install in no-su mode, follow the exact same instructions as for system-wide 
+  mode. It will not matter what user you do this as. </p>
 <p>At this point you will have to change permissions on any existing pending mail 
   and add something akin to:</p>
 <blockquote> 
@@ -388,7 +382,7 @@ ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
 </blockquote>
 <p>tmda-cgi was compiled with the following:</p>
 <blockquote> 
-  <pre>./compile -nc /var/tmda/~/config -t /www/tmda.cgi</pre>
+  <pre>./compile -nc /var/tmda/~/config -t /www/tmda.cgi -u nobody</pre>
 </blockquote>
 <p>Use the <tt>./compile -h</tt> for more details on how to use compile.</p>
 <hr>
