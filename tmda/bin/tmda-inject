@@ -94,6 +94,7 @@ from TMDA import Defaults
 from TMDA import Cookie
 from TMDA import FilterParser
 from TMDA import Util
+from TMDA import Version
 
 import popen2
 import rfc822
@@ -189,7 +190,7 @@ def inject_message(resending,
     if not message_headers.has_key('message-id'):
         message_headers['Message-ID'] = Util.make_msgid()
     # Add `X-Delivery-Agent' header.
-    message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
+    message_headers['X-Delivery-Agent'] = Version.SUMMARY
     # Optionally, add an `X-TMDA-Fingerprint' header.
     if Defaults.FINGERPRINT:
         hdrlist = []

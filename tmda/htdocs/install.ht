@@ -55,5 +55,12 @@ RPM are available.
 
 <u>Post-Installation</u><br><br>
 
-After installation, you should proceed to the 
-<a href="config.html">Configuration</a> section.
+Report your installation (used only to satisfy my curiosity):
+
+<blockquote><pre>
+# ( python -c 'from TMDA.Version import *; print SUMMARY' ) \
+  | mail jason-tmdausage@mastaler.com
+</blockquote></pre>
+
+Then proceed to the <a href="config.html">Configuration</a> section.
+<br><br>

@@ -1,3 +1,11 @@
+2001-12-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py: Remove PYTHON_VERSION, PLATFORM, and
+	DELIVERY_AGENT.  This info is now kept in Version.py.
+
+	* Version.py: New module to keep all versioning information in one
+	easily accessible place.
+
 2001-12-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (FINGERPRINT): New list which contains the headers

@@ -13,16 +13,6 @@ HREF="#general">general</a> set of instructions, and then read the set
 of instructions corresponding to your local configuration 
 [ <A HREF="#qmail">qmail</a> | <A HREF="#non-qmail">non-qmail</a> ]
 <br><br>
-
-After you are finished, you may want to report your success (from a
-TMDA user's account, not root).  If you installed from gzipped
-tarball, change into the top-level TMDA directory first.
-
-<blockquote><pre>
-  % ( python -c 'from TMDA.Defaults import *; print DELIVERY_AGENT' ) \
-    | mail jason-tmdausage@mastaler.com
-</blockquote></pre>
-
 <hr>
 
 <a name="general"><h4>TMDA Server Configuration (general)</h4></a>

@@ -95,6 +95,7 @@ from TMDA import Cookie
 from TMDA import FilterParser
 from TMDA import MTA
 from TMDA import Util
+from TMDA import Version
 
 import cStringIO
 import fileinput
@@ -236,7 +237,7 @@ def send_bounce(bounce_message, **vars):
         if not vars.has_key('already_confirmed'):
             message_headers['Reply-To'] = vars['confirm_accept_address']
         message_headers['Precedence'] = 'bulk'
-        message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
+        message_headers['X-Delivery-Agent'] = Version.SUMMARY
         message_body = bounce_message.read()
         inject = []
         inject.append(Defaults.SENDMAIL)

@@ -1,3 +1,10 @@
+2001-12-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (send_bounce): Get X-Delivery-Agent info from
+	Version.py instead of Defaults.py.
+
+	* tmda-inject (inject_message): Ditto.
+
 2001-12-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-inject (inject_message): Optionally, add an

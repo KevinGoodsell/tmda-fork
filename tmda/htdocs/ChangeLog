@@ -1,3 +1,8 @@
+2001-12-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* config-server.ht: Move success reporting information onto the
+	"Installation" page.
+
 2001-12-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* resources.ht (Links): Link to Vincent Danen's "Controlling SPAM

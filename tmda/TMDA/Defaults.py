@@ -13,20 +13,6 @@ import sys
 # General system-wide defaults
 ##############################
 
-TMDA_VERSION = "0.43"
-TMDA_HOMEPAGE = "<http://tmda.sf.net/>"
-
-PYTHON_VERSION = string.split(sys.version)[0]
-try:
-    import distutils.util
-    PLATFORM = distutils.util.get_platform()
-except ImportError:
-    PLATFORM = sys.platform
-# e.g, "TMDA/0.43 (Python 2.1.1; freebsd-4.4-RELEASE-i386)"
-DELIVERY_AGENT ='TMDA/%s (Python %s; %s)' % (TMDA_VERSION,
-                                             PYTHON_VERSION,
-                                             PLATFORM)
-
 # The current process id of the Python interpreter as a string.
 PID = str(os.getpid())
 
@@ -80,11 +66,16 @@ elif mode not in (400, 600):
 else:
     pass
 
+
+import Util
+import Version
+
+TMDA_HOMEPAGE = "(http://tmda.sf.net/)"
+TMDA_VERSION = Version.TMDA
+
 ############################
 # User configurable settings
 ############################
-
-import Util
 
 # Only compute defaults for unset variables to speed startup.
 
