@@ -4,6 +4,7 @@
 
 
 import fileinput
+import fnmatch
 import os
 import re
 import string
@@ -133,17 +134,20 @@ def file_to_list(file,list):
     return list
 
 
-def findmatch(list,address):
-    """Determine whether the substring address is contained in list.
-    Return the 2nd half of the string if it exists (for exp and ext
+def findmatch(list, *addrs):
+    """Determine whether any of the passed e-mail addresses match a
+    Unix shell-style wildcard pattern contained in list.  Also, return
+    the second half of the string if it exists (for exp and ext
     addresses only)."""
-    for s in list:
-        stringparts = string.split(s)
-        if string.find(address,stringparts[0]) != -1:
-            try:
-                return stringparts[1]
-            except IndexError:
-                return 1
+    for address in addrs:
+        if address:
+            for p in list:
+                stringparts = string.split(p)
+                if fnmatch.fnmatch(address,stringparts[0]):
+                    try:
+                        return stringparts[1]
+                    except IndexError:
+                        return 1
 
 
 def substring_match(substrings, *addrs):

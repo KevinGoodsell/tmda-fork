@@ -1,3 +1,8 @@
+2001-06-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (main): Use Util.findmatch instead of
+	Util.substring_match.
+	
 2001-06-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (verify_dated_cookie): Check for the discard

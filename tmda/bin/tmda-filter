@@ -325,41 +325,50 @@ def main():
     
     while 1:
         # Is the sender in the BLACKLIST?
-        if os.path.exists(Defaults.BLACKLIST) and \
-           Util.substring_match(Defaults.BLACKLIST,
-                                envelope_sender, From, ReplyTo):
-            logit("BOUNCE blacklist_match", time.time())
-            if Defaults.BOUNCE_BLACKLIST_CC:
-                bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
-            print "Sorry, your address matches my blacklist."
-            sys.exit(Defaults.ERR_HARD)
+        if os.path.exists(Defaults.BLACKLIST):
+            blacklist_list = []
+            blacklist_list = Util.file_to_list(Defaults.BLACKLIST,blacklist_list)
+            if Util.findmatch(blacklist_list, envelope_sender,From,ReplyTo):
+                logit("BOUNCE blacklist_match", time.time())
+                if Defaults.BOUNCE_BLACKLIST_CC:
+                    bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
+                print "Sorry, your address matches my blacklist."
+                sys.exit(Defaults.ERR_HARD)
+                pass
+
         # Is the sender in the WHITELIST?
-        elif os.path.exists(Defaults.WHITELIST) and \
-             Util.substring_match(Defaults.WHITELIST,
-                                  envelope_sender, From, ReplyTo):
-            logit("OK whitelist_match", time.time())
-            sys.exit(Defaults.ERR_OK)
+        if os.path.exists(Defaults.WHITELIST):
+            whitelist_list = []
+            whitelist_list = Util.file_to_list(Defaults.WHITELIST,whitelist_list)
+            if Util.findmatch(whitelist_list, envelope_sender,From,ReplyTo):
+                logit("OK whitelist_match", time.time())
+                sys.exit(Defaults.ERR_OK)
+                pass
+
         # Dated tag?
-        elif ext and (ext == 'dated' or re.match("^dated-\w+",ext)):
+        if ext and (ext == 'dated' or re.match("^dated-\w+",ext)):
             dated_cookie = ext2
             verify_dated_cookie(dated_cookie)
+            pass
+        
         # Sender tag?
-        elif ext and (ext == 'sender' or re.match("^sender-\w+",ext)):
+        if ext and (ext == 'sender' or re.match("^sender-\w+",ext)):
             sender_cookie = ext2
             sender_address = os.environ.get('SENDER')
             verify_sender_cookie(sender_address,sender_cookie)
+            pass
+
         # They get the default tag.
+        if Defaults.COOKIE_TYPE == 'dated':
+            ext = 'dated'
+        elif Defaults.COOKIE_TYPE == 'sender':
+            ext = 'sender'
+        elif Defaults.COOKIE_TYPE == 'bare':
+            logit("OK bare", time.time())
+            sys.exit(Defaults.ERR_OK)
         else:
-            if Defaults.COOKIE_TYPE == 'dated':
-                ext = 'dated'
-            elif Defaults.COOKIE_TYPE == 'sender':
-                ext = 'sender'
-            elif Defaults.COOKIE_TYPE == 'bare':
-                logit("OK bare", time.time())
-                sys.exit(Defaults.ERR_OK)
-            else:
-                print "unknown cookie type"
-                sys.exit(Defaults.ERR_CONFIG)
+            print "unknown cookie type"
+            sys.exit(Defaults.ERR_CONFIG)
 
 
 # This is the end my friend.
