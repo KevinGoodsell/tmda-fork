@@ -4,6 +4,10 @@
 	X-*-Originally-To header by default.  Instead, we look for the
 	header contained in RECIPIENT_HEADER if it's set by the user.
 
+	(main): Only check for an unqualified envelope_sender and
+	envelope_recipient if the MTA is Sendmail since the other MTAs
+	always produce fully qualified addresses.
+
 2002-01-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (list_headers): Add `Mailing-List' to the list of
