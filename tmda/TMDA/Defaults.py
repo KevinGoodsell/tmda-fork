@@ -240,6 +240,32 @@ if not vars().has_key('OUTGOINGMAIL'):
 if not vars().has_key('SMTPHOST') and OUTGOINGMAIL == 'smtp':
     SMTPHOST = "localhost"
 
+# SMTPAUTHUSER
+# The username to authenticate with if your SMTP server requires
+# authentication.  You must also define SMTPAUTHPASSWORD if you use
+# this option.  Requires Python 2.2 or above.
+#
+# Examples:
+#
+# SMTPAUTHUSER = "johndoe"
+#
+# No default.
+if not vars().has_key('SMTPAUTHUSER') and OUTGOINGMAIL == 'smtp':
+    SMTPAUTHUSER = None
+
+# SMTPAUTHPASSWORD
+# The password to authenticate with if your SMTP server requires
+# authentication.  You must also define SMTPAUTHUSER if you use this
+# option.  Requires Python 2.2 or above.
+#
+# Examples:
+#
+# SMTPAUTHPASSWORD = "6Yu_9iKzs"
+#
+# No default.
+if not vars().has_key('SMTPAUTHPASSWORD') and OUTGOINGMAIL == 'smtp':
+    SMTPAUTHPASSWORD = None
+
 # SMTP_MAX_SESSIONS_PER_CONNECTION
 # An integer specifying a ceiling on the number of SMTP sessions to
 # perform on a single socket connection, when OUTGOINGMAIL is
