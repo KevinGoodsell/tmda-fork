@@ -49,6 +49,8 @@ import os                                      # don't remove
 
 # ALLOW_MODE_640 = 0
 
+# BARE_APPEND = "/full/path/to/whitelist"
+
 # BOUNCE_ENV_SENDER = ""
 
 # CONFIRM_ACCEPT_NOTIFY = 1

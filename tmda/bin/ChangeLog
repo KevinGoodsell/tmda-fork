@@ -1,5 +1,7 @@
 2001-11-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-inject (inject_message): Support Defaults.BARE_APPEND.
+
 	* tmda-filter (main): Consult ACTION_INCOMING to decide how to
 	dispose of messages by default rather than always requesting
 	confirmation.

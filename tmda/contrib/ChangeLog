@@ -3,6 +3,8 @@
 	* sample.tmdarc: Add ACTION_INCOMING and ACTION_OUTGOING, and
 	remove COOKIE_TYPE.
 
+	Add BARE_APPEND.
+
 2001-11-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Remove: BOUNCE_BLACKLIST_CC, BOUNCE_CONFIRM_CC,

@@ -157,6 +157,14 @@ if not vars().has_key('BOUNCE_ENV_SENDER'):
     else:
         BOUNCE_ENV_SENDER = ''
 
+# BARE_APPEND
+# Filename to which a recipient's e-mail address should be
+# automatically appended if the outgoing <action> is in the form
+# 'bare=append'.
+# No default
+if not vars().has_key('BARE_APPEND'):
+    BARE_APPEND = None
+
 # CONFIRM_APPEND
 # Filename to which a sender's e-mail address should be automatically
 # appended once they confirm a message.  This can be used to implement

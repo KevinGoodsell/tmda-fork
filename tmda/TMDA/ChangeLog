@@ -1,5 +1,11 @@
 2001-11-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (BARE_APPEND): New variable specifying the filename
+	to append the recipient address of outgoing messages when <action>
+	is 'bare=append'.
+
+	* FilterParser.py: Document bare=append <action>.
+
 	* Defaults.py (ACTION_OUTGOING): New variable replacing
 	COOKIE_TYPE to specify the default tag on outgoing messages.
 

@@ -76,6 +76,7 @@ NOTE: The second field in a textfile or DBM is optional, but overrides
 
   For outgoing filters, <action> can be one of:
     bare (don't tag)
+    bare=append (don't tag, and also add recipient to Defaults.BARE_APPEND)
     sender (tag with a sender address)
     dated (tag with a dated address)
     dated=timeout_interval 
