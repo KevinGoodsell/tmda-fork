@@ -7,7 +7,7 @@ Name: %{name}
 Version: %{version}
 Release: %{release}
 Source0: http://prdownloads.sourceforge.net/tmda/%{name}-%{version}.tgz
-License: BSD
+License: GPL
 Group: Utilities/System
 BuildRoot: /var/tmp/%{name}-buildroot
 BuildArchitectures: noarch

@@ -1,3 +1,8 @@
+2002-02-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* COPYING: New file containing the GNU General Public License
+	text.  This replaces COPYRIGHT.
+
 2002-02-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* THANKS (Contributions): Add Bill Duncan.

@@ -2,6 +2,9 @@
 
 If you are upgrading from a release of TMDA < 0.48:
 
+* As of v0.48, TMDA is released under the GNU General Public License
+  (GNU GPL).  See COPYING for more information.
+
 * qmail users now must invoke tmda-filter with 'preline' from their
   dot-qmail files.  e.g,
 

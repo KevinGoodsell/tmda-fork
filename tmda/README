@@ -1,6 +1,5 @@
 Tagged Message Delivery Agent (TMDA)
-Copyright 2001-2002
-Jason R. Mastaler <jason@mastaler.com>
+Copyright (C) 2001,2002 Jason R. Mastaler <jason@mastaler.com>
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -27,5 +26,5 @@ CRYPTO explains the cryptography used in TMDA.
 
 THANKS contains acknowledgments and thanks.
 
-COPYRIGHT contains licensing information.
+COPYING contains licensing information.
 
