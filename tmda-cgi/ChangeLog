@@ -1,3 +1,8 @@
+2003-11-24  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Changed configure to strip slashes from DispDir to keep Netscape
+	  FastTrack happy.  (As per Tim Rice's request.)
+
 2003-11-17  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Fixed a stupid type-o in configure.
