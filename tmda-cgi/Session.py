@@ -139,8 +139,8 @@ its partition is marked "nosuid" in /etc/fstab.""")
         
         # Now that we know who we are, get our defaults
         from TMDA import Defaults
-        Template.Template.BaseDir = "%s/themes/%s/template" % \
-          (os.environ["TMDA_CGI_DISP_DIR"], Defaults.CGI_THEME)
+        Template.Template.BaseDir = "%s/display/themes/%s/template" % \
+          (os.path.abspath(os.path.split(sys.argv[0])[0]), Defaults.CGI_THEME)
         Template.Template.Dict["ThemeDir"] = "%s/themes/%s" % \
           (os.environ["TMDA_CGI_DISP_DIR"], Defaults.CGI_THEME)
       except IOError: # Failed to resurrect session, fall through to make new SID
@@ -230,8 +230,8 @@ its partition is marked "nosuid" in /etc/fstab.""")
       from TMDA import Errors
       try:
         from TMDA import Defaults
-        MyCgiTb.ErrTemplate = "%s/themes/%s/template/prog_err.html" % \
-          (os.environ["TMDA_CGI_DISP_DIR"], Defaults.CGI_THEME)
+        Template.Template.BaseDir = "%s/display/themes/%s/template" % \
+          (os.path.abspath(os.path.split(sys.argv[0])[0]), Defaults.CGI_THEME)
         Template.Template.Dict["ThemeDir"] = "%s/themes/%s" % \
           (os.environ["TMDA_CGI_DISP_DIR"], Defaults.CGI_THEME)
       except Errors.ConfigError, (ErrStr):

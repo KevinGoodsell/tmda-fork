@@ -53,8 +53,8 @@ MyCgiTb.Content()
 MyCgiTb.ErrTemplate = "prog_err.html"
 
 # Make some global stuff available to all
-Template.Template.BaseDir = "%s/themes/Blue/template" % \
-  os.environ["TMDA_CGI_DISP_DIR"]
+Template.Template.BaseDir = "%s/display/themes/Blue/template" % \
+  os.path.abspath(os.path.split(sys.argv[0])[0])
 Template.Template.Dict["Script"]  = os.environ["SCRIPT_NAME"]
 Template.Template.Dict["DispDir"] = os.environ["TMDA_CGI_DISP_DIR"]
 Template.Template.Dict["ThemeDir"] = "%s/themes/Blue" % \
