@@ -4,6 +4,9 @@
 	os.popen to work around an undetermined bug in some BSD variants
 	where the mutt MUA hangs when sending with tmda-inject.
 
+	(main): Add the platform identifier to X-Delivery-Agent for easier
+	diagnosis of platform dependent problems.
+
 2001-05-02  Jason R. Mastaler  <jasonrm@nightshade.acl.lanl.gov>
 
 	* tmda-filter (make_dated_bounce): Depreciated function.
