@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.71+"
+TMDA = "0.72"
 
 # TMDA version codename
 CODENAME = "Assault"
