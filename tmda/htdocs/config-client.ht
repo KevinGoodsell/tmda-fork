@@ -110,7 +110,7 @@ exceptions to that rule.  You can also change the default by setting
 Many users prefer that their "whitelisted" addresses receive untagged
 (no cookie added) messages.  This way their trusted contacts are not
 even be aware of TMDA.  If you are whitelisting as
-described in the <a href="faq.html">FAQ</a>, you can accomplish this
+described in the FAQ, you can accomplish this
 by adding one of the following lines to your ~/.tmda/filters/outgoing filter
 file:
 

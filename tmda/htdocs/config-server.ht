@@ -40,7 +40,7 @@ change the default by setting <strong>ACTION_INCOMING</strong> in your
 tmdarc.  <br><br>
 
 The most common use for the incoming filter is to create both a 
-<a href="faq.html">"whitelist"</a> to allow your trusted contacts
+"whitelist" (see the FAQ) to allow your trusted contacts
 directly into your mailbox, as well as a "blacklist" for those senders
 you want to refuse mail from.
 <br><br>
