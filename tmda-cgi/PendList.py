@@ -168,8 +168,10 @@ width="18" height="18" alt="Last">"""
   T["NumBlankCols"] = NumBlankCols
 
   # Javascript confirmation?
-  if PVars[("General", "UseJSConfirm")]:
+  if PVars[("General", "UseJSConfirm")] == "Yes":
     T["OnSubmit"] = 'onSubmit="return TestConfirm()"'
+  else:
+    T["OnSubmit"] = ""
   T["PagerSize"] = PVars[("PendingList", "PagerSize")]
 
   # Parse out embedded variables from template

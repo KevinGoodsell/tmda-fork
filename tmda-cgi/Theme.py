@@ -22,6 +22,7 @@
 "Theme picker page for tmda-cgi."
 
 import os
+import re
 import Template
 
 # Handy stuff
@@ -77,6 +78,30 @@ def Show():
     T["Info"] = PVars[("Theme", "Info")]
   else:
     T["Info"] = NoneLook
+
+  # Save changes?
+  FormVars = re.split("[,\s]+", T["FormVars"])
+  if Form.has_key("subcmd"):
+    for Var in FormVars:
+      Parts = Var.split(":")
+      Key = "%s%s" % tuple(Parts[0:2])
+      if Form.has_key(Key):
+        PVars[Parts[0:2]] = Form[Key].value
+    PVars.Save()
+
+  # Find any theme vars they let us configure
+  for Var in FormVars:
+    Parts = Var.split(":")
+    Value = PVars[Parts[0:2]]
+    T["%s%s" % tuple(Parts[0:2])] = Value
+    for Option in Parts[2:]:
+      Expand = tuple(Parts[0:2] + [Option])
+      if Option == Value:
+        T["%s%s%sSelected" % Expand] = "selected"
+        T["%s%s%sChecked" % Expand] = "checked"
+      else:
+        T["%s%s%sSelected" % Expand] = ""
+        T["%s%s%sChecked" % Expand] = ""
 
   # Display template
   print T

@@ -17,6 +17,9 @@ Things left to do:
                           include the appropriate language identifiers in the
                           viewer
 
+    * Remove JS -- there should be no JS in View.py, it should be in the
+                   template
+
     * SpamCop -- an option to delete/blacklist/forward to SpamCop
 
     * Tutorial -- someone should write one

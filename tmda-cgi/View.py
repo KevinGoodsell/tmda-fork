@@ -192,7 +192,7 @@ width="11" height="18" alt="Next">"""
 width="18" height="18" alt="Last">"""
 
   # Use Javascript confirmation?
-  if PVars[("General", "UseJSConfirm")]:
+  if PVars[("General", "UseJSConfirm")] == "Yes":
     T["DeleteURL"]    = "javascript:ConfirmDelete()"
     T["BlacklistURL"] = "javascript:ConfirmBlacklist()"
   else:
@@ -276,7 +276,7 @@ width="18" height="18" alt="Last">"""
   T["Columns"] = Columns
 
   # Javascript confirmation for delete and blacklist?
-  if PVars[("General", "UseJSConfirm")]:
+  if PVars[("General", "UseJSConfirm")] == "Yes":
     T["ConfirmScript"] = """<script>
 function ConfirmDelete()
 {

@@ -32,3 +32,45 @@ border="0"></a><br>
     <td>%(Info)s<!-- var: None="<i>None.</i>" --></td>
   </tr>
 </table>
+<hr width="50%">
+<p><b>Customize your theme:</b></p>
+<!-- var: FormVars="General:UseJSConfirm:Yes:No, PendingList:PagerSize,
+  PendingList:CropSender, PendingList:CropSubject" -->
+<table>
+  <form method="post" action="%(Script)s">
+    <tr>
+      <td align="center"><select name="GeneralUseJSConfirm">
+          <option %(GeneralUseJSConfirmYesSelected)s value="Yes">Enabled</option>
+          <option %(GeneralUseJSConfirmNoSelected)s value="No">Disabled</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Javascript confirmation before deleting or blacklisting</td>
+    </tr>
+    <tr>
+      <td align="center"><input type="text" name="PendingListPagerSize"
+        value="%(PendingListPagerSize)s" size="2"></td>
+      <td>&nbsp;</td>
+      <td>Number of pending e-mails to show in list form</td>
+    </tr>
+    <tr>
+      <td align="center"><input type="text" name="PendingListCropSender"
+        value="%(PendingListCropSender)s" size="2"></td>
+      <td>&nbsp;</td>
+      <td>Width of sender field in list view</td>
+    </tr>
+    <tr>
+      <td align="center"><input type="text" name="PendingListCropSubject"
+        value="%(PendingListCropSubject)s" size="2"></td>
+      <td>&nbsp;</td>
+      <td>Width of subject field in list view</td>
+    </tr>
+    <tr>
+      <td colspan="3" align="center"><br>
+        <input type="submit" value="Save Changes">
+        <input type="hidden" name="cmd" value="theme">
+        <input type="hidden" name="subcmd" value="save">
+        <input type="hidden" name="SID" value="%(SID)s">
+      </td>
+    </tr>
+  </form>
+</table>
