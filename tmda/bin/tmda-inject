@@ -268,20 +268,13 @@ def inject_message(resending,
             del msg['X-TMDA-Fingerprint']
 	    msg['X-TMDA-Fingerprint'] = (Cookie.make_fingerprint(hdrlist))
     # Optionally, add some headers.
-    if Defaults.ADDED_HEADERS_CLIENT:
-        keys = Defaults.ADDED_HEADERS_CLIENT.keys()
-        keys.sort()
-        for k in keys:
-            del msg[k]
-            msg[k] = Defaults.ADDED_HEADERS_CLIENT[k]
+    Util.add_headers(msg, Defaults.ADDED_HEADERS_CLIENT)
     # Optionally, remove some headers.
-    if Defaults.PURGED_HEADERS:
-	for hdr in Defaults.PURGED_HEADERS:
-	    del msg[hdr]
+    Util.purge_headers(msg, Defaults.PURGED_HEADERS_CLIENT)
     # Create the custom headers.
     custom_headers = [ h for h in actions.keys()
                         if h not in ('from', 'envelope', 'resent-from') ]
-    nice_headers = []
+    nice_headers = {}
     for header in custom_headers:
         (cookie_type, cookie_option) = actions[header]
         field = make_field(cookie_type, cookie_option, from_address, to_address)
@@ -289,11 +282,8 @@ def inject_message(resending,
             field = message_format(field, full_name,
                                    Defaults.MESSAGE_TAG_HEADER_STYLE)
         nice_header = string.capwords(header.replace('-', ' ')).replace(' ', '-')
-        nice_headers.append((nice_header, field))
-    if nice_headers:
-        for h, v in nice_headers:
-            del msg[h]
-            msg[h] = v
+        nice_headers[nice_header] = field
+    Util.add_headers(msg, nice_headers)
     # Prepend a Received header.
     if injections == 0:
         if os.environ.has_key('TMDA_OFMIPD_RECEIVED'):
@@ -323,9 +313,7 @@ def inject_message(resending,
     # Remove any custom headers we added for this recipient from the
     # message object, else all subsequent recipients will receive them
     # unconditionally.
-    if nice_headers:
-        for h, v in nice_headers:
-            del msg[h]
+    Util.purge_headers(msg, nice_headers.keys())
 
 
 ######
