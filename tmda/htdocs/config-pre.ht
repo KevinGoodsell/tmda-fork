@@ -78,6 +78,9 @@ suffix_optional
 <strong>NOTE:</strong> If you are running Exim version 4.x, 
 use <em>local_part_suffix</em>
 and <em>local_part_suffix_optional</em> instead.
+You also might be interested in 
+<a href="http://mla.libertine.org/tmda-users/2002-11/msg00283.html" TARGET="Resource Window">these</a> 
+Exim 4 specific instructions for a server-wide TMDA setup.
 <br><br>
 </ol>
 
