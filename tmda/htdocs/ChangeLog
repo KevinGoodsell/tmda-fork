@@ -1,5 +1,7 @@
 2001-10-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config.ht (Links): Just link to the two sections.
+
 	* config-server.ht (Links): Mention that you should add your own
 	e-mail address to the whitelist to facilitate initial testing.
 	Also suggest a minimal .procmailrc-tmda.
