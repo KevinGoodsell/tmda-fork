@@ -7,6 +7,9 @@
 	the message's From: header, if available.  Otherwise, the .tmdarc
 	settings are used as before.
 	Patch contributed by Ron Bickers.
+
+	(main): Don't set QMAILNAME in the environment if the From: header
+	is lacking the user's full name.
 	
 	* tmda-dated-address: Add an option to specify the address to base
 	the tagging on vs. the default USERNAME/HOSTNAME settings.
