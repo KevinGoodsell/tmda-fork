@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Fri Feb  6 10:40:25 2004 -->
+<!-- Wed Mar 10 12:04:48 2004 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -285,7 +285,11 @@ character you choose matches <b>RECIPIENT_DELIMITER</b> in your
 
 <a name="exim"><h4>MTA Configuration (Exim)</h4></a>
 
-Edit your Exim run time configuration file as follows:
+Edit your Exim run time configuration file as follows. Note: These
+instructions assume Exim 4.x.  According to the Exim homepage, Exim 3
+and previous versions are now considered obsolete.  If you are running
+Exim 3 and can't upgrade, you'll have to find an old version of
+this page.
 
 <h5>MAIN CONFIGURATION</h5>
 
@@ -294,7 +298,7 @@ Edit your Exim run time configuration file as follows:
 TMDA uses sendmail's `-f' option to set the envelope sender
 address on outgoing messages.  By default this option is only
 available to Exim's "trusted users".  You can also add
-<b>untrusted_set_sender = true</b> to your Exim configuration
+<b>untrusted_set_sender = *</b> to your Exim configuration
 which allows untrusted users use of the -f command line option.
 <br><br>
 
@@ -314,20 +318,17 @@ Add the following lines to both the <b>userforward</b> and
 the <b>localuser</b> directors if they are not there already:
 
 <blockquote><pre>
-suffix = -*
+local_part_suffix = -*
 # or "+*" if you prefer "user+suffix" addresses
-suffix_optional
+local_part_suffix_optional
 </blockquote></pre>
 
 Make sure the character you choose matches <b>RECIPIENT_DELIMITER</b> in your
 <b>~/.tmda/config</b>.<br><br>
 
-<strong>NOTE:</strong> If you are running Exim version 4.x, 
-use <em>local_part_suffix</em>
-and <em>local_part_suffix_optional</em> instead.
 You also might be interested in 
 <a href="http://mla.libertine.org/tmda-users/2002-11/msg00283.html" TARGET="Resource Window">these</a> 
-Exim 4 specific instructions for a server-wide TMDA setup.
+Exim specific instructions for a server-wide TMDA setup.
 </ol>
 
 <h5>TRANSPORTS CONFIGURATION</h5>
