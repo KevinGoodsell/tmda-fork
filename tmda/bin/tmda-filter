@@ -99,16 +99,18 @@ message_size = str(len(stdin.read()))
 # $SENDER is the envelope sender address.
 envelope_sender = os.environ.get('SENDER')
 
+# $RECIPIENT is the envelope recipient address.
+envelope_recipient = os.environ.get('RECIPIENT')
 
 def logit(action_msg,date):
     """Write delivery statistics to the LOGFILE if enabled."""
-    if Defaults.LOGFILE and os.environ.get('RECIPIENT'):
+    if Defaults.LOGFILE and envelope_recipient:
         try:
             logfile = open(Defaults.LOGFILE, 'a') # append to the file
             Date = time.asctime(time.localtime(date))
             From = message_headers.getheader('from')
             if not From:From = envelope_sender
-            To = os.environ.get('RECIPIENT')
+            To = envelope_recipient
             Subject = message_headers.getheader('subject', 'None')
             Action = action_msg
             actionstr = 'Actn: ' + Action
@@ -206,7 +208,8 @@ def bounce_dated():
     expire_utc_tuple = time.gmtime(expire_date)
     utc_expire_date = time.asctime(expire_utc_tuple)
     dated_cookie = Cookie.make_dated_cookie('%d' % now)
-
+    envelope_recipient = os.environ.get('RECIPIENT')
+    
     logit("BOUNCE dated",now)
 
     if Defaults.BOUNCE_DATED_CC:
@@ -230,6 +233,8 @@ def bounce_dated():
 
 def bounce_sender(sender_address,sender_address_cookie):
     """Bounce the message back to sender with their sender cookie."""
+    envelope_recipient = os.environ.get('RECIPIENT')
+    
     logit("BOUNCE sender",time.time())
 
     if Defaults.BOUNCE_SENDER_CC:
