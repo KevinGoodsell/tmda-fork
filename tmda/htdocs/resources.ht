@@ -9,4 +9,9 @@ Project Management Site at Sourceforge</a><br><br>
 <li><a href="http://www.apress.com/catalog/book/1893115402/" TARGET="Resource Window">
 The qmail Handbook</a> contains a section describing TMDA<br><br>
 
+<li><a href="http://www.visca.com/tmda/tmda_confirm.html" TARGET="Resource Window">tmda_confirm.pl</a> 
+is a Perl script that checks all the CONFIRM messages in the TMDA log
+file entries for the last $hours hours and pulls out the corresponding
+Reply-To header for that message from the TMDA pending directory. It
+then sends a summary to the admin.
 

@@ -1,5 +1,7 @@
 2001-10-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* resources.ht (Links): Added link to Lou Hevly's tmda_confirm.pl.
+
 	* faq.ht (Links): Clarify that tmda-clean should be run from the
 	user account that owns the pending queue, not from root.
 
