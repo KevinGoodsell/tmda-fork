@@ -4,6 +4,9 @@
 	bounce message to make it easier to reply to.  Thanks to Paul
 	English for the suggestion.
 
+	(main): tmda-filter now consults the "whitelist" no matter what
+	the destination address is.
+
 2001-04-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (main): changed all references of Whitelist.match()
