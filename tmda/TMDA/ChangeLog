@@ -1,3 +1,7 @@
+2004-01-17  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Defaults.py (TMDARC): ~/.tmdarc is deprecated.
+
 2004-01-11  Jason R. Mastaler  <jason@mastaler.com>
 
 	* MessageLogger.py (MessageLogger.write): Use Util.make_date().

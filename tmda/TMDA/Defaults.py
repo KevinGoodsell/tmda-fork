@@ -68,12 +68,10 @@ if os.path.exists(GLOBAL_TMDARC):
     execfile(GLOBAL_TMDARC)
         
 # Look for the user-config-file in the environment first then default
-# to ~/.tmdarc or ~/.tmda/config
+# to ~/.tmda/config
 TMDARC = os.environ.get('TMDARC')
 if not TMDARC:
-    TMDARC = os.path.expanduser('~/.tmdarc')
-    if not os.path.exists(TMDARC):
-        TMDARC = os.path.expanduser('~/.tmda/config')
+    TMDARC = os.path.expanduser('~/.tmda/config')
 
 # CONFIG_EXEC
 # If set to 0 in GLOBAL_TMDARC, the user's TMDARC file will be parsed

@@ -5,6 +5,9 @@ this file.
 
 If you are upgrading from a release of TMDA < 1.1.1:
 
+* ~/.tmdarc has been deprecated.  Make sure you rename this file to
+  ~/.tmda/config if you are still using ~/.tmdarc.
+
 * The TIMEOUT configuration variable has been renamed DATED_TIMEOUT.
 
 * The Unix-style date strings in TMDA have been replaced by RFC 2822
