@@ -167,11 +167,11 @@ def TranslateToUTF8(CharSet, Str, Errors):
   if not CharSet:
     return Str
   CS = email.Charset.Charset( CharSet )
-  RealCharset = CS.input_charset
+  CharSet = CS.input_charset
 
   # Find appropriate decoder
   try:
-    Decoder = codecs.getdecoder(RealCharset)
+    Decoder = codecs.getdecoder(CharSet)
   except LookupError:
     try:
       # Is it GB2312?
