@@ -17,6 +17,10 @@ Controlling SPAM under Mandrake Linux, Part 2</a><br><br>
 <a href="http://www.visca.com/tmda/tmda_vpop.html" TARGET="Resource Window">
 tutorial for installing TMDA with vpopmail</a><br><br>
 
+<li>Gerardo Arnaez has written a 
+<a href="http://mung.net/~dude/howto/Qmail-vpop-qmailadmin-tmda.html" TARGET="Resource Window">
+qmail / Vpopmail / QmailAdmin / TMDA on Debian</a> HOWTO<br><br>
+
 <li>Robin Socha has written a
 <a href="http://my.gnus.org/Members/robin/Doc/tmda" TARGET="Resource Window">
 Using Gnus with TMDA to reduce UCE</a> HOWTO<br><br>
