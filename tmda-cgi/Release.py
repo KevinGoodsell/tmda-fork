@@ -112,7 +112,7 @@ make sure that it is typed in exactly as it was sent to you.""")
           "TMDA_VLOOKUP = %s" % os.environ["TMDA_VLOOKUP"],
           """Contact this message's sender by an alternate means and inform them
 of this error, or try confirming your message using an alternate method.""")
-      Home, UID, GID = Sandbox["getuserparams"](List)
+      Home, UID, GID = Sandbox["getuserparams"](List)[0:3]
     else:
       Home, UID, GID = Util.getuserparams(pwd.getpwuid(UID)[0])
   except KeyError:

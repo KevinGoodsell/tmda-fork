@@ -73,7 +73,7 @@ def Show():
               DeleteList.append(MsgObj)
             elif Form["a%d" % Count].value == "whitelist":
               WhiteList.append(MsgObj)
-              ReleaseList.append( thisMsgId )
+              ReleaseList.append(MsgObj)
             elif Form["a%d" % Count].value == "blacklist":
               BlackList.append(MsgObj)
               DeleteList.append(MsgObj)
@@ -118,7 +118,7 @@ def Show():
               DeleteList.append( MsgObj )
             elif Form.has_key("WhitelistButton"):
               WhiteList.append( MsgObj )
-              ReleaseList.append( thisMsgId )
+              ReleaseList.append( MsgObj )
             elif Form.has_key("ReportButton"):
               OtherAction = "Report"
               OtherList.append( MsgObj )
@@ -130,7 +130,7 @@ def Show():
                 DeleteList.append( MsgObj )
               elif OtherAction == "Whitelist":
                 WhiteList.append( MsgObj )
-                ReleaseList.append( thisMsgId )
+                ReleaseList.append( MsgObj )
               elif OtherAction == "Blacklist":
                 BlackList.append( MsgObj )
                 DeleteList.append( MsgObj )
