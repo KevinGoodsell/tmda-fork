@@ -318,7 +318,7 @@ def IgnoreFiles(Anomalies):
       else:
         CgiUtil.TermError("Unknown mailtype",
           "VIRTUAL_ONLY dictionary has no key: %s" % Mail, "locate files",
-          "VIRTUAL_ONLY = %s" % repr(VIRTUAL_ONLY),
+          "VIRTUAL_ONLY = %s" % repr(Anomalies["VIRTUAL_ONLY"]),
           "Contact system administrator.")
     else:
       ListDiff(RetVal, Anomalies["VIRTUAL_ONLY"])
