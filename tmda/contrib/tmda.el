@@ -565,7 +565,7 @@ to the kill ring for easy pasting wherever it is needed."
   (insert (concat "\n" tmda-pending-help-text))
   (goto-char (point-min))
   ;; remove blank line at start
-  (when (looking-at "^$")
+  (when (looking-at "^ *$")
     (kill-line))
   (toggle-read-only 1))
 
