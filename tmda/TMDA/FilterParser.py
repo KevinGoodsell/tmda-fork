@@ -11,6 +11,7 @@ import os
 import re
 import string
 import types
+import time
 
 import Util
 
@@ -452,10 +453,12 @@ class FilterParser:
                 # appropriately.
                 if args.has_key('autocdb'):
                     dbname += '.cdb'
+                    dbsurrogate = dbname
                     build_func = Util.build_cdb
                     search_func = self.__search_cdb
                 elif args.has_key('autodbm'):
                     dbname += '.db'
+                    dbsurrogate = match + '.last_built'
                     build_func = Util.build_dbm
                     search_func = self.__search_dbm
                 # If we have a valid build_func, we want to try to build
@@ -467,10 +470,18 @@ class FilterParser:
                     txt_mtime = os.path.getmtime(match)
                     # If the cdb file doesn't exist, that's not an error.
                     try:
-                        db_mtime = os.path.getmtime(dbname)
+                        db_mtime = os.path.getmtime(dbsurrogate)
                     except OSError:
                         db_mtime = 0
-                    if db_mtime <= txt_mtime and not build_func(match):
+                    if db_mtime <= txt_mtime:
+                        if build_func(match):
+                            if os.path.exists(dbsurrogate):
+                                mtime = time.time()
+                                os.utime(dbsurrogate, (mtime, mtime))
+                            else:
+                                fd = os.open(dbsurrogate, os.O_CREAT, 0600)
+                                os.close(fd)
+                        else:
                             dbname = match
                             search_func = self.__search_file
                 try:
@@ -630,18 +641,18 @@ def _actionstr(actions):
     """
     line = ''
     if actions:
-	for header, action in actions.items():
-	    mo = FilterParser.in_action.match(header)
+	for header, (action, option) in actions.items():
+            mo = FilterParser.in_action.match(action or '')
 	    if mo:
-		line = line + header
+		line = line + action
 	    else:
                 if len(line) == 0:
                     line = line + 'tag'
-		line = line + ' '+ header
-                if action[0]:
-                    line = line + ' ' + _cookiestr(action)
+		line = line + ' ' + header
+                if action:
+                    line = line + ' ' + _cookiestr((action, option))
 		else:
-		    line = line + ' "' + str(action[1]) + '"'
+		    line = line + ' "' + str(option) + '"'
     return line
 
 

@@ -1,5 +1,13 @@
 2002-02-22  Tim Legant  <tim@catseye.net>
 
+	* FilterParser.py (FilterParser.firstmatch): Made autodbm
+	functionality use a surrogate file to determine whether the DBM is
+	up to date.  This is because of the varied naming of DBM files
+	across platforms.  It was suggested by Matt Armstrong.
+
+	(FilterParser._actionstr): Fixed bug introduced by new
+	dictionary layout for incoming rules.
+
 	* Util.py (build_dbm): New function, based on the list2dbm
 	utility.
 
