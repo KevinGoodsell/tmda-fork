@@ -1,5 +1,8 @@
 2002-02-21  Tim Legant  <tim@catseye.net>
 
+	* tmda-rfilter (main): The 'actions' dictionary has changed
+	semantic format and this code has been made aware of that.
+
 	* tmda-inject (inject_message): Custom headers are now written
 	directly to sendmail through 'pipeline' rather than being added to
 	'message_headers'.  This fixes the bug where custom headers should

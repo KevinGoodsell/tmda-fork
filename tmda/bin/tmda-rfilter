@@ -582,9 +582,7 @@ def main():
                                                   message_body,
                                                   str(message_headers),
                                                   message_size)
-    action = None
-    if actions:
-        action = actions.keys()[0]
+    (action, option) = actions.get('incoming', (None, None))
     # Dispose of the message now if there was a filter file match.
     # Log the action along with and the matching line in the filter
     # file that caused it.
