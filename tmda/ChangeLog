@@ -1,3 +1,7 @@
+2001-10-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* README: The FAQ is now in HTML within htdocs.
+
 2001-10-15  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* INSTALL: htdocs replaces doc.
