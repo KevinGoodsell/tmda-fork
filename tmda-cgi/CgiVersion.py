@@ -25,10 +25,10 @@ import sys
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.08+"
+tmda_cgi = "0.09"
 
 # tmda-cgi version codename
-Codename = "Oxygen"
+Codename = "Fluorine"
 
 # TMDA version required
 TMDAReqVer = "0.75"

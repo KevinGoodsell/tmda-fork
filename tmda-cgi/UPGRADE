@@ -2,6 +2,9 @@
 
 If you are upgrading from a release of tmda-cgi < 0.09:
 
+* display directory has been updated again.  You'll need to copy in the new
+  one or use a symbolic link.
+
 * Confirm accept URLs (read: URL confirmations) have changed format.
 
   This version of tmda-cgi will accept both old-style (TMDA 0.77 and earlier)

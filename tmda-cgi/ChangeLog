@@ -1,5 +1,7 @@
 2003-05-21  Gre7g Luterman  <gre7g@wolfhome.com>
 
+	* tmda-cgi 0.09 is released.
+
 	* Closed a security hole.  We strongly recommend that any system using
 	  "default" authentication be upgraded.
 
@@ -35,6 +37,8 @@
 	* Added a stub for decoding /var/qmail/users/assign
 
 2003-05-04  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* tmda-cgi 0.08 is released.
 
 	* Replaced compile with new, improved configure.  Makes better guesses
 	  about where TMDA is installed.  A little more standard to use.
