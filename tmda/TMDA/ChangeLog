@@ -1,3 +1,7 @@
+2001-08-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Defaults.py (TMDA_VERSION): Begin 0.33 development.
+
 2001-08-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (SACRED_FILE): New variable pointing to a filename
