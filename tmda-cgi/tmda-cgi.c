@@ -30,9 +30,6 @@ int main(int argc, char *argv[])
   putenv(AUTH_TYPE);
   putenv(AUTH_ARG);
 #endif
-#ifdef AUTH_TRUE
-  putenv(AUTH_TRUE);
-#endif
   putenv(MODE);
   putenv(USER);
   putenv(DISP_DIR);

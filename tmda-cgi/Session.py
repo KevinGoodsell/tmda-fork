@@ -190,8 +190,7 @@ its partition is marked "nosuid" in /etc/fstab.""")
     try:
       if os.environ.has_key( "TMDA_AUTH_TYPE" ):
         if os.environ["TMDA_AUTH_TYPE"] == "program":
-          Authenticate.InitProgramAuth( os.environ["TMDA_AUTH_ARG"],
-            os.environ["TMDA_AUTH_TRUE"] )
+          Authenticate.InitProgramAuth( os.environ["TMDA_AUTH_ARG"] )
         elif os.environ["TMDA_AUTH_TYPE"] == "remote":
           Authenticate.InitRemoteAuth( os.environ["TMDA_AUTH_ARG"] )
         elif os.environ["TMDA_AUTH_TYPE"] == "file":

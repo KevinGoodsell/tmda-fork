@@ -37,7 +37,7 @@ Auth.DEBUGSTREAM = sys.stderr
 
 authinit = 0
 
-def InitProgramAuth( Program, trueProg = "/usr/bin/true" ):
+def InitProgramAuth( Program ):
   """Initializes the authentication scheme with a checkpw-style program.
 (Implemented by Auth.py)"""
   global authinit
@@ -45,7 +45,16 @@ def InitProgramAuth( Program, trueProg = "/usr/bin/true" ):
   try:
     realprog, args = Program.split(" ", 1)
   except ValueError:
-    realprog, args = Program, trueProg
+    try:
+      if CanRun( "/usr/bin/true" ):
+        args = "/usr/bin/true"
+    except IOError:
+      try:
+        if CanRun( "/bin/true" ):
+          args = "/bin/true"
+      except IOError:
+        raise ValueError, "Could not find /usr/bin/true or /bin/true"
+    realprog = Program
   try:
     if not CanRun( realprog ):
       authinit = 0
@@ -53,14 +62,6 @@ def InitProgramAuth( Program, trueProg = "/usr/bin/true" ):
   except IOError:
     authinit = 0
     raise ValueError, "'%s' does not exist" % realprog
-  if args == trueProg:
-    try:
-      if not CanRun( args ):
-        authinit = 0
-        raise ValueError, "'%s' is not executable" % args
-    except IOError:
-      authinit = 0
-      raise ValueError, "'%s' does not exist" % args
   # Now initialize the authprog with the checkpasswd program and "true"
   Auth.authprog = "%s %s" % ( realprog, args )
   authinit = 1

@@ -110,11 +110,6 @@ Where:
     --target <file>
        Compile as a file other than ./tmda-cgi.
 
-    -T <true>
-    --true-prog <true>
-       Specify the path to the "true" program (which returns 0)
-       Default is '/usr/bin/true'
-
     -u <user>
     --user <user>
        Overrides the value of CGI_USER found in the configuration files.
@@ -205,10 +200,9 @@ def Interactive(OptD):
     Ask('Authentication File (or "None" for system default)', OptD, "AuthFile")
     OptD["AuthArg"] = OptD["AuthFile"]
   elif OptD["AuthType"] == "program":
-    Ask('Authentication (checkpassword-style) program (full path)', OptD,
+    Ask('Authentication (checkpassword-style) program (full path, including any switches or arguments)', OptD,
       "AuthProg")
     OptD["AuthArg"] = OptD["AuthProg"]
-    Ask('Full path to "true" program', OptD, "AuthTrue")
   elif OptD["AuthType"] == "remote":
     Ask('Authentication URI (protocol://host.domain.com[:port][/dn])', OptD,
       "AuthURI")
@@ -239,7 +233,6 @@ OptD["User"]     = "nobody"
 OptD["AuthType"] = "default"
 OptD["AuthFile"] = "None"
 OptD["AuthProg"] = "/usr/sbin/checkpassword"
-OptD["AuthTrue"] = "/usr/bin/true"
 OptD["AuthURI"]  = "imap://localhost"
 OptD["AuthArg"]  = "None"
 OptD["VUser"]    = "vpopmail"
@@ -260,10 +253,10 @@ def Usage(Code, Msg=""):
   sys.exit(Code)
 
 try:
-  Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:f:i:m:nhp:r:t:T:u:",
+  Opts, Args = getopt.getopt(sys.argv[1:], "b:c:d:f:i:m:nhp:r:t:u:",
     ["base-dir=", "config-file=", "display-dir=", "file-auth=", "help",
      "install-prefix=", "mode=", "no-su", "program-auth=", "remote-auth=",
-     "target=", "true-prog=", "user="])
+     "target=", "user="])
 except getopt.error, Msg:
   Usage(1, Msg)
 
@@ -293,8 +286,6 @@ for Opt, Arg in Opts:
     OptD["AuthArg"] = Arg
   elif Opt in ("-t", "--target"):
     OptD["Target"] = Arg
-  elif Opt in ("-T", "--true-prog"):
-    OptD["AuthTrue"] = Arg
   elif Opt in ("-m", "--mode"):
     if not Arg in ("system-wide", "single-user", "no-su"):
       Usage(1, "Valid modes are system-wide, single-user, and no-su")
@@ -390,9 +381,6 @@ if OptD["AuthArg"] != "None":
   print "Users will be authenticated using %(AuthType)s %(AuthArg)s" % OptD
   F.write("""#define AUTH_TYPE "TMDA_AUTH_TYPE=%(AuthType)s"
 #define AUTH_ARG "TMDA_AUTH_ARG=%(AuthArg)s"
-""" % OptD)
-  if OptD["AuthType"] == "program":
-    F.write( """#define AUTH_TRUE "TMDA_AUTH_TRUE=%(AuthTrue)s"
 """ % OptD)
 F.close()
 
