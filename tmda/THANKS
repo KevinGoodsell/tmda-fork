@@ -17,6 +17,8 @@ Acknowledgements:
 Contributions:
 --------------
 
+    * Jason Andrade -- mirror of www.tmda.net in Australia.
+
     * Matt Armstrong -- contributed heavily to the Postfix support,
       plus many good suggestions, and bugfixes.
 
@@ -37,6 +39,8 @@ Contributions:
 
     * Michael S. Fischer -- tmda-pending patch which allows messages
       to be specified on standard input.
+
+    * Slawek 'IDEall' Fydryk -- mirror of www.tmda.net in Poland.
 
     * Arcady Genkin -- Gentoo Linux Package.
 
