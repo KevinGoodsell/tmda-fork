@@ -1,3 +1,7 @@
+2002-05-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Remove CRYPT_KEY.
+
 2002-05-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Replace LOCAL_DELIVERY_AGENT with DELIVERY.

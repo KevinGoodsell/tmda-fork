@@ -14,12 +14,13 @@
 # Any variable set here overrides the default value set in
 # Defaults.py.
 
-##########################################################
-# Globally required variables; all users must define these
-##########################################################
+#########################################################
+# qmail required variables; required only for qmail users
+#
+# (none at this time)
+#
+#########################################################
 
-# generate your own unique CRYPT_KEY using tmda-keygen !
-CRYPT_KEY = "95b76bbc4b747cuid8963264151a6bfae394"
 
 #################################################################
 # Non-qmail required variables; required only for non-qmail users
