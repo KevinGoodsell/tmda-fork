@@ -1,3 +1,7 @@
+2003-11-16  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Added a nasty hack to prevent import errors in Python 2.3.
+
 2003-11-15  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Changed timestamp call in dynamic address tester for compatibility
