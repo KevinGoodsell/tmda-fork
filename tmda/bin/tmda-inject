@@ -136,7 +136,8 @@ if filter_match:
 
 message = sys.stdin
 message_headers = rfc822.Message(message)
-
+message_body = message.read()
+message_size = str(len(message_body))
 
 def message_format(fsa, ffn, type):
     # "angles" is the default MESSAGE_FROM_STYLE
@@ -144,7 +145,6 @@ def message_format(fsa, ffn, type):
         return Util.formataddr((None, fsa))
     else:
         return Util.formataddr((ffn, fsa))
-
 
 def make_field(cookie_type, cookie_option, from_address, to_address):
     """
@@ -195,7 +195,8 @@ def inject_message(resending,
 		   full_name,
                    message_headers,
                    message_body,
-                   actions):
+                   actions,
+                   log_msg):
     """Hand the message off to sendmail."""
     # Default, if no From: is specified, is bare.
     (cookie_type, cookie_option) = actions.get('from', ('bare', None))
@@ -270,6 +271,16 @@ def inject_message(resending,
             field = message_format(field, full_name, Defaults.MESSAGE_FROM_STYLE)
         nice_header = string.capwords(header.replace('-', ' ')).replace(' ', '-')
         nice_headers.append('%s: %s\n' % (nice_header, field))
+    # Optionally, log this transmission.
+    if Defaults.LOGFILE_OUTGOING:
+        from TMDA import MessageLogger
+        logger = MessageLogger.MessageLogger(Defaults.LOGFILE_OUTGOING,
+                                             message_headers,
+                                             envsender = envelope_sender,
+                                             envrecip = to_address,
+                                             msg_size = message_size,
+                                             action_msg = log_msg)
+        logger.write()
     # Inject the message.
     Util.sendmail(str(message_headers) + ''.join(nice_headers), message_body,
                   to_address, envelope_sender)
@@ -283,6 +294,7 @@ def main():
 
     x_tmda_over = None
     actions = None
+    log_msg = None
 
     if message_headers.has_key('resent-from'):
         # We must be resending (bouncing) the message.
@@ -296,10 +308,7 @@ def main():
         fullname = Defaults.FULLNAME
     if not from_address or len(string.split(from_address,'@')) != 2:
         from_address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
-    
-    # Read in the message body.
-    message_body = message.read()
-    
+        
     # If recipients were provided as arguments, use them.
     if args:
         address_list = args
@@ -329,6 +338,7 @@ def main():
     if message_headers.has_key('x-tmda'):
         x_tmda_over = 1
         x_tmda = message_headers.getheader('x-tmda')
+        log_msg = '%s: %s' % ('X-TMDA', x_tmda)
         # X-TMDA should only have one field.
         if len(string.split(x_tmda)) == 1:
 	    actions = { 'from' : FilterParser.splitaction(x_tmda) }
@@ -363,6 +373,9 @@ def main():
         if not actions:
 	    actions = {
                 'from' : FilterParser.splitaction(Defaults.ACTION_OUTGOING) }
+            log_msg = '%s (%s)' % ('action_outgoing', Defaults.ACTION_OUTGOING)
+        elif log_msg is None:
+            log_msg = matching_line
         # The message is sent to each recipient separately so that
         # everyone gets the correct tag.  Make sure your MUA
         # generates its own Message-ID: and Date: headers so they
@@ -373,7 +386,8 @@ def main():
 		       fullname,
                        message_headers,
                        message_body,
-                       actions)
+                       actions,
+                       log_msg)
     if qfilter:
         sys.exit(qfilter)
     else:

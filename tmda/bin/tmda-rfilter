@@ -276,38 +276,19 @@ if auto_reply:
 # Functions
 ###########
 
-def logit(action_msg, timesecs=None):
+def logit(action_msg):
     """Write delivery statistics to the logfile if it's enabled."""
     if Defaults.LOGFILE_INCOMING and recipient_address:
-        if not timesecs:
-            timesecs = time.time()
-        logfile = open(Defaults.LOGFILE_INCOMING, 'a') # append to the file
-        Date = Util.unixdate(timesecs)
-        From = message_headers.getheader('from')
-        ReplyTo = message_headers.getheader('reply-to')
-        EnvelopeSender = envelope_sender
-        To = recipient_address
-        Subject = subject
-        Action = action_msg
-        actionstr = 'Actn: ' + Action
         if not globals().get('auto_reply'):
-            actionstr = '%s (no reply)' % actionstr
-        sizestr = '(' + message_size + ')'
-        wsbuf = 78 - len(actionstr) - len(sizestr)
-        # Write the log entry and then close the log.
-        logfile.write('Date: ' + Date + '\n')
-        if (EnvelopeSender
-            and message_headers.getaddr('from')[1] != EnvelopeSender):
-            logfile.write('Sndr: ' + EnvelopeSender + '\n')
-        if From:
-            logfile.write('From: ' + From + '\n')
-        if ReplyTo:
-            logfile.write('Rept: ' + ReplyTo + '\n')
-        logfile.write('  To: ' + To + '\n')
-        logfile.write('Subj: ' + Subject + '\n')
-        logfile.write(actionstr + ' '*wsbuf + sizestr + '\n')
-        logfile.write('\n')
-        logfile.close()
+            action_msg = '%s (no reply)' % action_msg
+        from TMDA import MessageLogger
+        logger = MessageLogger.MessageLogger(Defaults.LOGFILE_INCOMING,
+                                             message_headers,
+                                             envsender = envelope_sender,
+                                             envrecip = recipient_address,
+                                             msg_size = message_size,
+                                             action_msg = action_msg)
+        logger.write()
 
 
 def send_bounce(bounce_message, **vars):

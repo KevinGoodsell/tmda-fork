@@ -1,3 +1,9 @@
+2002-08-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-rfilter (logit): Move guts into TMDA/MessageLogger.
+
+	* tmda-inject (inject_message): Add logging capability.
+
 2002-07-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (send_bounce): Consult ADDED_HEADERS_SERVER.

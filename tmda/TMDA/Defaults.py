@@ -728,21 +728,33 @@ if not vars().has_key('HOSTNAME'):
 # Filename which uncaught exceptions should be written to.
 #
 # Example:
-# LOGFILE_DEBUG = "/path/to/tmda_debug.log"
+# LOGFILE_DEBUG = "/path/to/logs/tmda.debug"
 #
 # No default.
 if not vars().has_key('LOGFILE_DEBUG'):
     LOGFILE_DEBUG = None
     
 # LOGFILE_INCOMING
-# Filename which delivery summaries should be written to.
+# Filename which incoming delivery (i.e, tmda-filter) summaries should
+# be written to.
 #
 # Example:
-# LOGFILE_INCOMING = "/path/to/tmda_incoming.log"
+# LOGFILE_INCOMING = "/path/to/logs/tmda.in"
 #
 # No default.
 if not vars().has_key('LOGFILE_INCOMING'):
     LOGFILE_INCOMING = None
+
+# LOGFILE_OUTGOING
+# Filename which outgoing message (i.e, tmda-sendmail) summaries
+# should be written to.
+#
+# Example:
+# LOGFILE_OUTGOING = "/path/to/logs/tmda.out"
+#
+# No default.
+if not vars().has_key('LOGFILE_OUTGOING'):
+    LOGFILE_OUTGOING = None
 
 # LOCALDATE
 # Set this variable to 0 if you want TMDA to generate ``Date:''
