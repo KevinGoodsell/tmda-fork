@@ -652,7 +652,7 @@ def bouncegen(mode, text=None):
             if Defaults.CGI_VIRTUALUSER:
                 # include the current uid, recipient address, and release cookie.
                 confirm_accept_url = '%s?%s&%s&%s' %(Defaults.CGI_URL,
-                                                     os.getuid(),
+                                                     os.geteuid(),
                                                      recipient_address,
                                                      Cookie.make_confirm_cookie(
                     timestamp,
