@@ -1,3 +1,8 @@
+2002-02-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (sendmail): Add quotes around both the sender and
+	recipient when calling sendmail from the shell.
+
 2002-02-25  Tim Legant  <tim@catseye.net>
 
 	* Defaults.py: Documented additional options for ACTION_OUTGOING.
@@ -14,9 +19,6 @@
 
 2002-02-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
-	* Defaults.py (BOUNCE_ENV_SENDER): Fix quoting to comply with
-	Util.sendmail().
-	
         * Util.py (pipecmd): New function that runs child processes with
         error checking.
 

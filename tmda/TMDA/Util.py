@@ -332,10 +332,10 @@ def sendmail(headers, body, recip, return_path=None):
     """
     import Defaults
     if return_path is not None:
-        env_sender = '-f ' + return_path
+        env_sender = "-f '%s'" % (return_path)
     else:
         env_sender = ''
-    cmd = "%s %s %s" % (Defaults.SENDMAIL, env_sender, recip)
+    cmd = "%s %s '%s'" % (Defaults.SENDMAIL, env_sender, recip)
     pipecmd(cmd, str(headers), '\n', body)
 
 

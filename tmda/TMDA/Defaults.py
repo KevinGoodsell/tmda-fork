@@ -154,10 +154,10 @@ if not vars().has_key('VIRTUALDOMAINS'):
 if not vars().has_key('BOUNCE_ENV_SENDER'):
     # Exim and Sendmail don't like -f ''
     if MAIL_TRANSFER_AGENT in ('exim', 'sendmail'):
-        BOUNCE_ENV_SENDER = "'<>'"
+        BOUNCE_ENV_SENDER = '<>'
     else:
-        BOUNCE_ENV_SENDER = "''"
-
+        BOUNCE_ENV_SENDER = ''
+        
 # BARE_APPEND
 # Filename to which a recipient's e-mail address should be
 # automatically appended if the outgoing <action> is in the form
