@@ -643,7 +643,7 @@ def bouncegen(mode, text=None):
                                                              timestamp,
                                                              pid,
                                                              'accept')
-        if Defaults.CGI_ACTIVE and Defaults.CGI_URL:
+        if Defaults.CGI_URL:
             # e.g, http://www.domain.tld/tmda.cgi?684.1038959858.48460.c7a2e8
             confirm_accept_url = '%s?%s.%s' %(Defaults.CGI_URL, os.geteuid(),
                                               Cookie.make_confirm_cookie(timestamp,
