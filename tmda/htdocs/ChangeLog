@@ -1,5 +1,7 @@
 2002-02-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* faq.ht: Update link to bbdb-normalize-tmda-addresses.
+	
 	* features.ht (Links): Mention OpenBSD port.
 
 	* download.ht: Link to OpenBSD port.
