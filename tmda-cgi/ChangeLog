@@ -2,8 +2,8 @@
 
 	* tmda-cgi 0.04 is released.
 
-	* Added code for "generate address", "test address", and "local config"
-	  buttons.
+	* Added code for "generate address", "test address", "local config",
+	  and "info" buttons.
 
 	* Added a bugfix that was causing some users to get an error when
 	  the pending list tried to find the size of a message.  No idea why
