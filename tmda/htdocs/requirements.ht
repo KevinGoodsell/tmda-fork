@@ -28,6 +28,7 @@ Currently supported MTAs include
 <a href="http://www.qmail.org/" TARGET="Resource Window">qmail</a>, 
 <a href="http://www.postfix.org/" TARGET="Resource Window">Postfix</a>,
 <a href="http://www.exim.org/" TARGET="Resource Window">Exim</a>,
+<a href="http://www.courier-mta.org/" TARGET="Resource Window">Courier</a>,
 and <a href="http://www.sendmail.org/" TARGET="Resource Window">Sendmail</a>.
 <br><br>
 
