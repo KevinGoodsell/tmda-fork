@@ -83,7 +83,7 @@ def CreateTgz(Archive, Filelist):
 
 Return 0 on success, error code on error."""
 
-  if not Util.CanWrite(os.path.join(os.environ["HOME"], Archive)):
+  if not Util.CanWrite(os.environ["HOME"], os.geteuid(), os.getegid(), 0):
     CgiUtil.TermError("Can't write.", "No write permissions.",
       "create backup", CgiUtil.FileDetails("home directory",
       os.environ["HOME"]), "Check file permissions in home directory.")

@@ -67,7 +67,7 @@ Where:
     -i <path>
     --install-prefix <path>
        Specify path to tmda-cgi.py and the other tmda-cgi program files.
-       Current default: %(Path)s
+       Current default: %(InstPath)s
 
     -l <path>
     --virtual-lookup <path>
@@ -191,7 +191,7 @@ If you installed TMDA from a FreeBSD port, try:
   "/usr/local/lib/python2.2/site-packages".""", "Base", os.path.isdir,
     "%s/TMDA")
   Ask("""Where did you install tmda-cgi?
-This is typically the CWD.""", "Path", os.path.isfile, "%s/tmda-cgi.py")
+This is typically the CWD.""", "InstPath", os.path.isfile, "%s/tmda-cgi.py")
   Ask("""Would you like to override the default config file location?
 If so, enter a "formula" to specify where to look for the config file.
 This formula is just a path, but it can include the character "~".
