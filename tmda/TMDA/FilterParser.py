@@ -39,16 +39,24 @@ class ParsingError(Error):
 class FilterParser:
     bol_comment = re.compile(r'\s*#')
 
-    whitespace = re.compile(r'\s+')
-
-    source_match = re.compile(r"""
-    (?:( (?:(?:to|from)(?:-(?:file|cdb|dbm|mailman\.\S+))?)
-    | (?:(?:body|headers)(?:-file)?)
+    most_sources = re.compile(r"""
+    ( (?:(?:to|from)(?:-(?:file|cdb|dbm|mailman\.\S+))?)
     | size )
     \ (?# NOTE: preceding character must be an actual space)
-    )? ( \S+ )""", re.VERBOSE | re.IGNORECASE)
+    """, re.VERBOSE | re.IGNORECASE)
+
+    hdrbody_sources = re.compile(r"""
+    ( (?:body|headers)(?:-file)?)
+    \ (?# NOTE: preceding character must be an actual space)
+    """, re.VERBOSE | re.IGNORECASE)
+
+    matches = re.compile(r"""
+    (?: \( ( (?: \\\) | [^)] )+ ) \)
+    | ( \S+ ) )
+    \ (?# NOTE: preceding character must be an actual space)
+    """, re.VERBOSE)
     
-    tag_action = re.compile(r'([A-Za-z][-\w]+) (\S+)')
+    tag_action = re.compile(r'([A-Za-z][-\w]+)\s+(\S+)')
 
     in_action = re.compile(r'(bounce|reject|drop|exit|stop|ok|accept|deliver|confirm)',
                            re.IGNORECASE)
@@ -127,8 +135,8 @@ class FilterParser:
             # comment at beginning of line, with or without leading whitespace
             if self.bol_comment.match(original_line):
                 continue
-	    # collapse any sequence of whitespace to a single space
-	    line = self.whitespace.sub(' ', original_line)
+	    # substitute space characters for tab characters
+	    line = string.replace(original_line, '\t', ' ')
             # lose end-of-line comments and trailing whitespace
             line = string.split(line, ' #')[0]
             line = string.rstrip(line)
@@ -162,7 +170,9 @@ class FilterParser:
 	with three fields.  The three fields are:
 	
 	  source    - string: to*, from*, body, headers, size, default
-	  match     - string: the email address to be matched against
+	  match     - string: the email address to be matched against, a
+                      filename or a regular expression enclosed within
+                      parentheses
 	  actions   - dictionary: a dictionary with a key of 'action' and
                       a value that is a tuple. The value tuple contains
                       the 'cookie' type and the 'cookie' option. Ex:
@@ -176,22 +186,27 @@ class FilterParser:
 	"""
 	rule = None
 	# first, get the source and the match
-	mo = self.source_match.match(rule_line)
+	mo = self.most_sources.match(rule_line)
+        if not mo:
+            mo = self.hdrbody_sources.match(rule_line)
 	if not mo:
 	    self.__adderror(self.__rule_lineno, rule_line)
 	else:
-	    (source, match) = mo.groups()
-	    if not source:
-		# missing source!
-		self.__adderror(self.__rule_lineno, rule_line)
-	    else:
-		action_line = rule_line[mo.end()+1:]
+	    source = mo.group(1)
+            match_line = string.lstrip(rule_line[mo.end():])
+            mo = self.matches.match(match_line)
+            if not mo:
+                # missing match
+                self.__adderror(self.__rule_lineno, match_line)
+            else:
+                match = mo.group(1) or mo.group(2)
+                action_line = string.lstrip(match_line[mo.end():])
                 actions = self.__buildactions(action_line, rule_line)
-		if actions:
-		    rule = (source, match, actions)
-		else:
-		    # missing action!
-		    self.__adderror(self.__rule_lineno, action_line)
+                if actions:
+                    rule = (source, match, actions)
+                else:
+                    # missing action!
+                    self.__adderror(self.__rule_lineno, action_line)
 	return rule
 
 
@@ -205,9 +220,9 @@ class FilterParser:
 	# raised at the end of the file and will contain a
 	# list of all bogus lines.
 	if self.checking:
-	    if not self.exception:
-		self.exception = ParsingError(self.filename)
-	    self.exception.append(lineno, `line`)
+	    if not self.__exception:
+		self.__exception = ParsingError(self.filename)
+	    self.__exception.append(lineno, `line`)
 
 
     def __buildactions(self, action_line, rule_line=None):
@@ -217,7 +232,7 @@ class FilterParser:
 	"""
 	actions = None
 	if action_line[:len('tag ')] == 'tag ':
-	    action_line = action_line[len('tag '):]
+	    action_line = string.lstrip(action_line[len('tag '):])
 	    while len(action_line) > 0:
 		mo = self.tag_action.match(action_line)
                 if not mo:
@@ -233,7 +248,7 @@ class FilterParser:
 		else:
 		    # malformed action
 		    self.__adderror(self.__rule_lineno, action)
-		action_line = action_line[mo.end()+1:]
+		action_line = string.lstrip(action_line[mo.end()+1:])
 	else:
 	    mo = self.in_action.match(action_line)
 	    if mo:
@@ -401,11 +416,20 @@ class FilterParser:
                 if found_match:
                     break
 	if found_match:
-	    line = str(source) + ' ' + str(match) + ' ' + _actionstr(actions)
+	    line = _rulestr(source, match, actions)
 	else:
 	    actions = None
 	return actions, line
 
+
+def _rulestr(source, match, actions):
+    """
+    Build string from source, match and actions.
+    """
+    if source in ('headers', 'body'):
+        match = '(' + str(match) + ')'
+    line = str(source) + ' ' + match + ' ' + _actionstr(actions)
+    return line
 
 def _actionstr(actions):
     """

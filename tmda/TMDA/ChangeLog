@@ -1,3 +1,29 @@
+2002-01-24  Tim Legant  <tim@catseye.net>
+
+	* FilterParser.py (FilterParser): Removed 'whitespace' and
+	source_match regular expressions and added 'most_sources',
+	'hdrbody_sources' and 'matches' regular expressions. Modified
+	'tag_action' regular expression.
+	
+	* (FilterParser.__readrule): Changed whitespace collapse to simply
+	substitue a space for every tab.
+
+	* (FilterParser.__parserule): Rewrote to handle parenthesized
+	regular expressions with embedded spaces (for the 'headers' and
+	'body' sources).
+
+	* (FilterParser.__adderror): Fixed massive bug. Should have been
+	'__exception', not 'exception'.  When 'checking' was True, this
+	resulted in a NameError exception.
+
+	* (FilterParser.__buildactions): Fixed to handle multiple spaces
+	between headers and actions.
+
+	* (FilterParser.firstmatch): Created 'line' return value by
+	calling new module-level function, '_rulestr'.
+
+	* (_rulestr): New function.
+
 2002-01-19  Tim Legant  <tim@catseye.net>
 
 	* FilterParser.py: Rewrite to support multiline,
