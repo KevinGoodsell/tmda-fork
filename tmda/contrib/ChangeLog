@@ -1,3 +1,7 @@
+2001-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: New RPM spec file from Ron Bickers.
+
 2001-06-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* bounce_dated.txt: 'From' and 'Subject' headers are now in the
