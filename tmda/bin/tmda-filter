@@ -349,6 +349,7 @@ def bouncegen(mode):
     envelope_sender = globals().get('envelope_sender')
     subject = globals().get('subject')
     original_message = globals().get('message')
+    original_message_headers = globals().get('message_headers')
     pkg_template_dir = '/etc/tmda/'    # Debian
     if not os.path.exists(pkg_template_dir):
         pkg_template_dir = sys.prefix + '/share/tmda/' # Redhat
