@@ -1262,7 +1262,8 @@ if not vars().has_key('PURGED_HEADERS'):
 # The header should contain one fully-qualified e-mail address.  This
 # can be used in rare cases when you need to override the RECIPIENT
 # environment variable, which is how TMDA normally determines the
-# envelope recipient address.
+# envelope recipient address. If EXT isn't set, the address extension
+# will also be extracted from RECIPIENT_HEADER.
 #
 # Example:
 #

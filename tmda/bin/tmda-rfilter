@@ -184,6 +184,13 @@ if envelope_recipient == None:
 # EXT is the recipient address extension.
 address_extension = (os.environ.get('EXT')           # qmail
                      or os.environ.get('EXTENSION')) # Postfix
+# Extract EXT from Defaults.RECIPIENT_HEADER if it isn't set.
+if not address_extension and (Defaults.RECIPIENT_HEADER and recipient_header):
+    recip = recipient_header.split('@')[0]       # remove domain
+    if recip:
+        pieces = recip.split(Defaults.RECIPIENT_DELIMITER, 1)
+        if len(pieces) > 1:
+            address_extension = pieces[1]
 
 # If SENDER exists but its value is empty, the message has an empty
 # envelope sender.  Set it to the string '<>' so it can be matched as

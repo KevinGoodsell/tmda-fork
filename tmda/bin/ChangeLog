@@ -1,3 +1,8 @@
+2003-03-04  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (address_extension): Extract address_extension from
+	Defaults.RECIPIENT_HEADER if it's set and $EXT is not.
+
 2003-02-26  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* tmda-inject (inject_message): Sort ADDED_HEADERS_CLIENT before
