@@ -847,13 +847,19 @@ def wraptext(text, column=70, honor_leading_ws=1):
 def maketext(templatefile, vardict):
     """Make some text from a template file.
 
-     Several locations are scanned for templatefile, in the following order:
-     1. The directory specified by tmda-filter's `-t' option.
-     2. Defaults.TEMPLATE_DIR_MATCH_SENDER (if true)
-     3. Defaults.TEMPLATE_DIR_MATCH_RECIPIENT (if true)
-     4. Defaults.TEMPLATE_DIR
-     5. ../templates/
-     6. The package/RPM template directories.
+    templatefile can either be an absolute pathname starting with an /
+    or ~ (e.g, /usr/local/packages/tmda/templates/bounce.txt) or a
+    relative pathname (e.g, bounce.txt).
+
+    Given a relative pathname, several locations are scanned for
+    templatefile, in the following order:
+
+    1. The directory specified by tmda-filter's `-t' option.
+    2. Defaults.TEMPLATE_DIR_MATCH_SENDER (if true)
+    3. Defaults.TEMPLATE_DIR_MATCH_RECIPIENT (if true)
+    4. Defaults.TEMPLATE_DIR
+    5. ../templates/
+    6. The package/RPM template directories.
 
     The first match found stops the search.  In this way, you can
     specialize templates at the desired level, or, if you use only the
@@ -868,51 +874,57 @@ def maketext(templatefile, vardict):
     and licensed under the GNU General Public License version 2.
     """
     import Defaults
-    # Calculate the locations to scan.
-    searchdirs = []
-    searchdirs.append(os.environ.get('TMDA_TEMPLATE_DIR'))
-    if Defaults.TEMPLATE_DIR_MATCH_SENDER and Defaults.TEMPLATE_DIR:
-        sender = os.environ.get('SENDER').lower()
-        searchdirs.append(os.path.join(Defaults.TEMPLATE_DIR, sender))
-        try:
-            domainparts = sender.split('@', 1)[1].split('.')
-            for i in range(len(domainparts)):
-                searchdirs.append(os.path.join
-                                  (Defaults.TEMPLATE_DIR, '.'.join(domainparts)))
-                del domainparts[0]
-        except IndexError:
-            pass
-    if Defaults.TEMPLATE_DIR_MATCH_RECIPIENT and Defaults.TEMPLATE_DIR:
-        recipient = os.environ.get('TMDA_RECIPIENT').lower()
-        searchdirs.append(os.path.join(Defaults.TEMPLATE_DIR, recipient))
-        try:
-            recippart, domainpart = recipient.split('@',1)
-            recipparts = recippart.split(Defaults.RECIPIENT_DELIMITER)
-            for i in range(len(recipparts)):
-                searchdirs.append(os.path.join
-                                  (Defaults.TEMPLATE_DIR,
-                                   Defaults.RECIPIENT_DELIMITER.join(recipparts) +
-                                   "@" + domainpart))
-                del recipparts[-1]
-            domainparts = domainpart.split('.')
-            for i in range(len(domainparts)):
-                searchdirs.append(os.path.join
-                                  (Defaults.TEMPLATE_DIR, '.'.join(domainparts)))
-                del domainparts[0]
-        except IndexError:
-            pass
-    searchdirs.append(Defaults.TEMPLATE_DIR)
-    searchdirs.append(os.path.join(Defaults.PARENTDIR, 'templates'))
-    searchdirs.append(os.path.join(sys.prefix, 'share/tmda'))
-    searchdirs.append('/etc/tmda/')
-    # Start scanning.
     foundit = None
-    for dir in searchdirs:
-        if dir:
-            filename = os.path.join(dir, templatefile)
-            if os.path.exists(filename):
-                foundit = filename
-                break
+    if (templatefile[0] == '/' or templatefile[0] == '~'):
+        if templatefile[0] == '~':
+            templatefile = os.path.expanduser(templatefile)
+        if os.path.exists(templatefile):
+            foundit = templatefile
+    else:
+        # Calculate the locations to scan.
+        searchdirs = []
+        searchdirs.append(os.environ.get('TMDA_TEMPLATE_DIR'))
+        if Defaults.TEMPLATE_DIR_MATCH_SENDER and Defaults.TEMPLATE_DIR:
+            sender = os.environ.get('SENDER').lower()
+            searchdirs.append(os.path.join(Defaults.TEMPLATE_DIR, sender))
+            try:
+                domainparts = sender.split('@', 1)[1].split('.')
+                for i in range(len(domainparts)):
+                    searchdirs.append(os.path.join
+                                      (Defaults.TEMPLATE_DIR, '.'.join(domainparts)))
+                    del domainparts[0]
+            except IndexError:
+                pass
+        if Defaults.TEMPLATE_DIR_MATCH_RECIPIENT and Defaults.TEMPLATE_DIR:
+            recipient = os.environ.get('TMDA_RECIPIENT').lower()
+            searchdirs.append(os.path.join(Defaults.TEMPLATE_DIR, recipient))
+            try:
+                recippart, domainpart = recipient.split('@',1)
+                recipparts = recippart.split(Defaults.RECIPIENT_DELIMITER)
+                for i in range(len(recipparts)):
+                    searchdirs.append(os.path.join
+                                      (Defaults.TEMPLATE_DIR,
+                                       Defaults.RECIPIENT_DELIMITER.join(recipparts) +
+                                       "@" + domainpart))
+                    del recipparts[-1]
+                domainparts = domainpart.split('.')
+                for i in range(len(domainparts)):
+                    searchdirs.append(os.path.join
+                                      (Defaults.TEMPLATE_DIR, '.'.join(domainparts)))
+                    del domainparts[0]
+            except IndexError:
+                pass
+        searchdirs.append(Defaults.TEMPLATE_DIR)
+        searchdirs.append(os.path.join(Defaults.PARENTDIR, 'templates'))
+        searchdirs.append(os.path.join(sys.prefix, 'share/tmda'))
+        searchdirs.append('/etc/tmda/')
+        # Start scanning.
+        for dir in searchdirs:
+            if dir:
+                filename = os.path.join(dir, templatefile)
+                if os.path.exists(filename):
+                    foundit = filename
+                    break
     if foundit is None:
         raise IOError, "Can't find " + templatefile
     else:

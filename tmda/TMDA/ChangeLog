@@ -1,3 +1,13 @@
+2003-06-08  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Util.py (maketext): Now accepts an absolute pathname to a
+	template file which short-circuits the searching process.
+
+2003-06-08  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* FilterParser.py (_FilterFile.__init__): bounce,reject now can
+	take an option, which is the path to a specific template.
+
 2003-06-05  Cory Wright <cwright@standblue.net>
 
 	* Util.py (maketext): Recognize TEMPLATE_DIR_MATCH_RECIPIENT.

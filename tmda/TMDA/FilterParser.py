@@ -244,10 +244,9 @@ class FilterParser:
     """, re.VERBOSE)
 
     in_action = re.compile(r"""
-    ( bounce | reject
-    | drop | exit | stop
+    ( drop | exit | stop
     | confirm | hold
-    | (?: deliver | ok | accept)(?:\s*=.*$)? )
+    | (?: bounce | reject | deliver | ok | accept)(?:\s*=.*$)? )
     """, re.VERBOSE | re.IGNORECASE)
     
     out_action = re.compile(r"""

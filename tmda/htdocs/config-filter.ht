@@ -116,13 +116,23 @@ outgoing.
 (for incoming, action can be one of):
 <blockquote><pre>
 bounce,reject (bounce the message)
+bounce,reject=&lt;template&gt; (bounce the message using a specific template)
 drop,exit,stop (silently drop the message)
 ok,accept,deliver (deliver the message)
 ok,accept,deliver=&lt;instruction&gt; (deliver to a Maildir, mbox, program, or address)
 confirm (request confirmation for the message)
 hold (store the message in the pending queue but do not send a confirmation request)
-
 </blockquote></pre>
+
+The <b>template</b> option to <b>bounce,reject</b> can be used
+to bounce the message using a specific template file rather than the
+default (bounce.txt).  The option can be an absolute pathname to the
+template file (e.g, <i>/path/to/template.txt</i>).  Pathnames
+starting with a tilde will be expanded.  It can also be
+a relative pathname, in which case the template will be searched for
+under <a href="config-vars.html#TEMPLATE_DIR">TEMPLATE_DIR</a> as
+described in the <a href="howto-template.html">Template HOWTO</a>.
+<br><br>
 
 The <b>instruction</b> option to <b>ok,accept,deliver</b> can be used
 to short-circuit the default delivery method by delivering the message

@@ -603,7 +603,7 @@ def create_pending_msg(timestamp, pid):
     return pending_message
 
 
-def bouncegen(mode, text=None):
+def bouncegen(mode, text=None, template=None):
     """Bounce a message back to sender."""
     # Stop right away if --discard was specified.
     if discard:
@@ -639,7 +639,10 @@ def bouncegen(mode, text=None):
         if text is None:
             mta.stop()
         else:
-            templatefile = 'bounce.txt'
+            if template:
+                templatefile = template
+            else:
+                templatefile = 'bounce.txt'
             bounce_text = Util.wraptext(text)
     elif mode == 'request':               # confirmation requests
         templatefile = 'confirm_request.txt'
@@ -750,8 +753,13 @@ def main():
     if action in ('bounce','reject'):
         if Defaults.FILTER_BOUNCE_CC:
             send_cc(Defaults.FILTER_BOUNCE_CC)
-        logit('%s (%s)' % ('BOUNCE', matching_line))
-        bouncegen('bounce', Defaults.BOUNCE_TEXT_FILTER_INCOMING)
+        if option:
+            logit('%s (%s)' % ('BOUNCE', matching_line + '=' + option))
+            bouncegen('bounce', Defaults.BOUNCE_TEXT_FILTER_INCOMING,
+                      template=option)
+        else:
+            logit('%s (%s)' % ('BOUNCE', matching_line))
+            bouncegen('bounce', Defaults.BOUNCE_TEXT_FILTER_INCOMING)
     elif action in ('drop','exit','stop'):
         if Defaults.FILTER_DROP_CC:
             send_cc(Defaults.FILTER_DROP_CC)

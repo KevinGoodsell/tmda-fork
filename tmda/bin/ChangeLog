@@ -1,3 +1,10 @@
+2003-06-08  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (bouncegen): Add a 'template' function parameter,
+	which defaults to None.
+
+	(main): Support bounce=template FILTER_INCOMING instructions.
+		
 2003-05-30  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-rfilter (recipient_address): export TMDA_RECIPIENT to the
