@@ -27,11 +27,12 @@ Filter file syntax documented in htdocs/config-filter.html
 
 
 import os
+import popen2
 import re
 import string
 import sys
-import types
 import time
+import types
 
 import Util
 
@@ -922,12 +923,28 @@ class FilterParser:
             # A match is found if the command exits with a zero exit
             # status.
             if source == 'pipe' and msg_body and msg_headers:
-                p = os.popen(match, 'w')
-                p.write(msg_headers + '\n' + msg_body)
-                estat = p.close()
-                if estat is None:
+                cmd = popen2.Popen3(match, 1, bufsize=-1)
+                cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
+                cmdin.write(msg_headers + '\n' + msg_body)
+                cmdin.flush()
+                cmdin.close()
+                err = cmderr.read().strip()
+                cmderr.close()
+                out = cmdout.read().strip()
+                cmdout.close()
+                r = cmd.wait()
+                if r == 0:
                     found_match = 1
                     break
+                else:
+                    # non-zero exit status
+                    if os.WIFEXITED(r):
+                        pass
+                    # raise an exception if the process exited due to
+                    # a signal.
+                    elif os.WIFSIGNALED(r):
+                        raise Error, 'command "%s" abnormal exit signal %s (%s)' \
+                              % (match, os.WTERMSIG(r), err or '')
             if source in ('body', 'headers'):
                 if source == 'body' and msg_body:
                     content = msg_body
