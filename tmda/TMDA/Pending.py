@@ -400,6 +400,10 @@ class Message:
 
     def release(self):
         """Release a message from the pending queue."""
+        try:
+            self.return_path
+        except:
+            self.initMessage()
         import Cookie
         if Defaults.PENDING_RELEASE_APPEND:
             Util.append_to_file(self.return_path,
@@ -425,6 +429,10 @@ class Message:
 
     def delete(self):
         """Delete a message from the pending queue."""
+        try:
+            self.return_path
+        except:
+            self.initMessage()
         if Defaults.PENDING_DELETE_APPEND:
             Util.append_to_file(self.return_path,
                                 Defaults.PENDING_DELETE_APPEND)
@@ -432,6 +440,10 @@ class Message:
 
     def whitelist(self):
         """Whitelist the message sender."""
+        try:
+            self.return_path
+        except:
+            self.initMessage()
         if Defaults.PENDING_WHITELIST_APPEND:
             Util.append_to_file(self.return_path,
                                 Defaults.PENDING_WHITELIST_APPEND)
@@ -441,6 +453,10 @@ class Message:
 
     def blacklist(self):
         """Blacklist the message sender."""
+        try:
+            self.return_path
+        except:
+            self.initMessage()
         if Defaults.PENDING_BLACKLIST_APPEND:
             Util.append_to_file(self.return_path,
                                 Defaults.PENDING_BLACKLIST_APPEND)
