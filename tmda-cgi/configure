@@ -429,3 +429,6 @@ install:
 \tcp -f tmda.cgi %(Target)s
 \tchmod %(Perm)s %(Target)s
 """ % OptD)
+
+# Compile Python code
+compileall.compile_dir(OptD["Path"])
