@@ -2,11 +2,11 @@
 
 If you are upgrading from a release of TMDA < 0.56:
 
-* TMDA now sends outgoing mail via direct SMTP instead of with the
-  /usr/sbin/sendmail program.  By default it will use the standard
-  SMTP port (25) on the local host.  You can modify this by setting
-  the "SMTPHOST" variable in your tmdarc.  See TMDA/Defaults.py for
-  further information.
+* TMDA now sends outgoing mail by handing it off to an SMTP server
+  instead of the /usr/sbin/sendmail program.  By default it will use
+  the standard SMTP port (25) on the local host.  You can modify this
+  by setting the "SMTPHOST" variable in your tmdarc.  See
+  TMDA/Defaults.py for further information.
 
 * tmdarc variable SENDMAIL has been renamed SENDMAIL_PROGRAM.
 

@@ -175,17 +175,18 @@ else:
 CRYPT_KEY = binascii.unhexlify(open(CRYPT_KEY_FILE).read().strip())
 
 # OUTGOINGMAIL
-# Final delivery method for outgoing mail, both for replies to
-# incoming messages, and also for the client side of TMDA.  Possible
-# values include:
+# Final delivery method for all outgoing mail (server and client).
+# Possible values include:
 # 
 # "smtp"
-#    Deliver messages via SMTP to a locally specified daemon.  Be sure
-#    that the "SMTPHOST" variable (see below) is set correctly.
+#    Deliver messages by handing them off to an SMTP server (i.e,
+#    smarthost).  Be sure that the "SMTPHOST" variable (see below) is
+#    set correctly.
 #
 # "sendmail"
 #    Deliver messages via the command line interface to the sendmail
-#    program.  Use at your own risk.  smtp is recommended.
+#    program (/usr/sbin/sendmail).  Use at your own risk.  "smtp" is
+#    highly recommended.
 #
 #    SECURITY WARNING: The 'sendmail' method is not secure.  Because
 #    this method uses popen(), it goes through the shell.  It does not
