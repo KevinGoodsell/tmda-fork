@@ -1,0 +1,223 @@
+#!/usr/bin/env python
+#
+# Copyright (C) 2002 Gre7g Luterman <gre7g@wolfhome.com>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+"""Pending queue manipulation tool.
+
+Usage:  %(Program)s [OPTIONS]
+
+Where:
+    -c <file>
+    --config-file <file>
+       Specify a different configuration file other than ~/.tmda/config.
+
+    -d <path>
+    --display-dir <path>
+       Specify a different directory for supplimental display files (icons and
+       stylesheet).
+
+    -h
+    --help
+       Print this help message and exit.
+
+    -i <path>
+    --install-prefix <path>
+       Specify path to tmda-cgi.py other than the currect directory.
+
+    -m system-wide|single-user|no-su
+    --mode system-wide|single-user|no-su
+       Specify an operating mode.
+
+    -n
+    --no-su
+       Compile a CGI to run in no-su mode.  Forces option "-m no-su".
+
+    -t <file>
+    --target <file>
+       Compile as a file other than ./tmda-cgi.
+
+    -u <user>
+    --user <user>
+       Overrides the value of CGI_USER found in the configuration files.
+       (Only affects system-wide mode.)
+
+By default, this program compiles tmda-cgi in the current directory and sets
+the program to run as the user who compiled it.  If that user is root, the
+resulting CGI will run in system-wide mode.  Otherwise it will run in single-
+user mode. You may optionally specify the -n option to compile for no-su mode.
+
+The -i and -m options are seldom needed.  These options are for the rare cases
+when a user other than root needs to compile the program for use in system-
+wide mode.  For the resulting code to run correctly, root will have to chown
+the resulting program.
+
+The target may be specified on the command line with the -t option.
+
+You can specify the location of the supplimental display files (icons and
+stylesheet) with the -d option.  The default location is:
+
+    ../display/
+
+Use the -c option to specify a different location for your TMDA configuration
+file.  You may use a "~" anywhere in the path to specify "the current user".
+For example:
+
+    %(Program)s -c /var/tmda/~/config
+
+Will look for configuration files at /var/tmda/<user>/config instead of the
+usual ~<user>/.tmda/config.
+
+If no ~ is specified, compile will make a "best guess".
+"""
+
+import getopt
+import os.path
+import pwd
+import re
+import string
+import sys
+
+import paths
+User = None
+try:
+  import Defaults
+  User = Defaults.CGI_USER
+except ImportError:
+  pass
+
+Program = sys.argv[0]
+Target  = "tmda-cgi"
+Perm    = 04755
+Path    = "."
+DispDir = "../display/"
+if os.geteuid():
+  Mode = "single-user"
+else:
+  Mode = "system-wide"
+
+def Usage(Code, Msg=""):
+  print __doc__ % globals()
+  if Msg: print Msg
+  sys.exit(Code)
+
+try:
+  Opts, Args = getopt.getopt(sys.argv[1:], "c:d:i:m:nht:u:",
+    ["config-file=", "display-dir=", "help", "install-prefix=", "mode=",
+     "no-su", "target=", "user="])
+except getopt.error, Msg:
+  Usage(1, Msg)
+
+for Opt, Arg in Opts:
+  if Opt in ("-h", "--help"):
+    Usage(0)
+  elif Opt in ("-c", "--config-file"):
+    os.environ["TMDARC"] = Arg
+  elif Opt in ("-d", "--display-dir"):
+    if Arg[-1] == "/":
+      DispDir = Arg
+    else:
+      DispDir = Arg + "/"
+  elif Opt in ("-i", "--install-prefix"):
+    Path = Arg
+  elif Opt in ("-t", "--target"):
+    Target = Arg
+  elif Opt in ("-m", "--mode"):
+    if not Arg in ("system-wide", "single-user", "no-su"):
+      Usage(1, "Valid modes are system-wide, single-user, and no-su")
+    Mode = Arg
+    if Arg == "no-su": Perm = 0755
+  elif Opt in ("-n", "--no-su"):
+    Perm = 0755
+    Mode = "no-su"
+  elif Opt in ("-u", "--user"):
+    User = Arg
+
+# Check that we're running in Python version 2.1 or higher
+if sys.version.split()[0] < '2.1':
+  print """Compile terminated.  tmda-cgi requires Python version 2.1 or higher.
+
+Either install the latest version of Python or specify the appropriate Python
+interpreter when you issue the compile command.  Instead of typing:
+
+    $ ./compile <options>
+
+Type:
+
+    $ /usr/bin/python2 compile <options>
+
+(Assuming that your Python 2.1+ can be found at /usr/bin/python2.)
+The compiler will save the correct version of the Python interpreter and use it
+when tmda-cgi is run."""
+  sys.exit()
+
+# Check that User is valid and unprivileged (system-wide mode only).
+if Mode == "system-wide":
+  if not User:
+    print """Compile terminated.  System-wide mode requires that you specify a non-
+privileged CGI_USER in either a configuration file or with the -u option."""
+    sys.exit()
+  try:
+    if not pwd.getpwnam(User)[2]:
+      print """Compile terminated.  CGI_USER may not be root.  Please specify a non-
+privileged user with the -u option."""
+      sys.exit()
+  except KeyError:
+    print """Compile terminated.  System-wide mode requires that you specify a real, non-
+privileged CGI_USER in either a configuration file or with the -u option."""
+    sys.exit()
+
+
+Path = os.path.abspath(Path)
+
+# Create dirs.h
+F = open("dirs.h", "w")
+F.write("""#define PYTHON "%s"
+#define INSTALL "%s"
+#define MODE "TMDA_CGI_MODE=%s"
+#define USER "TMDA_CGI_USER=%s"
+#define DISP_DIR "TMDA_CGI_DISP_DIR=%s"
+""" % (sys.executable, Path, Mode, User, DispDir))
+if os.environ.has_key("TMDARC"):
+  TMDARC = os.environ["TMDARC"]
+  if TMDARC.find("~") < 0:
+    TMDARC = string.replace(TMDARC, "/%s/" % os.environ["USER"], "/~/")
+    print """NOTE:
+tmda-cgi will look for config files at: %s
+Where <user> will be replaced by the user's login name.
+""" % string.replace(TMDARC, "/~/", "/<user>/")
+  F.write("""#define TMDARC "TMDARC=%s"
+""" % TMDARC)
+F.close()
+
+# Remove any old tmda-rc
+try:
+  os.unlink(Target)
+except: pass
+
+# Compile tmda-cgi
+os.system("gcc tmda-cgi.c -o %s" % Target)
+
+# Remove dirs.h
+os.unlink("dirs.h")
+
+# Set permissions
+os.chmod(Target, Perm)
+
+print "Compilation done."

@@ -1,0 +1,19 @@
+body         { color: #000000; background-color: #FFFFCC                     }
+a            { color: #6600FF                                                }
+.Attachments { text-align: center                                            }
+.EmailText   { font-family: "Courier New", Courier, mono; font-size: smaller }
+.GoButton    { width: 66px                                                   }
+.Heading     { font-size: 14px; font-weight: bold; height: 25px              }
+.Headers th  { text-align: left; vertical-align: baseline                    }
+.Headers td  { font-family: "Courier New", Courier, mono;
+               font-size: smaller; vertical-align: baseline                  }
+.InProcess   { font-style: italic                                            }
+.LoginButton { width: 66px                                                   }
+.LoginOuter  { border: medium double #000000                                 }
+.MailList th { text-align: left                                              }
+.MailList td { vertical-align: baseline                                      }
+.NewMsg td   { font-weight: bold                                             }
+.Note        { font-weight: bold; font-style: italic; vertical-align: top    }
+.PartDiv     { width: 530px; text-align: left                                }
+.Release     { border: medium double #000000                                 }
+.Spacer      { background-color: #CCCCCC; height: 2px                        }
