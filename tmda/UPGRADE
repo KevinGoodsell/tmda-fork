@@ -2,10 +2,20 @@
 
 If you are upgrading from a release of TMDA < 0.45:
 
+* Filter file rules must now start at the beginning of a line.  e.g,
+
+  # invalid
+    from johndoe ok
+
+  # valid
+  from johndoe ok
+
+  See the documentation for more details on filter file syntax.
+
 * tmda-filter no longer looks for the `X-Originally-To' header by
   default.  If you need to retain this feature, set the following in
   your tmdarc:
-
+  
   RECIPIENT_HEADER = "x-originally-to"
 
   See the related documentation for RECIPIENT_HEADER in Defaults.py.
@@ -186,3 +196,8 @@ motivations behind this, see `CRYPTO'.
   necessary with bin/tmda-dated-address and bin/tmda-sender-address.
 
 ======================================================================
+
+^L
+Local Variables:
+mode: text
+End:
