@@ -196,9 +196,9 @@ Send the message to all recipients from jason-mlist-xemacs-beta@mastaler.com
 
 <li>.tmdarc configuration:<br><br>
 
-Make sure that you use the same .tmdarc on your mail server as you do
-on your client, so that required settings such as CRYPT_KEY
-match.<br><br>
+Make sure that your <b>.tmdarc</b> contains the same <b>CRYPT_KEY</b>
+on both your mail server and your mail client -- they must match.
+<br><br>
 
 <strong>NOTE:</strong>
 
