@@ -1,3 +1,13 @@
+2001-05-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-inject (main): When using TMDA with qfilter, Bcc recipients
+	are silently ignored since they aren't in the headers at the time
+	qfilter passes the message to tmda-inject.  Fix this by making
+	tmda-inject use the QMAILRCPTS environment variable set by qfilter
+	when it's available, instead of getting the address list from the
+	headers.  This variable will contain a list of envelope
+	recipients, which will include any Bcc recipients.
+
 2001-05-28  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-sender-address (main): Bugfix.  When you provide arguments

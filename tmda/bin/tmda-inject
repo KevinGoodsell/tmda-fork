@@ -153,13 +153,17 @@ def main():
     # Read in the message body.
     message_body = message.read()
     
-    # Downcase and then combine To:, Cc:, and Bcc: addresses into one list.
-    address_list = []
-    for list in header_to,header_cc,header_bcc:
-        for a in list:
-            address = string.lower(a[1])
-            address_list.append(address)
-
+    # If running through qfilter, get recipient list from QMAILRCPTS.
+    if os.environ.has_key('QMAILRCPTS'):
+        address_list = string.split(os.environ['QMAILRCPTS'],'\n')[:-1]
+    else:
+        # Downcase and then combine To:, Cc:, and Bcc: addresses into one list.
+       address_list = []
+       for list in header_to,header_cc,header_bcc:
+           for a in list:
+               address = string.lower(a[1])
+               address_list.append(address)
+               
     # Check for the `X-TMDA' override header.
     if message_headers.has_key('x-tmda'):
         x_tmda_over = 1
