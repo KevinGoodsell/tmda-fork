@@ -1,3 +1,7 @@
+2001-08-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: USEVIRTUALDOMAINS replaces QMAILVIRTUALDOMAINS.
+
 2001-08-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* sample.tmdarc: Add QMAILVIRTUALDOMAINS and VIRTUALDOMAINS.

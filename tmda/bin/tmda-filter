@@ -109,7 +109,7 @@ envelope_recipient = (message_headers.getheader('x-originally-to') or
 # not qmail-send's rewritten interpretation.  This will be the same as
 # envelope_recipient if we are not running under a virtualdomain.
 original_recipient = envelope_recipient
-if Defaults.QMAILVIRTUALDOMAINS:
+if Defaults.USEVIRTUALDOMAINS:
     (ousername, odomain) = string.split(envelope_recipient,'@')
     for line in fileinput.input(Defaults.VIRTUALDOMAINS):
         line = string.lower(string.strip(line))

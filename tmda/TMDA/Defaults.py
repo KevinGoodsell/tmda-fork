@@ -79,13 +79,13 @@ else:
 if not vars().has_key('DATADIR'):
     DATADIR = os.path.expanduser("~/.tmda/")
 
-# QMAILVIRTUALDOMAINS
+# USEVIRTUALDOMAINS
 # Set this variable to 0 if want to turn off TMDA's virtualdomains
 # support.  This should obviously only be done if you are not running
 # any virtualdomains, but it will improve performance.
 # Default is 1 (turned on)
-if not vars().has_key('QMAILVIRTUALDOMAINS'):
-    QMAILVIRTUALDOMAINS = 1
+if not vars().has_key('USEVIRTUALDOMAINS'):
+    USEVIRTUALDOMAINS = 1
 
 # VIRTUALDOMAINS
 # virtualdomains defaults to /var/qmail/crontrol/virtualdomains, but
@@ -93,7 +93,7 @@ if not vars().has_key('QMAILVIRTUALDOMAINS'):
 # for virtualdomain processing in tmda-filter.
 if not vars().has_key('VIRTUALDOMAINS'):
     VIRTUALDOMAINS = "/var/qmail/control/virtualdomains"
-if QMAILVIRTUALDOMAINS:
+if USEVIRTUALDOMAINS:
     if not os.path.exists(VIRTUALDOMAINS):
         print "file not found:",VIRTUALDOMAINS
         sys.exit(ERR_CONFIG)

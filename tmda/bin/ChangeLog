@@ -1,3 +1,8 @@
+2001-08-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (original_recipient): USEVIRTUALDOMAINS replaces
+	QMAILVIRTUALDOMAINS.
+	
 2001-08-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (original_recipient): original_recipient is the
