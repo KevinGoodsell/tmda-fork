@@ -1,5 +1,10 @@
 2002-04-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Version.py (ALL): Fall back to using sys.platform if os.uname()
+	isn't available on the host.  Also, use SYSNAME and MACHINE
+	instead of PLATFORM and ARCH to match the os.uname() docs.
+	PLATFORM is now SYSNAME/MACHINE.
+
 	* Util.py (pickleit): Write to a tmpfile, and then rename to the
 	target file.
 

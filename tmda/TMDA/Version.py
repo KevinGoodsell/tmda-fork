@@ -33,18 +33,19 @@ TMDA = "0.49+"
 # e.g, 2.2 
 PYTHON = sys.version.split()[0]
 
-# System information
-# e.g, ('OSF1', 'spe147', 'V5.1', '1885', 'alpha')
-UNAME = os.uname()
-
-# Platform identifier
-# e.g, OSF1
-PLATFORM = UNAME[0].replace(' ', '_').replace('/', '_')
-
-# Machine architecture
-# e.g, alpha
-ARCH = UNAME[4].replace(' ', '_').replace('/', '_')
-
+try:
+    # System information (sysname, nodename, release, version, machine)
+    # e.g, ('OSF1', 'spe147', 'V5.1', '1885', 'alpha')
+    UNAME = os.uname()
+    SYSNAME = UNAME[0].replace(' ', '_').replace('/', '_') # OSF1
+    MACHINE = UNAME[4].replace(' ', '_').replace('/', '_') # alpha
+    PLATFORM = os.path.join(SYSNAME, MACHINE) # OSF1/alpha
+except AttributeError:
+    # Fall back to using just sys.platform for PLATFORM if uname isn't
+    # available on this host.
+    UNAME = SYSNAME = MACHINE = None
+    PLATFORM = sys.platform             # osf1V5
+    
 # Summary of all the version identifiers
 # e.g, TMDA/0.49 (Python 2.2 on OSF1/alpha)
-ALL = "TMDA/%s (Python %s on %s/%s)" % (TMDA, PYTHON, PLATFORM, ARCH)
+ALL = "TMDA/%s (Python %s on %s)" % (TMDA, PYTHON, PLATFORM)
