@@ -3,6 +3,10 @@
 	* tmda-filter (envelope_sender): The envelope sender is used in
 	more than one place.
 
+	(send_bounce): Use the popen2 module instead of os.popen to inject
+	the message.  This works around an undetermined bug in some BSD
+	variants where python hangs after message delivery.
+
 	(bounce_dated): Add the ability to draw the bounce template from
 	multiple locations.  Command line takes priority, followed by the
 	.tmdarc setting, followed by the default in ../templates/.

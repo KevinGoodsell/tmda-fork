@@ -34,6 +34,7 @@ import cStringIO
 import getopt
 import fileinput
 import os
+import popen2
 import re
 import rfc822
 import stat
@@ -133,8 +134,10 @@ def send_bounce(bounce_message):
     message_headers['To'] = envelope_sender
     message_headers['X-Delivery-Agent'] = Defaults.DELIVERY_AGENT
     message_body = bounce_message.read()
-    inject = Defaults.INJECT + ' ' + envelope_sender
-    pipeline = os.popen(inject, 'w')
+    inject = []
+    inject.append(Defaults.INJECT)
+    inject.append(envelope_sender)
+    pipeline = popen2.popen2(inject)[1]
     pipeline.write(str(message_headers))
     pipeline.write('\n')
     pipeline.write(message_body)
