@@ -25,6 +25,10 @@ See http://tmda.net/config-vars.html for an HTMLized version of the
 information below.
 """
 
+# Some convenient constants
+ON = On = on = YES = Yes = yes = TRUE = true = True
+OFF = Off = off = NO = No = no = FALSE = false = False
+
 
 # NEVER make configuration changes to this file.  ALWAYS make them in
 # /etc/tmdarc or ~/.tmda/config instead.
