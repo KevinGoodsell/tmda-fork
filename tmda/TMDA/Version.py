@@ -43,7 +43,7 @@ PLATFORM = UNAME[0]
 
 # Machine architecture
 # e.g, IP27
-ARCH = UNAME[4]
+ARCH = UNAME[4].replace(' ', '_')
 
 # Summary of all the version identifiers
 # e.g, TMDA/0.49 (Python 2.2; IRIX64-IP27)
