@@ -1,3 +1,19 @@
+2001-10-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter (verify_dated_cookie): Move check for --discard to
+	into bouncegen().
+
+	(verify_sender_cookie): Ditto.
+
+	(bouncegen): Check at the top level whether --discard was
+	specified, and if so, stop processing rather than bounce.
+
+	(main): After passing through the list file and tagged message
+	checks, it is no longer relevant to assign the default COOKIE_TYPE
+	and then cycle back through the loop.  Instead, we just bounce the
+	message for confirmation request if we reach that point.  The
+	result is much cleaner code.
+	
 2001-10-08  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-filter (main): Fix a thinko where any incoming message

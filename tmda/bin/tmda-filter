@@ -106,8 +106,8 @@ envelope_sender = os.environ.get('SENDER')
 
 # $RECIPIENT is the envelope recipient address.
 # Use the X-Originally-To header if it exists.
-envelope_recipient = (message_headers.getheader('x-originally-to') or
-                      os.environ.get('RECIPIENT'))
+envelope_recipient = (message_headers.getheader('x-originally-to')
+                      or os.environ.get('RECIPIENT'))
 
 # recipient_address is the original address the message was sent to,
 # not qmail-send's rewritten interpretation.  This will be the same as
@@ -316,18 +316,10 @@ def verify_confirm_cookie(confirm_cookie):
 
 def verify_dated_cookie(dated_cookie):
     """Verify a dated cookie."""
-    # Save some time if the dated_cookie doesn't exist or is bogus.
-    if not dated_cookie:
-        if discard:
-            mta.stop()
-        else:
-            bouncegen('request')
+    # Save some time if the dated_cookie is bogus.
     dated_cookie_split = string.split(dated_cookie,'.')
     if len(dated_cookie_split) != 2:
-        if discard:
-            mta.stop()
-        else:
-            bouncegen('request')
+        bouncegen('request')
     cookie_date = dated_cookie_split[0]
     datemac = dated_cookie_split[1]
     newdatemac = Cookie.datemac(cookie_date)
@@ -337,8 +329,6 @@ def verify_dated_cookie(dated_cookie):
     if ((int(cookie_date) >= int('%d' % now)) and (datemac == newdatemac)):
         logit("OK good_dated_cookie",now)
         mta.deliver(message)
-    elif discard:
-        mta.stop()
     else:
         bouncegen('request')
 
@@ -350,14 +340,15 @@ def verify_sender_cookie(sender_address,sender_cookie):
     if (sender_cookie == sender_address_cookie):
         logit("OK good_sender_cookie", time.time())
         mta.deliver(message)
-    elif discard:
-        mta.stop()
     else:
         bouncegen('request')
 
 
 def bouncegen(mode):
     """Bounce a message back to sender."""
+    # Stop right away if --discard was specified.
+    if discard:
+        mta.stop()
     # Common variables.
     now = time.time()
     recipient_address = globals().get('recipient_address')
@@ -442,7 +433,8 @@ def bouncegen(mode):
 def main():
 
     # Get the cookie type and value by parsing the extension address.
-    ext = (os.environ.get('EXT') or os.environ.get('EXTENSION'))
+    ext = (os.environ.get('EXT')           # qmail
+           or os.environ.get('EXTENSION')) # Postfix
     if ext:
         ext = string.lower(ext)
         ext_split = string.split(ext, Defaults.RECIPIENT_DELIMITER)
@@ -455,7 +447,7 @@ def main():
     else:
         cookie_type = None
         cookie_value = None
-            
+    
     # Extract the e-mail address from From:, and Reply-To:
     EnvelopeSender = string.lower(envelope_sender)
     From = message_headers.getaddr('from')[1]
@@ -463,85 +455,60 @@ def main():
     ReplyTo = message_headers.getaddr('reply-to')[1]
     if ReplyTo:ReplyTo = string.lower(ReplyTo)
     
-    while 1:
-        # Is the sender in the BLACKLIST?
-        if os.path.exists(Defaults.BLACKLIST):
-            blacklist_list = []
-            blacklist_list = Util.file_to_list(Defaults.BLACKLIST,
-                                               blacklist_list)
-            if Util.findmatch(blacklist_list, EnvelopeSender,From,ReplyTo):
-                logit("DROP blacklist_match", time.time())
-                if Defaults.BOUNCE_BLACKLIST_CC:
-                    bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
-                mta.stop()
-                pass
-
-        # Confirm tag?
-        if cookie_type == 'confirm':
-            if not cookie_value:
-                cookie_type = Defaults.COOKIE_TYPE
-                pass
-            else:
-                verify_confirm_cookie(cookie_value)
-                pass
-
-        # Is the sender in the WHITELIST?
-        if os.path.exists(Defaults.WHITELIST):
-            whitelist_list = []
-            whitelist_list = Util.file_to_list(Defaults.WHITELIST,
-                                               whitelist_list)
-            if Util.findmatch(whitelist_list, EnvelopeSender,From,ReplyTo):
-                logit("OK whitelist_match", time.time())
-                mta.deliver(message)
-                pass
-
-        # Is the recipient in the REVOKED_FILE?
-        if os.path.exists(Defaults.REVOKED_FILE):
-            revoked_file_list = []
-            revoked_file_list = Util.file_to_list(Defaults.REVOKED_FILE,
-                                                  revoked_file_list)
-            if Util.findmatch(revoked_file_list, recipient_address):
-                logit("BOUNCE revoked_file_match", time.time())
-                if Defaults.BOUNCE_REVOKED_CC:
-                    bounce_cc(Defaults.BOUNCE_REVOKED_CC)
-                print "Sorry, this address has been revoked."
-                mta.bounce()
-                pass
-
-        # Is the message sacred?
-        if os.path.exists(Defaults.SACRED_FILE):
-            sacred_list = []
-            sacred_list = Util.file_to_list(Defaults.SACRED_FILE,sacred_list)
-            matches = 0
-            for single_expression in sacred_list:
-                if None != re.search(single_expression,message,(re.M|re.I)):
-                    matches = matches+1
-            if matches > 0:
-                logit("OK sacred_text_match", time.time())
-                mta.deliver(message)
-                pass
-            
-        # Dated tag?
-        if cookie_type == 'dated':
-            verify_dated_cookie(cookie_value)
-            pass
-        
-        # Sender tag?
-        if cookie_type == 'sender':
-            sender_address = globals().get('envelope_sender')
-            verify_sender_cookie(sender_address,cookie_value)
-            pass
-
-        # They get the default tag.
-        if Defaults.COOKIE_TYPE == 'dated':
-            cookie_type = 'dated'
-        elif Defaults.COOKIE_TYPE == 'sender':
-            cookie_type = 'sender'
-        elif Defaults.COOKIE_TYPE == 'bare':
-            bouncegen('request')
-        else:
-            print "unknown cookie type"
-            mta.defer()
+    # Is the sender in the BLACKLIST?
+    if os.path.exists(Defaults.BLACKLIST):
+        blacklist_list = []
+        blacklist_list = Util.file_to_list(Defaults.BLACKLIST,
+                                           blacklist_list)
+        if Util.findmatch(blacklist_list, EnvelopeSender,From,ReplyTo):
+            logit("DROP blacklist_match", time.time())
+            if Defaults.BOUNCE_BLACKLIST_CC:
+                bounce_cc(Defaults.BOUNCE_BLACKLIST_CC)
+            mta.stop()
+    # Confirm tag?
+    if cookie_type == 'confirm' and cookie_value:
+            verify_confirm_cookie(cookie_value)
+    # Is the sender in the WHITELIST?
+    if os.path.exists(Defaults.WHITELIST):
+        whitelist_list = []
+        whitelist_list = Util.file_to_list(Defaults.WHITELIST,
+                                           whitelist_list)
+        if Util.findmatch(whitelist_list, EnvelopeSender,From,ReplyTo):
+            logit("OK whitelist_match", time.time())
+            mta.deliver(message)
+    # Is the recipient in the REVOKED_FILE?
+    if os.path.exists(Defaults.REVOKED_FILE):
+        revoked_file_list = []
+        revoked_file_list = Util.file_to_list(Defaults.REVOKED_FILE,
+                                              revoked_file_list)
+        if Util.findmatch(revoked_file_list, recipient_address):
+            logit("BOUNCE revoked_file_match", time.time())
+            if Defaults.BOUNCE_REVOKED_CC:
+                bounce_cc(Defaults.BOUNCE_REVOKED_CC)
+            print "Sorry, this address has been revoked."
+            mta.bounce()
+    # Is the message sacred?
+    if os.path.exists(Defaults.SACRED_FILE):
+        sacred_list = []
+        sacred_list = Util.file_to_list(Defaults.SACRED_FILE,sacred_list)
+        matches = 0
+        for single_expression in sacred_list:
+            if None != re.search(single_expression,message,(re.M|re.I)):
+                matches = matches+1
+        if matches > 0:
+            logit("OK sacred_text_match", time.time())
+            mta.deliver(message)
+    # Dated tag?
+    if cookie_type == 'dated' and cookie_value:
+        verify_dated_cookie(cookie_value)
+    # Sender tag?
+    if cookie_type == 'sender' and cookie_value:
+        sender_address = globals().get('envelope_sender')
+        verify_sender_cookie(sender_address,cookie_value)
+    # If the message gets this far (i.e, was not sent to a tagged
+    # address and it didn't match any list files), then we bounce it
+    # for confirmation.
+    bouncegen('request')
 
 
 # This is the end my friend.
