@@ -2,6 +2,8 @@
 
 If you are upgrading from a release of TMDA < 0.38:
 
+* The local copy of the documentation is now in `htdocs'.
+
 * The `X-Confirmed' header is now `X-TMDA-Confirmed'.
 
 * You can remove INJECT and INJECT_FLAGS from your .tmdarc as they are
