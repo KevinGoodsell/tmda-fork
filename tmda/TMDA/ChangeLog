@@ -1,3 +1,11 @@
+2001-11-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (findmatch): Bugfix for the `@=' handling syntax.  Now
+	split on `@=' using only the last `@'.  This is in case you start
+	getting spammed from "@="@randomdomain.com, you will be able to
+	match this using the current syntax.
+	Patch contributed by Ron Bickers.
+		
 2001-11-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* FilterParser.py (FilterParser.firstmatch): Bugfix.  The DBM

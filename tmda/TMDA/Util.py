@@ -157,9 +157,14 @@ def findmatch(list, addrs):
                 stringparts = string.split(p)
                 p = stringparts[0]
                 # Handle special @=domain.dom syntax.
-                if string.find(p, '@=') >= 0:
-                    p1 = string.replace(p, '@=', '@')
-                    p2 = string.replace(p, '@=', '@*.')
+                try:
+                    at = string.rindex(p, '@')
+                    atequals = p[at+1] == '='
+                except (ValueError, IndexError):
+                    atequals = None
+                if atequals:
+                    p1 = p[:at+1] + p[at+2:]
+                    p2 = p[:at+1] + '*.' + p[at+2:]
                     match = (fnmatch.fnmatch(address,p1)
                              or fnmatch.fnmatch(address,p2))
                 else:
