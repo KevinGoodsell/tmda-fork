@@ -6,8 +6,11 @@ Title: Local Configuration File
       <td height="30" align="center" valign="top"><b>%(FilePath)s:</b></td>
     </tr>
     <tr>
-      <td><textarea name="textarea" cols="64"
+      <td><textarea name="config" cols="64"
         rows="15">%(FileContents)s</textarea>
+        <input type="hidden" name="subcmd" value="save">
+        <input type="hidden" name="cmd" value="localconfig">
+        <input type="hidden" name="SID" value="%(SID)s">
       </td>
     </tr>
     <tr align="center">

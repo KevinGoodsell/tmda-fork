@@ -10,8 +10,8 @@ Title: Pending E-mail
           <input type="hidden" name="subcmd" value="batch">
           <tr bgcolor="#7A7AB6" height="24">
             <td width="20%"><input type="image"
-              src="%(ThemeDir)s/buttons/subnav_r1_c14.gif" width="98" height="18"
-              border="0"></td>
+              src="%(ThemeDir)s/buttons/subnav_r1_c14.gif" width="98"
+              height="18" border="0"></td>
             <td align="center"><!-- var: FirstButt1 --><a
               href="%(Script)s?cmd=pending&subcmd=first&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
@@ -120,8 +120,8 @@ Title: Pending E-mail
 </tr>
           <tr bgcolor="#7A7AB6" height="24">
             <td width="20%"><input type="image"
-              src="%(ThemeDir)s/buttons/subnav_r1_c14.gif" width="98" height="18"
-              border="0"></td>
+              src="%(ThemeDir)s/buttons/subnav_r1_c14.gif" width="98"
+              height="18" border="0"></td>
             <td align="center"><!-- var: FirstButt2 --><a
               href="%(Script)s?cmd=pending&subcmd=first&SID=%(SID)s"><img
               src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
@@ -151,9 +151,9 @@ Title: Pending E-mail
           <td valign="top" width="45"><font
             color="#FFFFFF"><b><i>Note:</i></b></font></td>
           <td>
-            <font color="#FFFFFF"><span class="InProcess">Marked</span> messages 
-              are being processed by the mail server. They will be removed from 
-              the pending list when released.</font>
+            <font color="#FFFFFF"><span class="InProcess">Marked</span>
+              messages are being processed by the mail server. They will be
+              removed from the pending list when released.</font>
           </td>
         </tr>
 <!-- /var -->

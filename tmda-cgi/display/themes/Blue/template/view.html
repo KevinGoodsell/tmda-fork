@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sat Apr 19 21:22:41 2003 -->
+<!-- Sun Apr 20 15:11:57 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -63,7 +63,7 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r3_c1.png" name="x383" height="35" width="
 onmouseover="document.images.x468.src='%(ThemeDir)s/dyn_buttons/layout1_r4_c1_h.png'"
 onmouseout="document.images.x468.src='%(ThemeDir)s/dyn_buttons/layout1_r4_c1.png'"><img
 src="%(ThemeDir)s/dyn_buttons/layout1_r4_c1.png" name="x468" height="35" width="194" border="0" alt="Lists"></a></td></tr>
-<tr><td><a href="%(Script)s?cmd=theme&SID=%(SID)s"
+<tr><td><a href="%(Script)s?cmd=localconfig&SID=%(SID)s"
 onmouseover="document.images.x553.src='%(ThemeDir)s/dyn_buttons/layout1_r5_c1_h.png'"
 onmouseout="document.images.x553.src='%(ThemeDir)s/dyn_buttons/layout1_r5_c1.png'"><img
 src="%(ThemeDir)s/dyn_buttons/layout1_r5_c1.png" name="x553" height="35" width="194" border="0" alt="Settings"></a></td></tr>
@@ -80,44 +80,48 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x638" height="35" width="
   bordercolor="#4E508F">
   <tr>
     <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr align="center" bgcolor="#7A7AB6" height="24"> 
-          <td><a href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
+        <tr align="center" bgcolor="#7A7AB6" height="24">
+          <td><!-- var: FirstButt1 --><a
+            href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
-            height="18" alt="First"></a></td>
-          <td><a href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19" 
-            height="18" alt="Prev"></a></td>
+            height="18" alt="First"></a><!-- /var --></td>
+          <td><!-- var: PrevButt1 --><a
+            href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
+            src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19"
+            height="18" alt="Prev"></a><!-- /var --></td>
           <td><a href="%(DeleteURL)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c3.gif" border="0" width="21" 
+            src="%(ThemeDir)s/buttons/subnav_r1_c3.gif" border="0" width="21"
             height="18" alt="Delete"></a></td>
           <!-- var: BlIcon1 -->
-            <td><a href="%(BlacklistURL)s"><img 
-              src="%(ThemeDir)s/buttons/subnav_r1_c4.gif" border="0" width="59" 
+            <td><a href="%(BlacklistURL)s"><img
+              src="%(ThemeDir)s/buttons/subnav_r1_c4.gif" border="0" width="59"
               height="18" alt="Blacklist & Delete"></a></td>
           <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=release&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c5.gif" border="0" width="21" 
+            src="%(ThemeDir)s/buttons/subnav_r1_c5.gif" border="0" width="21"
             height="18" alt="Release"></a></td>
           <!-- var: WhIcon1 -->
             <td><a href="%(Script)s?cmd=view&subcmd=white&SID=%(SID)s"><img
-              src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59" 
+              src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59"
               height="18" alt="Whitelist & Release"></a></td>
           <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56" 
+            src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56"
             height="18" alt="Toggle Headers"></a></td>
-          <td><a href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18" 
-            height="18" alt="Next"></a></td>
-          <td><a href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24" 
-            height="18" alt="Last"></a></td>
+          <td><!-- var: NextButt1 --><a
+            href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
+            src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18"
+            height="18" alt="Next"></a><!-- /var --></td>
+          <td><!-- var: LastButt1 --><a
+            href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
+            src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
+            height="18" alt="Last"></a><!-- /var --></td>
         </tr>
-        <tr bgcolor="#DADCEB"> 
+        <tr bgcolor="#DADCEB">
           <td colspan="%(Columns)d" class="email"><!-- var: Headers --><table
               class="Headers" border="0" cellspacing="0" cellpadding="0">
 <!-- var: HeaderRow -->
-              <tr> 
+              <tr>
                 <td><b>%(Name)s:</b></td>
                 <td width="5"></td>
                 <td>%(Value)s</td>
@@ -126,38 +130,42 @@ src="%(ThemeDir)s/dyn_buttons/layout1_r6_c1.png" name="x638" height="35" width="
             </table><br><!-- /var (Headers) -->
             %(Content)s</td>
         </tr>
-        <tr align="center" bgcolor="#7A7AB6" height="24"> 
-          <td><a href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
+        <tr align="center" bgcolor="#7A7AB6" height="24">
+          <td><!-- var: FirstButt2 --><a
+            href="%(Script)s?cmd=view&subcmd=first&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c1.gif" border="0" width="26"
-            height="18" alt="First"></a></td>
-          <td><a href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
+            height="18" alt="First"></a><!-- /var --></td>
+          <td><!-- var: PrevButt2 --><a
+            href="%(Script)s?cmd=view&subcmd=prev&SID=%(SID)s"><img
             src="%(ThemeDir)s/buttons/subnav_r1_c2.gif" border="0" width="19"
-            height="18" alt="Prev"></a></td>
+            height="18" alt="Prev"></a><!-- /var --></td>
           <td><a href="%(DeleteURL)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c3.gif" border="0" width="21" 
+            src="%(ThemeDir)s/buttons/subnav_r1_c3.gif" border="0" width="21"
             height="18" alt="Delete"></a></td>
           <!-- var: BlIcon2 -->
-            <td><a href="%(BlacklistURL)s"><img 
-              src="%(ThemeDir)s/buttons/subnav_r1_c4.gif" border="0" width="59" 
+            <td><a href="%(BlacklistURL)s"><img
+              src="%(ThemeDir)s/buttons/subnav_r1_c4.gif" border="0" width="59"
               height="18" alt="Blacklist & Delete"></a></td>
           <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=release&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c5.gif" border="0" width="21" 
+            src="%(ThemeDir)s/buttons/subnav_r1_c5.gif" border="0" width="21"
             height="18" alt="Release"></a></td>
           <!-- var: WhIcon2 -->
             <td><a href="%(Script)s?cmd=view&subcmd=white&SID=%(SID)s"><img
-              src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59" 
+              src="%(ThemeDir)s/buttons/subnav_r1_c6.gif" border="0" width="59"
               height="18" alt="Whitelist & Release"></a></td>
           <!-- /var -->
           <td><a href="%(Script)s?cmd=view&subcmd=headers&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56" 
+            src="%(ThemeDir)s/buttons/subnav_r1_c9.gif" border="0" width="56"
             height="18" alt="Toggle Headers"></a></td>
-          <td><a href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18" 
-            height="18" alt="Next"></a></td>
-          <td><a href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
-            src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24" 
-            height="18" alt="Last"></a></td>
+          <td><!-- var: NextButt2 --><a
+            href="%(Script)s?cmd=view&subcmd=next&SID=%(SID)s"><img
+            src="%(ThemeDir)s/buttons/subnav_r1_c7.gif" border="0" width="18"
+            height="18" alt="Next"></a><!-- /var --></td>
+          <td><!-- var: LastButt2 --><a
+            href="%(Script)s?cmd=view&subcmd=last&SID=%(SID)s"><img
+            src="%(ThemeDir)s/buttons/subnav_r1_c8.gif" border="0" width="24"
+            height="18" alt="Last"></a><!-- /var --></td>
         </tr>
       </table></td>
   </tr>

@@ -193,8 +193,13 @@ rights.""")
         CgiUtil.FileDetails("Defaults settings", Default)),
         "Download a new copy of tmda-cgi.")
 
+    # Extract out section "NoOverride"
+    self.NoOverride = {}
+    for Option in self.ThemeVars.options("NoOverride"):
+      self.NoOverride[Option] = self.ThemeVars.get("NoOverride", Option, 1)
+
     # Trim out domain name from user name
-    Match = re.search(self[("General", "UserSplit")], self.Vars["User"])
+    Match = re.search(self[("NoOverride", "UserSplit")], self.Vars["User"])
     if Match:
       os.environ["USER"] = Match.group(1)
     else:
@@ -223,6 +228,10 @@ rights.""")
     Template.Template.Dict["ThemeDir"] = \
       os.path.join(os.environ["TMDA_CGI_DISP_DIR"], "themes",
         self[("General", "Theme")])
+
+    # Replace "NoOverride" variables with the originals
+    for Option in self.NoOverride.keys():
+      self.ThemeVars.set("NoOverride", Option, self.NoOverride[Option])
 
   def BecomeUser(self):
     "Set up everything to *BE* the user."

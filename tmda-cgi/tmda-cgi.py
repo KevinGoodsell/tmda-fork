@@ -112,23 +112,26 @@ def main():
       
     import GenAddr
     import GlobalConfig
+    import LocalConfig
     import PendList
     import TestAddr
     import Theme
     import View
     
     # Share "globals"
-    CgiUtil.PVars  = PVars
-    GenAddr.PVars  = PVars
-    GenAddr.Form   = Form
-    PendList.PVars = PVars
-    PendList.Form  = Form
-    TestAddr.PVars = PVars
-    TestAddr.Form  = Form
-    Theme.PVars    = PVars
-    Theme.Form     = Form
-    View.PVars     = PVars
-    View.Form      = Form
+    CgiUtil.PVars     = PVars
+    GenAddr.PVars     = PVars
+    GenAddr.Form      = Form
+    LocalConfig.PVars = PVars
+    LocalConfig.Form  = Form
+    PendList.PVars    = PVars
+    PendList.Form     = Form
+    TestAddr.PVars    = PVars
+    TestAddr.Form     = Form
+    Theme.PVars       = PVars
+    Theme.Form        = Form
+    View.PVars        = PVars
+    View.Form         = Form
     
     # View?
     if Form["cmd"].value == "pending":
@@ -146,6 +149,8 @@ def main():
       GenAddr.Show()
     elif Form["cmd"].value == "test_addr":
       TestAddr.Show()
+    elif Form["cmd"].value == "localconfig":
+      LocalConfig.Show()
     else:
       CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
         Form["cmd"].value, "interpret command", "", "Please be patient while "

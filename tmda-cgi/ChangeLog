@@ -1,6 +1,7 @@
 2003-04-20  Gre7g Luterman  <gre7g@wolfhome.com>
 
-	* Added code for "generate address" and "test address" buttons.
+	* Added code for "generate address", "test address", and "local config"
+	  buttons.
 
 2003-04-19  Gre7g Luterman  <gre7g@wolfhome.com>
 

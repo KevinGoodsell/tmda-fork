@@ -93,29 +93,30 @@ def Show():
   # Get e-mail template
   T = Template.Template("view.html")
 
+  # Locate messages in pending dir
+  Msgs = Queue.listPendingIds()
+  try:
+    MsgIdx = Msgs.index(PVars["MsgID"])
+  except ValueError: # Oops.  Perhaps they released the message?  Get the list!
+    raise Errors.MessageError
+
   # Any subcommands?
   if Form.has_key("subcmd"):
-    # Locate messages in pending dir
-    Msgs = Queue.listPendingIds()
-    try:
-      MsgIdx = Msgs.index(PVars["MsgID"])
-    except ValueError: # Oops.  Perhaps they released the message?  Get the list!
-      raise Errors.MessageError
 
     # first/prev/next/last subcommands
     if Form["subcmd"].value == "first":
-      PVars["MsgID"] = Msgs[0]
+      MsgIdx = 0
       PVars["Pager"] = 0
     elif Form["subcmd"].value == "prev":
       if MsgIdx > 0:
-        PVars["MsgID"] = Msgs[MsgIdx - 1]
+        MsgIdx -= 1
         PVars["Pager"] -= 1
     elif Form["subcmd"].value == "next":
       if MsgIdx < (len(Msgs) - 1):
-        PVars["MsgID"] = Msgs[MsgIdx + 1]
+        MsgIdx += 1
         PVars["Pager"] += 1
     elif Form["subcmd"].value == "last":
-      PVars["MsgID"] = Msgs[-1]
+      MsgIdx = len(Msgs) - 1
       PVars["Pager"] = len(Msgs)
 
     # Toggle headers?
@@ -149,11 +150,45 @@ def Show():
       if len(Msgs) == 0: # Oops! None left!
         PVars.Save()
         raise Errors.MessageError
-      if MsgIdx >= len(Msgs): PVars["MsgID"] = Msgs[-1]
-      else:                   PVars["MsgID"] = Msgs[MsgIdx]
+      if MsgIdx >= len(Msgs):
+        MsgIdx = len(Msgs) - 1
+      PVars["MsgID"] = Msgs[MsgIdx]
 
     # Save session
     PVars.Save()
+
+  # Get message ID
+  PVars["MsgID"] = Msgs[MsgIdx]
+
+  # Grey out the first & prev buttons?
+  if MsgIdx == 0:
+    T["FirstButt1"]
+    T["FirstButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c10.gif"
+width="18" height="18" alt="First">"""
+    T["PrevButt1"]
+    T["PrevButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c11.gif"
+width="11" height="18" alt="Prev">"""
+    T["FirstButt2"]
+    T["FirstButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c10.gif"
+width="18" height="18" alt="First">"""
+    T["PrevButt2"]
+    T["PrevButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c11.gif"
+width="11" height="18" alt="Prev">"""
+
+  # Grey out the next & last buttons?
+  if MsgIdx == (len(Msgs) - 1):
+    T["NextButt1"]
+    T["NextButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c12.gif"
+width="11" height="18" alt="Next">"""
+    T["LastButt1"]
+    T["LastButt1"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c13.gif"
+width="18" height="18" alt="Last">"""
+    T["NextButt2"]
+    T["NextButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c12.gif"
+width="11" height="18" alt="Next">"""
+    T["LastButt2"]
+    T["LastButt2"] = """<img src="%(ThemeDir)s/buttons/subnav_r1_c13.gif"
+width="18" height="18" alt="Last">"""
 
   # Use Javascript confirmation?
   if PVars[("General", "UseJSConfirm")]:
