@@ -567,7 +567,7 @@ class FilterParser:
                     import cPickle as Serializer
                 elif os.path.exists(config_db):
                     dbfile = config_db
-                    import marshall as Serializer
+                    import marshal as Serializer
                 mmdb_file = open(dbfile, 'r')
                 mmdb_data = Serializer.load(mmdb_file)
                 mmdb_file.close()
