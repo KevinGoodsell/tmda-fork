@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Sun May 25 18:40:43 2003 -->
+<!-- Thu Jun  5 09:59:14 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -387,26 +387,28 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
+<td><a href="#TEMPLATE_DIR_MATCH_RECIPIENT">TEMPLATE_DIR_MATCH_RECIPIENT</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_EMAIL_HEADERS">TEMPLATE_EMAIL_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_ENCODED_HEADERS">TEMPLATE_ENCODED_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TIMEOUT">TIMEOUT</a></td>
-</tr>
-<tr>
 <td><a href="#TMDAINJECT">TMDAINJECT</a></td>
+</tr>
+<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
-<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 <td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
+</tr>
 </table>
 
 <dl>
@@ -1633,6 +1635,40 @@ Example:
 <code>TEMPLATE_DIR = "/full/path/to/templates/"</code>
 <br><br>
 No default.
+<dt><hr>
+<a name="TEMPLATE_DIR_MATCH_RECIPIENT"><h4>TEMPLATE_DIR_MATCH_RECIPIENT</h4></a>
+<dd>
+Set this variable to 1 if you want to use specific templates for
+different recipient addresses.  Be sure to set TEMPLATE_DIR as well.
+<br><br>
+The TEMPLATE_DIR_MATCH_RECIPIENT feature enables TMDA to search for
+customized template files based on the recipient address.  To continue
+with the example given for TEMPLATE_DIR_MATCH_SENDER, if a message
+arrives for foo-lists-guitar@bar.baz.de then TMDA will search for
+template files in the following directories:
+<br><br>
+<blockquote>
+ foo-lists-guitars@bar.baz.de/
+<br><br>
+ foo-lists@bar.baz.de/
+<br><br>
+ foo@bar.baz.de/
+<br><br>
+ bar.baz.de/
+<br><br>
+ baz.de/
+<br><br>
+ de/
+</blockquote>
+<br>
+This example assumes that RECIPIENT_DELIMITER is set to `-'.  This
+feature also works for *-confirm-* addresses.
+<br><br>
+When both TEMPLATE_DIR_MATCH_RECIPIENT and TEMPLATE_DIR_MATCH_SENDER
+are enabled, the TEMPLATE_DIR_MATCH_RECIPIENT directories are searched
+after the sender directories.
+<br><br>
+Default is 0 (turned off)
 <dt><hr>
 <a name="TEMPLATE_DIR_MATCH_SENDER"><h4>TEMPLATE_DIR_MATCH_SENDER</h4></a>
 <dd>
