@@ -35,12 +35,6 @@ tmda-filter
 	certainly a sign that someone is attempting forgery.
 	
 	- Support reading from DBM/GDBM style databases in addition to
-	textfiles.
-
-Greylist.py
-	
-	- Support reading from DBM/GDBM style databases in addition to
 	textfiles.  Currently, a 10,000 line list is read in
 	under 15 seconds on a PIII/700, but DB support may be
 	necessary for much larger lists.
-
