@@ -99,5 +99,18 @@ qmail-return-*@list.cr.yp.to
 This will allow messages to get through when initially interacting
 with ezmlm to get subscribed, as well as after when list messages are
 delivered.
+<hr>
+
+<li><b>
+I use <a href="http://bbdb.sourceforge.net/" TARGET="Resource Window">BBDB</a>, 
+and every time it sees a new 'dated' address it asks me whether I want
+it added to so-and-so's BBDB record.  How can I prevent this?
+</b>
+<br><br>
+
+You can either set <em>bbdb-always-add-addresses</em> to
+<em>'never</em>, or use a 
+<a href="http://forums.my.gnus.org/viewtopic.php?topic=46&forum=7&0" TARGET="Resource Window">BBDB hook</a>
+to filter the addresses before adding them to the database.
 
 <hr>
