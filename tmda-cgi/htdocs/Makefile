@@ -29,7 +29,7 @@ SOURCES =	$(shell echo *.ht)
 TARGETS =	$(filter-out *.html,$(SOURCES:%.ht=%.html)) $(EXTRA_TARGETS)
 GENERATED_HTML= $(SOURCES:.ht=.html)
 
-DEST =          jason@tmda.net:www/tmda.net/htdocs/
+DEST =          tmda.sourceforge.net:/home/groups/t/tm/tmda/htdocs/tmda-cgi/
 EXCLUDES =      --exclude "*"
 INCLUDES =	--include "*.html"
 ARGS =          -v -a -z --delete $(INCLUDES) $(EXCLUDES)
