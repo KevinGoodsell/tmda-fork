@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.68+"
+TMDA = "0.69"
 
 # TMDA version codename
 CODENAME = "Count Fleet"
