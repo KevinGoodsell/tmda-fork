@@ -12,16 +12,17 @@ Title: Generate Dynamic E-mail Addresses
         <table border="0" cellspacing="0" cellpadding="0">
           <tr>
             <td width="90">Keyword:</td>
-            <td><input name="textfield" type="text" value="%(Keyword)s"
+            <td><input name="keyword" type="text" value="%(Keyword)s"
               size="10">
-              <input type="submit" name="Submit" value="Generate">
-              <input type="hidden" name="cmd" value="gen_keyword">
+              <input type="submit" value="Generate">
+              <input type="hidden" name="cmd" value="gen_addr">
+              <input type="hidden" name="subcmd" value="keyword">
               <input type="hidden" name="SID" value="%(SID)s">
             </td>
           </tr>
           <tr>
             <td>Use address:</td>
-            <td><input name="textfield" type="text" value="%(KeywordAddr)s"
+            <td><input name="keyword_addr" type="text" value="%(KeywordAddr)s"
               size="45"></td>
           </tr>
         </table>
@@ -42,15 +43,16 @@ Title: Generate Dynamic E-mail Addresses
             <td width="90">Expires in:</td>
             <td><input name="exp_amt" type="text" value="%(ExpAmt)d" size="2">
               <select name="exp_units">
-                <option%(MinutesSel)s>minutes</option>
-                <option%(HoursSel)s>hours</option>
-                <option%(DaysSel)s>days</option>
-                <option%(WeeksSel)s>weeks</option>
-                <option%(MonthsSel)s>months</option>
-                <option%(YearsSel)s>years</option>
+                <option value="m"%(mSel)s>minutes</option>
+                <option value="h"%(hSel)s>hours</option>
+                <option value="d"%(dSel)s>days</option>
+                <option value="w"%(wSel)s>weeks</option>
+                <option value="M"%(MSel)s>months</option>
+                <option value="Y"%(YSel)s>years</option>
               </select>
               <input type="submit" value="Generate">
-              <input type="hidden" name="cmd" value="gen_dated">
+              <input type="hidden" name="cmd" value="gen_addr">
+              <input type="hidden" name="subcmd" value="dated">
               <input type="hidden" name="SID" value="%(SID)s">
             </td>
           </tr>
@@ -73,16 +75,17 @@ Title: Generate Dynamic E-mail Addresses
         <table border="0" cellspacing="0" cellpadding="0">
           <tr>
             <td width="90">Valid if from:</td>
-            <td><input name="textfield" type="text" value="%(Sender)s"
+            <td><input name="sender" type="text" value="%(Sender)s"
               size="32">
-              <input type="submit" name="Submit" value="Generate">
-              <input type="hidden" name="cmd" value="gen_sender">
+              <input type="submit" value="Generate">
+              <input type="hidden" name="cmd" value="gen_addr">
+              <input type="hidden" name="subcmd" value="sender">
               <input type="hidden" name="SID" value="%(SID)s">
             </td>
           </tr>
           <tr>
             <td>Use address:</td>
-            <td><input name="textfield" type="text" value="%(SenderAddr)s"
+            <td><input name="sender_addr" type="text" value="%(SenderAddr)s"
               size="45"></td>
           </tr>
         </table>

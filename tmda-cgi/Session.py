@@ -137,6 +137,7 @@ be able to."""
 
         # If they want "user", go do it
         elif User == "user":
+          os.setgid(int(self.Vars["GID"]))
           os.setuid(int(self.Vars["UID"]))
 
       except OSError:
@@ -154,6 +155,7 @@ we save Vars or PVars."""
 
     CWD = os.getcwd()
     if self.RealUser:
+      from TMDA import Defaults
       os.chdir(os.path.split(Defaults.TMDARC)[0])
       Filename = Defaults.CGI_SETTINGS
       Data     = self.PVars
@@ -177,11 +179,32 @@ session file,<br>or recompile the CGI and specify a CGI_USER with more
 rights.""")
     os.chdir(CWD)
 
-  def GetTheme(self):
-    "Load the current theme."
-
-    # Create a ConfigParser object
+  def LoadSysDefaults(self):
+    "Load system defaults and trim domain name (if present) off of user name."
+    # Get system defaults
+    self.PVars = {}
     self.ThemeVars = ConfigParser.ConfigParser()
+    Filename  = os.path.join(os.getcwd(), "defaults.ini")
+    self.ThemeVars.read(Filename)
+    if len(self.ThemeVars.sections()) < 2:
+      CgiUtil.TermError("Missing defaults.ini", "Cannot load defaults.ini",
+        "import defaults", "%s<br>%s" % (
+        CgiUtil.FileDetails("Theme settings", Filename),
+        CgiUtil.FileDetails("Defaults settings", Default)),
+        "Download a new copy of tmda-cgi.")
+
+    # Trim out domain name from user name
+    Match = re.search(self[("General", "UserSplit")], self.Vars["User"])
+    if Match:
+      os.environ["USER"] = Match.group(1)
+    else:
+      os.environ["USER"] = self.Vars["User"]
+
+    # Clean up
+    self.CleanUp()
+
+  def GetTheme(self):
+    "Set up current theme."
 
     # If user doesn't have a theme or the theme has been deleted, get the first
     # one (alphabetically)
@@ -195,18 +218,44 @@ rights.""")
     # Set up the template to use the theme and load the theme's .ini
     ThemeDir = os.path.join(self.ThemesDir, self[("General", "Theme")])
     Filename = os.path.join(ThemeDir, "theme.ini")
-    Default  = os.path.join(os.getcwd(), "defaults.ini")
-    self.ThemeVars.read([Default, Filename])
-    if len(self.ThemeVars.sections()) < 2:
-      CgiUtil.TermError("Missing defaults.ini", "Cannot load defaults.ini",
-        "import defaults", "%s<br>%s" % (
-        CgiUtil.FileDetails("Theme settings", Filename),
-        CgiUtil.FileDetails("Defaults settings", Default)),
-        "Download a new copy of tmda-cgi.")
+    self.ThemeVars.read(Filename)
     Template.Template.BaseDir = os.path.join(ThemeDir, "template")
     Template.Template.Dict["ThemeDir"] = \
       os.path.join(os.environ["TMDA_CGI_DISP_DIR"], "themes",
         self[("General", "Theme")])
+
+  def BecomeUser(self):
+    "Set up everything to *BE* the user."
+    os.environ["HOME"] = self.Vars["HOME"]
+    self.__suid__("user")
+    self.Valid = 1
+
+    # Now that we know who we are, get our defaults
+    from TMDA import Errors
+    try:
+      from TMDA import Defaults
+    except Errors.ConfigError, (ErrStr):
+      CgiUtil.TermError("ConfigError", ErrStr, "import Defaults",
+        "", """Recheck the CGI's permissions and owner.  The file permissions
+should be 4755 (-rwsr-xr-x) and the owner should be root for system-wide
+install or a non-privileged user for single-user mode.<br>Also check in which
+partition you placed the CGI.  You cannot run the CGI in system-wide or single-
+user modes if its partition is marked "nosuid" in /etc/fstab.""")
+
+    # Read in our PVars
+    try:
+      CWD = os.getcwd()
+      os.chdir(os.path.split(Defaults.TMDARC)[0])
+      Filename = Defaults.CGI_SETTINGS
+      F = open(Filename)
+      self.PVars = pickle.load(F)
+      F.close()
+    except (IOError, EOFError):
+      pass
+    os.chdir(CWD)
+
+    # Get current theme
+    self.GetTheme()
 
   def __init__(self, Form):
     "Reload an existing SID or create a new one."
@@ -251,35 +300,17 @@ rights.""")
         # Touch session file to keep it from getting cleaned too soon
         os.utime(Filename, None)
 
-        # Clean up
-        self.CleanUp()
-
         # Is there a TMDARC variable?
         if os.environ.has_key("TMDARC"):
           # Yes, replace it
           os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/",
             "/%s/" % self.Vars["User"])
 
-        # Claim our new identity
-        os.environ["HOME"] = self.Vars["HOME"]
-        os.environ["USER"] = self.Vars["User"]
-        self.Valid = 1
-        self.__suid__("user")
+        # Load system defaults
+        self.LoadSysDefaults()
 
-        # Now that we know who we are, get our defaults
-        from TMDA import Defaults
-        CWD = os.getcwd()
-        os.chdir(os.path.split(Defaults.TMDARC)[0])
-        try:
-          F = open(Defaults.CGI_SETTINGS)
-          self.PVars = pickle.load(F)
-          F.close()
-        except (IOError, EOFError):
-          self.PVars = {}
-        os.chdir(CWD)
-
-        # Load our theme
-        self.GetTheme()
+        # Become the user
+        self.BecomeUser()
 
         # Done!
         return
@@ -321,12 +352,11 @@ rights.""")
           CgiUtil.TermError("Can't load virtual user stub.",
             "Cannot execute %s" % Filename, "execute stub",
             "TMDA_VLOOKUP = %s" % os.environ["TMDA_VLOOKUP"], "Recompile CGI.")
-        self.Vars["HOME"], self.Vars["UID"], GID = \
+        self.Vars["HOME"], self.Vars["UID"], self.Vars["GID"] = \
           Sandbox["getuserparams"](List)
       else:
-        self.Vars["HOME"], self.Vars["UID"], GID = \
+        self.Vars["HOME"], self.Vars["UID"], self.Vars["GID"] = \
           Util.getuserparams(self.Vars["User"])
-      os.environ["HOME"] = self.Vars["HOME"]
     except KeyError, str:
       Template.Template.Dict["ErrMsg"] = \
         "Username %s not found in system.\nstr=%s" % (self.Vars["User"], str)
@@ -335,7 +365,7 @@ rights.""")
     if int(self.Vars["UID"]) < 2:
       PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
       self.Vars["UID"] = PasswordRecord[2]
-      GID = PasswordRecord[3]
+      self.Vars["GID"] = PasswordRecord[3]
       if not int(self.Vars["UID"]):
         CgiUtil.TermError("TMDA_VUSER is UID 0.", "It is not safe to run "
           "tmda-cgi as root.", "set euid",
@@ -369,7 +399,10 @@ rights.""")
         else:
           File = os.path.join(self.Vars["HOME"], ".tmda/tmda-cgi")
         self.__suid__("root")
-        if not Util.CanRead( File, int(self.Vars["UID"]), int(GID), 0 ):
+        if not Util.CanRead \
+        (
+          File, int(self.Vars["UID"]), int(self.Vars["GID"]), 0
+        ):
           File = "/etc/tmda-cgi"
 
         Authenticate.InitFileAuth( File )
@@ -383,45 +416,15 @@ rights.""")
 
     # Validate the new session
     if not Authenticate.CheckPassword(Form): return
-    self.Valid = 1
 
     # Save session file
     self.Save()
-    self.CleanUp()
 
-    # Become user
-    os.environ["USER"] = self.Vars["User"]
-    self.__suid__("user")
+    # Load system defaults
+    self.LoadSysDefaults()
 
-    # Now that we know who we are, get our defaults
-    from TMDA import Errors
-    try:
-      from TMDA import Defaults
-    except Errors.ConfigError, (ErrStr):
-      CgiUtil.TermError("ConfigError", ErrStr, "import Defaults",
-        "", """Recheck the CGI's permissions and owner.  The file permissions
-should be 4755 (-rwsr-xr-x) and the owner should be root for system-wide
-install or a non-privileged user for single-user mode.<br>Also check in which
-partition you placed the CGI.  You cannot run the CGI in system-wide or single-
-user modes if its partition is marked "nosuid" in /etc/fstab.""")
-
-    # Read in our PVars
-    try:
-      CWD = os.getcwd()
-      os.chdir(os.path.split(Defaults.TMDARC)[0])
-      Filename = Defaults.CGI_SETTINGS
-      try:
-        F = open(Filename)
-        self.PVars = pickle.load(F)
-        F.close()
-      except (IOError, EOFError):
-        self.PVars = {}
-    except IOError:
-      self.PVars = {}
-    os.chdir(CWD)
-
-    # Get our theme
-    self.GetTheme()
+    # Become the user
+    self.BecomeUser()
 
   def CleanUp(self):
     if self.Rands.random() < float(os.environ["TMDA_SESSION_ODDS"]):
@@ -440,14 +443,19 @@ user modes if its partition is marked "nosuid" in /etc/fstab.""")
     if type(a) in StringTypes:
       del self.PVars[a]
     else:
-      del self.PVars[":".join(a)]
+      ID = ":".join(a)
+      if self.PVars.has_key(ID):
+        del self.PVars[ID]
+      else:
+        self.ThemeVars.remove_option(a[0], a[1])
 
   def __getitem__(self, a):
     if type(a) in StringTypes:
       return self.PVars[a]
     else:
-      if self.PVars.has_key(":".join(a)):
-        return self.PVars[":".join(a)]
+      ID = ":".join(a)
+      if self.PVars.has_key(ID):
+        return self.PVars[ID]
       else:
         return self.ThemeVars.get(a[0], a[1], 1)
 

@@ -110,19 +110,22 @@ def main():
       PVars["InProcess"] = {}
       PVars.Save()
       
+    import GenAddr
     import GlobalConfig
     import PendList
     import Theme
     import View
     
     # Share "globals"
+    CgiUtil.PVars  = PVars
+    GenAddr.PVars  = PVars
+    GenAddr.Form   = Form
     PendList.PVars = PVars
     PendList.Form  = Form
-    View.PVars     = PVars
-    View.Form      = Form
-    CgiUtil.PVars  = PVars
     Theme.PVars    = PVars
     Theme.Form     = Form
+    View.PVars     = PVars
+    View.Form      = Form
     
     # View?
     if Form["cmd"].value == "pending":
@@ -136,6 +139,8 @@ def main():
       Theme.Show()
     elif Form["cmd"].value == "globalconfig":
       GlobalConfig.Show()
+    elif Form["cmd"].value == "gen_addr":
+      GenAddr.Show()
     else:
       CgiUtil.TermError("Command not recognized.", "Unknown command: %s" %
         Form["cmd"].value, "interpret command", "", "Please be patient while "

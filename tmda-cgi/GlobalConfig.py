@@ -26,7 +26,7 @@ import Template
 from TMDA import Defaults
 
 def Show():
-  "Show all global config file."
+  "Show global config file."
 
   # Load the display template
   T = Template.Template("globalconfig.html")

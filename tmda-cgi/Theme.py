@@ -35,6 +35,8 @@ def Show():
   if Form.has_key("subcmd"):
     PVars[("General", "Theme")] = Form["subcmd"].value
     PVars.Save()
+    if PVars.has_key(("Theme", "Info")):
+      del PVars[("Theme", "Info")]
     PVars.GetTheme()
 
   # Load the display template
