@@ -43,10 +43,6 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#AUTORESPONSE_INCLUDE_SENDER_COPY">AUTORESPONSE_INCLUDE_SENDER_COPY</a></td>
-<td><a href="#AUTORESPONSE_TEMPLATE_EMAIL_HEADERS">AUTORESPONSE_TEMPLATE_EMAIL_HEADERS</a></td>
-</tr>
-<tr>
-<td><a href="#AUTORESPONSE_TEMPLATE_ENCODED_HEADERS">AUTORESPONSE_TEMPLATE_ENCODED_HEADERS</a></td>
 <td><a href="#BARE_APPEND">BARE_APPEND</a></td>
 </tr>
 <tr>
@@ -179,6 +175,10 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
+<td><a href="#TEMPLATE_EMAIL_HEADERS">TEMPLATE_EMAIL_HEADERS</a></td>
+</tr>
+<tr>
+<td><a href="#TEMPLATE_ENCODED_HEADERS">TEMPLATE_ENCODED_HEADERS</a></td>
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
 </tr>
 <tr>
@@ -446,31 +446,6 @@ included or not when sending an auto response.  Available options:
 2 - include the sender's entire message (recommended).
 <br><br>
 Default is 2
-<dt><hr>
-<a name="AUTORESPONSE_TEMPLATE_EMAIL_HEADERS"><h4>AUTORESPONSE_TEMPLATE_EMAIL_HEADERS</h4></a>
-<dd>
-A list containing the names of headers in your templates that
-contain an e-mail address.  This is necessary so that the e-mail
-address will avoid being RFC 2047 encoded when handling
-internationalized headers.
-<br><br>
-Example:
-<br><br>
-<code>AUTORESPONSE_TEMPLATE_EMAIL_HEADERS = ["from", "reply-to"]</code>
-<br><br>
-Default is "From:" and "Reply-To:".
-<dt><hr>
-<a name="AUTORESPONSE_TEMPLATE_ENCODED_HEADERS"><h4>AUTORESPONSE_TEMPLATE_ENCODED_HEADERS</h4></a>
-<dd>
-A list containing the names of headers in your templates that might
-contain an RFC 2047 encoded string.  This is necessary so that they
-can be decoded first when handling internationalized headers.
-<br><br>
-Example:
-<br><br>
-<code>AUTORESPONSE_TEMPLATE_ENCODED_HEADERS = ["subject"]</code>
-<br><br>
-Default is "Subject:".
 <dt><hr>
 <a name="BARE_APPEND"><h4>BARE_APPEND</h4></a>
 <dd>
@@ -1228,6 +1203,31 @@ Example:
 <code>TEMPLATE_DIR = "/full/path/to/templates/"</code>
 <br><br>
 No default.
+<dt><hr>
+<a name="TEMPLATE_EMAIL_HEADERS"><h4>TEMPLATE_EMAIL_HEADERS</h4></a>
+<dd>
+A list containing the names of headers in your templates that
+contain an e-mail address.  This is necessary so that the e-mail
+address will avoid being RFC 2047 encoded when handling
+internationalized headers.
+<br><br>
+Example:
+<br><br>
+<code>TEMPLATE_EMAIL_HEADERS = ["from", "reply-to"]</code>
+<br><br>
+Default is "From:" and "Reply-To:".
+<dt><hr>
+<a name="TEMPLATE_ENCODED_HEADERS"><h4>TEMPLATE_ENCODED_HEADERS</h4></a>
+<dd>
+A list containing the names of headers in your templates that might
+contain an RFC 2047 encoded string.  This is necessary so that they
+can be decoded first when handling internationalized headers.
+<br><br>
+Example:
+<br><br>
+<code>TEMPLATE_ENCODED_HEADERS = ["subject"]</code>
+<br><br>
+Default is "Subject:".
 <dt><hr>
 <a name="TERSE_SUMMARY_HEADERS"><h4>TERSE_SUMMARY_HEADERS</h4></a>
 <dd>

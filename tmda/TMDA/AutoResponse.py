@@ -149,7 +149,7 @@ class AutoResponse:
             # might need the "Fullname" portion encoded, but the
             # address portion must _not_ be encoded.
             if k.lower() in map(lambda s: s.lower(),
-                                Defaults.AUTORESPONSE_TEMPLATE_EMAIL_HEADERS):
+                                Defaults.TEMPLATE_EMAIL_HEADERS):
                 name, addr = parseaddr(v)
                 if name:
                     h = Header(name, hdrcharset)
@@ -159,7 +159,7 @@ class AutoResponse:
             # so we need to decode that first before encoding the
             # entire header value.
             elif k.lower() in map(lambda s: s.lower(),
-                                  Defaults.AUTORESPONSE_TEMPLATE_ENCODED_HEADERS):
+                                  Defaults.TEMPLATE_ENCODED_HEADERS):
                 h = Header(charset=hdrcharset, header_name=k)
                 decoded_seq = decode_header(v)
                 for s, charset in decoded_seq:

@@ -545,6 +545,31 @@ if not vars().has_key('CONFIRM_MAX_MESSAGE_SIZE'):
 if not vars().has_key('TEMPLATE_DIR'):
     TEMPLATE_DIR = None
 
+# TEMPLATE_EMAIL_HEADERS
+# A list containing the names of headers in your templates that
+# contain an e-mail address.  This is necessary so that the e-mail
+# address will avoid being RFC 2047 encoded when handling
+# internationalized headers.
+#
+# Example:
+# TEMPLATE_EMAIL_HEADERS = ["from", "reply-to"]
+#
+# Default is "From:" and "Reply-To:".
+if not vars().has_key('TEMPLATE_EMAIL_HEADERS'):
+    TEMPLATE_EMAIL_HEADERS = ['from', 'reply-to']
+
+# TEMPLATE_ENCODED_HEADERS
+# A list containing the names of headers in your templates that might
+# contain an RFC 2047 encoded string.  This is necessary so that they
+# can be decoded first when handling internationalized headers.
+#
+# Example:
+# TEMPLATE_ENCODED_HEADERS = ["subject"]
+#
+# Default is "Subject:".
+if not vars().has_key('TEMPLATE_ENCODED_HEADERS'):
+    TEMPLATE_ENCODED_HEADERS = ['subject']
+
 # DATED_TEMPLATE_VARS
 # Set this variable to 1 if you want to use 'dated' address variables
 # in your templates.
@@ -930,31 +955,6 @@ if not vars().has_key('RESPONSE_DIR') and MAX_AUTORESPONSES_PER_DAY != 0:
 # Default is 2
 if not vars().has_key('AUTORESPONSE_INCLUDE_SENDER_COPY'):
     AUTORESPONSE_INCLUDE_SENDER_COPY = 2
-
-# AUTORESPONSE_TEMPLATE_EMAIL_HEADERS
-# A list containing the names of headers in your templates that
-# contain an e-mail address.  This is necessary so that the e-mail
-# address will avoid being RFC 2047 encoded when handling
-# internationalized headers.
-#
-# Example:
-# AUTORESPONSE_TEMPLATE_EMAIL_HEADERS = ["from", "reply-to"]
-#
-# Default is "From:" and "Reply-To:".
-if not vars().has_key('AUTORESPONSE_TEMPLATE_EMAIL_HEADERS'):
-    AUTORESPONSE_TEMPLATE_EMAIL_HEADERS = ['from', 'reply-to']
-
-# AUTORESPONSE_TEMPLATE_ENCODED_HEADERS
-# A list containing the names of headers in your templates that might
-# contain an RFC 2047 encoded string.  This is necessary so that they
-# can be decoded first when handling internationalized headers.
-#
-# Example:
-# AUTORESPONSE_TEMPLATE_ENCODED_HEADERS = ["subject"]
-#
-# Default is "Subject:".
-if not vars().has_key('AUTORESPONSE_TEMPLATE_ENCODED_HEADERS'):
-    AUTORESPONSE_TEMPLATE_ENCODED_HEADERS = ['subject']
 
 # DELIVERED_CACHE
 # Path to the cache file used to keep track of which messages have
