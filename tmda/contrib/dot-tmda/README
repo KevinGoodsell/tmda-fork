@@ -1,14 +1,17 @@
-Sample ~/.tmda/ files.  There is no one-size-fits-all set of files,
-but these examples show common usage, and might help get you started.
+Sample ~/.tmda/ structure to help you get started.  There is no
+one-size-fits-all set of dot files, but these examples show common
+usage and some of the techniques discussed in the FAQ.
 
 You can use them as is without only a few modifications.  Copy them
-with `cp -pR dot-tmda ~/.tmda'
+with `cp -pR dot-tmda ~/.tmda' if you don't already have a ~/.tmda
+directory.
 
-Please make sure to read the documentation at http://tmda.net/unstable
+Please make sure to read the documentation at http://tmda.net/unstable/
+so you understand the purpose of these files and how they work.
 
 ====================================================================
 
-config    You need to edit the required settings section for your
+config    You need to edit the ``Required settings'' section for your
           environment.
 
 crypt_key You must generate a unique key for yourself with:
@@ -21,15 +24,18 @@ filters/  Example incoming and outgoing filter files.  They
 
 lists/    'whitelist' is a file that you can edit that should
 	  contain sender addresses and domains that should be
-	  accepted.  Is is ok if this file is empty.
+	  accepted.
 
 	  'confirmed' is another whitelist file that contains
 	  addresses of senders who have sucessfully confirmed a
-	  message.  Since TMDA takes care of populating this list, 
-	  you should not edit it by hand unless the mail system is
-	  stopped.  Is is ok if this file remains empty.
+	  message.  Since TMDA takes care of automatically updating
+	  this list, you should not edit it by hand unless the mail
+	  system is stopped.
 
 	  'blacklist' contains sender addresses and domains that
-	  should not be accepted.  Is is ok if this file is empty.
+	  should not be accepted.  Format is the same as 'whitelist'.
 
 ====================================================================
+
+Please send any comments and suggestions to the tmda-workers mailing
+list.

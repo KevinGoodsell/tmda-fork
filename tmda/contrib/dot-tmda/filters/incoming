@@ -5,6 +5,10 @@
 # TMDA incoming filter file; controls how incoming messages are
 # disposed of.  The first match wins.  Deliveries are logged to
 # ~/.tmda/incoming.log
+#
+# References:
+# http://tmda.net/unstable/config-filter.html
+# http://tmda.net/unstable/filter-sources.html
 
 #####################
 # whitelisted senders
