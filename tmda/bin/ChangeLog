@@ -4,6 +4,9 @@
 	sender_cookie_address are replaced with dated_recipient_address
 	and sender_recipient_address
 
+	(main): Bugfix.  Differentiate 'keyword' addresses from normal
+	extension addresses.
+
 	(recipient_address): Split lines in control/virtualdomains on ':'
 	only once.
 

@@ -596,12 +596,16 @@ def main():
         except IndexError:
             cookie_type = None
         if cookie_type not in ('confirm','dated','sender'):
-            cookie_type = 'keyword'
-            cookie_value = ext
+            # make sure cookie_value contains KEYWORD.HMAC
+            if len(string.split(cookie_value, '.', 1)) > 1:
+                cookie_type = 'keyword'
+                cookie_value = ext
+            else:
+                # just a normal extension address, not a keyword address
+                cookie_type = cookie_value = None
     else:
-        cookie_type = None
-        cookie_value = None
-
+        cookie_type = cookie_value = None
+    
     # The list of sender e-mail addresses comes from the envelope
     # sender, the "From:" header and the "Reply-To:" header.
     sender_list = [envelope_sender]
