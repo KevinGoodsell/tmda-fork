@@ -163,7 +163,12 @@ its partition is marked "nosuid" in /etc/fstab.""")
         self.Vars["HOME"], UID, self.Vars["GID"] = \
           Util.getuserparams(Form["user"].value, VLookup)
       except KeyError:
-        return
+        if int(Form["debug"].value):
+          CgiUtil.TermError( "Login Failed", "Authentication error",
+           "Check Username", "Username not found in system", 
+           "Ensure that the username '%s' is a valid user" % Form["user"].value )
+        else:
+          return
       if not UID:
         PasswordRecord = pwd.getpwnam(os.environ["TMDA_VUSER"])
         UID = PasswordRecord[2]
@@ -171,7 +176,13 @@ its partition is marked "nosuid" in /etc/fstab.""")
       os.environ["HOME"] = self.Vars["HOME"]
 
     # Logging in?
-    if not Form.has_key("user"): return
+    if not Form.has_key("user"):
+      if int(Form["debug"].value):
+        CgiUtil.TermError( "Login Failed", "Authentication error",
+         "Check Username", "No username given", 
+         "Ensure that you remembered to fill out the username" )
+      else:
+        return
 
     # Is there a TMDARC variable?
     if os.environ.has_key("TMDARC"):
