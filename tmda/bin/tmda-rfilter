@@ -170,7 +170,9 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'sendmail' and
 # not qmail-send's rewritten interpretation.  This will be the same as
 # envelope_recipient if we are not running under a qmail virtualdomain.
 recipient_address = envelope_recipient
-if Defaults.USEVIRTUALDOMAINS and os.path.exists(Defaults.VIRTUALDOMAINS):
+if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
+    Defaults.USEVIRTUALDOMAINS and
+    os.path.exists(Defaults.VIRTUALDOMAINS)):
     # Parse the virtualdomains control file; see qmail-send(8) for
     # syntax rules.  All this because qmail doesn't store the original
     # envelope recipient in the environment.

@@ -8,6 +8,9 @@
 	envelope_recipient if the MTA is Sendmail since the other MTAs
 	always produce fully qualified addresses.
 
+	(recipient_address): Only parse Defaults.VIRTUALDOMAINS if the MTA
+	is qmail.  
+	
 2002-01-09  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-rfilter (list_headers): Add `Mailing-List' to the list of
