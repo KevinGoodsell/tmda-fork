@@ -1,3 +1,8 @@
+2002-04-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Util.py (make_date): Include our own code until such time as
+	we can assume availability of the email package.
+
 2002-04-02  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
 
 	* Util.py (pickleit): Bugfix. Insure the tempfile directory is the

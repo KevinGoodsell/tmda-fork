@@ -166,17 +166,39 @@ def make_date(timesecs=None, localtime=1):
     relative to the local timezone instead of UTC where possible.
 
     JRM: Once the email mod is included within TMDA, we can nuke this
-    function and use email.Utils.formatdate in all cases.
+    function and use email.Utils.formatdate.
+
+    Based on code from Python's email package
+    <URL:http://www.python.org/doc/current/lib/module-email.html>
+    Copyright (C) 2001,2002 Python Software Foundation.
     """
     if not timesecs:
         timesecs = time.time()
-    try:
-        from email.Utils import formatdate
-        datestr = formatdate(timesecs, localtime)
-    except ImportError:
-        from rfc822 import formatdate
-        datestr = formatdate(timesecs)
-    return datestr
+    if localtime:
+        now = time.localtime(timesecs)
+        # Calculate timezone offset, based on whether the local zone has
+        # daylight savings time, and whether DST is in effect.
+        if time.daylight and now[-1]:
+            offset = time.altzone
+        else:
+            offset = time.timezone
+        hours, minutes = divmod(abs(offset), 3600)
+        # Remember offset is in seconds west of UTC, but the timezone is in
+        # minutes east of UTC, so the signs differ.
+        if offset > 0:
+            sign = '-'
+        else:
+            sign = '+'
+        zone = '%s%02d%02d' % (sign, hours, minutes / 60)
+    else:
+        now = time.gmtime(timesecs)
+        # Timezone offset is always -0000
+        zone = '-0000'
+    return '%02d %s %04d %02d:%02d:%02d %s' % (
+        now[2], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now[1] - 1],
+        now[0], now[3], now[4], now[5],
+        zone)
 
 
 def formataddr(pair):
