@@ -22,26 +22,10 @@
 # Based on code from Python's (undocumented) smtpd module
 # Copyright (C) 2001,2002 Python Software Foundation.
 
-# This program implements the minimal SMTP protocol as defined in RFC
-# 2821, the ESMTP EHLO command defined in RFC 1869, and SMTP
-# Authentication (PLAIN, LOGIN, CRAM-MD5) as defined in RFC 2554.  The
-# proxy cannot be used by an unauthenticated user.
-#
-# It's called tmda-ofmipd to indicate that it's appropriate for
-# outgoing mail but not for incoming mail, in the spirit of
-# http://cr.yp.to/proto/ofmip.html
+"""An authenticated ofmip proxy for TMDA.  Tag your outgoing mail through SMTP.
 
-"""An async I/O based authenticated ofmip proxy for TMDA.  This allows
-users of any SMTP AUTH capable mail client (e.g, Outlook, Eudora,
-Mozilla) to "tag" their outgoing mail.
-
-tmda-ofmipd can either be run under your non-privileged TMDA user
-account for your own personal use, or by your system administrator to
-serve all TMDA users on the system with once instance of the daemon.
-
-For more on ofmip, see <URL:http://cr.yp.to/proto/ofmip.html>.  Also
-there are several tmda-ofmipd related entries under section 5 of the
-TMDA FAQ.  Please read them.
+See <URL:http://software.libertine.org/tmda/tmda-ofmipd.html>
+for complete setup and usage information.
 
 Usage: %(program)s [OPTIONS]
 
@@ -74,17 +58,9 @@ OPTIONS:
     -a <file>
     --authfile <file>
         Path to the file holding authentication information for this
-        proxy.  Each line should contain a username and password
-        separated by a colon; one entry per line. The password
-        should NOT be the same as your system password! e.g,
-
-	bobby:FooBar
-	chloe:baz_bap
-	   
-	The file should be chmod 600 or 400, and be owned by the user
-	running the daemon.  Default location is /etc/tofmipd if
-	running as root/tofmipd, otherwise ~user/.tmda/tofmipd.  Use
-	this option to override these defaults.
+        proxy.  Default location is /etc/tofmipd if running as
+        root/tofmipd, otherwise ~user/.tmda/tofmipd.  Use this option
+        to override these defaults.
 
     -c <directory>
     --configdir <directory>
@@ -96,39 +72,6 @@ OPTIONS:
         `-c /var/tmda' will have tmda-ofmipd search for
         `/var/tmda/bobby/config'.  If this option is not used,
         `~user/.tmda/config' will be assumed.
-
-        Examples:
-
-        * running as TMDA user `johndoe'
-
-        johndoe$ echo 'johndoe:MyPassword' > ~/.tmda/tofmipd     
-        johndoe$ chmod 600 ~/.tmda/tofmipd  
-
-        johndoe$ %(program)s -d
-        tmda-ofmipd started at Sat Jul 13 12:24:43 NZST 2002
-                Listening on nightshade.la.mastaler.com:8025
-
-        (Now configure your mail client to send outgoing mail using
-        nightshade.la.mastaler.com, port 8025)
-
-        * running as `tofmipd' to serve all TMDA users on the system
-        
-        root# pw groupadd tofmipd
-        root# pw useradd tofmipd -g tofmipd -s /nonexistent
-
-        (now create the /etc/tofmipd password file)
-
-        root# chown tofmipd:tofmipd /etc/tofmipd
-        root# chmod 600 /etc/tofmipd
-
-        root# %(program)s -d
-        tmda-ofmipd started at Fri Jul 12 18:54:44 MDT 2002
-               Listening on nightshade.la.mastaler.com:8025
-
-        (daemon will be running seteuid user `tofmipd')
-
-        (Now have your users configure their mail clients to send
-        outgoing mail using nightshade.la.mastaler.com, port 8025)
 """
 
 import getopt

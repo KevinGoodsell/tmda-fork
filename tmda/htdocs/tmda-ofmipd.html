@@ -1,0 +1,375 @@
+<HTML>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Sat Jul 13 16:55:38 2002 -->
+<!-- USING HT2HTML 1.2 -->
+<!-- SEE http://barry.wooz.org/software/ht2html -->
+<!-- User-specified headers:
+Title: tmda-ofmipd HOWTO
+
+-->
+
+<HEAD>
+<TITLE>tmda-ofmipd HOWTO</TITLE>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff" TEXT="#000000"
+      TOPMARGIN="0" LEFTMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0"
+      LINK="#0000bb"  VLINK="#551a8b"
+      ALINK="#ff0000">
+<!-- start of page table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=0>
+<!-- start of banner row -->
+<TR>
+<!-- start of corner cells -->
+<TD WIDTH=150 VALIGN=CENTER BGCOLOR="#191970">
+
+        <font color="#191970">
+        <h3> T M D A </h3>
+        </font> </TD>
+<TD WIDTH=15 BGCOLOR="#cccccc">&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of corner cells -->
+<!-- start of banner -->
+<TD WIDTH="90%" BGCOLOR="#cccccc">
+<!-- start of site links table -->
+<TABLE WIDTH="100%" BORDER=0
+CELLSPACING=0 CELLPADDING=0
+       COLS=4 ROWS=1 BGCOLOR="#ffffff">
+<TR>
+    <TD BGCOLOR="#cccccc">
+<a href="./index.html">TMDA Homepage</a>
+    </TD>
+    <TD BGCOLOR="#cccccc">
+<a href="http://sourceforge.net/projects/tmda">TMDA @ SourceForge</a>
+    </TD>
+    <TD BGCOLOR="#cccccc">
+&nbsp;&nbsp;</TD>
+    <TD BGCOLOR="#cccccc">
+&nbsp;&nbsp;</TD>
+</TR>
+</TABLE><!-- end of site links table -->
+
+</TD><!-- end of banner -->
+</TR><!-- end of banner row -->
+<TR><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<TD WIDTH=150 VALIGN=TOP BGCOLOR="#cccccc">
+<!-- start of sidebar table -->
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=3
+       BGCOLOR="#ffffff">
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Overview
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="index.html">Introduction</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="history.html">History</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="features.html">Features</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="results.html">Results &amp; Testimonials</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="inuse.html">TMDA In Use</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Usage
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="requirements.html">Requirements</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="download.html">Download</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="install.html">Installation</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="config.html">Configuration</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="howtos.html">HOWTOs</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+HOWTOs
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="howtos.html">Overview</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<b>tmda-ofmipd</b>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Support
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="trouble.html">Troubleshooting</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<a href="http://software.libertine.org/tmda/faq.cgi" TARGET="Resource Window">FAQ</a>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="bugs.html">Bugs &amp; Patches</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<a href="http://libertine.org/lists/listinfo/" TARGET="Resource Window">Mailing Lists</a>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<a href="http://mla.libertine.org/" TARGET="Resource Window">List Archive</a> 
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="resources.html">External Resources</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">&nbsp;
+<TR><TD BGCOLOR="#191970"><B><FONT COLOR="#ffffff">
+Author
+</FONT></B></TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+<A HREF="mailto:jason@mastaler.com">Jason R. Mastaler</A>
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+&nbsp;
+</TD></TR>
+<TR><TD BGCOLOR="#cccccc">
+&copy; 2001-2002
+</TD></TR>
+</TABLE><!-- end of sidebar table -->
+
+</TD>
+<TD WIDTH=15>&nbsp;&nbsp;</TD><!--spacer-->
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<TD VALIGN=TOP WIDTH="90%"><BR>
+<h1>tmda-ofmipd</h1>
+
+<hr>
+
+<h2>What is it&nbsp;?</h2>
+tmda-ofmipd is an async I/O based authenticated 
+
+<a href="http://cr.yp.to/proto/ofmip.html" TARGET="Resource Window">ofmip</a>
+
+proxy for TMDA.  This allows users of any mail client capable of SMTP
+Authentication (e.g, Outlook, Eudora, Mozilla) to "tag" their outgoing
+mail as described in the
+
+<a href="config-client.html">Client Configuration</a>
+
+section.  
+<br><br>
+tmda-ofmipd does this by listening on an available port (e.g, 8025),
+accepting SMTP connections to that port, and then "tagging" the
+message according to the TMDA configuration of the authenticated user.
+<br><br>
+
+I call it a proxy because it's not replacing the real SMTP server.  It
+only accepts the message from the client, transforms the headers, and
+then sends the message by handing it off to the real SMTP server.
+<br><br>
+
+There are several reasons why you may want (or have to) use tmda-ofmipd to
+take advantage of TMDA's client features:<br>
+
+<ul>
+
+<li>Your mail client (MUA) doesn't support a /usr/sbin/sendmail interface, but
+rather uses direct SMTP to send mail.  This includes practically all non-Unix
+mail clients, and even some Unix clients such as Mozilla.<br><br>
+
+<li>You want to maintain your TMDA configuration in one central
+location instead of on your workstation and your mail server.  Unless
+the two share a home directory via NFS or somesuch, this isn't
+trivial.  tmda-ofmipd allows you to maintain only one set of files (on
+the server).
+</ul>
+
+<hr>
+
+<h2>Requirements</h2>
+
+<ul>
+
+<li>Python 2.2 or greater.  tmda-ofmipd uses some essential features
+that were introduced in the 2.2 release.  If your Python is older than
+this, please 
+
+<a href="http://python.org/download/" TARGET="Resource Window">upgrade</a>.
+<br><br>
+
+<li>An MUA that supports RFC 2554 SMTP Authentication (i.e, username/password).
+TMDA FAQ 5.6 contains a preliminary list of MUAs known to work with tmda-ofmipd.
+<br><br>
+NOTE: If your MUA only supports a sendmail command-line interface, but you still
+want to use tmda-ofmipd, see below for some options.
+<br><br>
+
+</ul>
+
+<hr>
+
+<h2>Authentication</h2>
+
+tmda-ofmipd implements the minimal SMTP protocol as defined in RFC
+2821, the ESMTP EHLO command defined in RFC 1869, and SMTP
+Authentication (PLAIN, LOGIN, CRAM-MD5 methods) as defined in RFC
+2554.  The proxy <strong>cannot</strong> be used by an unauthenticated user.
+<br><br>
+
+tmda-ofmipd gets its authentication information from a "password"
+file that you create.  The format of this file is simple.  Each line
+of the file should contain a username and password separated by a
+colon; one entry per line.  e.g,
+
+<pre><blockquote>
+bobby:FooBar
+chloe:baz_bap
+johndoe:8i9/hjuy+33
+
+</pre></blockquote>
+<li>The username fields should match the usernames of the TMDA users on your mail
+server.<br><br>
+
+<li>The passwords need not be the same as any other passwords on the system.
+In fact, for security reasons, they should remain distinct!
+<br><br>
+
+<li>The default location for the authentication file /etc/tofmipd if
+running in global mode (see below), otherwise ~user/.tmda/tofmipd.
+These defaults can be overridden using tmda-ofmipd's `-a' flag.
+<br><br>
+
+<li>The authentication file must be chmod 600 or 400, and be owned by the
+user running the daemon.  tmda-ofmipd will fail to start otherwise.
+
+<hr>
+
+<h2>Running</h2>
+
+Familiarize yourself with tmda-ofmipd's command-line options by reading
+the output of:
+
+<blockquote><code>
+tmda-ofmipd --help
+
+</blockquote></code>
+
+tmda-ofmipd can be run in two modes.  "Personal" by your
+non-privileged TMDA user account for your own personal use, or
+"Global" by your system administrator to serve multiple TMDA users on the
+system with once instance of the daemon.
+<br><br>
+
+<h4>Personal mode</h4>
+<ol>
+<li>Create an authentication file as described above in ~/.tmda/tofmipd.
+<br><br>
+
+<li>Start tmda-ofmipd:
+
+<blockquote><pre>
+$ tmda-ofmipd -d &
+[1] 48676
+tmda-ofmipd started at Sun Jul 14 09:31:33 NZST 2002
+        Listening on nightshade.la.mastaler.com:8025
+
+</blockquote></pre>
+tmda-ofmipd is now listening for connections on port 8025 of your server.
+
+<blockquote><pre>
+$ telnet nightshade.la.mastaler.com 8025
+Trying 128.165.148.67...
+Connected to nightshade.la.mastaler.com.
+Escape character is '^]'.
+220 nightshade.la.mastaler.com ESMTP tmda-ofmipd
+quit
+221 Bye
+Connection closed by foreign host.
+
+</blockquote></pre>
+
+The host:port combination can be changed using the `-p' option.  The `-d'
+option prints debugging information to stderr which might be useful until
+you get tmda-ofmipd working as you want it to.
+
+</ol>
+
+<h4>Global mode</h4>
+<ol>
+<li>Create an authentication file as described above in /etc/tofmipd.
+<br><br>
+
+<li>Create a non-priveleged user account for tmda-ofmipd to run under.  The
+following creates an account for user `tofmipd', group `tofmipd'
+under FreeBSD:
+
+<blockquote><pre>
+# pw groupadd tofmipd
+# pw useradd tofmipd -g tofmipd -s /nonexistent
+
+</blockquote></pre>
+
+If you choose a name other than `tofmipd', make sure to start
+tmda-ofmipd with the `-u' option.
+<br><br>
+
+<li>Start tmda-ofmipd as root:
+
+<blockquote><pre>
+# tmda-ofmipd -d &
+[1] 48676
+tmda-ofmipd started at Sun Jul 14 09:31:33 NZST 2002
+        Listening on nightshade.la.mastaler.com:8025
+
+</blockquote></pre>
+tmda-ofmipd is now running seteuid user `tofmipd', and listening for
+connections on port 8025 of your server.
+
+<blockquote><pre>
+# telnet nightshade.la.mastaler.com 8025
+Trying 128.165.148.67...
+Connected to nightshade.la.mastaler.com.
+Escape character is '^]'.
+220 nightshade.la.mastaler.com ESMTP tmda-ofmipd
+quit
+221 Bye
+Connection closed by foreign host.
+
+</blockquote></pre>
+
+The host:port combination can be changed using the `-p' option.  The `-d'
+option prints debugging information to stderr which might be useful until
+you get tmda-ofmipd working as you want it to.
+
+</ol>
+
+<hr>
+
+<h2>MUA Configuration</h2>
+
+You must now configure your MUA to use a port other than 25 to send
+outgoing mail (by default, tmda-ofmipd runs on port 8025).
+Configuring your mail client to use an alternate SMTP port to send
+outgoing mail differs for every client, and is beyond to scope of this
+document. However, see the following two links for examples of how to do this
+for some of the more popular clients.
+<br><br>
+
+<li><a href="http://directory.purdue.edu/MAIL-HUB/md/smtp_auth.html" TARGET="Resource Window">
+http://directory.purdue.edu/MAIL-HUB/md/smtp_auth.html</a><br>
+
+<li><a href="http://independence.net/internet/port26.htm" TARGET="Resource Window">
+http://independence.net/internet/port26.htm</a>
+<br><br>
+
+If your MUA only supports a sendmail interface for sending mail, see TMDA FAQ 5.7
+for some options.
+
+</TD><!-- end of body cell -->
+</TR><!-- end of sidebar/body row -->
+</TABLE><!-- end of page table -->
+</BODY></HTML>
