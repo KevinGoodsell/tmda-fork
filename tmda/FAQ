@@ -49,8 +49,8 @@ A. In addition to explicit e-mail addresses, TMDA supports matching
    [seq]            Matches any character in seq.
    [!seq]           Matches any character not in seq.
 
-   In addition, a custom wildcard character `=' is available for
-   matching both @ and @*. in one rule.
+   In addition, `@=' (a custom rule) will expand to match both @ and
+   @*. in one shot.
 
    Here are some common examples:
    
