@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.89+"
+TMDA = "0.90"
 
 # TMDA version codename
 CODENAME = "Northern Dancer"
