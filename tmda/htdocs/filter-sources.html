@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Wed Mar 12 15:01:19 2003 -->
+<!-- Sun Mar 23 17:22:56 2003 -->
 <!-- USING HT2HTML 2.0 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -210,165 +210,120 @@ setting can be satisfied.
 The <code>to-*</code> sources examine the envelope recipient address but
 <i>not</i> the To header field, which is often bogus in spam email.
 <br><br>
-
 <dl>
-<dt>
-<code>
-from <a href="#email_address">&lt;email_address&gt;</a><br>
-to <a href="#email_address">&lt;email_address&gt;</a>
-</code>
-<dd>
-
-The <code>from</code> and <code>to</code> sources expect a match field
-of either an explicit email address or a wildcarded email address.
-The format of the email address is documented <a
-href="#email_address">below</a>.
-
-<br><br>
-
-<dt>
-<code>
-from-file [ <a href="#autoflags">-autocdb</a> |
-            <a href="#autoflags">-autodbm</a> ] [ -optional ]
-          <a href="#email_file">&lt;textfile&gt;</a><br>
-to-file [ <a href="#autoflags">-autocdb</a> |
-          <a href="#autoflags">-autodbm</a> ] [ -optional ]
-          <a href="#email_file">&lt;textfile&gt;</a>
-</code>
-<dd>
-
-The <code>from-file</code> and <code>to-file</code> sources expect the
-name of a textfile as the match field.  You can specify the entire
-path explicitly or use a leading '~' to represent the user's home
-directory, like the shell does.  The match field is always the name of
-the textfile.  You do not need to add '.cdb' or '.db' if you use the
-<code>-auto*</code> flags. It will be automatically appended to the
-filename.  The format of the textfile is documented <a
-href="#email_file">below</a>.
-
-<br><br>
-
-Both <code>from-file</code> and <code>to-file</code> can take one of
-the <code>-autocdb</code> or <code>-autodbm flags</code>.  The
--autocdb and -autodbm flags are documented <a
-href="#autoflags">below</a>.
-
-<br><br>
-
-If the <code>-optional</code> flag is given, the non-existence of the
-file is not an error.  If the file should exist, don't specify this
-flag; the parser will log an error and will defer the mail so that you
-have a chance to fix the problem.
-
-<br><br>
-
-
-<dt>
-<code>
-from-cdb [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a><br>
-to-cdb [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a>
-</code>
-<dd>
-
-The <code>from-cdb</code> and <code>to-cdb</code> sources expect a
-match field of a CDB database filename.  You can specify the entire
-path or use a leading '~' to represent the user's home directory.  You
-should specify the <b>.cdb</b> extension as part of the filename.  The
-CDB format and expected contents are documented <a
-href="#db_file">below</a>.
-
-<br><br>
-
-If the <code>-optional</code> flag is given, the non-existence of the
-file is not an error.  If the file should exist, don't specify this
-flag; the parser will log an error and will defer the mail so that you
-have a chance to fix the problem.
-
-<br><br>
-
-<dt>
-<code>
-from-dbm [ -optional ] <a href="#db_file">&lt;database.db&gt;</a><br>
-to-dbm [ -optional ] <a href="#db_file">&lt;database.db&gt;</a>
-</code>
-<dd>
-
-The <code>from-dbm</code> and <code>to-dbm</code> sources expect the
-name of a DBM database in the match field.  You can specify the entire
-path or use a leading '~' to represent the user's home directory.  You
-should specify the <b>.db</b> extension as part of the filename.  The
-DBM format and expected contents are documented <a
-href="#db_file">below</a>.
-
-<br><br>
-
-If the <code>-optional</code> flag is given, the non-existence of the
-file is not an error.  If the file should exist, don't specify this
-flag; the parser will log an error and will defer the mail so that you
-have a chance to fix the problem.
-
-<br><br>
-
-
-<dt>
-<code>
-from-ezmlm [ -optional ] &lt;path_to_subscribers_parent_dir&gt;<br>
-to-ezmlm [ -optional ] &lt;path_to_subscribers_parent_dir&gt;
-</code>
-<dd>
-
-The <code>from-ezmlm</code> and <code>to-ezmlm</code> sources match
-against the subscriber list of an <a href="http://cr.yp.to/ezmlm.html"
-TARGET="Resource Window">ezmlm</a> mailing list.  They expect the
-match field to be the full path of the <i>parent</i> directory of an
-ezmlm `subscribers' directory.  You should not include the
-`subscribers' portion of the path.
-
-<br><br>
-
-If the <code>-optional</code> flag is given, the non-existence of the
-file is not an error.  If the file should exist, don't specify this
-flag; the parser will log an error and will defer the mail so that you
-have a chance to fix the problem.
-
-<br><br>
-
-
-<dt>
-<code>
-from-mailman -attr=&lt;attribute&gt; [ -optional ] &lt;path_to_list_dir&gt;<br>
-to-mailman -attr=&lt;attribute&gt; [ -optional ] &lt;path_to_list_dir&gt;
-</code>
-<dd>
-
-The <code>from-mailman</code> and <code>to-mailman</code> sources
-match against addresses contained in a <a href="http://list.org/"
-TARGET="Resource Window">Mailman</a> configuration database.  The
-match field should be the full path to the list directory.  Both
-Mailman 2.0 and 2.1-style configuration databases are supported.
-
-<br><br>
-
-The <code>-mailman</code> sources require you to specify an
-`attribute' to search.  Use the <code>-attr=attribute</code> flag to
-specify the name of an attribute contained in the database.  For
-example, `members' (subscriber addresses), `digest_members' (digest
-subscriber addresses), or `owner' (list owner's address).
-
-<br><br>
-
-If the <code>-optional</code> flag is given, the non-existence of the
-file is not an error.  If the file should exist, don't specify this
-flag; the parser will log an error and will defer the mail so that you
-have a chance to fix the problem.
-
-<br><br>
-
+  <dt> <code> from <a href="#email_address">&lt;email_address&gt;</a><br>
+    to <a href="#email_address">&lt;email_address&gt;</a> </code> 
+  <dd> The <code>from</code> and <code>to</code> sources expect a match field 
+    of either an explicit email address or a wildcarded email address. The format 
+    of the email address is documented <a
+href="#email_address">below</a>. <br>
+    <br>
+  <dt> <code> from-file [ <a href="#autoflags">-autocdb</a> | <a href="#autoflags">-autodbm</a> 
+    ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a><br>
+    to-file [ <a href="#autoflags">-autocdb</a> | <a href="#autoflags">-autodbm</a> 
+    ] [ -optional ] <a href="#email_file">&lt;textfile&gt;</a> </code> 
+  <dd> The <code>from-file</code> and <code>to-file</code> sources expect the 
+    name of a textfile as the match field. You can specify the entire path explicitly 
+    or use a leading '~' to represent the user's home directory, like the shell 
+    does. The match field is always the name of the textfile. You do not need 
+    to add '.cdb' or '.db' if you use the <code>-auto*</code> flags. It will be 
+    automatically appended to the filename. The format of the textfile is documented 
+    <a
+href="#email_file">below</a>. <br>
+    <br>
+    Both <code>from-file</code> and <code>to-file</code> can take one of the <code>-autocdb</code> 
+    or <code>-autodbm flags</code>. The -autocdb and -autodbm flags are documented 
+    <a
+href="#autoflags">below</a>. <br>
+    <br>
+    If the <code>-optional</code> flag is given, the non-existence of the file 
+    is not an error. If the file should exist, don't specify this flag; the parser 
+    will log an error and will defer the mail so that you have a chance to fix 
+    the problem. <br>
+    <br>
+  <dt> <code> from-cdb [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a><br>
+    to-cdb [ -optional ] <a href="#db_file">&lt;database.cdb&gt;</a> </code> 
+  <dd> The <code>from-cdb</code> and <code>to-cdb</code> sources expect a match 
+    field of a CDB database filename. You can specify the entire path or use a 
+    leading '~' to represent the user's home directory. You should specify the 
+    <b>.cdb</b> extension as part of the filename. The CDB format and expected 
+    contents are documented <a
+href="#db_file">below</a>. <br>
+    <br>
+    If the <code>-optional</code> flag is given, the non-existence of the file 
+    is not an error. If the file should exist, don't specify this flag; the parser 
+    will log an error and will defer the mail so that you have a chance to fix 
+    the problem. <br>
+    <br>
+  <dt> <code> from-dbm [ -optional ] <a href="#db_file">&lt;database.db&gt;</a><br>
+    to-dbm [ -optional ] <a href="#db_file">&lt;database.db&gt;</a> </code> 
+  <dd> The <code>from-dbm</code> and <code>to-dbm</code> sources expect the name 
+    of a DBM database in the match field. You can specify the entire path or use 
+    a leading '~' to represent the user's home directory. You should specify the 
+    <b>.db</b> extension as part of the filename. The DBM format and expected 
+    contents are documented <a
+href="#db_file">below</a>. <br>
+    <br>
+    If the <code>-optional</code> flag is given, the non-existence of the file 
+    is not an error. If the file should exist, don't specify this flag; the parser 
+    will log an error and will defer the mail so that you have a chance to fix 
+    the problem. <br>
+    <br>
+  <dt> <code> from-ezmlm [ -optional ] &lt;path_to_subscribers_parent_dir&gt;<br>
+    to-ezmlm [ -optional ] &lt;path_to_subscribers_parent_dir&gt; </code> 
+  <dd> The <code>from-ezmlm</code> and <code>to-ezmlm</code> sources match against 
+    the subscriber list of an <a href="http://cr.yp.to/ezmlm.html"
+TARGET="Resource Window">ezmlm</a> mailing list. They expect the match field to 
+    be the full path of the <i>parent</i> directory of an ezmlm `subscribers' 
+    directory. You should not include the `subscribers' portion of the path. <br>
+    <br>
+    If the <code>-optional</code> flag is given, the non-existence of the file 
+    is not an error. If the file should exist, don't specify this flag; the parser 
+    will log an error and will defer the mail so that you have a chance to fix 
+    the problem. <br>
+    <br>
+  <dt> <code> from-mailman -attr=&lt;attribute&gt; [ -optional ] &lt;path_to_list_dir&gt;<br>
+    to-mailman -attr=&lt;attribute&gt; [ -optional ] &lt;path_to_list_dir&gt; 
+    </code> 
+  <dd> The <code>from-mailman</code> and <code>to-mailman</code> sources match 
+    against addresses contained in a <a href="http://list.org/"
+TARGET="Resource Window">Mailman</a> configuration database. The match field should 
+    be the full path to the list directory. Both Mailman 2.0 and 2.1-style configuration 
+    databases are supported. <br>
+    <br>
+    The <code>-mailman</code> sources require you to specify an `attribute' to 
+    search. Use the <code>-attr=attribute</code> flag to specify the name of an 
+    attribute contained in the database. For example, `members' (subscriber addresses), 
+    `digest_members' (digest subscriber addresses), or `owner' (list owner's address). 
+    <br>
+    <br>
+    If the <code>-optional</code> flag is given, the non-existence of the file 
+    is not an error. If the file should exist, don't specify this flag; the parser 
+    will log an error and will defer the mail so that you have a chance to fix 
+    the problem. <br>
+    <br>
+  <dt> <code> from-mysql [ -like | -rlike ] &lt;table&gt;<br>
+    to-mysql [ -like | -rlike ] &lt;table&gt; </code> 
+  <dd> The <code>from-mysql</code> and <code>to-mysql</code> sources match against 
+    addresses contained in a <a href="http://mysql.org/"
+TARGET="Resource Window">MySQL</a> database table. The match field should be the 
+    table name. The MySQL host, user name, password, and database name should 
+    all be configured with the appropriate <a href="config-vars.html"
+TARGET="Resource Window">MYSQL_*</a> variable. The MySQL table format and expected 
+    contents are documented <a href="#MySQL">below</a>.<br>
+    <br>
+    If no flags are specified, the address(es) being tested must exactly match 
+    an entry in the table. Wildcard matching may be done by adding the <code>-like</code> 
+    or <code>-rlike</code> flags. <code>-like</code> indicates that MySQL <code>LIKE</code> 
+    comparison should be done (i.e. <code>%@my.host.name</code> would match all 
+    users in the <code>my.host.name</code> domain). <code>-rlike</code> indicates 
+    that MySQL regular expression (<code>RLIKE</code>) comparison should be done 
+    (i.e. <code>.+@my\.host\.name</code> would match all users in the <code>my.host.name</code> 
+    domain).<br>
+    <br>
 </dl>
-
-The following group of sources may be used only in incoming filter
-files.
-<br><br>
+The following group of sources may be used only in incoming filter files. <br>
+<br>
 
 <dl>
 <dt>
@@ -469,41 +424,23 @@ contains whitespace, it should be quoted.
 <h3>Miscellaneous Notes</h3>
 
 <dl>
-<dt>
-<a name="email_address"><b>Email Addresses</b></a>
-<dd>
-
-In addition to explicit email addresses, you can use expressions
-based on UNIX shell-style wildcard characters anywhere an email
-address is expected.
-
-<br><br>
-
-<strong>NOTE:</strong> Wildcard characters are not recognized in a CDB
-or DBM file.
-
-<br><br>
-
-The special characters are:
-
-<blockquote><pre>
-
-Characters(s)    Description
--------------    -----------
-*                Matches everything.
-?                Matches any single character.
-[seq]            Matches any character in seq.
-[!seq]           Matches any character not in seq.
-
-</blockquote></pre>
-
-In addition, `<code>@=</code>' (a custom rule) will expand to match
-both <code>@</code> and <code>@*.</code>
-
-<br><br>
-
-Here are some common examples:
-<pre><blockquote>
+  <dt> <a name="email_address"><b>Email Addresses</b></a> 
+  <dd> In addition to explicit email addresses, you can use expressions based 
+    on UNIX shell-style wildcard characters anywhere an email address is expected. 
+    <br>
+    <br>
+    <strong>NOTE:</strong> Wildcard characters are not recognized in a CDB or 
+    DBM file. <br>
+    <br>
+    The special characters are: 
+    <blockquote><pre> Characters(s) Description ------------- ----------- * Matches 
+      everything. ? Matches any single character. [seq] Matches any character 
+      in seq. [!seq] Matches any character not in seq. </blockquote></pre>
+    In addition, `<code>@=</code>' (a custom rule) will expand to match both <code>@</code> 
+    and <code>@*.</code> <br>
+    <br>
+    Here are some common examples: 
+    <pre><blockquote>
 # match only jdoe@domain.dom
 jdoe@domain.dom
 # match anyone@domain.dom, but not anyone@sub.domain.dom
@@ -514,114 +451,106 @@ jdoe@domain.dom
 *@=domain.dom
 
 </blockquote></pre>
-<strong>NOTE:</strong> To match the empty envelope sender such as bounce
-messages are sent with, use <b><code><></code></b> as the expression.
-
-<br><br>
-
-<dt>
-<a name="email_file"><b>Email Address Files</b></a>
-<dd>
-
-Email address files are textfiles containing an email address on each
-line.  When using the <code>from-file</code> and <code>to-file</code>
-sources, the textfile is searched sequentially, with the first match
-terminating the search.  Wildcarded email addresses are supported in
-textfiles.
-
-<br><br>
-
-Address files may contain an optional second field on each line that
-specifies an action (<code>ok, drop, bounce, etc.</code>).  If the
-action is specified, it overrides the action given in the filter rule.
-
-<br><br>
-
-<dt>
-<a name="autoflags"><b>Auto- Database Flags</b></a>
-<dd>
-
-If you have lengthy email address textfiles, you might want to
-consider using the much faster hashed databases instead.  The address
-files used by the auto-building hashed database feature are the same
-email address textfiles documented above with the sole exception that
-wildcards are not supported.
-
-<br><br>
-
-The <code>-autocdb</code> and <code>-autodbm</code> arguments are
-intended to ease the use of CDB/DBM lists in TMDA by automatically
-rebuilding the CDB or DBM file as necessary.  This gives you the
-performance advantages of hashed databases without the hassle of
-having to manually maintain them.  With the <code>-auto*</code>
-arguments, TMDA will rebuild the database if it doesn't exist or if
-its timestamp is older than its source file.  If the rebuild fails for
-some reason, TMDA will fall back to matching from the textfile
-instead.
-
-<br><br>
-
-Before you try the CDB version of this feature, make sure you have the
-<a href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource
-Window">python-cdb</a> extension module installed.
-
-<br><br>
-
-<dt>
-<a name="db_file"><b>Database Files</b></a>
-<dd>
-
-CDB and DBM files are hashed databases.  TMDA can look up email
-addresses in these files.  Lookup in these files is much
-faster than in a textfile.  On the other hand, wildcards are not
-supported in database files -- only in textfiles.
-
-<br><br>
-
-In a CDB or DBM, the keys should be the email addresses to match, and
-their corresponding values (or records) should be empty unless you
-want to override the action specified in the filter file.
-
-<br><br>
-
-CDB or DBM files can be created outside of TMDA and merely referenced
-by your filter files (use the <code>*-cdb</code> and
-<code>*-dbm</code> filter rules) or can be automatically created by
-TMDA if you use the <code>-autocdb</code> or <code>-autodbm</code>
-flags and the <code>*-file</code> rules.
-
-<br><br>
-
-If you wish to explore CDB databases, make sure you have the <a
+    <strong>NOTE:</strong> To match the empty envelope sender such as bounce messages 
+    are sent with, use <b><code><></code></b> as the expression. <br>
+    <br>
+  <dt> <a name="email_file"><b>Email Address Files</b></a> 
+  <dd> Email address files are textfiles containing an email address on each line. 
+    When using the <code>from-file</code> and <code>to-file</code> sources, the 
+    textfile is searched sequentially, with the first match terminating the search. 
+    Wildcarded email addresses are supported in textfiles. <br>
+    <br>
+    Address files may contain an optional second field on each line that specifies 
+    an action (<code>ok, drop, bounce, etc.</code>). If the action is specified, 
+    it overrides the action given in the filter rule. <br>
+    <br>
+  <dt> <a name="autoflags"><b>Auto- Database Flags</b></a> 
+  <dd> If you have lengthy email address textfiles, you might want to consider 
+    using the much faster hashed databases instead. The address files used by 
+    the auto-building hashed database feature are the same email address textfiles 
+    documented above with the sole exception that wildcards are not supported. 
+    <br>
+    <br>
+    The <code>-autocdb</code> and <code>-autodbm</code> arguments are intended 
+    to ease the use of CDB/DBM lists in TMDA by automatically rebuilding the CDB 
+    or DBM file as necessary. This gives you the performance advantages of hashed 
+    databases without the hassle of having to manually maintain them. With the 
+    <code>-auto*</code> arguments, TMDA will rebuild the database if it doesn't 
+    exist or if its timestamp is older than its source file. If the rebuild fails 
+    for some reason, TMDA will fall back to matching from the textfile instead. 
+    <br>
+    <br>
+    Before you try the CDB version of this feature, make sure you have the <a href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource
+Window">python-cdb</a> extension module installed. <br>
+    <br>
+  <dt> <a name="db_file"><b>Database Files</b></a> 
+  <dd> CDB and DBM files are hashed databases. TMDA can look up email addresses 
+    in these files. Lookup in these files is much faster than in a textfile. On 
+    the other hand, wildcards are not supported in database files -- only in textfiles. 
+    <br>
+    <br>
+    In a CDB or DBM, the keys should be the email addresses to match, and their 
+    corresponding values (or records) should be empty unless you want to override 
+    the action specified in the filter file. <br>
+    <br>
+    CDB or DBM files can be created outside of TMDA and merely referenced by your 
+    filter files (use the <code>*-cdb</code> and <code>*-dbm</code> filter rules) 
+    or can be automatically created by TMDA if you use the <code>-autocdb</code> 
+    or <code>-autodbm</code> flags and the <code>*-file</code> rules. <br>
+    <br>
+    If you wish to explore CDB databases, make sure you have the <a
 href="http://pilcrow.madison.wi.us/#pycdb" TARGET="Resource
-Window">python-cdb</a> extension module installed.
-
-<br><br>
-
-<dt>
-<a name="re_file"><b>Regular Expression Files</b></a>
-<dd>
-
-A regular expression textfile is simply a text file with a regular
-expression on each line.  The file is read sequentially and each
-regular expression is used to attempt a match.  As soon as there is a
-match, the search stops.
-
-<br><br>
-
-Because regular expressions may include spaces, you must surround the
-regular expressions with quotation marks.  You may use either single
-quotes (<code><b>'</b></code>) or double quotes
-(<code><b>"</b></code>) as long as you use the the same one at both
-the beginning and the end.
-
-<br><br>
-
-If you need to match a quote in your regular expression, simply use
-the other style of quotes to surround the expression or escape the
-embedded quote with a backslash (<code><b>\</b></code>).
-<br><br>
-
+Window">python-cdb</a> extension module installed. <br>
+    <br>
+  <dt> <a name="MySQL" id="MySQL"><b>MySQL Tables</b></a> 
+  <dd> MySQL tables used in <code>from-mysql</code> and <code>to-mysql</code> 
+    filter sources should be created with the following SQL: 
+    <p> 
+    <pre>CREATE TABLE &lt;table_name&gt;
+(
+    ADDRESS text NOT NULL,
+    ACTION text NOT NULL,
+    PRIMARY KEY (ADDRESS(80))
+)</pre>
+    The <code>ACTION</code> field in your records may generally be left blank, 
+    but if present, any command in the field will override the action specified 
+    in the filter source. In other words: 
+    <pre>+-------------+--------+
+| ADDRESS     | ACTION |
++-------------+--------+
+| %@yahoo.com | bounce |
++-------------+--------+</pre>
+    will cause all mail from yahoo.com to bounce, even if the filter source was: 
+    <pre>from-mysql -like TMDA accept</pre>
+    Make sure that the MySQL user specified in <a href="config-vars.html#MYSQL_USER"><code>MYSQL_USER</code></a> 
+    has been <code>GRANT</code>ed sufficient <code>SELECT</code> privileges to 
+    allow access to the table listed in your filter source.<br>
+    <br>
+    The TMDA filter parser will stop on the first matching record found. If you 
+    are using the <code>-like</code> or <code>-rlike</code> options and multiple 
+    table entries match, there is no predicting which record will be used.<br>
+    <br>
+    If you wish to explore MySQL databases, make sure you have the <a
+href="http://sourceforge.net/projects/mysql-python/" TARGET="Resource
+Window">mysql-python</a> extension module installed. <br>
+    <br></dt>
+    
+  <dd></dt> 
+  <dd></dt> 
+  <dt> <a name="re_file"><b>Regular Expression Files</b></a> 
+  <dd> A regular expression textfile is simply a text file with a regular expression 
+    on each line. The file is read sequentially and each regular expression is 
+    used to attempt a match. As soon as there is a match, the search stops. <br>
+    <br>
+    Because regular expressions may include spaces, you must surround the regular 
+    expressions with quotation marks. You may use either single quotes (<code><b>'</b></code>) 
+    or double quotes (<code><b>"</b></code>) as long as you use the the same one 
+    at both the beginning and the end. <br>
+    <br>
+    If you need to match a quote in your regular expression, simply use the other 
+    style of quotes to surround the expression or escape the embedded quote with 
+    a backslash (<code><b>\</b></code>). <br>
+    <br>
 </dl>
 
 
