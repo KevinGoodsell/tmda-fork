@@ -847,7 +847,7 @@ def main():
         mta.stop()
     elif action in ('accept','deliver','ok'):
         if option:
-            logit('DELIVER', '(%s)' % matching_line + '=' + option)
+            logit('DELIVER', '(%s)' % (matching_line + '=' + option))
             mta.deliver(msgin, option)
         else:
             logit('OK', '(%s)' % matching_line)
