@@ -1,3 +1,11 @@
+2003-01-20  Tim Legant  <tim@catseye.net>
+
+	* vmailmgr-vdir.sh: Script to print virtual email user's homedir.
+	Works with the VMailMgr virtual domain add-on to qmail.
+
+	* vpopmail-vdir.sh: Script to print virtual email user's homedir.
+	Works with the VPopMail virtual domain add-on to qmail.
+
 2002-11-13  Josh  <huber@alum.wpi.edu>
 
 	* tmda.el: Made the changelist processing faster.
