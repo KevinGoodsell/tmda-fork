@@ -29,42 +29,44 @@ aS'Incoming Filter'
 p15
 aS'Outgoing Filter'
 p16
-aS'Theme'
+aS'Test Filters'
 p17
-aS'Local Config'
+aS'Theme'
 p18
-aS'Templates'
+aS'Local Config'
 p19
-aS'Global Config'
+aS'Templates'
 p20
-aS'Uninstall'
+aS'Global Config'
 p21
-aS'whitelist'
+aS'Uninstall'
 p22
-aS'white'
+aS'whitelist'
 p23
-aS'blacklist'
+aS'white'
 p24
-aS'black'
+aS'blacklist'
 p25
-aS'confirmed'
+aS'black'
 p26
-aS'confirm'
+aS'confirmed'
 p27
-aS'revoked'
+aS'confirm'
 p28
-aS'work'
+aS'revoked'
 p29
-aS'family'
+aS'work'
 p30
-aS'friends'
+aS'family'
 p31
-aS'accept'
+aS'friends'
 p32
-aS'deny'
+aS'accept'
 p33
-aS'whitelist_confirmed'
+aS'deny'
 p34
-aS'other'
+aS'whitelist_confirmed'
 p35
+aS'other'
+p36
 as.

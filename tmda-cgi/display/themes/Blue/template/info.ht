@@ -28,6 +28,10 @@ Title: About tmda-cgi
     <td><b>TMDA:</b></td>
     <td class="TextField">%(TmdaVersion)s</td>
   </tr>
+  <tr>
+    <td><b>Theme:</b></td>
+    <td class="TextField">Blue/1.0 By Gre7g Luterman and Jim Ramsay</td>
+  </tr>
 </table><p>
 
 <h2><a name="Params"></a>Compile Params</h2>
