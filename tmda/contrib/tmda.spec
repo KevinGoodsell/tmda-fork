@@ -1,5 +1,5 @@
 %define name tmda
-%define version 0.74
+%define version 0.75
 %define release 1
 
 Summary: Tagged Message Delivery Agent
