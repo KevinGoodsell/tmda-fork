@@ -1,3 +1,8 @@
+2003-05-24  Gre7g Luterman  <gre7g@wolfhome.com>
+
+	* Fixed a bug in the e-mail viewer which could cause the wrong item
+	  to be handled.
+
 2003-05-23  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Made %(UrlDomain)s, %(ShortUrlDom)s, and %(VirtUser)d available

@@ -91,7 +91,6 @@ def Show():
 
   # Get e-mail template
   T = Template.Template("view.html")
-  T["MsgID"]      = PVars["MsgID"]
   T["EmailClass"] = PVars[("ViewPending", "EmailClass")]
 
   # Locate messages in pending dir
@@ -162,6 +161,7 @@ def Show():
     PVars.Save()
 
   # Get message ID
+  T["MsgID"]     = Msgs[MsgIdx]
   PVars["MsgID"] = Msgs[MsgIdx]
 
   # Grey out the first & prev buttons?
