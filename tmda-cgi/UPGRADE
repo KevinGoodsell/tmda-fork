@@ -2,7 +2,7 @@
 
 If you are upgrading from a release of tmda-cgi < 0.02:
 
-* Requires TMDA version 0.74+
+* Requires TMDA release 0.74 or later
 
 * New authentication mechanisms (which appear to work).  To
   facilitate this there are new parameters in the ./compile script.
