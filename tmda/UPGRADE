@@ -3,6 +3,20 @@ this file.
 
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.81:
+
+* The {from,to}-mysql rules have been replaced by from-sql and
+  to-sql.  See <URL:http://tmda.net/filter-sources.html> for details
+  on the use of the new rules.
+
+* The -domains argument to filter rules that search files or databases
+  has been removed.  The domains of the sender or recipient addresses
+  are now always added to the list of search keys.  The behavior of
+  the rules is the same as before; you just don't need to specify the
+  -domains argument anymore.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.79:
 
 * The PURGED_HEADERS configuration variable has been changed to
