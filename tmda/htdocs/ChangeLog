@@ -1,5 +1,8 @@
 2001-11-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* config-server.ht: Move success reporting info from INSTALL to
+	here.
+	
 	* config-pre.ht: New file describing configuration changes needed
 	for supporting software such as the MTA.  Exim info is new.
 
