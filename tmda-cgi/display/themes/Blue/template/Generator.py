@@ -215,7 +215,7 @@ name="%s"''' % (alt, height, name)
     return Sidebar.get_sidebar(self)
 
   def get_banner(self):
-    return '''<img src="%(ThemeDir)s/title.png" width="327" height="135"
+    return '''<img src="%(ThemeDir)s/title.png" width="341" height="135"
 alt="TMDA (http://tmda.net) CGI Interface">'''
 
   def get_corner(self):
