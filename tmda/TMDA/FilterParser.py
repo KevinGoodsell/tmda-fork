@@ -418,7 +418,34 @@ class FilterParser:
                 dbm.close()
                 break
         return found_match
-        
+
+
+    def __autobuild_db(self, basename, extension,
+                       surrogate, build_func, search_func):
+        """
+        Automatically build a CDB/DBM database if it's out-of-date.
+        """
+        dbname = basename + extension
+        # If the text file doesn't exist, let the exception
+        #  happen and get passed back to tmda-filter.
+        txt_mtime = os.path.getmtime(basename)
+        # If the db doesn't exist, that's not an error.
+        try:
+            db_mtime = os.path.getmtime(surrogate)
+        except OSError:
+            db_mtime = 0
+        if db_mtime <= txt_mtime:
+            if build_func(basename):
+                if os.path.exists(surrogate):
+                    mtime = time.time()
+                    os.utime(surrogate, (mtime, mtime))
+                else:
+                    os.close(os.open(surrogate, os.O_CREAT, 0600))
+            else:
+                dbname = basename
+                search_func = self.__search_file
+        return (dbname, search_func)
+
 
     def firstmatch(self, recipient, senders=None,
                    msg_body=None, msg_headers=None, msg_size=None):
@@ -445,45 +472,18 @@ class FilterParser:
 		    break
             # 'from-file' or 'to-file', including autocdb functionality
             if source in ('from-file', 'to-file'):
-                match = os.path.expanduser(match)
-                dbname = match
-                build_func = None
+                dbname = os.path.expanduser(match)
                 search_func = self.__search_file
-                # If we have an argument, reset the preceding variables
-                # appropriately.
+                # If we have an argument, ensure that the database is
+                # up-to-date.
                 if args.has_key('autocdb'):
-                    dbname += '.cdb'
-                    dbsurrogate = dbname
-                    build_func = Util.build_cdb
-                    search_func = self.__search_cdb
+                    (dbname, search_func) = self.__autobuild_db(
+                        dbname, '.cdb', dbname + '.cdb',
+                        Util.build_cdb, self.__search_cdb)
                 elif args.has_key('autodbm'):
-                    dbname += '.db'
-                    dbsurrogate = match + '.last_built'
-                    build_func = Util.build_dbm
-                    search_func = self.__search_dbm
-                # If we have a valid build_func, we want to try to build
-                # the database.  If build_func is None, this is just a
-                # plain 'from-/to-file' with no -auto* argument.
-                if build_func:
-                    # If the text file doesn't exist, let the exception
-                    #  happen and get passed back to tmda-filter.
-                    txt_mtime = os.path.getmtime(match)
-                    # If the cdb file doesn't exist, that's not an error.
-                    try:
-                        db_mtime = os.path.getmtime(dbsurrogate)
-                    except OSError:
-                        db_mtime = 0
-                    if db_mtime <= txt_mtime:
-                        if build_func(match):
-                            if os.path.exists(dbsurrogate):
-                                mtime = time.time()
-                                os.utime(dbsurrogate, (mtime, mtime))
-                            else:
-                                fd = os.open(dbsurrogate, os.O_CREAT, 0600)
-                                os.close(fd)
-                        else:
-                            dbname = match
-                            search_func = self.__search_file
+                    (dbname, search_func) = self.__autobuild_db(
+                        dbname, '.db', dbname + '.last_built',
+                        Util.build_dbm, self.__search_dbm)
                 try:
                     found_match = search_func(dbname, keys,
                                               actions, source)

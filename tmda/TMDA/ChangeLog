@@ -1,5 +1,10 @@
 2002-02-22  Tim Legant  <tim@catseye.net>
 
+	* FilterParser.py (FilterParser.__autobuild_db): New function.
+
+	(FilterParser.firstmatch): Factored above function out of
+	'from-/to-file' clause to clean up code.
+	
 	* FilterParser.py (FilterParser.firstmatch): Made autodbm
 	functionality use a surrogate file to determine whether the DBM is
 	up to date.  This is because of the varied naming of DBM files
