@@ -266,6 +266,30 @@ if not vars().has_key('SMTPAUTH_USERNAME') and OUTGOINGMAIL == 'smtp':
 if not vars().has_key('SMTPAUTH_PASSWORD') and OUTGOINGMAIL == 'smtp':
     SMTPAUTH_PASSWORD = None
 
+# SMTPSSL
+# Set this variable to 1 to put the SMTP connection in TLS (Transport
+# Layer Security) mode. All SMTP commands that follow will be
+# encrypted.  Your Python's socket module must be compiled with SSL
+# support.  Requires Python 2.2 or greater.
+# Default is 0 (turned off)
+if not vars().has_key('SMTPSSL') and OUTGOINGMAIL == 'smtp':
+    SMTPSSL = 0
+
+# SMTPSSL_KEYFILE
+# When SMTPSSL is enabled, this is the optional name of a PEM
+# formatted file that contains your private key.
+# No default.
+if not vars().has_key('SMTPSSL_KEYFILE') and SMTPSSL:
+    SMTPSSL_KEYFILE = None
+
+# SMTPSSL_CERTFILE
+# When SMTPSSL is enabled, this is the optional name of a PEM
+# formatted certificate chain file.  Warning: This does not do any
+# certificate verification.
+# No default.
+if not vars().has_key('SMTPSSL_CERTFILE') and SMTPSSL:
+    SMTPSSL_CERTFILE = None
+
 # SMTP_MAX_SESSIONS_PER_CONNECTION
 # An integer specifying a ceiling on the number of SMTP sessions to
 # perform on a single socket connection, when OUTGOINGMAIL is

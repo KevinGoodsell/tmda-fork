@@ -49,6 +49,10 @@ class Connection:
         if Defaults.SMTPAUTH_USERNAME and Defaults.SMTPAUTH_PASSWORD:
             self.__conn.login(Defaults.SMTPAUTH_USERNAME,
                               Defaults.SMTPAUTH_PASSWORD)
+        # Optional TLS (SSL) mode.
+        if Defaults.SMTPSSL:
+            self.__conn.starttls(Defaults.SMTPSSL_KEYFILE,
+                                 Defaults.SMTPSSL_CERTFILE)
             
     def sendmail(self, envsender, recips, msgtext):
         try:
