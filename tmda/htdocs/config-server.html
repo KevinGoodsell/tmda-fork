@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon May 13 13:36:19 2002 -->
+<!-- Tue May 28 16:36:34 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -175,7 +175,7 @@ and then read the set of instructions corresponding to your MTA
 <ol>
 
 <li>A unique, private key is required for every TMDA user.  This key
-is stored in your TMDA configuration file (<b>~/.tmdarc</b>).  A
+is stored in its own file <b>~/.tmda/crypt_key</b>.  A
 key-generation utility is included with the distribution.  Simply run
 <b>tmda-keygen</b> and follow its instructions.
 <br><br>
@@ -204,9 +204,7 @@ you want to refuse mail from.
 
 <li>Finish setting up your <b>~/.tmdarc</b> and optionally a
 system-wide <b>/etc/tmdarc</b> by reading through the included
-<b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b> is the only entry
-required for qmail users, but there may be other settings you want to
-enable or change.  <br><br>
+<b>sample.tmdarc</b> file.<br><br>
 
 <li>Setup dot-qmail files appropriately in your home directory.<br><br>
 
@@ -311,8 +309,7 @@ otherwise it goes through the confirmation process.
 
 <li>Finish setting up your <b>~/.tmdarc</b> and optionally a
 system-wide <b>/etc/tmdarc</b> by reading through the
-included <b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b>,
-<b>MAIL_TRANSFER_AGENT</b>, <b>DELIVERY</b>, and
+included <b>sample.tmdarc</b> file.  <b>MAIL_TRANSFER_AGENT</b>, <b>DELIVERY</b>, and
 <b>RECIPIENT_DELIMITER</b> are required entries for non-qmail users.
 <br><br>
 
@@ -374,7 +371,7 @@ mailer as described in the
 
 <li>Finish setting up your <b>~/.tmdarc</b> and optionally a
 system-wide <b>/etc/tmdarc</b> by reading through the
-included <b>sample.tmdarc</b> file.  <b>CRYPT_KEY</b>,
+included <b>sample.tmdarc</b> file.  
 <b>MAIL_TRANSFER_AGENT</b>, <b>DELIVERY</b>, and
 <b>RECIPIENT_DELIMITER</b> are required entries for non-qmail users.
 <br><br>

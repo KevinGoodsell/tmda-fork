@@ -219,9 +219,9 @@ Send the message to all recipients from jason-mlist-xemacs-beta@mastaler.com
 
 <li>.tmdarc configuration:<br><br>
 
-Make sure that your <b>.tmdarc</b> contains the same <b>CRYPT_KEY</b>
+Make sure that your <b>crypt_key</b> file is the same
 on both your mail server and your mail client -- they must match.
-See <b>sample.tmdarc</b> for more client options.
+See <b>TMDA/Defaults.py</b> for more client options.
 <br><br>
 
 
