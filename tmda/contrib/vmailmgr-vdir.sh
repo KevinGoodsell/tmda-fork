@@ -23,18 +23,26 @@ SED=/usr/bin/sed
 # Set IFS to a newline (no space, no tab)
 IFS='
 '
-set `${LISTVDOMAIN} $1`
+output=$(${LISTVDOMAIN} $1)
+rc=$?
+
+if [ $rc -ne 0 ]; then
+    exit $rc
+fi
+
+set -- $output
+
 # Reset IFS to a space, tab, newline.
 IFS=' 	
 '
-set $2
+set -- $2
 
 # $2, now the user's home directory, is relative to $HOME and looks like this:
 #
 # ./users/<username>
 #
 # Strip off the leading dot, but leave the (now leading) '/'.
-homedir=`echo $2 | ${SED} 's/^\.//'`
+homedir=$(echo $2 | ${SED} 's/^\.//')
 
 # No separating '/' necessary because 'homedir' begins with '/'.
-echo ${HOME}${homedir}
+echo "${HOME}${homedir}"

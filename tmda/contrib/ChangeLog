@@ -1,3 +1,8 @@
+2003-06-17  Tim Legant  <tim@catseye.net>
+
+	* vmailmgr-vdir.sh, vpopmail-vdir.sh: Modified to return error
+	code if home directory lookup fails.
+
 2003-04-19  Gre7g Luterman <gre7g@wolfhome.com>
 
 	* Removed getuserinfo-vpopmail.sh

@@ -22,4 +22,20 @@ else
     vuser="$1@$2"
 fi
 
-${VUSERINFO} -d $vuser
+output=$(${VUSERINFO} -d "$vuser")
+rc=$?
+
+if [ $rc -ne 0 ]; then
+    exit $rc
+fi
+
+set -- $output
+
+# Older versions of vuserinfo prefaced the home directory with 'dir: '
+if [ -n "$2" ]; then
+    $1=$2
+fi
+
+echo $1
+
+exit 0
