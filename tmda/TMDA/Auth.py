@@ -529,7 +529,7 @@ class Auth(Util.Debugable):
             try:
                 M = ldap.initialize("ldap://%s:%s" % (self.__authremote['host'],
                                                       self.__authremote['port']))
-                M.simple_bind_s(self.__authremote['dn'] % { user: username }, password)
+                M.simple_bind_s(self.__authremote['dn'] % { 'user': username }, password)
                 M.unbind_s()
                 return 1
             except:
