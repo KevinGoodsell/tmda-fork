@@ -19,7 +19,7 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""Check a tagged (dated, or sender style only) e-mail address.
+"""Check a tagged (dated, keyword, or sender style only) e-mail address.
 
 Usage:  %(program)s [-c <file>] [-V] [-h] address [senderaddr]
 
