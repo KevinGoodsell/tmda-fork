@@ -1,5 +1,12 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.74:
+
+* contrib/cgi has been removed.  tmda-cgi is now maintained/released
+  as a stand-alone distribution to allow that effort more flexibility.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.72:
 
 * contrib/vipmap-to-authmap has been removed.
