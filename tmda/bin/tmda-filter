@@ -194,6 +194,12 @@ def main():
     ext3 = os.environ.get('EXT3') 
     if ext3:ext3 = string.lower(ext3)
 
+    # EXT4 is the portion of EXT following the third dash.  This
+    # should normally only be defined if a "pre-extension" is defined
+    # in /var/qmail/users/assign.
+    ext4 = os.environ.get('EXT4') 
+    if ext4:ext4 = string.lower(ext4)
+
     # HOST is the domain part of the recipient address.
     host = os.environ.get('HOST')
     if host:host = string.lower(host)
@@ -211,6 +217,18 @@ def main():
         ext = ext2
         ext2 = ext3
 
+    # If a "pre-extension" is defined in the users/assign file, it is
+    # prepended to the address before being processed.  Set USERPREFIX
+    # to match the "pre-extension" so we can look for it and shift if
+    # off.
+    if Defaults.USERPREFIX:
+        prefix=ext[:string.find(ext,ext2)-1]
+        if prefix == Defaults.USERPREFIX:
+            # Shift the EXT* variables twice left.
+            ext = ext2
+            ext2 = ext3
+            ext3 = ext4
+            
     # Extract the e-mail address from Envelope-Sender, From:, and Reply-To:
     Envelope = os.environ.get('SENDER')
     From = message_headers.getaddr('from')[1]

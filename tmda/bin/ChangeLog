@@ -1,5 +1,8 @@
 2001-05-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-filter (main): Add support for "pre-extension" definitions
+	in /var/qmail/users/assign.
+	
 	* tmda-inject (main): Special case files can now contain
 	substrings instead of only explicit addresses to match.  To
 	support this, exp and ext cases are now stored in lists like the

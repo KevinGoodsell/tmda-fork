@@ -1,5 +1,8 @@
 2001-05-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Defaults.py (USERPREFIX): New variable introduced to support
+	"pre-extension" definitions in /var/qmail/users/assign.
+
 	* Util.py (findmatch): New function to facilitate matching
 	substrings for the special-case addresses.  Used by tmda-inject.
 

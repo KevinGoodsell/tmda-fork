@@ -160,6 +160,13 @@ if not vars().has_key('TIMEOUT'):
 if not vars().has_key('USERNAME'):
     USERNAME = Util.getusername()
 
+# USERPREFIX
+# The prefix to the address as specified in the last field of the
+# /var/qmail/users/assign. (without a trailing `-')
+# No default.
+if not vars().has_key('USERPREFIX'):
+    USERPREFIX = None
+    
 # BARE_FILE
 # Filename which contains a list of e-mail addresses, one per line,
 # which will receive untagged (no cookie added) messages.

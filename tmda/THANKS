@@ -18,3 +18,5 @@ Contributions:
     * Reuben Sumner -- for contributing the HMAC.py module and for
     suggesting the "blacklist" functionality.
 
+    * Ted Rathkopf -- for contributing support for "pre-extension"
+    definitions in /var/qmail/users/assign.
