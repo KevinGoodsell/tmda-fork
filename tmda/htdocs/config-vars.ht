@@ -696,14 +696,14 @@ Default is ~/.tmda/crypt_key
 <dd>
 Top-level directory which TMDA uses to store its files and
 directories.  TMDA should be free to create files and directories
-under DATADIR if need be.  Make sure to include a trailing "/".
+under DATADIR if need be.
 <br><br>
 Examples:
 <br><br>
-<code>DATADIR = "/full/path/to/.tmda/"</code><br>
-<code>DATADIR = "~/.tmda/"</code>
+<code>DATADIR = "/full/path/to/.tmda"</code><br>
+<code>DATADIR = "~/.tmda"</code>
 <br><br>
-Default is ~/.tmda/
+Default is ~/.tmda
 <dt><hr>
 <a name="DATED_TEMPLATE_VARS"><h4>DATED_TEMPLATE_VARS</h4></a>
 <dd>
