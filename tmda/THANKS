@@ -91,6 +91,8 @@ Contributions:
     * Drew Raines -- Tireless assistance on tmda-users; custom address
       type identifiers feature.
 
+    * Jim Ramsay -- work on Auth.py.
+
     * Ted Rathkopf -- support for "pre-extension" definitions in
       /var/qmail/users/assign (now deprecated).
 
