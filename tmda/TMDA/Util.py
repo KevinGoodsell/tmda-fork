@@ -870,7 +870,8 @@ class StringOutput:
     def __init__(self):
         self.__content = ""
     def write(self, msg):
-        self.__content += "%s" % msg
+        if msg != "":
+            self.__content += "%s" % msg
     def flush(self):
         self.__content = ""
     def __repr__(self):
