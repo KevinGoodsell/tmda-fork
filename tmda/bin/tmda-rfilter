@@ -683,6 +683,7 @@ def bouncegen(mode, text=None):
         # Don't send anything for silently held messages
         if Defaults.CONFIRM_CC:
             send_cc(Defaults.CONFIRM_CC)
+        logit("HOLD pending " + pending_message)
         mta.stop()
 
     # Create the confirm message and then send it.

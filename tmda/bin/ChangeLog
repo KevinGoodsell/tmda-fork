@@ -5,6 +5,8 @@
 	(bouncegen): Assign message filename to 'pending_message' when
 	creating pending message.  Fixes bug when attempting to log
 	confirmation, reported by Jinhyok Heo <novembre@ournature.org>.
+	Also added log message when message is held, reporting the
+	filename in pending/ (analogous to the confirm log message).
 
 2002-09-12  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
