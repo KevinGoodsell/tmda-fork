@@ -29,9 +29,9 @@ import os
 import sys
 import time
 
-import email
-import Errors
+from email.Utils import parseaddr
 import Defaults
+import Errors
 import Util
 
 class Queue:
@@ -385,13 +385,11 @@ class Message:
         self.msgfile = os.path.join(Defaults.DATADIR, 'pending', self.msgid)
         if not os.path.exists(self.msgfile):
             raise Errors.MessageError, '%s not found!' % self.msgid
-
-        self.msgobj = email.message_from_file(open(self.msgfile, 'r'))
+        self.msgobj = Util.msg_from_file(open(self.msgfile, 'r'))
         self.recipient = recipient
 
     def initMessage(self, recipient = None):
-        self.return_path = email.Utils.parseaddr(
-                                        self.msgobj.get('return-path'))[1]
+        self.return_path = parseaddr(self.msgobj.get('return-path'))[1]
         if not recipient and not self.recipient:
             self.recipient = self.msgobj.get('x-tmda-recipient')
         else:
@@ -482,8 +480,8 @@ class Message:
         terse_hdrs = []
         for hdr in Defaults.TERSE_SUMMARY_HEADERS:
             if hdr in ('from_name', 'from_address'):
-                from_name, from_address = email.Utils.parseaddr(
-                                                self.msgobj.get('from'))
+                from_name, from_address = parseaddr(
+                    self.msgobj.get('from'))
                 if hdr == 'from_name':
                     terse_hdrs.append(from_name
                                       or from_address or 'None')
