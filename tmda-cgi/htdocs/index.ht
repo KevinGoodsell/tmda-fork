@@ -5,13 +5,16 @@ Title: What is it?
 <p>tmda-cgi is an beta-release program for managing your <a href="/">TMDA</a>
   account over the web. tmda-cgi can:</p>
 <ul>
-  <li>Configure a user's account to use TMDA.</li>
+  <li>Configure a user's account to use TMDA. [<a
+    href="autoinstall.html">Notes</a>]</li>
   <li>Remove TMDA from a user's account.</li>
   <li>Page through lists of pending e-mail (mail received by your MTA, but
     still awaiting confirmation)</li>
   <li>View the text content (and see what sorts of attachments are included) in
     any of your pending e-mails</li>
   <li>Strip Javascript and other "nasty" bits when viewing e-mails</li>
+  <li>Allow sending <a href="confirm.html">URL-based links</a> in your
+    confirmation e-mails so users can surf instead of replying.</li>
   <li>Release (move into your mail folder as if a confirmation had been
     received) any of your pending e-mails</li>
   <li>Delete any pending e-mail</li>
@@ -20,11 +23,14 @@ Title: What is it?
     href="http://spamcop.net">SpamCop</a></li>
   <li>Generate dynamic ("keyword", "dated", and "sender") addresses</li>
   <li>Test dynamic addresses</li>
-  <li>Edit both incoming and outgoing filter files (disable-able)</li>
+  <li>Edit both incoming and outgoing filter files (<a
+    href="defaults.html#NoOverrideMayEditFilters">disable-able</a>)</li>
   <li>Edit any of your text-file based lists</li>
-  <li>Edit your local TMDA configuration file (disable-able)</li>
+  <li>Edit your local TMDA configuration file (<a
+    href="defaults.html#NoOverrideMayEditLocalConfig">disable-able</a>)</li>
   <li>View the global TMDA configuration file</li>
-  <li>Edit the templates used in challenges & bounces (disable-able)</li>
+  <li>Edit the templates used in challenges & bounces (<a
+    href="defaults.html#NoOverrideMayEditTemplates">disable-able</a>)</li>
   <li>Configure a variety of parameters from within tmda-cgi</li>
   <li>Select a theme (although only one theme is currently included in the
     releases)</li>
