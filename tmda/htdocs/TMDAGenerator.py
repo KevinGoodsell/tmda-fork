@@ -127,19 +127,26 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
                 # there is no wide body
                 self.__body = text
 
+    # TMDA 1.1 Scotch/Sea color scheme            
     def get_lightshade(self):
         #return '#fffedc'
         #return '#ffccff'
-        return '#e5e5e5'
-    
+        #return '#e5e5e5'
+        #return '#F5DEB3'
+        #return '#8FBC8F'
+        return '#7FFFD4'
+        
     def get_mediumshade(self):
         return '#9862cb'
 
     def get_darkshade(self):
-        return '#000000'
-
+        #return '#000000'
+        #return '#8B4513'
+        #return '#008B45'
+        return '#2E8B57'
+    
     def get_corner_bgcolor(self):
-        return '#e5e5e5'
+        return '#7FFFD4'
 
     # TMDA 1.0.x color scheme
     #def get_lightshade(self):
