@@ -14,8 +14,8 @@ BuildArchitectures: noarch
 Vendor: Jason R. Mastaler <jason@mastaler.com>
 Packager: Ron Bickers <rbickers@logicetc.com>
 Url: http://tmda.sourceforge.net/
-BuildRequires: python2
-Requires: python2
+BuildRequires: /usr/bin/python2
+Requires: /usr/bin/python2
 
 %description
 TMDA is an OSI certified software application designed to

@@ -1,5 +1,12 @@
 ======================================================================
 
+If you are upgrading from a release of TMDA < 0.52:
+
+* For its Python 2.x dependency, tmda.spec now has RPM look for the
+  file "/usr/bin/python2" instead of the package "python2".
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 0.50:
 
 * Messages in the pending directory are no longer deleted after they
