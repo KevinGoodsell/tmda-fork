@@ -33,6 +33,8 @@ Contributions:
 
     * Brian Lalor -- testing the initial Sendmail support; bugfixes.
 
+    * David Lebel -- OpenBSD port.
+
     * Tim Legant -- Improvements to the filter file language such as
       support for multi-line, multi-action filters, support for
       arguments, and improved error reporting.  from/to-autocdb,
