@@ -1,4 +1,9 @@
 General
+
+	- Write a sendmail wrapper similar to qmail's sendmail wrapper
+	that accepts sendmail options and then runs tmda-inject.
+	Useful for MUAs such as VM which hardcode sendmail options
+	when injecting mail.
 	
 	- Write a LOGFILE statistics/summary script.
 	
