@@ -27,7 +27,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.49+"
+TMDA = "0.50"
 
 # Python version
 # e.g, 2.2 
