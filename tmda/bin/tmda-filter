@@ -92,6 +92,7 @@ except ImportError:
 
 from TMDA import Defaults
 from TMDA import Cookie
+from TMDA import Errors
 from TMDA import FilterParser
 from TMDA import MTA
 from TMDA import Util
@@ -129,8 +130,23 @@ message = stdin.getvalue()
 # Calculate the message size.
 message_size = str(len(message_body))
 
-# $SENDER is the envelope sender address.
+# Collect the three essential environment variables, and defer if they
+# are missing.
+
+# SENDER is the envelope sender address.
 envelope_sender = os.environ.get('SENDER')
+if envelope_sender == None:
+    raise Errors.MissingEnvironmentVariable('SENDER')
+# RECIPIENT is the envelope recipient address.
+# Use the X-Originally-To header if it exists.
+envelope_recipient = (message_headers.getheader('x-originally-to')
+                      or os.environ.get('RECIPIENT'))
+if envelope_recipient == None:
+    raise Errors.MissingEnvironmentVariable('RECIPIENT')
+# EXT is the recipient address extension.
+address_extension = (os.environ.get('EXT')           # qmail
+                     or os.environ.get('EXTENSION')) # Postfix
+
 # If SENDER exists but its value is empty, the message has an empty
 # envelope sender.  Set it to the string '<>' so it can be matched as
 # such in the filter files.
@@ -143,10 +159,6 @@ if envelope_sender == '':
 elif len(string.split(envelope_sender,'@')) == 1:
     envelope_sender = envelope_sender + '@' + Util.gethostname()
     
-# $RECIPIENT is the envelope recipient address.
-# Use the X-Originally-To header if it exists.
-envelope_recipient = (message_headers.getheader('x-originally-to')
-                      or os.environ.get('RECIPIENT'))
 # If the envelope recipient contains only a user part, we need to form
 # it into a fully qualified address by appending the local hostname.
 # This should only be the case when running Sendmail, and the message
@@ -538,8 +550,7 @@ def bouncegen(mode):
 def main():
 
     # Get the cookie type and value by parsing the extension address.
-    ext = (os.environ.get('EXT')           # qmail
-           or os.environ.get('EXTENSION')) # Postfix
+    ext = address_extension
     if ext:
         ext = string.lower(ext)
         ext_split = string.split(ext, Defaults.RECIPIENT_DELIMITER)

@@ -1,3 +1,7 @@
+2001-12-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Errors.py: New module to hold TMDA custom exceptions.
+	
 2001-12-17  Matt Armstrong  <matt@lickey.com>
 
 	* Cookie.py (make_keyword_cookie): Substitute '?' for keyword

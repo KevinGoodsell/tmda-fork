@@ -1,3 +1,8 @@
+2001-12-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-filter: If SENDER or RECIPIENT is not in the environment,
+	print a warning and raise an exception that defers delivery.
+
 2001-12-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter (list_headers): Turn off auto-replies if the message
