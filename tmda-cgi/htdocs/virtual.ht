@@ -5,7 +5,7 @@ Title: Virtual Users
   will need to read over the following sections to insure compatibility.</p>
 
 <a href="#Stub">Stub programs</a><br>
-<a href="#Annoy">Virtual user specific settings</a><p>
+<a href="#Settings">Virtual user specific settings</a><p>
 
 <h3><a name="Stub"></a>Stub programs</h3>
 <p>tmda-cgi uses a "stub" program which converts the output of a virtual user
