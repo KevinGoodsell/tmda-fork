@@ -25,13 +25,10 @@
 import os
 import sys
 import socket
-import asynchat
-import asyncore
 import base64
 import hmac
 import md5
 import popen2
-import random
 import time
 
 # TMDA imports
@@ -44,7 +41,8 @@ class Auth(Util.Debugable):
 
     def __init__(self, authtype=None, autharg=None, \
                  configdir = None, vhomescript = None, \
-                 vdomainfile = "/var/qmail/control/virtualdomains" ):
+                 vdomainfile = "/var/qmail/control/virtualdomains", \
+                 ipauthmapfile = None ):
         """Setup initial values.
         Optional: authtype and autharg initialize the authentication mechanism
                   configdir to set an alternate directory to /home/user
@@ -93,13 +91,13 @@ class Auth(Util.Debugable):
                                                   self.__default_tmda_dir)
         self.__defaultauthfile = os.path.join(self.__owner_tmda_path, \
                                               self.__default_auth_filename)
-        self.__ipauthmapfile = os.path.join(self.__owner_tmda_path, 'ipauthmap')
+        self.__defaultipauth = os.path.join(self.__owner_tmda_path, 'ipauthmap')
         if self.__owner_tmda_path != "/etc":
             if not Util.CanRead(self.__defaultauthfile, raiseError = 0):
                 self.__defaultauthfile = os.path.join(self.__system_tmda_path, \
                                                       'tmdauth')
-            if not Util.CanRead(self.__ipauthmapfile, raiseError = 0):
-                self.__ipauthmapfile = os.path.join(self.__system_tmda_path, \
+            if not Util.CanRead(self.__defaultipauth, raiseError = 0):
+                self.__defaultipauth = os.path.join(self.__system_tmda_path, \
                                                     'ipauthmap')
 
         # external vars
@@ -114,6 +112,12 @@ class Auth(Util.Debugable):
                 self.__authtype = "Undefined"
         else:
             self.init_auth_method( authtype, autharg ) 
+
+        # Set up the ipauthmapfile
+        if ipauthmapfile is not None:
+            self.__ipauthmapfile = ipauthmapfile
+        else:
+            self.__ipauthmapfile = self.__defaultipauth
 
         # Initialize virtual users if necessary
         self.__use_confdir = 0
