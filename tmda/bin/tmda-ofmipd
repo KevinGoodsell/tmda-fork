@@ -1008,6 +1008,10 @@ def main():
     if authfile_mode not in (400, 600):
         raise IOError, \
               authfile + ' must be chmod 400 or 600!'
+    # try binding to the specified host:port
+    host, port = proxyport.split(':', 1)
+    proxy = TMDAProxy((host, int(port)),
+                      ('localhost', 25))
     if running_as_root:
         pw_uid = Util.getuid(username)
         # check ownership of authfile
@@ -1020,10 +1024,6 @@ def main():
         os.setgroups(Util.getgrouplist(username))
         # try seteuid()
         os.seteuid(pw_uid)
-    # try binding to the specified host:port
-    host, port = proxyport.split(':', 1)
-    proxy = TMDAProxy((host, int(port)),
-                      ('localhost', 25))
     # Start the event loop
     try:
         asyncore.loop()
