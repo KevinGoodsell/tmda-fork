@@ -269,7 +269,7 @@ width="18" height="18" alt="Last">"""
   DlRadio = T["DlRadio"]
   WhRadio = T["WhRadio"]
   BlRadio = T["BlRadio"]
-  ScRadio = T["ScRadio"]
+  ScRadio = T["SCRadio"]
 
   # TODO: Programatically check a setting to see which are allowed,
   #       and which should be shown.
