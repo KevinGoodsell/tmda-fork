@@ -1,5 +1,10 @@
 2001-05-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* Util.py (file_to_list): Allow inline comments in the .tmda-*
+	files.  For example:
+	friend@fbi.org       # My friend at the FBI
+	(substring_match): Ditto.
+
 	* Defaults.py (TMDA_VERSION): Begin 0.16 development.
 
 2001-05-28  Jason R. Mastaler  <jason@mastaler.com>

@@ -118,6 +118,9 @@ def file_to_list(file,list):
         if line == '' or line[0] in '#':
             continue
         else:
+            line = string.expandtabs(line)
+            line = string.split(line, ' #')[0]
+            line = string.strip(line)
             line = string.lower(line)
             list.append(line)
     return list
@@ -154,6 +157,9 @@ def substring_match(substrings, *addrs):
                 if line == '' or line[0] in '#':
                     continue
                 else:
+                    line = string.expandtabs(line)
+                    line = string.split(line, ' #')[0]
+                    line = string.strip(line)
                     sublist.append(re.escape(line))
         
         # "address1|address2|address3|addressN"
