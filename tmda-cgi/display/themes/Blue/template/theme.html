@@ -2,7 +2,7 @@
 <?xml-stylesheet href="%(ThemeDir)s/styles.css" type="text/css"?>
 <html>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Tue May  6 14:07:14 2003 -->
+<!-- Tue May  6 18:15:18 2003 -->
 <!-- USING HT2HTML 2.1 -->
 <!-- SEE http://ht2html.sf.net -->
 <!-- User-specified headers:
@@ -123,7 +123,8 @@ border="0"></a><br>
 <p><b>Customize your theme:</b></p>
 <!-- var: FormVars="General:UseJSConfirm:Yes:No,
   ViewPending:AltPref:textplain:texthtml,
-  ViewPending:EmailClass:proportional:fixed, PendingList:PagerSize,
+  ViewPending:EmailClass:proportional:fixed,
+  General:CSEncoding:iso-8859-1:gb2312:big5, PendingList:PagerSize,
   PendingList:DateFormat:aZmZd:aZdZm:ZmZd:ZdZm:db,
   Login:InitPage:pending:gen_addr, PendingList:CropSender,
   PendingList:CropSubject, PendingList:ShowAddr:Name:Address:All,
@@ -154,6 +155,18 @@ border="0"></a><br>
             value="proportional">Proportional</option>
           <option %(ViewPendingEmailClassfixedSelected)s
             value="fixed">Fixed</option>
+        </select></td>
+      <td>&nbsp;</td>
+      <td>Font to use when viewing e-mails</td>
+    </tr>
+    <tr>
+      <td align="center"><select name="GeneralCSEncoding">
+          <option %(GeneralCSEncodingiso88591Selected)s
+            value="iso-8859-1">English</option>
+          <option %(GeneralCSEncodinggb2312Selected)s
+            value="gb2312">GB2312</option>
+          <option %(GeneralCSEncodingbig5Selected)s
+            value="big5">Big5</option>
         </select></td>
       <td>&nbsp;</td>
       <td>Font to use when viewing e-mails</td>

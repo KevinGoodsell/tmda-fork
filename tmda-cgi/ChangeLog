@@ -2,6 +2,8 @@
 
 	* Display international characters in both pending lists and e-mails.
 
+	* Added a stub for decoding /var/qmail/users/assign
+
 2003-05-04  Gre7g Luterman  <gre7g@wolfhome.com>
 
 	* Replaced compile with new, improved configure.  Makes better guesses

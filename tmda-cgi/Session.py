@@ -269,6 +269,7 @@ rights.""")
     os.chdir(CWD)
 
     # Get current theme
+    Template.Template.Dict["CharSet"] = self[("General", "CSEncoding")]
     self.GetTheme()
 
   def __init__(self, Form):
@@ -358,7 +359,7 @@ rights.""")
         VLookup = \
           CgiUtil.ParseString(os.environ["TMDA_VLOOKUP"], self.Vars["User"])
         List = Util.RunTask(VLookup[1:])
-        Sandbox = {}
+        Sandbox = {"User": self.Vars["User"]}
         Filename = os.path.join("stubs", "%s.py" % VLookup[0])
         try:
           execfile(Filename, Sandbox)

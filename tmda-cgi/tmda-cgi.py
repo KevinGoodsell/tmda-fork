@@ -82,7 +82,6 @@ try:
   try:
     PVars = Session.Session(Form)
     CgiUtil.ErrTemplate = "error.html"
-    Template.Template.Dict["CharSet"] = PVars[("General", "CSEncoding")]
   except CgiUtil.NotInstalled, (ErrStr, PVars):
     Template.Template.Dict["ErrMsg"] = ErrStr
     # Can log in but TMDA is not installed correctly
