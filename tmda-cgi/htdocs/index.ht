@@ -181,11 +181,12 @@ can:</p>
   <li>The path to tmda-cgi's root directory</li>
   <li>An optional path or &quot;formula&quot; to find the user <tt>config</tt> 
     files</li>
+  <li>The authentication mechanism (file / program / remote)
   <li>The web path from the CGI to the <tt>display</tt> directory</li>
   <li>Mode</li>
 </ol>
 <p>Finally, tmda-cgi requires a variety of visual elements to be saved in a <tt>display</tt> 
-  directory (see #6, above). This directory comes with the tmda-cgi source and 
+  directory (see #7, above). This directory comes with the tmda-cgi source and 
   will need to be manually copied or linked (make sure your web server is configured 
   to follow links!) into the appropriate web directory. Please note that #6 specifies 
   the relative <i>web path</i> from the CGI to the <tt>display</tt> directory, 
@@ -387,16 +388,26 @@ ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
 <p>Use the <tt>./compile -h</tt> for more details on how to use compile.</p>
 <hr>
 <h2><a name="Pass"></a>Passwords</h2>
-<p>tmda-cgi currently authenticate logins against user name &amp; password pairs 
-  stored in a password file (or files). tmda-cgi will look in two different places 
-  for password file(s), but it (they) must be readable by the CGI.</p>
+<p>tmda-cgi currently has three possible authentication mechanisms:</p>
+<ul>
+  <li><a href="#FileAuth">File authentication</a>
+  <li><a href="#ProgAuth">Program authentication</a> (checkpassword-style)
+  <li><a href="#RemtAuth">Remote authentication</a>
+</ul>
+<ol>
+  <li><a name="FileAuth"></a><b>File authentication:</b>
+    <p>This method authenticates logins against user name &amp; password pairs 
+  stored in a password file (or files). tmda-cgi will look either in the file
+  specified by the compile script, or in the default locations 
+  for the password file, but this file must be readable by the CGI.</p>
 <p>If you are running in system-wide mode, the password file can be owned by root. 
   If you are running in single-user mode, the password file can be owned by the 
   user who will be running the CGI. If you are running in no-su mode, the file 
   must either be owned by &quot;nobody&quot; (or whatever user your web server 
-  is configured to run as) or made globally readable See the table below for a 
+  is configured to run as) or made globally readable. See the table below for a 
   better breakdown of your options.</p>
-<p>tmda-cgi first checks for a readable file called <tt>tmda-cgi</tt> in the same 
+<p>The default password file location is obtained in the following manner:  
+  tmda-cgi first checks for a readable file called <tt>tmda-cgi</tt> in the same 
   directory as the user's configuration file (if that location has been specified, 
   otherwise it will look in <tt>~user/.tmda/tmda-cgi</tt>). It then tries <tt>/etc/tmda-cgi</tt> 
   if it can't find a match or cannot read the file. This allows the system administrator 
@@ -501,6 +512,37 @@ ADDED_HEADERS_CLIENT = { "X-Primary-Address": "%s@%s" % \<br>
   permissions on your password file(s). To debug this, append a <tt>?debug=1</tt> 
   onto the end of your CGI URL. This will display some diagnostic information 
   if the login fails instead of simply saying &quot;Wrong password. Try again.&quot;</p>
+
+  <li><a name="ProgAuth"></a><b>Program Authentication</b>
+  <p><b>Warning:  This is not heavily tested yet</b></p>
+  <p>tmda-cgi supports authentication by a checkpassword-style program
+  (see http://cr.yp.to/checkpwd/interface.html for a description of this
+  interface).</p>
+  <p>When specifying this method of authentication, it is also necessary to
+  specify the program that is run if the password is authenticated properly.
+  The default is &quot;/usr/bin/true&quot;, but any program that eventually
+  returns &quot;0&quot; will do.</p>
+  <p>Some brief explanation may exist in the web server error log if this
+  authentication method fails</p>
+  
+  <li><a name="RemtAuth"></a><b>Remote Authentication</b>
+  <p><b>Warning:  This is barely tested.  Imap may work...</b></p>
+  <p>tmda-cgi supports authentication by a remote host, using some common 
+  existing protocols:</p>
+  <ul>
+    <li>imap
+    <li>imaps (secure SSL imap)
+    <li>apop
+    <li>pop3
+    <li>ldap (requires separately obtained python ldap library)
+  </ul>
+  <p>The authentication mechanism is specified as an URI in the regular URI
+  format: <tt>protocol://host.domain.com[:port][/ldap_domain]</tt> where
+  &quot;protocol&quot; must be from the list above, and the rest should be
+  self-explanatory.</p>
+  <p>Some brief explanation may exist in the web server error log if this
+  authentication method fails</p>
+</ol>
 <hr>
 <h2><a name="Virtual" id="Virtual"></a>Virtual users</h2>
 <p>Although planned for future releases, there is no support for virtual users 
