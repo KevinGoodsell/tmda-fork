@@ -1,6 +1,6 @@
 <HTML>
 <!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
-<!-- Mon Aug 19 11:29:08 2002 -->
+<!-- Mon Aug 26 15:54:22 2002 -->
 <!-- USING HT2HTML 1.2 -->
 <!-- SEE http://barry.wooz.org/software/ht2html -->
 <!-- User-specified headers:
@@ -578,8 +578,8 @@ username = "foo"
 Here's an extremely simple system-wide filter that uses the 'username'
 variable to include a user's filter.
 <pre><blockquote>
-from /etc/company_blacklist drop
-from /etc/company_whitelist accept
+from-file /etc/company_blacklist drop
+from-file /etc/company_whitelist accept
 include -optional /home/vdomain/tmda/lists/whitelist.${username}
 
 </blockquote></pre>

@@ -419,8 +419,8 @@ username = "foo"
 Here's an extremely simple system-wide filter that uses the 'username'
 variable to include a user's filter.
 <pre><blockquote>
-from /etc/company_blacklist drop
-from /etc/company_whitelist accept
+from-file /etc/company_blacklist drop
+from-file /etc/company_whitelist accept
 include -optional /home/vdomain/tmda/lists/whitelist.${username}
 
 </blockquote></pre>

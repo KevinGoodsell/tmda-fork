@@ -1,3 +1,8 @@
+2002-08-26  Tim Legant  <tim@catseye.net>
+
+	* config-filter.ht (username): Fixed example under Variable
+	Interpolation.  It had used 'from' instead of 'from-file'.
+
 2002-08-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* features.ht (Links): Add smart auto-responding.
