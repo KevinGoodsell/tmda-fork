@@ -1,5 +1,8 @@
 2002-02-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* features.ht (Links): Mention filtering language, local mail
+	delivery ability, and -autocdb/-autodbm.  Change HMAC link.
+
 	* resources.ht (TARGET): Link to the TMDA plugin for SquirrelMail.
 	
 	* config-server.ht (Links): Include 'preline' in dot-qmail
