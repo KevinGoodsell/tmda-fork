@@ -349,14 +349,12 @@ def release_pending(timestamp, pid, headers, body):
     delivered_to = headers.getfirstmatchingheader('delivered-to')
     if delivered_to:
         headers.headers.remove(delivered_to[0])    
+    # Add an X-TMDA-Confirm-Done: field to the top of the header for
+    # later verification.  This includes a timestamp, pid, and HMAC.
+    headers['X-TMDA-Confirm-Done'] = Cookie.make_confirm_cookie(timestamp,
+                                                                pid, 'done')
     # Add the date when confirmed in a header.
     headers['X-TMDA-Confirmed'] = Util.unixdate()
-    # Add an X-TMDA-Confirm-Done: field to the top of the header for
-    # later verification.  This includes an HMAC of the full message
-    # headers.  Since this includes at least one locally-added
-    # Received field, the hash is not reusable or forgeable.
-    headers.headers.insert(0, 'X-TMDA-Confirm-Done: %s.%s.%s\n' % (
-        timestamp, pid, Cookie.make_fingerprint(headers.headers)))
     # Reinject the message to the original envelope recipient.
     Util.sendmail(headers, body, recipient, return_path)
     mta.stop()
@@ -443,32 +441,10 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         release_pending(confirm_timestamp, confirm_pid, headers, body)
     # post-confirmation
     elif confirm_action == 'done':
-        # Use a copy of the real headers list for the hash work, so
-        # we can munge headers without affecting the real message.
-        hash_headers_list = message_headers.headers[:]
-        # Find the X-TMDA-Confirm-Done field; any header fields
-        # following this were present in the original message and
-        # can be included in the hash.
-        hash_start = (hash_headers_list.index
-                      (message_headers.getfirstmatchingheader
-                       ('x-tmda-confirm-done')[0]) + 1)
-        # Trim off all headers before and including X-TMDA-Confirm-Done:
-        hash_headers_list = hash_headers_list[hash_start:]
-        # Regenerate the hash for comparison.
-        new_confirm_hmac = Cookie.make_fingerprint(hash_headers_list)
-        # Accept the message only if the HMAC can be verified.  If the
-        # message has an X-TMDA-Confirm-Done field, but the hash isn't
-        # right, then ignore (but preserve) the field and make the
-        # sender confirm the message.  This means that after the
-        # message is confirmed, there will be multiple
-        # X-TMDA-Confirm-Done fields, so the first field is the one
-        # that should be verified.  Any later occurrences of the field
-        # are treated like plain data, and will just be included in
-        # the new hash.  In normal use, this isn't likely to occur,
-        # except when someone perhaps bounces a message containing an
-        # X-TMDA-Confirm-Done field to a TMDA user.  And this is
-        # possible only under qmail where we can't remove the field
-        # before delivery.
+        # Regenerate the HMAC for comparison.
+        new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
+                                                  confirm_pid, 'done')
+        # Accept the message only if the HMAC can be verified.
         if not (confirm_hmac == new_confirm_hmac):
             logit("CONFIRM bad_confirm_done_cookie")
             bouncegen('request')
@@ -661,10 +637,9 @@ def main():
             sender_list.append(emaddy)
 
     # Process confirmation messages first.
-    confirm_done_hdr = message_headers.getrawheader('x-tmda-confirm-done')
-    # getheader() doesn't always fetch the first matching header; bug?
+    confirm_done_hdr = message_headers.getheader('x-tmda-confirm-done', None)
     if confirm_done_hdr:
-        verify_confirm_cookie(confirm_done_hdr.strip(), 'done')
+        verify_confirm_cookie(confirm_done_hdr, 'done')
     if cookie_type == 'confirm' and cookie_value:
         verify_confirm_cookie(cookie_value, 'accept')
 

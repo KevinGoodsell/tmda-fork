@@ -91,11 +91,11 @@ Confirmation request acknowledgments are accepted if:
     1.  CONFIRMMAC is verified by matching it with a new HMAC
 	generated against TIMESTAMP, PID, and 'accept'.
 
-Once accepted, an 'X-TMDA-Confirm-Done:' header containing an HMAC of
-the original message headers (including Received) is added to the
-message, and then it is reinjected to the original recipient.  Upon
-reception, TMDA verifies the HMAC by recalculation before delivering
-the message.
+Once accepted, an 'X-TMDA-Confirm-Done:' header containing TIMESTAMP,
+PID, and CONFIRMMAC (based on string 'done' rather than 'accept') is
+added to the message, and then it is reinjected to the original
+recipient.  Upon reception, TMDA verifies the HMAC by recalculation
+before delivering the message.
 
 
 HMAC Advantages:

@@ -270,19 +270,26 @@ def confirm_accept_address(recipient, msg):
     return Cookie.make_confirm_address(recipient, timestamp, pid, 'accept')
 
 
-def confirm_done_address(recipient, msg):
-    (timestamp, pid, suffix) = msg.split('.')
-    return Cookie.make_confirm_address(recipient, timestamp, pid, 'done')
-
-
-def release(headers, body, recipient):
+def release(headers, body, msg):
     """Release a message from the pending queue."""
-    del headers['x-tmda-recipient']
-    # Add the released date in a header.
-    headers['X-TMDA-Released'] = Util.unixdate()
-    # Collect the envelope sender to pass to sendmail.
+    timestamp, pid, suffix = msg.split('.')
     return_path = headers.getaddr('return-path')[1]
-    # Inject the message.
+    # Remove Return-Path: to avoid duplicates.
+    del headers['return-path']
+    recipient = headers.getheader('x-tmda-recipient')
+    # Remove X-TMDA-Recipient:
+    del headers['x-tmda-recipient']
+    # Remove the first Delivered-To: line to avoid a mail loop on reinjection.
+    delivered_to = headers.getfirstmatchingheader('delivered-to')
+    if delivered_to:
+        headers.headers.remove(delivered_to[0])    
+    # Add an X-TMDA-Confirm-Done: field to the top of the header for
+    # later verification.  This includes a timestamp, pid, and HMAC.
+    headers['X-TMDA-Confirm-Done'] = Cookie.make_confirm_cookie(timestamp,
+                                                                pid, 'done')
+    # Add the date when confirmed in a header.
+    headers['X-TMDA-Released'] = Util.unixdate()
+    # Reinject the message to the original envelope recipient.
     Util.sendmail(headers, body, recipient, return_path)
 
 
@@ -443,8 +450,8 @@ def main():
                         return_path = headers.getaddr('return-path')[1]
                         Util.append_to_file(return_path,
                                             Defaults.PENDING_RELEASE_APPEND)
-                    release(headers, body,
-                            confirm_done_address(recipient_address, msg))
+                    
+                    release(headers, body, msg)
                 elif dispose == 'delete':
                     # Optionally append the envelope sender to a file.
                     if Defaults.PENDING_DELETE_APPEND:
