@@ -27,17 +27,18 @@ import os
 import os.path
 import pwd
 import random
+import string
 import sys
 
 import Template
+import StreamCapture
 from TMDA import Auth
 from TMDA import Errors
 from TMDA import Util
 
 authobj = Auth.Auth()
-
-# For now, output all Auth.py errors to http error log
-authobj.DEBUGSTREAM = sys.stderr
+Stream = StreamCapture.StreamCapture()
+authobj.DEBUGSTREAM = Stream.Stream
 
 authinit = 0
 
@@ -94,13 +95,16 @@ def Authenticate(User, Password):
 
 def CheckPassword(Form):
   "Checks a password from a form."
+  global Stream
 
+  Except = ""
   try:
-    return Authenticate( Form["user"].value, Form["password"].value )
+    RetVal = Authenticate( Form["user"].value, Form["password"].value )
   except Errors.AuthError, error:
-    Template.Template.Dict["ErrMsg"] = error.msg
+    Except = "\n*** EXCEPTION CAUGHT ***: %s" % error.msg
+    RetVal = 0
+  Stream.Stream.close()
+  Template.Template.Dict["ErrMsg"] = "Capturing the debug stream...\n" + \
+    string.join(Stream.GetCapture(), "") + Except
 
-  Template.Template.Dict["ErrMsg"] = "Password incorrect for user %s" % \
-    Form["user"].value
-
-  return 0
+  return RetVal
