@@ -105,6 +105,7 @@ for opt, arg in opts:
 
 
 from TMDA import Defaults
+from TMDA import Deliver
 from TMDA import Cookie
 from TMDA import Errors
 from TMDA import FilterParser
@@ -577,8 +578,14 @@ def main():
         logit('%s (%s)' % ('DROP', matching_line), disposal_time)
         mta.stop()
     elif action in ('accept','deliver','ok'):
-        logit('%s (%s)' % ('OK', matching_line), disposal_time)
-        mta.deliver(message)
+        if option:
+            msg = Deliver.Deliver(message_headers, message_body, option)
+            logit('%s %s (%s)' % ('DELIVER', msg.get_instructions()[1],
+                                  matching_line), disposal_time)
+            msg.deliver()
+        else:
+            logit('%s (%s)' % ('OK', matching_line), disposal_time)
+            mta.deliver(message)
     elif action == 'confirm':
         # bouncegen does logging
         bouncegen('request')

@@ -1,3 +1,7 @@
+2002-02-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Deliver.py: New module to handle local mail delivery.
+
 2002-02-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* Defaults.py (BOUNCE_ENV_SENDER): Fix quoting to comply with
