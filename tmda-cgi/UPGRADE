@@ -3,29 +3,17 @@
 If you are upgrading from a release of tmda-cgi < 0.13
 
 * If you or someone you know has built a custom theme, there are a few 
-  changes you should know about:
-
-  - The usage for custom first/prev/next/last buttons in pending.html
-    and view.html has changed.  There is now a variable defined for
-    each Active (ie, clickable) button and a different variable for
-    each Inactive (ie, greyed-out) button.  This was done so that one
-    is not stuck using the same filename for the inactive button in all
-    themes.
-
+  changes you should know about.  Check out what changed in the Blue theme.
+  There is also a new theme called "TMDA-X" which lays out the pending list
+  in a different way.
+  
+  In general, you'll have to change the following in your custom theme
+  for it to work.  Look at the "Blue" theme for a reference:
+  - There's a new way to specify custom first/prev/next/last buttons in 
+    pending.html and view.html.
   - The format for the list of available Lists to edit in editlist.html
-    has changed.  There are now two variables defined at the top of
-    the file which are used as templates for the links in the sidebar.
-    They are CurrentListElement (ie, the one currently being edited),
-    and ListElement (ie, any other link in that list).  This was done so
-    that one is not stuck using the same format for these links in all
-    themes.
-
+    has changed.
   - There is now a search function available for the pending list.
-    An example search form for this (with detailed comments) is in
-    pending.ht / pending.html in the Blue theme.
-
-  - Check out the changes to all these files in the Blue theme for more
-    information.
 
 ======================================================================
 

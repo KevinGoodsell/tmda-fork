@@ -24,10 +24,10 @@
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.12B"
+tmda_cgi = "0.13"
 
 # tmda-cgi version codename
-Codename = "Magnesium"
+Codename = "Aluminum"
 
 # TMDA version required
 TMDAReqVer = "0.81"
