@@ -26,7 +26,7 @@ import sys
 
 
 # TMDA version
-TMDA = "0.88+"
+TMDA = "0.89"
 
 # TMDA version codename
 CODENAME = "Chateaugay"
