@@ -378,57 +378,9 @@ ADDED_HEADERS_CLIENT = { &quot;X-Primary-Address&quot;: &quot;%s@%s&quot; % \
   if the login fails instead of simply saying &quot;Wrong password. Try again.&quot;</p>
 <hr>
 <h2>Configuration</h2>
-<p>tmda-cgi is configured by a set of parameters in your <tt>/etc/tmdarc</tt>, 
-  <tt>~user/.tmdarc</tt>, or <tt>~user/.tmda/config</tt> files. More details on 
-  these variables can be found in your <tt>Defaults.py</tt>, but <b><i>do not 
-  edit <tt>Defaults.py</tt></i></b>. Place your variables in your configuration 
-  file(s) and they will override the defaults in <tt>Defaults.py</tt>.</p>
-<dl>
-  <dt><tt>CGI_ACTIVE</tt></dt>
-  <br>
-  &nbsp; 
-  <dd>Must be set to 1 to use the tmda-cgi. Set this in <tt>/etc/tmdarc</tt> if 
-    you set up tmda-cgi in system-wide mode.</dd>
-  <br>
-  &nbsp; 
-  <dt><tt>CGI_CLEANUP_ODDS</tt></dt>
-  <br>
-  &nbsp; 
-  <dd>Chance of cleaning up temporary session files. You probably won't need to 
-    adjust this parameter.</dd>
-  <br>
-  &nbsp; 
-  <dt><tt>CGI_DATE_FORMAT</tt></dt>
-  <br>
-  &nbsp; 
-  <dd>Configuration string which sets the date format you see when viewing a list 
-    of pending e-mails. It defaults to &quot;<tt>%a %1m/%d</tt>&quot; which generates 
-    American-style dates like &quot;Mon 12/31&quot;.</dd>
-  <br>
-  &nbsp; 
-  <dt><tt>CGI_PAGER_SIZE</tt><br>
-    &nbsp; </dt>
-  <dd>Maximum number of e-mails shown on a listing page.</dd>
-  <br>
-  &nbsp; 
-  <dt><tt>CGI_SESSION_EXP</tt><br>
-    &nbsp; </dt>
-  <dd>The number of seconds a session may sit idle before it can expire. Set this 
-    to a larger number if you surf pages so slowly that the program makes you 
-    log in again.</dd>
-  <br>
-  &nbsp; 
-  <dt><tt>CGI_USE_JS_CONFIRM</tt><br>
-    &nbsp; </dt>
-  <dd>Set this to 0 if your browser cannot use Javascript or you don't like having 
-    to confirm when you delete or blacklist an item.</dd>
-  <br>
-  &nbsp; 
-  <dt><tt>CGI_USER</tt><br>
-    &nbsp; </dt>
-  <dd>Set this to the user name used by your web server. The default is &quot;nobody&quot;, 
-    but some systems are configured to run as &quot;apache&quot; or other low-privilege 
-    user.</dd>
-  <br>
-  &nbsp; 
-</dl>
+<p>tmda-cgi is configured by a set of parameters in your configuration file(s). 
+  All tmda-cgi configuration variables begin with a &quot;<tt>CGI_</tt>&quot; 
+  and are described on the <a href="config-vars.html">Configuration Variables</a> 
+  page.</p>
+<p><em><strong>Note:</strong></em> If you change nothing else, you will have to 
+  at least set the value for <a href="config-vars.html#CGI_ACTIVE"><tt>CGI_ACTIVE</tt></a>.</p>
