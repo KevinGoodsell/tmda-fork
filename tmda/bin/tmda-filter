@@ -300,8 +300,12 @@ def locate_pending(timestamp,pid):
 
 def verify_confirm_cookie(confirm_cookie):
     """Verify a confirmation cookie."""
-    (confirm_action, confirm_timestamp,
-     confirm_pid, confirm_hmac) = string.split(confirm_cookie,'.')
+    # Save some time if the cookie is bogus.
+    try:
+        (confirm_action, confirm_timestamp,
+         confirm_pid, confirm_hmac) = string.split(confirm_cookie,'.')
+    except ValueError:
+        bouncegen('request')
     # pre-confirmation
     if confirm_action == 'accept':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,

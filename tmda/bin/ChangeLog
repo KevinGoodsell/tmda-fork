@@ -1,5 +1,11 @@
 2001-10-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-filter (verify_confirm_cookie): Make sure the cookie
+	unpacks into 4 elements (action, timestamp, pid, HMAC) or else we
+	consider it bogus and request confirmation.  This fixes a bug
+	where Python would raise a ValueError if you sent a message to
+	`user-confirm-foo' for example.  Reported by Kirill Miazine.
+
 	* tmda-inject (inject_message): Add support for keyword message
 	tagging.
 
