@@ -1,0 +1,11 @@
+======================================================================
+
+If you are upgrading from a release of tmda-cgi < 0.01:
+
+* tmda-cgi has been split off from TMDA.  compile now runs in a handy
+  interactive mode if you supply no options.  You will need to re-
+  compile and specify the path to your TMDA install.
+
+* CGI_USER has been abandoned.  This is now compiled in.
+
+======================================================================
