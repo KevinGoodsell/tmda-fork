@@ -9,6 +9,10 @@ Where:
     --batch
        Output only the CRYPT_KEY.
 
+    -d <device>
+    --device <device>
+       Draw random numbers from a random data source device other than /dev/urandom
+       
     --help
     -h
        Print this help message and exit.
@@ -21,8 +25,10 @@ import os
 import sys
 
 
-program = sys.argv[0]
 batch = None
+randomdev = '/dev/urandom'
+
+program = sys.argv[0]
 
 def usage(code, msg=''):
     print __doc__ % globals()
@@ -32,14 +38,18 @@ def usage(code, msg=''):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                               'bh',
-                               ['batch','help'])
+                               'bd:h',
+                               ['batch',
+                                'device=',
+                                'help'])
 except getopt.error, msg:
     usage(1, msg)
 
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
+    if opt in ('-d', '--device'):
+        randomdev = arg
     elif opt in ('-b', '--batch'):
         batch = 1
 
@@ -54,7 +64,6 @@ from TMDA import Util
 
 def keygen():
     # Use the kernel's random number generator if available.
-    randomdev = '/dev/urandom'
     if os.path.exists(randomdev):
         key = open(randomdev,'rb').read(20)
     else:

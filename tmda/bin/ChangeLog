@@ -1,3 +1,8 @@
+2002-01-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda-keygen: Add a command-line option (-d, --device) to specify
+	a different random data source device other than /dev/urandom.
+
 2002-01-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
 	* tmda-filter: Two changes: 1) add the version of Python to the
