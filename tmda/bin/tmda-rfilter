@@ -244,13 +244,13 @@ pendingdir = os.path.join(Defaults.DATADIR, 'pending')
 auto_reply = 1
 # - Don't respond if:
 #   - SENDER is <>
-if envelope_sender == '<>':
+if auto_reply and envelope_sender == '<>':
     auto_reply = 0
 #   - SENDER is <#@[]>
-if envelope_sender == '<#@[]>':
+if auto_reply and envelope_sender == '<#@[]>':
     auto_reply = 0
 #   - SENDER starts with "mailer-daemon"
-if envelope_sender.lower().startswith('mailer-daemon'):
+if auto_reply and envelope_sender.lower().startswith('mailer-daemon'):
     auto_reply = 0
 #   - header "List-ID:" (as per RFC 2919)
 #   - header "Mailing-List:"
@@ -258,17 +258,20 @@ if envelope_sender.lower().startswith('mailer-daemon'):
 #   - header "X-ML-Name:"
 #   - header "List-(Help|Unsubscribe|Subscribe|Post|Owner|Archive):"
 #     (as per RFC 2369)
-list_headers = ['list-id', 'list-help', 'list-subscribe', 'list-unsubscribe',
-                'list-post', 'list-owner', 'list-archive', 'mailing-list',
-                'x-mailing-list', 'x-ml-name']
-for hdr in list_headers:
-    if message_headers.has_key(hdr):
-        auto_reply = 0
-        break
+if auto_reply:
+    list_headers = ['list-id', 'list-help', 'list-subscribe',
+                    'list-unsubscribe', 'list-post', 'list-owner',
+                    'list-archive', 'mailing-list', 'x-mailing-list',
+                    'x-ml-name']
+    for hdr in list_headers:
+        if message_headers.has_key(hdr):
+            auto_reply = 0
+            break
 #   - header "Precedence:" value junk, bulk, or list
-precedence = message_headers.getheader('precedence', None)
-if precedence and precedence.lower() in ('bulk', 'junk', 'list'):
-    auto_reply = 0
+if auto_reply:
+    precedence = message_headers.getheader('precedence', None)
+    if precedence and precedence.lower() in ('bulk', 'junk', 'list'):
+        auto_reply = 0
 
 
 ###########
