@@ -1,3 +1,8 @@
+2004-03-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Defaults.py (TMDARC): Allow TMDARC to be specified by
+	GLOBAL_TMDARC if $TMDARC is not set.
+
 2004-02-20  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Defaults.py: Removed BOUNCE_TEXT_* and CONFIRM_ACCEPT_TEXT_* in

@@ -65,25 +65,31 @@ if os.path.islink(progpath):
         progpath = os.path.normpath(progdir + '/' + linkpath)
 PARENTDIR = os.path.split(os.path.dirname(progpath))[0] # '../'
 
-# If the file /etc/tmdarc exists, read it before ~/.tmda/config.
-# Make site-wide configuration changes to this file.
-GLOBAL_TMDARC = '/etc/tmdarc'
-if os.path.exists(GLOBAL_TMDARC):
-    execfile(GLOBAL_TMDARC)
-        
-# Look for the user-config-file in the environment first then default
-# to ~/.tmda/config
-TMDARC = os.environ.get('TMDARC')
-if not TMDARC:
-    TMDARC = os.path.expanduser('~/.tmda/config')
+# Look for the global config file in the environment first, and then
+# default to /etc/tmdarc.  If one exists, read it before TMDARC. Make
+# site-wide configuration changes to this file.
+GLOBAL_TMDARC = os.environ.get('GLOBAL_TMDARC')
+if not GLOBAL_TMDARC:
+    GLOBAL_TMDARC = '/etc/tmdarc'
+    if os.path.exists(GLOBAL_TMDARC):
+        execfile(GLOBAL_TMDARC)
 
+# Look for the user config file in the TMDARC environment var first,
+# and if not there, then check if set by GLOBAL_TMDARC, and finally
+# default to ~/.tmda/config
+_tmdarc = os.environ.get('TMDARC')
+if _tmdarc:
+    TMDARC = _tmdarc
+elif not vars().has_key('TMDARC'):
+    TMDARC = os.path.expanduser('~/.tmda/config')
+    
 # CONFIG_EXEC
-# If set to 0 in GLOBAL_TMDARC, the user's TMDARC file will be parsed
+# If set to False in GLOBAL_TMDARC, the user's TMDARC file will be parsed
 # using ConfigParser, otherwise it will evaluated as a sequence of
 # Python statements using execfile().
-# Default is 1 (execfile())
+# Default is True (use execfile())
 if not vars().has_key('CONFIG_EXEC'):
-    CONFIG_EXEC = 1
+    CONFIG_EXEC = True
 
 # Read-in the user's configuration file.
 if os.path.exists(TMDARC):
@@ -1567,7 +1573,7 @@ _path_vars = {
 
 _defaults = globals()
 for var in _path_vars:
-    if isinstance(_defaults[var], str):
+    if _defaults.has_key(var) and isinstance(_defaults[var], str):
         _defaults[var] = os.path.expanduser(_defaults[var])
 
 
