@@ -1,3 +1,11 @@
+2003-04-19  Gre7g Luterman <gre7g@wolfhome.com>
+
+	* Removed getuserinfo-vpopmail.sh
+
+	It turns out that we can't do stubs with shell scripts due to
+	permission problems.  This is being replaced with a Python stub in the
+	tmda-cgi/stubs directory.
+
 2003-04-09  Gre7g Luterman <gre7g@wolfhome.com>
 
 	* getuserinfo-vpopmail.sh: New file from Jesse Guardiani.
