@@ -1,3 +1,8 @@
+2002-12-06  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-rfilter (bouncegen): confirm_accept_url holds the release
+	URL if using tmda-cgi.
+
 2002-11-25  David Guerizec  <david@guerizec.net>
 
     * tmda-pending: Use the new module Pending.py

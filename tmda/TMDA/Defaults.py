@@ -423,6 +423,16 @@ if not vars().has_key('BARE_APPEND'):
 # Default is 0 (disabled)
 if not vars().has_key('CGI_ACTIVE'):
     CGI_ACTIVE = 0
+
+# CGI_URL
+# Absolute URL of your tmda-cgi installation.
+#
+# Example:
+# CGI_URL = "http://www.domain.dom/cgi-bin/tmda.cgi"
+#
+# No default.
+if CGI_ACTIVE and not vars().has_key('CGI_URL'):
+    CGI_URL = None
     
 # CGI_CLEANUP_ODDS
 # Chance of cleaning up old sessions when a session object is

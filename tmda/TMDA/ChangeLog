@@ -1,10 +1,14 @@
+2002-12-06  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Defaults.py (CGI_URL): New variable.
+
 2002-12-02  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Defaults.py (GLOBAL_TMDARC): Don't skip if there is an error.
 	
 2002-11-25  David Guerizec  <david@guerizec.net>
 
-    * Pending.py: new module
+	* Pending.py: new module
 
 2002-11-21  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
