@@ -449,6 +449,24 @@ def unpickle(file):
     return object
 
 
+def decode_header(str):
+    """Accept a possibly encoded message header as a string, and
+    return a decoded string.
+
+    JRM: email.Header has a decode_header method, but it returns a
+    list of decoded pairs, one for each part of the header, which is
+    an awkward interface IMO, especially when the header contains a
+    mix of encoded and non-encoded parts.
+    """
+    from email import Header
+    parts = []
+    pairs = Header.decode_header(str)
+    for pair in pairs:
+        parts.append(pair[0])
+    decoded_string = ' '.join(parts)
+    return decoded_string
+
+
 def findmatch(list, addrs):
     """Determine whether any of the passed e-mail addresses match a
     Unix shell-style wildcard pattern contained in list.  The

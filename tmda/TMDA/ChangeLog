@@ -1,3 +1,7 @@
+2002-09-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* Util.py (decode_header): New function.
+
 2002-09-12  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Util.py (formataddr): Remove function.

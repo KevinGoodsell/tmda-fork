@@ -1,3 +1,8 @@
+2002-09-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tmda-pending (main): Run the headers through an RFC 2047 decoder
+	before displaying message summaries.
+
 2002-09-14  Tim Legant  <tim@catseye.net>
 
 	* tmda-rfilter (create_pending_msg): Return message filename.

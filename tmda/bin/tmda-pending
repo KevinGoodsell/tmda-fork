@@ -398,7 +398,8 @@ def main():
                 for hdr in ('date', 'from', 'to', 'subject'):
                     print "%s %s: %s" % ('  >>',
                                          hdr.capitalize()[:4].rjust(4),
-                                         headers.getheader(hdr, 'None'))
+                                         Util.decode_header(headers.getheader
+                                                            (hdr, 'None')))
                 if summary:
                     print '<mailto:%s>' % (confirm_accept_address
                                            (recipient_address, msg))
@@ -417,7 +418,7 @@ def main():
                     else:
                         terse_hdrs.append(headers.getheader(hdr, 'None'))
                 terse_hdrs.insert(0, msg)
-                print '\t'.join(terse_hdrs)
+                print '\t'.join([Util.decode_header(hdr) for hdr in terse_hdrs])
             if interactive:
                 try:
 		    message = '([p]ass / [s]how / [r]el / [d]el'
