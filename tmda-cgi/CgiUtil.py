@@ -47,8 +47,9 @@ class JustLoggedIn(Errors.TMDAError):
   "Not really an error, but used to trigger a setting of initial variables."
   pass
 
-def Size(MsgObj):
-  MsgSize = os.stat(MsgObj.msgfile).st_size
+def Size(MsgObj = None, MsgSize = 0):
+  if MsgObj:
+    MsgSize = os.stat(MsgObj.msgfile).st_size
   if MsgSize > 512:
     if MsgSize > 5120:
       if MsgSize > 524288:

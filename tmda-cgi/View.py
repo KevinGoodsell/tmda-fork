@@ -69,7 +69,8 @@ def Attachment(Part):
   (%s)
 </td>
 <td width="10">
-</td>""" % (CgiUtil.DispDir, Icon, Filename, CgiUtil.Size(Part))
+</td>""" % (CgiUtil.DispDir, Icon, Filename,
+  CgiUtil.Size(MsgSize = len(Part.as_string())))
 
 def Show():
   "Show an e-mail in HTML."
