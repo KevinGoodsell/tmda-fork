@@ -82,3 +82,22 @@ morning at 2AM, add the following crontab entry:
 
 <hr>
 
+<li><b>
+How do I allow my <a href="http://cr.yp.to/ezmlm.html" TARGET="Resource Window">ezmlm</a>
+mailing lists to pass through TMDA?  Each list message is sent out 
+with a different envelope sender address.
+</b>
+<br><br>
+
+You can whitelist the ezmlm list using wildcard characters.  Here is
+an example whitelist entry for the qmail mailing list:
+
+<blockquote><code>
+qmail-return-*@list.cr.yp.to
+</blockquote></code>
+
+This will allow messages to get through when initially interacting
+with ezmlm to get subscribed, as well as after when list messages are
+delivered.
+
+<hr>

@@ -1,5 +1,8 @@
 2001-10-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* faq.ht (Links): New FAQ entry: How do I allow my ezmlm mailing
+	lists to pass through TMDA?
+
 	* config-server.ht (Links): Mention systemwide configuration file
 	/etc/tmdarc.
 	

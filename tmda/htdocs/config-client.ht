@@ -240,7 +240,10 @@ be accomplished with the following addition to your .gnus file:
 
 <strong>tmda-sender-address</strong> can be used to generate
 subscription addresses for mailing lists without worry that the
-subscription list might get harvested by spammers.  For example:
+subscription list might get harvested by spammers.  The address to use
+can be found in the <b>Return-Path</b> header of a mailing list message.
+
+  For example:
   
 <blockquote>
 <pre>
