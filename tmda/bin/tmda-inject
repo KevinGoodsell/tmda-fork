@@ -303,7 +303,7 @@ def inject_message(resending,
         else:
             # tmda-sendmail/inject
             msg._headers.insert(0, ('Received',
-                                    'by %s (tmda-inject, from uid %s); %s' \
+                                    'by %s (tmda-sendmail, from uid %s); %s' \
                                     % (socket.getfqdn(), os.getuid(),
                                        Util.make_date())))
             
