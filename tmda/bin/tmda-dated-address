@@ -47,7 +47,7 @@ for opt, arg in opts:
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
     elif opt in ('-a', '--address'):
-	address = string.split(arg,'@')
+	address = arg
 
 
 try:

@@ -1,5 +1,10 @@
 2001-08-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
 
+	* tmda-dated-address (address): Bugfix: Don't split the address
+	just yet.
+
+	* tmda-sender-address (address): Ditto.
+	
 	* tmda-filter (main): Allow ANY mail that has a certain regular
 	expression to go through. So, let's say you wanted any mail about
 	car.*accident to come through, you can do so.
