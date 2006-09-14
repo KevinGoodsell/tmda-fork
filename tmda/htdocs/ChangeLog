@@ -1,3 +1,17 @@
+2006-09-14  Jason R. Mastaler  <jason@mastaler.com>
+
+	* links.h: All docs now reside at wiki.tmda.net.  Just include a
+	few essential links on this top-level homepage.
+
+	* TMDAGenerator.py: Move back to blue-style template.  Remove the
+	links to mirror sites - that was a PITA to maintain, and the wiki
+	will now contain the definitive list.  
+
+	* index.ht: Add a note about the docs being moved to TmdaWiki.
+
+	* Makefile: Master site is now tmda.net rather than sourceforge,
+	so we rsync to there.
+
 2003-07-11  Tim Legant  <tim@catseye.net>
 
 	* filter-sources.ht: Removed {from,to}-mysql documentation, moved

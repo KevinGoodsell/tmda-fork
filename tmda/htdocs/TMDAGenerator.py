@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-# Copyright (C) 2001,2002,2003,2004 Jason R. Mastaler <jason@mastaler.com>
+# Copyright (C) 2001,2002,2003,2004,2005,2006 Jason R. Mastaler <jason@mastaler.com>
 #
 # This file is part of TMDA.
 #
@@ -25,6 +25,7 @@
 import os
 import time
 
+from email.Utils import formatdate
 from Skeleton import Skeleton
 from Sidebar import Sidebar, BLANKCELL
 from Banner import Banner
@@ -32,37 +33,22 @@ from HTParser import HTParser
 from LinkFixer import LinkFixer
 
 
-
 sitelinks = [
 
-    ('%(rootdir)s/index.html', 'Home'),
+    ('http://wiki.tmda.net/', 'TmdaWiki'),
 
-    ('%(rootdir)s/trouble.html', 'Help'),
-   
-    ('../tmda-cgi', 'TMDA-CGI'),
-
-    ('http://sourceforge.net/projects/tmda', 'SourceForge'),
+    ('http://sourceforge.net/projects/tmda', 'TMDA @ SourceForge'),
+  
+    ('tmda-cgi', 'TMDA-CGI'),
  
-    (None, '[\
-    <a href="http://www.au.tmda.net/" title="Australia Mirror">AU</a> |\
-    <a href="http://www.de.tmda.net/" title="Germany Mirror">DE</a> |\
-    <a href="http://www.it.tmda.net/" title="Italy Mirror">IT</a> |\
-    <a href="http://www.pl.tmda.net/" title="Poland Mirror">PL</a> |\
-    <a href="http://www.us.tmda.net/" title="USA Mirror">US</a> \
-    mirror ]'),
-
-    ('http://tmda.net/faq.cgi', 'FAQ'),
-
-    ('http://wiki.tmda.net/', 'Wiki'),
- 
-    ('http://www.cafeshops.com/TMDA/', 'Store'),
+    ('http://www.cafepress.com/TMDA/', 'TMDA Store'),
 
     ]
 
-
+
 class TMDAGenerator(Skeleton, Sidebar, Banner):
-    AUTHOR = 'TMDA Workers List'
-    EMAIL = 'tmda-workers@tmda.net'
+    AUTHOR = 'TMDA Users List'
+    EMAIL = 'tmda-users@tmda.net'
 
     def __init__(self, file, rootdir, relthis):
         root, ext = os.path.splitext(file)
@@ -81,9 +67,9 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
         copyright = self.__parser.get('copyright', '2001-%d' %
                                       time.localtime()[0])
         p.sidebar.append((None, '&copy; ' + copyright))
-        #last_modified = self.__parser.get('last_modified', '%s' %
-        #                              time.asctime(time.gmtime(time.time())))
-        #p.sidebar.append('Updated: ' + last_modified)
+        last_modified = self.__parser.get('last_modified', '%s' %
+                                      formatdate(usegmt=True))
+        p.sidebar.append('Last Updated: ' + last_modified)
         # Fix up our site links, no relthis because the site links are
         # relative to the root of our web pages.
         sitelink_fixer = LinkFixer(f.myurl(), rootdir)
@@ -113,14 +99,8 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
     def get_corner(self):
         # It is important not to have newlines between the img tag and the end
         # anchor and end center tags, otherwise layout gets messed up
-        #return '''<center><font size="+2"
-        #>&gt;&gt;&gt;&nbsp;TMDA&nbsp</font></center>'''
-        rootdir = self.__linkfixer.rootdir()
-        return '''
-<center>
-    <a href="%(rootdir)s/index.html">
-    <img border=0 src="%(rootdir)s/img/blocksmall.png"></a></center>''' \
-    % self.__d
+        return '''<center><font size="+2"
+        >&gt;&gt;&gt;&nbsp;TMDA&nbsp</font></center>'''
 
     def get_body(self):
         self.__grokbody()
@@ -141,39 +121,19 @@ class TMDAGenerator(Skeleton, Sidebar, Banner):
                 # there is no wide body
                 self.__body = text
 
-    # TMDA 1.1 Scotch/Sea color scheme            
+
+    # python.org color scheme overrides
     def get_lightshade(self):
-        #return '#fffedc'
-        #return '#ffccff'
-        #return '#e5e5e5'
-        #return '#F5DEB3'
-        #return '#8FBC8F'
-        return '#7FFFD4'
+        return '#cccccc'
         
     def get_mediumshade(self):
         return '#9862cb'
 
     def get_darkshade(self):
-        #return '#000000'
-        #return '#8B4513'
-        #return '#008B45'
-        return '#2E8B57'
-    
-    def get_corner_bgcolor(self):
-        return '#7FFFD4'
+        return '#191970'
 
-    # TMDA 1.0.x color scheme
-    #def get_lightshade(self):
-    #    return '#cccccc'
-    #    
-    #def get_mediumshade(self):
-    #    return '#9862cb'
-    #
-    #def get_darkshade(self):
-    #    return '#191970'
-    #
-    #def get_corner_bgcolor(self):
-    #    return '#afeeee'
+    def get_corner_bgcolor(self):
+        return '#afeeee'
     
 # jython.org color scheme
 #     def get_lightshade(self):
