@@ -5,7 +5,10 @@ For crypto-cookie generation and verification, TMDA uses HMAC, which
 is a mechanism for message authentication using cryptographic hash
 functions such as SHA-1 and MD5.
 
-For more information, see <URL:http://www.faqs.org/rfcs/rfc2104.html>
+For more information, see:
+
+http://en.wikipedia.org/wiki/HMAC 
+http://www.faqs.org/rfcs/rfc2104.html
 
 
 Dated Addresses:

@@ -24,8 +24,8 @@
 
 """An authenticated ofmip proxy for TMDA.  Tag your outgoing mail through SMTP.
 
-See <URL:http://tmda.net/tmda-ofmipd.html> for complete setup and
-usage information.
+See http://wiki.tmda.net/TmdaOfmipdHowto for complete setup and usage
+information.
 
 Usage: %(program)s [OPTIONS]
 

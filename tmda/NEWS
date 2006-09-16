@@ -32,8 +32,7 @@ TMDA 1.1.3 "Dailuaine" --
 
 * The template system has been reorganized to simplify things for
   users of multi-lingual templates among others.  See
-  http://www.us.tmda.net/unstable/howto-template.html and the UPGRADE
-  notes below.
+  http://wiki.tmda.net/TemplateHowto and the UPGRADE notes below.
 
 * Messages are now simply deleted from your pending queue once they
   are confirmed or released rather than being renamed with a '3,C' or
@@ -63,7 +62,7 @@ TMDA 1.1.1 "Balblair" --
   now ``just works''.
 
 * New 'whitelist' behavior for tmda-pending and tmda-cgi, controlled
-  by http://tmda.net/unstable/config-vars.html#PENDING_WHITELIST_RELEASE
+  by http://wiki.tmda.net/ConfigurationVariables#PENDING_WHITELIST_RELEASE
 
 * A new 'pipe-headers' incoming filter file source.  Identical to
   'pipe' except that it only pipes the headers to the program, instead
@@ -72,7 +71,7 @@ TMDA 1.1.1 "Balblair" --
 
 * A new feature to add Mail-Followup-To headers from tmda-sendmail or
   tmda-ofmipd to messages.  See
-  http://tmda.net/unstable/config-vars.html#MAIL_FOLLOWUP_TO
+  http://wiki.tmda.net/ConfigurationVariables#MAIL_FOLLOWUP_TO
 
 ======================================================================
 

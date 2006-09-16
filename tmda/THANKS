@@ -4,8 +4,7 @@ Developers:
     TMDA was originally developed by Jason R. Mastaler.  Subsequent
     development towards the 1.0 final release was a group effort; the
     core contributors being Jason R. Mastaler and Tim Legant, with
-    contributions from many others (see the 'Contributions' section
-    below).  Jason R. Mastaler remains TMDA maintainer.
+    contributions from many others.
 
 Acknowledgements:
 -----------------
@@ -23,104 +22,31 @@ Acknowledgements:
     * Andrew Archibald -- provided lots of cryptography-related help and
       insight.  Much of the crypto design in TMDA stems from his input.
 
-Contributions:
---------------
-
-    * Jason Andrade -- mirror of www.tmda.net in Australia.
+Notable contributions:
+------------------
 
     * Matt Armstrong -- contributed heavily to the Postfix support,
       plus many good suggestions, and bugfixes.
 
-    * Binesh Bannerjee -- SACRED_FILE feature (now deprecated).
-    
-    * Ron Bickers -- countless suggestions, bugfixes, documentation
-      additions, and code patches (too many to list).
-
-    * Ed Blackman -- bugfixes, and enchancement of the sender style
-      tagged address to support domains.
-
-    * David Bremner -- Added shell= and python= tag actions to the
-      outgoing filter.
-
-    * Francisco Sam Castillo -- QAdmin-TMDA web management utility.
-
     * Charles Cazabon -- Maildir and mbox delivery code from getmail.
 
-    * Vincent Danen -- Mandrake Linux RPMs.
+    * Chris Hardie -- designed and donated the TMDA logo.
 
-    * Bill Duncan -- SquirrelMail plugin.
-
-    * Michael S. Fischer -- tmda-pending patch which allows messages
-      to be specified on standard input.
-
-    * Slawek 'IDEall' Fydryk -- mirror of www.tmda.net in Poland.
-
-    * Arcady Genkin -- Gentoo Linux Package.
-
-    * Jesse Guardiani -- various contrib scripts.
-
-    * David Guerizec -- Pending.py module, lots of tmda-ofmipd
-      improvements, miscellaneous bugfixes, and tmda-gui (TKinter
-      interface).
-
-    * Chris Hardie -- mirror of www.tmda.net, and the TMDA logo.
-
-    * Lou Hevly -- documentation (vpopmail tutorial).
-
-    * Mark Horn -- Configurable actions for tagged address
-      verification failures.
-
-    * Josh Huber -- tmda.el.
-
-    * Bernard Johnson -- contrib files to support tmda-ofmipd running
-      as a system daemon in SysV/RedHat style.  Improvements to
-      tmda.spec.
-
-    * Sergei Kolobov -- FreeBSD port (formerly Mike Meyer).
-
-    * Brian Lalor -- testing the initial Sendmail support; bugfixes.
-
-    * Gre7g Luterman -- tmda-cgi, a web interface to TMDA's pending
-      queue.  MySQL support for filter files.
-
-    * Adam McKenna -- Debian package.
-
-    * Sven Neuhaus -- mirror of www.tmda.net in Germany.
-
-    * Drew Raines -- Tireless assistance on tmda-users; custom address
-      type identifiers feature.
-
-    * Jim Ramsay -- work on Auth.py.
-
-    * Ted Rathkopf -- support for "pre-extension" definitions in
-      /var/qmail/users/assign (now deprecated).
-
-    * Tim Rice -- MMDF support.
+    * Gre7g Luterman -- tmda-cgi, a popular web interface to TMDA's
+      pending queue.
 
     * Michael Schler -- registration of, and secondary nameservice for
-      TMDA.NET.
-
-    * Robin S. Socha -- lots of TMDA advocacy, particularly in the
-      de.* newsgroups, and documentation (Gnus HOWTO).
-
-    * Maurizio Speranza -- mirror of www.tmda.net in Italy.
-
-    * Dave Steinberg -- OpenBSD port (formerly David Lebel, and Jim
-      Geovedi).
+      the tmda.net domain.
 
     * Reuben Sumner -- original HMAC module.
 
-    * Kimmo Suominen -- NetBSD package (formerly Amitai Schlair).
+    * David Guerizec and Jim Ramsay -- secondary developers.
 
-    * Simon Waldman -- documentation (Fetchmail HOWTO).
+    * The maintainers of TMDA's packages for various flavors of Linux
+      and *BSD.
 
-    * Mate Wierdl -- tmda4ezmlm script.
-
-    * Cory Wright -- mirror of www.tmda.net, various contrib scripts,
-      the TEMPLATE_DIR_MATCH_RECIPIENT feature, tmda-users support.
-
-    * Lloyd Zusman -- "whitelist" and "blacklist" commands for
-      tmda-pending.
+    * The countless invaluable suggestions, bugfixes, and improvements
+      by the members of the tmda-users and tmda-workers mailing lists.
 
 --------------
 ^L

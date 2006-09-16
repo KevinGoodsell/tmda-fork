@@ -6,14 +6,14 @@ Summary: Tagged Message Delivery Agent
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source0: http://www.tmda.net/releases/unstable/%{name}-%{version}.tgz
+Source0: http://tmda.net/releases/%{name}-%{version}.tgz
 License: GPL
 Group: Utilities/System
 BuildRoot: %{_tmppath}/%{name}-buildroot
 BuildArchitectures: noarch
 Vendor: TMDA Cabal
 Packager: tmda-workers@tmda.net
-Url: http://www.tmda.net/
+Url: http://tmda.net/
 BuildRequires: /usr/bin/python2.3
 Requires: /usr/bin/python2.3
 
@@ -67,13 +67,13 @@ rm -rf %{buildroot}
 %verify(not size md5 mtime) %{pylibdir}/TMDA/pythonlib/email/*.pyc
 %{_datadir}/tmda/*
 
-%doc --parents ChangeLog CODENAMES COPYING CRYPTO INSTALL README THANKS UPGRADE contrib/ htdocs/{*.html,img/}
+%doc --parents ChangeLog CODENAMES COPYING CRYPTO INSTALL NEWS README THANKS UPGRADE contrib/ htdocs/{*.html,img/}
 
 %package ofmipd
 Summary: Tagged Message Delivery Agent - ofmipd server
 Group: System/Daemons
 Requires: tmda >= %{version}
-Url: http://www.tmda.net/tmda-ofmipd.html
+Url: http://wiki.tmda.net/TmdaOfmipdHowto
 %description ofmipd
 tmda-ofmipd is an async I/O based authenticated ofmip proxy for TMDA.
 This allows users of any mail client capable of SMTP Authentication

@@ -21,8 +21,8 @@
 
 """TMDA configuration variable defaults.
 
-See http://tmda.net/config-vars.html for an HTMLized version of the
-information below.
+See http://wiki.tmda.net/ConfigurationVariables for an HTMLized
+version of the information below.
 """
 
 # Some convenient constants

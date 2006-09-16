@@ -5,12 +5,12 @@
 # TMDA outgoing filter file; controls how how outgoing messages are
 # tagged.  The first match wins.  You must setup your mail client to
 # use tmda-sendmail or tmda-ofmipd according to
-# http://tmda.net/unstable/config-client.html.  Deliveries are logged
+# http://wiki.tmda.net/ClientConfiguration.  Deliveries are logged
 # to ~/.tmda/outgoing.log.
 #
 # References:
-# http://tmda.net/unstable/config-filter.html
-# http://tmda.net/unstable/filter-sources.html
+# http://wiki.tmda.net/FilterSpecification
+# http://wiki.tmda.net/FilterSources
 
 ########################
 # whitelisted recipients

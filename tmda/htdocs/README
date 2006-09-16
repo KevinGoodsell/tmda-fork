@@ -1,5 +1,6 @@
-Load "index.html" to view the HTML documentation.
+The TMDA homepage is generated with the ht2html web page template
+processor using the TMDAGenerator style.  ht2html is available from
+http://ht2html.sourceforge.net/
 
-TMDA documentation is generated with the ht2html web page template
-processor using the TMDAGenerator style.  ht2html is available from:
-<URL:http://ht2html.sourceforge.net/>
+The documentation has been moved to http://wiki.tmda.net/
+ 

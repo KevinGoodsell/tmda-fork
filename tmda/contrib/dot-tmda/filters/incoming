@@ -7,8 +7,8 @@
 # ~/.tmda/incoming.log
 #
 # References:
-# http://tmda.net/unstable/config-filter.html
-# http://tmda.net/unstable/filter-sources.html
+# http://wiki.tmda.net/FilterSpecification
+# http://wiki.tmda.net/FilterSources
 
 #####################
 # whitelisted senders
@@ -51,5 +51,5 @@ body "filename\=.+\.(pif|scr|exe|bat|com|cmd|vbs|js|rar|zip)" hold
 
 # Mail that didn't match one of the rules above will be disposed of
 # according to your ACTION_INCOMING setting ('confirm' by default).
-# See http://tmda.net/unstable/config-vars.html#ACTION_INCOMING
+# See http://wiki.tmda.net/ConfigurationVariables#ACTION_INCOMING
 

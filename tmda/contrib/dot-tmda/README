@@ -6,7 +6,7 @@ You can use them as is without only a few modifications.  Copy them
 with `cp -pR dot-tmda ~/.tmda' if you don't already have a ~/.tmda
 directory.
 
-Please make sure to read the documentation at http://tmda.net/unstable/
+Please make sure to read the documentation at http://wiki.tmda.net/
 so you understand the purpose of these files and how they work.
 
 ====================================================================

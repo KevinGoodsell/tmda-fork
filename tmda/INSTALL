@@ -1,10 +1,10 @@
 The latest installation instructions and usage information can be
 found on the TMDA homepage:
 
-  <URL:http://tmda.net/>
+http://tmda.net/
 
 A local copy of the HTML documentation matching this release is
 included in the "htdocs" directory.
 
 If you are upgrading from an earlier release of TMDA, make sure to
-consult <URL:http://tmda.net/upgrade.html>.
+consult http://wiki.tmda.net/TmdaUpgrade

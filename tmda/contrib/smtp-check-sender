@@ -36,7 +36,7 @@ level.
 Requirements
 ============
 Python, and also the PyDNS module, available at
-<URL:http://pydns.sourceforge.net/>.
+http://pydns.sourceforge.net/
 
 Usage
 =====
