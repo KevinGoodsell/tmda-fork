@@ -1,0 +1,82 @@
+This file contains a list of new features and capabilities by TMDA
+version.  These blurbs are what I usually include in release
+announcements under "What's new?".  Make sure to read the UPGRADE
+file in this directory as well.
+
+======================================================================
+
+TMDA 1.1.4 "Edradour" --
+
+* The new 'dot-tmda' directory in contrib contains a working ~/.tmda/
+  structure that can be used with only a few changes.  See the README
+  in that directory for more info.  Not documented yet outside of the
+  README, but this might help new TMDA users get started quicker.
+
+* Some of the tmda-* programs will now run on native win32
+  (tmda-address, tmda-check-address, tmda-pending, and tmda-keygen).
+
+* tmda-ofmipd has a new option (--pure-proxy) that can proxy mail for
+  non-TMDA users in addition to TMDA users.  This might be useful if
+  you run a mixed environment, and want to use tmda-ofmipd for
+  everyone.  See `tmda-ofmipd --help' for more on this option.
+
+======================================================================
+
+TMDA 1.1.3 "Dailuaine" --
+
+* New feature from David Bremner.  Add 'shell=' and 'python=' tag
+  actions to the outgoing filter.  This allows you to add
+  dynamic/shell escaped headers from the outgoing filter file.  For
+  example usage, see the TMDA/Hashcash HOWTO I've prepared at
+  http://wiki.tmda.net/TmdaHashCashHowto
+
+* The template system has been reorganized to simplify things for
+  users of multi-lingual templates among others.  See
+  http://www.us.tmda.net/unstable/howto-template.html and the UPGRADE
+  notes below.
+
+* Messages are now simply deleted from your pending queue once they
+  are confirmed or released rather than being renamed with a '3,C' or
+  '3,R' suffix.  This provides simpler, more intuitive behavior and
+  decreased storage requirements.
+
+======================================================================
+
+TMDA 1.1.2 "Caol Ila" --
+
+* Fixed a bug in TMDAINJECT that caused Message-ID and Date headers to
+  differ when sending to multiple recipients.
+
+* Fixes to the tmda.spec file that should allow RPMs to be built with
+  Python 2.3.x.
+
+======================================================================
+
+TMDA 1.1.1 "Balblair" --
+
+* Tilde expansion is now done automatically for variables in
+  /etc/tmdarc and ~/.tmda/config, so you no longer have to use
+  os.path.expanduser() to do this yourself.  e.g,
+
+  TEMPLATE_DIR = "~/.tmda/templates"
+
+  now ``just works''.
+
+* New 'whitelist' behavior for tmda-pending and tmda-cgi, controlled
+  by http://tmda.net/unstable/config-vars.html#PENDING_WHITELIST_RELEASE
+
+* A new 'pipe-headers' incoming filter file source.  Identical to
+  'pipe' except that it only pipes the headers to the program, instead
+  of the headers + body.  This should offer greater performance and
+  reliability when processing the message body isn't required.
+
+* A new feature to add Mail-Followup-To headers from tmda-sendmail or
+  tmda-ofmipd to messages.  See
+  http://tmda.net/unstable/config-vars.html#MAIL_FOLLOWUP_TO
+
+======================================================================
+
+^L
+Local Variables:
+mode: text
+End:
