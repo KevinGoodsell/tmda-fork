@@ -1,0 +1,189 @@
+body { background: white; color:black; font-family:"Trebuchet MS",sans-serif;}
+
+a:link { color:#0044B3; }
+
+a:visited { color:##597BB3; }
+
+a:hover {color: #0044B3;}
+
+table { 
+    border: 0 solid #ffffff; 
+    background: transparent; 
+    border-collapse: separate ;
+    border-spacing: 0 ;
+    margin: 0 ;
+    padding: 0 ;
+}
+
+table.pkgversion { 
+    border: 0 solid #ffffff; 
+    background: transparent; 
+    border-collapse: separate ;
+    border-spacing: 3px ;
+    margin: 0 ;
+    padding: 0 ;
+}
+
+p,ul,ol,li,dl,dt,dd,td,th { font: 11pt "Trebuchet MS",sans-serif; 
+    color: black ; 
+}
+
+
+td { 
+    margin: 4px ;
+    padding: 4px ;
+}
+
+h1 { font: bold 18pt "Trebuchet MS",sans-serif; color:black; }
+
+h2 { font: bold 12pt "Trebuchet MS",sans-serif; color:black; }
+
+.default { font: 11pt "Trebuchet MS",sans-serif; color:black; }
+
+.attention { color:red; }
+
+
+ul.menu { 
+    border: 0 solid #fff; 
+    background: #eee; 
+    font-family: Verdana, Helvetica, Arial, sans-serif ; 
+    border-collapse: collapse ;
+    padding: 0 ;
+    margin: 0 ;
+}
+
+ul.menu li { 
+    list-style: none; 
+    border: 0 0 1px 0 solid #fff; 
+    padding: 0 ;
+}
+
+ul.menu li.menu_item {
+    font-weight: bold ;
+    margin: 0 ;
+}
+
+ul.menu li.menu_subitem {
+    font-weight: normal ;
+    margin: 0 0 0 8px ;
+}
+
+ul.menu li div {
+    border: 0 0 0 8px solid #607dbf; 
+    font-size: 10pt ;
+    margin: 0 ;
+    padding: 3px ;
+    display: block ;
+}
+
+ul.menu li div.selected {
+    background: #607dbf; 
+}
+
+ul.menu li a { 
+    border: 0 0 0 8px solid #ccc; 
+    background: #eee; 
+    font-size: 10pt ;
+    text-decoration: none ;
+    margin: 0 ;
+    padding: 3px ;
+    display: block ;
+}
+
+ul.menu li a:hover { 
+    border: #999; 
+    background: #bfd3ff;
+}
+
+.nav { font: 8pt Verdana,Helvetica,Arial,sans-serif; color:black; }
+
+
+input { font: 10pt Courier,"Courier New",monospace; color:black; }
+
+tt { font: 10pt Courier,"Courier New",monospace; color:black; }
+
+code { font: 10pt Courier,"Courier New",monospace; color:black; white-space:nowrap; }
+
+pre { background: #FFF2D9; font: 10pt Courier,"Courier New",monospace; color:black; padding:4px; padding-left:8px; margin-left:16px; margin-right:16px; }
+
+img { border:0; }
+
+
+div#header-left {
+    float: left ;
+    padding: 0 0 10px 0 ;
+    margin: 0 ;
+    width: 180px ;
+    height: 90px ;
+    border-style: solid ;
+    border-width: 0 0 3px 0 ;
+    border-color: #607dbf ;
+}
+
+div#header {
+    padding: 0 0 10px 0 ;
+    margin: 0 ;
+    height: 90px ;
+    border-style: solid ;
+    border-width: 0 0 3px 180px ;
+    border-color: #fff #fff #607dbf #fff ;
+    font-family: "Trebuchet MS", sans-serif ;
+    text-align: right ;
+}
+
+div#sidebar {
+    float: left ;
+    padding: 0 ;
+    margin: 0 ;
+    width: 150px ;
+    border-style: solid ;
+    border-width: 0 ;
+    border-color: #333 ;
+}
+
+div#sections {
+    background: url(img/stripes.gif); 
+    padding: 6px 3px ;
+    margin: 0 ;
+    font-weight: bold ;
+    display: block ;
+    border-style: solid ;
+    border-width: 0 0 4px 0 ;
+    border-color: #607dbf ;
+    font-family: "Trebuchet MS", sans-serif ;
+    text-align: center ;
+}
+
+div#main {
+    padding: 0 0 20px 10px ;
+    margin: 0 ;
+    border-style: solid ;
+    border-width: 0 0 0 150px ;
+    border-color: #eee ;
+}
+
+div#footer-left { 
+    background: url(img/stripes.gif); 
+    font: smaller "Trebuchet MS", sans-serif; 
+    clear: both ;
+    float: left;
+    padding: 10px 0 10px 0 ;
+    margin: 0 ;
+    width: 150px ;
+    height: 50px ;
+    border-style: solid ;
+    border-width: 3px 0 3px 0 ;
+    border-color: #607dbf ;
+    text-align: center ;
+}
+
+div#footer {
+    font: smaller "Trebuchet MS", sans-serif; 
+    padding: 10px 0 10px 10px ;
+    margin: 0 ;
+    height: 50px ;
+    border-style: solid ;
+    border-width: 3px 0 3px 150px ;
+    border-color: #fff #fff #607dbf #eee ;
+    text-align: center ;
+}

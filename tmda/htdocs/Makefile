@@ -19,15 +19,8 @@
 
 DEF2HTML =      ../contrib/def2html
 
-HTROOT = 	.
-HT2HTML =	ht2html
-HTSTYLE =	TMDAGenerator
-HTALLFLAGS =	-f -s $(HTSTYLE)
-HTFLAGS =	$(HTALLFLAGS) -r $(HTROOT)
-
 SOURCES =	$(shell echo *.ht)
-TARGETS =	$(filter-out *.html,$(SOURCES:%.ht=%.html)) $(EXTRA_TARGETS)
-GENERATED_HTML= $(SOURCES:.ht=.html)
+TARGETS =	config-vars.ht
 
 DEST =          jason@tmda.net:/www/tmda.net/htdocs
 EXCLUDES =      --exclude "*"
@@ -35,26 +28,25 @@ INCLUDES =	--include "*.html"
 ARGS =          -e ssh -v -a -z --delete $(INCLUDES) $(EXCLUDES)
 
 
-.SUFFIXES:	.ht .html
+.SUFFIXES:	.ht 
 
-.ht.html:
-	$(HT2HTML) $(HTFLAGS) $<
+.ht:
+		$(HT2HTML) $(HTFLAGS) $<
 
-all: $(TARGETS)
-
-config-vars.ht: config-vars.tpl config-vars.tmp
-	sed -e '/<!--config_vars-->/r config-vars.tmp' -e \
-	'/<!--config_vars-->/d' < config-vars.tpl > config-vars.ht
+all: 		$(TARGETS)
 
 config-vars.tmp: ../TMDA/Defaults.py
-	$(DEF2HTML) ../TMDA/Defaults.py > config-vars.tmp
+		$(DEF2HTML) ../TMDA/Defaults.py > config-vars.tmp
 
-clean: clean
-	-rm -f *~
-	-rm -f $(GENERATED_HTML)
-	-rm -f config-vars.tmp
+config-vars.ht: config-vars.tpl config-vars.tmp
+		sed -e '/<!--config_vars-->/r config-vars.tmp' -e \
+		'/<!--config_vars-->/d' < config-vars.tpl > config-vars.ht
 
-remake: clean all
+clean: 		
+		-rm -f *~
+		-rm -f config-vars.tmp
+
+remake: 	clean all
 
 install: 
-	rsync $(ARGS) . $(DEST)
+		rsync $(ARGS) . $(DEST)

@@ -1,3 +1,9 @@
+2006-09-18  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Since all the content is now in the wiki, dump the ht2html
+	template system in favor of just a simple index.html and
+	accompanying css stylesheet that we can hand edit.
+	
 2006-09-14  Jason R. Mastaler  <jason@mastaler.com>
 
 	* links.h: All docs now reside at wiki.tmda.net.  Just include a
