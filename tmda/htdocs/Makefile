@@ -24,7 +24,7 @@ TARGETS =	config-vars.ht
 
 DEST =          jason@tmda.net:/www/tmda.net/htdocs
 EXCLUDES =      --exclude "*"
-INCLUDES =	--include "*.html"
+INCLUDES =	--include "*.html" --include "*.css"
 ARGS =          -e ssh -v -a -z --delete $(INCLUDES) $(EXCLUDES)
 
 
