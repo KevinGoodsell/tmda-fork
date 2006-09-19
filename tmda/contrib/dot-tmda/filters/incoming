@@ -37,6 +37,9 @@ from-file ~/.tmda/lists/blacklist drop
 # Accept mail containing the Habeas SWE headers (http://www.habeas.com/)
 headers "^X-Habeas-SWE-3.*like Habeas SWE \(tm\)" ok
 
+# SPF has marked the message as forged.  Do not confirm it.
+headers 'Received-SPF: fail' hold 
+
 # Hold all messages marked by SpamAssassin that score above level 8.
 # See http://wiki.tmda.net/SpamAssassin for more examples.
 headers "X-Spam-Level: \*\*\*\*\*\*\*\*" hold
