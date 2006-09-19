@@ -43,7 +43,6 @@ DEFAULT_CHARSET = 'US-ASCII'
 
 # Extend Charset.ALIASES with some charsets which don't already have
 # convenient aliases.
-add_alias('arabic', 'iso-8859-6')
 add_alias('cyrillic', 'iso-8859-5')
 add_alias('greek', 'iso-8859-7')
 add_alias('hebrew', 'iso-8859-8')

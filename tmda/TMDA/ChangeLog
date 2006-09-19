@@ -1,3 +1,8 @@
+2006-09-19  Jason R. Mastaler  <jason@mastaler.com>
+
+	* AutoResponse.py: Remove arabic -> iso-8859-6 alias.  UTF-8 is
+	what's used for Arabic these days AFAIK.
+
 2004-03-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
 
 	* Pending.py (Queue.listDeliveredIds): Removed.
