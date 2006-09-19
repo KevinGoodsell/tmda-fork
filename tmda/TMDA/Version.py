@@ -26,7 +26,7 @@ import platform
 
 
 # TMDA version
-TMDA = "1.1.4+"
+TMDA = "1.1.5"
 
 # TMDA version codename
 CODENAME = "Fettercairn"
