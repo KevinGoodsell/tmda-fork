@@ -19,28 +19,22 @@
 
 DEF2HTML =      ../contrib/def2html
 
-SOURCES =	$(shell echo *.ht)
-TARGETS =	config-vars.ht
+SOURCES =	config-vars.html
+TARGETS =	config-vars.html
 
 DEST =          jason@tmda.net:/www/tmda.net/htdocs
 EXCLUDES =      --exclude "*"
 INCLUDES =	--include "*.html" --include "*.css"
 ARGS =          -e ssh -v -a -z --delete $(INCLUDES) $(EXCLUDES)
 
-
-.SUFFIXES:	.ht 
-
-.ht:
-		$(HT2HTML) $(HTFLAGS) $<
-
 all: 		$(TARGETS)
 
 config-vars.tmp: ../TMDA/Defaults.py
 		$(DEF2HTML) ../TMDA/Defaults.py > config-vars.tmp
 
-config-vars.ht: config-vars.tpl config-vars.tmp
+config-vars.html: config-vars.tpl config-vars.tmp
 		sed -e '/<!--config_vars-->/r config-vars.tmp' -e \
-		'/<!--config_vars-->/d' < config-vars.tpl > config-vars.ht
+		'/<!--config_vars-->/d' < config-vars.tpl > config-vars.html
 
 clean: 		
 		-rm -f *~
