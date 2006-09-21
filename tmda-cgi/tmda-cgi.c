@@ -19,7 +19,9 @@ You should have received a copy of the GNU General Public License
 along with TMDA; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <tmda-cgi.h>
 
@@ -46,7 +48,7 @@ int main(int argc, char *argv[])
 
   if (!chdir(INSTALL))
   {
-    execl(PYTHON, PYTHON, "tmda-cgi.py", 0);
+    execl(PYTHON, PYTHON, "tmda-cgi.py", NULL);
     return 0;
   }
   printf("Content-type: text/html\n\nCannot change to directory: %s", INSTALL);

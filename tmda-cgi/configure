@@ -476,8 +476,8 @@ CC = %(CC)s
 
 all: tmda.cgi
 
-tmda.cgi: tmda-cgi.h
-	$(CC) -I . %(Path)stmda-cgi.c -o tmda.cgi
+tmda.cgi: %(Path)stmda-cgi.c tmda-cgi.h
+	$(CC) -Wall -I . %(Path)stmda-cgi.c -o tmda.cgi
 	chmod %(Perm)s tmda.cgi
 
 install: $(DESTDIR)/%(TargFN)s
