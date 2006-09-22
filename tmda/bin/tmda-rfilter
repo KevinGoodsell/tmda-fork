@@ -179,7 +179,7 @@ from TMDA import Errors
 from TMDA import FilterParser
 from TMDA import MTA
 from TMDA import Util
-
+from TMDA.Queue.Util import create_pending_msg
 
 from cStringIO import StringIO
 from email.Utils import parseaddr, getaddresses
@@ -640,21 +640,6 @@ def verify_keyword_cookie(keyword_cookie):
                           'bounce_fail_keyword.txt')
 
 
-def create_pending_msg(timestamp, pid):
-    pending_message = "%s.%s.msg" % (timestamp, pid)
-    # Create ~/.tmda/ and friends if necessary.
-    if not os.path.exists(pendingdir):
-        os.makedirs(pendingdir, 0700) # stores the unconfirmed messages
-    # X-TMDA-Recipient is used by release_pending().
-    del msgin['X-TMDA-Recipient']
-    msgin['X-TMDA-Recipient'] = recipient_address
-    # Write ~/.tmda/pending/TIMESTAMP.PID.msg
-    pending_contents = Util.msg_as_string(msgin)
-    fn = os.path.join(pendingdir, pending_message)
-    Util.writefile(pending_contents, fn)
-    del msgin['X-TMDA-Recipient']
-    return pending_message
-
 
 def bouncegen(mode, template=None):
     """Bounce a message back to sender."""
@@ -721,9 +706,17 @@ def bouncegen(mode, template=None):
                                                   Cookie.make_confirm_cookie(timestamp,
                                                                              pid,
                                                                              'accept'))
-        pending_message = create_pending_msg(timestamp, pid)
+	# X-TMDA-Recipient is used by release_pending()
+	del msgin['X-TMDA-Recipient']
+        msgin['X-TMDA-Recipient'] = recipient_address
+        pending_message = create_pending_msg(timestamp, pid, msgin)
+	del msgin['X-TMDA-Recipient']
+    
     elif mode == 'hold':
-        pending_message = create_pending_msg(str('%d' % now), Defaults.PID)
+	del msgin['X-TMDA-Recipient']
+        msgin['X-TMDA-Recipient'] = recipient_address
+        pending_message = create_pending_msg(str('%d' % now), Defaults.PID, msgin)
+	del msgin['X-TMDA-Recipient']
         # Don't send anything for silently held messages
         if Defaults.CONFIRM_CC:
             send_cc(Defaults.CONFIRM_CC)
