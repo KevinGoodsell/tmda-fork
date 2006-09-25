@@ -37,15 +37,19 @@ def create_pending_dir(dirpath=None):
 	os.makedirs(dirpath, 0700)
     
 
-def create_pending_msg(timestamp, pid, msg):
+def create_pending_msg(timestamp, pid, recip, msg):
     """ """
     fname = "%s.%s.msg" % (timestamp, pid)
     # Create ~/.tmda/ and friends if necessary.
     create_pending_dir(Defaults.PENDING_DIR)
+    # X-TMDA-Recipient is used by release_pending()
+    del msg['X-TMDA-Recipient']
+    msg['X-TMDA-Recipient'] = recip
     # Write ~/.tmda/pending/TIMESTAMP.PID.msg
     fcontents = msg_as_string(msg)
     fpath = os.path.join(Defaults.PENDING_DIR, fname)
     writefile(fcontents, fpath)
+    del msg['X-TMDA-Recipient']
     return fname
 
 

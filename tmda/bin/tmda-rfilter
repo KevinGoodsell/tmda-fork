@@ -706,17 +706,10 @@ def bouncegen(mode, template=None):
                                                   Cookie.make_confirm_cookie(timestamp,
                                                                              pid,
                                                                              'accept'))
-	# X-TMDA-Recipient is used by release_pending()
-	del msgin['X-TMDA-Recipient']
-        msgin['X-TMDA-Recipient'] = recipient_address
-        pending_message = create_pending_msg(timestamp, pid, msgin)
-	del msgin['X-TMDA-Recipient']
-    
+        pending_message = create_pending_msg(timestamp, pid, recipient_address, msgin)
     elif mode == 'hold':
-	del msgin['X-TMDA-Recipient']
-        msgin['X-TMDA-Recipient'] = recipient_address
-        pending_message = create_pending_msg(str('%d' % now), Defaults.PID, msgin)
-	del msgin['X-TMDA-Recipient']
+        pending_message = create_pending_msg(str('%d' % now), Defaults.PID, 
+					     recipient_address, msgin)
         # Don't send anything for silently held messages
         if Defaults.CONFIRM_CC:
             send_cc(Defaults.CONFIRM_CC)
