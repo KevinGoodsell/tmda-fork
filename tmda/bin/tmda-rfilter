@@ -179,7 +179,7 @@ from TMDA import Errors
 from TMDA import FilterParser
 from TMDA import MTA
 from TMDA import Util
-from TMDA.Queue.OriginalQueue import OriginalQueue
+from TMDA.Queue.Queue import Queue
 
 from cStringIO import StringIO
 from email.Utils import parseaddr, getaddresses
@@ -205,7 +205,8 @@ TIMESTAMP = str('%d' % TIME)
 MAILID = "%s.%s" % (TIMESTAMP, Defaults.PID)
 
 # A pending queue instance
-Q = OriginalQueue()
+Q = Queue()
+Q = Q.init()
 
 # We use this MTA instance to control the fate of the message.
 mta = MTA.init(Defaults.MAIL_TRANSFER_AGENT, Defaults.DELIVERY)

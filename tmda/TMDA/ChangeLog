@@ -1,3 +1,7 @@
+2006-09-28  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Defaults.py (PENDING_QUEUE_FORMAT): New variable.
+	
 2006-09-27  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Pending.py: Modified to use new Tmda.Queue interface.

@@ -33,10 +33,11 @@ import time
 import Defaults
 import Errors
 import Util
-from TMDA.Queue.OriginalQueue import OriginalQueue
+from TMDA.Queue.Queue import Queue
 
 
-Q = OriginalQueue()
+Q = Queue()
+Q = Q.init()
 
 
 class Queue:

@@ -1050,6 +1050,20 @@ if not vars().has_key('DB_BARE_APPEND'):
 if not vars().has_key('PENDING_DIR'):
     PENDING_DIR = os.path.join(DATADIR, 'pending')
 
+# PENDING_QUEUE_FORMAT
+# A string specifying the format of TMDA's pending queue where
+# unconfirmed messages are stored.
+# Possible values include:
+#
+# "original"
+#      A custom TMDA format where messages are stored one per file in a
+#      directory (PENDING_DIR).  Offers high performance, but can only
+#      be browsed with TMDA tools like 'tmda-pending' and 'tmda-cgi'.
+#
+# Default is "original".
+if not vars().has_key('PENDING_QUEUE_FORMAT'):
+    PENDING_QUEUE_FORMAT = 'original'
+
 # PENDING_LIFETIME
 # A time interval describing how long a message can live in the
 # pending queue before it's subject to automated deletion by

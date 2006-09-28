@@ -22,10 +22,3 @@
 """General purpose (Pending Queue related) functions."""
 
 
-
-# def maildirmake(dirpath):
-#     """ """
-#     os.makedirs(os.path.join(dirpath, 'cur'), 0700)
-#     os.mkdir(os.path.join(dirpath, 'new'), 0700)
-#     os.mkdir(os.path.join(dirpath, 'tmp'), 0700)
-    

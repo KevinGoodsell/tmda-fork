@@ -27,6 +27,9 @@ seperated by a dot, e.g, "1159383896.4198".  This infomration
 currently comes from a timestamp and the Python process id.
 """
 
+from TMDA import Defaults
+from TMDA import Errors
+
 
 class Queue:
     def __init__(self):
@@ -106,3 +109,19 @@ class Queue:
 	Return true if this message is in the queue, otherwise False.
 	"""
 	pass
+
+
+    # Subclasses should not override this method.
+
+    def init(self):
+	qformat = Defaults.PENDING_QUEUE_FORMAT
+	if qformat.lower() == 'original':
+	    from OriginalQueue import OriginalQueue
+	    return OriginalQueue()
+	#if qformat.lower() == 'maildir':
+	#    from MaildirQueue import MaildirQueue
+	#    return MaildirQueue()
+	else:
+	    raise Errors.ConfigError, \
+		"Unknown PENDING_QUEUE_FORMAT: " + '"%s"' % qformat
+
