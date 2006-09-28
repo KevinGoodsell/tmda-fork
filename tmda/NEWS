@@ -7,6 +7,17 @@ file in this directory as well.
 
 TMDA 1.1.6 "Glen Albyn" --
 
+* tmda-filter will defer incoming deliveries if the sticky bit is set
+  on your home directory (as determined by the $HOME variable).  This
+  allows you to safely edit the contents of ~/.tmda/ on a live system
+  if you need to.  Set the sticky bit with:
+
+  % chmod +t $HOME
+
+  And make sure to remove it when you are done (chmod -t $HOME).  This
+  idea comes from qmail-local.  See "SAFE QMAIL EDITING" at
+  http://www.qmail.org/man/man5/dot-qmail.html
+
 * tmda-ofmipd now has "one-session" mode through the '--one-session'
   command-line option, courtesy of Stephen Warren.  This allows you to
   use xinetd or tcpserver, possibly in conjunction with stunnel, to

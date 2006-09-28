@@ -87,6 +87,7 @@ OPTIONS:
 import getopt
 import os
 import sys
+import stat
 
 try:
     import paths
@@ -170,6 +171,18 @@ for opt, arg in opts:
     elif opt in ('-S', '--vhome-script'):
         if os.environ.has_key('EXT') and os.environ.has_key('HOST'):
             setvuserhomedir(arg)
+
+
+# Defer the delivery if the sticky bit is set on $HOME (chmod +t).
+# This allows users and processes to safely edit the contents of
+# ~/.tmda/.  Remove sticky bit with chmod -t $HOME.  This idea comes
+# from qmail.  Check for the sticky bit here, after $HOME is set for
+# virtual users, but before Defaults is imported.
+homestat = os.stat(os.path.expanduser('~'))
+homesticky = homestat[stat.ST_MODE] & stat.S_ISVTX
+if homesticky:
+    sys.stdout.write('tmda-filter: home directory is sticky.')
+    sys.exit(75)
 
 
 from TMDA import Defaults
