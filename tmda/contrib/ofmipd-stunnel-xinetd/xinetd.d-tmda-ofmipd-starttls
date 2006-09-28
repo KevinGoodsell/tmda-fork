@@ -1,0 +1,10 @@
+# default: on
+# description: TMDA SMTP proxy daemon
+service tmda-ofmipd-starttls
+{
+	socket_type     = stream
+	wait            = no
+	user            = root
+	server          = /usr/local/tmda/xinetd/tmda-ofmipd-starttls/stunnel-wrapper
+	log_on_failure  += USERID
+}

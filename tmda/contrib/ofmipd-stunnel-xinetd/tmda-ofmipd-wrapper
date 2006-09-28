@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/local/tmda/bin/tmda-ofmipd -f -A "/usr/local/bin/checkpassword-pam -s system-auth -- /bin/true" -1 2>/var/log/tmda-ofmipd-starttls

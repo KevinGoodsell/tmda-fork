@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/sbin/stunnel /usr/local/tmda/xinetd/tmda-ofmipd-starttls/stunnel.conf 2>/var/log/tmda-ofmipd-starttls-stunnel-wrapper
