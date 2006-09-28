@@ -1,7 +1,25 @@
 This file contains a list of new features and capabilities by TMDA
-version.  These blurbs are what I usually include in release
+version.  These blurbs are what are usually included in release
 announcements under "What's new?".  Make sure to read the UPGRADE
 file in this directory as well.
+
+======================================================================
+
+TMDA 1.1.6 "Glen Albyn" --
+
+* tmda-ofmipd now has "one-session" mode through the '--one-session'
+  command-line option, courtesy of Stephen Warren.  This allows you to
+  use xinetd or tcpserver, possibly in conjunction with stunnel, to
+  spawn tmda-ofmipd, rather than having tmda-ofmipd bind to a port and
+  accept connections on its own.
+
+  This allows you to re-use your existing xinetd/tcpserver
+  configuration/management and access control rules.  It also allows
+  tmda-ofmipd to see the real IP address of the client, for better
+  Received: line logging.
+
+  See the contrib/ofmipd-stunnel-xinetd directory for a README and
+  some configuration examples.
 
 ======================================================================
 
