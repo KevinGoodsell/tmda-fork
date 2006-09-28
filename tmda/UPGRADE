@@ -5,6 +5,18 @@ this file.
 
 If you are upgrading from a release of TMDA < 1.1.6:
 
+* The default name and location of the PENDING_CACHE file has changed
+  from:
+
+  ~/.tmda/pending/.msgcache
+
+  to ~/.tmda/.pendingcache
+
+  PENDING_CACHE is used by tmda-pending's '--cache' option, and also
+  by tmda-cgi.  If you've set a custom value for PENDING_CACHE,
+  obviously this change won't affect you, otherwise you will have to
+  move the cache file to it's new location.
+
 * Mail messages in the queue are now referred to by a unique numerical
   identifier, as discussed in TMDA/Queue/Queue.py.  For example,
   "1159383896.4198".  For most users, this change is inconsequential

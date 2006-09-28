@@ -1111,9 +1111,9 @@ if not vars().has_key('PENDING_CLEANUP_ODDS'):
 # Path to the cache file used when tmda-pending is invoked with the
 # --cache option.
 #
-# Default is ~/.tmda/pending/.msgcache
+# Default is ~/.tmda/.pendingcache
 if not vars().has_key('PENDING_CACHE'):
-    PENDING_CACHE = os.path.join(PENDING_DIR, '.msgcache')
+    PENDING_CACHE = os.path.join(DATADIR, '.pendingcache')
     
 # PENDING_CACHE_LEN
 # An integer which specifies the maximum number of entries held by
