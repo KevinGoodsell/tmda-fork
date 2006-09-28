@@ -133,11 +133,14 @@ Where:
     (interactively operate on all pending messages)
     %(program)s 
 
+    (get a summary listing of all pending messages)
+    %(program)s -T -b
+
     (interactively operate on just these messages)
-    %(program)s 1012182077.5803.msg 1012939546.7870.msg
+    %(program)s 1012182077.5803 1012939546.7870
 
     (immediately release these messages from the pending queue)
-    %(program)s -b -r 1012182077.5803.msg 1012939546.7870.msg
+    %(program)s -b -r 1012182077.5803 1012939546.7870
 
     (immediately release any messages with `foobar' in them)
     %(program)s -b -T | grep foobar | awk '{print $1}' | %(program)s -b -r -

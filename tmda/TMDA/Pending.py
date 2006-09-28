@@ -26,7 +26,6 @@
 
 from email.Utils import parseaddr
 import email
-import glob
 import os
 import sys
 import time
@@ -34,6 +33,11 @@ import time
 import Defaults
 import Errors
 import Util
+from TMDA.Queue.OriginalQueue import OriginalQueue
+
+
+Q = OriginalQueue()
+
 
 class Queue:
     """A simple pending queue."""
@@ -70,10 +74,9 @@ class Queue:
 
     def initQueue(self):
         """Initialize the queue with the given parameters (see __init__)."""
-        self.pendingdir = Defaults.PENDING_DIR
-        if not os.path.exists(self.pendingdir):
-            raise Errors.QueueError, 'Pending directory %s does not exist, exiting.' % self.pendingdir
-    
+	if not Q.exists():
+	    raise Errors.QueueError, 'Pending Queue does not exist, exiting.'
+
         # Replace any `-' in the message list with those messages provided
         # via standard input.  (Since it's pointless to call it twice,
         # it's safe to remove any subsequent occurrences in the list after
@@ -90,10 +93,7 @@ class Queue:
                 sys.stdin = open('/dev/tty', 'r')
 
         if not self.msgs and not wantedstdin:
-            cwd = os.getcwd()
-            os.chdir(self.pendingdir)
-            self.msgs = glob.glob('*.*.msg*')
-            os.chdir(cwd)
+            self.msgs = Q.fetch_ids()
     
         self.msgs.sort()
         if self.descending:
@@ -153,9 +153,10 @@ class Queue:
     def _saveCache(self):
         """Save the cache on disk."""
         if self.cache:
-            # Trim tail entries off if necessary, and then save the cache.
-            self.msgcache = self.msgcache[:Defaults.PENDING_CACHE_LEN]
-            Util.pickleit(self.msgcache, Defaults.PENDING_CACHE)
+	    # Trim tail entries off if necessary, and then save the
+	    # cache in ASCII format.
+	    self.msgcache = self.msgcache[:Defaults.PENDING_CACHE_LEN]
+            Util.pickleit(self.msgcache, Defaults.PENDING_CACHE, 0)
 
     ## Threshold (-Y and -O options)
     def checkTreshold(self, msgid):
@@ -170,38 +171,6 @@ class Queue:
                 # skip this message
                 return 0
         return 1
-
-    def cleanQueue(self, lifetime=None):
-        """Delete messages in the pending queue which exceed a certain
-        lifetime."""
-        # We can't use the Message class and delete method below
-        # because this would mean parsing the contents of every
-        # message regardless of whether we use PENDING_DELETE_APPEND
-        # or not.
-        self.older = 1
-        if lifetime is None:
-            self.threshold = Defaults.PENDING_LIFETIME
-        else:
-            self.threshold = lifetime
-        for msgid in self.msgs:
-            if not self.checkTreshold(msgid):
-                continue
-            # delete this message
-            msgfile = os.path.join(self.pendingdir, msgid)
-            if Defaults.PENDING_DELETE_APPEND:
-                try:
-                    msgobj = Util.msg_from_file(open(msgfile, 'r'))
-                except IOError:
-                    # in case of concurrent cleanups
-                    pass
-                else:
-                    rp = parseaddr(msgobj.get('return-path'))[1]
-                    Util.append_to_file(rp, Defaults.PENDING_DELETE_APPEND)
-            try:
-                os.unlink(msgfile)
-            except OSError:
-                # in case of concurrent cleanups
-                pass
 
     def disposeMessage(self, M):
         """Dispose the message."""
@@ -384,14 +353,10 @@ class Message:
     confirm_accept_address = None
     def __init__(self, msgid, recipient = None):
         self.msgid = msgid
-        self.msgfile = os.path.join(Defaults.PENDING_DIR, self.msgid)
-        if not os.path.exists(self.msgfile):
-            raise Errors.MessageError, '%s not found!' % self.msgid
-        try:
-            self.msgobj = email.message_from_file(open(self.msgfile, 'r'))
-        except email.Errors.MessageError:
-            self.msgobj = Util.msg_from_file(open(self.msgfile, 'r'))
-        self.recipient = recipient
+        if not Q.find_message(self.msgid):
+	    raise Errors.MessageError, '%s not found!' % self.msgid
+        self.msgobj = Q.fetch_message(self.msgid)
+	self.recipient = recipient
         if self.recipient is None:
             self.recipient = self.msgobj.get('x-tmda-recipient')
         self.return_path = parseaddr(self.msgobj.get('return-path'))[1]
@@ -405,7 +370,7 @@ class Message:
         if Defaults.PENDING_RELEASE_APPEND:
             Util.append_to_file(self.append_address,
                                 Defaults.PENDING_RELEASE_APPEND)
-        timestamp, pid, suffix = self.msgid.split('.')
+        timestamp, pid = self.msgid.split('.')
         # Remove Return-Path: to avoid duplicates.
         del self.msgobj['return-path']
         # Remove X-TMDA-Recipient:
@@ -429,7 +394,7 @@ class Message:
         if Defaults.PENDING_DELETE_APPEND:
             Util.append_to_file(self.append_address,
                                 Defaults.PENDING_DELETE_APPEND)
-        os.unlink(self.msgfile)
+	Q.delete_message(self.msgid)
 
     def whitelist(self):
         """Whitelist the message sender."""
@@ -452,17 +417,12 @@ class Message:
                   'PENDING_BLACKLIST_APPEND not defined!'
 
     def pager(self):
-        Util.pager(self.msgfile)
-        return ''
+        Util.pager(self.show())
+	return ''
 
     def show(self):
         """Return the string representation of a message."""
-        try:
-            return Util.msg_as_string(self.msgobj)
-        except TypeError:
-            # Re-parse using HeaderParser if Generator fails.
-            self.msgobj = Util.msg_from_file(open(self.msgfile, 'r'))
-            return Util.msg_as_string(self.msgobj)
+	return Util.msg_as_string(self.msgobj)
 
     def getDate(self):
         timestamp = self.msgid.split('.')[0]
@@ -500,7 +460,7 @@ class Message:
         if not self.confirm_accept_address:
             if self.recipient:
                 import Cookie
-                (timestamp, pid, suffix) = self.msgid.split('.')
+                (timestamp, pid) = self.msgid.split('.')
                 self.confirm_accept_address =   Cookie.make_confirm_address(
                                                 self.recipient, timestamp, pid,
                                                 'accept')

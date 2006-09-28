@@ -1,3 +1,16 @@
+2006-09-27  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Pending.py: Modified to use new Tmda.Queue interface.
+	
+	(Queue.cleanQueue): Removed.  Functionality moved into
+	Queue.Queue.
+
+	* Util.py (pager): Now accepts a string rather than a filepath.
+
+	(pickleit): Use 'protocol' argument as introduced in Python 2.3.
+	Also make the default protocol the new efficient
+	binary storage format compatible with Python2.3 and up.
+
 2006-09-19  Jason R. Mastaler  <jason@mastaler.com>
 
 	* AutoResponse.py: Remove arabic -> iso-8859-6 alias.  UTF-8 is

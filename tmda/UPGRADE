@@ -3,6 +3,15 @@ this file.
 
 ======================================================================
 
+If you are upgrading from a release of TMDA < 1.1.6:
+
+* Mail messages in the queue are now referred to by a unique numerical
+  identifier, as discussed in TMDA/Queue/Queue.py.  For example,
+  "1159383896.4198".  For most users, this change is inconsequential
+  but is noted here nonetheless.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 1.1.4:
 
 * contrib/sample.config has been removed in favour of the

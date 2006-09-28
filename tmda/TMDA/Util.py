@@ -432,21 +432,20 @@ def append_to_file(str, fullpathname):
     file.close()
 
 
-def pager(file):
-    """Display file using a UNIX text pager such as less or more."""
-    pager_list = []
+def pager(str):
+    """Display a string using a UNIX text pager such as less or more."""
     pager = os.environ.get('PAGER')
     if pager is None:
         # try to locate less or more if $PAGER is not set
         for prog in ('less', 'more'):
             path = os.popen('which ' + prog).read()
-            if path != '':
+            if path <> '':
                 pager = path
                 break
-    for arg in pager.split():
-        pager_list.append(arg)
-    pager_list.append(file)
-    os.spawnvp(os.P_WAIT, pager_list[0], pager_list)
+    try:
+	os.popen(pager, 'w').write(str)
+    except IOError:
+	return
 
 
 def normalize_sender(sender):
@@ -760,13 +759,28 @@ def build_dbm(filename):
         return 1
 
 
-def pickleit(object, file, bin=False):
+def pickleit(object, file, proto=2):
     """Store object in a pickle file.
-    Optional bin specifies whether to use binary or text pickle format."""
+
+    Optional 'proto' specifies which data storage format to use.
+    Possible integer values include:
+
+    0 (original ASCII protocol and is backwards compatible with
+    earlier versions of Python)
+
+    1 (old binary format which is also compatible with earlier
+    versions of Python)
+
+    2 (a more effecient binary format introduced in Python 2.3)
+
+    -1 (always choose the highest protocol version available)
+
+    default is 2, since we must support Python 2.3 and above.
+    """
     tempfile.tempdir = os.path.dirname(file)
-    tmpname = tempfile.mktemp()
+    tmpname = tempfile.mkstemp()[1]
     fp = open(tmpname, 'w')
-    cPickle.dump(object, fp, bin)
+    cPickle.dump(object, fp, proto)
     fp.close()
     os.rename(tmpname, file)
     return

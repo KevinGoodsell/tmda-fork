@@ -22,40 +22,10 @@
 """General purpose (Pending Queue related) functions."""
 
 
-import os
 
-from TMDA import Errors
-from TMDA import Defaults
-from TMDA.Util import msg_as_string, writefile
-
-
-def create_pending_dir(dirpath=None):
-    """ """
-    if not dirpath:
-	dirpath = Defaults.PENDING_DIR
-    if not os.path.exists(dirpath):
-	os.makedirs(dirpath, 0700)
-    
-
-def create_pending_msg(timestamp, pid, recip, msg):
-    """ """
-    fname = "%s.%s.msg" % (timestamp, pid)
-    # Create ~/.tmda/ and friends if necessary.
-    create_pending_dir(Defaults.PENDING_DIR)
-    # X-TMDA-Recipient is used by release_pending()
-    del msg['X-TMDA-Recipient']
-    msg['X-TMDA-Recipient'] = recip
-    # Write ~/.tmda/pending/TIMESTAMP.PID.msg
-    fcontents = msg_as_string(msg)
-    fpath = os.path.join(Defaults.PENDING_DIR, fname)
-    writefile(fcontents, fpath)
-    del msg['X-TMDA-Recipient']
-    return fname
-
-
-def maildirmake(dirpath):
-    """ """
-    os.makedirs(os.path.join(dirpath, 'cur'), 0700)
-    os.mkdir(os.path.join(dirpath, 'new'), 0700)
-    os.mkdir(os.path.join(dirpath, 'tmp'), 0700)
+# def maildirmake(dirpath):
+#     """ """
+#     os.makedirs(os.path.join(dirpath, 'cur'), 0700)
+#     os.mkdir(os.path.join(dirpath, 'new'), 0700)
+#     os.mkdir(os.path.join(dirpath, 'tmp'), 0700)
     

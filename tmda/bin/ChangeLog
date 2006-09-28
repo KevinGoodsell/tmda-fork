@@ -1,6 +1,6 @@
-2006-09-22  Jason R. Mastaler  <jason@mastaler.com>
+2006-09-27  Jason R. Mastaler  <jason@mastaler.com>
 
-	* tmda-rfilter (create_pending_msg): Move to TMDA.Queue.Util.
+	* tmda-rfilter: Modified to use new TMDA.Queue interface.
 	
 2004-03-25  Jason R. Mastaler  <jason@mastaler.com>
 

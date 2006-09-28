@@ -179,7 +179,7 @@ from TMDA import Errors
 from TMDA import FilterParser
 from TMDA import MTA
 from TMDA import Util
-from TMDA.Queue.Util import create_pending_msg
+from TMDA.Queue.OriginalQueue import OriginalQueue
 
 from cStringIO import StringIO
 from email.Utils import parseaddr, getaddresses
@@ -199,6 +199,13 @@ if filter_match:
 
 if act_as_filter:
     Defaults.DELIVERY = '_filter_'
+
+TIME = time.time()
+TIMESTAMP = str('%d' % TIME)
+MAILID = "%s.%s" % (TIMESTAMP, Defaults.PID)
+
+# A pending queue instance
+Q = OriginalQueue()
 
 # We use this MTA instance to control the fate of the message.
 mta = MTA.init(Defaults.MAIL_TRANSFER_AGENT, Defaults.DELIVERY)
@@ -294,7 +301,7 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
                 vdomain_match = 1
             # .domain:prepend (wildcard)
             elif not vdomain.split('.', 1)[0]:
-                if odomain.lower().find(vdomain) != -1:
+                if odomain.lower().find(vdomain) <> -1:
                     vdomain_match = 1
             # user@domain:prepend
             else:
@@ -321,8 +328,6 @@ os.environ['TMDA_RECIPIENT'] = recipient_address
 # Collect some header values for later use.
 subject = msgin.get('subject')
 x_primary_address = parseaddr(msgin.get('x-primary-address'))[1]
-
-pendingdir = Defaults.PENDING_DIR
 
 # Catchall variable to enable/disable auto-responses.
 auto_reply = 1
@@ -443,7 +448,7 @@ def send_bounce(bounce_message, type):
         ar.create()
         ar.send()
         # Optionally, record this auto-response.
-        if Defaults.MAX_AUTORESPONSES_PER_DAY != 0:
+        if Defaults.MAX_AUTORESPONSES_PER_DAY <> 0:
             ar.record()
 
 
@@ -455,7 +460,6 @@ def send_cc(address):
 
 def do_default_action(action, logname, template=None):
     """Handle ACTION_* actions"""
-    disposal_time = time.time()
     if action in ('bounce', 'reject'):
         logit('BOUNCE', logname)
         bouncegen('bounce', template=template)
@@ -507,8 +511,7 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         do_default_action(Defaults.ACTION_INVALID_CONFIRMATION.lower(),
                           'action_invalid_confirmation',
                           'bounce_invalid_confirmation.txt')
-    confirmed_filename = '%s.%s.msg' % (confirm_timestamp, confirm_pid)
-    confirmed_filepath = os.path.join(pendingdir, confirmed_filename)
+    confirmed_mailid = '%s.%s' % (confirm_timestamp, confirm_pid)
     # pre-confirmation
     if confirm_action == 'accept':
         new_confirm_hmac = Cookie.confirmationmac(confirm_timestamp,
@@ -519,13 +522,13 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
             do_default_action(Defaults.ACTION_INVALID_CONFIRMATION.lower(),
                               'action_invalid_confirmation',
                               'bounce_invalid_confirmation.txt')
-        elif not (os.path.exists(confirmed_filepath)):
+        elif not (Q.find_message(confirmed_mailid)):
             do_default_action(Defaults.ACTION_MISSING_PENDING.lower(),
                               'action_missing_pending',
                               'bounce_missing_pending.txt')
         else:
-            msg = Util.msg_from_file(open(confirmed_filepath, 'r'))
-            logit("CONFIRM", "accept " + confirmed_filename)
+            msg = Q.fetch_message(confirmed_mailid)
+	    logit("CONFIRM", "accept " + confirmed_mailid)
             # Optionally append the sender's address to a file and/or DB.
             if Defaults.CONFIRM_APPEND or Defaults.DB_CONFIRM_APPEND:
                 confirm_append_addr = Util.confirm_append_address(
@@ -533,10 +536,10 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                     parseaddr(msg.get('return-path'))[1])
                 if not confirm_append_addr:
                     raise IOError, \
-                          confirmed_filepath + ' has no Return-Path header!'
+                          confirmed_mailid + ' has no Return-Path header!'
                 if Defaults.CONFIRM_APPEND:
                     if Util.append_to_file(confirm_append_addr,
-                                           Defaults.CONFIRM_APPEND) != 0:
+                                           Defaults.CONFIRM_APPEND) <> 0:
                         logit('CONFIRM_APPEND', Defaults.CONFIRM_APPEND)
                 if Defaults.DB_CONFIRM_APPEND and Defaults.DB_CONNECTION:
                     _username = Defaults.USERNAME.lower()
@@ -573,7 +576,7 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
         else:
             logit("OK", "good_confirm_done_cookie")
             try:
-                os.unlink(confirmed_filepath)
+                Q.delete_message(confirmed_mailid)
             except OSError:
                 pass
             # Remove X-TMDA-Confirm-Done: since it's only used
@@ -595,7 +598,7 @@ def verify_dated_cookie(dated_cookie):
                           'bounce_fail_dated.txt')
     # Accept the message only if the address has not expired, and the
     # HMAC is valid.
-    if datemac != Cookie.datemac(cookie_date): 
+    if datemac <> Cookie.datemac(cookie_date): 
         do_default_action(Defaults.ACTION_FAIL_DATED.lower(),
                           'action_fail_dated',
                           'bounce_fail_dated.txt')
@@ -647,7 +650,6 @@ def bouncegen(mode, template=None):
     if discard:
         mta.stop()
     # Common variables.
-    now = time.time()
     recipient_address = globals().get('recipient_address')
     recipient_local, recipient_domain = recipient_address.split('@', 1)
     envelope_sender = globals().get('envelope_sender')
@@ -664,7 +666,7 @@ def bouncegen(mode, template=None):
     if Defaults.DATED_TEMPLATE_VARS:
         dated_timeout = Util.format_timeout(Defaults.DATED_TIMEOUT)
         dated_expire_date = time.asctime(time.gmtime
-                                         (now +
+                                         (TIME +
                                           Util.seconds(Defaults.DATED_TIMEOUT)))
         dated_recipient_address = Cookie.make_dated_address(recipient_address)
     # Optional 'sender' address variables.
@@ -682,11 +684,10 @@ def bouncegen(mode, template=None):
             templatefile = template
         else:
             templatefile = 'confirm_request.txt'
-        timestamp = str('%d' %now)
-        pid = Defaults.PID
+
         confirm_accept_address = Cookie.make_confirm_address(recipient_address,
-                                                             timestamp,
-                                                             pid,
+                                                             TIMESTAMP,
+                                                             Defaults.PID,
                                                              'accept')
         if Defaults.CGI_URL:
             # create the url for tmda-cgi release.
@@ -696,24 +697,23 @@ def bouncegen(mode, template=None):
                                                      os.geteuid(),
                                                      recipient_address,
                                                      Cookie.make_confirm_cookie(
-                    timestamp,
-                    pid,
+                    TIMESTAMP,
+                    Defaults.PID,
                     'accept'
                     ))
             else:
                 # include the current euid and release cookie.
                 confirm_accept_url = '%s?%s.%s' %(Defaults.CGI_URL, os.geteuid(),
-                                                  Cookie.make_confirm_cookie(timestamp,
-                                                                             pid,
+                                                  Cookie.make_confirm_cookie(TIMESTAMP,
+                                                                             Defaults.PID,
                                                                              'accept'))
-        pending_message = create_pending_msg(timestamp, pid, recipient_address, msgin)
+	Q.insert_message(msgin, MAILID, recipient_address)
     elif mode == 'hold':
-        pending_message = create_pending_msg(str('%d' % now), Defaults.PID, 
-					     recipient_address, msgin)
+        Q.insert_message(msgin, MAILID, recipient_address)
         # Don't send anything for silently held messages
         if Defaults.CONFIRM_CC:
             send_cc(Defaults.CONFIRM_CC)
-        logit("HOLD", "pending " + pending_message)
+        logit("HOLD", "pending " + MAILID)
         mta.stop()
     # Create the confirm message and then send it.
     bounce_message = Util.maketext(templatefile, vars())
@@ -725,7 +725,7 @@ def bouncegen(mode, template=None):
     elif mode == 'request':
         if Defaults.CONFIRM_CC:
             send_cc(Defaults.CONFIRM_CC)
-        logit("CONFIRM", "pending " + pending_message)
+        logit("CONFIRM", "pending " + MAILID)
         send_bounce(bounce_message, mode)
         mta.stop()     
 
@@ -735,15 +735,11 @@ def bouncegen(mode, template=None):
 ######
 
 def main():
-    # Possibly clean the pending queue?
-    if Defaults.PENDING_CLEANUP_ODDS <> 0 and \
-           os.path.exists(Defaults.PENDING_DIR):
-        from random import random
-        if random() < float(Defaults.PENDING_CLEANUP_ODDS):
-            from TMDA import Pending
-            q = Pending.Queue()
-            q.initQueue()
-            q.cleanQueue()
+    # cleanup the pending queue
+    if Defaults.PENDING_CLEANUP_ODDS <> 0:
+	from random import random
+	if random() < float(Defaults.PENDING_CLEANUP_ODDS):
+	    Q.cleanup()
     # Get the cookie type and value by parsing the extension address.
     ext = address_extension
     cookie_type = cookie_value = None
@@ -762,7 +758,7 @@ def main():
     sender_dict = { envelope_sender: None }
     confirm_append_address = Util.confirm_append_address(x_primary_address,
                                                          envelope_sender)
-    if confirm_append_address and confirm_append_address != envelope_sender:
+    if confirm_append_address and confirm_append_address <> envelope_sender:
         sender_dict[confirm_append_address] = None
     from_list = getaddresses(msgin.get_all('from', []))
     replyto_list = getaddresses(msgin.get_all('reply-to', []))
