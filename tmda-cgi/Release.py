@@ -82,9 +82,9 @@ make sure that it is typed in exactly as it was sent to you.""")
       "locate pending e-mail", "", """Please check the link you followed and
 make sure that it is typed in exactly as it was sent to you.""")
 
-  MsgID = "%s.%s.msg" % (Timestamp, PID)
+  MsgID = "%s.%s" % (Timestamp, PID)
   # Check to make sure they're not trying to access anything other than email
-  if not re.compile("^\d+\.\d+\.msg$").search(MsgID):
+  if not re.compile("^\d+\.\d+$").search(MsgID):
     CgiUtil.TermError("<tt>%s.%s.%s</tt> is not a valid message ID." % \
       (Timestamp, PID, HMAC), "Program error / corrupted link.",
       "retrieve pending e-mail", "", """Please check the link you followed and
