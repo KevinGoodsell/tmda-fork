@@ -40,6 +40,7 @@ QuotedString   = re.compile(r"^(['\"])(.*?)\1\s*", re.S)
 UnquotedString = re.compile(r"^(\S+)\s*")
 HomeDirSearch  = re.compile("^~/")
 HTMLTagSearch  = re.compile("</?([^\s>]*).*?>", re.S)
+PVars = None
 
 # CGI exception classes
 class NotInstalled(Errors.TMDAError):
