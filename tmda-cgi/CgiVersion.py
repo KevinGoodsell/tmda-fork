@@ -30,7 +30,7 @@ tmda_cgi = "0.13"
 Codename = "Aluminum"
 
 # TMDA version required
-TMDAReqVer = "0.81"
+TMDAReqVer = "1.1.5+"
 
 # Python version
 Python = Version.PYTHON
