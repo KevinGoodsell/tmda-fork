@@ -31,6 +31,7 @@ import time
 import Template
 
 from TMDA import Errors
+from TMDA import Util
 
 # Handy values
 DispDir        = os.environ["TMDA_CGI_DISP_DIR"]
@@ -51,7 +52,7 @@ class JustLoggedIn(Errors.TMDAError):
 
 def Size(MsgObj = None, MsgSize = 0):
   if MsgObj:
-    MsgSize = os.stat(MsgObj.msgfile)[6]
+    MsgSize = len(MsgObj.show())
   if MsgSize > 512:
     if MsgSize > 5120:
       if MsgSize > 524288:
@@ -82,12 +83,12 @@ def FileDetails(Desc, Filename):
 
 def TermError(Err, Cause, Failed, Other, Recommend):
   try:
-    T = Template.Template(ErrTemplate)
+    T = Template.Template(ErrTemplate, PVars = PVars)
   except IOError:
     T = Template.Template(SubTemplate = ["""Error:<br>%(ErrorName)s<p>
 Cause:<br>%(Cause)s<p>
 Additional:<br>%(Additional)s<p>
-Recommend:<br>%(Recommendation)s"""])
+Recommend:<br>%(Recommendation)s"""], PVars = PVars)
   T["ErrorName"]  = Err
   T["Cause"]      = Cause
   T["Additional"] = """Running in %s mode.<br>

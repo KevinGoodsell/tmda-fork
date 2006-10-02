@@ -79,7 +79,7 @@ def Show():
     PVars.Save()
 
   # Check to make sure they're not trying to access anything other than email
-  if not re.compile("^\d+\.\d+\.msg$").search(PVars["MsgID"]):
+  if not re.compile("^\d+\.\d+$").search(PVars["MsgID"]):
     CgiUtil.TermError("<tt>%s</tt> is not a valid message ID." % PVars["MsgID"],
       "Program error / corrupted link.", "retrieve pending e-mail", "",
       "Recheck link or contact TMDA programmers.")
@@ -210,7 +210,7 @@ def Show():
   T["DispRange"] = "%d of %d" % (MsgIdx + 1, len(Msgs))
 
   # Read in e-mail
-  MsgObj = Pending.Message(PVars["MsgID"])
+  MsgObj = Pending.Message(PVars["MsgID"], fullParse=True)
   Queue._addCache(PVars["MsgID"])
   Queue._saveCache()
 
@@ -222,15 +222,15 @@ def Show():
 
     # Generate all headers
     Headers = ""
-    for Line in CgiUtil.Escape(MsgObj.show()).split("\n"):
-      if Line == "": break
+    for (header, value) in MsgObj.msgobj.items():
+      Headers += header + ": " + value + "\n"
       # Decode internationalized headers
-      for decoded in email.Header.decode_header( Line ):
-        Headers += decoded[0] + " "
-        if decoded[1]:
-          cset = email.Charset.Charset(decoded[1]).input_charset.split()
-          T["CharSet"] = cset[0]
-      Headers += "\n"
+      #for decoded in email.Header.decode_header( Line ):
+      #  Headers += decoded[0] + " "
+      #  if decoded[1]:
+      #    cset = email.Charset.Charset(decoded[1]).input_charset.split()
+      #    T["CharSet"] = cset[0]
+      #Headers += "\n"
     T["Headers"] = '<pre class="Headers">%s</pre>' % Headers
   else:
     # Remove all header block
@@ -352,21 +352,7 @@ def ShowPart(Part):
   else:
     Type = Part.get_type("text/plain")
     # Display the easily display-able parts
-    if Type == "text/plain":
-      # Check if there's a character set for this part.
-      if Part.get_content_charset():
-        cset = email.Charset.Charset(Part.get_content_charset()).input_charset.split()
-        T["CharSet"] = cset[0]
-      # Escape & display
-      try:
-        Str = Part.get_payload(decode=1).strip()
-        T["Content"] = CgiUtil.Escape(Str).replace("\n", "&nbsp;<br>")
-        if len(PartTemplate.HTML) == 1:
-          Divider.Add()
-        PartTemplate.Add()
-      except AttributeError:
-        pass
-    elif Type == "text/html":
+    if Type == "text/html":
       # Sterilize & display
       # Check if there's a character set for this part.
       if Part.get_content_charset():
@@ -375,6 +361,20 @@ def ShowPart(Part):
       try:
         T["Content"] = \
           CgiUtil.Sterilize(Part.get_payload(decode=1), Allow, Remove)
+        if len(PartTemplate.HTML) == 1:
+          Divider.Add()
+        PartTemplate.Add()
+      except AttributeError:
+        pass
+    elif Type.startswith("text/"):
+      # Check if there's a character set for this part.
+      if Part.get_content_charset():
+        cset = email.Charset.Charset(Part.get_content_charset()).input_charset.split()
+        T["CharSet"] = cset[0]
+      # Escape & display
+      try:
+        Str = Part.get_payload(decode=1).strip()
+        T["Content"] = CgiUtil.Escape(Str).replace("\n", "&nbsp;<br>")
         if len(PartTemplate.HTML) == 1:
           Divider.Add()
         PartTemplate.Add()

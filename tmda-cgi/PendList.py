@@ -35,7 +35,7 @@ from TMDA import Errors
 from TMDA import Pending
 
 # Pre-calc the regular expressions
-GoodFN     = re.compile("^\d+\.\d+\.msg$")
+GoodFN     = re.compile("^\d+\.\d+$")
 Address    = re.compile("^(.+) +<(.+)>")
 ZeroSearch = re.compile("Z-0*(\d)")
 ZeroSub    = r"\1"
