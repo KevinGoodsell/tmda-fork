@@ -43,11 +43,12 @@ done
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/tmda
 mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp
-mkdir -p %{buildroot}%{pylibdir}/TMDA/pythonlib/email
+mkdir -p %{buildroot}%{pylibdir}/TMDA/{Queue,pythonlib/email}
 mkdir -p %{buildroot}%{_sysconfdir}/{rc.d/init.d,sysconfig}
 install bin/tmda-* %{buildroot}%{_bindir}
 install templates/*.txt %{buildroot}%{_datadir}/tmda
 install TMDA/*.{py,pyc} %{buildroot}%{pylibdir}/TMDA
+install TMDA/Queue*.{py,pyc} %{buildroot}%{pylibdir}/TMDA/Queue
 install TMDA/pythonlib/email/*.{py,pyc} %{buildroot}%{pylibdir}/TMDA/pythonlib/email
 install contrib/print{cdb,dbm} %{buildroot}%{_bindir}
 install contrib/collectaddys %{buildroot}%{_bindir}
@@ -62,8 +63,10 @@ rm -rf %{buildroot}
 %defattr(0644,root,root)
 %attr(0755,root,root) %{_bindir}/*
 %{pylibdir}/TMDA/*.py
+%{pylibdir}/TMDA/Queue/*.py
 %{pylibdir}/TMDA/pythonlib/email/*.py
 %verify(not size md5 mtime) %{pylibdir}/TMDA/*.pyc
+%verify(not size md5 mtime) %{pylibdir}/TMDA/Queue/*.pyc
 %verify(not size md5 mtime) %{pylibdir}/TMDA/pythonlib/email/*.pyc
 %{_datadir}/tmda/*
 
