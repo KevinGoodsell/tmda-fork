@@ -138,76 +138,78 @@ Each variable definition below contains one or more examples.
 </tr>
 <tr>
 <td><a href="#PENDING_LIFETIME">PENDING_LIFETIME</a></td>
+<td><a href="#PENDING_QUEUE_FORMAT">PENDING_QUEUE_FORMAT</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_RELEASE_APPEND">PENDING_RELEASE_APPEND</a></td>
-</tr>
-<tr>
 <td><a href="#PENDING_WHITELIST_APPEND">PENDING_WHITELIST_APPEND</a></td>
+</tr>
+<tr>
 <td><a href="#PENDING_WHITELIST_RELEASE">PENDING_WHITELIST_RELEASE</a></td>
-</tr>
-<tr>
 <td><a href="#PRIMARY_ADDRESS_MATCH">PRIMARY_ADDRESS_MATCH</a></td>
+</tr>
+<tr>
 <td><a href="#PURGED_HEADERS_CLIENT">PURGED_HEADERS_CLIENT</a></td>
-</tr>
-<tr>
 <td><a href="#PURGED_HEADERS_DELIVERY">PURGED_HEADERS_DELIVERY</a></td>
+</tr>
+<tr>
 <td><a href="#PURGED_HEADERS_SERVER">PURGED_HEADERS_SERVER</a></td>
-</tr>
-<tr>
 <td><a href="#RECIPIENT_DELIMITER">RECIPIENT_DELIMITER</a></td>
+</tr>
+<tr>
 <td><a href="#RECIPIENT_HEADER">RECIPIENT_HEADER</a></td>
-</tr>
-<tr>
 <td><a href="#RESPONSE_DIR">RESPONSE_DIR</a></td>
+</tr>
+<tr>
 <td><a href="#SENDER_TEMPLATE_VARS">SENDER_TEMPLATE_VARS</a></td>
-</tr>
-<tr>
 <td><a href="#SENDMAIL_PROGRAM">SENDMAIL_PROGRAM</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPAUTH_PASSWORD">SMTPAUTH_PASSWORD</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPAUTH_USERNAME">SMTPAUTH_USERNAME</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPHOST">SMTPHOST</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL">SMTPSSL</a></td>
+</tr>
+<tr>
 <td><a href="#SMTPSSL_CERTFILE">SMTPSSL_CERTFILE</a></td>
-</tr>
-<tr>
 <td><a href="#SMTPSSL_KEYFILE">SMTPSSL_KEYFILE</a></td>
+</tr>
+<tr>
 <td><a href="#SMTP_MAX_SESSIONS_PER_CONNECTION">SMTP_MAX_SESSIONS_PER_CONNECTION</a></td>
-</tr>
-<tr>
 <td><a href="#SUMMARY_HEADERS">SUMMARY_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_CONFIRM">TAGS_CONFIRM</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_DATED">TAGS_DATED</a></td>
+</tr>
+<tr>
 <td><a href="#TAGS_KEYWORD">TAGS_KEYWORD</a></td>
-</tr>
-<tr>
 <td><a href="#TAGS_SENDER">TAGS_SENDER</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_DIR">TEMPLATE_DIR</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_DIR_MATCH_RECIPIENT">TEMPLATE_DIR_MATCH_RECIPIENT</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_DIR_MATCH_SENDER">TEMPLATE_DIR_MATCH_SENDER</a></td>
-</tr>
-<tr>
 <td><a href="#TEMPLATE_EMAIL_HEADERS">TEMPLATE_EMAIL_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TEMPLATE_ENCODED_HEADERS">TEMPLATE_ENCODED_HEADERS</a></td>
-</tr>
-<tr>
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
+</tr>
+<tr>
 <td><a href="#TMDAINJECT">TMDAINJECT</a></td>
-</tr>
-<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-<td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
 <td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
-<td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
 </tr>
+<tr>
+<td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
 </table>
 
 <dl>
@@ -1080,7 +1082,7 @@ No default
 Path to the cache file used when tmda-pending is invoked with the
 --cache option.
 <br><br>
-Default is ~/.tmda/pending/.msgcache
+Default is ~/.tmda/.pendingcache
 <dt><hr>
 <a name="PENDING_CACHE_LEN"><h4>PENDING_CACHE_LEN</h4></a>
 <dd>
@@ -1154,6 +1156,21 @@ Examples:
 <code>PENDING_LIFETIME = "1M"  # messages can live for 1 month</code>
 <br><br>
 Default is 14d (14 day lifetime)
+<dt><hr>
+<a name="PENDING_QUEUE_FORMAT"><h4>PENDING_QUEUE_FORMAT</h4></a>
+<dd>
+A string specifying the format of TMDA's pending queue where
+unconfirmed messages are stored.
+Possible values include:
+<br><br>
+"<code>original</code>"
+<blockquote>
+     A custom TMDA format where messages are stored one per file in a
+     directory (PENDING_DIR).  Offers high performance, but can only
+     be browsed with TMDA tools like 'tmda-pending' and 'tmda-cgi'.
+</blockquote>
+<br>
+Default is "original".
 <dt><hr>
 <a name="PENDING_RELEASE_APPEND"><h4>PENDING_RELEASE_APPEND</h4></a>
 <dd>
