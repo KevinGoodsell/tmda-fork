@@ -156,7 +156,7 @@ class Template:
     # to allow Themes to use custom settings
     if PVars:
       for var in PVars.vars( "Theme" ):
-	self.Dict[ var ] = PVars[ "Theme", var ]
+        self.Dict[ var ] = PVars[ "Theme", var ]
     self.Items = {}
 
   def refreshPVars( self, PVars ):
