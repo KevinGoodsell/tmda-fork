@@ -517,7 +517,7 @@ def confirm_append_address(xp, rp):
     return rp
 
 
-def msg_from_file(fp, strict=False):
+def msg_from_file(fp, strict=False, fullParse=False):
     """Read a file and parse its contents into a Message object model.
     Replacement for email.message_from_file().
     
@@ -526,8 +526,12 @@ def msg_from_file(fp, strict=False):
     body as a string.  This is faster, and also helps us avoid
     problems trying to parse spam with broken MIME bodies."""
     from email.Message import Message
-    from email.Parser import HeaderParser
-    msg = HeaderParser(Message, strict=strict).parse(fp)
+    if fullParse:
+	from email.Parser import Parser
+	msg = Parser(Message, strict=strict).parse(fp)
+    else:
+	from email.Parser import HeaderParser
+	msg = HeaderParser(Message, strict=strict).parse(fp)
     msg.header_parsed = 1
     return msg
 

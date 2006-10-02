@@ -352,11 +352,11 @@ class Message:
     msg_size = 0
     bytes = 'bytes'
     confirm_accept_address = None
-    def __init__(self, msgid, recipient = None):
+    def __init__(self, msgid, recipient = None, fullParse = False):
         self.msgid = msgid
         if not Q.find_message(self.msgid):
 	    raise Errors.MessageError, '%s not found!' % self.msgid
-        self.msgobj = Q.fetch_message(self.msgid)
+        self.msgobj = Q.fetch_message(self.msgid, fullParse=fullParse)
 	self.recipient = recipient
         if self.recipient is None:
             self.recipient = self.msgobj.get('x-tmda-recipient')
