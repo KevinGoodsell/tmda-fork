@@ -26,7 +26,7 @@ import platform
 
 
 # TMDA version
-TMDA = "1.1.5+"
+TMDA = "1.1.6"
 
 # TMDA version codename
 CODENAME = "Glen Albyn"
