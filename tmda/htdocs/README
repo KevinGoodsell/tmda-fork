@@ -1,9 +1,0 @@
-index.html is literally just a "homepage".  
-
-All the documentation has been moved to http://wiki.tmda.net/
-
-Normally the Wiki tracks the most recent release of TMDA which you may
-not be running.  If you want to download a copy of the Wiki that was
-cut at the time your TMDA release was made, see the "docs" tarballs in
-the TMDA release directory.  e.g, tmda-1.1.6-doc.tgz for TMDA v1.1.6.
-
