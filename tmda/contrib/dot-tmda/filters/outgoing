@@ -1,0 +1,42 @@
+# -*- text -*-
+
+# ~/.tmda/filters/outgoing
+#
+# TMDA outgoing filter file; controls how how outgoing messages are
+# tagged.  The first match wins.  You must setup your mail client to
+# use tmda-sendmail or tmda-ofmipd according to
+# http://wiki.tmda.net/ClientConfiguration.  Deliveries are logged
+# to ~/.tmda/outgoing.log.
+#
+# References:
+# http://wiki.tmda.net/FilterSpecification
+# http://wiki.tmda.net/FilterSources
+
+########################
+# whitelisted recipients
+########################
+
+# Recipients on your whitelists get mail with a 'bare' From, and a
+# 'dated' Return-Path.
+
+to-file ~/.tmda/lists/whitelist tag
+	envelope dated=8d
+	from bare
+
+to-file ~/.tmda/lists/confirmed tag
+	envelope dated=8d
+	from bare
+
+#################
+# default tagging
+#################
+
+# Default tagging is a 'bare' From, a 'dated' Reply-To, and a 'dated'
+# Return-Path.  The sender's address is also auto-appended to
+# ~/.tmda/lists/whitelist.
+
+to * tag
+   envelope dated=8d
+   reply-to dated
+   from     bare=append
+

@@ -1,0 +1,185 @@
+#!/bin/sh
+
+##############################################################################
+#                                                                            #
+# vadduser-tmda -  A TMDA wrapper script for vpopmail's vadduser program     #
+#                                                                            #
+# Version: 0.5                                                               #
+#                                                                            #
+# This file is part of TMDA                                                  #
+#                                                                            #
+# Copyright (C) 2003 Cory Wright - http://www.standblue.net/                 #
+#                                                                            #
+# This program is free software; you can redistribute it and/or modify       #
+# it under the terms of the GNU General Public License as published by       #
+# the Free Software Foundation; either version 2 of the License, or          #
+# (at your option) any later version.                                        #
+#                                                                            #
+# This program is distributed in the hope that it will be useful,            #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of             #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              #
+# GNU General Public License for more details.                               #
+#                                                                            #
+# You should have received a copy of the GNU General Public License          #
+# along with this program; if not, write to the Free Software                #
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA  #
+#                                                                            #
+##############################################################################
+
+##############################################################################
+#                          Installation and Usage                            #
+#                                                                            #
+# Copy the vadduser-tmda script to the ~vpopmail/bin/ directory.  Copy the   #
+# vtmdarc file to the ~vpopmail/etc/ directory.  Default configuration       #
+# variables for new users .tmda/config files can be set in the optional      #
+# ~vpopmail/etc/vtmdarc file.  Any shell variables used in vadduser-tmda     #
+# can be used in vtmdarc.  See the provided vtmdarc for an example.          #
+#                                                                            #
+# Customize vadduser-tmda by editing the TMDAROOT and VPOPROOT shell         #
+# variables listed in the "Configuration Variables" section of this file.    #
+#                                                                            #
+# To add a new vpopmail user with TMDA pre-configured simply execute the     #
+# vadduser-tmda script with any options that you would normally pass to the  #
+# vadduser program:                                                          #
+#                                                                            #
+#   ~vpopmail/bin/vadduser-tmda -n user@example.com                          #
+#                                                                            #
+# This will set up a ~vpopmail/domains/example.com/user/.tmda/ directory     #
+# with all necessary files.  In addtion, the example.com/.qmail-user and     #
+# example.com/.qmail-user-default files will be created.                     #
+#                                                                            #
+# The vadduser-tmda script can also be used to add TMDA protection to an     #
+# existing vpopmail account.   Usage is identical in this situation.         #
+#                                                                            #
+##############################################################################
+
+##############################################################################
+#                                                                            #
+# Thanks to:  Ben Bullock for many suggestions along with supporting code.   #
+#                                                                            #
+##############################################################################
+
+##############################################################################
+#                         Configuration Variables                            #
+
+TMDAROOT="/usr/local/tmda/"
+VPOPROOT="/var/vpopmail/"
+PATH="$VPOPROOT/bin:$TMDAROOT/bin:$PATH"
+VTMDARC="$VPOPROOT/etc/vtmdarc"
+
+#                                                                            #
+##############################################################################
+
+# We need the full parameters passed so that we can send them straight through 
+# to the vadduser program.
+FULLPARAM="$*"
+
+# Find a valid email address among the command line arguments
+while [ $1 ]; do
+    if echo $1 | egrep '^[^@ ]+@[^@ ]+\.[^@ \.]+$' > /dev/null; then
+        EMAILADDR=$1
+        break
+    fi
+    shift
+done
+
+if [ ! $EMAILADDR ]; then
+    echo "$0: error: No email address passed on the command line.  Exiting."
+    exit 1
+fi
+
+# Set up a few variables that we need.  Many of these are useful in vtmdarc
+VUSERNAME=`echo $EMAILADDR | cut -d@ -f1`
+VDOMAIN=`echo $EMAILADDR | cut -d@ -f2`
+VDOMDIR=`vdominfo -d $VDOMAIN`
+VUID=`vdominfo -u $VDOMAIN`
+VGID=`vdominfo -g $VDOMAIN`
+
+# Check for existing .qmail files first
+if [ -f "$VDOMDIR/.qmail-${VUSERNAME}" -o -L "$VDOMDIR/.qmail-${VUSERNAME}-default" ]; then
+    echo "$0: error: One of the following two files (or both) already exists:"
+    echo " * $VDOMDIR/.qmail-${VUSERNAME}"
+    echo " * $VDOMDIR/.qmail-${VUSERNAME}-default"
+    echo "Remove these files and try again."
+    exit 1
+fi
+
+# Add the new user if the account does not already exist
+RES=`vuserinfo $EMAILADDR`
+retval=$?
+if [ $retval != "0" ]; then
+
+    # Does the domain directory exist?
+    RES=`vdominfo $VDOMAIN`
+    retval=$?
+    if [ $retval != "0" ]; then
+	echo "$0: error: Domain $VDOMAIN does not exist.  Exiting."
+	exit 1
+    fi
+
+    # Add the virtual user account
+    $VPOPROOT/bin/vadduser $FULLPARAM
+
+    # Stop if creation was not successful.
+    if [ "$?" != 0 ]; then
+	echo "$0: error: There was a problem adding the account.  Exiting."
+	exit 1
+    fi
+
+fi
+
+VUSERDIR=`vuserinfo -d $EMAILADDR`
+
+# Check python's cdb support
+CDB=""
+python -c 'import cdb' 2> /dev/null
+cdbcheckret=$?
+if [ $cdbcheckret = "0" ]; then
+    CDB="-autocdb"
+fi
+
+# Create all the necessary directories and files.
+mkdir -p $VUSERDIR/.tmda/filters $VUSERDIR/.tmda/lists \
+	 $VUSERDIR/.tmda/pending $VUSERDIR/.tmda/responses
+touch $VUSERDIR/.tmda/filters/incoming $VUSERDIR/.tmda/filters/outgoing \
+      $VUSERDIR/.tmda/lists/whitelist  $VUSERDIR/.tmda/lists/blacklist \
+      $VUSERDIR/.tmda/config
+echo "from-file $CDB $VUSERDIR/.tmda/lists/whitelist ok"   >> $VUSERDIR/.tmda/filters/incoming
+echo "from-file $CDB $VUSERDIR/.tmda/lists/blacklist drop" >> $VUSERDIR/.tmda/filters/incoming
+cp -R $TMDAROOT/templates $VUSERDIR/.tmda/
+$TMDAROOT/bin/tmda-keygen -b > $VUSERDIR/.tmda/crypt_key
+chmod 600 $VUSERDIR/.tmda/crypt_key
+
+# Create the .qmail files.
+cat <<VEOF > $VDOMDIR/.qmail-${VUSERNAME}
+|preline -f $TMDAROOT/bin/tmda-filter -c $VUSERDIR/.tmda/config -t $VUSERDIR/.tmda/templates/
+|$VPOPROOT/bin/vdelivermail '' $VUSERDIR
+VEOF
+ln -s $VDOMDIR/.qmail-${VUSERNAME} $VDOMDIR/.qmail-${VUSERNAME}-default
+
+# If we have a valid vtmdarc file then use it to create
+# the users .tmda/config file.
+if [ -f $VTMDARC ]; then
+    # The $VTMDARC file can access any variables that have
+    # been declared down to this point.  This means that
+    # something like the following could be in there:
+    # CONFIRM_APPEND = "$VUSERDIR/.tmda/lists/something"
+    IFS="
+"
+    # nasty
+    VTMDARCFILE=`cat $VTMDARC | sed 's/"/\\\"/g'`
+    for line in $VTMDARCFILE; do
+	eval echo $line >> $VUSERDIR/.tmda/config
+    done
+fi
+
+# If we are running as root be sure to reset the ownership
+# so that qmail and TMDA have write access where necessary.
+if [ `id -u` = 0 ]; then
+	chown -R $VUID.$VGID $VUSERDIR
+	chown $VUID.$VGID $VDOMDIR/.qmail-${VUSERNAME}
+	chown $VUID.$VGID $VDOMDIR/.qmail-${VUSERNAME}-default
+fi
+
+# Done!
+exit 0

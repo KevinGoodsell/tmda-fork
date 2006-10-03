@@ -1,0 +1,105 @@
+#!/usr/bin/env python
+#
+# Copyright (C) 2001,2002,2003,2004,2005,2006 Jason R. Mastaler <jason@mastaler.com>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+"""
+This is a wrapper around the real filter (tmda-rfilter) script.
+
+It catches all possible exceptions and exits EX_TEMPFAIL to
+defer the delivery if anything but SystemExit is thrown.
+
+The traceback is also written to the user's LOGFILE_DEBUG if
+possible, and if not ~/TMDA_DELIVERY_FAILURE, and if not again,
+to stdout.
+"""
+
+import sys
+tb1 = tb2 = tb3 = None
+status = 0
+fp = sys.stdout
+
+try:
+    import os
+    import sys
+    import traceback
+    
+    try:
+        import paths
+    except ImportError:
+        # Prepend /usr/lib/python2.x/site-packages/TMDA/pythonlib
+        sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
+                               'site-packages', 'TMDA', 'pythonlib')
+        sys.path.insert(0, sitedir)
+
+    program = sys.argv[0]
+    execdir = os.path.dirname(os.path.abspath(program))
+    execfile(os.path.join(execdir, 'tmda-rfilter'))
+    
+except KeyboardInterrupt:
+    pass
+
+except SystemExit:
+    raise
+
+except:
+    try:
+        status = 75
+        tb1 = sys.exc_info()
+        import time
+
+        from TMDA.Defaults import LOGFILE_DEBUG
+        if not LOGFILE_DEBUG:
+            raise NameError, 'LOGFILE_DEBUG is not defined'
+        print 'See', LOGFILE_DEBUG, 'for traceback'
+        fp = open(LOGFILE_DEBUG, 'a')
+
+    except SystemExit:
+        raise
+    
+    except:
+        try:
+            failure_file = os.path.expanduser('~/TMDA_DELIVERY_FAILURE')
+            print 'See', failure_file, 'for traceback'
+            tb2 = sys.exc_info()
+            fp = open(failure_file, 'a')
+
+        except SystemExit:
+            raise
+
+        except:
+            tb3 = sys.exc_info()
+
+if status:
+    try:
+        fline = ('%s (%s):' %
+                 ('Uncaught Python ' + sys.version.split()[0] + ' Exception',
+                  time.ctime(time.time())))
+        log_header = '\n%s\n%s\n' % (fline, '-' * len(fline))
+        fp.write(log_header)
+        for tb in (tb1, tb2, tb3):
+            if tb:
+                traceback.print_exception(tb[0], tb[1],
+                                          tb[2], file=fp)
+        fp.close()
+
+    except:
+        pass
+
+sys.exit(status)

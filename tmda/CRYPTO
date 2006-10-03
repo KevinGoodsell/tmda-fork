@@ -1,0 +1,155 @@
+Cryptography in TMDA
+--------------------
+
+For crypto-cookie generation and verification, TMDA uses HMAC, which
+is a mechanism for message authentication using cryptographic hash
+functions such as SHA-1 and MD5.
+
+For more information, see:
+
+http://en.wikipedia.org/wiki/HMAC 
+http://www.faqs.org/rfcs/rfc2104.html
+
+
+Dated Addresses:
+----------------
+
+The format for a 'dated' address is:
+
+    USERNAME-dated-DATE.DATEMAC@DOMAIN.DOM
+
+    (For example, jason-dated-988298746.9d619c@mastaler.com)
+
+    DATE is seconds since the epoch in UTC, expressed as an integer.
+  
+    DATEMAC is an HMAC of DATE.
+
+Incoming 'dated' messages are accepted if:
+
+    1.  DATE >= the current time (i.e, not yet expired) 
+
+        *AND* 
+
+    2.  DATEMAC is verified by matching it with a new HMAC generated
+        against DATE.
+
+    DATEMAC verification prevents any tampering with DATE.
+
+Sender Addresses:
+-----------------
+
+The format for a 'sender' address is:
+    
+    USERNAME-sender-SENDERMAC@DOMAIN.DOM
+
+    (For example, jason-sender-8c54ac@mastaler.com)
+
+    SENDERMAC is an HMAC of the sender's e-mail address.
+
+Incoming 'sender' messages are accepted if:
+
+    1.  SENDERMAC is verified by matching it with a new HMAC generated
+        against the sender's e-mail address.
+    2.  If the new HMAC does not match, a new HMAC is generated against
+	the sender's fully qualified domain.  If there is still no
+	match, one level of qualification is stripped (eg, 'DOMAIN.DOM'
+	-> 'DOM') and a new HMAC is generated and compared.  The process
+	repeats until a match is found or no more domain parts remain.
+
+Keyword Addresses:
+------------------
+
+The format for a 'keyword' address is:
+    
+    USERNAME-keyword-KEYWORD.KEYWORDMAC@DOMAIN.DOM
+
+    (For example, jason-keyword-promos.8w06e8@mastaler.com)
+
+    KEYWORD can be any string.
+
+    KEYWORDMAC is an HMAC of KEYWORD.
+
+Incoming 'keyword' messages are accepted if:
+
+    1.  KEYWORDMAC is verified by matching it with a new HMAC
+	generated against the KEYWORD.
+
+Confirmation Requests:
+----------------------
+
+The format for a confirmation request address is:
+
+    USERNAME-confirm-TIMESTAMP.PID.CONFIRMMAC@DOMAIN.DOM
+
+    (For example, jason-confirm-995399954.1345.c08f32@mastaler.com)
+
+    TIMESTAMP the arrival time of the message in seconds since the
+    epoch.
+
+    PID is the process-id of the current Python process.
+
+    CONFIRMMAC is an HMAC as a function of TIMESTAMP, PID, and the
+    string 'accept'.
+
+Confirmation request acknowledgments are accepted if:
+
+    1.  CONFIRMMAC is verified by matching it with a new HMAC
+	generated against TIMESTAMP, PID, and 'accept'.
+
+Once accepted, an 'X-TMDA-Confirm-Done:' header containing TIMESTAMP,
+PID, and CONFIRMMAC (based on string 'done' rather than 'accept') is
+added to the message, and then it is reinjected to the original
+recipient.  Upon reception, TMDA verifies the HMAC by recalculation
+before delivering the message.
+
+
+HMAC Advantages:
+----------------
+
+Using HMACs offers several advantages over the former use of block
+cipher encryption without any loss of security:
+
+* The amkCrypto package is no longer necessary as TMDA includes an
+  HMAC implementation that uses Python's `sha' module for hashing.
+  Thus, only the core Python distribution is needed to run TMDA.
+  amkCrypto/OpenSSL compilation/installation difficulties proved to be
+  the biggest stumbling block for new users of earlier TMDA releases.
+
+* The default "cookies" are shorter.  (6 hex characters as compared to
+  16 for 'dated', and 6 hex characters as compared to 40 for 'sender')
+
+* It is the right construction to be using from a cryptographic
+  perspective.  (MACs were designed for exactly these type of
+  message authentication tasks)
+
+
+TMDA Security:
+--------------
+
+With HMACs, the length of the key determines how hard it is to "break"
+the system; that is, find the key and be able to forge arbitrary
+messages (create arbitrary email addresses, in this context).  With
+this in mind, TMDA uses long (160-bit) random private keys.
+
+One way to try to sneak messages past TMDA would be to simply pick a
+random string as the HMAC and hope that it verified correctly.  The
+length of the HMAC determines the likelihood that a random message is
+a forgery.  If you use n bits in your HMAC, the chance of this is 1 in
+2**n.  By default, TMDA uses 24-bit HMACs (3 bytes, 6 hex characters).
+Here are some statistics for HMACs of various sizes:
+
+HMAC_BYTES  CHARS  BITS  CHANCE OF FORGERY       EXAMPLE
+----------  -----  ----	 -----------------	 -------
+1	    2      8	 1 in 256		 e9
+2	    4      16    1 in 65,536		 f9c4
+3	    6      24    1 in 16,777,216	 3fd2f2
+4	    8      32    1 in 4,294,967,296	 596b0ba3
+5	    10     40    1 in 1,099,511,627,776	 490e78c8d9
+[...]
+
+You can alter the length of your HMACs (through HMAC_BYTES) if you are
+not comfortable with the default.  However, the default should provide
+sufficient protection when you consider that to test a forged HMAC,
+the attacker must actually send you an e-mail message and wait for the
+result.  Longer HMACs also mean longer e-mail addresses to work with.
+

@@ -1,0 +1,20 @@
+From.US-ASCII: "%(FULLNAME)s" <%(recipient_address)s>
+Subject.US-ASCII: Please confirm your message
+Reply-To.US-ASCII: %(confirm_accept_address)s
+BodyCharset: US-ASCII
+
+This message was created automatically by mail delivery software (TMDA).
+
+Your message attached below is being held because the address
+<%(confirm_append_address)s> has not been verified.
+
+To release your message for delivery, please send an empty message
+to the following address, or use your mailer's "Reply" feature.
+
+   %(confirm_accept_address)s
+
+This confirmation verifies that your message is legitimate and not
+junk-mail. You should only have to confirm your address once.
+
+If you do not respond to this confirmation request within %(pending_lifetime)s,
+your message will not be delivered.

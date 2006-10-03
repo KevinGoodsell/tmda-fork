@@ -1,0 +1,453 @@
+#!/usr/bin/env perl
+
+# --------------------------------------------------
+#  update-internaldomains - atomically update global
+#                           whitelist of internal
+#                           domains
+#                               
+#  Author                 - Jesse D. Guardiani
+#  Created                - 03/12/03
+#  Modified               - 03/18/03
+# --------------------------------------------------
+# See 'update-internaldomains -h' for Usage
+# instructions.
+#         
+#  ChangeLog
+#  ---------
+#
+#  03/18/03 - JDG
+#  --------------
+#  - Added Usage text above.
+#  - Made a few clarifications to the Usage() text
+#  - Added the -a option
+#  - Added Copyright and GNU statement
+#
+#  03/12/03 - JDG
+#  --------------
+#  - Created
+# --------------------------------------------------
+# Copyright (C) 2003 Jesse D. Guardiani <jesse@wingnet.net>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+# --------------------------------------------------
+
+
+use strict;
+
+# -----------------------------------
+# GLOBALS
+# -----------------------------------
+
+my $VERSION="0.001";         # Version number of this script
+my $debug=0;                 # We default to non-debug mode
+my $path_to_whitelist="";    # Path (relative or full) to whitelist
+my $do_combine=0;            # boolean flag that specifies whether or not the output of $command should
+                             # be combined with the contents of the file specified by -a
+my $add_to_whitelist="addto-whitelist";
+                             # Name of the file whos contents will be combined with $command's output
+			     # if the file "$base_whitelist_dir/$add_to_whitelist" exists.
+my $command="";              # Command to execute that will return a list of internal domains, one per line.
+my $base_whitelist_dir="";   # Path to the whitelist's base directory, without a trailing slash.
+my $tmp_file="";             # relative or full path to temporary file
+my $owner="vpopmail";        # file owner. This is a candidate for a command line option someday.        
+my $last_error="";           # Last Error code returned by back-tick called shell command
+
+
+
+
+# -----------------------------------
+# usage() function
+# -----------------------------------
+
+sub usage()
+{
+	print STDERR << "EOF";
+
+------------------------------------------------------------------------
+usage:  update-internaldomains [-dh] [-a combine-file]
+                               -f whitelist -s command
+------------------------------------------------------------------------
+  Version: $VERSION
+
+  Summary:
+           update-internaldomains is intended to be run from cron every
+           fifteen minutes or so. -f and -s are required options. This
+	   script was originally written to retrieve a list of domains
+	   from vpopmail's 'vdominfo -n' command. However, it can be
+           used with ANY command that returns a list of domains in the
+	   correct format (See -s syntax below).
+
+           Possible -s commands might include: Billing apps, database
+           retrieval scripts, radius query scripts, etc...
+
+  How it works:	   
+           update-internaldomains executes the command specified by -s
+           and saves it's output to a temporary file in the same
+           directory as the file specified by -f.
+
+           update-internaldomains then compares the whitelist specified
+           by -f with the temp file it just created using 'diff -q'. If
+           changes are found, update-internaldomains atomically replaces
+           the whitelist specified by -f with the temporary file using 
+           'mv'.
+
+           NOTE: The 'mv' operation is only atomic if your system has
+                 a POSIX rename() function, and the 'mv' command makes
+                 use of it to overwrite single files.
+
+  Command Line Options:
+
+  -a combine-file
+           If specified, combine-file is the full path to a flat file
+           containing domain names, one per line, which you wish to
+           COMBINE with the output of '-s command' BEFORE comparing
+           and/or updating the whitelist specified by -f.
+
+  -d       debug mode.
+
+  -f whitelist
+           This is the path to the whitelist you wish to write your 
+           internal domain list to.
+
+  -s command
+           command you wish to run that will return a raw list of
+           domains, one per line, in the following format:
+
+	   domain1.com
+	   domain2.com
+	   domain3.org
+	   etc...
+
+  -h       print this usage report.
+
+  Example: 
+
+  update-internaldomains -f "/usr/local/vpopmail/.tmda/internaldomains" -s "/usr/local/vpopmail/bin/vdominfo -n"
+
+  Return Codes:
+           If update-internaldomains can not write to the directory in 
+           which the file specified by -f resides, it exits nonzero.
+
+           If update-internaldomains can not execute the command
+           specified by -s, it immediately exits nonzero.
+
+           If the 'mv' fails, update-internaldomains immediately exits
+           nonzero.
+
+           If anything else that update-internaldomains tries to execute
+           fails, update-internaldomains will immediately exit nonzero.
+------------------------------------------------------------------------\n
+
+EOF
+}
+
+
+
+
+
+
+# -----------------------------------
+# General Functions
+# -----------------------------------
+
+# save the last exit status
+sub saveexitstatus()
+{
+	# Get exit status from last command.
+	$last_error = $? >> 8;
+}
+
+# Get the last exit status
+sub getexitstatus()
+{
+	# return exit status from last command.
+	return $last_error;
+}
+
+# Print error message if bad exit status
+sub dieifbadexit( $$ )
+{
+	my $badstatus=$_[0];  # the "bad" exit status
+	my $message=$_[1];    # the message to print before exiting if the last exit status was "bad"
+
+	# Check exit status.
+	if ( getexitstatus() == $badstatus and getexitstatus() ne "") {
+		print STDERR ($message);
+		exit 1;
+	}
+}
+
+# Print error message if bad exit status
+sub dieifnotgoodexit( $$ )
+{
+	my $goodstatus=$_[0]; # the "good" exit status
+	my $message=$_[1];    # the message to print before exiting if the last exit status was not the "good" exit status
+
+	# Check exit status.
+	if ( getexitstatus() != $goodstatus and getexitstatus() ne "") {
+		print STDERR ($message);
+		exit 1;
+	}
+}
+
+# If debugging is turned on, print the message
+sub ifdebugprint( $ )
+{
+	my $message=$_[0]; # the message to print
+	# print debug info
+	if ($debug) {
+		print STDERR ($message);
+	}
+}
+
+
+
+
+# -----------------------------------
+# Handle command line arguments
+# -----------------------------------
+
+# Import Getopt::Std module
+use Getopt::Std;
+
+# we only take one option: -f
+# -f has a single argument.
+my $opt_string = 'hda:f:s:';
+
+# get command line flags. If we recieve none, then we attempt to use defaults.
+getopts( "$opt_string", \my %opt );
+
+# print usage message if -h specified
+usage() and exit if $opt{h};
+
+# setup debug mode
+$debug = 1 if $opt{d};
+print STDERR "Debugging mode ON.\n" if $debug;
+
+# set appropriate variables associated with -a
+if ($opt{a}) {
+	# if flat file does not exist, create it
+	if ( ! -e $opt{a} ) {
+		`touch "$opt{a}"`;
+
+		# Get any bad exit status from 'rm'.
+		saveexitstatus();
+
+		# Check exit status.
+		dieifnotgoodexit(0, "\nError: 'touch \"$opt{a}\"' failed!\n");
+
+		# This code is only executed if the flat file was successfully created.
+		ifdebugprint("whitelist created: $opt{a}\n");
+	}
+	
+	die "$opt{a} is not readable." unless (-r $opt{a});
+
+	$add_to_whitelist="$opt{a}";
+	$do_combine=1;
+}
+
+# print debug info
+ifdebugprint("\$add_to_whitelist=$add_to_whitelist\n");
+ifdebugprint("\$do_combine=$do_combine\n");
+
+
+# do checks on whitelist file and set $path_to_whitelist variable
+if ($opt{f}) {
+	if ($opt{f} == 1) {
+		die "\n -f requires an argument.";
+	}
+
+	# if whitelist does not exist, create it
+	if ( ! -e $opt{f} ) {
+		`touch "$opt{f}"`;
+
+		# Get any bad exit status from 'rm'.
+		saveexitstatus();
+
+		# Check exit status.
+		dieifnotgoodexit(0, "\nError: 'touch \"$opt{f}\"' failed!\n");
+
+		# This code is only executed if the whitelist file was successfully created.
+		ifdebugprint("whitelist created: $opt{f}\n");
+	}
+	
+	die "$opt{f} is not readable and writable." unless (-r $opt{f} and -w $opt{f});
+
+	$path_to_whitelist="$opt{f}";
+
+	# print debug info
+	ifdebugprint("\$path_to_whitelist=$path_to_whitelist\n");
+} else {
+	usage();
+	exit 1;
+}
+
+# do checks on command file and set $command variable
+if ($opt{s}) {
+	if ($opt{s} == 1) {
+		die "\n -s requires an argument.";
+	}
+	
+#	die "$opt{s} is not executable." unless (-x $opt{s});
+
+	$command="$opt{s}";
+
+	# print debug info
+	ifdebugprint("\$command=$command\n");
+} else {
+	usage();
+	exit 1;
+}
+
+
+# -----------------------------------
+# Parse $path_to_whitelist for
+# directory path.
+# -----------------------------------
+
+# get directory that whitelist lives in, then set $tmp_file variable
+my $last_slash_loc = rindex ("$path_to_whitelist","/");
+
+# if $path_to_whitelist contains JUST a filename and no path
+if ($last_slash_loc == -1) {
+	$base_whitelist_dir = ".";
+} else {
+	$base_whitelist_dir = substr ("$path_to_whitelist", 0, $last_slash_loc);
+}
+
+# build temp file path.
+$tmp_file = $base_whitelist_dir . "/tmp";
+
+
+# print debug info
+ifdebugprint("\$tmp_file=$tmp_file\n");
+
+
+
+
+# -----------------------------------
+# Get command output
+# -----------------------------------
+
+# remove temp file if it exists
+if ( -e "$tmp_file" ) {
+	# print debug info
+	ifdebugprint("'$tmp_file' exists.\n");
+
+	`rm "$tmp_file"`;
+
+	saveexitstatus();
+	dieifnotgoodexit(0, "\"rm '$tmp_file'\" failed!");
+
+	# print debug info
+	ifdebugprint("\"rm '$tmp_file'\" successful!\n");
+}
+
+# Get any bad exit status from 'rm'.
+saveexitstatus();
+
+# Check exit status.
+dieifnotgoodexit(0, "\nError: 'rm' failed to remove temp file!\n");
+
+if ( -r "$add_to_whitelist" and $do_combine) {
+	# define the string we wish to execute
+	my $execstring="$command | cat - \"$add_to_whitelist\" | sort | uniq > \"$tmp_file\"";
+	
+	# execute our command pipe.
+	`$execstring`;
+
+	# Get any bad exit status from execution.
+	saveexitstatus();
+
+	# Check exit status and print error and exit if bad exit status found.
+	dieifnotgoodexit(0, "\nError: `$execstring` failed!\n");
+} else {
+	# define the string we wish to execute
+	my $execstring="$command | sort | uniq > \"$tmp_file\"";
+
+	# execute our command pipe.
+	`$execstring`;
+
+	# Get any bad exit status from execution.
+	saveexitstatus();
+
+	# Check exit status.
+	dieifnotgoodexit(0, "\nError: `$execstring` failed!\n");
+}
+
+
+
+
+# -----------------------------------
+# Use 'diff -q' to compare the
+# contents of our temp file with the
+# contents of $path_to_whitelist
+# -----------------------------------
+
+`diff -q "$tmp_file" "$path_to_whitelist"`;
+
+# Get any bad exit status from execution.
+saveexitstatus();
+
+#If 'diff -q' returns with an 'exit 2', then there has been an error.
+dieifbadexit(2, "\nError: \"diff -q '$tmp_file' '$path_to_whitelist'\" failed!\n");
+
+
+
+# -----------------------------------
+# If the contents differ, then
+# atomically update $path_to_whitelist
+# Otherwise, simply 'exit 0;'
+# -----------------------------------
+
+#If 'diff -q' returns with an 'exit 1', the files do NOT match.
+if ( getexitstatus() == 1 and getexitstatus() ne "") {
+	# atomically overwrite $path_to_whitelist with $tmp_file
+	`mv '$tmp_file' '$path_to_whitelist'`;
+
+	# Get any bad exit status from execution.
+	saveexitstatus();
+
+	#If 'mv' returns nonzero, there was an error
+	dieifnotgoodexit(0, "\nError: \"mv '$tmp_file' '$path_to_whitelist'\" failed!\n");
+	
+	# This point is only reached if 'mv' succeeded
+	ifdebugprint("\"mv '$tmp_file' '$path_to_whitelist'\" successful!\n");
+} else {
+	# print debug info
+	ifdebugprint("\"diff -q '$tmp_file' '$path_to_whitelist'\" indicates no update is necessary!\n");
+}
+
+
+
+# -----------------------------------
+# Make sure the files we just touched
+# are owned by $owner
+# -----------------------------------
+
+ifdebugprint("executing 'chown $owner \"$base_whitelist_dir\"/*'");
+
+`chown $owner "$base_whitelist_dir"/*`;
+
+saveexitstatus();
+dieifnotgoodexit(0,"'chown $owner \"$base_whitelist_dir\"/*' failed!");
+
+ifdebugprint("exiting happy.\n");
+
+# If execution reaches this point, then chances are that all is well.
+exit 0;

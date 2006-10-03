@@ -1,0 +1,13 @@
+From.US-ASCII: "%(FULLNAME)s" <%(recipient_address)s>
+Subject.US-ASCII: Mail delivery failed: returning message to sender
+BodyCharset: US-ASCII
+
+This message was created automatically by mail delivery software (TMDA).
+
+Your message attached below could not be delivered to one or more of
+its recipients. This is a permanent error. The following address(es)
+failed:
+
+<%(recipient_address)s>:
+
+You have sent email to an invalid keyword address.

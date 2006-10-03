@@ -1,0 +1,5 @@
+#
+# If you are installing this file by hand, please consult the distribution
+# file contrib/tofmipd.init for further instructions.
+#
+OPTIONS="-p 0.0.0.0:8025 -R pop3://localhost"

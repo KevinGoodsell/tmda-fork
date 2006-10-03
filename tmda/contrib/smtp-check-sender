@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+#
+# Copyright (C) 2003,2004 Jason R. Mastaler <jason@mastaler.com>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+"""
+Description
+===========
+smtp-check-sender verifies the validity of an e-mail address by
+probing the SMTP port of its primary mail exchanger without actually
+sending mail to it (SMTP interruptus).
+
+This feature, often called 'sender address verification' is available
+for Postfix and Exim (and possibly others) at the MTA level.  That is
+preferred if possible because it covers all users on the system and
+saves TMDA work.  This script is made available for users who want
+this functionality, but can't or don't want to implement it at the MTA
+level.
+
+Requirements
+============
+Python, and also the PyDNS module, available at
+http://pydns.sourceforge.net/
+
+Usage
+=====
+smtp-check-sender is meant to be run from your TMDA FILTER_INCOMING
+file with a 'pipe' entry similar to the following:
+
+# drop mail from verified bogus addresses which can't be replied to
+pipe '~/bin/smtp-check-sender $SENDER' drop
+
+$SENDER is expanded to the envelope sender address of the incoming
+message.
+
+If you want to experiment on the command line, you'd do so with
+something like this:
+
+$ echo | smtp-check-sender user@domain.tld
+
+Uncomment the 'server.set_debuglevel(1)' line in the program for more
+verbose output.
+
+Limitations
+===========
+This technique will not work with MTAs (e.g, qmail) where you
+cannot verify the validity of an address via SMTP.  Luckily, most
+MTAs do not have this limitation.
+"""
+
+import DNS # http://pydns.sourceforge.net/
+import smtplib
+import socket
+import sys
+
+# we read stdin, but don't actually use it
+data = sys.stdin.read()
+
+# bail out here if no address is specified
+if len(sys.argv) < 2:
+    sys.exit(1)
+
+# Make sure you either take the default of '' (meaning probe with an
+# empty envelope sender <>), or use a valid address for this variable,
+# otherwise you risk losing mail.
+mail_from_address = ''
+
+address_to_verify = sys.argv[1]
+verify_hostname = address_to_verify.split('@', 1)[1]
+
+DNS.DiscoverNameServers()
+
+mxlist = DNS.mxlookup(verify_hostname)
+if mxlist:
+    primx = mxlist[0][1]
+else:
+    primx = verify_hostname
+
+# SMTP conversation
+server = smtplib.SMTP(primx)
+#server.set_debuglevel(1)
+server.docmd('helo', socket.getfqdn())
+server.docmd('mail from:', '<%s>' % mail_from_address)
+code, msg = server.docmd('rcpt to:', '<%s>' % address_to_verify)
+server.quit()
+
+# RFC 2821 is quite clear in stating that all codes starting
+# with 5 are always `permanent negative completion replies.
+if str(code).startswith('5'):
+    print 'BAD sender'
+    sys.exit(0)
+else:
+    print 'GOOD sender'
+    sys.exit(1)

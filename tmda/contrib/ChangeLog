@@ -1,0 +1,438 @@
+2004-04-03  Bob Rogers  <rogers@rgrjr.dyndns.org>
+
+        * tmda.el (tmda-pending-buffer-kill):  FSF emacs `=' expects 2 args.
+        (tmda-pending-command): Remove comma that prevented compilation.
+        (tmda-pending-tag-command): FSF emacs delete-char needs an arg.
+        (tmda-pending-changelist): FSF emacs has no copy-tree defaultly.
+        (tmda-check-version): Fix logic error in versions >= 1.*.
+        (tmda-add-to-list, tmda-generate-address, tmda-pending-apply-changes):
+        supply missing format string (fixes a bug in processing of
+        output that contains '%').
+
+        * tmda.el (tmda-pending-backward-clear):  New command, bound to
+        DEL.
+
+2003-10-01  Jason R. Mastaler  <jason@mastaler.com>
+
+	* smtp-check-sender (data): Change the default probe address to
+	the empty envelope sender <>.
+	
+2003-07-31  Tim Legant  <tim@catseye.net>
+
+	* vmailmgr-vdir.sh: Apparently the listvdomain program doesn't
+	always return a non-zero error code when the recipient is
+	unknown.  Added extra check for non-null output.
+
+2003-06-17  Tim Legant  <tim@catseye.net>
+
+	* vmailmgr-vdir.sh, vpopmail-vdir.sh: Modified to return error
+	code if home directory lookup fails.
+
+2003-04-19  Gre7g Luterman <gre7g@wolfhome.com>
+
+	* Removed getuserinfo-vpopmail.sh
+
+	It turns out that we can't do stubs with shell scripts due to
+	permission problems.  This is being replaced with a Python stub in the
+	tmda-cgi/stubs directory.
+
+2003-04-09  Gre7g Luterman <gre7g@wolfhome.com>
+
+	* getuserinfo-vpopmail.sh: New file from Jesse Guardiani.
+
+	This stub file converts the output of /home/vpopmail/bin/vuserinfo
+	into a format used by tmda-cgi.
+
+2003-04-08  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* smtp-check-sender: New file.
+
+2003-03-24  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* collectaddys: Use a dictionary instead of a list to guarantee
+	uniqueness.
+	
+2003-03-18  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* update-internaldomains: New script from Jesse Guardiani.
+	Removed vipmap-to-authmap.
+
+2003-02-20  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* tofmipd.init, tofmipd.sysconfig, cgi/tmda-cgi.conf: New support
+	files for making tmda-ofmipd run as a system daemon in the
+	SysV/RedHat style.
+
+2003-02-03  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* sendit.sh: New script from Jesse Guardiani that allows sqwebmail
+	to send mail using tmda-sendmail.
+
+	* vipmap-to-authmap: New script from Jesse Guardiani for
+	converting vpopmail 'vipmap' output into tmda-ofmipd's 'ipauthmap'
+	file.
+
+2003-02-03  Tim Legant  <tim@catseye.net>
+
+	* vpopmail-vdir.sh (VUSERINFO): Changed the path from a hard-coded
+	/home/vpopmail to ~vpopmail.  This should work on most systems,
+	regardless of where vpopmail is installed.
+
+2003-01-20  Tim Legant  <tim@catseye.net>
+
+	* vmailmgr-vdir.sh: Script to print virtual email user's homedir.
+	Works with the VMailMgr virtual domain add-on to qmail.
+
+	* vpopmail-vdir.sh: Script to print virtual email user's homedir.
+	Works with the VPopMail virtual domain add-on to qmail.
+
+2002-11-13  Josh  <huber@alum.wpi.edu>
+
+	* tmda.el: Made the changelist processing faster.
+
+2002-11-13  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* sample.tmdarc: Renamed sample.config.
+
+2002-11-11  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* collectaddys (addys): Remove Python 2.0 compatibility, and also
+	Reply-To from list of default headers to scan.
+
+2002-10-01  Jason R. Mastaler  <jasonrm@hrothgar.la.mastaler.com>
+
+	* def2html: New file.
+
+2002-07-31  Josh  <huber@alum.wpi.edu>
+
+	* tmda.el (tmda-addr-at-point): Fixed regexp
+	* tmda.el (tmda-pending-summary-args): Changed default to terse.
+	* tmda.el (tmda-pending-truncate-lines): New.
+	* tmda.el (tmda-pending-show): Use truncate option during buffer
+	display.
+
+2002-07-26  Josh  <huber@alum.wpi.edu>
+
+	* tmda.el: Misc Fixes, also add tmda-pending-count
+	* tmda.el (tmda-addr-at-point):
+	* tmda.el (tmda-pending-apply-changes): Update pending count
+	* tmda.el (tmda-pending-count): New.
+	* tmda.el (tmda-pending-update-count): New.
+
+2002-07-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* qmail-smtpd_auth.patch: Removed.
+
+	* README.RELAY: Removed.
+
+2002-05-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Remove CRYPT_KEY.
+
+2002-05-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Replace LOCAL_DELIVERY_AGENT with DELIVERY.
+	
+2002-04-30  Jason R. Mastaler  <jason@mastaler.com>
+
+	* sample.tmdarc: Include example settings for optional variables
+	in Defaults.py instead of here.
+
+2002-04-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec (Requires): Require /usr/bin/python2, not a package
+	named "python2".
+
+2002-04-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* setup.py: Remove, unmaintained.
+
+2002-03-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* collectaddys: Do Maildir checking with os.path.isdir().
+	
+2002-03-27  Jason R. Mastaler  <jason@aguirre.la.mastaler.com>
+
+	* Add collectaddys.
+
+2002-03-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add DELIVERED_CACHE & DELIVERED_CACHE_LEN.
+
+2002-03-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add TEMPLATE_DIR, remove CONFIRM_ACCEPT_TEMPLATE
+	and CONFIRM_REQUEST_TEMPLATE.
+
+2002-02-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add CONFIRM_ADDRESS.
+
+2002-02-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec (Source0): Update download link.
+
+2002-02-22  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* Remove list2cdb and list2bm.
+
+2002-02-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add PENDING_CACHE & PENDING_CACHE_LEN.
+
+2002-01-31  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec (Requires): Depend/Require python2.
+
+2002-01-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add RECIPIENT_HEADER.
+
+2002-01-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.44.
+
+2002-01-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* setup.py: New setup configuration file for Python distutils,
+	contributed by Skip Montanaro.
+
+2002-01-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Rename LOGFILE to LOGFILE_INCOMING.
+	Add LOGFILE_DEBUG.
+
+2002-01-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* list2cdb (cdb): Lowercase keys before they are added to the DB.
+
+	* list2dbm (dbm): Ditto.
+	
+2001-12-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add 'sendmail' as a MAIL_TRANSFER_AGENT option.
+	
+2001-12-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add FINGERPRINT.
+
+2001-12-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add PURGED_HEADERS.
+
+2001-12-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Remove TIMEZONE.
+
+2001-12-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add CONFIRM_ACCEPT_CC.
+
+	* tmda.spec: Raise version number to 0.43.
+
+2001-11-20  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec (Url): Removed TODO.
+	Raise version number to 0.42.
+
+2001-11-14  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add ACTION_INCOMING and ACTION_OUTGOING, and
+	remove COOKIE_TYPE.
+
+	Add BARE_APPEND.
+
+2001-11-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Remove: BOUNCE_BLACKLIST_CC, BOUNCE_CONFIRM_CC,
+	BOUNCE_REVOKED_CC BLACKLIST, WHITELIST, SACRED_FILE, REVOKED_FILE,
+	BARE_FILE, DATED_FILE, EXP_FILE, EXT_FILE, KEYWORD_FILE,
+	SENDER_FILE, WHITELIST_TO_BARE, WHITELIST_AUTO_APPEND
+
+	Add: FILTER_DROP_CC, CONFIRM_CC, FILTER_BOUNCE_CC,
+	FILTER_INCOMING, FILTER_OUTGOING, CONFIRM_APPEND
+
+2001-11-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add FILTER_OUTGOING.
+
+2001-11-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.41.
+
+2001-11-01  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add TIMEZONE.
+
+2001-10-31  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.40.
+
+	* sample.tmdarc: Change Postfix references to non-qmail since they
+	are the same for Exim.
+
+2001-10-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add MESSAGE_FROM_STYLE and KEYWORD_FILE.
+
+2001-10-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.39.
+
+2001-10-16  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: FAQ is now in HTML within htdocs.
+
+	(%doc): Replace "doc" with "htdocs".
+
+2001-10-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: REMOVE INJECT & INJECT_FLAGS, and add SENDMAIL.
+	
+2001-10-07  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add RECIPIENT_DELIMITER.
+
+2001-10-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add LOCAL_DELIVERY_AGENT & MAIL_TRANSFER_AGENT.
+		
+2001-09-21  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Updated %description to better reflect the current
+	workings of the software.
+
+2001-09-19  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.38.
+
+2001-09-18  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add HMAC_BYTES.
+
+2001-09-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.37.
+
+2001-09-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add REVOKED_FILE and BOUNCE_REVOKED_CC.
+
+2001-09-12  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.36.
+
+2001-09-10  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Change default value for WHITELIST_TO_BARE to on.
+	
+2001-09-05  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add WHITELIST_AUTO_APPEND.
+	Add SACRED_FILE.
+	.txt suffix depreciated for "lists" files.
+
+2001-09-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add CONFIRM_MAX_MESSAGE_SIZE.
+
+2001-08-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.35.
+
+2001-08-28  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.34.
+
+2001-08-27  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: USEVIRTUALDOMAINS replaces QMAILVIRTUALDOMAINS.
+
+2001-08-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Add QMAILVIRTUALDOMAINS and VIRTUALDOMAINS.
+	
+	* tmda.spec: Raise version number to 0.33.
+
+2001-08-13  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.32.
+
+2001-07-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: LOCALS no longer necessary.
+
+	* tmda.spec: Raise version number to 0.31.
+
+2001-07-11  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.30.
+
+2001-07-03  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.23.
+
+2001-07-02  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* README.RELAY: Update from Ron Bickers.
+
+2001-06-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.22.
+
+2001-06-08  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: Raise version number to 0.21.
+	
+2001-06-06  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* tmda.spec: New RPM spec file from Ron Bickers.
+
+2001-06-04  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* bounce_dated.txt: 'From' and 'Subject' headers are now in the
+	templates.  The From address is the new 'dated' or 'sender'
+	address, so the recipient can simply reply to the original
+	message.
+
+	* bounce_sender.txt: Ditto.	
+
+2001-05-29  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* README.RELAY: Update from Ron Bickers.
+
+2001-05-28  Jason R. Mastaler  <jason@mastaler.com>
+
+	* README.RELAY: Change `rbickers' to `username' in step 3 and
+	clarify that all .tmda-* files should be chmod 640 so qmail can
+	read them.
+
+2001-05-24  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc (ALLOW_MODE_640): New variable to support mode 640
+	tmdarc files which are necessary when running TMDA through a qmail
+	relay.
+
+2001-05-23  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc (FULLNAME): Unintentionally left out.
+
+2001-05-17  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc (LOCALS): Introduced new variable to support
+	virtualdomain detection.
+
+2001-04-30  Jason R. Mastaler  <jasonrm@nightshade.acl.lanl.gov>
+
+	* sample.tmdarc: Commented out all sections so people won't trip
+	over the sample values.  Suggested by John White.
+
+2001-04-26  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc (BLOCK_CIPHER): Obsolete.
+	(HASH_FUNCTION): Ditto.
+
+2001-04-25  Jason R. Mastaler  <jasonrm@nightshade.la.mastaler.com>
+
+	* sample.tmdarc: Added BOUNCE_BLACKLIST_CC, BOUNCE_DATED_CC,
+	BOUNCE_SENDER_CC.

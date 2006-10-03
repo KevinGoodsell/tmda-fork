@@ -1,0 +1,36 @@
+# -*- python -*-
+
+# ~/.tmda/config
+#
+# TMDA configuration file.  See
+# http://wiki.tmda.net/ConfigurationVariables for descriptions of all
+# the available options.
+
+########################################################
+# Required settings.  One from each section is required.
+########################################################
+
+MAIL_TRANSFER_AGENT = "qmail"
+#MAIL_TRANSFER_AGENT = "postfix"
+#MAIL_TRANSFER_AGENT = "exim"
+#MAIL_TRANSFER_AGENT = "sendmail"
+
+RECIPIENT_DELIMITER = "-"
+#RECIPIENT_DELIMITER = "+"
+
+DELIVERY = "~/Mailbox"
+#DELIVERY = "/var/mail/%s" % os.environ.get("USER")
+#DELIVERY = "~/Maildir/"
+#DELIVERY = "|/usr/bin/procmail ~/.procmailrc-tmda"
+#DELIVERY = "me@new.job.com"
+
+####################################################
+# Optional settings.
+# Here are some recommended configuration variables.
+####################################################
+
+BARE_APPEND = "~/.tmda/lists/whitelist"
+CONFIRM_APPEND = "~/.tmda/lists/confirmed"
+LOGFILE_INCOMING = "~/.tmda/incoming.log"
+LOGFILE_OUTGOING = "~/.tmda/outgoing.log"
+
