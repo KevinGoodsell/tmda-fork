@@ -120,9 +120,9 @@ class Queue:
 	if qformat.lower() == 'original':
 	    from OriginalQueue import OriginalQueue
 	    return OriginalQueue()
-	#if qformat.lower() == 'maildir':
-	#    from MaildirQueue import MaildirQueue
-	#    return MaildirQueue()
+	if qformat.lower() == 'maildir':
+	    from MaildirQueue import MaildirQueue
+	    return MaildirQueue()
 	else:
 	    raise Errors.ConfigError, \
 		"Unknown PENDING_QUEUE_FORMAT: " + '"%s"' % qformat

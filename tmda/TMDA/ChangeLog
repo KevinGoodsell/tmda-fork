@@ -1,3 +1,7 @@
+2006-10-04  Jason R. Mastaler  <jason@mastaler.com>
+
+	* Defaults.py (PENDING_QUEUE_FORMAT): Add 'maildir'.
+	
 2006-09-28  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Defaults.py (PENDING_QUEUE_FORMAT): New variable.
