@@ -151,9 +151,9 @@ class MaildirQueue(Queue):
 
 
     def fetch_message(self, mailid, fullParse=False):
-	msgs = (glob.glob(os.path.join(Defaults.PENDING_DIR, 'cur/') 
+	msgs = (glob.glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
 			  + '[0-9]*.[0-9]*.*')) + \
-			  (glob.glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
+			  (glob.glob(os.path.join(Defaults.PENDING_DIR, 'cur/') 
 				     + '[0-9]*.[0-9]*.*'))
 	for m in msgs:
 	    if mailid in m:
@@ -165,9 +165,9 @@ class MaildirQueue(Queue):
 
 
     def delete_message(self, mailid):
-	msgs = (glob.glob(os.path.join(Defaults.PENDING_DIR, 'cur/') 
+	msgs = (glob.glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
 			  + '[0-9]*.[0-9]*.*')) + \
-			  (glob.glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
+			  (glob.glob(os.path.join(Defaults.PENDING_DIR, 'cur/') 
 				     + '[0-9]*.[0-9]*.*'))
 	for m in msgs:
 	    if mailid in m:
@@ -177,8 +177,8 @@ class MaildirQueue(Queue):
     def find_message(self, mailid):
 	cwd = os.getcwd()
 	os.chdir(Defaults.PENDING_DIR)
-	msgs = glob.glob('cur/[0-9]*.[0-9]*.*') + \
-	    glob.glob('new/[0-9]*.[0-9]*.*')
+	msgs = glob.glob('new/[0-9]*.[0-9]*.*') + \
+	    glob.glob('cur/[0-9]*.[0-9]*.*')
 
 	for i in range(5):
 	    for m in msgs:
@@ -189,8 +189,8 @@ class MaildirQueue(Queue):
 		# retry several times in case a MUA moved/renamed the
 		# message to cur/
 		time.sleep(1)
-		msgs = glob.glob('cur/[0-9]*.[0-9]*.*') + \
-		    glob.glob('new/[0-9]*.[0-9]*.*')
+		msgs = glob.glob('new/[0-9]*.[0-9]*.*') + \
+		    glob.glob('cur/[0-9]*.[0-9]*.*')
 		continue
 	os.chdir(cwd)
 	# give up; message is not there
