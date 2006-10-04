@@ -48,7 +48,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/{rc.d/init.d,sysconfig}
 install bin/tmda-* %{buildroot}%{_bindir}
 install templates/*.txt %{buildroot}%{_datadir}/tmda
 install TMDA/*.{py,pyc} %{buildroot}%{pylibdir}/TMDA
-install TMDA/Queue*.{py,pyc} %{buildroot}%{pylibdir}/TMDA/Queue
+install TMDA/Queue/*.{py,pyc} %{buildroot}%{pylibdir}/TMDA/Queue
 install TMDA/pythonlib/email/*.{py,pyc} %{buildroot}%{pylibdir}/TMDA/pythonlib/email
 install contrib/print{cdb,dbm} %{buildroot}%{_bindir}
 install contrib/collectaddys %{buildroot}%{_bindir}
