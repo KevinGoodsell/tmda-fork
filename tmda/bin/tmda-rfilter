@@ -40,6 +40,10 @@ OPTIONS:
 	--discard
 	   Discard message if address is invalid instead of bouncing it.
 
+        -e
+        --environ <VAR=value>
+           Add the following var/value pair to the environment.
+
         -p
         --print
            Print the message to stdout.  This option is useful when TMDA is run
@@ -135,15 +139,16 @@ def setvuserhomedir(vhomescript):
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],
-                            'c:dpt:I:M:S:Vh', ['config-file=',
-                                               'discard',
-                                               'print',
-                                               'template-dir=',
-                                               'filter-incoming-file=',
-                                               'filter-match=',
-                                               'vhome-script=',
-                                               'version',
-                                               'help'])
+                            'c:de:pt:I:M:S:Vh', ['config-file=',
+						 'discard',
+						 'environ=',
+						 'print',
+						 'template-dir=',
+						 'filter-incoming-file=',
+						 'filter-match=',
+						 'vhome-script=',
+						 'version',
+						 'help'])
 except getopt.error, msg:
     usage(1, msg)
 
@@ -168,6 +173,12 @@ for opt, arg in opts:
         act_as_filter = 1
     elif opt in ('-c', '--config-file'):
         os.environ['TMDARC'] = arg
+    elif opt in ('-e', '--environ'):
+        try:
+            key, value = arg.split('=',1)
+	    os.environ[key] = value
+        except KeyError:
+            usage(1, 'bad environment key-value pair %s' % arg)
     elif opt in ('-S', '--vhome-script'):
         if os.environ.has_key('EXT') and os.environ.has_key('HOST'):
             setvuserhomedir(arg)

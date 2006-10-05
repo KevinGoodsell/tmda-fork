@@ -1,3 +1,8 @@
+2006-10-05  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-rfilter: Add -e/--environ option for setting of environment
+	variables from the command line.	
+
 2006-09-27  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-rfilter: Modified to use new TMDA.Queue interface.

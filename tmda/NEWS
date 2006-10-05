@@ -16,6 +16,11 @@ TMDA 1.1.7 "Hazelburn" --
   For more infomation on how to enable and use this feature, please
   see http://wiki.tmda.net/TmdaPendingAsMaildir
 
+* tmda-filter has a new command-line option, '-e/--environ' which you
+  can use to add a VAR=value pair to the environment.  One example use
+  of this is to allow TMDA to be setup as a Postfix transport.
+  Contributed by Bernard Johnson.
+
 ======================================================================
 
 TMDA 1.1.6 "Glen Albyn" --
