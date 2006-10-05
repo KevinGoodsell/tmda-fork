@@ -231,6 +231,12 @@ rights.""")
     # Clean up
     self.CleanUp()
 
+  def mylistdir(self):
+    """A specialized version of os.listdir() that ignores files that
+    start with a leading period."""
+    filelist = os.listdir(self.ThemesDir)
+    return [x for x in filelist if not (x.startswith('.'))]
+ 
   def GetTheme(self):
     "Set up current theme."
 
@@ -239,7 +245,7 @@ rights.""")
     if not self.has_key(("General", "Theme")) or not os.access \
       (os.path.join(self.ThemesDir, self[("General", "Theme")]), os.R_OK):
       # Pick the first theme in the themes directory
-      Themes = os.listdir(self.ThemesDir)
+      Themes = self.mylistdir()
       Themes.sort()
       self[("General", "Theme")] = Themes[0]
 
