@@ -90,9 +90,9 @@ class MaildirQueue(Queue):
 	lifetimesecs = Util.seconds(Defaults.PENDING_LIFETIME)
 	cwd = os.getcwd()
 	os.chdir(os.path.join(Defaults.PENDING_DIR, 'new'))
-	new_msgs = glob.glob('[0-9]*.[0-9]*.*')
+	new_msgs = glob.glob('1*.[0-9]*.*')
 	os.chdir(os.path.join(Defaults.PENDING_DIR, 'cur'))
-	cur_msgs = glob.glob('[0-9]*.[0-9]*.*')
+	cur_msgs = glob.glob('1*.[0-9]*.*')
 	os.chdir(cwd)
 	msgs = new_msgs + cur_msgs
 
@@ -128,9 +128,9 @@ class MaildirQueue(Queue):
     def fetch_ids(self):
 	cwd = os.getcwd()
 	os.chdir(os.path.join(Defaults.PENDING_DIR, 'new'))
-	new_msgs = glob.glob('[0-9]*.[0-9]*.*')
+	new_msgs = glob.glob('1*.[0-9]*.*')
 	os.chdir(os.path.join(Defaults.PENDING_DIR, 'cur'))
-	cur_msgs = glob.glob('[0-9]*.[0-9]*.*')
+	cur_msgs = glob.glob('1*.[0-9]*.*')
     	ids = ['.'.join(i.split('.')[:2]) 
 	       for i in new_msgs + cur_msgs]
 	os.chdir(cwd)
@@ -152,9 +152,9 @@ class MaildirQueue(Queue):
 
     def fetch_message(self, mailid, fullParse=False):
 	msgs = (glob.glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
-			  + '[0-9]*.[0-9]*.*')) + \
+			  + '1*.[0-9]*.*')) + \
 			  (glob.glob(os.path.join(Defaults.PENDING_DIR, 'cur/') 
-				     + '[0-9]*.[0-9]*.*'))
+				     + '1*.[0-9]*.*'))
 	for m in msgs:
 	    if mailid in m:
 		msg = Util.msg_from_file(file(m, 'r'),fullParse=fullParse)
@@ -166,9 +166,9 @@ class MaildirQueue(Queue):
 
     def delete_message(self, mailid):
 	msgs = (glob.glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
-			  + '[0-9]*.[0-9]*.*')) + \
+			  + '1*.[0-9]*.*')) + \
 			  (glob.glob(os.path.join(Defaults.PENDING_DIR, 'cur/') 
-				     + '[0-9]*.[0-9]*.*'))
+				     + '1*.[0-9]*.*'))
 	for m in msgs:
 	    if mailid in m:
 		os.unlink(m)
@@ -177,8 +177,8 @@ class MaildirQueue(Queue):
     def find_message(self, mailid):
 	cwd = os.getcwd()
 	os.chdir(Defaults.PENDING_DIR)
-	msgs = glob.glob('new/[0-9]*.[0-9]*.*') + \
-	    glob.glob('cur/[0-9]*.[0-9]*.*')
+	msgs = glob.glob('new/1*.[0-9]*.*') + \
+	    glob.glob('cur/1*.[0-9]*.*')
 
 	for i in range(5):
 	    for m in msgs:
@@ -189,8 +189,8 @@ class MaildirQueue(Queue):
 		# retry 5 times in case a MUA moved/renamed the
 		# message to cur/ in a non-atomic way.
 		time.sleep(0.1)
-		msgs = glob.glob('new/[0-9]*.[0-9]*.*') + \
-		    glob.glob('cur/[0-9]*.[0-9]*.*')
+		msgs = glob.glob('new/1*.[0-9]*.*') + \
+		    glob.glob('cur/1*.[0-9]*.*')
 		continue
 	# give up; message is not there
 	os.chdir(cwd)
