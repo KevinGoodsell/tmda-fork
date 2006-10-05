@@ -1063,8 +1063,7 @@ if not vars().has_key('PENDING_DIR'):
 # "maildir"
 #      Maildir is a specific one-file-per-message organization that
 #      was introduced with the qmail system by D.J. Bernstein.  For
-#      more information, see http://en.wikipedia.org/wiki/Maildir
-#      NOTE: Maildir support is currently considered experimental.
+#      more information, see http://wiki.tmda.net/TmdaPendingAsMaildir
 #
 # Default is "original".
 if not vars().has_key('PENDING_QUEUE_FORMAT'):
