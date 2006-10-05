@@ -186,14 +186,14 @@ class MaildirQueue(Queue):
 		    os.chdir(cwd)
 		    return True
 	    else:
-		# retry several times in case a MUA moved/renamed the
-		# message to cur/
-		time.sleep(1)
+		# retry 5 times in case a MUA moved/renamed the
+		# message to cur/ in a non-atomic way.
+		time.sleep(0.1)
 		msgs = glob.glob('new/[0-9]*.[0-9]*.*') + \
 		    glob.glob('cur/[0-9]*.[0-9]*.*')
 		continue
-	os.chdir(cwd)
 	# give up; message is not there
+	os.chdir(cwd)
 	return False
 
 
