@@ -8,11 +8,11 @@ file in this directory as well.
 TMDA 1.1.7 "Hazelburn" --
 
 * TMDA can now optionally store unconfirmed messages in a "Maildir"
-  rather than in TMDA's custom pending queue format.  This allows
-  you to use any mail reading program that supports Maildir to browse
-  your pending queue, rather than the 'tmda-pending' and 'tmda-cgi'
-  programs, though the latter will still work.  For more information
-  on Maildir, see http://en.wikipedia.org/wiki/Maildir
+  rather than in TMDA's custom pending queue format.  This allows you
+  to use any mail reading program that supports Maildir to browse or
+  search your pending queue, rather than the 'tmda-pending' and
+  'tmda-cgi' programs, though the latter will still work.  For more
+  information on Maildir, see http://en.wikipedia.org/wiki/Maildir
 
   Maildir support should be considered "experimental" in this release
   only because it's not had significant exposure in live environments,
@@ -23,16 +23,24 @@ TMDA 1.1.7 "Hazelburn" --
 
   See http://wiki.tmda.net/ConfigurationVariables#PENDING_QUEUE_FORMAT
 
-  Future releases will provide a tool to handle conversion for you,
-  but for now, you must also convert your current pending queue to a
-  Maildir by hand, which is not difficult since the formats are fairly
-  similar:
+  Future releases will likely provide a tool to handle conversion for
+  you, but for now, you must also convert your current pending queue
+  to a Maildir by hand, which is not difficult since the formats are
+  fairly similar:
 
   % chmod +t $HOME
-  % cd ~/.tmda/
+  % cd ~/.tmda
   % mv pending pending.old
   % mkdir -m 0700 -p pending/{new,cur,tmp}
   % cp pending.old/*.msg pending/new
+  % chmod -t $HOME
+
+  On the other hand, if your current pending queue contains only spam
+  and you don't need to convert it, you can just blow it away and TMDA
+  will automatically create the Maildir next time a message arrives:
+
+  % chmod +t $HOME
+  % rm -rf ~/.tmda/pending
   % chmod -t $HOME
 
 ======================================================================
