@@ -2,13 +2,14 @@
 
 # ~/.tmda/filters/incoming 
 #
-# TMDA incoming filter file; controls how incoming messages are
-# disposed of.  The first match wins.  Deliveries are logged to
+# Example TMDA incoming filter file; controls how incoming messages
+# are disposed of.  The first match wins.  Deliveries are logged to
 # ~/.tmda/incoming.log
 #
 # References:
 # http://wiki.tmda.net/FilterSpecification
 # http://wiki.tmda.net/FilterSources
+# http://wiki.tmda.net/TmdaFaq
 
 #####################
 # whitelisted senders
@@ -34,11 +35,25 @@ from-file ~/.tmda/lists/blacklist drop
 # content filtering
 ###################
 
+# Accept (don't challenge) replies to messages I've sent.  See TMDA
+# FAQ 5.5 for an explanation of this technique.  Uncomment one or more
+# of these 'headers' pairs depending on which mailer you use.
+#
+# Mozilla Thunderbird
+#headers '^In-Reply-To:(.|\n)*<4.*@.*>' ok
+#headers '^References:(.|\n)*<4.*@.*>' ok
+# Microsoft Entourage
+#headers '^In-Reply-To:(.|\n)*<.*\%you@yourhost\.com>' ok
+#headers '^References:(.|\n)*<.*\%you@yourhost\.com>' ok
+# tmda-sendmail / tmda-ofmipd
+#headers '^In-Reply-To:(.|\n)*<.*\.TMDA@.*>' ok
+#headers '^References:(.|\n)*<.*\.TMDA@.*>' ok
+
 # Accept mail containing the Habeas SWE headers (http://www.habeas.com/)
 headers "^X-Habeas-SWE-3.*like Habeas SWE \(tm\)" ok
 
 # SPF has marked the message as forged.  Do not confirm it.
-headers 'Received-SPF: fail' hold 
+headers "Received-SPF: fail" hold 
 
 # Hold all messages marked by SpamAssassin that score above level 8.
 # See http://wiki.tmda.net/SpamAssassin for more examples.
@@ -46,13 +61,13 @@ headers "X-Spam-Level: \*\*\*\*\*\*\*\*" hold
 
 # Hold messages with Microsoft executable attachments, which may be
 # virus/worm-infected.
-body "filename\=.+\.(pif|scr|exe|bat|com|cmd|vbs|js|rar|zip)" hold
+body "filename\=.+\.(pif|scr|exe|bat|com|cmd|vbs|js|rar)" hold
 
 #####################
 # default disposition
 #####################
 
-# Mail that didn't match one of the rules above will be disposed of
-# according to your ACTION_INCOMING setting ('confirm' by default).
-# See http://wiki.tmda.net/ConfigurationVariables#ACTION_INCOMING
+# Mail that didn't match one of the rules above will be challenged.
+
+from * confirm
 
