@@ -838,14 +838,11 @@ class SMTPChannel(asynchat.async_chat):
 
             if not throttlescript or not os.system("%s %s" % (throttlescript,
                 self.__auth_username)):
-                try:
-                    status = self.__server.process_message(self.__peer,
-                                                           self.__mailfrom,
-                                                           self.__rcpttos,
-                                                           self.__data,
-                                                           self.__auth_username)
-                except:
-                    status = self.push('451 Internal exception in tmda-ofmipd')
+                status = self.__server.process_message(self.__peer,
+                                                       self.__mailfrom,
+                                                       self.__rcpttos,
+                                                       self.__data,
+                                                       self.__auth_username)
             else:
                 status = self.push('450 Outgoing mail quota exceeded')
 
