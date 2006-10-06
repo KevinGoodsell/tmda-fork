@@ -2,7 +2,7 @@ Sample ~/.tmda/ structure to help you get started.  There is no
 one-size-fits-all set of dot files, but these examples show common
 usage and some of the techniques discussed in the FAQ.
 
-You can use them as is without only a few modifications.  Copy them
+You can use them as is with only a few modifications.  Copy them
 with `cp -pR dot-tmda ~/.tmda' if you don't already have a ~/.tmda
 directory.
 
@@ -39,5 +39,5 @@ lists/    'whitelist' is a file that you can edit that should
 
 ====================================================================
 
-Please send any comments and suggestions to the tmda-workers mailing
-list.
+Please send any comments and suggestions to the tmda-users mailing list.
+
