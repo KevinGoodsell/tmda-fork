@@ -26,7 +26,7 @@ import platform
 
 
 # TMDA version
-TMDA = "1.1.6+"
+TMDA = "1.1.7"
 
 # TMDA version codename
 CODENAME = "Hazelburn"
