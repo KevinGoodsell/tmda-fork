@@ -232,7 +232,7 @@ if not vars().has_key('SMTPHOST') and MAIL_TRANSPORT == 'smtp':
 # SMTPAUTH_USERNAME
 # The username to authenticate with if your SMTP server requires
 # authentication.  You must also define SMTPAUTH_PASSWORD if you use
-# this option.  Requires Python 2.2 or greater.
+# this option.
 #
 # Examples:
 #
@@ -245,7 +245,7 @@ if not vars().has_key('SMTPAUTH_USERNAME') and MAIL_TRANSPORT == 'smtp':
 # SMTPAUTH_PASSWORD
 # The password to authenticate with if your SMTP server requires
 # authentication.  You must also define SMTPAUTH_USERNAME if you use
-# this option.  Requires Python 2.2 or greater.
+# this option.
 #
 # Examples:
 #
@@ -259,7 +259,7 @@ if not vars().has_key('SMTPAUTH_PASSWORD') and MAIL_TRANSPORT == 'smtp':
 # Set this variable to True to put the SMTP connection in TLS (Transport
 # Layer Security) mode. All SMTP commands that follow will be
 # encrypted.  Your Python's socket module must be compiled with SSL
-# support.  Requires Python 2.2 or greater.
+# support.
 #
 # Default is False (turned off)
 if not vars().has_key('SMTPSSL') and MAIL_TRANSPORT == 'smtp':
