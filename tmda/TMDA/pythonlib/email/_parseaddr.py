@@ -1,18 +1,19 @@
-# Copyright (C) 2002 Python Software Foundation
+# Copyright (C) 2002-2006 Python Software Foundation
+# Contact: email-sig@python.org
 
 """Email address parsing code.
 
 Lifted directly from rfc822.py.  This should eventually be rewritten.
 """
 
-import time
-from types import TupleType
+__all__ = [
+    'mktime_tz',
+    'parsedate',
+    'parsedate_tz',
+    'quote',
+    ]
 
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
+import time
 
 SPACE = ' '
 EMPTYSTRING = ''
@@ -122,15 +123,15 @@ def parsedate_tz(data):
             tzoffset = -tzoffset
         else:
             tzsign = 1
-        tzoffset = tzsign * ( (tzoffset/100)*3600 + (tzoffset % 100)*60)
-    tuple = (yy, mm, dd, thh, tmm, tss, 0, 0, 0, tzoffset)
-    return tuple
+        tzoffset = tzsign * ( (tzoffset//100)*3600 + (tzoffset % 100)*60)
+    # Daylight Saving Time flag is set to -1, since DST is unknown.
+    return yy, mm, dd, thh, tmm, tss, 0, 1, -1, tzoffset
 
 
 def parsedate(data):
     """Convert a time string to a time tuple."""
     t = parsedate_tz(data)
-    if isinstance(t, TupleType):
+    if isinstance(t, tuple):
         return t[:9]
     else:
         return t
@@ -366,6 +367,7 @@ class AddrlistClass:
                 break
             elif allowcomments and self.field[self.pos] == '(':
                 slist.append(self.getcomment())
+                continue        # have already advanced pos from getcomment
             elif self.field[self.pos] == '\\':
                 quote = True
             else:

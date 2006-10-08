@@ -1,14 +1,18 @@
-# Copyright (C) 2002 Python Software Foundation
-# Author: barry@zope.com
+# Copyright (C) 2001-2006 Python Software Foundation
+# Author: Barry Warsaw
+# Contact: email-sig@python.org
 
-"""Module containing compatibility functions for Python 2.1.
-"""
+"""Various types of useful iterators and generators."""
 
+__all__ = [
+    'body_line_iterator',
+    'typed_subpart_iterator',
+    'walk',
+    # Do not include _structure() since it's part of the debugging API.
+    ]
+
+import sys
 from cStringIO import StringIO
-from types import StringType, UnicodeType
-
-False = 0
-True = 1
 
 
 
@@ -19,39 +23,25 @@ def walk(self):
     The walk is performed in depth-first order.  This method is a
     generator.
     """
-    parts = []
-    parts.append(self)
+    yield self
     if self.is_multipart():
         for subpart in self.get_payload():
-            parts.extend(subpart.walk())
-    return parts
-
-
-# Python 2.2 spells floor division //
-def _floordiv(i, j):
-    """Do a floor division, i/j."""
-    return i / j
-
-
-def _isstring(obj):
-    return isinstance(obj, StringType) or isinstance(obj, UnicodeType)
+            for subsubpart in subpart.walk():
+                yield subsubpart
 
 
 
 # These two functions are imported into the Iterators.py interface module.
-# The Python 2.2 version uses generators for efficiency.
 def body_line_iterator(msg, decode=False):
     """Iterate over the parts, returning string payloads line-by-line.
 
     Optional decode (default False) is passed through to .get_payload().
     """
-    lines = []
     for subpart in msg.walk():
         payload = subpart.get_payload(decode=decode)
-        if _isstring(payload):
-            for line in StringIO(payload).readlines():
-                lines.append(line)
-    return lines
+        if isinstance(payload, basestring):
+            for line in StringIO(payload):
+                yield line
 
 
 def typed_subpart_iterator(msg, maintype='text', subtype=None):
@@ -61,9 +51,23 @@ def typed_subpart_iterator(msg, maintype='text', subtype=None):
     "text".  Optional `subtype' is the MIME subtype to match against; if
     omitted, only the main type is matched.
     """
-    parts = []
     for subpart in msg.walk():
         if subpart.get_content_maintype() == maintype:
             if subtype is None or subpart.get_content_subtype() == subtype:
-                parts.append(subpart)
-    return parts
+                yield subpart
+
+
+
+def _structure(msg, fp=None, level=0, include_default=False):
+    """A handy debugging aid"""
+    if fp is None:
+        fp = sys.stdout
+    tab = ' ' * (level * 4)
+    print >> fp, tab + msg.get_content_type(),
+    if include_default:
+        print >> fp, '[%s]' % msg.get_default_type()
+    else:
+        print >> fp
+    if msg.is_multipart():
+        for subpart in msg.get_payload():
+            _structure(subpart, fp, level+1, include_default)
