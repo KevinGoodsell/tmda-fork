@@ -124,7 +124,7 @@ from TMDA import Defaults
 from TMDA import FilterParser
 from TMDA import Util
 
-from email.Utils import formataddr, getaddresses, parseaddr
+from email.utils import formataddr, getaddresses, parseaddr
 import socket
 import string
 

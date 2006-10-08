@@ -25,7 +25,7 @@
 from cStringIO import StringIO
 import cPickle
 import email
-import email.Utils
+import email.utils
 import fileinput
 import fnmatch
 import os
@@ -312,7 +312,7 @@ def make_date(timesecs=None):
     """
     if timesecs is None:
         timesecs = time.time()
-    return email.Utils.formatdate(timesecs, localtime=True)
+    return email.utils.formatdate(timesecs, localtime=True)
 
 
 def file_to_dict(file, dict):
@@ -525,12 +525,12 @@ def msg_from_file(fp, fullParse=False):
     to parse the message body, instead setting the payload to the raw
     body as a string.  This is faster, and also helps us avoid
     problems trying to parse spam with broken MIME bodies."""
-    from email.Message import Message
+    from email.message import Message
     if fullParse:
-	from email.Parser import Parser
+	from email.parser import Parser
 	msg = Parser(Message).parse(fp)
     else:
-	from email.Parser import HeaderParser
+	from email.parser import HeaderParser
 	msg = HeaderParser(Message).parse(fp)
     #msg.header_parsed = True
     return msg
@@ -542,7 +542,7 @@ def msg_as_string(msg, maxheaderlen=False, mangle_from_=False, unixfrom=False):
     not wrapped, From is not escaped, and a leading From_ line is not
     added.
 
-    msg is an email.Message.Message object.
+    msg is an email.message.Message object.
 
     maxheaderlen specifies the longest length for a non-continued
     header.  Disabled by default.  RFC 2822 recommends 78.
@@ -553,13 +553,13 @@ def msg_as_string(msg, maxheaderlen=False, mangle_from_=False, unixfrom=False):
 
     unixfrom forces the printing of the envelope header delimiter.
     Default is False."""
-    from email import Generator
+    from email import generator
     fp = StringIO()
     #if hasattr(msg, 'header_parsed') and msg.header_parsed:
     #    genclass = Generator.HeaderParsedGenerator
     #else:
          #genclass = Generator.Generator
-    genclass = Generator.Generator
+    genclass = generator.Generator
     g = genclass(fp, mangle_from_=mangle_from_, maxheaderlen=maxheaderlen)
     g.flatten(msg, unixfrom=unixfrom)
     return fp.getvalue()
@@ -618,20 +618,20 @@ def decode_header(str):
     """Accept a possibly encoded message header as a string, and
     return a decoded string if it can be decoded.
 
-    JRM: email.Header has a decode_header method, but it returns a
+    JRM: email.header has a decode_header method, but it returns a
     list of decoded pairs, one for each part of the header, which is
     an awkward interface IMO, especially when the header contains a
     mix of encoded and non-encoded parts.
     """
     try:
-        from email import Header
+        from email import header
         parts = []
-        pairs = Header.decode_header(str)
+        pairs = header.decode_header(str)
         for pair in pairs:
             parts.append(pair[0])
         decoded_string = ' '.join(parts)
         return decoded_string
-    except email.Errors.HeaderParseError:
+    except email.errors.HeaderParseError:
         return str
 
 
@@ -655,7 +655,7 @@ def headers_as_string(msg):
     try:
         hdrstr = '\n'.join(['%s: %s' %
                             (k, decode_header(v)) for k, v in msg.items()])
-    except email.Errors.HeaderParseError:
+    except email.errors.HeaderParseError:
         hdrstr = headers_as_raw_string(msg)
     return hdrstr
 
@@ -671,7 +671,7 @@ def body_as_raw_string(msg):
 def rename_headers(msg, old, new):
     """Rename all occurances of a message header in a Message object.
 
-    msg is an email.Message.Message object.
+    msg is an email.message.Message object.
 
     old is name of the header to rename.
 
@@ -687,7 +687,7 @@ def rename_headers(msg, old, new):
 def add_headers(msg, headers):
     """Add headers to a Message object.
 
-       msg is an email.Message.Message object.
+       msg is an email.message.Message object.
 
        headers is a dictionary of headers and values.
        """
@@ -702,7 +702,7 @@ def add_headers(msg, headers):
 def purge_headers(msg, headers):
     """Purge headers from a Message object.
 
-       msg is an email.Message.Message object.
+       msg is an email.message.Message object.
 
        headers is a list of headers.
        """

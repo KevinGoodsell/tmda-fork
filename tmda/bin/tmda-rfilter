@@ -206,7 +206,7 @@ from TMDA import Util
 from TMDA.Queue.Queue import Queue
 
 from cStringIO import StringIO
-from email.Utils import parseaddr, getaddresses
+from email.utils import parseaddr, getaddresses
 import email
 import fileinput
 import string

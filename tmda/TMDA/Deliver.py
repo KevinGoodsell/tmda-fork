@@ -54,7 +54,7 @@ def unlock_file(fp):
 class Deliver:
     def __init__(self, msg, delivery_option):
         """
-        msg is an email.Message object.
+        msg is an email.message object.
 
         deliver_option is a delivery action option string returned
         from the TMDA.FilterParser instance.

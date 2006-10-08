@@ -23,13 +23,13 @@
 
 
 from email import message_from_string
-from email.Charset import add_alias
-from email.Errors import MessageError
-from email.Header import Header, decode_header
-from email.MIMEMessage import MIMEMessage
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-from email.Utils import formataddr, parseaddr
+from email.charset import add_alias
+from email.errors import MessageError
+from email.header import Header, decode_header
+from email.mime.message import MIMEMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formataddr, parseaddr
 
 import os
 import time
@@ -57,7 +57,7 @@ add_alias('vietnamese', 'viscii')
 class AutoResponse:
     def __init__(self, msgin, bouncetext, response_type, recipient):
         """
-        msgin is an email.Message object representing the incoming
+        msgin is an email.message object representing the incoming
         message we are responding to.
 
         bouncetext is a string of rfc822 headers/body created from a

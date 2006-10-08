@@ -32,7 +32,7 @@ wish to monitor the contents of their pending queue.
 """
 
 
-from email.Utils import parseaddr
+from email.utils import parseaddr
 
 import glob
 import os

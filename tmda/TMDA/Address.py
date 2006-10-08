@@ -230,7 +230,7 @@ def Factory(address = None, tag = None):
     if tag:
         pass
     elif address:
-        address = email.Utils.parseaddr(address)[1]
+        address = email.utils.parseaddr(address)[1]
         (local_parts, dummy, dummy) = _split(address)
     else:    
         return Address(address)

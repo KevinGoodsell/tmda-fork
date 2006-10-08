@@ -24,7 +24,7 @@
 """Pending messages functions."""
 
 
-from email.Utils import parseaddr
+from email.utils import parseaddr
 import email
 import os
 import sys

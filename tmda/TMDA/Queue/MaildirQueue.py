@@ -25,7 +25,7 @@ http://en.wikipedia.org/wiki/Maildir
 """
 
 
-from email.Utils import parseaddr
+from email.utils import parseaddr
 from glob import glob
 
 

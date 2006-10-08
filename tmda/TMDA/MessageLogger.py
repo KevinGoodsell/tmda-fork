@@ -24,7 +24,7 @@ Log statistics about incoming or outgoing messages to a file.
 """
 
 
-from email.Utils import parseaddr
+from email.utils import parseaddr
 
 import Util
 
@@ -34,7 +34,7 @@ class MessageLogger:
         """
         logfile is the full path to the logfile.
         
-        msg in an email.Message object.
+        msg in an email.message object.
 
         vardict is a dictionary containing an indefinite number of
         keyword arguments.

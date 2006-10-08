@@ -378,7 +378,6 @@ if vhomescript and configdir:
 import asynchat
 import asyncore
 import base64
-import email.Utils
 import hmac
 import imaplib
 import md5

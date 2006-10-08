@@ -80,7 +80,7 @@ class Queue:
 	"""
 	Insert the contents of a message into the queue.
 
-	msg is an email.Message like object.
+	msg is an email.message like object.
 
 	mailid (see above)
 
@@ -92,9 +92,9 @@ class Queue:
     def fetch_message(self, mailid, fullParse=False):
 	"""
 	Fetch the contents of a message in the queue.  Should
-	return an email.Message like object.
-	Normally uses 'email.HeaderParser' for a quick parse unless 'fullParse'
-	is set to True, in which case it uses the full 'email.Parser'.
+	return an email.message like object.
+	Normally uses HeaderParser' for a quick parse unless 'fullParse'
+	is set to True, in which case it uses the full 'email.parser'.
 	"""
 	pass
 
