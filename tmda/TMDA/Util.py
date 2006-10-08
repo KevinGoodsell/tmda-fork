@@ -532,7 +532,7 @@ def msg_from_file(fp, fullParse=False):
     else:
 	from email.Parser import HeaderParser
 	msg = HeaderParser(Message).parse(fp)
-    msg.header_parsed = True
+    #msg.header_parsed = True
     return msg
 
 
