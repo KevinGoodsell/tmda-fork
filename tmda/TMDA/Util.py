@@ -517,7 +517,7 @@ def confirm_append_address(xp, rp):
     return rp
 
 
-def msg_from_file(fp, strict=False, fullParse=False):
+def msg_from_file(fp, fullParse=False):
     """Read a file and parse its contents into a Message object model.
     Replacement for email.message_from_file().
     
@@ -528,11 +528,11 @@ def msg_from_file(fp, strict=False, fullParse=False):
     from email.Message import Message
     if fullParse:
 	from email.Parser import Parser
-	msg = Parser(Message, strict=strict).parse(fp)
+	msg = Parser(Message).parse(fp)
     else:
 	from email.Parser import HeaderParser
-	msg = HeaderParser(Message, strict=strict).parse(fp)
-    msg.header_parsed = 1
+	msg = HeaderParser(Message).parse(fp)
+    msg.header_parsed = True
     return msg
 
 
@@ -555,10 +555,11 @@ def msg_as_string(msg, maxheaderlen=False, mangle_from_=False, unixfrom=False):
     Default is False."""
     from email import Generator
     fp = StringIO()
-    if hasattr(msg, 'header_parsed') and msg.header_parsed:
-        genclass = Generator.HeaderParsedGenerator
-    else:
-        genclass = Generator.Generator
+    #if hasattr(msg, 'header_parsed') and msg.header_parsed:
+    #    genclass = Generator.HeaderParsedGenerator
+    #else:
+         #genclass = Generator.Generator
+    genclass = Generator.Generator
     g = genclass(fp, mangle_from_=mangle_from_, maxheaderlen=maxheaderlen)
     g.flatten(msg, unixfrom=unixfrom)
     return fp.getvalue()
