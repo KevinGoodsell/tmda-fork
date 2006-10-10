@@ -3,6 +3,13 @@ this file.
 
 ======================================================================
 
+If you are upgrading from a release of TMDA < 1.1.8:
+
+* If you use tmda-cgi, you'll need to upgrade to at least
+  tmda-cgi-0.15 to use this release of TMDA with it.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 1.1.6:
 
 * The default name and location of the PENDING_CACHE file has changed
