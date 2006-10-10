@@ -19,31 +19,10 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""Generate a unique 160-bit hex key.
 
-Usage: %(program)s [-d <device>] [-b] [-V] [-h]
-
-Where:
-    -d <device>
-    --device <device>
-       Draw random numbers from a random data source device other than /dev/urandom
-
-    -b
-    --batch
-       Output only the CRYPT_KEY.
-
-    -V
-    --version
-       Print TMDA version information and exit.
-       
-    --help
-    -h
-       Print this help message and exit.
-"""
-
+from optparse import OptionParser, make_option
 
 import binascii
-import getopt
 import os
 import sys
 
@@ -58,45 +37,36 @@ except ImportError:
 from TMDA import Version
 
 
-batch = False
-randomdev = '/dev/urandom'
+# option parsing
 
-program = sys.argv[0]
+opt_desc = "Generate a unique 160-bit hex key."
 
-def usage(code, msg=''):
-    print __doc__ % globals()
-    if msg:
-        print msg
-    sys.exit(code)
+opt_list = [
+    make_option("-d", "--device",
+                default="/dev/urandom", dest="device",
+                help=("""Draw random numbers from a random data source 
+                         device other than /dev/urandom""")),
+    make_option("-b", "--batch",
+                action="store_true", default=False, dest="batch",
+                help="Output only the CRYPT_KEY"),
+    make_option("-V", 
+                action="store_true", default=False, dest="full_version",
+                help="show full TMDA version information and exit"),
+    ]
 
-try:
-    opts, args = getopt.getopt(sys.argv[1:],
-                               'bd:Vh', ['batch',
-                                         'device=',
-                                         'version',
-                                         'help'])
-except getopt.error, msg:
-    usage(1, msg)
+parser = OptionParser(option_list=opt_list, description=opt_desc, 
+                      version=Version.TMDA)
+(opts, args) = parser.parse_args()
 
-for opt, arg in opts:
-    if opt in ('-h', '--help'):
-        usage(0)
-    if opt == '-V':
-        print Version.ALL
-        sys.exit()
-    if opt == '--version':
-        print Version.TMDA
-        sys.exit()
-    if opt in ('-d', '--device'):
-        randomdev = arg
-    elif opt in ('-b', '--batch'):
-        batch = True
+if opts.full_version:
+    print Version.ALL
+    sys.exit()
 
 
 def keygen():
     # Use the kernel's random number generator.
-    if os.path.exists(randomdev):
-        key = open(randomdev,'rb').read(20)
+    if os.path.exists(opts.device):
+        key = open(opts.device,'rb').read(20)
         return binascii.hexlify(key)
     #elif sys.platform == 'win32':
         # The Windows equivalent of polling /dev/urandom is to call
@@ -109,7 +79,7 @@ def keygen():
     
 def main():
     
-    if not batch:
+    if not opts.batch:
         print "Generating a unique, 160-bit private key, please wait a moment.."
         print
 
@@ -118,7 +88,7 @@ def main():
     if key is None:
         # Use of a cryptographic random number generator is required.
         warning = ("key generation on a system without a "
-                   + randomdev + " device is not supported!")
+                   + opts.device + " device is not supported!")
         print "WARNING:"
         print '*' * len(warning)
         print warning
@@ -129,13 +99,13 @@ def main():
         print "exiting!"
         sys.exit()
         
-    if len(key) != 40:
+    if len(key) <> 40:
         print "Oops, generated key is not 40-characters long, exiting!"
         sys.exit()
 
     print key
     
-    if not batch:
+    if not opts.batch:
         print
         print "Now paste the above key into ~/.tmda/crypt_key"
         print "and make sure to keep your key secret! (chmod 600 ~/.tmda/crypt_key)"

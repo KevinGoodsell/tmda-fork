@@ -1,3 +1,7 @@
+2006-10-09  Jason R. Mastaler  <jason@mastaler.com>
+
+	* tmda-keygen: Migrate from getopt to optparse.
+	
 2006-10-05  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-rfilter: Add -e/--environ option for setting of environment
