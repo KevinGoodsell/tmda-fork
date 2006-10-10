@@ -19,33 +19,9 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""Check a tagged (dated, keyword, or sender style only) e-mail address.
 
-Usage:  %(program)s [-c <file>] [-V] [-h] address [senderaddr]
+from optparse import OptionParser, make_option
 
-Where:
-    -c <file>
-    --config-file <file>
-       Specify a different configuration file other than ~/.tmda/config.
-       
-    -l
-    --localtime
-       Display dates in the local time zone instead of UTC.
-
-    -V
-    --version
-       Print TMDA version information and exit.
-
-    --help
-    -h
-       Print this help message and exit.
-
-    address is the address you want to check.
-    
-    senderaddr is the sender address to verify if checking a sender style address.
-"""
-
-import getopt
 import os
 import sys
 import string
@@ -62,43 +38,46 @@ except ImportError:
 from TMDA import Version
 
 
-program = sys.argv[0]
-localtime = None
+# option parsing
 
-def usage(code, msg=''):
-    print __doc__ % globals()
-    if msg:
-        print msg
-    sys.exit(code)
+opt_usage = ("""\
+%prog [options] address [senderaddr]
 
-try:
-    opts, args = getopt.getopt(sys.argv[1:],
-                                   'c:lVh', ['config-file=',
-                                             'localtime',
-                                             'version',
-                                             'help'])
-except getopt.error, msg:
-    usage(1, msg)
+Check a tagged (dated, keyword, or sender style only) e-mail address.
 
-for opt, arg in opts:
-    if opt in ('-h', '--help'):
-        usage(0)
-    if opt == '-V':
-        print Version.ALL
-        sys.exit()
-    if opt == '--version':
-        print Version.TMDA
-        sys.exit()
-    elif opt in ('-c', '--config-file'):
-        os.environ['TMDARC'] = arg
-    elif opt in ('-l', '--localtime'):
-        localtime = 1
+address is the address you want to check.
+    
+senderaddr is the sender address to verify if checking a sender style address.""")
+
+opt_list = [
+    make_option("-c", "--config-file",
+                metavar="FILE", dest="config_file",
+                help=("""Specify a different configuration file other than 
+                         ~/.tmda/config""")),
+    make_option("-l", "--localtime",
+                action="store_true", default=False, dest="localtime",
+                help="Display dates in the local time zone instead of UTC"),
+    make_option("-V", 
+                action="store_true", default=False, dest="full_version",
+                help="show full TMDA version information and exit"),
+    ]
+
+parser = OptionParser(option_list=opt_list, version=Version.TMDA, usage=opt_usage)
+(opts, args) = parser.parse_args()
+
+if opts.full_version:
+    print Version.ALL
+    sys.exit()
+
+if opts.config_file:
+     os.environ['TMDARC'] = opts.config_file
+
 
 from TMDA import Defaults
 from TMDA import Address
 
 def formattime(timestamp):
-    if localtime:
+    if opts.localtime:
         timetuple = time.localtime(int(timestamp))
         tzstr = ' %Z'
     else:
@@ -112,7 +91,7 @@ def main():
         address = args[0]
         addr = Address.Factory(address)
     except (IndexError, ValueError):
-        usage(0)
+        parser.error('invalid usage')
 
     try:
         sender_address = args[1]
