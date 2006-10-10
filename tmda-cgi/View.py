@@ -59,10 +59,10 @@ def AddIcon(Part):
   elif SoundType1.search(Filename): Icon = "sound"
   elif TextType1.search(Filename): Icon = "text"
   elif ZipType1.search(Filename): Icon = "zip"
-  elif ImageType2.search(Part.get_type("text/plain")): Icon = "image"
-  elif MovieType2.search(Part.get_type("text/plain")): Icon = "movie"
-  elif SoundType2.search(Part.get_type("text/plain")): Icon = "sound"
-  elif ZipType2.search(Part.get_type("text/plain")): Icon = "zip"
+  elif ImageType2.search(Part.get_content_type()): Icon = "image"
+  elif MovieType2.search(Part.get_content_type()): Icon = "movie"
+  elif SoundType2.search(Part.get_content_type()): Icon = "sound"
+  elif ZipType2.search(Part.get_content_type()): Icon = "zip"
   Attachment["Icon"]     = Icon
   Attachment["Filename"] = Filename
   Attachment["Size"]     = CgiUtil.Size(MsgSize = len(Part.as_string()))
@@ -331,12 +331,12 @@ def ShowPart(Part):
 
   # Display this part
   if Part.is_multipart():
-    if Part.get_type("multipart/mixed") == "multipart/alternative":
+    if Part.get_content_type() == "multipart/alternative":
       # Pick preferred alternative
       PrefPart   = None
       PrefRating = -1
       for SubPart in Part.get_payload():
-        Type = SubPart.get_type("text/plain")
+        Type = SubPart.get_content_type()
         Rating = PVars[("ViewPending", "AltPref")].find(Type)
         # Is this part preferred?
         if (not PrefPart) or ((PrefRating == -1) and (Rating >= 0)) \
@@ -350,7 +350,7 @@ def ShowPart(Part):
       for SubPart in Part.get_payload():
         ShowPart(SubPart)
   else:
-    Type = Part.get_type("text/plain")
+    Type = Part.get_content_type()
     # Display the easily display-able parts
     if Type == "text/html":
       # Sterilize & display
