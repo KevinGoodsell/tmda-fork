@@ -30,6 +30,7 @@ import re
 import CgiUtil
 import MyCgiTb
 import Template
+import Unicode
 
 from TMDA import Defaults
 from TMDA import Errors
@@ -91,6 +92,7 @@ def Show():
 
   # Get e-mail template
   T = Template.Template("view.html", PVars = PVars)
+  T["CharSet"] = "utf-8"
   T["EmailClass"] = PVars[("ViewPending", "EmailClass")]
 
   # Locate messages in pending dir
@@ -214,6 +216,8 @@ def Show():
   Queue._addCache(PVars["MsgID"])
   Queue._saveCache()
 
+  CharSet = CgiUtil.FindCharSet(MsgObj)
+
   # Extract header row
   HeaderRow = T["HeaderRow"]
   if PVars[("ViewPending", "Headers")] == "all":
@@ -223,14 +227,20 @@ def Show():
     # Generate all headers
     Headers = ""
     for (header, value) in MsgObj.msgobj.items():
-      Headers += header + ": " + value + "\n"
+      Headers += header + ": "
       # Decode internationalized headers
-      #for decoded in email.Header.decode_header( Line ):
-      #  Headers += decoded[0] + " "
-      #  if decoded[1]:
-      #    cset = email.Charset.Charset(decoded[1]).input_charset.split()
-      #    T["CharSet"] = cset[0]
-      #Headers += "\n"
+      try:
+        for decoded in email.Header.decode_header( value ):
+          if decoded[1]:
+            try:
+              Headers += Unicode.TranslateToUTF8(decoded[1], decoded[0], "strict")
+            except UnicodeError:
+              Headers += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
+          else:
+            Headers += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
+      except email.errors.HeaderParseError:
+        Headers += value
+      Headers += "\n"
     T["Headers"] = '<pre class="Headers">%s</pre>' % Headers
   else:
     # Remove all header block
@@ -241,11 +251,17 @@ def Show():
       T["Name"]  = Header.capitalize()
       value = ""
       # Decode internationalazed headers
-      for decoded in email.Header.decode_header( MsgObj.msgobj[Header] ):
-        value += decoded[0] + " "
-        if decoded[1]:
-          cset = email.Charset.Charset(decoded[1]).input_charset.split()
-          T["CharSet"] = cset[0]
+      try:
+        for decoded in email.Header.decode_header( MsgObj.msgobj[Header] ):
+          if decoded[1]:
+            try:
+              value += Unicode.TranslateToUTF8(decoded[1], decoded[0], "strict")
+            except UnicodeError:
+              value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
+          else:
+            value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
+      except email.errors.HeaderParseError:
+        value += MsgObj.msgobj[Header]
       T["Value"] = CgiUtil.Escape(value)
       HeaderRow.Add()
 
@@ -354,10 +370,6 @@ def ShowPart(Part):
     # Display the easily display-able parts
     if Type == "text/html":
       # Sterilize & display
-      # Check if there's a character set for this part.
-      if Part.get_content_charset():
-        cset = email.Charset.Charset(Part.get_content_charset()).input_charset.split()
-        T["CharSet"] = cset[0]
       try:
         T["Content"] = \
           CgiUtil.Sterilize(Part.get_payload(decode=1), Allow, Remove)
@@ -367,10 +379,6 @@ def ShowPart(Part):
       except AttributeError:
         pass
     elif Type.startswith("text/"):
-      # Check if there's a character set for this part.
-      if Part.get_content_charset():
-        cset = email.Charset.Charset(Part.get_content_charset()).input_charset.split()
-        T["CharSet"] = cset[0]
       # Escape & display
       try:
         Str = Part.get_payload(decode=1).strip()

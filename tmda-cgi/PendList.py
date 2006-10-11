@@ -496,16 +496,20 @@ def Show():
       if not MsgObj.msgobj["subject"]:
         Subject = "None"
       else:
-        # Decode internationalazed headers
+        # Try to decode internationalized headers
         value = ""
-        for decoded in email.Header.decode_header( MsgObj.msgobj["subject"] ):
-          if decoded[1]:
-            try:
-              value += Unicode.TranslateToUTF8(decoded[1], decoded[0], "strict")
-            except UnicodeError:
+        try:
+          for decoded in email.Header.decode_header( MsgObj.msgobj["subject"] ):
+            if decoded[1]:
+              try:
+                value += Unicode.TranslateToUTF8(decoded[1], decoded[0], "strict")
+              except UnicodeError:
+                value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
+            else:
               value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
-          else:
-            value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
+        except email.errors.HeaderParseError:
+          # just return the undecoded string if we can't decode it
+          value = MsgObj.msgobj["subject"]
         Subject = value
         if len(Subject) > int(PVars[("PendingList", "CropSubject")]):
           Subject = \
@@ -519,16 +523,20 @@ def Show():
       if not MsgObj.msgobj["from"]:
         From = ""
       else:
-        # Decode internationalazed headers
+        # Try to decode internationalized headers
         value = ""
-        for decoded in email.Header.decode_header( MsgObj.msgobj["from"] ):
-          if decoded[1]:
-            try:
-              value += Unicode.TranslateToUTF8(decoded[1], decoded[0], "strict")
-            except UnicodeError:
+        try:
+          for decoded in email.Header.decode_header( MsgObj.msgobj["from"] ):
+            if decoded[1]:
+              try:
+                value += Unicode.TranslateToUTF8(decoded[1], decoded[0], "strict")
+              except UnicodeError:
+                value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
+            else:
               value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
-          else:
-            value += Unicode.TranslateToUTF8(CharSet, decoded[0], "ignore")
+        except email.errors.HeaderParseError:
+          # just return the undecoded string if we can't decode it
+          value = MsgObj.msgobj["from"]
         From = value
         Temp = Address.search(From)
         if Temp:
