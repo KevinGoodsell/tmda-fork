@@ -22,169 +22,9 @@
 # Based on code from Python's (undocumented) smtpd module
 # Copyright (C) 2001,2002 Python Software Foundation.
 
-"""An authenticated ofmip proxy for TMDA.  Tag your outgoing mail through SMTP.
 
-See http://wiki.tmda.net/TmdaOfmipdHowto for complete setup and usage
-information.
+from optparse import OptionGroup, OptionParser, make_option
 
-Usage: %(program)s [OPTIONS]
-
-OPTIONS:
-    -h
-    --help
-        Print this message and exit.
-
-    -V
-    --version
-        Print TMDA version information and exit.
-
-    -d
-    --debug
-        Turn on debugging prints.
-
-    -f
-    --foreground
-        Run in foreground.
-
-    -b
-    --background
-        Run in background (default).
-
-    -u <username>
-    --username <username>
-        The username that this program should run under.  The default
-        is to run as the user who starts the program unless that is
-        root, in which case an attempt to seteuid user `tofmipd' will be
-        made.  Use this option to override these defaults.
-
-    -p <host:port>
-    --proxyport <host:port>
-        The host:port to listen for incoming connections on.  The
-        default is FQDN:8025 (i.e, port 8025 on the fully qualified
-        domain name for the local host).  Use 0.0.0.0:8025 to listen
-        on all available interfaces.
-
-    -P
-    --pure-proxy
-	Proxy the message straight through to the mail transport
-	system unaltered if the user's TMDA config file is missing.
-	The /usr/sbin/sendmail program on the system is
-	used to inject the message.  You can override this by setting
-	$TMDA_SENDMAIL_PROGRAM in the environment.
-	
-	This option might be useful when serving a mixed environment
-	of TMDA and non-TMDA users.
-
-    -R proto[://host[:port]]
-    --remoteauth proto[://host[:port]][/dn]
-        Host to connect to to check username and password.
-        - proto can be one of the following:
-          `imap' (IMAP4 server)
-          'imaps' (IMAP4 server over SSL)
-          `pop3' (POP3 server)
-          `apop' (POP3 server with APOP authentication)
-          `ldap' (LDAP server)
-        - host defaults to localhost
-        - port defaults to 143 (imap), 993 (imaps), 110 (pop3/apop), 389 (ldap)
-        - dn is mandatory for ldap and should contain a `%%s' identifying
-          the username
-        Examples: -R imaps://myimapserver.net
-                  -R pop3://mypopserver.net:2110
-                  -R ldap://host.com/cn=%%s,dc=host,dc=com
-                  
-    -A <program>
-    --authprog <program>
-        checkpassword compatible command used to check username/password.
-        Examples:
-              -A "/usr/sbin/checkpassword-pam -s id -- /bin/true"
-              -A "/usr/local/vpopmail/bin/vchkpw /usr/bin/true"
-        The program must be able to receive the username/password pair
-        on descriptor 3 and in the following format:
-              `username\\0password\\0'
-        Any program claiming to be checkpassword-compatible should be able to
-        do this.  If you can tell the program to accept input on another
-        descriptor, such as stdin, don't.  It won't work, because TMDA follows
-        the standard exactly.
-            http://cr.yp.to/checkpwd/interface.html
-        Also, checkpassword-type programs expect to find the name of another
-        program to run on their command line.  For tmda-ofmipd's purpose,
-        (/usr)/bin/true is perfectly fine.
-
-        Note the position of the quotes in the Examples, which cause the the
-        whole string following the -A to be passed as a single argument.
-
-    -a <file>
-    --authfile <file>
-        Path to the file holding authentication information for this
-        proxy.  Default location is /etc/tofmipd if running as
-        root/tofmipd, otherwise ~user/.tmda/tofmipd.  Use this option
-        to override these defaults.
-
-    -F
-    --fallback
-        When used with -R or -A, fallback to authenticate against
-        the authfile if remote authentication fails.
-        Note: this flag has no effect on -R to -A fallback. If you
-        specify both -R and -A methods, then authprog will be tried
-        after remoteauth has failed.
-
-    -C <n>
-    --connections <n>
-        Do not handle more than n simultaneous connections. If there
-        are n active connections, defer acceptance of a new connection
-        until one finishes. n must be a positive integer. Default: 20
-    
-    -c <directory>
-    --configdir <directory>
-        Base directory to search for the authenticated user's TMDA
-        configuration file in.  This might be useful if you wish to
-        maintain TMDA files outside the user's home directory.
-        
-        'username/config' will be appended to form the path; e.g,
-        `-c /var/tmda' will have tmda-ofmipd search for
-        `/var/tmda/bobby/config'.  If this option is not used,
-        `~user/.tmda/config' will be assumed, but see the
-        --vhome-script option for qmail virtual domain users.
-
-    -S <script>
-    --vhome-script <script>
-        Full pathname of script that prints a virtual email user's home
-        directory on standard output.  tmda-ofmipd will read that path and use
-        it to build the path to the user's config file instead of
-        '~user/.tmda'.  The script must take two arguments, the user name and
-        the domain, on its command line.
-
-        This option is for use only with the VPopMail and VMailMgr add-ons to
-        qmail.  See the tmda0.XX/contrib directory for sample scripts.
-
-    -v <path_to_qmails_virtualdomains_file>
-    --vdomains-path <path_to_qmails_virtualdomains_file>
-        Full pathname to qmail's virtualdomains file.  The default for most
-        installations is /var/qmail/control/virtualdomains.  This is also
-        tmda-ofmipd's default, so you normally won't need to set this
-        parameter.
-
-        If you have installed qmail somewhere other than /var/qmail, you will
-        need to set this so tmda-ofmipd can find the virtualdomains file.
-
-        NOTE: This is only used when you have a qmail installation with virtual
-        domains using the VMailMgr add-on.  It implies that you will also set
-        the --vhome-script parameter above.
-
-    -t <script>
-    --throttle-script <script>
-        Full pathname of a script which can meter how much mail any user sends.
-        The script is passed a login name whenever a user tries to send mail.
-        If the script returns a 0, the message is allowed.  For any other
-        value, the message is rejected.
-
-    -1
-    --one-session
-        Don't bind to a port and accept new connections;
-        Process a single SMTP session on stdin (used both for input & output)
-        This is useful when started from tcpserver or stunnel."""
-
-import getopt
 import os
 import signal
 import socket
@@ -198,57 +38,262 @@ except ImportError:
                            'site-packages', 'TMDA', 'pythonlib')
     sys.path.insert(0, sitedir)
 
+
 from TMDA import Util
 from TMDA import Version
+
 
 class Devnull:
     def write(self, msg): pass
     def flush(self): pass
 
-# Some defaults
-FQDN = socket.getfqdn()
-DEBUGSTREAM = Devnull()
-proxyport = '%s:%s' % (FQDN, 8025)
 program = sys.argv[0]
-configdir = None
-authprog = None
-fallback = 0
-pure_proxy = False
-foreground = None
-one_session = False
-remoteauth = { 'proto': None,
-               'host':  'localhost',
-               'port':  None,
-               'dn':  '',
-               'enable': 0,
-               }
-defaultauthports = { 'imap':  143,
-                     'imaps': 993,
-                     'apop': 110,
-                     'pop3':  110,
-                     'ldap':  389,
-                     #                     'pop3s': 995,
-                     }
-connections = 20
-vhomescript = None
-vdomainspath = '/var/qmail/control/virtualdomains'
-throttlescript = None
+
+FQDN = socket.getfqdn()
 
 if os.getuid() == 0:
-    running_as_root = 1
+    running_as_root = True
 else:
-    running_as_root = 0
+    running_as_root = False
+
+remoteauth = { 'proto': None,
+               'host': 'localhost',
+               'port': None,
+               'dn': '',
+               'enable': 0,
+               }
+defaultauthports = { 'imap': 143,
+                     'imaps': 993,
+                     'apop': 110,
+                     'pop3': 110,
+                     'ldap': 389,
+                     # 'pop3s': 995,
+                     }
+
+# option parsing
+
+opt_desc = ("""\
+An authenticated ofmip proxy for TMDA that allows you to 'tag' your
+mail client's outgoing mail through SMTP.  For more information,
+including setup and usage instructions, see
+http://wiki.tmda.net/TmdaOfmipdHowto
+""" + "\n")
+
+parser = OptionParser(description=opt_desc, version=Version.TMDA)
+
+parser.add_option("-V", 
+		  action="store_true", default=False, dest="full_version",
+		  help="show full TMDA version information and exit")
+
+# option groups
+gengroup = OptionGroup(parser, "General options")
+congroup = OptionGroup(parser, "Connection options")
+authgroup = OptionGroup(parser, "Authentication options")
+virtgroup = OptionGroup(parser, "Virtual Domains options")
+    
+# general
+gengroup.add_option("-d", "--debug",
+		  action="store_true", default=False, dest="debug",
+		  help="Turn on debugging prints.")
+
+gengroup.add_option("-b", "--background",
+		  action="store_false", dest="foreground",
+		  help="Detach and run in the background (default).")
+
+gengroup.add_option("-f", "--foreground",
+		  action="store_true", default=False, dest="foreground",
+		  help="Don't detach; run in the foreground.")
+
+gengroup.add_option("-u", "--username",
+		  dest="username",
+		  help=("""\
+The username that this program should run under.  The default is to
+run as the user who starts the program unless that is root, in which
+case an attempt to seteuid user 'tofmipd' will be made.  Use this
+option to override these defaults."""))
+
+gengroup.add_option("-c", "--configdir",
+		  metavar="DIR", dest="configdir",
+		  help=("""\
+DIR is the base directory to search for the authenticated user's TMDA
+configuration file in.  This might be useful if you wish to maintain
+TMDA files outside the user's home directory.
+'username/config' will be appended to form the path; e.g, `-c
+/var/tmda' will have tmda-ofmipd search for `/var/tmda/bobby/config'.
+If this option is not used, `~user/.tmda/config' will be assumed, but
+see the --vhome-script option for qmail virtual domain users."""))
+
+# connection
+congroup.add_option("-p", "--proxyport",
+		  default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT", 
+		  dest="proxyport", help=("""\
+The HOST:PORT to listen for incoming connections on.  The default is
+FQDN:8025 (i.e, port 8025 on the fully qualified domain name for the
+local host).  Use '0.0.0.0:PORT' to listen on all available
+interfaces."""))
+
+congroup.add_option("-C", "--connections",
+		  type="int", default="20", metavar="NUM", dest="connections",
+		  help=("""\
+Do not handle more than NUM simultaneous connections. If there are NUM
+active connections, defer acceptance of new connections until one
+finishes. NUM must be a positive integer. Default: 20"""))
+
+congroup.add_option("-1", "--one-session",
+		  action="store_true", default=False, dest="one_session",
+		  help=("""\
+Don't bind to a port and accept new connections; Process a single SMTP
+session on stdin (used both for input & output).  This is useful when
+started from tcpserver or stunnel."""))
+
+congroup.add_option("-P", "--pure-proxy",
+		  action="store_true", default=False, dest="pure_proxy",
+		  help=("""\
+Proxy the message straight through to the mail transport system
+unaltered if the user's TMDA config file is missing.  The
+/usr/sbin/sendmail program on the system is used to inject the
+message.  You can override this by setting $TMDA_SENDMAIL_PROGRAM in
+the environment.  This option might be useful when serving a mixed
+environment of TMDA and non-TMDA users."""))
+
+congroup.add_option("-t", "--throttle-script",
+		  metavar="/PATH/TO/SCRIPT", dest="throttlescript",
+		  help=("""\
+Full pathname of a script which can meter how much mail any user
+sends.  The script is passed a login name whenever a user tries to
+send mail.  If the script returns a 0, the message is allowed.  For
+any other value, the message is rejected."""))
+
+# authentication
+authgroup.add_option("-R", "--remoteauth",
+		  metavar="PROTO://HOST[:PORT][/DN]", dest="remoteauth",
+		  help=("""\
+Protocol and host to check username and password. PROTO can be one of
+the following: 'imap' (IMAP4 server), 'imaps' (IMAP4 server over SSL),
+'pop3' (POP3 server), 'apop' (POP3 server with APOP authentication),
+'ldap' (LDAP server).  Optional :PORT defaults to the standard port for
+the specified protocol (143 for imap, 993 for imaps, 110 for
+pop3/apop, and 389 for ldap).  /DN is mandatory for ldap and should
+contain a '%%s' identifying the username. Examples: '-R
+imaps://myimapserver.net', '-R pop3://mypopserver.net:2110', '-R
+ldap://example.com/cn=%%s,dc=host,dc=com'"""))
+
+authgroup.add_option("-A", "--authprog",
+		  metavar="PROGRAM", dest="authprog",
+		  help=("""\
+A checkpassword compatible command used to check username/password.
+Examples: '-A "/usr/sbin/checkpassword-pam -s id -- /bin/true"',
+'-A "/usr/local/vpopmail/bin/vchkpw /usr/bin/true"'.
+The program must be able to receive the username/password pair on
+descriptor 3 and in the following format: `username\\0password\\0'
+Any program claiming to be checkpassword-compatible should be able to
+do this.  If you can tell the program to accept input on another
+descriptor, such as stdin, don't.  It won't work, because TMDA follows
+the standard (http://cr.yp.to/checkpwd/interface.html) exactly.
+Also, checkpassword-type programs expect to find the name of another
+program to run on their command line.  For tmda-ofmipd's purpose,
+/bin/true is perfectly fine.
+Note the position of the quotes in the Examples, which cause the the
+whole string following the -A to be passed as a single argument."""))
+
+authgroup.add_option("-a", "--authfile",
+		  metavar="FILE", dest="authfile",
+		  help=("""\
+Path to the file holding authentication information for this proxy.
+Default location is /etc/tofmipd if running as root/tofmipd, otherwise
+~user/.tmda/tofmipd.  Use this option to override these defaults."""))
+
+authgroup.add_option("-F", "--fallback",
+		  action="store_true", default=False, dest="fallback",
+		  help=("""\
+When used with -R or -A, fallback to authenticate against the authfile
+if remote authentication fails.  Note: this flag has no effect on -R
+to -A fallback. If you specify both -R and -A methods, then authprog
+will be tried after remoteauth has failed."""))
+
+# virtual domains
+virtgroup.add_option("-S", "--vhome-script",
+		  metavar="/PATH/TO/SCRIPT", dest="vhomescript",
+		  help=("""\
+Full pathname of a script that prints a virtual email user's home
+directory on standard output.  tmda-ofmipd will read that and use it
+to build the path to the user's config file instead of '~user/.tmda'.
+The script must take two arguments, the user name and the domain, on
+its command line.  This option is for use only with the VPopMail and
+VMailMgr add-ons to qmail.  See the contrib directory for sample
+scripts."""))
+
+virtgroup.add_option("-v", "--vdomains-path",
+		  default="/var/qmail/control/virtualdomains", 
+		  metavar="/PATH/TO/FILE", dest="vdomainspath",
+		  help=("""\
+Full pathname to qmail's virtualdomains file.  The default is
+/var/qmail/control/virtualdomains.  This is also tmda-ofmipd's
+default, so you normally won't need to set this parameter.  If you
+have installed qmail somewhere other than /var/qmail, you will need to
+set this so tmda-ofmipd can find the virtualdomains file.  NOTE: This
+is only used when you have a qmail installation with virtual domains
+using the VMailMgr add-on.  It implies that you will also set the
+'--vhome-script' option above."""))
+
+for g in (gengroup, congroup, authgroup, virtgroup):
+    parser.add_option_group(g)
+
+(opts, args) = parser.parse_args()
+
+if opts.full_version:
+    print Version.ALL
+    sys.exit()
+if opts.vhomescript and opts.configdir:
+    parser.error("options '--vhome-script' and '--configdir' are incompatible!")
+if opts.debug:
+    DEBUGSTREAM = sys.stderr
+else:
+    DEBUGSTREAM = Devnull()
+
+if opts.remoteauth:
+    # arg is like: imap://host:port
+    autharg = opts.remoteauth
+    try:
+	authproto, autharg = autharg.split('://', 1)
+    except ValueError:
+	authproto, autharg = autharg, None
+    if authproto not in defaultauthports.keys():
+	raise ValueError, 'Protocol not supported: ' + authproto + \
+	    '\nPlease pick one of ' + repr(defaultauthports.keys())
+    remoteauth['proto'] = authproto
+    remoteauth['port'] = defaultauthports[authproto]
+    if autharg:
+	try:
+	    autharg, dn = autharg.split('/', 1)
+	    remoteauth['dn'] = dn
+	except ValueError:
+	    dn = ''
+	try:
+	    authhost, authport = autharg.split(':', 1)
+	except ValueError:
+	    authhost = autharg
+	    authport = defaultauthports[authproto]
+	if authhost:
+	    remoteauth['host'] = authhost
+	if authport:
+	    remoteauth['port'] = authport
+    print >> DEBUGSTREAM, "auth method: %s://%s:%s/%s" % \
+	(remoteauth['proto'], remoteauth['host'],
+	 remoteauth['port'], remoteauth['dn'])
+    remoteauth['enable'] = 1
 
 if running_as_root:
-    username = 'tofmipd'
-    authfile = '/etc/tofmipd'
+    if not opts.username:
+	opts.username = 'tofmipd'
+    if not opts.authfile:
+	authfile = '/etc/tofmipd'
     ipauthmapfile = '/etc/ipauthmap'
 else:
-    username = None
     tmda_path = os.path.join(os.path.expanduser('~'), '.tmda')
-    authfile = os.path.join(tmda_path, 'tofmipd')
     ipauthmapfile = os.path.join(tmda_path, 'ipauthmap')
-
+    if not opts.authfile:
+	opts.authfile = os.path.join(tmda_path, 'tofmipd')
 
 def warning(msg='', exit=1):
     delimiter = '*' * 70
@@ -268,111 +313,6 @@ if running_as_root:
     warning(msg, exit=0)
     
     
-def usage(code, msg=''):
-    print __doc__ % globals()
-    if msg:
-        print msg
-    sys.exit(code)
-
-try:
-    opts, args = getopt.getopt(sys.argv[1:],
-                               'p:u:a:R:A:Fc:C:dVhfbPS:v:t:1',
-                               ['proxyport=',
-                                'username=',
-                                'authfile=',
-                                'remoteauth=',
-                                'authprog=',
-                                'fallback',
-                                'configdir=',
-                                'connections=',
-                                'debug',
-                                'version',
-                                'help',
-                                'foreground',
-                                'background',
-                                'pure-proxy',
-                                'vhome-script=',
-                                'vdomains-path=',
-                                'throttle-script=',
-                                'one-session'])
-except getopt.error, msg:
-    usage(1, msg)
-
-for opt, arg in opts:
-    if opt in ('-h', '--help'):
-        usage(0)
-    if opt == '-V':
-        print Version.ALL
-        sys.exit()
-    if opt == '--version':
-        print Version.TMDA
-        sys.exit()
-    elif opt in ('-d', '--debug'):
-        DEBUGSTREAM = sys.stderr
-    elif opt in ('-F', '--fallback'):
-        fallback = 1
-    elif opt in ('-f', '--foreground'):
-        foreground = 1
-    elif opt in ('-b', '--background'):
-        foreground = 0
-    elif opt in ('-P', '--pure-proxy'):
-        pure_proxy = True
-    elif opt in ('-p', '--proxyport'):
-        proxyport = arg
-    elif opt in ('-u', '--username'):
-        username = arg
-    elif opt in ('-R', '--remoteauth'):
-        # arg is like: imap://host:port
-        try:
-            authproto, arg = arg.split('://', 1)
-        except ValueError:
-            authproto, arg = arg, None
-        if authproto not in defaultauthports.keys():
-            raise ValueError, 'Protocol not supported: ' + authproto + \
-                    '\nPlease pick one of ' + repr(defaultauthports.keys())
-        remoteauth['proto'] = authproto
-        remoteauth['port'] = defaultauthports[authproto]
-        if arg:
-            try:
-                arg, dn = arg.split('/', 1)
-                remoteauth['dn'] = dn
-            except ValueError:
-                dn = ''
-            try:
-                authhost, authport = arg.split(':', 1)
-            except ValueError:
-                authhost = arg
-                authport = defaultauthports[authproto]
-            if authhost:
-                remoteauth['host'] = authhost
-            if authport:
-                remoteauth['port'] = authport
-        print >> DEBUGSTREAM, "auth method: %s://%s:%s/%s" % \
-              (remoteauth['proto'], remoteauth['host'],
-               remoteauth['port'], remoteauth['dn'])
-        remoteauth['enable'] = 1
-    elif opt in ('-A', '--authprog'):
-        authprog = arg
-    elif opt in ('-a', '--authfile'):
-        authfile = arg
-    elif opt in ('-c', '--configdir'):
-        configdir = arg
-    elif opt in ('-C', '--connections'):
-        connections = arg
-    elif opt in ('-S', '--vhome-script'):
-        vhomescript = arg
-    elif opt in ('-v', '--vdomains-path'):
-        vdomainspath = arg
-    elif opt in ('-t', '--throttle-script'):
-        throttlescript = arg
-    elif opt in ('-1', '--one-session'):
-        one_session = True
-
-if vhomescript and configdir:
-    msg = "WARNING: --vhome-script and --config-dir are incompatible." + \
-          "         Ignoring --config-dir."
-    configdir = None
-    warning(msg, exit=0)
 
 
 import asynchat
@@ -434,7 +374,7 @@ def run_authprog(username, password):
     """authprog should return 0 for auth ok, and a positive integer in
     case of a problem."""
     print >> DEBUGSTREAM, "Trying authprog method"
-    cmd = "/bin/sh -c 'exec %s 3<&0'" % (authprog,)
+    cmd = "/bin/sh -c 'exec %s 3<&0'" % (opts.authprog,)
     return pipecmd(cmd, '%s\0%s\0' % (username, password))
 
 
@@ -575,7 +515,7 @@ class SMTPChannel(asynchat.async_chat):
         self.__sasl_types = ['login', 'cram-md5', 'plain']
         # Remove CRAM-MD5 from the published SASL types if using the
         # `--authprog' or `--remoteauth' options. See FAQ 5.8.
-        if remoteauth['enable'] or authprog:
+        if remoteauth['enable'] or opts.authprog:
             self.__sasl_types.remove('cram-md5')
         self.__auth_cram_md5_ticket = '<%s.%s@%s>' % (random.randrange(10000),
                                                       int(time.time()), FQDN)
@@ -597,7 +537,7 @@ class SMTPChannel(asynchat.async_chat):
         # decrypt the data and send it here over a pipe...
         # Note: Whilst tcpserver does provide these variables, the
         # xinetd/stunnel combination does not.
-        if one_session and os.environ.has_key('TCPREMOTEIP'):
+        if opts.one_session and os.environ.has_key('TCPREMOTEIP'):
             self.__peerip = os.environ['TCPREMOTEIP']
             self.__peername = os.environ.get('TCPREMOTEHOST', None)
             if not self.__peername:
@@ -613,7 +553,7 @@ class SMTPChannel(asynchat.async_chat):
             self._local = (self._localip, self._localport)
         else:
             # xinetd (or stunnel?) does at least provide REMOTE_HOST.
-            if one_session and os.environ.has_key('REMOTE_HOST'):
+            if opts.one_session and os.environ.has_key('REMOTE_HOST'):
                 self.__peerip = os.environ['REMOTE_HOST']
                 self.__peerport = ''
                 self.__peer = (self.__peerip, self.__peerport)
@@ -657,15 +597,15 @@ class SMTPChannel(asynchat.async_chat):
             # Try first with the remote auth
             if run_remoteauth(username, password, self._localip):
                 return 1
-        if authprog:
+        if opts.authprog:
             # Then with the authprog
             if run_authprog(username, password) == 0:
                 return 1
         # Now can we fall back on the authfile
-        if (not fallback) and (remoteauth['enable'] or authprog):
+        if (not opts.fallback) and (remoteauth['enable'] or opts.authprog):
             return 0
-        authdict = authfile2dict(authfile)
-        if authdict.get(username.lower(), 0) != password:
+        authdict = authfile2dict(opts.authfile)
+        if authdict.get(username.lower(), 0) <> password:
             return 0
         else:
             return 1
@@ -687,15 +627,15 @@ class SMTPChannel(asynchat.async_chat):
             # Try first with the remote auth
             if run_remoteauth(username, password, self._localip):
                 return 1
-        if authprog:
+        if opts.authprog:
             # Then with the authprog
             if run_authprog(username, password) == 0:
                 return 1
         # Now can we fall back on the authfile
-        if (not fallback) and (remoteauth['enable'] or authprog):
+        if (not opts.fallback) and (remoteauth['enable'] or opts.authprog):
             return 0
-        authdict = authfile2dict(authfile)
-        if authdict.get(username.lower(), 0) != password:
+        authdict = authfile2dict(opts.authfile)
+        if authdict.get(username.lower(), 0) <> password:
             return 0
         else:
             return 1
@@ -710,14 +650,14 @@ class SMTPChannel(asynchat.async_chat):
             username, hexdigest = response.split()
         except ValueError:
             return 0
-        authdict = authfile2dict(authfile)
+        authdict = authfile2dict(opts.authfile)
         password = authdict.get(username.lower(), 0)
         self.__auth_username = username.lower()
         self.__auth_password = password
         if password == 0:
             return 0
         newhexdigest = hmac.HMAC(password, ticket, digestmod=md5).hexdigest()
-        if newhexdigest != hexdigest:
+        if newhexdigest <> hexdigest:
             return 0
         else:
             return 1
@@ -835,7 +775,7 @@ class SMTPChannel(asynchat.async_chat):
                     data.append(text)
             self.__data = NEWLINE.join(data)
 
-            if not throttlescript or not os.system("%s %s" % (throttlescript,
+            if not opts.throttlescript or not os.system("%s %s" % (opts.throttlescript,
                 self.__auth_username)):
                 status = self.__server.process_message(self.__peer,
                                                        self.__mailfrom,
@@ -882,8 +822,8 @@ class SMTPChannel(asynchat.async_chat):
         # to add later.
         rh = []
         rh.append('from %s' % (arg))
-        if ((arg.lower() != self.__peername.lower()) and
-            (self.__peername.lower() != self.__peerip)):
+        if ((arg.lower() <> self.__peername.lower()) and
+            (self.__peername.lower() <> self.__peerip)):
             rh.append('(%s [%s])' % (self.__peername, self.__peerip))
         else:
             rh.append('(%s)' % (self.__peerip))
@@ -910,7 +850,7 @@ class SMTPChannel(asynchat.async_chat):
             address = arg[keylen:].strip()
             if not address:
                 pass
-            elif address[0] == '<' and address[-1] == '>' and address != '<>':
+            elif address[0] == '<' and address[-1] == '>' and address <> '<>':
                 # Addresses can be in the form <person@dom.com> but watch out
                 # for null address, e.g. <>
                 address = address[1:-1]
@@ -1051,10 +991,10 @@ class SMTPServer(asyncore.dispatcher, MessageProcessor):
         self.listen(5)
         print >> DEBUGSTREAM, \
               'tmda-ofmipd started at %s\n\tListening on %s' % \
-              (Util.make_date(), proxyport)
+              (Util.make_date(), opts.proxyport)
 
     def readable(self):
-        if len(asyncore.socket_map) > int(connections):
+        if len(asyncore.socket_map) > opts.connections:
             # too many simultaneous connections
             return 0
         else:
@@ -1139,16 +1079,17 @@ class VDomainProxy(PureProxy):
         # user.
         if running_as_root:
             pid = os.fork()
-            if pid != 0:
+            if pid <> 0:
                 rpid, status = os.wait()
                 # Did tmda-inject succeed?
-                if status != 0:
+                if status <> 0:
                     raise IOError, 'tmda-inject failed!'
                 return
             else:
                 # The 'prepend' is the system user in charge of this virtual
                 # domain.
-                prepend = Util.getvdomainprepend(auth_username, vdomainspath)
+                prepend = Util.getvdomainprepend(auth_username, 
+						 opts.vdomainspath)
                 if not prepend:
                     err = 'Error: "%s" is not a virtual domain' % (domain,)
                     print >> DEBUGSTREAM, err
@@ -1161,14 +1102,14 @@ class VDomainProxy(PureProxy):
                 os.environ['HOME'] = Util.gethomedir(prepend)
         # From here on, we're either in the child (pid == 0) or we're not
         # running as root, so we haven't forked.
-        vhomedir = Util.getvuserhomedir(user, domain, vhomescript)
+        vhomedir = Util.getvuserhomedir(user, domain, opts.vhomescript)
         print >> DEBUGSTREAM, 'vuser homedir: "%s"' % (vhomedir,)
         # This is so "~" will work in the .tmda/* files.
         os.environ['HOME'] = vhomedir
         # change inject_cmd to pass the message through if
         # --pure-proxy was specified and the .tmda/config file is
         # missing.
-        if pure_proxy and not os.path.exists(os.path.join
+        if opts.pure_proxy and not os.path.exists(os.path.join
                                              (vhomedir, '.tmda', 'config')):
             sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
                                or '/usr/sbin/sendmail'
@@ -1188,15 +1129,15 @@ class TMDAProxy(PureProxy):
     """Using this server for outgoing smtpd, the authenticated user
     will have his mail tagged using his TMDA config file."""
     def process_message(self, peer, mailfrom, rcpttos, data, auth_username):
-        if configdir is None:
+        if opts.configdir is None:
             # ~user/.tmda/
             tmda_configdir = os.path.join(os.path.expanduser
                                           ('~' + auth_username), '.tmda')
         else:
             tmda_configdir = os.path.join(os.path.expanduser
-                                          (configdir), auth_username)
+                                          (opts.configdir), auth_username)
         tmda_configfile = os.path.join(tmda_configdir, 'config')
-        if pure_proxy and not os.path.exists(tmda_configfile):
+        if opts.pure_proxy and not os.path.exists(tmda_configfile):
             sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
                                or '/usr/sbin/sendmail'
             inject_cmd = [sendmail_program, '-i', '--'] + rcpttos
@@ -1225,7 +1166,7 @@ class TMDAProxy(PureProxy):
             else:
                 rpid, status = os.wait()
                 # Did tmda-inject succeed?
-                if status != 0:
+                if status <> 0:
                     raise IOError, 'tmda-inject failed!'
         else:
             # no need to fork
@@ -1263,50 +1204,43 @@ class TMDAProxyProcessor(TMDAProxy, SMTPProcessor):
 def main():
     # check permissions of authfile if using only remote
     # authentication.
-    if not (remoteauth['enable'] or authprog) or fallback:
-        authfile_mode = Util.getfilemode(authfile)
+    if not (remoteauth['enable'] or opts.authprog) or opts.fallback:
+        authfile_mode = Util.getfilemode(opts.authfile)
         if authfile_mode not in (400, 600):
             raise IOError, \
-                  authfile + ' must be chmod 400 or 600!'
+		opts.authfile + ' must be chmod 400 or 600!'
     # try binding to the specified host:port
-    host, port = proxyport.split(':', 1)
-    if vhomescript:
-        if one_session:
+    host, port = opts.proxyport.split(':', 1)
+    if opts.vhomescript:
+        if opts.one_session:
             proxy = VDomainProxyProcessor()
         else:
             proxy = VDomainProxyServer((host, int(port)),
                                        ('localhost', 25))
     else:
-        if one_session:
+        if opts.one_session:
             proxy = TMDAProxyProcessor()
         else:
             proxy = TMDAProxyServer((host, int(port)),
                                     ('localhost', 25))
     if running_as_root:
-        pw_uid = Util.getuid(username)
+        pw_uid = Util.getuid(opts.username)
         # check ownership of authfile if using only remote
         # authentication.
-        if not (remoteauth['enable'] or authprog) or fallback:
-            if Util.getfileuid(authfile) != pw_uid:
+        if not (remoteauth['enable'] or opts.authprog) or opts.fallback:
+            if Util.getfileuid(opts.authfile) <> pw_uid:
                 raise IOError, \
-                      authfile + ' must be owned by UID ' + str(pw_uid)
+		    opts.authfile + ' must be owned by UID ' + str(pw_uid)
         # try setegid()
-        os.setegid(Util.getgid(username))
+        os.setegid(Util.getgid(opts.username))
         # try setting the supplemental group ids
-        os.setgroups(Util.getgrouplist(username))
+        os.setgroups(Util.getgrouplist(opts.username))
         # try seteuid()
         os.seteuid(pw_uid)
 
-    # Issue a warning if neither -f nor -b options specified
-    #if foreground is None:
-    #    print "WARNING: you should specify -b",
-    #    print "(background) or -f (foreground) option."
-    #    print "The default (background) behavior",
-    #    print "could be changed in a future version."
-    # Try to fork to go to daemon unless foreground mode
-    if not (foreground or one_session):
+    if not (opts.foreground or opts.one_session):
         signal.signal(signal.SIGHUP, signal.SIG_IGN) # ignore SIGHUP
-        if os.fork() != 0:
+        if os.fork() <> 0:
             sys.exit()
 
     # Start the event loop
