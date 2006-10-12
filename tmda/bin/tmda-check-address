@@ -40,14 +40,14 @@ from TMDA import Version
 
 # option parsing
 
-opt_usage = ("""\
-%prog [options] address [senderaddr]
+opt_usage = \
+"""%prog [options] address [senderaddr]
 
 Check a tagged (dated, keyword, or sender style only) e-mail address.
 
 address is the address you want to check.
     
-senderaddr is the sender address to verify if checking a sender style address.""")
+senderaddr is the sender address to verify if checking a sender style address."""
 
 opt_list = [
     make_option("-c", "--config-file",

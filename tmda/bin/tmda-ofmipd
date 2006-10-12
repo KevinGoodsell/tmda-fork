@@ -72,18 +72,17 @@ defaultauthports = { 'imap': 143,
 
 # option parsing
 
-opt_desc = ("""\
-An authenticated ofmip proxy for TMDA that allows you to 'tag' your
+opt_desc = \
+"""An authenticated ofmip proxy for TMDA that allows you to 'tag' your
 mail client's outgoing mail through SMTP.  For more information,
 including setup and usage instructions, see
-http://wiki.tmda.net/TmdaOfmipdHowto
-""" + "\n")
+http://wiki.tmda.net/TmdaOfmipdHowto""" 
 
 parser = OptionParser(description=opt_desc, version=Version.TMDA)
 
 parser.add_option("-V", 
 		  action="store_true", default=False, dest="full_version",
-		  help="show full TMDA version information and exit")
+		  help="show full TMDA version information and exit.")
 
 # option groups
 gengroup = OptionGroup(parser, "General options")
@@ -106,69 +105,69 @@ gengroup.add_option("-f", "--foreground",
 
 gengroup.add_option("-u", "--username",
 		  dest="username",
-		  help=("""\
-The username that this program should run under.  The default is to
+		  help= \
+"""The username that this program should run under.  The default is to
 run as the user who starts the program unless that is root, in which
 case an attempt to seteuid user 'tofmipd' will be made.  Use this
-option to override these defaults."""))
+option to override these defaults.""")
 
 gengroup.add_option("-c", "--configdir",
 		  metavar="DIR", dest="configdir",
-		  help=("""\
-DIR is the base directory to search for the authenticated user's TMDA
+		  help= \
+"""DIR is the base directory to search for the authenticated user's TMDA
 configuration file in.  This might be useful if you wish to maintain
 TMDA files outside the user's home directory.
 'username/config' will be appended to form the path; e.g, `-c
 /var/tmda' will have tmda-ofmipd search for `/var/tmda/bobby/config'.
 If this option is not used, `~user/.tmda/config' will be assumed, but
-see the --vhome-script option for qmail virtual domain users."""))
+see the --vhome-script option for qmail virtual domain users.""")
 
 # connection
 congroup.add_option("-p", "--proxyport",
 		  default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT", 
-		  dest="proxyport", help=("""\
-The HOST:PORT to listen for incoming connections on.  The default is
+		  dest="proxyport", help= \
+"""The HOST:PORT to listen for incoming connections on.  The default is
 FQDN:8025 (i.e, port 8025 on the fully qualified domain name for the
 local host).  Use '0.0.0.0:PORT' to listen on all available
-interfaces."""))
+interfaces.""")
 
 congroup.add_option("-C", "--connections",
 		  type="int", default="20", metavar="NUM", dest="connections",
-		  help=("""\
-Do not handle more than NUM simultaneous connections. If there are NUM
+		  help= \
+"""Do not handle more than NUM simultaneous connections. If there are NUM
 active connections, defer acceptance of new connections until one
-finishes. NUM must be a positive integer. Default: 20"""))
+finishes. NUM must be a positive integer. Default: 20""")
 
 congroup.add_option("-1", "--one-session",
 		  action="store_true", default=False, dest="one_session",
-		  help=("""\
-Don't bind to a port and accept new connections; Process a single SMTP
+		  help= \
+"""Don't bind to a port and accept new connections; Process a single SMTP
 session on stdin (used both for input & output).  This is useful when
-started from tcpserver or stunnel."""))
+started from tcpserver or stunnel.""")
 
 congroup.add_option("-P", "--pure-proxy",
 		  action="store_true", default=False, dest="pure_proxy",
-		  help=("""\
-Proxy the message straight through to the mail transport system
+		  help= \
+"""Proxy the message straight through to the mail transport system
 unaltered if the user's TMDA config file is missing.  The
 /usr/sbin/sendmail program on the system is used to inject the
 message.  You can override this by setting $TMDA_SENDMAIL_PROGRAM in
 the environment.  This option might be useful when serving a mixed
-environment of TMDA and non-TMDA users."""))
+environment of TMDA and non-TMDA users.""")
 
 congroup.add_option("-t", "--throttle-script",
 		  metavar="/PATH/TO/SCRIPT", dest="throttlescript",
-		  help=("""\
-Full pathname of a script which can meter how much mail any user
+		  help= \
+"""Full pathname of a script which can meter how much mail any user
 sends.  The script is passed a login name whenever a user tries to
 send mail.  If the script returns a 0, the message is allowed.  For
-any other value, the message is rejected."""))
+any other value, the message is rejected.""")
 
 # authentication
 authgroup.add_option("-R", "--remoteauth",
 		  metavar="PROTO://HOST[:PORT][/DN]", dest="remoteauth",
-		  help=("""\
-Protocol and host to check username and password. PROTO can be one of
+		  help= \
+"""Protocol and host to check username and password. PROTO can be one of
 the following: 'imap' (IMAP4 server), 'imaps' (IMAP4 server over SSL),
 'pop3' (POP3 server), 'apop' (POP3 server with APOP authentication),
 'ldap' (LDAP server).  Optional :PORT defaults to the standard port for
@@ -176,12 +175,12 @@ the specified protocol (143 for imap, 993 for imaps, 110 for
 pop3/apop, and 389 for ldap).  /DN is mandatory for ldap and should
 contain a '%%s' identifying the username. Examples: '-R
 imaps://myimapserver.net', '-R pop3://mypopserver.net:2110', '-R
-ldap://example.com/cn=%%s,dc=host,dc=com'"""))
+ldap://example.com/cn=%%s,dc=host,dc=com'""")
 
 authgroup.add_option("-A", "--authprog",
 		  metavar="PROGRAM", dest="authprog",
-		  help=("""\
-A checkpassword compatible command used to check username/password.
+		  help= \
+"""A checkpassword compatible command used to check username/password.
 Examples: '-A "/usr/sbin/checkpassword-pam -s id -- /bin/true"',
 '-A "/usr/local/vpopmail/bin/vchkpw /usr/bin/true"'.
 The program must be able to receive the username/password pair on
@@ -194,47 +193,47 @@ Also, checkpassword-type programs expect to find the name of another
 program to run on their command line.  For tmda-ofmipd's purpose,
 /bin/true is perfectly fine.
 Note the position of the quotes in the Examples, which cause the the
-whole string following the -A to be passed as a single argument."""))
+whole string following the -A to be passed as a single argument.""")
 
 authgroup.add_option("-a", "--authfile",
 		  metavar="FILE", dest="authfile",
-		  help=("""\
-Path to the file holding authentication information for this proxy.
+		  help= \
+"""Path to the file holding authentication information for this proxy.
 Default location is /etc/tofmipd if running as root/tofmipd, otherwise
-~user/.tmda/tofmipd.  Use this option to override these defaults."""))
+~user/.tmda/tofmipd.  Use this option to override these defaults.""")
 
 authgroup.add_option("-F", "--fallback",
 		  action="store_true", default=False, dest="fallback",
-		  help=("""\
-When used with -R or -A, fallback to authenticate against the authfile
+		  help= \
+"""When used with -R or -A, fallback to authenticate against the authfile
 if remote authentication fails.  Note: this flag has no effect on -R
 to -A fallback. If you specify both -R and -A methods, then authprog
-will be tried after remoteauth has failed."""))
+will be tried after remoteauth has failed.""")
 
 # virtual domains
 virtgroup.add_option("-S", "--vhome-script",
 		  metavar="/PATH/TO/SCRIPT", dest="vhomescript",
-		  help=("""\
-Full pathname of a script that prints a virtual email user's home
+		  help= \
+"""Full pathname of a script that prints a virtual email user's home
 directory on standard output.  tmda-ofmipd will read that and use it
 to build the path to the user's config file instead of '~user/.tmda'.
 The script must take two arguments, the user name and the domain, on
 its command line.  This option is for use only with the VPopMail and
 VMailMgr add-ons to qmail.  See the contrib directory for sample
-scripts."""))
+scripts.""")
 
 virtgroup.add_option("-v", "--vdomains-path",
 		  default="/var/qmail/control/virtualdomains", 
 		  metavar="/PATH/TO/FILE", dest="vdomainspath",
-		  help=("""\
-Full pathname to qmail's virtualdomains file.  The default is
+		  help= \
+"""Full pathname to qmail's virtualdomains file.  The default is
 /var/qmail/control/virtualdomains.  This is also tmda-ofmipd's
 default, so you normally won't need to set this parameter.  If you
 have installed qmail somewhere other than /var/qmail, you will need to
 set this so tmda-ofmipd can find the virtualdomains file.  NOTE: This
 is only used when you have a qmail installation with virtual domains
 using the VMailMgr add-on.  It implies that you will also set the
-'--vhome-script' option above."""))
+'--vhome-script' option above.""")
 
 for g in (gengroup, congroup, authgroup, virtgroup):
     parser.add_option_group(g)
