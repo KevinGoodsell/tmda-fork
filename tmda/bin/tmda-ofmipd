@@ -23,7 +23,7 @@
 # Copyright (C) 2001,2002 Python Software Foundation.
 
 
-from optparse import OptionGroup, OptionParser, make_option
+from optparse import OptionGroup, OptionParser
 
 import os
 import signal
