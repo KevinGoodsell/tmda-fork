@@ -19,49 +19,9 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""Generate a tagged e-mail address.
 
-Usage:  %(program)s OPTIONS
+from optparse import OptionParser, make_option
 
-OPTIONS:
-	-h
-	--help
-	   Print this help message and exit.
-
-	-V
-	--version
-	   Print TMDA version information and exit.
-
-	-c <file>
-	--config-file <file>
-	   Specify a configuration file other than the default.
-
-	-a <address>
-	--address <address>
-	   Specify a different address as the basis for the tagged address.
-	   
-	-n
-	--no-newline
-	   Do not print a newline after the address.
-
-	-k <keyword>
-	--keyword <keyword>
-	   Generate a keyword-style tagged address.  keyword is
-	   a required keyword string.
-
-	-s <address>
-	--sender <address>
-	   Generate a sender-style tagged address.  address is
-	   a required sender e-mail address or domain name.
-
-	-d [timeout]
-	--dated [timeout]
-	   Generate a dated-style tagged address.  timeout is an
-	   optional timeout interval to override your default.
-	   See the output of tmda-pending -h for syntax of timeout.
-"""
-
-import getopt
 import os
 import sys
 
@@ -75,97 +35,109 @@ except ImportError:
 
 from TMDA import Version
 
-program = sys.argv[0]
+# option parsing
 
-def usage(code, msg=''):
-    print __doc__ % globals()
-    if msg:
-        print msg
-    sys.exit(code)
+opt_desc = \
+"""Generate a tagged e-mail address and print it to stdout.  If no
+options are specified, a dated-style address is generated."""
 
-def processOpts(args):
-    opts = None
-    try:
-	opts, args = getopt.getopt(args,
-                                   'c:a:dk:s:hVn', ['config-file=',
-                                                    'address=',
-                                                    'dated',
-                                                    'keyword=',
-                                                    'sender=',
-                                                    'help',
-                                                    'version',
-                                                    'no-newline'])
-    except getopt.error, msg:
-	usage(1, msg)
-    return (opts, args)
+opt_list = [
+    make_option("-c", "--config-file",
+                metavar="FILE", dest="config_file",
+                help= \
+"""Specify a different configuration file other than ~/.tmda/config"""),
+    
+    make_option("-n", "--no-newline",
+                action="store_false", default=True, dest="print_newline",
+                help= \
+"""Do not print a newline after the address, which is often useful
+when calling tmda-address from another program."""),
+   
+    make_option("-a", "--address",
+                dest="address",
+                help= \
+"""Use this address as the basis for the tagged address, otherwise
+your default email address will be used."""),
+    
+    make_option("-k", "--keyword",
+                dest="keyword",
+                help="Generate a keyword-style tagged address based on KEYWORD."),
+    
+    make_option("-s", "--sender",
+                metavar="ADDRESS", dest="sender",
+                help= \
+"""Generate a sender-style tagged address.  ADDRESS can either be an
+email address or a domain name."""),
+ 
+    make_option("-d", "--dated",
+                action="store_true", default=False, dest="dated",
+                help= \
+"""Generate a dated-style tagged address using your default timeout
+value which comes from the DATED_TIMEOUT variable in your
+configuration (5 days by default).  You can specify a different
+timeout using the '-t/--timeout' option below."""),
+    
+    make_option("-t", "--timeout",
+                metavar="TIMEOUT", dest="dated_timeout",
+                help= \
+"""Generate a dated-style taggedd address using the timeout value
+TIMEOUT, which is a number followed by a unit of time -- seconds (s),
+minutes (m), hours (h), days (d), weeks (w), months (M), or years (Y).
+e.g, '5d' for a 5 day timeout, and '24h' for 24 hours.  This option
+assumes '-d/--dated'."""),
 
-opts, args = processOpts(sys.argv[1:])
-address = None
-tag = 'dated'
-option = None
-print_newline = 1
+    make_option("-V", 
+                action="store_true", default=False, dest="full_version",
+                help="show full TMDA version information and exit"),
+    ]
 
-for opt, arg in opts[:]:
-    if opt in ('-c', '--config-file'):
-        os.environ['TMDARC'] = arg
-	opts.remove((opt, arg))
+parser = OptionParser(option_list=opt_list, description=opt_desc, 
+                      version=Version.TMDA)
+(opts, args) = parser.parse_args()
+
+if opts.full_version:
+    print Version.ALL
+    sys.exit()
+if opts.config_file:
+    os.environ['TMDARC'] = opts.config_file
+
 
 from TMDA import Defaults
 
-while len(opts) > 0:
-    for opt, arg in opts[:]:
-	if opt in ('-h', '--help'):
-	    usage(0)
-	if opt == '-V':
-	    print Version.ALL
-	    sys.exit()
-	if opt == '--version':
-	    print Version.TMDA
-	    sys.exit()
-	elif opt in ('-a', '--address'):
-	    address = arg
-	elif opt in ('-d', '--dated'):
-	    tag = Defaults.TAGS_DATED[0].lower()
-	    option = None
-	    try:                        # check for timeout override
-		os.environ['TMDA_TIMEOUT'] = args[0]
-	    except IndexError:
-		pass
-	    for tmparg in args[:]:
-                if tmparg[0] == '-':
-		    break
-		args.remove(tmparg)
-	    moreOpts, args = processOpts(args)
-	    opts.extend(moreOpts)
-	elif opt in ('-k', '--keyword'):
-	    tag = Defaults.TAGS_KEYWORD[0].lower()
-	    option = arg
-	elif opt in ('-s', '--sender'):
-	    tag = Defaults.TAGS_SENDER[0].lower()
-	    option = arg
-	elif opt in ('-n', '--no-newline'):
-	    print_newline = 0
-	opts.remove((opt, arg))
 
+# default is a 'dated' address
+tag = 'dated'
+option = None
+
+if opts.keyword:
+    tag = Defaults.TAGS_KEYWORD[0].lower()
+    option = opts.keyword
+elif opts.sender:
+    tag = Defaults.TAGS_SENDER[0].lower()
+    option = opts.sender
+elif opts.dated or opts.dated_timeout:
+    tag = Defaults.TAGS_DATED[0].lower()
+    if opts.dated_timeout:
+        os.environ['TMDA_TIMEOUT'] = opts.dated_timeout
+    
 
 from TMDA import Cookie
 from TMDA import Address
 
-def main():
-    global address, tag, option, print_newline
 
+def main():
     try:
-        tagged_address = Address.Factory(tag = tag).create(address, option).address
+        tagged_address = Address.Factory(tag = tag).create(opts.address, option).address
     except ValueError, msg:
-        usage(msg)
-        sys.exit(0)
+        parser.error(msg)
 
     if not tagged_address:
-        usage(0)
+        parser.error('invalid usage')
+        parser.print_help()
 
     sys.stdout.write(tagged_address)
 
-    if print_newline:
+    if opts.print_newline:
         sys.stdout.write("\n")
     
 # This is the end my friend.
