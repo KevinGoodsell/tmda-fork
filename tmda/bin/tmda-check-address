@@ -71,7 +71,7 @@ if opts.full_version:
 if opts.config_file:
      os.environ['TMDARC'] = opts.config_file
 if len(args) < 1:
-    parser.error('ADDRESS is required.')
+    parser.error('ADDRESS to check is required.')
 
 
 from TMDA import Defaults
