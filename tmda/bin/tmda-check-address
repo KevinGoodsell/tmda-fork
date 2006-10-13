@@ -40,14 +40,13 @@ from TMDA import Version
 
 # option parsing
 
-opt_usage = \
-"""%prog [options] address [senderaddr]
+opt_usage = "%prog [options] ADDRESS [SENDER]"
 
-Check a tagged (dated, keyword, or sender style only) e-mail address.
-
-address is the address you want to check.
-    
-senderaddr is the sender address to verify if checking a sender style address."""
+opt_desc = \
+"""Check a tagged (dated, keyword, or sender style only) e-mail
+address.  Required 'ADDRESS' is the address you want to check. Optional
+'SENDER' is the sender address to verify if checking a sender-style
+address."""
 
 opt_list = [
     make_option("-c", "--config-file",
@@ -62,19 +61,22 @@ opt_list = [
                 help="show full TMDA version information and exit"),
     ]
 
-parser = OptionParser(option_list=opt_list, version=Version.TMDA, usage=opt_usage)
+parser = OptionParser(option_list=opt_list, version=Version.TMDA, 
+                      usage=opt_usage, description=opt_desc)
 (opts, args) = parser.parse_args()
 
 if opts.full_version:
     print Version.ALL
     sys.exit()
-
 if opts.config_file:
      os.environ['TMDARC'] = opts.config_file
+if len(args) < 1:
+    parser.error('ADDRESS is required.')
 
 
 from TMDA import Defaults
 from TMDA import Address
+
 
 def formattime(timestamp):
     if opts.localtime:
