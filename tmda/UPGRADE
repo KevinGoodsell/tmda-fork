@@ -5,6 +5,14 @@ this file.
 
 If you are upgrading from a release of TMDA < 1.1.8:
 
+* The '-d/--dated' option to the 'tmda-address' command no longer
+  accepts an optional timeout value.  '-d' now expects no arguments,
+  and means "Generate a dated-style address using my default timeout".
+  To specify a specific timeout value, use the '-t/--timeout' (which
+  assumes '-d') option instead.  If you previously used '-d TIMEOUT',
+  you can now get the same behavior by using '-t TIMEOUT'.  See
+  'tmda-address -h' for more information.
+
 * If you use tmda-cgi, you'll need to upgrade to at least
   tmda-cgi-0.15 to use this release of TMDA with it.
 
