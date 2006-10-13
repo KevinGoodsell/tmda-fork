@@ -85,10 +85,10 @@ parser.add_option("-V",
 		  help="show full TMDA version information and exit.")
 
 # option groups
-gengroup = OptionGroup(parser, "General options")
-congroup = OptionGroup(parser, "Connection options")
-authgroup = OptionGroup(parser, "Authentication options")
-virtgroup = OptionGroup(parser, "Virtual Domains options")
+gengroup = OptionGroup(parser, "General")
+congroup = OptionGroup(parser, "Connection")
+authgroup = OptionGroup(parser, "Authentication")
+virtgroup = OptionGroup(parser, "Virtual Domains")
     
 # general
 gengroup.add_option("-d", "--debug",
