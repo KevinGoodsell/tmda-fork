@@ -1,9 +1,10 @@
 2006-10-12  Jason R. Mastaler  <jason@mastaler.com>
 
-	* tmda-address: Migrate from getopt to optparse.
+	* tmda-pending: Migrate from getopt to optparse.
 
-	Add new option '-t/--timeout'.  '-d/--dated' no longer accepts an
-	optional argument.
+	* tmda-address: Migrate from getopt to optparse.  Also add new
+	option '-t/--timeout'.  '-d/--dated' no longer accepts an optional
+	argument.
 
 2006-10-11  Jason R. Mastaler  <jason@mastaler.com>
 
