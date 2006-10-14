@@ -40,9 +40,13 @@ from TMDA import Version
 
 # option parsing
 
-opt_usage = "%prog [options] [messages ... | - ]"
+opt_usage = "%prog [OPTIONS] [MESSAGES ... | - ]"
 
-opt_desc = "A TMDA pending queue manipulation tool."
+opt_desc = \
+"""A TMDA pending queue manipulation tool. If one or more MESSAGES are
+provided as arguments, operate just on them.  If `-' is specified,
+operate on a list of messages provided by standard input. Otherwise,
+operate on all messages in the pending queue."""
 
 parser = OptionParser(version=Version.TMDA, usage=opt_usage, description=opt_desc)
 
