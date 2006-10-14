@@ -19,76 +19,9 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""Filter incoming messages on standard input.
 
-Usage:  %(program)s [OPTIONS]
+from optparse import OptionParser, make_option
 
-OPTIONS:
-	-h
- 	--help
-	   Print this help message and exit.
-
-        -V
-        --version
-           Print TMDA version information and exit.
-           
-	-c <file>
-	--config-file <file>
-	   Specify a different configuration file other than ~/.tmda/config.
-
-        -d
-	--discard
-	   Discard message if address is invalid instead of bouncing it.
-
-        -e
-        --environ <VAR=value>
-           Add the following var/value pair to the environment.
-
-        -p
-        --print
-           Print the message to stdout.  This option is useful when TMDA is run
-           as a filter in maildrop or procmail.  It overrides all other
-           delivery options, even if a specific delivery is given in a matching
-           rule.
-
-           If the message is delivered, TMDA's exit code is 0.  If the message
-           is dropped, bounced or a confirmation request is sent, the exit code
-           will be 99.  You can use the exit code in maildrop/procmail to
-           decide if you want to perform further processing.
-
-        -t <dir>
-        --template-dir <dir>
-	   Full pathname to a directory containing custom TMDA templates.
-
-        -I <file>
-        --filter-incoming-file <file>
-           Full pathname to your incoming filter file.  Overrides FILTER_INCOMING
-           in ~/.tmda/config.
-           
-        -M <recipient> <sender>
-        --filter-match <recipient> <sender>
-           Check whether the given e-mail addresses match a line in your incoming
-           filter and then exit.  The first address given should be the message
-           recipient (you), and the second is the sender.  This option will also
-           check for parsing errors in the filter file.
-	   
-        -S <script>
-	--vhome-script <script>
-        
-	   Full pathname of script that prints a virtual email user's
-	   home directory on standard output.  tmda-filter will read
-	   that path and set $HOME to that path so that '~' expansion
-	   works properly for virtual users.
-
-	   The script takes two arguments, the user name and the
-	   domain, on its command line.
-
-	   This option is for use only with the VPopMail and VMailMgr
-	   add-ons to qmail.  See the tmda0.XX/contrib directory for
-	   sample scripts.
-"""
-
-import getopt
 import os
 import sys
 import stat
@@ -103,17 +36,6 @@ except ImportError:
 
 from TMDA import Version
 
-
-filter_match = None
-discard = None
-act_as_filter = 0
-program = sys.argv[0]
-
-def usage(code, msg=''):
-    print __doc__ % globals()
-    if msg:
-        print msg
-    sys.exit(code)
 
 # If -S / --vhome-script flag is given on command line, use it to determine the
 # virtual user's home directory and set $HOME to that, so that '~' refers to
@@ -137,51 +59,96 @@ def setvuserhomedir(vhomescript):
     else:  # didn't find username
         sys.exit(0)
 
-try:
-    opts, args = getopt.getopt(sys.argv[1:],
-                            'c:de:pt:I:M:S:Vh', ['config-file=',
-						 'discard',
-						 'environ=',
-						 'print',
-						 'template-dir=',
-						 'filter-incoming-file=',
-						 'filter-match=',
-						 'vhome-script=',
-						 'version',
-						 'help'])
-except getopt.error, msg:
-    usage(1, msg)
+# option parsing
 
-for opt, arg in opts:
-    if opt in ('-h', '--help'):
-        usage(0)
-    if opt == '-V':
-        print Version.ALL
-        sys.exit()
-    if opt == '--version':
-        print Version.TMDA
-        sys.exit()
-    elif opt in ('-M', '--filter-match'):
-	filter_match = 1
-    elif opt in ('-I', '--filter-incoming-file'):
-	os.environ['TMDA_FILTER_INCOMING'] = arg
-    elif opt in ('-t', '--template-dir'):
-        os.environ['TMDA_TEMPLATE_DIR'] = arg
-    elif opt in ('-d', '--discard'):
-	discard = 1
-    elif opt in ('-p', '--print'):
-        act_as_filter = 1
-    elif opt in ('-c', '--config-file'):
-        os.environ['TMDARC'] = arg
-    elif opt in ('-e', '--environ'):
-        try:
-            key, value = arg.split('=',1)
-	    os.environ[key] = value
-        except KeyError:
-            usage(1, 'bad environment key-value pair %s' % arg)
-    elif opt in ('-S', '--vhome-script'):
-        if os.environ.has_key('EXT') and os.environ.has_key('HOST'):
-            setvuserhomedir(arg)
+opt_desc = "Filter incoming messages on standard input."
+
+opt_list = [
+    make_option("-c", "--config-file",
+                metavar="FILE", dest="config_file",
+                help= \
+"""Specify a different configuration file other than ~/.tmda/config"""),
+
+    make_option("-t", "--template-dir",
+                metavar="DIR", dest="template_dir",
+                help= \
+"""Full pathname to a directory containing custom TMDA templates."""),
+
+   make_option("-I", "--filter-incoming-file",
+                metavar="FILE", dest="filter_incoming",
+                help= \
+"""Full pathname to your incoming filter file.  Overrides
+FILTER_INCOMING in ~/.tmda/config."""),
+
+    make_option("-e", "--environ",
+                metavar="VAR=VAL", dest="environ",
+                help= \
+"""Add an environment variable on the command line.  VAR is the name
+of the variable, and VAL, separated by an '=', is its value.  There
+should be no whitespace before or after the '='."""),
+
+    make_option("-d", "--discard",
+                action="store_true", dest="discard",
+                help= \
+"""Discard message if address is invalid instead of bouncing it."""),
+
+    make_option("-p", "--print",
+                action="store_true", default=False, dest="act_as_filter",
+                help= \
+"""Print the message to stdout.  This option is useful when TMDA is
+run as a filter in maildrop or procmail.  It overrides all other
+delivery options, even if a specific delivery is given in a matching
+rule. If the message is delivered, TMDA's exit code is 0.  If the
+message is dropped, bounced or a confirmation request is sent, the
+exit code will be 99.  You can use the exit code in maildrop/procmail
+to decide if you want to perform further processing."""),
+
+    make_option("-S", "--vhome-script",
+                metavar="SCRIPT", dest="vhomescript",
+                help= \
+"""Full pathname of SCRIPT that prints a virtual email user's home
+directory on standard output.  tmda-filter will read that path and set
+$HOME to that path so that '~' expansion works properly for virtual
+users.  The script takes two arguments, the user name and the domain,
+on its command line.  This option is for use only with the VPopMail
+and VMailMgr add-ons to qmail.  See the contrib/ directory for
+sample scripts."""),
+
+    make_option("-M", "--filter-match",
+                nargs=2, metavar="RECIP SENDER", dest="filter_match",
+                help= \
+"""Check whether the given e-mail addresses match a line in your
+ incoming filter and then exit.  The first address given should be the
+ message recipient (you), and the second is the sender.  This option
+ will also check for parsing errors in the filter file."""),
+
+    make_option("-V",
+                action="store_true", default=False, dest="full_version",
+                help="show full TMDA version information and exit"),
+    ]
+
+parser = OptionParser(option_list=opt_list, description=opt_desc, 
+                      version=Version.TMDA)
+(opts, args) = parser.parse_args()
+
+if opts.full_version:
+    print Version.ALL
+    sys.exit()
+if opts.config_file:
+    os.environ['TMDARC'] = opts.config_file
+if opts.template_dir:
+    os.environ['TMDA_TEMPLATE_DIR'] = opts.template_dir
+if opts.filter_incoming:
+    os.environ['TMDA_FILTER_INCOMING'] = opts.filter_incoming
+if opts.environ:
+    try:
+        key, value = opts.environ.split('=', 1)
+        os.environ[key] = value
+    except (KeyError, ValueError):
+        parser.error('bad environment key-value pair - "%s"' % opts.environ)
+if opts.vhomescript:
+    if os.environ.has_key('EXT') and os.environ.has_key('HOST'):
+        setvuserhomedir(opts.vhomescript)
 
 
 # Defer the delivery if the sticky bit is set on $HOME (chmod +t).
@@ -215,13 +182,13 @@ import time
 
 # Just check Defaults.FILTER_INCOMING for syntax errors and possible
 # matches, and then exit.
-if filter_match:
-    sender = sys.argv[-1]
-    recip = sys.argv[-2]
+if opts.filter_match:
+    sender = opts.filter_match[-1]
+    recip = opts.filter_match[-2] 
     Util.filter_match(Defaults.FILTER_INCOMING, recip, sender)
     sys.exit()
 
-if act_as_filter:
+if opts.act_as_filter:
     Defaults.DELIVERY = '_filter_'
 
 TIME = time.time()
@@ -672,7 +639,7 @@ def verify_keyword_cookie(keyword_cookie):
 def bouncegen(mode, template=None):
     """Bounce a message back to sender."""
     # Stop right away if --discard was specified.
-    if discard:
+    if opts.discard:
         mta.stop()
     # Common variables.
     recipient_address = globals().get('recipient_address')
