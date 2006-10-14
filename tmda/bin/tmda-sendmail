@@ -70,7 +70,7 @@ for opt, arg in opts:
     elif opt in list('BpvixmeoEJ'):
         pass 
     elif opt == '-t':
-        header_recipients = 1
+        header_recipients = True
     elif opt == '-f':
         pass
     elif opt == '-F':
@@ -83,7 +83,7 @@ def main():
     if args and not header_recipients:
         for a in args:
             arglist.append(a)
-    os.execv(os.path.join(execdir,'tmda-inject'), arglist)
+    os.execv(os.path.join(execdir, 'tmda-inject'), arglist)
 
 
 # This is the end my friend.
