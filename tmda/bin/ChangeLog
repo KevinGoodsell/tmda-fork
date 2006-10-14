@@ -1,6 +1,7 @@
 2006-10-13  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-rfilter: Migrate from getopt to optparse.
+	* tmda-inject: Ditto.
 
 2006-10-12  Jason R. Mastaler  <jason@mastaler.com>
 

@@ -19,50 +19,9 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""Tag and send outgoing messages.
 
-Usage:  %(program)s [OPTIONS] [ recip ... ]
+from optparse import OptionParser, make_option
 
-OPTIONS:
-	-h
-	--help
-	   Print this help message and exit.
-
-        -V
-        --version
-           Print TMDA version information and exit.
-           
-	-c <file>
-	--config-file <file>
-	   Specify a different configuration file other than ~/.tmda/config.
-
-        -f <sender>
-           This option is silently ignored currently.
-
-        -q
-        --qfilter
-           Return 99 to qfilter so it will not run qmail-queue itself.
-
-        -O <file>
-        --filter-outgoing-file <file>
-           Full pathname to your outgoing filter file.  Overrides
-           FILTER_OUTGOING in ~/.tmda/config.
-
-        -M <recipient> <sender>
-        --filter-match <recipient> <sender>
-           Check whether the given e-mail address matches a line in
-           your outgoing filter and then exit.  The first address
-           given should be the message recipient, and the second is
-           the sender (you).  This option will also check for parsing
-           errors in the filter file.
-           
-	recip
-	   If one or more recipients are provided, send the message to
-	   all recip arguments.  If none are provided, send the message
-	   to all header recipient addresses.
-"""
-
-import getopt
 import os
 import sys
 
@@ -77,46 +36,62 @@ except ImportError:
 from TMDA import Version
 
 
-filter_match = None
-qfilter = None
-program = sys.argv[0]
+# option parsing
 
-def usage(code, msg=''):
-    print __doc__ % globals()
-    if msg:
-        print msg
-    sys.exit(code)
-    
-try:
-    opts, args = getopt.getopt(sys.argv[1:],
-                               'c:O:M:qVhf:', ['config-file=',
-                                               'filter-outgoing-file=',
-                                               'filter-match=',
-                                               'qfilter',
-                                               'version',
-                                               'help'])
-except getopt.error, msg:
-    usage(1, msg)
+opt_usage = "%prog [OPTIONS] [ RECIP ... ]"
 
-for opt, arg in opts:
-    if opt in ('-h', '--help'):
-        usage(0)
-    if opt == '-V':
-        print Version.ALL
-        sys.exit()
-    if opt == '--version':
-        print Version.TMDA
-        sys.exit()
-    elif opt in ('-M', '--filter-match'):
-	filter_match = 1
-    elif opt in ('-O', '--filter-outgoing-file'):
-	os.environ['TMDA_FILTER_OUTGOING'] = arg
-    elif opt in ('-c', '--config-file'):
-        os.environ['TMDARC'] = arg
-    elif opt in ('-q', '--qfilter'):
-        qfilter = 99
-    elif opt == '-f':
-        pass
+opt_desc = \
+"""Tag and send outgoing messages from a MUA. If one or more
+recipients are provided, send the message to all RECIP arguments.
+If none are provided, send the message to all header recipient
+addresses."""
+
+opt_list = [
+    make_option("-c", "--config-file",
+                metavar="FILE", dest="config_file",
+                help= \
+"""Specify a different configuration file other than ~/.tmda/config"""),
+
+    make_option("-O", "--filter-outgoing-file",
+                metavar="FILE", dest="filter_outgoing",
+                help= \
+"""Full pathname to your outgoing filter file. Overrides
+FILTER_OUTGOING in ~/.tmda/config."""),
+
+    make_option("-f",
+                metavar="SENDER", dest="sender",
+                help="This option is silently ignored currently."),
+
+    make_option("-q", "--qfilter",
+                action="store_true", dest="qfilter",
+                help= \
+"""Return 99 to qfilter so it will not run qmail-queue itself. A qmail
+only option."""),
+
+   make_option("-M", "--filter-match",
+               nargs=2, metavar="RECIP SENDER", dest="filter_match",
+               help= \
+"""Check whether the given e-mail address matches a line in your
+outgoing filter and then exit.  The first address given should be the
+message recipient, and the second is the sender (you).  This option
+will also check for parsing errors in the filter file."""),
+
+    make_option("-V", 
+                action="store_true", default=False, dest="full_version",
+                help="show full TMDA version information and exit"),
+    ]
+
+parser = OptionParser(option_list=opt_list, description=opt_desc, 
+                      usage=opt_usage, version=Version.TMDA)
+(opts, args) = parser.parse_args()
+
+if opts.full_version:
+    print Version.ALL
+    sys.exit()
+if opts.config_file:
+    os.environ['TMDARC'] = opts.config_file
+if opts.filter_outgoing:
+    os.environ['TMDA_FILTER_OUTGOING'] = opts.filter_outgoing
 
 
 from TMDA import Cookie
@@ -131,9 +106,9 @@ import string
 
 # Just check Defaults.FILTER_OUTGOING for syntax errors and possible
 # matches, and then exit.
-if filter_match:
-    sender = sys.argv[-1]
-    recip = sys.argv[-2]
+if opts.filter_match:
+    sender = opts.filter_match[-1]
+    recip = opts.filter_match[-2]
     Util.filter_match(Defaults.FILTER_OUTGOING, recip, sender)
     sys.exit()
 
@@ -475,8 +450,8 @@ def main():
                        orig_msgout_body_as_raw_string,
                        actions,
                        log_msg)
-    if qfilter:
-        sys.exit(qfilter)
+    if opts.qfilter:
+        sys.exit(99)
     else:
         sys.exit(Defaults.EX_OK)
 
