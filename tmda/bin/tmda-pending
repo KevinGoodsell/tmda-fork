@@ -37,8 +37,20 @@ import email
 
 from TMDA import Version
 
-
 # option parsing
+
+# We need to subclass OptionParser here in order to print text after
+# the help message.  An 'epilogue' attribute to OptionParser was added
+# in Python 2.5, so in the future, when we require Python >= 2.5, we
+# can use that instead.
+
+class MyOptionParser(OptionParser):
+    def format_help(self, *args, **kwargs):
+        result = OptionParser.format_help(self, *args, **kwargs)
+        if hasattr(self, 'trailer'):
+            return "%s\n%s\n" % (result, self.trailer)
+        else:
+            return result
 
 opt_usage = "%prog [OPTIONS] [MESSAGES ... | - ]"
 
@@ -48,7 +60,35 @@ provided as arguments, operate just on them.  If `-' is specified,
 operate on a list of messages provided by standard input. Otherwise,
 operate on all messages in the pending queue."""
 
-parser = OptionParser(version=Version.TMDA, usage=opt_usage, description=opt_desc)
+parser = MyOptionParser(version=Version.TMDA, usage=opt_usage, description=opt_desc)
+
+parser.trailer = \
+"""examples:
+
+  (interactively operate on all pending messages)
+  $ tmda-pending
+
+  (get a summary listing of all pending messages)
+  $ tmda-pending -T -b
+
+  (interactively operate on just these messages)
+  $ tmda-pending 1012182077.5803 1012939546.7870
+
+  (immediately release these messages from the pending queue)
+  $ tmda-pending -b -r 1012182077.5803 1012939546.7870
+
+  (immediately release any messages with `foobar' in them)
+  $ tmda-pending -b -T | grep foobar | awk '{print $1}' | $ tmda-pending -b -r -
+
+  (immediately delete all messages from the pending queue)
+  $ tmda-pending -b -d
+
+  (silently and immediately delete all messages older than 30 days)
+  $ tmda-pending -q -b -d -O 30d
+    
+  (mail a summary report of all new pending messages)
+  $ tmda-pending -C -b -s | mail -s 'TMDA pending summary' jason
+"""
 
 parser.add_option("-V", 
 		  action="store_true", default=False, dest="full_version",
