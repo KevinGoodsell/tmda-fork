@@ -26,7 +26,7 @@ import platform
 
 
 # TMDA version
-TMDA = "1.1.7+"
+TMDA = "1.1.8"
 
 # TMDA version codename
 CODENAME = "Imperial"

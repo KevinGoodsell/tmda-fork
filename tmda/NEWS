@@ -5,6 +5,16 @@ file in this directory as well.
 
 ======================================================================
 
+TMDA 1.1.8 "Imperial" --
+
+* TMDA's internal copy of the Python email package has been upgraded
+  to v4.0.1.
+
+* The bin/tmda-* programs have been revamped to use Python's new
+  'optparse' library.
+
+======================================================================
+
 TMDA 1.1.7 "Hazelburn" --
 
 * TMDA can now optionally store unconfirmed messages in a "Maildir"
