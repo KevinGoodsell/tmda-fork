@@ -1,3 +1,15 @@
+2006-10-16  Jim Ramsay      <i.am@jimramsay.com>
+
+	* Version 0.15 is released
+
+2006-10-11  Jim Ramsay      <i.am@jimramsay.com>
+
+	* Various international character set fixes
+
+2006-10-10  Jim Ramsay      <i.am@jimramsay.com>
+
+	* Changes for new python email package in TMDA-1.1.8 and later
+
 2006-10-03  Jim Ramsay      <i.am@jimramsay.com>
 
 	* Now supports the new pending queue in TMDA-1.1.6 and later
