@@ -184,18 +184,18 @@ class Template:
 
     RetVal = ""
     for HTML in self.HTML:
-      if type(HTML) == StringType:
+      if isinstance(HTML, Template):
+        RetVal += str(HTML)
+      else:
         if self.BeenExpanded:
           RetVal += HTML
         else:
           RetVal += self.LonePctSearch.sub(self.LonePctRepl, HTML) % self.Dict
-      else:
-        RetVal += str(HTML)
     return RetVal
 
   def UpdateItems(self, Target):
     for i in range(len(self.HTML)):
-      if type(self.HTML[i]) != StringType:
+      if isinstance(self.HTML[i], Template):
         if self.HTML[i].Name:
           self.HTML[i].BoilerPlate.UpdateItems(self.HTML[i])
           Target.Items[self.HTML[i].Name] = self.HTML[i]
@@ -215,7 +215,12 @@ class Template:
 
     # Find the start tag
     for i in range(len(self.HTML)):
-      if type(self.HTML[i]) == StringType:
+      if isinstance(self.HTML[i], Template):
+        RetVal = self.HTML[i][Var]
+        if RetVal:
+          self.UpdateItems(self)
+          return RetVal
+      else:
         Match = self.SearchDict[Var].search(self.HTML[i])
         if Match:
           # Is it an all-in-one tag?
@@ -230,7 +235,7 @@ class Template:
               [self.HTML[i][:Match.start()], self.HTML[i][Match.end():]]
             # Now search for the end tag
             for j in range(i+1, len(self.HTML)):
-              if type(self.HTML[j]) == StringType:
+              if not isinstance(self.HTML[j], Template):
                 Match = self.VarEndSearch.search(self.HTML[j])
                 if Match:
                   # Found end tag, split off text after it
@@ -244,22 +249,17 @@ class Template:
                   self.UpdateItems(self)
                   return self.HTML[i+1]
           raise KeyError, "Can't find end tag for variable: %s" % Var
-      else:
-        RetVal = self.HTML[i][Var]
-        if RetVal:
-          self.UpdateItems(self)
-          return RetVal
     return None
 
   def Expand(self, Dict):
     "Expand any %(<name>)s references in self."
     for i in range(len(self.HTML)):
-      if type(self.HTML[i]) == StringType:
+      if isinstance(self.HTML[i], Template):
+        self.HTML[i].Expand(Dict)
+      else:
         if not self.BeenExpanded:
           self.HTML[i] = \
             self.LonePctSearch.sub(self.LonePctRepl, self.HTML[i]) % Dict
-      else:
-        self.HTML[i].Expand(Dict)
     self.BeenExpanded = 1
     return self
 
