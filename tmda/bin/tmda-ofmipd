@@ -50,6 +50,8 @@ class Devnull:
 program = sys.argv[0]
 
 FQDN = socket.getfqdn()
+if FQDN == 'localhost':
+    FQDN = socket.gethostname()
 
 if os.getuid() == 0:
     running_as_root = True
