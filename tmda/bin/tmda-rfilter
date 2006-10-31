@@ -117,10 +117,11 @@ sample scripts."""),
     make_option("-M", "--filter-match",
                 nargs=2, metavar="RECIP SENDER", dest="filter_match",
                 help= \
-"""Check whether the given e-mail addresses match a line in your
- incoming filter and then exit.  The first address given should be the
- message recipient (you), and the second is the sender.  This option
- will also check for parsing errors in the filter file."""),
+
+"""Check whether the given e-mail addresses matches a line in your
+incoming filter and then exit. The first address given should be the
+message recipient (you), and the second is the sender. This option
+will also check for parsing errors in the filter file."""),
 
     make_option("-V",
                 action="store_true", default=False, dest="full_version",
