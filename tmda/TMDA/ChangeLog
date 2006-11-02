@@ -1,3 +1,8 @@
+2006-10-27  Mark Horn  <mark@hornclan.com>
+
+	* Defaults.py: added additional description to
+	ACTION_EXPIRED_DATED
+	
 2006-10-07  Jason R. Mastaler  <jason@mastaler.com>
 
 	* pythonlib/email: Sync up with email 4.0.1.

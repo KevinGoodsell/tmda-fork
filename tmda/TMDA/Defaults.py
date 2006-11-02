@@ -667,8 +667,9 @@ if not vars().has_key('ACTION_FAIL_DATED'):
 
 # ACTION_EXPIRED_DATED
 # Specifies how incoming messages should be disposed of if they are
-# sent to an expired dated address.
-# Possible values include:
+# sent to an expired dated address. You can specify a single action to
+# take by setting this variable to a string, in which case possible
+# values include:
 #
 # "bounce"
 #    bounce the message - uses the bounce_expired_dated.txt template.
@@ -681,7 +682,18 @@ if not vars().has_key('ACTION_FAIL_DATED'):
 # "hold"
 #    silently hold message in pending queue
 #
-# Default is confirm
+# This can also be a dictionary if you want to handle different ages
+# of expired dated messages in different ways.
+#
+# Examples:
+#
+# ACTION_EXPIRED_DATED = {
+#     'default':'confirm', # default is to confirm, unless
+#     '1w':     'bounce',  # ...it expired more than 1w ago, then bounce
+#     '30d':    'hold',    # ...it expired more than 30d ago, then hold
+#     '1Y':     'drop'}    # ...it expired more than 1Y ago, then drop
+# 
+# Default is "confirm"
 if not vars().has_key('ACTION_EXPIRED_DATED'):
     ACTION_EXPIRED_DATED = "confirm"
 

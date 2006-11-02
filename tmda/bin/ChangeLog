@@ -3,6 +3,10 @@
 	* tmda-ofmipd (FQDN): Fall back to gethostname() if getfqdn() only
 	returns 'localhost'.
 
+2006-10-27  Mark Horn  <mark@hornclan.com>
+
+	* tmda-rfilter: added multiple expiration to ACTION_EXPIRED_DATED
+	
 2006-10-13  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-rfilter: Migrate from getopt to optparse.

@@ -217,8 +217,9 @@ Each variable definition below contains one or more examples.
 <a name="ACTION_EXPIRED_DATED"><h4>ACTION_EXPIRED_DATED</h4></a>
 <dd>
 Specifies how incoming messages should be disposed of if they are
-sent to an expired dated address.
-Possible values include:
+sent to an expired dated address. You can specify a single action to
+take by setting this variable to a string, in which case possible
+values include:
 <br><br>
 "<code>bounce</code>"
 <blockquote>
@@ -245,7 +246,20 @@ Possible values include:
    silently hold message in pending queue
 </blockquote>
 <br>
-Default is confirm
+This can also be a dictionary if you want to handle different ages
+of expired dated messages in different ways.
+<br><br>
+Examples:
+<br><br>
+<code>ACTION_EXPIRED_DATED = {</code><br>
+<blockquote>
+<code>    'default':'confirm', # default is to confirm, unless</code><br>
+<code>    '1w':     'bounce',  # ...it expired more than 1w ago, then bounce</code><br>
+<code>    '30d':    'hold',    # ...it expired more than 30d ago, then hold</code><br>
+<code>    '1Y':     'drop'}    # ...it expired more than 1Y ago, then drop</code>
+</blockquote>
+<br>
+Default is "confirm"
 <dt><hr>
 <a name="ACTION_FAIL_DATED"><h4>ACTION_FAIL_DATED</h4></a>
 <dd>

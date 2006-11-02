@@ -5,6 +5,18 @@ file in this directory as well.
 
 ======================================================================
 
+TMDA 1.1.9 "Jura" --
+
+* New feature courtesy of Mark Horn. ACTION_EXPIRED_DATED has been
+  extended to support handling multiple ages of dated messages. So you
+  could for example 'bounce' mail to dated addresses that have been
+  expired for more than a week, 'hold' if longer than a month, and
+  'drop' if over a year, while still setting the default behavior to
+  'confirm'.  For more information and an illustrative example, see
+  http://wiki.tmda.net/ConfigurationVariables#ACTION_EXPIRED_DATED
+
+======================================================================
+
 TMDA 1.1.8 "Imperial" --
 
 * TMDA's internal copy of the Python email package has been upgraded
