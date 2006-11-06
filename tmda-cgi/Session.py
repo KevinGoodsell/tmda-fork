@@ -282,6 +282,7 @@ rights.""")
           CgiUtil.TermError("Install failed",
             "Install not allowed in no-su mode", "install", "",
             "Either recompile in another mode or install TMDA manually.")
+        self.GetTheme()
         raise CgiUtil.NotInstalled, (ErrStr, self)
       T = Template.Template("no-install.html")
       T["ErrMsg"] = ErrStr
