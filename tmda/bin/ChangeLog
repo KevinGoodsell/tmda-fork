@@ -1,6 +1,12 @@
 2006-11-14  Stephen Warren  <swarren@wwwdotorg.org>
 
 	* tmda-ofmipd: Import part of Robert P. Thille's patch;
+	Add a -L option, which acts the same as the existing -d debug option,
+	except that the raw SMTP dialog is not logged (i.e. the Data: lines)
+
+2006-11-14  Stephen Warren  <swarren@wwwdotorg.org>
+
+	* tmda-ofmipd: Import part of Robert P. Thille's patch;
 	Pass "-f sender" option to sendmail program, so the SMTP envelope
 	sender is passed along the chain from the MUA to the MTA.
 

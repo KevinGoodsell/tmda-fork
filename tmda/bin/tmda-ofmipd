@@ -97,6 +97,15 @@ gengroup.add_option("-d", "--debug",
 		  action="store_true", default=False, dest="debug",
 		  help="Turn on debugging prints.")
 
+gengroup.add_option("-L", "--log",
+		  action="store_true", default=False, dest="log",
+		  help= \
+"""Turn on logging prints.
+This option logs everything that -d logs, except for the raw SMTP protocol
+data. Hence, it is useful if you want to leave logging enabled permanently,
+but don't want your logs bloated with AUTH data and/or the content of large
+attachments.""")
+
 gengroup.add_option("-b", "--background",
 		  action="store_false", dest="foreground",
 		  help="Detach and run in the background (default).")
@@ -247,7 +256,7 @@ if opts.full_version:
     sys.exit()
 if opts.vhomescript and opts.configdir:
     parser.error("options '--vhome-script' and '--configdir' are incompatible!")
-if opts.debug:
+if opts.debug or opts.log:
     DEBUGSTREAM = sys.stderr
 else:
     DEBUGSTREAM = Devnull()
@@ -745,7 +754,8 @@ class SMTPChannel(asynchat.async_chat):
     # Implementation of base class abstract method
     def found_terminator(self):
         line = EMPTYSTRING.join(self.__line)
-        print >> DEBUGSTREAM, 'Data:', repr(line)
+        if opts.debug:
+            print >> DEBUGSTREAM, 'Data:', repr(line)
         self.__line = []
         if self.__state == self.COMMAND:
             if not line:
