@@ -5,6 +5,16 @@ file in this directory as well.
 
 ======================================================================
 
+TMDA 1.1.10 "Killyloch" --
+
+* tmda-ofmipd has a new option courtesy of Robert P. Thille.  `-L'
+  turns on logging prints which logs everything that `-d' logs, except
+  for the raw SMTP protocol data. Hence, it is useful if you want to
+  leave logging enabled permanently, but don't want your logs bloated
+  with AUTH data and/or the content of large attachments.
+
+======================================================================
+
 TMDA 1.1.9 "Jura" --
 
 * New feature courtesy of Mark Horn. ACTION_EXPIRED_DATED has been
