@@ -778,11 +778,17 @@ class SMTPChannel(asynchat.async_chat):
 
             if not opts.throttlescript or not os.system("%s %s" % (opts.throttlescript,
                 self.__auth_username)):
-                status = self.__server.process_message(self.__peer,
-                                                       self.__mailfrom,
-                                                       self.__rcpttos,
-                                                       self.__data,
-                                                       self.__auth_username)
+                try:
+                    status = self.__server.process_message(self.__peer,
+                                                           self.__mailfrom,
+                                                           self.__rcpttos,
+                                                           self.__data,
+                                                           self.__auth_username)
+                except:
+                    print >>DEBUGSTREAM, "process_message raised an exception:"
+                    import traceback
+                    traceback.print_exc(DEBUGSTREAM)
+                    raise
             else:
                 status = self.push('450 Outgoing mail quota exceeded')
 
