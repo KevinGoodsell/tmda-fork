@@ -1,3 +1,9 @@
+2006-11-14  Stephen Warren  <swarren@wwwdotorg.org>
+
+	* tmda-ofmipd: Import part of Robert P. Thille's patch;
+	Pass "-f sender" option to sendmail program, so the SMTP envelope
+	sender is passed along the chain from the MUA to the MTA.
+
 2006-10-29  Jason R. Mastaler  <jason@mastaler.com>
 
 	* tmda-ofmipd (FQDN): Fall back to gethostname() if getfqdn() only

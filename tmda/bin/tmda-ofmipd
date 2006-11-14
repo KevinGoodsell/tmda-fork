@@ -1120,7 +1120,7 @@ class VDomainProxy(PureProxy):
                                              (vhomedir, '.tmda', 'config')):
             sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
                                or '/usr/sbin/sendmail'
-            inject_cmd = [sendmail_program, '-i', '--'] + rcpttos
+            inject_cmd = [sendmail_program, '-f', mailfrom, '-i', '--'] + rcpttos
         try:
             Util.pipecmd(inject_cmd, data)
         except Exception, err:
@@ -1147,7 +1147,7 @@ class TMDAProxy(PureProxy):
         if opts.pure_proxy and not os.path.exists(tmda_configfile):
             sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
                                or '/usr/sbin/sendmail'
-            inject_cmd = [sendmail_program, '-i', '--'] + rcpttos
+            inject_cmd = [sendmail_program, '-f', mailfrom, '-i', '--'] + rcpttos
         else:
             execdir = os.path.dirname(os.path.abspath(program))
             inject_path = os.path.join(execdir, 'tmda-inject')
