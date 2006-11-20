@@ -134,7 +134,7 @@ gengroup.add_option("-C", "--cache",
                     action="store_true", dest="cache",
                     help= \
 """Operate only on messages which aren't stored in
- /.tmda/.pendingcache (i.e, haven't yet been read).  After operation,
+ ~/.tmda/.pendingcache (i.e, haven't yet been read).  After operation,
  store the message in the cache file.  Useful primarily in conjunction
  with the '--summary' option.""")
 
