@@ -7,6 +7,13 @@ file in this directory as well.
 
 TMDA 1.1.10 "Killyloch" --
 
+* New feature. When a message is released from your pending queue via
+  tmda-cgi, a new trace header 'X-TMDA-CGI' is added to the message
+  which contains both the IP address of the remote host as well as the
+  browser the client used to send the request.  This allows you to
+  visually discern that the message was released via tmda-cgi rather
+  than through email confirmation, and also allows for easier tracing.
+
 * tmda-ofmipd has a new option courtesy of Robert P. Thille.  `-L'
   turns on logging prints which logs everything that `-d' logs, except
   for the raw SMTP protocol data. Hence, it is useful if you want to

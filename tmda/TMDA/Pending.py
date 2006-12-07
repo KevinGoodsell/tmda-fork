@@ -387,6 +387,14 @@ class Message:
         # Add the date when confirmed in a header.
         del self.msgobj['X-TMDA-Released']
         self.msgobj['X-TMDA-Released'] = Util.make_date()
+	# For messages released via tmda-cgi, add the IP address and
+	# browser info of the releaser for easier tracing.
+	if os.environ.has_key('REMOTE_ADDR') and \
+		os.environ.has_key('HTTP_USER_AGENT'):
+	    cgi_header = "%s (%s)" % (os.environ.get('REMOTE_ADDR'), 
+				      os.environ.get('HTTP_USER_AGENT'))
+	    del self.msgobj['X-TMDA-CGI']
+	    self.msgobj['X-TMDA-CGI'] = cgi_header
         # Reinject the message to the original envelope recipient.
         Util.sendmail(self.show(), self.recipient, self.return_path)
 
