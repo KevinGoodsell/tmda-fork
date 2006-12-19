@@ -297,7 +297,7 @@ if running_as_root:
     if not opts.username:
 	opts.username = 'tofmipd'
     if not opts.authfile:
-	authfile = '/etc/tofmipd'
+	opts.authfile = '/etc/tofmipd'
     ipauthmapfile = '/etc/ipauthmap'
 else:
     tmda_path = os.path.join(os.path.expanduser('~'), '.tmda')
