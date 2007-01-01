@@ -26,6 +26,14 @@ stunnel.conf
     specifically, setup an SMTP session, allow STARTTLS, and then invoke
     tmda-ofmipd in one-session mode
 
+    NOTE: I personally store both the server certificate and private key in
+    the same file (hence the extension .key-and-crt). If you do not do this,
+    then you will need to replace the "cert =" line in stunnel.conf with
+    something along these lines:
+
+        cert = /etc/ssl/keys/severn.wwwdotorg.org.crt
+        key  = /etc/ssl/keys/severn.wwwdotorg.org.key
+
 tmda-ofmipd-wrapper
 
     Once stunnel has established the TLS-encrypted SMTP session, it runs this
