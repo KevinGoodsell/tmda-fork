@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-# Copyright (C) 2001-2006 Jason R. Mastaler <jason@mastaler.com>
+# Copyright (C) 2001-2007 Jason R. Mastaler <jason@mastaler.com>
 #
 # Author: David Guerizec <david@guerizec.net>
 #

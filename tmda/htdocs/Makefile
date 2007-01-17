@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2006 Jason R. Mastaler <jason@mastaler.com>
+# Copyright (C) 2001-2007 Jason R. Mastaler <jason@mastaler.com>
 #
 # This file is part of TMDA.
 #

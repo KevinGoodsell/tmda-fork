@@ -1,6 +1,6 @@
 # -*- python -*-
 #
-# Copyright (C) 2001-2006 Jason R. Mastaler <jason@mastaler.com>
+# Copyright (C) 2001-2007 Jason R. Mastaler <jason@mastaler.com>
 #
 # Authors: Tim Legant <tim@catseye.net> and
 #          Jason R. Mastaler <jason@mastaler.com>
