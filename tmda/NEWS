@@ -20,6 +20,8 @@ TMDA 1.1.10 "Killyloch" --
   leave logging enabled permanently, but don't want your logs bloated
   with AUTH data and/or the content of large attachments.
 
+* tmda-ofmipd bugfixes and improvements from Stephen Warren.
+
 ======================================================================
 
 TMDA 1.1.9 "Jura" --

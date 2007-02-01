@@ -26,7 +26,7 @@ import platform
 
 
 # TMDA version
-TMDA = '1.1.9+'
+TMDA = '1.1.10'
 
 # TMDA version codename
 CODENAME = 'Killyloch'
