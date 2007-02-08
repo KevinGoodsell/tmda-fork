@@ -1,6 +1,10 @@
 Things left to do:
 ==================
 
+    * Better handling of really bad template errors which currently cause a
+	     "server error" such as missing template directory.
+		  (Bug found by Michael Weiner)
+
     * Administrator Disable -- allow the administrator to globally disable any
                                command in the GUI
 
