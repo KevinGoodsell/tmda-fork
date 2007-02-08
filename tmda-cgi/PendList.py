@@ -611,7 +611,7 @@ def Show():
               SpamArray.append(0)
               Score = "-"
             else:
-              Score = Temp.group(1)
+              Score = Temp.group(2)
               if not float(Score) >= float(SpamThreshold):
                 SpamArray.append(0)
               else:
