@@ -24,10 +24,10 @@
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.15+"
+tmda_cgi = "0.16"
 
 # tmda-cgi version codename
-Codename = "Sulfur-svn"
+Codename = "Sulphur"
 
 # TMDA version required
 TMDAReqVer = "1.1.6"
