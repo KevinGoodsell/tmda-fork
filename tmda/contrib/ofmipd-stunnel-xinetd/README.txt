@@ -1,6 +1,17 @@
 The files in this directory show how to run tmda-ofmipd from xinet.d, using
 stunnel to provide TLS encryption.
 
+NOTE: This method runs a separate instance of stunnel and tmda-ofmipd for each
+incoming TLS connection. This allows tmda-ofmipd to see the true IP address of
+the connecting client. With a typical daemonized stunnel, tmda-ofmipd will
+only see connections from localhost (or wherever stunnel is running).
+
+Note 2: One could probably still run stunnel in daemonized mode, and spawn a
+new tmda-ofmipd instance for each incoming connection, thus removing the need
+to use xinetd. I personally didn't do this, because I already run a bunch of
+servers under xinetd, so doing it this way was consistent. xinetd may provide
+you useful features too.
+
 The same general principles (i.e. tmda-ofmipd "one-session" mode) should allow
 running tmda-ofmipd under DJB's tcpserver. A previous version of this patch
 was developed for this situation, so it should work fine.

@@ -1,3 +1,16 @@
+2007-02-18  Stephen Warren  <swarren@wwwdotorg.org>
+
+	* Added ofmipd-stunnel-daemons directory, which contains an example
+	stunnel.conf from Amitai Schlair. This shows the simple way of
+	providing TLS connections to tmda-ofmipd
+
+2006-09-27  Stephen Warren  <swarren@wwwdotorg.org>
+
+	* Added ofmipd-stunnel-xinetd directory, which contains example
+	xinetd and stunnel config files. These demonstrate how to use
+	tmda-ofmipd's new "one-session" mode in conjunction with stunnel,
+	to provide TLS connections to tmda-ofmipd.
+
 2004-04-03  Bob Rogers  <rogers@rgrjr.dyndns.org>
 
         * tmda.el (tmda-pending-buffer-kill):  FSF emacs `=' expects 2 args.
