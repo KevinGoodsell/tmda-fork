@@ -24,6 +24,7 @@ from optparse import OptionGroup, OptionParser
 
 import os
 import sys
+import socket
 
 try:
     import paths
@@ -71,6 +72,9 @@ parser.trailer = \
   (get a summary listing of all pending messages)
   $ tmda-pending -T -b
 
+  (same as above, but use /usr/local/bin/vhome as the vhome-script)
+  $ tmda-pending -T -b --vhome-script=/usr/local/bin/vhome
+
   (interactively operate on just these messages)
   $ tmda-pending 1012182077.5803 1012939546.7870
 
@@ -100,6 +104,33 @@ actngroup = OptionGroup(parser, "Actions")
 msggroup = OptionGroup(parser, "Messages")
 
 # general
+gengroup.add_option("--vhome-script",
+	             metavar="SCRIPT", dest="vhomescript",
+        	     help= \
+"""Full pathname of SCRIPT that prints a virtual email user's home
+directory on standard output.  tmda-pending will read that path and
+set $HOME to that path so that '~' expansion works properly for
+virtual users.  The script takes two arguments, the user name and
+the domain, on its command line.  This option is for use with the
+VPopMail and VMailMgr add-ons to qmail and with other systems that
+manage virtual email addresses.  The user name is obtained from the
+USER and LOGNAME environment variables, in that order, or by the
+value of the '--vhome-user' option, if defined. The domain name is
+obtained by the '--vhome-domain' option, if defined, and if not,
+an attempt to figure it out automatically.""")
+
+gengroup.add_option("--vhome-user",
+	             metavar="USER", dest="vhomeuser",
+        	     help= \
+"""The user name to optionally pass to the program specified
+in the '--vhome-script' option, above.""")
+
+gengroup.add_option("--vhome-domain",
+	             metavar="DOMAIN", dest="vhomedomain",
+        	     help= \
+"""The domain name to optionally pass to the program specified
+in the '--vhome-script' option, above.""")
+
 gengroup.add_option("-c", "--config-file",
                     metavar="FILE", dest="config_file",
                     help= \
@@ -229,6 +260,44 @@ elif opts.older:
 else:
     threshold = None
 
+if opts.vhomescript:
+    """Set $HOME to the recipient's (virtual user) home directory."""
+    user = None
+    if opts.vhomeuser:
+	user = opts.vhomeuser
+    else:
+	try:
+            user = os.environ['USER']
+        except:
+            try:
+                user = os.environ['LOGNAME']
+            except:
+                user = None
+    domain = None
+    if opts.vhomedomain:
+        domain = opts.vhomedomain
+    else:
+        try:
+            domain = socket.gethostbyaddr(socket.gethostname())[0]
+        except:
+            domain = None
+    message = ''
+    if user is None:
+        message += ' USER'
+    if domain is None:
+        message += ' DOMAIN'
+    if message != '':
+        sys.stdout.write('missing:%s\n' % message)
+        sys.exit(1)
+    cmd = "%s '%s' '%s'" % ( opts.vhomescript, user, domain )
+    fpin = os.popen(cmd)
+    vuserhomedir = fpin.read().strip()
+    if fpin.close() is None:
+        os.environ['HOME'] = vuserhomedir
+        os.chdir(vuserhomedir)
+    else:
+        sys.stdout.write('invocation failed: %s\n' % ( cmd, ))
+        sys.exit(1)
 
 from TMDA import Pending
 from TMDA import Errors
