@@ -3,8 +3,13 @@ found on the TMDA homepage:
 
 http://tmda.net/
 
-A local copy of the HTML documentation matching this release is
-included in the "htdocs" directory.
+and also the TMDA wiki:
+
+http://wiki.tmda.net/
+
+The live wiki tracks the latest release of TMDA, so if you want a copy
+of the documentation matching a particular release, wiki snapshot
+tarballs can be found in http://tmda.net/releases/tmda-1.1.X-doc.tgz
 
 If you are upgrading from an earlier release of TMDA, make sure to
 consult http://wiki.tmda.net/TmdaUpgrade
