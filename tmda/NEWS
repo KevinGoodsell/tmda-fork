@@ -5,6 +5,21 @@ file in this directory as well.
 
 ======================================================================
 
+TMDA 1.1.11 "Ladyburn" --
+
+* Virtual domain improvements to tmda-pending courtesy of Lloyd
+  Zusman. A '--vhost-script' command-line option has been added to
+  match tmda-ofmipd and tmda-filter. Also two new options have been
+  added, '--vhost-user' and '--vhost-domain'. See the tmda-pending
+  --help output for more information, or for greater detail, see
+  http://article.gmane.org/gmane.mail.spam.tmda.devel/6584
+
+* An alternative "simpler" example of how to use TLS with tmda-ofmipd
+  via stunnel has been added. See the contrib/ofmipd-stunnel-daemons/
+  directory.
+
+======================================================================
+
 TMDA 1.1.10 "Killyloch" --
 
 * New feature. When a message is released from your pending queue via
