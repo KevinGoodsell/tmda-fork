@@ -201,15 +201,17 @@ Each variable definition below contains one or more examples.
 <td><a href="#TERSE_SUMMARY_HEADERS">TERSE_SUMMARY_HEADERS</a></td>
 </tr>
 <tr>
+<td><a href="#TIMEOUT_UNITS">TIMEOUT_UNITS</a></td>
 <td><a href="#TMDAINJECT">TMDAINJECT</a></td>
+</tr>
+<tr>
 <td><a href="#USERNAME">USERNAME</a></td>
-</tr>
-<tr>
 <td><a href="#USEVIRTUALDOMAINS">USEVIRTUALDOMAINS</a></td>
-<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 </tr>
 <tr>
+<td><a href="#VIRTUALDOMAINS">VIRTUALDOMAINS</a></td>
 <td><a href="#X_TMDA_IN_SUBJECT">X_TMDA_IN_SUBJECT</a></td>
+</tr>
 </table>
 
 <dl>
@@ -1624,6 +1626,27 @@ Examples:
 <code>TERSE_SUMMARY_HEADERS = ["from_name", "from_address", "subject"]</code>
 <br><br>
 Default is the Fullname followed by Subject.
+<dt><hr>
+<a name="TIMEOUT_UNITS"><h4>TIMEOUT_UNITS</h4></a>
+<dd>
+Dictionary that contains translations of timeout unit strings. This
+dictionary must contains the keys Y,M,w,d,h,m,s with respective
+internationalized strings as values.
+<br><br>
+Examples:
+<br><br>
+<code>TIMEOUT_UNITS = {</code><br>
+<blockquote>
+<code>      'Y' : "anos",</code><br>
+<code>      'M' : "meses",</code><br>
+<code>      'w' : "semanas",</code><br>
+<code>      'd' : "dias",</code><br>
+<code>      'h' : "horas",</code><br>
+<code>      'm' : "minutos",</code><br>
+<code>      's' : "segundos"}</code>
+</blockquote>
+<br>
+Default is English values.
 <dt><hr>
 <a name="TMDAINJECT"><h4>TMDAINJECT</h4></a>
 <dd>

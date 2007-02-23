@@ -244,20 +244,8 @@ def format_timeout(timeout):
     if not match:
         return timeout
     (num, unit) = match.groups()
-    if unit == 'Y':
-        timeout = num + " years"
-    elif unit == 'M':
-        timeout = num + " months"
-    elif unit == 'w':
-        timeout = num + " weeks"
-    elif unit == 'd':
-        timeout = num + " days"
-    elif unit == 'h':
-        timeout = num + " hours"
-    elif unit == 'm':
-        timeout = num + " minutes"
-    else:
-        timeout = num + " seconds"
+    import Defaults
+    timeout = num + " " + Defaults.TIMEOUT_UNITS[unit]
     if int(num) == 1:
         timeout = timeout[:-1]
     return timeout

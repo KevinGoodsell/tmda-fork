@@ -7,6 +7,13 @@ file in this directory as well.
 
 TMDA 1.1.11 "Ladyburn" --
 
+* New feature courtesy of Vitor Espindola. A new configuration
+  variable, TIMEOUT_UNITS, to give users the ability to customize the
+  timeout unit value strings in the templates instead of using the
+  English defaults of "years", "months", "weeks", "days", "hours",
+  "minutes", and "seconds". For more information, see
+  http://wiki.tmda.net/ConfigurationVariables#TIMEOUT_UNITS
+
 * Virtual domain improvements to tmda-pending courtesy of Lloyd
   Zusman. A '--vhost-script' command-line option has been added to
   match tmda-ofmipd and tmda-filter. Also two new options have been

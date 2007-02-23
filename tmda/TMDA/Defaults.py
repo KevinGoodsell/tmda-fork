@@ -1511,6 +1511,34 @@ if not vars().has_key('DATED_TIMEOUT'):
 if not vars().has_key('USERNAME'):
     USERNAME = Util.getusername()
 
+# TIMEOUT_UNITS
+# Dictionary that contains translations of timeout unit strings. This
+# dictionary must contains the keys Y,M,w,d,h,m,s with respective
+# internationalized strings as values.
+#
+# Examples:
+# 
+# TIMEOUT_UNITS = {
+#       'Y' : "anos",
+#       'M' : "meses",
+#       'w' : "semanas",
+#       'd' : "dias",
+#       'h' : "horas",
+#       'm' : "minutos",
+#       's' : "segundos"}
+#
+# Default is English values.
+if not vars().has_key('TIMEOUT_UNITS'):
+    TIMEOUT_UNITS = {
+        'Y' : "years",
+        'M' : "months",
+        'w' : "weeks",
+        'd' : "days",
+        'h' : "hours",
+        'm' : "minutes",
+        's' : "seconds"
+        }
+
 # X_TMDA_IN_SUBJECT
 # With this variable set to True, tmda-inject will parse the Subject
 # header looking for `X-TMDA' actions, and then remove them before
