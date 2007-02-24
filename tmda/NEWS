@@ -7,6 +7,10 @@ file in this directory as well.
 
 TMDA 1.1.11 "Ladyburn" --
 
+* The snapshot of the wiki documentation is now included within the
+  main tmda-1.1.x.tgz tarball in the 'doc' directory rather than in a
+  separate tmda-1.1.x-doc.tgz tarball.
+
 * New feature courtesy of Vitor Espindola. A new configuration
   variable, TIMEOUT_UNITS, to give users the ability to customize the
   timeout unit value strings in the templates instead of using the
