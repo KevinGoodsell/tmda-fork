@@ -81,7 +81,7 @@ opt_list = [
 FILTER_INCOMING in ~/.tmda/config."""),
 
     make_option("-e", "--environ",
-                metavar="VAR=VAL", dest="environ",
+                metavar="VAR=VAL", dest="environ", action="append",
                 help= \
 """Add an environment variable on the command line.  VAR is the name
 of the variable, and VAL, separated by an '=', is its value.  There
@@ -141,11 +141,12 @@ if opts.template_dir:
 if opts.filter_incoming:
     os.environ['TMDA_FILTER_INCOMING'] = opts.filter_incoming
 if opts.environ:
-    try:
-        key, value = opts.environ.split('=', 1)
-        os.environ[key] = value
-    except (KeyError, ValueError):
-        parser.error('bad environment key-value pair - "%s"' % opts.environ)
+    for pair in opts.environ:
+        try:
+            key, value = pair.split('=', 1)
+            os.environ[key] = value
+        except (KeyError, ValueError):
+            parser.error('bad environment key-value pair - "%s"' % pair)
 if opts.vhomescript:
     if os.environ.has_key('EXT') and os.environ.has_key('HOST'):
         setvuserhomedir(opts.vhomescript)
