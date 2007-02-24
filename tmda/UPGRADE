@@ -3,6 +3,13 @@ this file.
 
 ======================================================================
 
+If you are upgrading from a release of TMDA < 1.1.11:
+
+* The behavior of contrib/tofmipd.init has changed; it no longer
+  auto-enables daemon startup; it is now inactive initially.
+
+======================================================================
+
 If you are upgrading from a release of TMDA < 1.1.8:
 
 * The '-d/--dated' option to the 'tmda-address' command no longer

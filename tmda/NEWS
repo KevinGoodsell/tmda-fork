@@ -25,6 +25,12 @@ TMDA 1.1.11 "Ladyburn" --
   via stunnel has been added. See the contrib/ofmipd-stunnel-daemons/
   directory.
 
+* A bug that broke tmda-filter's '-e' command-line option has been
+  fixed.
+
+* A 'reload' option has been added to contrib/tofmipd.init, just for
+  correctness; it currently does the same thing as 'restart'.
+
 ======================================================================
 
 TMDA 1.1.10 "Killyloch" --
