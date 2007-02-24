@@ -73,7 +73,7 @@ rm -rf %{buildroot}
 %verify(not size md5 mtime) %{pylibdir}/TMDA/pythonlib/email/mime/*.pyc
 %{_datadir}/tmda/*
 
-%doc --parents ChangeLog CODENAMES COPYING CRYPTO INSTALL NEWS README THANKS UPGRADE contrib/ htdocs/{*.html,*.css,img/}
+%doc --parents ChangeLog CODENAMES COPYING CRYPTO INSTALL NEWS README THANKS UPGRADE contrib/ doc/
 
 %package ofmipd
 Summary: Tagged Message Delivery Agent - ofmipd server
