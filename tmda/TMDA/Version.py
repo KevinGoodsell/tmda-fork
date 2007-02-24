@@ -26,7 +26,7 @@ import platform
 
 
 # TMDA version
-TMDA = '1.1.10+'
+TMDA = '1.1.11'
 
 # TMDA version codename
 CODENAME = 'Ladyburn'
