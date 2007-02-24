@@ -7,9 +7,9 @@ and also the TMDA wiki:
 
 http://wiki.tmda.net/
 
-The live wiki tracks the latest release of TMDA, so if you want a copy
-of the documentation matching a particular release, wiki snapshot
-tarballs can be found in http://tmda.net/releases/tmda-1.1.X-doc.tgz
+The live wiki tracks the latest release of TMDA, so a snapshot of the
+wiki documentation that matches this particular release is included
+here, in the 'doc/' subdirectory.
 
 If you are upgrading from an earlier release of TMDA, make sure to
 consult http://wiki.tmda.net/TmdaUpgrade
