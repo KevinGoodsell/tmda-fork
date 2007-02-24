@@ -1,3 +1,9 @@
+2007-02-23  Stephen Warren  <swarren@wwwdotorg.org>
+
+	* Updated tofmipd.init per patch from Bernard Johnson; don't auto-
+	enable daemon startup simply because init script is added, and
+	implement reload option.
+
 2007-02-18  Stephen Warren  <swarren@wwwdotorg.org>
 
 	* Added ofmipd-stunnel-daemons directory, which contains an example

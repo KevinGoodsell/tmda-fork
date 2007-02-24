@@ -13,7 +13,7 @@
 # You can then start the service with the following command:
 #   service tofmipd start
 #
-# chkconfig: 2345 87 13
+# chkconfig: - 87 13
 # description: tofmipd is a server that allows tagging of outgoing mail \
 #          for the TMDA system.
 # processname: tofmipd
@@ -62,7 +62,7 @@ case "$1" in
         status $program
 	RETVAL=$?
 	;;
-  restart)
+  restart|reload)
 	stop
 	start
 	;;
