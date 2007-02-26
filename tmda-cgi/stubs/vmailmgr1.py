@@ -25,7 +25,7 @@ def getuserparams(List):
   for Line in List:
     Parts = Line.split(":")
     if (Parts[0] == User):
-      return Parts[1], Parts[2], Parts[3]
+      return ':'.join(Parts[1:-2]), Parts[-2], Parts[-1]
 
   # User does not exist
   raise KeyError

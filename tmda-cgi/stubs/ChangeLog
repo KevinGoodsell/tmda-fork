@@ -1,3 +1,15 @@
+2007-02-23  Stephen Warren <swarren@wwwdotorg.org>
+
+	* Modified vmailmgr1 stub to allow the home-directory field to contain
+	  colon characters.
+
+	  It appears that vmailmgr automatically converts any "." in the user
+	  part of an email address to a ":" when creating the user's home
+	  directory.
+
+	  Report from, and patch testing by:
+	  "Dennis Kavadas <dennis.kavadas@gmail.com>"
+
 2004-02-01  Jim Ramsay <i.am@jimramsay.com>
 
 	* Added vmailmgr1 stub.
