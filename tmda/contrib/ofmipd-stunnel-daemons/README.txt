@@ -1,3 +1,8 @@
+NOTE: Recent versions of tmda-ofmipd contain native support for SSL. As such,
+this "HOWTO" is probably not relevant any more, unless you have some specific
+requirement to use stunnel.
+
+
 The files in this directory show how to run a daemonized stunnel to provide
 TLS encrypted connections to a daemonized tmda-ofmipd.
 

@@ -1,4 +1,9 @@
-The files in this directory show how to run tmda-ofmipd from xinet.d, using
+NOTE: Recent versions of tmda-ofmipd contain native support for SSL. As such,
+this "HOWTO" is probably not relevant any more, unless you have some specific
+requirement to use stunnel, or xinetd (e.g. for access control).
+
+
+The files in this directory show how to run tmda-ofmipd from xinetd, using
 stunnel to provide TLS encryption.
 
 NOTE: This method runs a separate instance of stunnel and tmda-ofmipd for each
