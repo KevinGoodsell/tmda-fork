@@ -1,3 +1,10 @@
+2007-02-25  Stephen Warren  <swarren@wwwdotorg.org>
+
+	* tmda-ofmipd: Implemented --tls, --ssl, --ssl-key, --ssl-crt options.
+	These implement STARTTLS and SSL support directly in tmda-ofmipd,
+	without requiring the use of stunnel etc. These options require the
+	tlslite Python module to be installed. See http://trevp.net/tlslite/.
+
 2007-02-23  Stephen Warren  <swarren@wwwdotorg.org>
 
 	* tmda-rfilter: Add fix from Bernard Johnson that enables multiple

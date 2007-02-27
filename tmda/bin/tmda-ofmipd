@@ -83,8 +83,8 @@ http://wiki.tmda.net/TmdaOfmipdHowto"""
 parser = OptionParser(description=opt_desc, version=Version.TMDA)
 
 parser.add_option("-V", 
-		  action="store_true", default=False, dest="full_version",
-		  help="show full TMDA version information and exit.")
+                  action="store_true", default=False, dest="full_version",
+                  help="show full TMDA version information and exit.")
 
 # option groups
 gengroup = OptionGroup(parser, "General")
@@ -94,12 +94,12 @@ virtgroup = OptionGroup(parser, "Virtual Domains")
     
 # general
 gengroup.add_option("-d", "--debug",
-		  action="store_true", default=False, dest="debug",
-		  help="Turn on debugging prints.")
+                    action="store_true", default=False, dest="debug",
+                    help="Turn on debugging prints.")
 
 gengroup.add_option("-L", "--log",
-		  action="store_true", default=False, dest="log",
-		  help= \
+                    action="store_true", default=False, dest="log",
+                    help= \
 """Turn on logging prints.
 This option logs everything that -d logs, except for the raw SMTP protocol
 data. Hence, it is useful if you want to leave logging enabled permanently,
@@ -107,24 +107,24 @@ but don't want your logs bloated with AUTH data and/or the content of large
 attachments.""")
 
 gengroup.add_option("-b", "--background",
-		  action="store_false", dest="foreground",
-		  help="Detach and run in the background (default).")
+                    action="store_false", dest="foreground",
+                    help="Detach and run in the background (default).")
 
 gengroup.add_option("-f", "--foreground",
-		  action="store_true", default=False, dest="foreground",
-		  help="Don't detach; run in the foreground.")
+                    action="store_true", default=False, dest="foreground",
+                    help="Don't detach; run in the foreground.")
 
 gengroup.add_option("-u", "--username",
-		  dest="username",
-		  help= \
+                    dest="username",
+                    help= \
 """The username that this program should run under.  The default is to
 run as the user who starts the program unless that is root, in which
 case an attempt to seteuid user 'tofmipd' will be made.  Use this
 option to override these defaults.""")
 
 gengroup.add_option("-c", "--configdir",
-		  metavar="DIR", dest="configdir",
-		  help= \
+                    metavar="DIR", dest="configdir",
+                    help= \
 """DIR is the base directory to search for the authenticated user's TMDA
 configuration file in.  This might be useful if you wish to maintain
 TMDA files outside the user's home directory.
@@ -135,30 +135,30 @@ see the --vhome-script option for qmail virtual domain users.""")
 
 # connection
 congroup.add_option("-p", "--proxyport",
-		  default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT", 
-		  dest="proxyport", help= \
+                    default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT", 
+                    dest="proxyport", help= \
 """The HOST:PORT to listen for incoming connections on.  The default is
 FQDN:8025 (i.e, port 8025 on the fully qualified domain name for the
 local host).  Use '0.0.0.0:PORT' to listen on all available
 interfaces.""")
 
 congroup.add_option("-C", "--connections",
-		  type="int", default="20", metavar="NUM", dest="connections",
-		  help= \
+                    type="int", default="20", metavar="NUM", dest="connections",
+                    help= \
 """Do not handle more than NUM simultaneous connections. If there are NUM
 active connections, defer acceptance of new connections until one
 finishes. NUM must be a positive integer. Default: 20""")
 
 congroup.add_option("-1", "--one-session",
-		  action="store_true", default=False, dest="one_session",
-		  help= \
+                    action="store_true", default=False, dest="one_session",
+                    help= \
 """Don't bind to a port and accept new connections; Process a single SMTP
 session on stdin (used both for input & output).  This is useful when
 started from tcpserver or stunnel.""")
 
 congroup.add_option("-P", "--pure-proxy",
-		  action="store_true", default=False, dest="pure_proxy",
-		  help= \
+                    action="store_true", default=False, dest="pure_proxy",
+                    help= \
 """Proxy the message straight through to the mail transport system
 unaltered if the user's TMDA config file is missing.  The
 /usr/sbin/sendmail program on the system is used to inject the
@@ -167,17 +167,46 @@ the environment.  This option might be useful when serving a mixed
 environment of TMDA and non-TMDA users.""")
 
 congroup.add_option("-t", "--throttle-script",
-		  metavar="/PATH/TO/SCRIPT", dest="throttlescript",
-		  help= \
+                    metavar="/PATH/TO/SCRIPT", dest="throttlescript",
+                    help= \
 """Full pathname of a script which can meter how much mail any user
 sends.  The script is passed a login name whenever a user tries to
 send mail.  If the script returns a 0, the message is allowed.  For
 any other value, the message is rejected.""")
 
+congroup.add_option("", "--ssl",
+                    action="store_true", default=False, dest="ssl",
+                    help= \
+"""Enable SSL encryption. This mode immediately initiates the SSL/TLS
+protocol as soon as a connection is made. This mode is not support
+for the STARTTLS command. This configuration is typically run on
+port 465 (smtps).""")
+
+congroup.add_option("", "--tls",
+                    type="choice", default='off', dest="tls",
+                    choices=['off', 'optional', 'on'],
+                    help= \
+"""Enable TLS mode. Valid options are off/optional/on. With this option
+enabled, the STARTTLS SMTP command may be used to upgrade the plain-text
+connection to SSL/TLS. In 'optional' mode, AUTH is allowed either before
+or after STARTTLS. In 'on' mode, clients are forced to STARTTLS prior to
+AUTH, to ensure that plain-text AUTH commands are protected. This
+configuration is typically run on port 587 (submission).""")
+
+congroup.add_option("", "--ssl-cert",
+                    metavar="/PATH/TO/FILE", dest="ssl_cert",
+                    help= \
+"""Location of the SSL/TLS certificate key file.""")
+
+congroup.add_option("", "--ssl-key",
+                    metavar="/PATH/TO/FILE", dest="ssl_key",
+                    help= \
+"""Location of the SSL/TLS private key file.""")
+
 # authentication
 authgroup.add_option("-R", "--remoteauth",
-		  metavar="PROTO://HOST[:PORT][/DN]", dest="remoteauth",
-		  help= \
+                     metavar="PROTO://HOST[:PORT][/DN]", dest="remoteauth",
+                     help= \
 """Protocol and host to check username and password. PROTO can be one of
 the following: 'imap' (IMAP4 server), 'imaps' (IMAP4 server over SSL),
 'pop3' (POP3 server), 'apop' (POP3 server with APOP authentication),
@@ -189,8 +218,8 @@ imaps://myimapserver.net', '-R pop3://mypopserver.net:2110', '-R
 ldap://example.com/cn=%%s,dc=host,dc=com'""")
 
 authgroup.add_option("-A", "--authprog",
-		  metavar="PROGRAM", dest="authprog",
-		  help= \
+                     metavar="PROGRAM", dest="authprog",
+                     help= \
 """A checkpassword compatible command used to check username/password.
 Examples: '-A "/usr/sbin/checkpassword-pam -s id -- /bin/true"',
 '-A "/usr/local/vpopmail/bin/vchkpw /usr/bin/true"'.
@@ -207,15 +236,15 @@ Note the position of the quotes in the Examples, which cause the the
 whole string following the -A to be passed as a single argument.""")
 
 authgroup.add_option("-a", "--authfile",
-		  metavar="FILE", dest="authfile",
-		  help= \
+                     metavar="FILE", dest="authfile",
+                     help= \
 """Path to the file holding authentication information for this proxy.
 Default location is /etc/tofmipd if running as root/tofmipd, otherwise
 ~user/.tmda/tofmipd.  Use this option to override these defaults.""")
 
 authgroup.add_option("-F", "--fallback",
-		  action="store_true", default=False, dest="fallback",
-		  help= \
+                     action="store_true", default=False, dest="fallback",
+                     help= \
 """When used with -R or -A, fallback to authenticate against the authfile
 if remote authentication fails.  Note: this flag has no effect on -R
 to -A fallback. If you specify both -R and -A methods, then authprog
@@ -223,8 +252,8 @@ will be tried after remoteauth has failed.""")
 
 # virtual domains
 virtgroup.add_option("-S", "--vhome-script",
-		  metavar="/PATH/TO/SCRIPT", dest="vhomescript",
-		  help= \
+                     metavar="/PATH/TO/SCRIPT", dest="vhomescript",
+                     help= \
 """Full pathname of a script that prints a virtual email user's home
 directory on standard output.  tmda-ofmipd will read that and use it
 to build the path to the user's config file instead of '~user/.tmda'.
@@ -234,9 +263,9 @@ VMailMgr add-ons to qmail.  See the contrib directory for sample
 scripts.""")
 
 virtgroup.add_option("-v", "--vdomains-path",
-		  default="/var/qmail/control/virtualdomains", 
-		  metavar="/PATH/TO/FILE", dest="vdomainspath",
-		  help= \
+                     default="/var/qmail/control/virtualdomains", 
+                     metavar="/PATH/TO/FILE", dest="vdomainspath",
+                     help= \
 """Full pathname to qmail's virtualdomains file.  The default is
 /var/qmail/control/virtualdomains.  This is also tmda-ofmipd's
 default, so you normally won't need to set this parameter.  If you
@@ -265,45 +294,45 @@ if opts.remoteauth:
     # arg is like: imap://host:port
     autharg = opts.remoteauth
     try:
-	authproto, autharg = autharg.split('://', 1)
+        authproto, autharg = autharg.split('://', 1)
     except ValueError:
-	authproto, autharg = autharg, None
+        authproto, autharg = autharg, None
     if authproto not in defaultauthports.keys():
-	raise ValueError, 'Protocol not supported: ' + authproto + \
-	    '\nPlease pick one of ' + repr(defaultauthports.keys())
+        raise ValueError, 'Protocol not supported: ' + authproto + \
+            '\nPlease pick one of ' + repr(defaultauthports.keys())
     remoteauth['proto'] = authproto
     remoteauth['port'] = defaultauthports[authproto]
     if autharg:
-	try:
-	    autharg, dn = autharg.split('/', 1)
-	    remoteauth['dn'] = dn
-	except ValueError:
-	    dn = ''
-	try:
-	    authhost, authport = autharg.split(':', 1)
-	except ValueError:
-	    authhost = autharg
-	    authport = defaultauthports[authproto]
-	if authhost:
-	    remoteauth['host'] = authhost
-	if authport:
-	    remoteauth['port'] = authport
+        try:
+            autharg, dn = autharg.split('/', 1)
+            remoteauth['dn'] = dn
+        except ValueError:
+            dn = ''
+        try:
+            authhost, authport = autharg.split(':', 1)
+        except ValueError:
+            authhost = autharg
+            authport = defaultauthports[authproto]
+        if authhost:
+            remoteauth['host'] = authhost
+        if authport:
+            remoteauth['port'] = authport
     print >> DEBUGSTREAM, "auth method: %s://%s:%s/%s" % \
-	(remoteauth['proto'], remoteauth['host'],
-	 remoteauth['port'], remoteauth['dn'])
+        (remoteauth['proto'], remoteauth['host'],
+         remoteauth['port'], remoteauth['dn'])
     remoteauth['enable'] = 1
 
 if running_as_root:
     if not opts.username:
-	opts.username = 'tofmipd'
+        opts.username = 'tofmipd'
     if not opts.authfile:
-	opts.authfile = '/etc/tofmipd'
+        opts.authfile = '/etc/tofmipd'
     ipauthmapfile = '/etc/ipauthmap'
 else:
     tmda_path = os.path.join(os.path.expanduser('~'), '.tmda')
     ipauthmapfile = os.path.join(tmda_path, 'ipauthmap')
     if not opts.authfile:
-	opts.authfile = os.path.join(tmda_path, 'tofmipd')
+        opts.authfile = os.path.join(tmda_path, 'tofmipd')
 
 def warning(msg='', exit=1):
     delimiter = '*' * 70
@@ -357,6 +386,130 @@ if remoteauth['proto'] == 'ldap':
     except:
         print >> DEBUGSTREAM, "Error: Invalid ldap dn\n"
         raise ValueError
+
+opts.tls_optional = opts.tls == 'optional'
+opts.tls = opts.tls != 'off'
+if opts.ssl or opts.tls:
+    if opts.ssl and opts.tls:
+        raise ValueError, 'Can\'t do SSL and TLS at the same time'
+
+    try:
+        from tlslite.api import *
+        from tlslite.TLSConnection import TLSConnection
+        from tlslite.integration.AsyncStateMachine import AsyncStateMachine
+    except ImportError:
+        raise ImportError, \
+              'tlslite (http://trevp.net/tlslite/) required.'
+
+    fhc = file(opts.ssl_cert, 'r')
+    datac = fhc.read()
+    fhc.close()
+    x509 = X509()
+    x509.parse(datac)
+    opts.ssl_cert_value = X509CertChain([x509])
+
+    fhk = file(opts.ssl_key, 'r')
+    datak = fhk.read()
+    fhk.close()
+    opts.ssl_key_value = parsePEMKey(datak, private=True)
+
+    class TMDATLSAsyncDispatcherMixIn(AsyncStateMachine):
+        """A custom version of tlslite's TLSAsyncDispatcherMixIn.
+        This version:
+        * Requires siblingClass to be specified explicitly, to ease use with
+          inheritance.
+        * Allows the mixin to remain dormant until activated, which allows
+          implementation of deferred SSL startup, as required for the STARTTLS
+          SMTP command.
+        """
+
+        def __init__(self, sock, siblingClass):
+            AsyncStateMachine.__init__(self)
+
+            self.siblingClass = siblingClass
+            self._active = False
+
+            self.tlsConnection = TLSConnection(sock)
+
+        def tlsMixinSetActive(self):
+            self._active = True
+
+        def readable(self):
+            if self._active:
+                result = self.wantsReadEvent()
+                if result != None:
+                    return result
+                return self.siblingClass.readable(self)
+            else:
+                return self.siblingClass.readable(self)
+
+        def writable(self):
+            if self._active:
+                result = self.wantsWriteEvent()
+                if result != None:
+                    return result
+                return self.siblingClass.readable(self)
+            else:
+                return self.siblingClass.writable(self)
+
+        def handle_read(self):
+            if self._active:
+                self.inReadEvent()
+            else:
+                self.siblingClass.handle_read(self)
+
+        def handle_write(self):
+            if self._active:
+                self.inWriteEvent()
+            else:
+                self.siblingClass.handle_write(self)
+
+        def outConnectEvent(self):
+            if not self._active:
+                raise "Internal state confusion"
+            self.siblingClass.handle_connect(self)
+
+        def outCloseEvent(self):
+            if not self._active:
+                raise "Internal state confusion"
+            asyncore.dispatcher.close(self)
+
+        def outReadEvent(self, readBuffer):
+            if not self._active:
+                raise "Internal state confusion"
+            self.readBuffer = readBuffer
+            self.siblingClass.handle_read(self)
+
+        def outWriteEvent(self):
+            if not self._active:
+                raise "Internal state confusion"
+            self.siblingClass.handle_write(self)
+
+        def recv(self, bufferSize=16384):
+            if self._active:
+                if bufferSize < 16384 or self.readBuffer == None:
+                    raise AssertionError()
+                returnValue = self.readBuffer
+                self.readBuffer = None
+                return returnValue
+            else:
+                return self.siblingClass.recv(self, bufferSize)
+
+        def send(self, writeBuffer):
+            if self._active:
+                self.setWriteOp(writeBuffer)
+                return len(writeBuffer)
+            else:
+                return self.siblingClass.send(self, writeBuffer)
+
+        def close(self):
+            if self._active:
+                if hasattr(self, "tlsConnection"):
+                    self.setCloseOp()
+                else:
+                    asyncore.dispatcher.close(self)
+            else:
+                return self.siblingClass.close(self)
 
 
 # Utility functions
@@ -508,36 +661,26 @@ def b64_decode(s):
 
 # Classes
 
-class SMTPChannel(asynchat.async_chat):
+class SMTPSession(asynchat.async_chat):
     COMMAND = 0
     DATA = 1
     AUTH = 2
+
+    ac_in_buffer_size = 16384
     
-    def __init__(self, server, conn):
+    def __init__(self, conn, process_msg_func):
+        if opts.ssl or opts.tls:
+            TMDATLSAsyncDispatcherMixIn.__init__(self, conn, asynchat.async_chat)
+            self.tlsConnection.ignoreAbruptClose = True
+
+        if opts.ssl:
+            self.tlsMixinSetActive()
+            self.setServerHandshakeOp(certChain=opts.ssl_cert_value,
+                                      privateKey=opts.ssl_key_value)
+
         asynchat.async_chat.__init__(self, conn)
-        # SMTP AUTH
-        self.__smtpauth = 0
-        self.__auth_resp1 = None
-        self.__auth_resp2 = None
-        self.__auth_username = None
-        self.__auth_password = None
-        self.__auth_sasl = None
-        self.__sasl_types = ['login', 'cram-md5', 'plain']
-        # Remove CRAM-MD5 from the published SASL types if using the
-        # `--authprog' or `--remoteauth' options. See FAQ 5.8.
-        if remoteauth['enable'] or opts.authprog:
-            self.__sasl_types.remove('cram-md5')
-        self.__auth_cram_md5_ticket = '<%s.%s@%s>' % (random.randrange(10000),
-                                                      int(time.time()), FQDN)
-        self.__server = server
-        self.__conn = conn
-        self.__line = []
-        self.__state = self.COMMAND
-        #self.__greeting = 0
-        self.__mailfrom = None
-        self.__rcpttos = []
-        self.__data = ''
-        self.__fqdn = FQDN
+
+        self.__process_msg_func = process_msg_func
 
         # If we're running under tcpserver, then it sets up a bunch of
         # environment variables that give socket address information.
@@ -577,9 +720,44 @@ class SMTPChannel(asynchat.async_chat):
             self._localname = socket.getfqdn(self._localip)
             self._localport = self._local[1]
 
+        # Set the TCPLOCALIP environment variable to support
+        # VPopMail's reverse IP domain mapping.
+        os.environ['TCPLOCALIP'] = self._localip
+
         print >> DEBUGSTREAM, 'Incoming connection from:', repr(self.__peer)
         print >> DEBUGSTREAM, 'Incoming connection to:', repr(self._local)
 
+        # SSL/TLS/STARTTLS
+        self.__can_starttls = opts.tls
+        self.__conn = conn
+
+        self.reinit()
+        self.signon()
+
+    def reinit(self):
+        # SMTP AUTH
+        self.__smtpauth = 0
+        self.__auth_resp1 = None
+        self.__auth_resp2 = None
+        self.__auth_username = None
+        self.__auth_password = None
+        self.__auth_sasl = None
+        self.__sasl_types = ['login', 'cram-md5', 'plain']
+        # Remove CRAM-MD5 from the published SASL types if using the
+        # `--authprog' or `--remoteauth' options. See FAQ 5.8.
+        if remoteauth['enable'] or opts.authprog:
+            self.__sasl_types.remove('cram-md5')
+        self.__auth_cram_md5_ticket = '<%s.%s@%s>' % (random.randrange(10000),
+                                                      int(time.time()), FQDN)
+        self.__line = []
+        self.__state = self.COMMAND
+        self.__mailfrom = None
+        self.__rcpttos = []
+        self.__data = ''
+        self.__fqdn = FQDN
+
+    def signon(self):
+        print "SENDING SIGN ON MSG"
         self.push('220 %s ESMTP tmda-ofmipd' % (self.__fqdn))
         self.set_terminator('\r\n')
 
@@ -590,6 +768,101 @@ class SMTPChannel(asynchat.async_chat):
     # Implementation of base class abstract method
     def collect_incoming_data(self, data):
         self.__line.append(data)
+
+    # Implementation of base class abstract method
+    def found_terminator(self):
+        line = EMPTYSTRING.join(self.__line)
+        if opts.debug:
+            print >> DEBUGSTREAM, 'Data:', repr(line)
+        self.__line = []
+        if self.__state == self.COMMAND:
+            if not line:
+                self.push('500 Error: bad syntax')
+                return
+            method = None
+            i = line.find(' ')
+            if i < 0:
+                command = line.upper()
+                arg = None
+            else:
+                command = line[:i].upper()
+                arg = line[i+1:].strip()
+            if self.__can_starttls and not opts.tls_optional:
+               valid_cmds = ['NOOP', 'EHLO', 'STARTTLS', 'QUIT']
+               if not (command in valid_cmds):
+                   self.push('530 Must issue a STARTTLS command first')
+                   return
+            method = getattr(self, 'smtp_' + command, None)
+            if not method:
+                self.push('502 Error: command "%s" not implemented' % command)
+                return
+            method(arg)
+            return
+        elif self.__state == self.DATA:
+            # Remove extraneous carriage returns and de-transparency according
+            # to RFC 2821, Section 4.5.2.
+            data = []
+            for text in line.split('\r\n'):
+                if text and text[0] == '.':
+                    data.append(text[1:])
+                else:
+                    data.append(text)
+            self.__data = NEWLINE.join(data)
+
+            if not opts.throttlescript or not os.system("%s %s" % (opts.throttlescript,
+                self.__auth_username)):
+                try:
+                    status = self.__process_msg_func(self.__peer,
+                                                     self.__mailfrom,
+                                                     self.__rcpttos,
+                                                     self.__data,
+                                                     self.__auth_username)
+                except:
+                    print >>DEBUGSTREAM, "process_message raised an exception:"
+                    import traceback
+                    traceback.print_exc(DEBUGSTREAM)
+                    raise
+            else:
+                status = self.push('450 Outgoing mail quota exceeded')
+
+            self.__rcpttos = []
+            self.__mailfrom = None
+            self.__state = self.COMMAND
+            self.set_terminator('\r\n')
+            if not status:
+                self.push('250 Ok')
+            else:
+                self.push(status)
+        elif self.__state == self.AUTH:
+            if line == '*':
+                # client canceled the authentication attempt
+                self.push('501 AUTH exchange cancelled')
+                self.auth_reset_state()
+                return
+            if not self.__auth_resp1:
+                self.__auth_resp1 = line
+            else:
+                self.__auth_resp2 = line
+            self.auth_challenge()
+        else:
+            self.push('451 Internal confusion')
+            return
+
+    # factored
+    def __getaddr(self, keyword, arg):
+        address = None
+        keylen = len(keyword)
+        if arg[:keylen].upper() == keyword:
+            address = arg[keylen:].strip()
+            if not address:
+                pass
+            elif address[0] == '<' and address[-1] == '>' and address <> '<>':
+                # Addresses can be in the form <person@dom.com> but watch out
+                # for null address, e.g. <>
+                address = address[1:-1]
+        return address
+
+    # Authentication methods
 
     def verify_login(self, b64username, b64password):
         """The LOGIN SMTP authentication method is an undocumented,
@@ -602,7 +875,6 @@ class SMTPChannel(asynchat.async_chat):
             return 501
         self.__auth_username = username.lower()
         self.__auth_password = password
-        os.environ['TCPLOCALIP'] = self._localip
         if remoteauth['enable']:
             # Try first with the remote auth
             if run_remoteauth(username, password, self._localip):
@@ -632,7 +904,6 @@ class SMTPChannel(asynchat.async_chat):
             return 0
         self.__auth_username = username.lower()
         self.__auth_password = password
-        os.environ['TCPLOCALIP'] = self._localip
         if remoteauth['enable']:
             # Try first with the remote auth
             if run_remoteauth(username, password, self._localip):
@@ -751,90 +1022,24 @@ class SMTPChannel(asynchat.async_chat):
             self.auth_verify()
             return
 
-    # Implementation of base class abstract method
-    def found_terminator(self):
-        line = EMPTYSTRING.join(self.__line)
-        if opts.debug:
-            print >> DEBUGSTREAM, 'Data:', repr(line)
-        self.__line = []
-        if self.__state == self.COMMAND:
-            if not line:
-                self.push('500 Error: bad syntax')
-                return
-            method = None
-            i = line.find(' ')
-            if i < 0:
-                command = line.upper()
-                arg = None
-            else:
-                command = line[:i].upper()
-                arg = line[i+1:].strip()
-            method = getattr(self, 'smtp_' + command, None)
-            if not method:
-                self.push('502 Error: command "%s" not implemented' % command)
-                return
-            method(arg)
-            return
-        elif self.__state == self.DATA:
-            # Remove extraneous carriage returns and de-transparency according
-            # to RFC 2821, Section 4.5.2.
-            data = []
-            for text in line.split('\r\n'):
-                if text and text[0] == '.':
-                    data.append(text[1:])
-                else:
-                    data.append(text)
-            self.__data = NEWLINE.join(data)
-
-            if not opts.throttlescript or not os.system("%s %s" % (opts.throttlescript,
-                self.__auth_username)):
-                try:
-                    status = self.__server.process_message(self.__peer,
-                                                           self.__mailfrom,
-                                                           self.__rcpttos,
-                                                           self.__data,
-                                                           self.__auth_username)
-                except:
-                    print >>DEBUGSTREAM, "process_message raised an exception:"
-                    import traceback
-                    traceback.print_exc(DEBUGSTREAM)
-                    raise
-            else:
-                status = self.push('450 Outgoing mail quota exceeded')
-
-            self.__rcpttos = []
-            self.__mailfrom = None
-            self.__state = self.COMMAND
-            self.set_terminator('\r\n')
-            if not status:
-                self.push('250 Ok')
-            else:
-                self.push(status)
-        elif self.__state == self.AUTH:
-            if line == '*':
-                # client canceled the authentication attempt
-                self.push('501 AUTH exchange cancelled')
-                self.auth_reset_state()
-                return
-            if not self.__auth_resp1:
-                self.__auth_resp1 = line
-            else:
-                self.__auth_resp2 = line
-            self.auth_challenge()
-        else:
-            self.push('451 Internal confusion')
-            return
-
     # ESMTP/SMTP commands
 
     def smtp_EHLO(self, arg):
         if not arg:
             self.push('501 Syntax: EHLO hostname')
             return
-        #self.__greeting = arg
-        self.push('250-%s' % self.__fqdn)
-        self.push('250 AUTH %s' % (' '.join(map(lambda s: s.upper(),
-                                                self.__sasl_types))))
+
+        responses = []
+        responses.append('%s' % self.__fqdn)
+        if not self.__can_starttls or opts.tls_optional:
+            responses.append('AUTH %s' %
+                (' '.join(map(lambda s: s.upper(), self.__sasl_types))))
+        if self.__can_starttls:
+            responses.append('STARTTLS')
+        for r in responses[:-1]:
+            self.push('250-' + r)
+        self.push('250 ' + responses[-1])
+
         # Put a Received header string in the environment for tmda-inject
         # to add later.
         rh = []
@@ -844,6 +1049,10 @@ class SMTPChannel(asynchat.async_chat):
             rh.append('(%s [%s])' % (self.__peername, self.__peerip))
         else:
             rh.append('(%s)' % (self.__peerip))
+        if opts.ssl:
+            rh.append('(using SMTP over TLS)')
+        if opts.tls and not self.__can_starttls:
+            rh.append('(using STARTTLS)')
         rh.append('by %s (tmda-ofmipd) with ESMTP;' % (self.__fqdn))
         rh.append(Util.make_date())
         os.environ['TMDA_OFMIPD_RECEIVED'] = ' '.join(rh)
@@ -858,20 +1067,6 @@ class SMTPChannel(asynchat.async_chat):
         # args is ignored
         self.push('221 Bye')
         self.close_when_done()
-
-    # factored
-    def __getaddr(self, keyword, arg):
-        address = None
-        keylen = len(keyword)
-        if arg[:keylen].upper() == keyword:
-            address = arg[keylen:].strip()
-            if not address:
-                pass
-            elif address[0] == '<' and address[-1] == '>' and address <> '<>':
-                # Addresses can be in the form <person@dom.com> but watch out
-                # for null address, e.g. <>
-                address = address[1:-1]
-        return address
 
     def smtp_MAIL(self, arg):
         # Authentication required first
@@ -947,59 +1142,211 @@ class SMTPChannel(asynchat.async_chat):
         self.__state = self.AUTH
         self.auth_challenge()
 
+    def smtp_STARTTLS(self, arg):
+        """RFC 3207 - SMTP Service Extension for Secure SMTP over Transport Layer Security"""
+        if not self.__can_starttls:
+            # Not TLS mode, or we have already done STARTTLS
+            self.push('503 Duplicate or disallowed STARTTLS')
+            return
+        if arg:
+            self.push('501 Syntax error (no parameters allowed)')
+            return
+        self.push('220 Ready to start TLS')
 
-class MessageProcessor:
-    """Base 'pure' SMTP message processing class.
-    Raises NotImplementedError if you try to use it."""
+        self.__can_starttls = False
 
-    # API for "doing something useful with the message"
-    def process_message(self, peer, mailfrom, rcpttos, data):
-        """Override this abstract method to handle messages from the client.
+        self.tlsMixinSetActive()
+        self.setServerHandshakeOp(certChain=opts.ssl_cert_value,
+                                  privateKey=opts.ssl_key_value)
 
-        peer is a tuple containing (ipaddr, port) of the client that made the
-        socket connection to our smtp port.
+        self.reinit()
 
-        mailfrom is the raw address the client claims the message is coming
-        from.
-
-        rcpttos is a list of raw addresses the client wishes to deliver the
-        message to.
-
-        data is a string containing the entire full text of the message,
-        headers (if supplied) and all.  It has been `de-transparencied'
-        according to RFC 821, Section 4.5.2.  In other words, a line
-        containing a `.' followed by other text has had the leading dot
-        removed.
-
-        This function should return None, for a normal `250 Ok' response;
-        otherwise it returns the desired response string in RFC 821 format.
-
-        """
-        raise NotImplementedError
+    def handle_connect(self):
+        print ">>> handle_connect called!"
 
 
-class DebuggingMessageProcessor(MessageProcessor):
+if opts.ssl or opts.tls:
+    SMTPSession.__bases__ = (TMDATLSAsyncDispatcherMixIn,) + SMTPSession.__bases__
+
+def process_message_fail(peer, mailfrom, rcpttos, data, auth_username):
+    """Debug class which prevents the mail from actually being accepted."""
+    raise "Test Exception"
+
+
+def process_message_print(peer, mailfrom, rcpttos, data, auth_username):
     """Simply prints each message it receives on stdout."""
-    # Do something with the gathered message
-    def process_message(self, peer, mailfrom, rcpttos, data):
-        inheaders = 1
-        lines = data.split('\n')
-        print '---------- MESSAGE FOLLOWS ----------'
-        for line in lines:
-            # headers first
-            if inheaders and not line:
-                print 'X-Peer:', peer[0]
-                inheaders = 0
-            print line
-        print '------------ END MESSAGE ------------'
+    inheaders = 1
+    lines = data.split('\n')
+    print '---------- MESSAGE FOLLOWS ----------'
+    for line in lines:
+        # headers first
+        if inheaders and not line:
+            print 'X-Peer:', peer[0]
+            inheaders = 0
+        print line
+    print '------------ END MESSAGE ------------'
 
 
-class SMTPServer(asyncore.dispatcher, MessageProcessor):
+def _deliver_process_message_smtp_proxy(mailfrom, rcpttos, data, auth_username):
+    import smtplib
+    refused = {}
+    try:
+        s = smtplib.SMTP()
+        s.connect(opts.remoteaddr[0], opts.remoteaddr[1])
+        try:
+            refused = s.sendmail(mailfrom, rcpttos, data)
+        finally:
+            s.quit()
+    except smtplib.SMTPRecipientsRefused, e:
+        print >> DEBUGSTREAM, 'got SMTPRecipientsRefused'
+        refused = e.recipients
+    except (socket.error, smtplib.SMTPException), e:
+        print >> DEBUGSTREAM, 'got', e.__class__
+        # All recipients were refused.  If the exception had an associated
+        # error code, use it.  Otherwise,fake it with a non-triggering
+        # exception code.
+        errcode = getattr(e, 'smtp_code', -1)
+        errmsg = getattr(e, 'smtp_error', 'ignore')
+        for r in rcpttos:
+            refused[r] = (errcode, errmsg)
+    return refused
+
+def process_message_smtp_proxy(peer, mailfrom, rcpttos, data, auth_username):
+    """Proxies all messages to a real smtpd which does final delivery.
+    Used solely as a base class."""
+    lines = data.split('\n')
+    # Look for the last header
+    i = 0
+    for line in lines:
+        if not line:
+            break
+        i += 1
+    lines.insert(i, 'X-Peer: %s' % peer[0])
+    data = NEWLINE.join(lines)
+    refused = _deliver_process_message_smtp_proxy(mailfrom, rcpttos, data)
+    # TBD: what to do with refused addresses?
+    print >> DEBUGSTREAM, 'we got some refusals:', refused
+
+
+def process_message_vdomain(peer, mailfrom, rcpttos, data, auth_username):
+    """This proxy is used only for virtual domain support in a qmail +
+    (VPopMail or VMailMgr) environment.  It needs to behave differently from
+    the standard TMDA proxy in that authenticated users are not system
+    (/etc/passwd) users."""
+    # Set up partial tmda-inject command line.
+    execdir = os.path.dirname(os.path.abspath(program))
+    inject_cmd = [os.path.join(execdir, 'tmda-inject')] + rcpttos
+    userinfo = auth_username.split('@', 1)
+    user = userinfo[0]
+    if len(userinfo) > 1:
+        domain = userinfo[1]
+    else:
+        domain = ''
+    # If running as uid 0, fork in preparation for running the tmda-inject
+    # process and change UID and GID to the virtual domain user.  This is
+    # for VMailMgr, where each virtual domain is a system (/etc/passwd)
+    # user.
+    if running_as_root:
+        pid = os.fork()
+        if pid <> 0:
+            rpid, status = os.wait()
+            # Did tmda-inject succeed?
+            if status <> 0:
+                raise IOError, 'tmda-inject failed!'
+            return
+        else:
+            # The 'prepend' is the system user in charge of this virtual
+            # domain.
+            prepend = Util.getvdomainprepend(auth_username, 
+                                             opts.vdomainspath)
+            if not prepend:
+                err = 'Error: "%s" is not a virtual domain' % (domain,)
+                print >> DEBUGSTREAM, err
+                os._exit(-1)
+            os.seteuid(0)
+            os.setgid(Util.getgid(prepend))
+            os.setgroups(Util.getgrouplist(prepend))
+            os.setuid(Util.getuid(prepend))
+            # For VMailMgr's utilities.
+            os.environ['HOME'] = Util.gethomedir(prepend)
+    # From here on, we're either in the child (pid == 0) or we're not
+    # running as root, so we haven't forked.
+    vhomedir = Util.getvuserhomedir(user, domain, opts.vhomescript)
+    print >> DEBUGSTREAM, 'vuser homedir: "%s"' % (vhomedir,)
+    # This is so "~" will work in the .tmda/* files.
+    os.environ['HOME'] = vhomedir
+    # change inject_cmd to pass the message through if
+    # --pure-proxy was specified and the .tmda/config file is
+    # missing.
+    if opts.pure_proxy and not os.path.exists(os.path.join
+                                         (vhomedir, '.tmda', 'config')):
+        sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
+                           or '/usr/sbin/sendmail'
+        inject_cmd = [sendmail_program, '-f', mailfrom, '-i', '--'] + rcpttos
+    try:
+        Util.pipecmd(inject_cmd, data)
+    except Exception, err:
+        print >> DEBUGSTREAM, 'Error:', err
+        if running_as_root:
+            os._exit(-1)
+    if running_as_root:
+        # Should never get here!
+        os._exit(0)
+
+
+def process_message_sysuser(peer, mailfrom, rcpttos, data, auth_username):
+    """Using this server for outgoing smtpd, the authenticated user
+    will have his mail tagged using his TMDA config file."""
+    if opts.configdir is None:
+        # ~user/.tmda/
+        tmda_configdir = os.path.join(os.path.expanduser
+                                      ('~' + auth_username), '.tmda')
+    else:
+        tmda_configdir = os.path.join(os.path.expanduser
+                                      (opts.configdir), auth_username)
+    tmda_configfile = os.path.join(tmda_configdir, 'config')
+    if opts.pure_proxy and not os.path.exists(tmda_configfile):
+        sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
+                           or '/usr/sbin/sendmail'
+        inject_cmd = [sendmail_program, '-f', mailfrom, '-i', '--'] + rcpttos
+    else:
+        execdir = os.path.dirname(os.path.abspath(program))
+        inject_path = os.path.join(execdir, 'tmda-inject')
+        inject_cmd = [inject_path, '-c', tmda_configfile] + rcpttos
+
+    # This is so "~" will always work in the .tmda/* files.
+    os.environ['HOME'] = Util.gethomedir(auth_username)
+    # If running as uid 0, fork the tmda-inject process, and
+    # then change UID and GID to the authenticated user.
+    if running_as_root:
+        pid = os.fork()
+        if pid == 0:
+            os.seteuid(0)
+            os.setgid(Util.getgid(auth_username))
+            os.setgroups(Util.getgrouplist(auth_username))
+            os.setuid(Util.getuid(auth_username))
+            try:
+                Util.pipecmd(inject_cmd, data)
+            except Exception, err:
+                print >> DEBUGSTREAM, 'Error:', err
+                os._exit(-1)
+            os._exit(0)
+        else:
+            rpid, status = os.wait()
+            # Did tmda-inject succeed?
+            if status <> 0:
+                raise IOError, 'tmda-inject failed!'
+    else:
+        # no need to fork
+        Util.pipecmd(inject_cmd, data)
+            
+
+class SMTPServer(asyncore.dispatcher):
     """Run an SMTP server daemon - accept new socket connections and
-    process SMTP sessions on each conneciton."""
-    def __init__(self, localaddr, remoteaddr):
+    process SMTP sessions on each connection."""
+    def __init__(self, localaddr, process_msg_func):
         self._localaddr = localaddr
-        self._remoteaddr = remoteaddr
+        self._process_msg_func = process_msg_func
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         # try to re-use a server port if possible
@@ -1007,8 +1354,8 @@ class SMTPServer(asyncore.dispatcher, MessageProcessor):
         self.bind(localaddr)
         self.listen(5)
         print >> DEBUGSTREAM, \
-              'tmda-ofmipd started at %s\n\tListening on %s' % \
-              (Util.make_date(), opts.proxyport)
+              'tmda-ofmipd started at %s\n\tListening on %s:%d' % \
+              (Util.make_date(), localaddr[0], localaddr[1])
 
     def readable(self):
         if len(asyncore.socket_map) > opts.connections:
@@ -1016,207 +1363,16 @@ class SMTPServer(asyncore.dispatcher, MessageProcessor):
             return 0
         else:
             return 1
-        
+
     def handle_accept(self):
         conn = self.accept()[0]
-        self._channel = SMTPChannel(self, conn)
+        SMTPSession(conn, self._process_msg_func)
 
 
-class SMTPProcessor(asyncore.dispatcher, MessageProcessor):
-    """Run a single SMTP session, on the stdin file descriptor."""
-    def __init__(self):
-        asyncore.dispatcher.__init__(self)
-        conn = socket.fromfd(0, socket.AF_INET, socket.SOCK_STREAM)
-        self._channel = SMTPChannel(self, conn)
-
-
-class PureProxy(MessageProcessor):
-    """Proxies all messages to a real smtpd which does final delivery.
-    Used solely as a base class."""
-    def process_message(self, peer, mailfrom, rcpttos, data):
-        lines = data.split('\n')
-        # Look for the last header
-        i = 0
-        for line in lines:
-            if not line:
-                break
-            i += 1
-        lines.insert(i, 'X-Peer: %s' % peer[0])
-        data = NEWLINE.join(lines)
-        refused = self._deliver(mailfrom, rcpttos, data)
-        # TBD: what to do with refused addresses?
-        print >> DEBUGSTREAM, 'we got some refusals:', refused
-
-    def _deliver(self, mailfrom, rcpttos, data):
-        import smtplib
-        refused = {}
-        try:
-            s = smtplib.SMTP()
-            s.connect(self._remoteaddr[0], self._remoteaddr[1])
-            try:
-                refused = s.sendmail(mailfrom, rcpttos, data)
-            finally:
-                s.quit()
-        except smtplib.SMTPRecipientsRefused, e:
-            print >> DEBUGSTREAM, 'got SMTPRecipientsRefused'
-            refused = e.recipients
-        except (socket.error, smtplib.SMTPException), e:
-            print >> DEBUGSTREAM, 'got', e.__class__
-            # All recipients were refused.  If the exception had an associated
-            # error code, use it.  Otherwise,fake it with a non-triggering
-            # exception code.
-            errcode = getattr(e, 'smtp_code', -1)
-            errmsg = getattr(e, 'smtp_error', 'ignore')
-            for r in rcpttos:
-                refused[r] = (errcode, errmsg)
-        return refused
-
-
-class VDomainProxy(PureProxy):
-    """This proxy is used only for virtual domain support in a qmail +
-    (VPopMail or VMailMgr) environment.  It needs to behave differently from
-    the standard TMDA proxy in that authenticated users are not system
-    (/etc/passwd) users."""
-    def process_message(self, peer, mailfrom, rcpttos, data, auth_username):
-        # Set the TCPLOCALIP environment variable to support VPopMail's reverse
-        # IP domain mapping.
-        os.environ['TCPLOCALIP'] = self._channel._localip
-        # Set up partial tmda-inject command line.
-        execdir = os.path.dirname(os.path.abspath(program))
-        inject_cmd = [os.path.join(execdir, 'tmda-inject')] + rcpttos
-        userinfo = auth_username.split('@', 1)
-        user = userinfo[0]
-        if len(userinfo) > 1:
-            domain = userinfo[1]
-        else:
-            domain = ''
-        # If running as uid 0, fork in preparation for running the tmda-inject
-        # process and change UID and GID to the virtual domain user.  This is
-        # for VMailMgr, where each virtual domain is a system (/etc/passwd)
-        # user.
-        if running_as_root:
-            pid = os.fork()
-            if pid <> 0:
-                rpid, status = os.wait()
-                # Did tmda-inject succeed?
-                if status <> 0:
-                    raise IOError, 'tmda-inject failed!'
-                return
-            else:
-                # The 'prepend' is the system user in charge of this virtual
-                # domain.
-                prepend = Util.getvdomainprepend(auth_username, 
-						 opts.vdomainspath)
-                if not prepend:
-                    err = 'Error: "%s" is not a virtual domain' % (domain,)
-                    print >> DEBUGSTREAM, err
-                    os._exit(-1)
-                os.seteuid(0)
-                os.setgid(Util.getgid(prepend))
-                os.setgroups(Util.getgrouplist(prepend))
-                os.setuid(Util.getuid(prepend))
-                # For VMailMgr's utilities.
-                os.environ['HOME'] = Util.gethomedir(prepend)
-        # From here on, we're either in the child (pid == 0) or we're not
-        # running as root, so we haven't forked.
-        vhomedir = Util.getvuserhomedir(user, domain, opts.vhomescript)
-        print >> DEBUGSTREAM, 'vuser homedir: "%s"' % (vhomedir,)
-        # This is so "~" will work in the .tmda/* files.
-        os.environ['HOME'] = vhomedir
-        # change inject_cmd to pass the message through if
-        # --pure-proxy was specified and the .tmda/config file is
-        # missing.
-        if opts.pure_proxy and not os.path.exists(os.path.join
-                                             (vhomedir, '.tmda', 'config')):
-            sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
-                               or '/usr/sbin/sendmail'
-            inject_cmd = [sendmail_program, '-f', mailfrom, '-i', '--'] + rcpttos
-        try:
-            Util.pipecmd(inject_cmd, data)
-        except Exception, err:
-            print >> DEBUGSTREAM, 'Error:', err
-            if running_as_root:
-                os._exit(-1)
-        if running_as_root:
-            # Should never get here!
-            os._exit(0)
-
-
-class TMDAProxy(PureProxy):
-    """Using this server for outgoing smtpd, the authenticated user
-    will have his mail tagged using his TMDA config file."""
-    def process_message(self, peer, mailfrom, rcpttos, data, auth_username):
-        if opts.configdir is None:
-            # ~user/.tmda/
-            tmda_configdir = os.path.join(os.path.expanduser
-                                          ('~' + auth_username), '.tmda')
-        else:
-            tmda_configdir = os.path.join(os.path.expanduser
-                                          (opts.configdir), auth_username)
-        tmda_configfile = os.path.join(tmda_configdir, 'config')
-        if opts.pure_proxy and not os.path.exists(tmda_configfile):
-            sendmail_program = os.environ.get('TMDA_SENDMAIL_PROGRAM') \
-                               or '/usr/sbin/sendmail'
-            inject_cmd = [sendmail_program, '-f', mailfrom, '-i', '--'] + rcpttos
-        else:
-            execdir = os.path.dirname(os.path.abspath(program))
-            inject_path = os.path.join(execdir, 'tmda-inject')
-            inject_cmd = [inject_path, '-c', tmda_configfile] + rcpttos
-
-        # This is so "~" will always work in the .tmda/* files.
-        os.environ['HOME'] = Util.gethomedir(auth_username)
-        # If running as uid 0, fork the tmda-inject process, and
-        # then change UID and GID to the authenticated user.
-        if running_as_root:
-            pid = os.fork()
-            if pid == 0:
-                os.seteuid(0)
-                os.setgid(Util.getgid(auth_username))
-                os.setgroups(Util.getgrouplist(auth_username))
-                os.setuid(Util.getuid(auth_username))
-                try:
-                    Util.pipecmd(inject_cmd, data)
-                except Exception, err:
-                    print >> DEBUGSTREAM, 'Error:', err
-                    os._exit(-1)
-                os._exit(0)
-            else:
-                rpid, status = os.wait()
-                # Did tmda-inject succeed?
-                if status <> 0:
-                    raise IOError, 'tmda-inject failed!'
-        else:
-            # no need to fork
-            Util.pipecmd(inject_cmd, data)
-            
-
-class VDomainProxyServer(VDomainProxy, SMTPServer):
-    """A proxy server class that binds to the server port, accepts new
-    connections, and processes them as necessary for a qmail virtual user
-    environment. All implementation is inherited from superclasses."""
-    pass
-
-
-class VDomainProxyProcessor(VDomainProxy, SMTPProcessor):
-    """A proxy server class that handles an SMTP session on a previously
-    created socket, and performs processing as necessary for a qmail virtual
-    user environment. All implementation is inherited from superclasses."""
-    pass
-
-
-class TMDAProxyServer(TMDAProxy, SMTPServer):
-    """A proxy server class that binds to the server port, accepts new
-    connections, and processes them as necessary for a system user
-    environment. All implementation is inherited from superclasses."""
-    pass
-
-
-class TMDAProxyProcessor(TMDAProxy, SMTPProcessor):
-    """A proxy server class that handles an SMTP session on a previously
-    created socket, and performs processing as necessary for a system
-    user environment. All implementation is inherited from superclasses."""
-    pass
-
+def create_smtp_session_from_stdin(process_msg_func):
+    conn = socket.fromfd(0, socket.AF_INET, socket.SOCK_STREAM)
+    SMTPSession(conn, process_msg_func)
+ 
 
 def main():
     # check permissions of authfile if using only remote
@@ -1225,21 +1381,20 @@ def main():
         authfile_mode = Util.getfilemode(opts.authfile)
         if authfile_mode not in (400, 600):
             raise IOError, \
-		opts.authfile + ' must be chmod 400 or 600!'
-    # try binding to the specified host:port
-    host, port = opts.proxyport.split(':', 1)
+                opts.authfile + ' must be chmod 400 or 600!'
+
     if opts.vhomescript:
-        if opts.one_session:
-            proxy = VDomainProxyProcessor()
-        else:
-            proxy = VDomainProxyServer((host, int(port)),
-                                       ('localhost', 25))
+        process_msg_func = process_message_vdomain
     else:
-        if opts.one_session:
-            proxy = TMDAProxyProcessor()
-        else:
-            proxy = TMDAProxyServer((host, int(port)),
-                                    ('localhost', 25))
+        process_msg_func = process_message_sysuser
+
+    if opts.one_session:
+        create_smtp_session_from_stdin(process_msg_func)
+    else:
+        # try binding to the specified host:port
+        host, port = opts.proxyport.split(':', 1)
+        server = SMTPServer((host, int(port)), process_msg_func)
+
     if running_as_root:
         pw_uid = Util.getuid(opts.username)
         # check ownership of authfile if using only remote
@@ -1247,7 +1402,7 @@ def main():
         if not (remoteauth['enable'] or opts.authprog) or opts.fallback:
             if Util.getfileuid(opts.authfile) <> pw_uid:
                 raise IOError, \
-		    opts.authfile + ' must be owned by UID ' + str(pw_uid)
+                    opts.authfile + ' must be owned by UID ' + str(pw_uid)
         # try setegid()
         os.setegid(Util.getgid(opts.username))
         # try setting the supplemental group ids
