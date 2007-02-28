@@ -759,7 +759,6 @@ class SMTPSession(asynchat.async_chat):
         self.__fqdn = FQDN
 
     def signon(self):
-        print "SENDING SIGN ON MSG"
         self.push('220 %s ESMTP tmda-ofmipd' % (self.__fqdn))
         self.set_terminator('\r\n')
 
