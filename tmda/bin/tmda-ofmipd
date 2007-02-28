@@ -183,10 +183,10 @@ for the STARTTLS command. This configuration is typically run on
 port 465 (smtps).""")
 
 congroup.add_option("", "--tls",
-                    type="choice", default='off', dest="tls",
-                    choices=['off', 'optional', 'on'],
+                    type="choice", default=None, dest="tls",
+                    choices=['optional', 'on'],
                     help= \
-"""Enable TLS mode. Valid options are off/optional/on. With this option
+"""Enable TLS mode. Valid options are optional and on. With this option
 enabled, the STARTTLS SMTP command may be used to upgrade the plain-text
 connection to SSL/TLS. In 'optional' mode, AUTH is allowed either before
 or after STARTTLS. In 'on' mode, clients are forced to STARTTLS prior to
@@ -194,12 +194,12 @@ AUTH, to ensure that plain-text AUTH commands are protected. This
 configuration is typically run on port 587 (submission).""")
 
 congroup.add_option("", "--ssl-cert",
-                    metavar="/PATH/TO/FILE", dest="ssl_cert",
+                    metavar="/PATH/TO/FILE", default=None, dest="ssl_cert",
                     help= \
 """Location of the SSL/TLS certificate key file.""")
 
 congroup.add_option("", "--ssl-key",
-                    metavar="/PATH/TO/FILE", dest="ssl_key",
+                    metavar="/PATH/TO/FILE", default=None, dest="ssl_key",
                     help= \
 """Location of the SSL/TLS private key file.""")
 
@@ -387,8 +387,6 @@ if remoteauth['proto'] == 'ldap':
         print >> DEBUGSTREAM, "Error: Invalid ldap dn\n"
         raise ValueError
 
-opts.tls_optional = opts.tls == 'optional'
-opts.tls = opts.tls != 'off'
 if opts.ssl or opts.tls:
     if opts.ssl and opts.tls:
         raise ValueError, 'Can\'t do SSL and TLS at the same time'
@@ -400,6 +398,10 @@ if opts.ssl or opts.tls:
     except ImportError:
         raise ImportError, \
               'tlslite (http://trevp.net/tlslite/) required.'
+
+    if (not opts.ssl_cert) or (not opts.ssl_key):
+        raise ValueError, \
+            '--ssl-cert and --ssl-key are required when using --ssl or --tls'
 
     fhc = file(opts.ssl_cert, 'r')
     datac = fhc.read()
@@ -787,7 +789,7 @@ class SMTPSession(asynchat.async_chat):
             else:
                 command = line[:i].upper()
                 arg = line[i+1:].strip()
-            if self.__can_starttls and not opts.tls_optional:
+            if self.__can_starttls and not opts.tls == 'optional':
                valid_cmds = ['NOOP', 'EHLO', 'STARTTLS', 'QUIT']
                if not (command in valid_cmds):
                    self.push('530 Must issue a STARTTLS command first')
@@ -1031,7 +1033,7 @@ class SMTPSession(asynchat.async_chat):
 
         responses = []
         responses.append('%s' % self.__fqdn)
-        if not self.__can_starttls or opts.tls_optional:
+        if not self.__can_starttls or opts.tls == 'optional':
             responses.append('AUTH %s' %
                 (' '.join(map(lambda s: s.upper(), self.__sasl_types))))
         if self.__can_starttls:
