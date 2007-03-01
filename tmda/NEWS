@@ -14,6 +14,9 @@ TMDA 1.1.12 "Macallan" --
   feature. For more information, see tmda-ofmipd's '--help' output or
   the "SSL/TLS" section of http://wiki.tmda.net/TmdaOfmipdHowto
 
+* Fixed a minor bug that prevented the use of both SMTPSSL and
+  SMTPAUTH together.
+
 ======================================================================
 
 TMDA 1.1.11 "Ladyburn" --

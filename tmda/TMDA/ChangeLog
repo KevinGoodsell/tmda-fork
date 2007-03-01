@@ -1,3 +1,8 @@
+2007-03-01  Jason R. Mastaler  <jason@mastaler.com>
+
+	* SMTP.py (Connection.__connect): bugfix: TLS must come before
+	SMTP AUTH or else you won't be able to use both of them together.
+
 2007-02-23  Jason R. Mastaler  <jason@mastaler.com>
 
 	* Util.py (format_timeout): Use Defaults.TIMEOUT_UNITS.
