@@ -403,14 +403,14 @@ if opts.ssl or opts.tls:
         raise ValueError, \
             '--ssl-cert and --ssl-key are required when using --ssl or --tls'
 
-    fhc = file(opts.ssl_cert, 'r')
+    fhc = file(os.path.expanduser(opts.ssl_cert), 'r')
     datac = fhc.read()
     fhc.close()
     x509 = X509()
     x509.parse(datac)
     opts.ssl_cert_value = X509CertChain([x509])
 
-    fhk = file(opts.ssl_key, 'r')
+    fhk = file(os.path.expanduser(opts.ssl_key), 'r')
     datak = fhk.read()
     fhk.close()
     opts.ssl_key_value = parsePEMKey(datak, private=True)
