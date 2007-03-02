@@ -24,7 +24,7 @@
 from TMDA import Version
 
 # tmda-cgi version
-tmda_cgi = "0.16"
+tmda_cgi = "0.16.1"
 
 # tmda-cgi version codename
 Codename = "Sulphur"
