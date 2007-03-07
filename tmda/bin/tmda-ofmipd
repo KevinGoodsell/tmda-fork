@@ -479,8 +479,11 @@ if opts.ssl or opts.tls:
         def outReadEvent(self, readBuffer):
             if not self._active:
                 raise "Internal state confusion"
-            self.readBuffer = readBuffer
-            self.siblingClass.handle_read(self)
+            if readBuffer == '':
+                self.outCloseEvent()
+            else:
+                self.readBuffer = readBuffer
+                self.siblingClass.handle_read(self)
 
         def outWriteEvent(self):
             if not self._active:
