@@ -666,26 +666,84 @@ def b64_decode(s):
 
 # Classes
 
-class SMTPSession(asynchat.async_chat):
+# Integration helper class for tlslite.
+#
+# tlslite's SSL handshake function is not synchronous; it may return prior
+# to handshake completion. In this case, we cannot perform application level
+# reads/writes to the socket, because doing so would corrupt the handshake
+# process.
+#
+# However, the very first thing an SMTP server wants to after a new connection
+# is established is to send the server signon greeting.
+#
+# So, we must wait for the handshake to complete. tlslite will notify us when
+# this occurs by calling the handle_connect function. However, note that
+# this function is called on the "sibling class" part of the object, not the
+# SMTPSession object. This forces us to sub-class async_chat so that we can
+# hook this call into the sibling class.
+#
+# tlslite calls the sibling class directly because asyncore/asynchat are
+# designed to call handle_connect on "self". Typically, the child class
+# (SMTPSession in our case) will implement this function. When tlslite is in
+# use, handle_connect is implemented by the tlslite mixin, which forwards the
+# evenr to the tlslite internals. To avoid infinite recursion, tlslite must
+# call handle_connect directly on the sibling class, not "self".
+#
+# Also note that when initializing an asyncore/async_chat sub-class with an
+# existing connected socket, like tmda-ofmipd does, asyncore/async_chat don't
+# call handle_connect. For this reason, we force this call ourselves at the
+# end of SMTPSession.__init__ (when not in SSL mode) in order to re-use the
+# same mechanism/function to send the server signon.
+
+class SMTPSessionSignon(asynchat.async_chat):
+    def __init__(self, conn):
+        asynchat.async_chat.__init__(self, conn)
+
+    def handle_connect(self):
+        self.init_dynamic_state() # calls sub-class
+        self.push('220 %s ESMTP tmda-ofmipd' % FQDN)
+        self.set_terminator('\r\n')
+
+class SMTPSession(SMTPSessionSignon):
     COMMAND = 0
     DATA = 1
     AUTH = 2
 
     ac_in_buffer_size = 16384
-    
+
     def __init__(self, conn, process_msg_func):
+        # Base class __init__ calls
+
         if opts.ssl or opts.tls:
-            TMDATLSAsyncDispatcherMixIn.__init__(self, conn, asynchat.async_chat)
+            TMDATLSAsyncDispatcherMixIn.__init__(self, conn, SMTPSessionSignon)
             self.tlsConnection.ignoreAbruptClose = True
+        SMTPSessionSignon.__init__(self, conn)
+
+        # Save our own __init__ parameters
+
+        self.__conn = conn
+        self.__process_msg_func = process_msg_func
+
+        # Initialize object state
+
+        self.init_static_state()
+
+        # Debug tracing
+
+        print >> DEBUGSTREAM, 'Incoming connection from:', repr(self.__peer)
+        print >> DEBUGSTREAM, 'Incoming connection to:', repr(self._local)
+
+        # Start SSL session, or perform plain-text signon
 
         if opts.ssl:
-            self.tlsMixinSetActive()
-            self.setServerHandshakeOp(certChain=opts.ssl_cert_value,
-                                      privateKey=opts.ssl_key_value)
+            self.do_ssl_handshake()
+        else:
+            self.handle_connect()
 
-        asynchat.async_chat.__init__(self, conn)
-
-        self.__process_msg_func = process_msg_func
+    def init_static_state(self):
+        """Initialize 'static state' - that state which is associated
+        solely with the object, or the physical network connection.
+        In particular, this state is not flushed by STARTTLS."""
 
         # If we're running under tcpserver, then it sets up a bunch of
         # environment variables that give socket address information.
@@ -716,11 +774,11 @@ class SMTPSession(asynchat.async_chat):
                 self.__peerport = ''
                 self.__peer = (self.__peerip, self.__peerport)
             else:
-                self.__peer = conn.getpeername()
+                self.__peer = self.__conn.getpeername()
                 self.__peerip = self.__peer[0]
                 self.__peerport = self.__peer[1]
             self.__peername = socket.getfqdn(self.__peerip)
-            self._local = conn.getsockname()
+            self._local = self.__conn.getsockname()
             self._localip = self._local[0]
             self._localname = socket.getfqdn(self._localip)
             self._localport = self._local[1]
@@ -729,17 +787,13 @@ class SMTPSession(asynchat.async_chat):
         # VPopMail's reverse IP domain mapping.
         os.environ['TCPLOCALIP'] = self._localip
 
-        print >> DEBUGSTREAM, 'Incoming connection from:', repr(self.__peer)
-        print >> DEBUGSTREAM, 'Incoming connection to:', repr(self._local)
-
         # SSL/TLS/STARTTLS
         self.__can_starttls = opts.tls
-        self.__conn = conn
 
-        self.reinit()
-        self.signon()
+    def init_dynamic_state(self):
+        """Initialize 'dynamic state' - that state which must be flushed
+        when a STARTLS command is issued, according to the RFC."""
 
-    def reinit(self):
         # SMTP AUTH
         self.__smtpauth = 0
         self.__auth_resp1 = None
@@ -759,11 +813,12 @@ class SMTPSession(asynchat.async_chat):
         self.__mailfrom = None
         self.__rcpttos = []
         self.__data = ''
-        self.__fqdn = FQDN
 
-    def signon(self):
-        self.push('220 %s ESMTP tmda-ofmipd' % (self.__fqdn))
-        self.set_terminator('\r\n')
+    def do_ssl_handshake(self):
+        self.__can_starttls = False
+        self.tlsMixinSetActive()
+        self.setServerHandshakeOp(certChain=opts.ssl_cert_value,
+                                  privateKey=opts.ssl_key_value)
 
     # Overrides base class for convenience
     def push(self, msg):
@@ -1034,7 +1089,7 @@ class SMTPSession(asynchat.async_chat):
             return
 
         responses = []
-        responses.append('%s' % self.__fqdn)
+        responses.append('%s' % FQDN)
         if not self.__can_starttls or opts.tls == 'optional':
             responses.append('AUTH %s' %
                 (' '.join(map(lambda s: s.upper(), self.__sasl_types))))
@@ -1057,7 +1112,7 @@ class SMTPSession(asynchat.async_chat):
             rh.append('(using SMTP over TLS)')
         if opts.tls and not self.__can_starttls:
             rh.append('(using STARTTLS)')
-        rh.append('by %s (tmda-ofmipd) with ESMTP;' % (self.__fqdn))
+        rh.append('by %s (tmda-ofmipd) with ESMTP;' % (FQDN))
         rh.append(Util.make_date())
         os.environ['TMDA_OFMIPD_RECEIVED'] = ' '.join(rh)
 
@@ -1156,17 +1211,7 @@ class SMTPSession(asynchat.async_chat):
             self.push('501 Syntax error (no parameters allowed)')
             return
         self.push('220 Ready to start TLS')
-
-        self.__can_starttls = False
-
-        self.tlsMixinSetActive()
-        self.setServerHandshakeOp(certChain=opts.ssl_cert_value,
-                                  privateKey=opts.ssl_key_value)
-
-        self.reinit()
-
-    def handle_connect(self):
-        print ">>> handle_connect called!"
+        self.do_ssl_handshake()
 
 
 if opts.ssl or opts.tls:
