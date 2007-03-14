@@ -350,8 +350,6 @@ if running_as_root:
           'If you are uncomfortable with this, quit now and instead run ' + \
           program + ' under your non-privileged TMDA user account.'
     warning(msg, exit=0)
-    
-    
 
 
 import asynchat
@@ -518,6 +516,7 @@ if opts.ssl or opts.tls:
 
 
 # Utility functions
+
 def pipecmd(command, *strings):
     popen2._cleanup()
     cmd = popen2.Popen3(command, 1, bufsize=-1)
@@ -663,7 +662,6 @@ def b64_decode(s):
     return base64.decodestring(s)
 
 
-
 # Classes
 
 # Integration helper class for tlslite.
@@ -705,6 +703,7 @@ class SMTPSessionSignon(asynchat.async_chat):
         if not self._sent_signon:
             self._sent_signon = True
             self.push('220 %s ESMTP tmda-ofmipd' % FQDN)
+
 
 class SMTPSession(SMTPSessionSignon):
     COMMAND = 0
