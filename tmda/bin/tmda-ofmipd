@@ -698,11 +698,13 @@ def b64_decode(s):
 class SMTPSessionSignon(asynchat.async_chat):
     def __init__(self, conn):
         asynchat.async_chat.__init__(self, conn)
+        self._sent_signon = False
 
     def handle_connect(self):
         self.init_dynamic_state() # calls sub-class
-        self.push('220 %s ESMTP tmda-ofmipd' % FQDN)
-        self.set_terminator('\r\n')
+        if not self._sent_signon:
+            self._sent_signon = True
+            self.push('220 %s ESMTP tmda-ofmipd' % FQDN)
 
 class SMTPSession(SMTPSessionSignon):
     COMMAND = 0
@@ -726,6 +728,7 @@ class SMTPSession(SMTPSessionSignon):
 
         # Initialize object state
 
+        self.set_terminator('\r\n')
         self.init_static_state()
 
         # Debug tracing
