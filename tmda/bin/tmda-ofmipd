@@ -29,6 +29,16 @@ import os
 import signal
 import socket
 import sys
+import asynchat
+import asyncore
+import base64
+import hmac
+import imaplib
+import md5
+import popen2
+import poplib
+import random
+import time
 
 try:
     import paths
@@ -42,627 +52,12 @@ except ImportError:
 from TMDA import Util
 from TMDA import Version
 
+# Classes
 
 class Devnull:
     def write(self, msg): pass
     def flush(self): pass
 
-program = sys.argv[0]
-
-FQDN = socket.getfqdn()
-if FQDN == 'localhost':
-    FQDN = socket.gethostname()
-
-if os.getuid() == 0:
-    running_as_root = True
-else:
-    running_as_root = False
-
-remoteauth = { 'proto': None,
-               'host': 'localhost',
-               'port': None,
-               'dn': '',
-               'enable': 0,
-               }
-defaultauthports = { 'imap': 143,
-                     'imaps': 993,
-                     'apop': 110,
-                     'pop3': 110,
-                     'ldap': 389,
-                     # 'pop3s': 995,
-                     }
-
-# option parsing
-
-opt_desc = \
-"""An authenticated ofmip proxy for TMDA that allows you to 'tag' your
-mail client's outgoing mail through SMTP.  For more information,
-including setup and usage instructions, see
-http://wiki.tmda.net/TmdaOfmipdHowto""" 
-
-parser = OptionParser(description=opt_desc, version=Version.TMDA)
-
-parser.add_option("-V", 
-                  action="store_true", default=False, dest="full_version",
-                  help="show full TMDA version information and exit.")
-
-# option groups
-gengroup = OptionGroup(parser, "General")
-congroup = OptionGroup(parser, "Connection")
-authgroup = OptionGroup(parser, "Authentication")
-virtgroup = OptionGroup(parser, "Virtual Domains")
-    
-# general
-gengroup.add_option("-d", "--debug",
-                    action="store_true", default=False, dest="debug",
-                    help="Turn on debugging prints.")
-
-gengroup.add_option("-L", "--log",
-                    action="store_true", default=False, dest="log",
-                    help= \
-"""Turn on logging prints.
-This option logs everything that -d logs, except for the raw SMTP protocol
-data. Hence, it is useful if you want to leave logging enabled permanently,
-but don't want your logs bloated with AUTH data and/or the content of large
-attachments.""")
-
-gengroup.add_option("-b", "--background",
-                    action="store_false", dest="foreground",
-                    help="Detach and run in the background (default).")
-
-gengroup.add_option("-f", "--foreground",
-                    action="store_true", default=False, dest="foreground",
-                    help="Don't detach; run in the foreground.")
-
-gengroup.add_option("-u", "--username",
-                    dest="username",
-                    help= \
-"""The username that this program should run under.  The default is to
-run as the user who starts the program unless that is root, in which
-case an attempt to seteuid user 'tofmipd' will be made.  Use this
-option to override these defaults.""")
-
-gengroup.add_option("-c", "--configdir",
-                    metavar="DIR", dest="configdir",
-                    help= \
-"""DIR is the base directory to search for the authenticated user's TMDA
-configuration file in.  This might be useful if you wish to maintain
-TMDA files outside the user's home directory.
-'username/config' will be appended to form the path; e.g, `-c
-/var/tmda' will have tmda-ofmipd search for `/var/tmda/bobby/config'.
-If this option is not used, `~user/.tmda/config' will be assumed, but
-see the --vhome-script option for qmail virtual domain users.""")
-
-# connection
-congroup.add_option("-p", "--proxyport",
-                    default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT", 
-                    dest="proxyport", help= \
-"""The HOST:PORT to listen for incoming connections on.  The default is
-FQDN:8025 (i.e, port 8025 on the fully qualified domain name for the
-local host).  Use '0.0.0.0:PORT' to listen on all available
-interfaces.""")
-
-congroup.add_option("-C", "--connections",
-                    type="int", default="20", metavar="NUM", dest="connections",
-                    help= \
-"""Do not handle more than NUM simultaneous connections. If there are NUM
-active connections, defer acceptance of new connections until one
-finishes. NUM must be a positive integer. Default: 20""")
-
-congroup.add_option("-1", "--one-session",
-                    action="store_true", default=False, dest="one_session",
-                    help= \
-"""Don't bind to a port and accept new connections; Process a single SMTP
-session on stdin (used both for input & output).  This is useful when
-started from tcpserver or stunnel.""")
-
-congroup.add_option("-P", "--pure-proxy",
-                    action="store_true", default=False, dest="pure_proxy",
-                    help= \
-"""Proxy the message straight through to the mail transport system
-unaltered if the user's TMDA config file is missing.  The
-/usr/sbin/sendmail program on the system is used to inject the
-message.  You can override this by setting $TMDA_SENDMAIL_PROGRAM in
-the environment.  This option might be useful when serving a mixed
-environment of TMDA and non-TMDA users.""")
-
-congroup.add_option("-t", "--throttle-script",
-                    metavar="/PATH/TO/SCRIPT", dest="throttlescript",
-                    help= \
-"""Full pathname of a script which can meter how much mail any user
-sends.  The script is passed a login name whenever a user tries to
-send mail.  If the script returns a 0, the message is allowed.  For
-any other value, the message is rejected.""")
-
-congroup.add_option("", "--ssl",
-                    action="store_true", default=False, dest="ssl",
-                    help= \
-"""Enable SSL encryption. This mode immediately initiates the SSL/TLS
-protocol as soon as a connection is made. This mode is not support
-for the STARTTLS command. This configuration is typically run on
-port 465 (smtps).""")
-
-congroup.add_option("", "--tls",
-                    type="choice", default=None, dest="tls",
-                    choices=['optional', 'on'],
-                    help= \
-"""Enable TLS mode. Valid options are optional and on. With this option
-enabled, the STARTTLS SMTP command may be used to upgrade the plain-text
-connection to SSL/TLS. In 'optional' mode, AUTH is allowed either before
-or after STARTTLS. In 'on' mode, clients are forced to STARTTLS prior to
-AUTH, to ensure that plain-text AUTH commands are protected. This
-configuration is typically run on port 587 (submission).""")
-
-congroup.add_option("", "--ssl-cert",
-                    metavar="/PATH/TO/FILE", default=None, dest="ssl_cert",
-                    help= \
-"""Location of the SSL/TLS certificate key file.""")
-
-congroup.add_option("", "--ssl-key",
-                    metavar="/PATH/TO/FILE", default=None, dest="ssl_key",
-                    help= \
-"""Location of the SSL/TLS private key file.""")
-
-# authentication
-authgroup.add_option("-R", "--remoteauth",
-                     metavar="PROTO://HOST[:PORT][/DN]", dest="remoteauth",
-                     help= \
-"""Protocol and host to check username and password. PROTO can be one of
-the following: 'imap' (IMAP4 server), 'imaps' (IMAP4 server over SSL),
-'pop3' (POP3 server), 'apop' (POP3 server with APOP authentication),
-'ldap' (LDAP server).  Optional :PORT defaults to the standard port for
-the specified protocol (143 for imap, 993 for imaps, 110 for
-pop3/apop, and 389 for ldap).  /DN is mandatory for ldap and should
-contain a '%%s' identifying the username. Examples: '-R
-imaps://myimapserver.net', '-R pop3://mypopserver.net:2110', '-R
-ldap://example.com/cn=%%s,dc=host,dc=com'""")
-
-authgroup.add_option("-A", "--authprog",
-                     metavar="PROGRAM", dest="authprog",
-                     help= \
-"""A checkpassword compatible command used to check username/password.
-Examples: '-A "/usr/sbin/checkpassword-pam -s id -- /bin/true"',
-'-A "/usr/local/vpopmail/bin/vchkpw /usr/bin/true"'.
-The program must be able to receive the username/password pair on
-descriptor 3 and in the following format: `username\\0password\\0'
-Any program claiming to be checkpassword-compatible should be able to
-do this.  If you can tell the program to accept input on another
-descriptor, such as stdin, don't.  It won't work, because TMDA follows
-the standard (http://cr.yp.to/checkpwd/interface.html) exactly.
-Also, checkpassword-type programs expect to find the name of another
-program to run on their command line.  For tmda-ofmipd's purpose,
-/bin/true is perfectly fine.
-Note the position of the quotes in the Examples, which cause the the
-whole string following the -A to be passed as a single argument.""")
-
-authgroup.add_option("-a", "--authfile",
-                     metavar="FILE", dest="authfile",
-                     help= \
-"""Path to the file holding authentication information for this proxy.
-Default location is /etc/tofmipd if running as root/tofmipd, otherwise
-~user/.tmda/tofmipd.  Use this option to override these defaults.""")
-
-authgroup.add_option("-F", "--fallback",
-                     action="store_true", default=False, dest="fallback",
-                     help= \
-"""When used with -R or -A, fallback to authenticate against the authfile
-if remote authentication fails.  Note: this flag has no effect on -R
-to -A fallback. If you specify both -R and -A methods, then authprog
-will be tried after remoteauth has failed.""")
-
-# virtual domains
-virtgroup.add_option("-S", "--vhome-script",
-                     metavar="/PATH/TO/SCRIPT", dest="vhomescript",
-                     help= \
-"""Full pathname of a script that prints a virtual email user's home
-directory on standard output.  tmda-ofmipd will read that and use it
-to build the path to the user's config file instead of '~user/.tmda'.
-The script must take two arguments, the user name and the domain, on
-its command line.  This option is for use only with the VPopMail and
-VMailMgr add-ons to qmail.  See the contrib directory for sample
-scripts.""")
-
-virtgroup.add_option("-v", "--vdomains-path",
-                     default="/var/qmail/control/virtualdomains", 
-                     metavar="/PATH/TO/FILE", dest="vdomainspath",
-                     help= \
-"""Full pathname to qmail's virtualdomains file.  The default is
-/var/qmail/control/virtualdomains.  This is also tmda-ofmipd's
-default, so you normally won't need to set this parameter.  If you
-have installed qmail somewhere other than /var/qmail, you will need to
-set this so tmda-ofmipd can find the virtualdomains file.  NOTE: This
-is only used when you have a qmail installation with virtual domains
-using the VMailMgr add-on.  It implies that you will also set the
-'--vhome-script' option above.""")
-
-for g in (gengroup, congroup, authgroup, virtgroup):
-    parser.add_option_group(g)
-
-(opts, args) = parser.parse_args()
-
-if opts.full_version:
-    print Version.ALL
-    sys.exit()
-if opts.vhomescript and opts.configdir:
-    parser.error("options '--vhome-script' and '--configdir' are incompatible!")
-if opts.debug or opts.log:
-    DEBUGSTREAM = sys.stderr
-else:
-    DEBUGSTREAM = Devnull()
-
-if opts.remoteauth:
-    # arg is like: imap://host:port
-    autharg = opts.remoteauth
-    try:
-        authproto, autharg = autharg.split('://', 1)
-    except ValueError:
-        authproto, autharg = autharg, None
-    if authproto not in defaultauthports.keys():
-        raise ValueError, 'Protocol not supported: ' + authproto + \
-            '\nPlease pick one of ' + repr(defaultauthports.keys())
-    remoteauth['proto'] = authproto
-    remoteauth['port'] = defaultauthports[authproto]
-    if autharg:
-        try:
-            autharg, dn = autharg.split('/', 1)
-            remoteauth['dn'] = dn
-        except ValueError:
-            dn = ''
-        try:
-            authhost, authport = autharg.split(':', 1)
-        except ValueError:
-            authhost = autharg
-            authport = defaultauthports[authproto]
-        if authhost:
-            remoteauth['host'] = authhost
-        if authport:
-            remoteauth['port'] = authport
-    print >> DEBUGSTREAM, "auth method: %s://%s:%s/%s" % \
-        (remoteauth['proto'], remoteauth['host'],
-         remoteauth['port'], remoteauth['dn'])
-    remoteauth['enable'] = 1
-
-if running_as_root:
-    if not opts.username:
-        opts.username = 'tofmipd'
-    if not opts.authfile:
-        opts.authfile = '/etc/tofmipd'
-    ipauthmapfile = '/etc/ipauthmap'
-else:
-    tmda_path = os.path.join(os.path.expanduser('~'), '.tmda')
-    ipauthmapfile = os.path.join(tmda_path, 'ipauthmap')
-    if not opts.authfile:
-        opts.authfile = os.path.join(tmda_path, 'tofmipd')
-
-def warning(msg='', exit=1):
-    delimiter = '*' * 70
-    if msg:
-        msg = Util.wraptext(msg)
-        print >> sys.stderr, '\n', delimiter, '\n', msg, '\n', delimiter, '\n'
-    if exit:
-        sys.exit()
-
-
-# provide disclaimer if running as root
-if running_as_root:
-    msg = 'WARNING: The security implications and risks of running ' + \
-          program + ' in "seteuid" mode have not been fully evaluated.  ' + \
-          'If you are uncomfortable with this, quit now and instead run ' + \
-          program + ' under your non-privileged TMDA user account.'
-    warning(msg, exit=0)
-
-
-import asynchat
-import asyncore
-import base64
-import hmac
-import imaplib
-import md5
-import popen2
-import poplib
-import random
-import time
-
-
-__version__ = Version.TMDA
-NEWLINE = '\n'
-EMPTYSTRING = ''
-COMMASPACE = ', '
-
-
-if remoteauth['proto'] == 'ldap':
-    try:
-        import ldap
-    except ImportError:
-        raise ImportError, \
-              'python-ldap (http://python-ldap.sf.net/) required.'
-    if remoteauth['dn'] == '':
-        print >> DEBUGSTREAM, "Error: Missing ldap dn\n"
-        raise ValueError
-    try:
-        remoteauth['dn'].index('%s')
-    except:
-        print >> DEBUGSTREAM, "Error: Invalid ldap dn\n"
-        raise ValueError
-
-if opts.ssl or opts.tls:
-    if opts.ssl and opts.tls:
-        raise ValueError, 'Can\'t do SSL and TLS at the same time'
-
-    try:
-        from tlslite.api import *
-        from tlslite.TLSConnection import TLSConnection
-        from tlslite.integration.AsyncStateMachine import AsyncStateMachine
-    except ImportError:
-        raise ImportError, \
-              'tlslite (http://trevp.net/tlslite/) required.'
-
-    if (not opts.ssl_cert) or (not opts.ssl_key):
-        raise ValueError, \
-            '--ssl-cert and --ssl-key are required when using --ssl or --tls'
-
-    fhc = file(os.path.expanduser(opts.ssl_cert), 'r')
-    datac = fhc.read()
-    fhc.close()
-    x509 = X509()
-    x509.parse(datac)
-    opts.ssl_cert_value = X509CertChain([x509])
-
-    fhk = file(os.path.expanduser(opts.ssl_key), 'r')
-    datak = fhk.read()
-    fhk.close()
-    opts.ssl_key_value = parsePEMKey(datak, private=True)
-
-    class TMDATLSAsyncDispatcherMixIn(AsyncStateMachine):
-        """A custom version of tlslite's TLSAsyncDispatcherMixIn.
-        This version:
-        * Requires siblingClass to be specified explicitly, to ease use with
-          inheritance.
-        * Allows the mixin to remain dormant until activated, which allows
-          implementation of deferred SSL startup, as required for the STARTTLS
-          SMTP command.
-        """
-
-        def __init__(self, sock, siblingClass):
-            AsyncStateMachine.__init__(self)
-
-            self.siblingClass = siblingClass
-            self._active = False
-
-            self.tlsConnection = TLSConnection(sock)
-
-        def tlsMixinSetActive(self):
-            self._active = True
-
-        def readable(self):
-            if self._active:
-                result = self.wantsReadEvent()
-                if result != None:
-                    return result
-                return self.siblingClass.readable(self)
-            else:
-                return self.siblingClass.readable(self)
-
-        def writable(self):
-            if self._active:
-                result = self.wantsWriteEvent()
-                if result != None:
-                    return result
-                return self.siblingClass.readable(self)
-            else:
-                return self.siblingClass.writable(self)
-
-        def handle_read(self):
-            if self._active:
-                self.inReadEvent()
-            else:
-                self.siblingClass.handle_read(self)
-
-        def handle_write(self):
-            if self._active:
-                self.inWriteEvent()
-            else:
-                self.siblingClass.handle_write(self)
-
-        def outConnectEvent(self):
-            if not self._active:
-                raise "Internal state confusion"
-            self.siblingClass.handle_connect(self)
-
-        def outCloseEvent(self):
-            if not self._active:
-                raise "Internal state confusion"
-            asyncore.dispatcher.close(self)
-
-        def outReadEvent(self, readBuffer):
-            if not self._active:
-                raise "Internal state confusion"
-            if readBuffer == '':
-                self.outCloseEvent()
-            else:
-                self.readBuffer = readBuffer
-                self.siblingClass.handle_read(self)
-
-        def outWriteEvent(self):
-            if not self._active:
-                raise "Internal state confusion"
-            self.siblingClass.handle_write(self)
-
-        def recv(self, bufferSize=16384):
-            if self._active:
-                if bufferSize < 16384 or self.readBuffer == None:
-                    raise AssertionError()
-                returnValue = self.readBuffer
-                self.readBuffer = None
-                return returnValue
-            else:
-                return self.siblingClass.recv(self, bufferSize)
-
-        def send(self, writeBuffer):
-            if self._active:
-                self.setWriteOp(writeBuffer)
-                return len(writeBuffer)
-            else:
-                return self.siblingClass.send(self, writeBuffer)
-
-        def close(self):
-            if self._active:
-                if hasattr(self, "tlsConnection"):
-                    self.setCloseOp()
-                else:
-                    asyncore.dispatcher.close(self)
-            else:
-                return self.siblingClass.close(self)
-
-
-# Utility functions
-
-def pipecmd(command, *strings):
-    popen2._cleanup()
-    cmd = popen2.Popen3(command, 1, bufsize=-1)
-    cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
-    if strings:
-        # Write to the tochild file object.
-        for s in strings:
-            cmdin.write(s)
-        cmdin.flush()
-        cmdin.close()
-    # Read from the childerr object; command will block until exit.
-    err = cmderr.read().strip()
-    cmderr.close()
-    # Read from the fromchild object.
-    out = cmdout.read().strip()
-    cmdout.close()
-    # Get exit status from the wait() member function.
-    return cmd.wait()
-
-
-def run_authprog(username, password):
-    """authprog should return 0 for auth ok, and a positive integer in
-    case of a problem."""
-    print >> DEBUGSTREAM, "Trying authprog method"
-    cmd = "/bin/sh -c 'exec %s 3<&0'" % (opts.authprog,)
-    return pipecmd(cmd, '%s\0%s\0' % (username, password))
-
-
-def run_remoteauth(username, password, localip):
-    """Authenticate username/password combination against a remote
-    resource.  Return 1 upon successful authentication, and 0
-    otherwise."""
-    authhost = remoteauth['host']
-    authport = remoteauth['port']
-    if authhost == '0.0.0.0':
-        ipauthmap = ipauthmap2dict(ipauthmapfile)
-        if len(ipauthmap) == 0:
-            authhost = localip
-        else:
-            authdata = ipauthmap.get(localip, '127.0.0.1').split(':')
-            authhost = authdata[0]
-            if len(authdata) > 1:
-                authport = authdata[1]
-            else:
-                authport = remoteauth['port']
-    print >> DEBUGSTREAM, "trying %s authentication for %s@%s:%s" % \
-          (remoteauth['proto'], username, authhost, authport)
-    if remoteauth['proto'] == 'imap':
-        M = imaplib.IMAP4(authhost, int(authport))
-        try:
-            M.login(username, password)
-            M.logout()
-            return 1
-        except:
-            print >> DEBUGSTREAM, "imap authentication for %s@%s failed" % \
-                  (username, authhost)
-            return 0
-    elif remoteauth['proto'] == 'imaps':
-        M = imaplib.IMAP4_SSL(authhost, int(authport))
-        try:
-            M.login(username, password)
-            M.logout()
-            return 1
-        except:
-            print >> DEBUGSTREAM, "imaps authentication for %s@%s failed" % \
-                  (username, authhost)
-            return 0
-    elif remoteauth['proto'] in ('pop3', 'apop'):
-        M = poplib.POP3(authhost, int(authport))
-        try:
-            if remoteauth['proto'] == 'pop3':
-                M.user(username)
-                M.pass_(password)
-                M.quit()
-                return 1
-            else:
-                M.apop(username, password)
-                M.quit()
-                return 1
-        except:
-            print >> DEBUGSTREAM, "%s authentication for %s@%s failed" % \
-                  (remoteauth['proto'], username, authhost)
-            return 0
-    elif remoteauth['proto'] == 'ldap':
-        import ldap
-        try:
-            M = ldap.initialize("ldap://%s:%s" % (authhost, authport))
-            M.simple_bind_s(remoteauth['dn'] % username, password)
-            M.unbind_s()
-            return 1
-        except:
-            print >> DEBUGSTREAM, "ldap authentication for %s@%s failed" % \
-                  (username, authhost)
-            return 0
-    # proto not implemented
-    print >> DEBUGSTREAM, "Error: protocol %s not implemented" % \
-            remoteauth['proto']
-    return 0
-
-
-def authfile2dict(authfile):
-    """Iterate over a tmda-ofmipd authentication file, and return a
-    dictionary containing username:password pairs.  Username is
-    returned in lowercase."""
-    authdict = {}
-    fp = file(authfile, 'r')
-    for line in fp:
-        line = line.strip()
-        if line == '':
-            continue
-        else:
-            fields = line.split(':', 1)
-            authdict[fields[0].lower().strip()] = fields[1].strip()
-    fp.close()
-    return authdict
-
-
-def ipauthmap2dict(ipauthmapfile):
-    """Iterate 'ipauthmapfile' (IP1:IP2:port) and return a dictionary
-    containing IP1 -> IP2:port hashes."""
-    ipauthmap = {}
-    try:
-        fp = file(ipauthmapfile, 'r')
-        for line in fp:
-            line = line.strip()
-            if line == '':
-                continue
-            ipdata = line.split(':', 1)
-            ipauthmap[ipdata[0].strip()] = ipdata[1].strip()
-        fp.close()
-    except IOError:
-        pass
-    return ipauthmap
-
-
-def b64_encode(s):
-    """base64 encoding without the trailing newline."""
-    return base64.encodestring(s)[:-1]
-
-
-def b64_decode(s):
-    """base64 decoding."""
-    return base64.decodestring(s)
-
-
-# Classes
 
 # Integration helper class for tlslite.
 #
@@ -1216,8 +611,188 @@ class SMTPSession(SMTPSessionSignon):
         self.do_ssl_handshake()
 
 
-if opts.ssl or opts.tls:
-    SMTPSession.__bases__ = (TMDATLSAsyncDispatcherMixIn,) + SMTPSession.__bases__
+class SMTPServer(asyncore.dispatcher):
+    """Run an SMTP server daemon - accept new socket connections and
+    process SMTP sessions on each connection."""
+    def __init__(self, localaddr, process_msg_func):
+        self._localaddr = localaddr
+        self._process_msg_func = process_msg_func
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        # try to re-use a server port if possible
+        self.set_reuse_addr()
+        self.bind(localaddr)
+        self.listen(5)
+        print >> DEBUGSTREAM, \
+              'tmda-ofmipd started at %s\n\tListening on %s:%d' % \
+              (Util.make_date(), localaddr[0], localaddr[1])
+
+    def readable(self):
+        if len(asyncore.socket_map) > opts.connections:
+            # too many simultaneous connections
+            return 0
+        else:
+            return 1
+
+    def handle_accept(self):
+        conn = self.accept()[0]
+        SMTPSession(conn, self._process_msg_func)
+
+
+# Utility functions
+
+def warning(msg='', exit=1):
+    delimiter = '*' * 70
+    if msg:
+        msg = Util.wraptext(msg)
+        print >> sys.stderr, '\n', delimiter, '\n', msg, '\n', delimiter, '\n'
+    if exit:
+        sys.exit()
+
+
+def pipecmd(command, *strings):
+    popen2._cleanup()
+    cmd = popen2.Popen3(command, 1, bufsize=-1)
+    cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
+    if strings:
+        # Write to the tochild file object.
+        for s in strings:
+            cmdin.write(s)
+        cmdin.flush()
+        cmdin.close()
+    # Read from the childerr object; command will block until exit.
+    err = cmderr.read().strip()
+    cmderr.close()
+    # Read from the fromchild object.
+    out = cmdout.read().strip()
+    cmdout.close()
+    # Get exit status from the wait() member function.
+    return cmd.wait()
+
+
+def run_authprog(username, password):
+    """authprog should return 0 for auth ok, and a positive integer in
+    case of a problem."""
+    print >> DEBUGSTREAM, "Trying authprog method"
+    cmd = "/bin/sh -c 'exec %s 3<&0'" % (opts.authprog,)
+    return pipecmd(cmd, '%s\0%s\0' % (username, password))
+
+
+def run_remoteauth(username, password, localip):
+    """Authenticate username/password combination against a remote
+    resource.  Return 1 upon successful authentication, and 0
+    otherwise."""
+    authhost = remoteauth['host']
+    authport = remoteauth['port']
+    if authhost == '0.0.0.0':
+        ipauthmap = ipauthmap2dict(ipauthmapfile)
+        if len(ipauthmap) == 0:
+            authhost = localip
+        else:
+            authdata = ipauthmap.get(localip, '127.0.0.1').split(':')
+            authhost = authdata[0]
+            if len(authdata) > 1:
+                authport = authdata[1]
+            else:
+                authport = remoteauth['port']
+    print >> DEBUGSTREAM, "trying %s authentication for %s@%s:%s" % \
+          (remoteauth['proto'], username, authhost, authport)
+    if remoteauth['proto'] == 'imap':
+        M = imaplib.IMAP4(authhost, int(authport))
+        try:
+            M.login(username, password)
+            M.logout()
+            return 1
+        except:
+            print >> DEBUGSTREAM, "imap authentication for %s@%s failed" % \
+                  (username, authhost)
+            return 0
+    elif remoteauth['proto'] == 'imaps':
+        M = imaplib.IMAP4_SSL(authhost, int(authport))
+        try:
+            M.login(username, password)
+            M.logout()
+            return 1
+        except:
+            print >> DEBUGSTREAM, "imaps authentication for %s@%s failed" % \
+                  (username, authhost)
+            return 0
+    elif remoteauth['proto'] in ('pop3', 'apop'):
+        M = poplib.POP3(authhost, int(authport))
+        try:
+            if remoteauth['proto'] == 'pop3':
+                M.user(username)
+                M.pass_(password)
+                M.quit()
+                return 1
+            else:
+                M.apop(username, password)
+                M.quit()
+                return 1
+        except:
+            print >> DEBUGSTREAM, "%s authentication for %s@%s failed" % \
+                  (remoteauth['proto'], username, authhost)
+            return 0
+    elif remoteauth['proto'] == 'ldap':
+        import ldap
+        try:
+            M = ldap.initialize("ldap://%s:%s" % (authhost, authport))
+            M.simple_bind_s(remoteauth['dn'] % username, password)
+            M.unbind_s()
+            return 1
+        except:
+            print >> DEBUGSTREAM, "ldap authentication for %s@%s failed" % \
+                  (username, authhost)
+            return 0
+    # proto not implemented
+    print >> DEBUGSTREAM, "Error: protocol %s not implemented" % \
+            remoteauth['proto']
+    return 0
+
+
+def authfile2dict(authfile):
+    """Iterate over a tmda-ofmipd authentication file, and return a
+    dictionary containing username:password pairs.  Username is
+    returned in lowercase."""
+    authdict = {}
+    fp = file(authfile, 'r')
+    for line in fp:
+        line = line.strip()
+        if line == '':
+            continue
+        else:
+            fields = line.split(':', 1)
+            authdict[fields[0].lower().strip()] = fields[1].strip()
+    fp.close()
+    return authdict
+
+
+def ipauthmap2dict(ipauthmapfile):
+    """Iterate 'ipauthmapfile' (IP1:IP2:port) and return a dictionary
+    containing IP1 -> IP2:port hashes."""
+    ipauthmap = {}
+    try:
+        fp = file(ipauthmapfile, 'r')
+        for line in fp:
+            line = line.strip()
+            if line == '':
+                continue
+            ipdata = line.split(':', 1)
+            ipauthmap[ipdata[0].strip()] = ipdata[1].strip()
+        fp.close()
+    except IOError:
+        pass
+    return ipauthmap
+
+
+def b64_encode(s):
+    """base64 encoding without the trailing newline."""
+    return base64.encodestring(s)[:-1]
+
+
+def b64_decode(s):
+    """base64 decoding."""
+    return base64.decodestring(s)
 
 
 def process_message_fail(peer, mailfrom, rcpttos, data, auth_username):
@@ -1336,40 +911,469 @@ def process_message_sysuser(peer, mailfrom, rcpttos, data, auth_username):
     else:
         # no need to fork
         Util.pipecmd(inject_cmd, data)
-            
-
-class SMTPServer(asyncore.dispatcher):
-    """Run an SMTP server daemon - accept new socket connections and
-    process SMTP sessions on each connection."""
-    def __init__(self, localaddr, process_msg_func):
-        self._localaddr = localaddr
-        self._process_msg_func = process_msg_func
-        asyncore.dispatcher.__init__(self)
-        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        # try to re-use a server port if possible
-        self.set_reuse_addr()
-        self.bind(localaddr)
-        self.listen(5)
-        print >> DEBUGSTREAM, \
-              'tmda-ofmipd started at %s\n\tListening on %s:%d' % \
-              (Util.make_date(), localaddr[0], localaddr[1])
-
-    def readable(self):
-        if len(asyncore.socket_map) > opts.connections:
-            # too many simultaneous connections
-            return 0
-        else:
-            return 1
-
-    def handle_accept(self):
-        conn = self.accept()[0]
-        SMTPSession(conn, self._process_msg_func)
 
 
 def create_smtp_session_from_stdin(process_msg_func):
     conn = socket.fromfd(0, socket.AF_INET, socket.SOCK_STREAM)
     SMTPSession(conn, process_msg_func)
- 
+
+
+# Main code begins
+
+
+# Constants
+
+remoteauth = { 'proto': None,
+               'host': 'localhost',
+               'port': None,
+               'dn': '',
+               'enable': 0,
+               }
+defaultauthports = { 'imap': 143,
+                     'imaps': 993,
+                     'apop': 110,
+                     'pop3': 110,
+                     'ldap': 389,
+                     # 'pop3s': 995,
+                     }
+
+NEWLINE = '\n'
+EMPTYSTRING = ''
+
+
+# Runtime global variables
+
+program = sys.argv[0]
+
+__version__ = Version.TMDA
+
+FQDN = socket.getfqdn()
+if FQDN == 'localhost':
+    FQDN = socket.gethostname()
+
+if os.getuid() == 0:
+    running_as_root = True
+else:
+    running_as_root = False
+
+
+# Option parsing
+
+opt_desc = \
+"""An authenticated ofmip proxy for TMDA that allows you to 'tag' your
+mail client's outgoing mail through SMTP.  For more information,
+including setup and usage instructions, see
+http://wiki.tmda.net/TmdaOfmipdHowto""" 
+
+parser = OptionParser(description=opt_desc, version=Version.TMDA)
+
+parser.add_option("-V", 
+                  action="store_true", default=False, dest="full_version",
+                  help="show full TMDA version information and exit.")
+
+# option groups
+gengroup = OptionGroup(parser, "General")
+congroup = OptionGroup(parser, "Connection")
+authgroup = OptionGroup(parser, "Authentication")
+virtgroup = OptionGroup(parser, "Virtual Domains")
+    
+# general
+gengroup.add_option("-d", "--debug",
+                    action="store_true", default=False, dest="debug",
+                    help="Turn on debugging prints.")
+
+gengroup.add_option("-L", "--log",
+                    action="store_true", default=False, dest="log",
+                    help= \
+"""Turn on logging prints.
+This option logs everything that -d logs, except for the raw SMTP protocol
+data. Hence, it is useful if you want to leave logging enabled permanently,
+but don't want your logs bloated with AUTH data and/or the content of large
+attachments.""")
+
+gengroup.add_option("-b", "--background",
+                    action="store_false", dest="foreground",
+                    help="Detach and run in the background (default).")
+
+gengroup.add_option("-f", "--foreground",
+                    action="store_true", default=False, dest="foreground",
+                    help="Don't detach; run in the foreground.")
+
+gengroup.add_option("-u", "--username",
+                    dest="username",
+                    help= \
+"""The username that this program should run under.  The default is to
+run as the user who starts the program unless that is root, in which
+case an attempt to seteuid user 'tofmipd' will be made.  Use this
+option to override these defaults.""")
+
+gengroup.add_option("-c", "--configdir",
+                    metavar="DIR", dest="configdir",
+                    help= \
+"""DIR is the base directory to search for the authenticated user's TMDA
+configuration file in.  This might be useful if you wish to maintain
+TMDA files outside the user's home directory.
+'username/config' will be appended to form the path; e.g, `-c
+/var/tmda' will have tmda-ofmipd search for `/var/tmda/bobby/config'.
+If this option is not used, `~user/.tmda/config' will be assumed, but
+see the --vhome-script option for qmail virtual domain users.""")
+
+# connection
+congroup.add_option("-p", "--proxyport",
+                    default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT", 
+                    dest="proxyport", help= \
+"""The HOST:PORT to listen for incoming connections on.  The default is
+FQDN:8025 (i.e, port 8025 on the fully qualified domain name for the
+local host).  Use '0.0.0.0:PORT' to listen on all available
+interfaces.""")
+
+congroup.add_option("-C", "--connections",
+                    type="int", default="20", metavar="NUM", dest="connections",
+                    help= \
+"""Do not handle more than NUM simultaneous connections. If there are NUM
+active connections, defer acceptance of new connections until one
+finishes. NUM must be a positive integer. Default: 20""")
+
+congroup.add_option("-1", "--one-session",
+                    action="store_true", default=False, dest="one_session",
+                    help= \
+"""Don't bind to a port and accept new connections; Process a single SMTP
+session on stdin (used both for input & output).  This is useful when
+started from tcpserver or stunnel.""")
+
+congroup.add_option("-P", "--pure-proxy",
+                    action="store_true", default=False, dest="pure_proxy",
+                    help= \
+"""Proxy the message straight through to the mail transport system
+unaltered if the user's TMDA config file is missing.  The
+/usr/sbin/sendmail program on the system is used to inject the
+message.  You can override this by setting $TMDA_SENDMAIL_PROGRAM in
+the environment.  This option might be useful when serving a mixed
+environment of TMDA and non-TMDA users.""")
+
+congroup.add_option("-t", "--throttle-script",
+                    metavar="/PATH/TO/SCRIPT", dest="throttlescript",
+                    help= \
+"""Full pathname of a script which can meter how much mail any user
+sends.  The script is passed a login name whenever a user tries to
+send mail.  If the script returns a 0, the message is allowed.  For
+any other value, the message is rejected.""")
+
+congroup.add_option("", "--ssl",
+                    action="store_true", default=False, dest="ssl",
+                    help= \
+"""Enable SSL encryption. This mode immediately initiates the SSL/TLS
+protocol as soon as a connection is made. This mode is not support
+for the STARTTLS command. This configuration is typically run on
+port 465 (smtps).""")
+
+congroup.add_option("", "--tls",
+                    type="choice", default=None, dest="tls",
+                    choices=['optional', 'on'],
+                    help= \
+"""Enable TLS mode. Valid options are optional and on. With this option
+enabled, the STARTTLS SMTP command may be used to upgrade the plain-text
+connection to SSL/TLS. In 'optional' mode, AUTH is allowed either before
+or after STARTTLS. In 'on' mode, clients are forced to STARTTLS prior to
+AUTH, to ensure that plain-text AUTH commands are protected. This
+configuration is typically run on port 587 (submission).""")
+
+congroup.add_option("", "--ssl-cert",
+                    metavar="/PATH/TO/FILE", default=None, dest="ssl_cert",
+                    help= \
+"""Location of the SSL/TLS certificate key file.""")
+
+congroup.add_option("", "--ssl-key",
+                    metavar="/PATH/TO/FILE", default=None, dest="ssl_key",
+                    help= \
+"""Location of the SSL/TLS private key file.""")
+
+# authentication
+authgroup.add_option("-R", "--remoteauth",
+                     metavar="PROTO://HOST[:PORT][/DN]", dest="remoteauth",
+                     help= \
+"""Protocol and host to check username and password. PROTO can be one of
+the following: 'imap' (IMAP4 server), 'imaps' (IMAP4 server over SSL),
+'pop3' (POP3 server), 'apop' (POP3 server with APOP authentication),
+'ldap' (LDAP server).  Optional :PORT defaults to the standard port for
+the specified protocol (143 for imap, 993 for imaps, 110 for
+pop3/apop, and 389 for ldap).  /DN is mandatory for ldap and should
+contain a '%%s' identifying the username. Examples: '-R
+imaps://myimapserver.net', '-R pop3://mypopserver.net:2110', '-R
+ldap://example.com/cn=%%s,dc=host,dc=com'""")
+
+authgroup.add_option("-A", "--authprog",
+                     metavar="PROGRAM", dest="authprog",
+                     help= \
+"""A checkpassword compatible command used to check username/password.
+Examples: '-A "/usr/sbin/checkpassword-pam -s id -- /bin/true"',
+'-A "/usr/local/vpopmail/bin/vchkpw /usr/bin/true"'.
+The program must be able to receive the username/password pair on
+descriptor 3 and in the following format: `username\\0password\\0'
+Any program claiming to be checkpassword-compatible should be able to
+do this.  If you can tell the program to accept input on another
+descriptor, such as stdin, don't.  It won't work, because TMDA follows
+the standard (http://cr.yp.to/checkpwd/interface.html) exactly.
+Also, checkpassword-type programs expect to find the name of another
+program to run on their command line.  For tmda-ofmipd's purpose,
+/bin/true is perfectly fine.
+Note the position of the quotes in the Examples, which cause the the
+whole string following the -A to be passed as a single argument.""")
+
+authgroup.add_option("-a", "--authfile",
+                     metavar="FILE", dest="authfile",
+                     help= \
+"""Path to the file holding authentication information for this proxy.
+Default location is /etc/tofmipd if running as root/tofmipd, otherwise
+~user/.tmda/tofmipd.  Use this option to override these defaults.""")
+
+authgroup.add_option("-F", "--fallback",
+                     action="store_true", default=False, dest="fallback",
+                     help= \
+"""When used with -R or -A, fallback to authenticate against the authfile
+if remote authentication fails.  Note: this flag has no effect on -R
+to -A fallback. If you specify both -R and -A methods, then authprog
+will be tried after remoteauth has failed.""")
+
+# virtual domains
+virtgroup.add_option("-S", "--vhome-script",
+                     metavar="/PATH/TO/SCRIPT", dest="vhomescript",
+                     help= \
+"""Full pathname of a script that prints a virtual email user's home
+directory on standard output.  tmda-ofmipd will read that and use it
+to build the path to the user's config file instead of '~user/.tmda'.
+The script must take two arguments, the user name and the domain, on
+its command line.  This option is for use only with the VPopMail and
+VMailMgr add-ons to qmail.  See the contrib directory for sample
+scripts.""")
+
+virtgroup.add_option("-v", "--vdomains-path",
+                     default="/var/qmail/control/virtualdomains", 
+                     metavar="/PATH/TO/FILE", dest="vdomainspath",
+                     help= \
+"""Full pathname to qmail's virtualdomains file.  The default is
+/var/qmail/control/virtualdomains.  This is also tmda-ofmipd's
+default, so you normally won't need to set this parameter.  If you
+have installed qmail somewhere other than /var/qmail, you will need to
+set this so tmda-ofmipd can find the virtualdomains file.  NOTE: This
+is only used when you have a qmail installation with virtual domains
+using the VMailMgr add-on.  It implies that you will also set the
+'--vhome-script' option above.""")
+
+for g in (gengroup, congroup, authgroup, virtgroup):
+    parser.add_option_group(g)
+
+(opts, args) = parser.parse_args()
+
+if opts.full_version:
+    print Version.ALL
+    sys.exit()
+if opts.vhomescript and opts.configdir:
+    parser.error("options '--vhome-script' and '--configdir' are incompatible!")
+if opts.debug or opts.log:
+    DEBUGSTREAM = sys.stderr
+else:
+    DEBUGSTREAM = Devnull()
+
+if opts.remoteauth:
+    # arg is like: imap://host:port
+    autharg = opts.remoteauth
+    try:
+        authproto, autharg = autharg.split('://', 1)
+    except ValueError:
+        authproto, autharg = autharg, None
+    if authproto not in defaultauthports.keys():
+        raise ValueError, 'Protocol not supported: ' + authproto + \
+            '\nPlease pick one of ' + repr(defaultauthports.keys())
+    remoteauth['proto'] = authproto
+    remoteauth['port'] = defaultauthports[authproto]
+    if autharg:
+        try:
+            autharg, dn = autharg.split('/', 1)
+            remoteauth['dn'] = dn
+        except ValueError:
+            dn = ''
+        try:
+            authhost, authport = autharg.split(':', 1)
+        except ValueError:
+            authhost = autharg
+            authport = defaultauthports[authproto]
+        if authhost:
+            remoteauth['host'] = authhost
+        if authport:
+            remoteauth['port'] = authport
+    print >> DEBUGSTREAM, "auth method: %s://%s:%s/%s" % \
+        (remoteauth['proto'], remoteauth['host'],
+         remoteauth['port'], remoteauth['dn'])
+    remoteauth['enable'] = 1
+
+if running_as_root:
+    if not opts.username:
+        opts.username = 'tofmipd'
+    if not opts.authfile:
+        opts.authfile = '/etc/tofmipd'
+    ipauthmapfile = '/etc/ipauthmap'
+else:
+    tmda_path = os.path.join(os.path.expanduser('~'), '.tmda')
+    ipauthmapfile = os.path.join(tmda_path, 'ipauthmap')
+    if not opts.authfile:
+        opts.authfile = os.path.join(tmda_path, 'tofmipd')
+
+# provide disclaimer if running as root
+if running_as_root:
+    msg = 'WARNING: The security implications and risks of running ' + \
+          program + ' in "seteuid" mode have not been fully evaluated.  ' + \
+          'If you are uncomfortable with this, quit now and instead run ' + \
+          program + ' under your non-privileged TMDA user account.'
+    warning(msg, exit=0)
+
+if remoteauth['proto'] == 'ldap':
+    try:
+        import ldap
+    except ImportError:
+        raise ImportError, \
+              'python-ldap (http://python-ldap.sf.net/) required.'
+    if remoteauth['dn'] == '':
+        print >> DEBUGSTREAM, "Error: Missing ldap dn\n"
+        raise ValueError
+    try:
+        remoteauth['dn'].index('%s')
+    except:
+        print >> DEBUGSTREAM, "Error: Invalid ldap dn\n"
+        raise ValueError
+
+if opts.ssl or opts.tls:
+    if opts.ssl and opts.tls:
+        raise ValueError, 'Can\'t do SSL and TLS at the same time'
+
+    try:
+        from tlslite.api import *
+        from tlslite.TLSConnection import TLSConnection
+        from tlslite.integration.AsyncStateMachine import AsyncStateMachine
+    except ImportError:
+        raise ImportError, \
+              'tlslite (http://trevp.net/tlslite/) required.'
+
+    if (not opts.ssl_cert) or (not opts.ssl_key):
+        raise ValueError, \
+            '--ssl-cert and --ssl-key are required when using --ssl or --tls'
+
+    fhc = file(os.path.expanduser(opts.ssl_cert), 'r')
+    datac = fhc.read()
+    fhc.close()
+    x509 = X509()
+    x509.parse(datac)
+    opts.ssl_cert_value = X509CertChain([x509])
+
+    fhk = file(os.path.expanduser(opts.ssl_key), 'r')
+    datak = fhk.read()
+    fhk.close()
+    opts.ssl_key_value = parsePEMKey(datak, private=True)
+
+    class TMDATLSAsyncDispatcherMixIn(AsyncStateMachine):
+        """A custom version of tlslite's TLSAsyncDispatcherMixIn.
+        This version:
+        * Requires siblingClass to be specified explicitly, to ease use with
+          inheritance.
+        * Allows the mixin to remain dormant until activated, which allows
+          implementation of deferred SSL startup, as required for the STARTTLS
+          SMTP command.
+        """
+
+        def __init__(self, sock, siblingClass):
+            AsyncStateMachine.__init__(self)
+
+            self.siblingClass = siblingClass
+            self._active = False
+
+            self.tlsConnection = TLSConnection(sock)
+
+        def tlsMixinSetActive(self):
+            self._active = True
+
+        def readable(self):
+            if self._active:
+                result = self.wantsReadEvent()
+                if result != None:
+                    return result
+                return self.siblingClass.readable(self)
+            else:
+                return self.siblingClass.readable(self)
+
+        def writable(self):
+            if self._active:
+                result = self.wantsWriteEvent()
+                if result != None:
+                    return result
+                return self.siblingClass.readable(self)
+            else:
+                return self.siblingClass.writable(self)
+
+        def handle_read(self):
+            if self._active:
+                self.inReadEvent()
+            else:
+                self.siblingClass.handle_read(self)
+
+        def handle_write(self):
+            if self._active:
+                self.inWriteEvent()
+            else:
+                self.siblingClass.handle_write(self)
+
+        def outConnectEvent(self):
+            if not self._active:
+                raise "Internal state confusion"
+            self.siblingClass.handle_connect(self)
+
+        def outCloseEvent(self):
+            if not self._active:
+                raise "Internal state confusion"
+            asyncore.dispatcher.close(self)
+
+        def outReadEvent(self, readBuffer):
+            if not self._active:
+                raise "Internal state confusion"
+            if readBuffer == '':
+                self.outCloseEvent()
+            else:
+                self.readBuffer = readBuffer
+                self.siblingClass.handle_read(self)
+
+        def outWriteEvent(self):
+            if not self._active:
+                raise "Internal state confusion"
+            self.siblingClass.handle_write(self)
+
+        def recv(self, bufferSize=16384):
+            if self._active:
+                if bufferSize < 16384 or self.readBuffer == None:
+                    raise AssertionError()
+                returnValue = self.readBuffer
+                self.readBuffer = None
+                return returnValue
+            else:
+                return self.siblingClass.recv(self, bufferSize)
+
+        def send(self, writeBuffer):
+            if self._active:
+                self.setWriteOp(writeBuffer)
+                return len(writeBuffer)
+            else:
+                return self.siblingClass.send(self, writeBuffer)
+
+        def close(self):
+            if self._active:
+                if hasattr(self, "tlsConnection"):
+                    self.setCloseOp()
+                else:
+                    asyncore.dispatcher.close(self)
+            else:
+                return self.siblingClass.close(self)
+
+
+    SMTPSession.__bases__ = (TMDATLSAsyncDispatcherMixIn,) + SMTPSession.__bases__
+
 
 def main():
     # check permissions of authfile if using only remote
