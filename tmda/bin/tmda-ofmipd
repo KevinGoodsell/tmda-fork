@@ -1220,64 +1220,10 @@ class SMTPSession(SMTPSessionSignon):
 if opts.ssl or opts.tls:
     SMTPSession.__bases__ = (TMDATLSAsyncDispatcherMixIn,) + SMTPSession.__bases__
 
+
 def process_message_fail(peer, mailfrom, rcpttos, data, auth_username):
     """Debug class which prevents the mail from actually being accepted."""
     raise "Test Exception"
-
-
-def process_message_print(peer, mailfrom, rcpttos, data, auth_username):
-    """Simply prints each message it receives on stdout."""
-    inheaders = 1
-    lines = data.split('\n')
-    print '---------- MESSAGE FOLLOWS ----------'
-    for line in lines:
-        # headers first
-        if inheaders and not line:
-            print 'X-Peer:', peer[0]
-            inheaders = 0
-        print line
-    print '------------ END MESSAGE ------------'
-
-
-def _deliver_process_message_smtp_proxy(mailfrom, rcpttos, data, auth_username):
-    import smtplib
-    refused = {}
-    try:
-        s = smtplib.SMTP()
-        s.connect(opts.remoteaddr[0], opts.remoteaddr[1])
-        try:
-            refused = s.sendmail(mailfrom, rcpttos, data)
-        finally:
-            s.quit()
-    except smtplib.SMTPRecipientsRefused, e:
-        print >> DEBUGSTREAM, 'got SMTPRecipientsRefused'
-        refused = e.recipients
-    except (socket.error, smtplib.SMTPException), e:
-        print >> DEBUGSTREAM, 'got', e.__class__
-        # All recipients were refused.  If the exception had an associated
-        # error code, use it.  Otherwise,fake it with a non-triggering
-        # exception code.
-        errcode = getattr(e, 'smtp_code', -1)
-        errmsg = getattr(e, 'smtp_error', 'ignore')
-        for r in rcpttos:
-            refused[r] = (errcode, errmsg)
-    return refused
-
-def process_message_smtp_proxy(peer, mailfrom, rcpttos, data, auth_username):
-    """Proxies all messages to a real smtpd which does final delivery.
-    Used solely as a base class."""
-    lines = data.split('\n')
-    # Look for the last header
-    i = 0
-    for line in lines:
-        if not line:
-            break
-        i += 1
-    lines.insert(i, 'X-Peer: %s' % peer[0])
-    data = NEWLINE.join(lines)
-    refused = _deliver_process_message_smtp_proxy(mailfrom, rcpttos, data)
-    # TBD: what to do with refused addresses?
-    print >> DEBUGSTREAM, 'we got some refusals:', refused
 
 
 def process_message_vdomain(peer, mailfrom, rcpttos, data, auth_username):
