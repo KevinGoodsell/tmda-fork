@@ -59,48 +59,7 @@ class Devnull:
     def flush(self): pass
 
 
-# Integration helper class for tlslite.
-#
-# tlslite's SSL handshake function is not synchronous; it may return prior
-# to handshake completion. In this case, we cannot perform application level
-# reads/writes to the socket, because doing so would corrupt the handshake
-# process.
-#
-# However, the very first thing an SMTP server wants to after a new connection
-# is established is to send the server signon greeting.
-#
-# So, we must wait for the handshake to complete. tlslite will notify us when
-# this occurs by calling the handle_connect function. However, note that
-# this function is called on the "sibling class" part of the object, not the
-# SMTPSession object. This forces us to sub-class async_chat so that we can
-# hook this call into the sibling class.
-#
-# tlslite calls the sibling class directly because asyncore/asynchat are
-# designed to call handle_connect on "self". Typically, the child class
-# (SMTPSession in our case) will implement this function. When tlslite is in
-# use, handle_connect is implemented by the tlslite mixin, which forwards the
-# evenr to the tlslite internals. To avoid infinite recursion, tlslite must
-# call handle_connect directly on the sibling class, not "self".
-#
-# Also note that when initializing an asyncore/async_chat sub-class with an
-# existing connected socket, like tmda-ofmipd does, asyncore/async_chat don't
-# call handle_connect. For this reason, we force this call ourselves at the
-# end of SMTPSession.__init__ (when not in SSL mode) in order to re-use the
-# same mechanism/function to send the server signon.
-
-class SMTPSessionSignon(asynchat.async_chat):
-    def __init__(self, conn):
-        asynchat.async_chat.__init__(self, conn)
-        self._sent_signon = False
-
-    def handle_connect(self):
-        self.init_dynamic_state() # calls sub-class
-        if not self._sent_signon:
-            self._sent_signon = True
-            self.push('220 %s ESMTP tmda-ofmipd' % FQDN)
-
-
-class SMTPSession(SMTPSessionSignon):
+class SMTPSession(asynchat.async_chat):
     COMMAND = 0
     DATA = 1
     AUTH = 2
@@ -111,9 +70,9 @@ class SMTPSession(SMTPSessionSignon):
         # Base class __init__ calls
 
         if opts.ssl or opts.tls:
-            TMDATLSAsyncDispatcherMixIn.__init__(self, conn, SMTPSessionSignon)
+            TMDATLSAsyncDispatcherMixIn.__init__(self, conn, asynchat.async_chat)
             self.tlsConnection.ignoreAbruptClose = True
-        SMTPSessionSignon.__init__(self, conn)
+        asynchat.async_chat.__init__(self, conn)
 
         # Save our own __init__ parameters
 
@@ -184,6 +143,8 @@ class SMTPSession(SMTPSessionSignon):
         # VPopMail's reverse IP domain mapping.
         os.environ['TCPLOCALIP'] = self._localip
 
+        self._sent_signon = False
+
         # SSL/TLS/STARTTLS
         self.__can_starttls = opts.tls
 
@@ -216,6 +177,12 @@ class SMTPSession(SMTPSessionSignon):
         self.tlsMixinSetActive()
         self.setServerHandshakeOp(certChain=opts.ssl_cert_value,
                                   privateKey=opts.ssl_key_value)
+
+    def handle_connect(self):
+        self.init_dynamic_state()
+        if not self._sent_signon:
+            self._sent_signon = True
+            self.push('220 %s ESMTP tmda-ofmipd' % FQDN)
 
     # Overrides base class for convenience
     def push(self, msg):
@@ -1324,7 +1291,7 @@ if opts.ssl or opts.tls:
         def outConnectEvent(self):
             if not self._active:
                 raise "Internal state confusion"
-            self.siblingClass.handle_connect(self)
+            self.handle_connect()
 
         def outCloseEvent(self):
             if not self._active:
