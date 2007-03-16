@@ -885,6 +885,10 @@ def create_smtp_session_from_stdin(process_msg_func):
     SMTPSession(conn, process_msg_func)
 
 
+def sig_handler(sig_num, frame):
+    sys.exit()
+
+
 # Main code begins
 
 
@@ -1363,6 +1367,7 @@ def main():
         host, port = opts.proxyport.split(':', 1)
         server = SMTPServer((host, int(port)), process_msg_func)
 
+    # Switch user/group ID, etc.
     if running_as_root:
         pw_uid = Util.getuid(opts.username)
         # check ownership of authfile if using only remote
@@ -1371,17 +1376,44 @@ def main():
             if Util.getfileuid(opts.authfile) <> pw_uid:
                 raise IOError, \
                     opts.authfile + ' must be owned by UID ' + str(pw_uid)
-        # try setegid()
+        # Set group ID
         os.setegid(Util.getgid(opts.username))
-        # try setting the supplemental group ids
+        # Set supplemental group ids
         os.setgroups(Util.getgrouplist(opts.username))
-        # try seteuid()
+        # Set user ID
         os.seteuid(pw_uid)
 
+    # Daemonize the process if required
     if not (opts.foreground or opts.one_session):
-        signal.signal(signal.SIGHUP, signal.SIG_IGN) # ignore SIGHUP
         if os.fork() <> 0:
             sys.exit()
+
+        if True:
+            os.setsid()
+
+            if os.fork() <> 0:
+                sys.exit()
+
+            os.setpgrp()
+
+            # Theoretically we should close all FDs in
+            # range(os.getdtablesize()), but the API doesn't exist!
+            os.close(0)
+            os.close(1)
+            os.close(2)
+            os.open('/dev/null', os.O_RDWR | os.O_NOCTTY)
+            os.dup(0)
+            os.dup(0)
+            sys.stdin = os.fdopen(0, 'r')
+            sys.stdout = os.fdopen(1, 'w')
+            sys.stderr = os.fdopen(2, 'w')
+
+            signal.signal(signal.SIGTSTP, signal.SIG_IGN);
+            signal.signal(signal.SIGTTOU, signal.SIG_IGN);
+            signal.signal(signal.SIGTTIN, signal.SIG_IGN);
+
+            signal.signal(signal.SIGHUP, sig_handler);
+            signal.signal(signal.SIGTERM, sig_handler);
 
     # Start the event loop
     try:
