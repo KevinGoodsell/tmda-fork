@@ -1,3 +1,7 @@
+2007-04-26  Jason R. Mastaler  <jason@mastaler.com>
+
+	* pythonlib/email: Sync up with email 4.0.2.
+
 2007-03-01  Jason R. Mastaler  <jason@mastaler.com>
 
 	* SMTP.py (Connection.__connect): bugfix: TLS must come before
