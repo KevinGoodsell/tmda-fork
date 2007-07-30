@@ -26,10 +26,10 @@ import platform
 
 
 # TMDA version
-TMDA = '1.1.12'
+TMDA = '1.1.12+'
 
 # TMDA version codename
-CODENAME = 'Macallan'
+CODENAME = 'Nikka'
 
 # Python version
 PYTHON = platform.python_version()
