@@ -26,7 +26,7 @@ import platform
 
 
 # TMDA version
-TMDA = '1.1.11+'
+TMDA = '1.1.12'
 
 # TMDA version codename
 CODENAME = 'Macallan'

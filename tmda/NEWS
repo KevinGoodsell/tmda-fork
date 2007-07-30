@@ -9,10 +9,9 @@ TMDA 1.1.12 "Macallan" --
 
 * tmda-ofmipd now has native STARTTLS and SSL support courtesy of
   Stephen Warren. The new options are '--tls', '--ssl', '--ssl-key',
-  and '--ssl-crt'. Note that the tlslite Python module
-  (http://trevp.net/tlslite/) needs to be installed to use this
-  feature. For more information, see tmda-ofmipd's '--help' output or
-  the "SSL/TLS" section of http://wiki.tmda.net/TmdaOfmipdHowto
+  and '--ssl-crt'. Note that the tlslite Python module needs to be
+  installed to use this feature. For more information, see the
+  "Builtin SSL/TLS" section of http://wiki.tmda.net/TmdaOfmipdHowto
 
 * Fixed a minor bug that prevented the use of both SMTPSSL and
   SMTPAUTH together.
