@@ -1,3 +1,9 @@
+2007-11-20  Stephen Warren  <swarren@wwwdotorg.org>
+
+	* tmda-ofmipd: Add --tls=localoptional option. This acts like
+	--tls=optional for connections from localhost, and like --tls=on
+	for connections from elsewhere.
+
 2007-02-25  Stephen Warren  <swarren@wwwdotorg.org>
 
 	* tmda-ofmipd: Implemented --tls, --ssl, --ssl-key, --ssl-crt options.

@@ -147,6 +147,14 @@ class SMTPSession(asynchat.async_chat):
 
         # SSL/TLS/STARTTLS
         self.__can_starttls = opts.tls
+        self.__must_starttls = \
+            (opts.tls == 'on') \
+            or \
+            ( \
+                (opts.tls == 'localoptional') \
+                and \
+                (str(self._localip) != "127.0.0.1")\
+            )
 
     def init_dynamic_state(self):
         """Initialize 'dynamic state' - that state which must be flushed
@@ -210,7 +218,7 @@ class SMTPSession(asynchat.async_chat):
             else:
                 command = line[:i].upper()
                 arg = line[i+1:].strip()
-            if self.__can_starttls and not opts.tls == 'optional':
+            if self.__can_starttls and self.__must_starttls:
                valid_cmds = ['NOOP', 'EHLO', 'STARTTLS', 'QUIT']
                if not (command in valid_cmds):
                    self.push('530 Must issue a STARTTLS command first')
@@ -454,7 +462,7 @@ class SMTPSession(asynchat.async_chat):
 
         responses = []
         responses.append('%s' % FQDN)
-        if not self.__can_starttls or opts.tls == 'optional':
+        if not self.__can_starttls or not self.__must_starttls:
             responses.append('AUTH %s' %
                 (' '.join(map(lambda s: s.upper(), self.__sasl_types))))
         if self.__can_starttls:
@@ -1040,14 +1048,18 @@ port 465 (smtps).""")
 
 congroup.add_option("", "--tls",
                     type="choice", default=None, dest="tls",
-                    choices=['optional', 'on'],
+                    choices=['optional', 'localoptional', 'on'],
                     help= \
-"""Enable TLS mode. Valid options are optional and on. With this option
-enabled, the STARTTLS SMTP command may be used to upgrade the plain-text
-connection to SSL/TLS. In 'optional' mode, AUTH is allowed either before
-or after STARTTLS. In 'on' mode, clients are forced to STARTTLS prior to
-AUTH, to ensure that plain-text AUTH commands are protected. This
-configuration is typically run on port 587 (submission).""")
+"""Enable TLS mode. Valid options are optional, localoptional and on.
+With this option enabled, the STARTTLS SMTP command may be used to upgrade
+the plain-text connection to SSL/TLS. This protects the safety of plain-text
+authentication methods, and message content. This is typically run on port
+587 (submission). The different options have the following effect:
+
+               AUTH allowed before STARTTLS?      AUTH after STARTTLS?
+optional       yes                                yes
+localoptional  connections from localhost only    yes
+on             no                                 yes""")
 
 congroup.add_option("", "--ssl-cert",
                     metavar="/PATH/TO/FILE", default=None, dest="ssl_cert",
