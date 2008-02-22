@@ -617,7 +617,7 @@ current window size.")
     (let ((winwidth (1- (window-width))))
       (goto-char (point-min))
       (while (not (eobp))
-        (cond ((looking-at ".*[0-9.]+\\.msg[\t ]")
+        (cond ((looking-at ".*[0-9.]+\\(\\.msg\\)?[\t ]")
                (insert "[ ] "))
               ((looking-at "^$"))      ; do nothing
               ((looking-at "^-\\*- ")) ; again, do nothing
@@ -639,7 +639,7 @@ current window size.")
   (save-excursion
     (beginning-of-line)
     (when (looking-at "\\[.\\] ")
-      (progn (re-search-forward "\\([0-9.]+msg\\)[\t ]")
+      (progn (re-search-forward "\\([0-9.]+\\(\\.msg\\)?\\)[\t ]")
 	     (match-string 1)))))
 
 (defmacro tmda-pending-command (&rest forms)

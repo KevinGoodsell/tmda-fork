@@ -1,3 +1,7 @@
+2008-02-21  Bob Rogers  <rogers@rgrjr.dyndns.org>
+
+	* Updated tmda.el to work with the current tmda-pending output.
+
 2007-02-23  Stephen Warren  <swarren@wwwdotorg.org>
 
 	* Updated tofmipd.init per patch from Bernard Johnson; don't auto-
