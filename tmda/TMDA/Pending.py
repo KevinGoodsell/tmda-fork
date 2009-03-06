@@ -75,8 +75,8 @@ class Queue:
 
     def initQueue(self):
         """Initialize the queue with the given parameters (see __init__)."""
-	if not Q.exists():
-	    raise Errors.QueueError, 'Pending Queue does not exist, exiting.'
+        if not Q.exists():
+            raise Errors.QueueError, 'Pending Queue does not exist, exiting.'
 
         # Replace any `-' in the message list with those messages provided
         # via standard input.  (Since it's pointless to call it twice,
@@ -154,9 +154,9 @@ class Queue:
     def _saveCache(self):
         """Save the cache on disk."""
         if self.cache:
-	    # Trim tail entries off if necessary, and then save the
-	    # cache in ASCII format.
-	    self.msgcache = self.msgcache[:Defaults.PENDING_CACHE_LEN]
+            # Trim tail entries off if necessary, and then save the
+            # cache in ASCII format.
+            self.msgcache = self.msgcache[:Defaults.PENDING_CACHE_LEN]
             Util.pickleit(self.msgcache, Defaults.PENDING_CACHE, 0)
 
     ## Threshold (-Y and -O options)
@@ -355,9 +355,9 @@ class Message:
     def __init__(self, msgid, recipient = None, fullParse = False):
         self.msgid = msgid
         if not Q.find_message(self.msgid):
-	    raise Errors.MessageError, '%s not found!' % self.msgid
+            raise Errors.MessageError, '%s not found!' % self.msgid
         self.msgobj = Q.fetch_message(self.msgid, fullParse=fullParse)
-	self.recipient = recipient
+        self.recipient = recipient
         if self.recipient is None:
             self.recipient = self.msgobj.get('x-tmda-recipient')
         self.return_path = parseaddr(self.msgobj.get('return-path'))[1]
@@ -387,14 +387,14 @@ class Message:
         # Add the date when confirmed in a header.
         del self.msgobj['X-TMDA-Released']
         self.msgobj['X-TMDA-Released'] = Util.make_date()
-	# For messages released via tmda-cgi, add the IP address and
-	# browser info of the releaser for easier tracing.
-	if os.environ.has_key('REMOTE_ADDR') and \
-		os.environ.has_key('HTTP_USER_AGENT'):
-	    cgi_header = "%s (%s)" % (os.environ.get('REMOTE_ADDR'), 
-				      os.environ.get('HTTP_USER_AGENT'))
-	    del self.msgobj['X-TMDA-CGI']
-	    self.msgobj['X-TMDA-CGI'] = cgi_header
+        # For messages released via tmda-cgi, add the IP address and
+        # browser info of the releaser for easier tracing.
+        if os.environ.has_key('REMOTE_ADDR') and \
+                os.environ.has_key('HTTP_USER_AGENT'):
+            cgi_header = "%s (%s)" % (os.environ.get('REMOTE_ADDR'), 
+                                      os.environ.get('HTTP_USER_AGENT'))
+            del self.msgobj['X-TMDA-CGI']
+            self.msgobj['X-TMDA-CGI'] = cgi_header
         # Reinject the message to the original envelope recipient.
         Util.sendmail(self.show(), self.recipient, self.return_path)
 
@@ -403,7 +403,7 @@ class Message:
         if Defaults.PENDING_DELETE_APPEND:
             Util.append_to_file(self.append_address,
                                 Defaults.PENDING_DELETE_APPEND)
-	Q.delete_message(self.msgid)
+        Q.delete_message(self.msgid)
 
     def whitelist(self):
         """Whitelist the message sender."""
@@ -427,11 +427,11 @@ class Message:
 
     def pager(self):
         Util.pager(self.show())
-	return ''
+        return ''
 
     def show(self):
         """Return the string representation of a message."""
-	return Util.msg_as_string(self.msgobj)
+        return Util.msg_as_string(self.msgobj)
 
     def getDate(self):
         timestamp = self.msgid.split('.')[0]

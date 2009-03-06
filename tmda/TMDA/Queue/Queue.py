@@ -33,97 +33,97 @@ from TMDA import Errors
 
 class Queue:
     def __init__(self):
-	self.format = "not defined"
+        self.format = "not defined"
 
     # Subclasses are expected to override the following methods since
     # their implementation is specific to the format of the queue.
 
     def exists(self):
-	"""
-	Return true if the queue exists, otherwise False.
-	"""
-	pass
+        """
+        Return true if the queue exists, otherwise False.
+        """
+        pass
 
 
     def _create(self):
         """
-	Create the queue.
-	"""
-	pass
+        Create the queue.
+        """
+        pass
 
 
     def _convert(self):
-	"""
-	Convert the existing queue as necessary to a different format.
-	JRM: unsure if this method will stay or not.
-	"""
-	pass
+        """
+        Convert the existing queue as necessary to a different format.
+        JRM: unsure if this method will stay or not.
+        """
+        pass
 
 
     def cleanup(self):
-	"""
-	Delete messages from the queue that are older than
-	Defaults.PENDING_LIFETIME.
-	"""
-	pass
+        """
+        Delete messages from the queue that are older than
+        Defaults.PENDING_LIFETIME.
+        """
+        pass
 
 
     def fetch_ids(self):
-	"""
-	Return a list containing the just the ids of all messages in
-	the queue. e.g, ['1159387731.4602', '1159383896.4198']
-	"""
-	pass
+        """
+        Return a list containing the just the ids of all messages in
+        the queue. e.g, ['1159387731.4602', '1159383896.4198']
+        """
+        pass
 
     
     def insert_message(self, msg, mailid, recipient):
-	"""
-	Insert the contents of a message into the queue.
+        """
+        Insert the contents of a message into the queue.
 
-	msg is an email.message like object.
+        msg is an email.message like object.
 
-	mailid (see above)
+        mailid (see above)
 
-	recipient is the recipient e-mail address of this message.
-	"""
-	pass
+        recipient is the recipient e-mail address of this message.
+        """
+        pass
 
 
     def fetch_message(self, mailid, fullParse=False):
-	"""
-	Fetch the contents of a message in the queue.  Should
-	return an email.message like object.
-	Normally uses HeaderParser' for a quick parse unless 'fullParse'
-	is set to True, in which case it uses the full 'email.parser'.
-	"""
-	pass
+        """
+        Fetch the contents of a message in the queue.  Should
+        return an email.message like object.
+        Normally uses HeaderParser' for a quick parse unless 'fullParse'
+        is set to True, in which case it uses the full 'email.parser'.
+        """
+        pass
 
 
     def delete_message(self, mailid):
-	"""
-	Delete a message in the queue.
-	"""
-	pass
+        """
+        Delete a message in the queue.
+        """
+        pass
 
 
     def find_message(self, mailid):
-	"""
-	Return true if this message is in the queue, otherwise False.
-	"""
-	pass
+        """
+        Return true if this message is in the queue, otherwise False.
+        """
+        pass
 
 
     # Subclasses should not override this method.
 
     def init(self):
-	qformat = Defaults.PENDING_QUEUE_FORMAT
-	if qformat.lower() == 'original':
-	    from OriginalQueue import OriginalQueue
-	    return OriginalQueue()
-	if qformat.lower() == 'maildir':
-	    from MaildirQueue import MaildirQueue
-	    return MaildirQueue()
-	else:
-	    raise Errors.ConfigError, \
-		"Unknown PENDING_QUEUE_FORMAT: " + '"%s"' % qformat
+        qformat = Defaults.PENDING_QUEUE_FORMAT
+        if qformat.lower() == 'original':
+            from OriginalQueue import OriginalQueue
+            return OriginalQueue()
+        if qformat.lower() == 'maildir':
+            from MaildirQueue import MaildirQueue
+            return MaildirQueue()
+        else:
+            raise Errors.ConfigError, \
+                "Unknown PENDING_QUEUE_FORMAT: " + '"%s"' % qformat
 

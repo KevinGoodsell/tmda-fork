@@ -46,43 +46,43 @@ from TMDA.Queue.Queue import Queue
 
 class OriginalQueue(Queue):
     def __init__(self):
-	Queue.__init__(self)
-	self.format = "original"
+        Queue.__init__(self)
+        self.format = "original"
 
 
     def exists(self):
-	if os.path.exists(Defaults.PENDING_DIR):
-	    return True
-	else:
-	    return False
+        if os.path.exists(Defaults.PENDING_DIR):
+            return True
+        else:
+            return False
 
 
     def _create(self):
-	if not self.exists():
-	    os.makedirs(Defaults.PENDING_DIR, 0700)
+        if not self.exists():
+            os.makedirs(Defaults.PENDING_DIR, 0700)
 
 
     def _convert(self):
-	pass
+        pass
 
 
     def cleanup(self):
-	if not self.exists():
-	    return
-	
-	lifetimesecs = Util.seconds(Defaults.PENDING_LIFETIME)
-	cwd = os.getcwd()
-	os.chdir(Defaults.PENDING_DIR)
-	msgs = glob.glob('*.*.msg')
-	os.chdir(cwd)
+        if not self.exists():
+            return
+        
+        lifetimesecs = Util.seconds(Defaults.PENDING_LIFETIME)
+        cwd = os.getcwd()
+        os.chdir(Defaults.PENDING_DIR)
+        msgs = glob.glob('*.*.msg')
+        os.chdir(cwd)
 
         for msg in msgs:
-	    now = '%d' % time.time()
+            now = '%d' % time.time()
             min_time = int(now) - int(lifetimesecs)
             msg_time = int(msg.split('.')[0])
             if msg_time > min_time:
                 # skip this message
-		continue
+                continue
             # delete this message
             fpath = os.path.join(Defaults.PENDING_DIR, msg)
             if Defaults.PENDING_DELETE_APPEND:
@@ -102,42 +102,42 @@ class OriginalQueue(Queue):
 
 
     def fetch_ids(self):
-	cwd = os.getcwd()
-	os.chdir(Defaults.PENDING_DIR)
-	msgs = glob.glob('*.*.msg')
-	ids = [i.rstrip('.msg') for i in msgs]
-	os.chdir(cwd)
-	return ids
+        cwd = os.getcwd()
+        os.chdir(Defaults.PENDING_DIR)
+        msgs = glob.glob('*.*.msg')
+        ids = [i.rstrip('.msg') for i in msgs]
+        os.chdir(cwd)
+        return ids
 
 
     def insert_message(self, msg, mailid, recipient):
-	fname = mailid + ".msg"
-	# Create ~/.tmda/ and friends if necessary.
-	self._create()
-	# X-TMDA-Recipient is used by release_pending()
-	del msg['X-TMDA-Recipient']
-	msg['X-TMDA-Recipient'] = recipient
-	# Write ~/.tmda/pending/MAILID.msg
-	fcontents = Util.msg_as_string(msg)
-	fpath = os.path.join(Defaults.PENDING_DIR, fname)
-	Util.writefile(fcontents, fpath)
-	del msg['X-TMDA-Recipient']
+        fname = mailid + ".msg"
+        # Create ~/.tmda/ and friends if necessary.
+        self._create()
+        # X-TMDA-Recipient is used by release_pending()
+        del msg['X-TMDA-Recipient']
+        msg['X-TMDA-Recipient'] = recipient
+        # Write ~/.tmda/pending/MAILID.msg
+        fcontents = Util.msg_as_string(msg)
+        fpath = os.path.join(Defaults.PENDING_DIR, fname)
+        Util.writefile(fcontents, fpath)
+        del msg['X-TMDA-Recipient']
 
 
     def fetch_message(self, mailid, fullParse=False):
-	fpath = os.path.join(Defaults.PENDING_DIR, mailid + '.msg')
-	msg = Util.msg_from_file(file(fpath, 'r'),fullParse=fullParse)
-	return msg
+        fpath = os.path.join(Defaults.PENDING_DIR, mailid + '.msg')
+        msg = Util.msg_from_file(file(fpath, 'r'),fullParse=fullParse)
+        return msg
 
 
     def delete_message(self, mailid):
-	fpath = os.path.join(Defaults.PENDING_DIR, mailid + '.msg')
-	os.unlink(fpath)
+        fpath = os.path.join(Defaults.PENDING_DIR, mailid + '.msg')
+        os.unlink(fpath)
 
 
     def find_message(self, mailid):
-	fpath = os.path.join(Defaults.PENDING_DIR, mailid + '.msg')
-	if os.path.exists(fpath):
-	    return True
-	else:
-	    return False
+        fpath = os.path.join(Defaults.PENDING_DIR, mailid + '.msg')
+        if os.path.exists(fpath):
+            return True
+        else:
+            return False

@@ -87,7 +87,7 @@ def Show():
                 DeleteList.append(MsgObj)
               elif Form["Action"].value == "Whitelist":
                 WhiteList.append(MsgObj)
-		# TODO: Separate release not needed for TMDA 1.1.x
+                # TODO: Separate release not needed for TMDA 1.1.x
                 ReleaseList.append(MsgObj)
               elif Form["Action"].value == "Blacklist":
                 BlackList.append(MsgObj)

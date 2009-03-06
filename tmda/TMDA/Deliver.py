@@ -180,7 +180,7 @@ class Deliver:
         Just make sure each message is surrounded by "\1\1\1\1\n"
         """
         try:
-	    # When orig_length is None, we haven't opened the file yet.
+            # When orig_length is None, we haven't opened the file yet.
             orig_length = None
             # Open the mmdf file.
             fp = open(mmdf, 'rb+')
@@ -218,8 +218,8 @@ class Deliver:
         except IOError, txt:
             try:
                 if not fp.closed and not orig_length is None:
-		    # If the file was opened and we know how long it was,
-		    # try to truncate it back to that length.
+                    # If the file was opened and we know how long it was,
+                    # try to truncate it back to that length.
                     fp.truncate(orig_length)
                 unlock_file(fp)
                 fp.close()
@@ -239,7 +239,7 @@ class Deliver:
         General Public License version 2.
         """
         try:
-	    # When orig_length is None, we haven't opened the file yet.
+            # When orig_length is None, we haven't opened the file yet.
             orig_length = None
             # Open the mbox file.
             fp = open(mbox, 'rb+')
@@ -275,8 +275,8 @@ class Deliver:
         except IOError, txt:
             try:
                 if not fp.closed and not orig_length is None:
-		    # If the file was opened and we know how long it was,
-		    # try to truncate it back to that length.
+                    # If the file was opened and we know how long it was,
+                    # try to truncate it back to that length.
                     fp.truncate(orig_length)
                 unlock_file(fp)
                 fp.close()
