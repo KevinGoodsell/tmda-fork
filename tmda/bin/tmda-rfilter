@@ -41,7 +41,7 @@ from TMDA import Version
 # virtual user's home directory and set $HOME to that, so that '~' refers to
 # the virtual user's home directory and not the domain directory.
 def setvuserhomedir(vhomescript):
-    """Set $HOME to the recipient's (virtual user) home directory.""" 
+    """Set $HOME to the recipient's (virtual user) home directory."""
     host = os.environ['HOST']
     parts = os.environ['EXT'].split('-confirm-', 1)[0].split('-')
     cmd = vhomescript + ' "%s"' + ' "%s"' % (host,)
@@ -127,7 +127,7 @@ will also check for parsing errors in the filter file."""),
                 help="show full TMDA version information and exit"),
     ]
 
-parser = OptionParser(option_list=opt_list, description=opt_desc, 
+parser = OptionParser(option_list=opt_list, description=opt_desc,
                       version=Version.TMDA)
 (opts, args) = parser.parse_args()
 
@@ -185,7 +185,7 @@ import time
 # matches, and then exit.
 if opts.filter_match:
     sender = opts.filter_match[-1]
-    recip = opts.filter_match[-2] 
+    recip = opts.filter_match[-2]
     Util.filter_match(Defaults.FILTER_INCOMING, recip, sender)
     sys.exit()
 
@@ -626,7 +626,7 @@ def verify_dated_cookie(dated_cookie):
                           'bounce_fail_dated.txt')
     # Accept the message only if the address has not expired, and the
     # HMAC is valid.
-    if datemac <> Cookie.datemac(cookie_date): 
+    if datemac <> Cookie.datemac(cookie_date):
         do_default_action(Defaults.ACTION_FAIL_DATED.lower(),
                           'action_fail_dated',
                           'bounce_fail_dated.txt')
@@ -763,7 +763,7 @@ def bouncegen(mode, template=None):
             send_cc(Defaults.CONFIRM_CC)
         logit("CONFIRM", "pending " + MAILID)
         send_bounce(bounce_message, mode)
-        mta.stop()     
+        mta.stop()
 
 
 ######

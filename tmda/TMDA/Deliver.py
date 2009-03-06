@@ -62,7 +62,7 @@ class Deliver:
         self.msg = msg
         self.option = delivery_option
         self.env_sender = os.environ.get('SENDER')
-        
+
     def get_instructions(self):
         """Process the delivery_option string, returning a tuple
         containing the type of delivery to be performed, and the
@@ -85,7 +85,7 @@ class Deliver:
             self.delivery_dest = self.option
             if firstchar == '&':
                 self.delivery_dest = self.delivery_dest[1:].strip()
-        # An mmdf line begins with a : 
+        # An mmdf line begins with a :
         elif firstchar == ':':
             self.delivery_type = 'mmdf'
             self.delivery_dest = self.option[1:].strip()
@@ -172,7 +172,7 @@ class Deliver:
     def __deliver_forward(self, message, address):
         """Forward message to address, preserving the existing Return-Path."""
         Util.sendmail(message, address, self.env_sender)
-        
+
     def __deliver_mmdf(self, message, mmdf):
         """Reliably deliver a mail message into an mmdf file.
 
@@ -232,7 +232,7 @@ class Deliver:
         """Reliably deliver a mail message into an mboxrd-format mbox file.
 
         See <URL:http://www.qmail.org/man/man5/mbox.html>
-        
+
         Based on code from getmail
         <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
         Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
@@ -312,7 +312,7 @@ class Deliver:
         # djb says that inode numbers and device numbers aren't always
         # available through NFS, but this shouldn't be the case if the
         # NFS implementation is POSIX compliant.
-        
+
         # Set a 24-hour alarm for this delivery.
         signal.signal(signal.SIGALRM, alarm_handler)
         signal.alarm(24 * 60 * 60)
@@ -320,7 +320,7 @@ class Deliver:
         dir_tmp = os.path.join(maildir, 'tmp')
         dir_cur = os.path.join(maildir, 'cur')
         dir_new = os.path.join(maildir, 'new')
-        if not (os.path.isdir(dir_tmp) and 
+        if not (os.path.isdir(dir_tmp) and
                 os.path.isdir(dir_cur) and
                 os.path.isdir(dir_new)):
             raise Errors.DeliveryError, 'not a Maildir! (%s)' % maildir
@@ -331,14 +331,14 @@ class Deliver:
         hostname = socket.gethostname()
         # To deal with invalid host names.
         hostname = hostname.replace('/', '\\057').replace(':', '\\072')
-        
+
         # e.g, 1043715037.P28810.hrothgar.la.mastaler.com
         filename_tmp = '%lu.P%d.%s' % (now, pid, hostname)
         fname_tmp = os.path.join(dir_tmp, filename_tmp)
         # File must not already exist.
         if os.path.exists(fname_tmp):
             raise Errors.DeliveryError, fname_tmp + 'already exists!'
-        
+
         # Get user & group of maildir.
         s_maildir = os.stat(maildir)
         maildir_owner = s_maildir[stat.ST_UID]
@@ -373,7 +373,7 @@ class Deliver:
         # File must not already exist.
         if os.path.exists(fname_new):
             raise Errors.DeliveryError, fname_new + 'already exists!'
-        
+
         # Move message file from Maildir/tmp to Maildir/new
         try:
             os.link(fname_tmp, fname_new)

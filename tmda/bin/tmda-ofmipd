@@ -388,7 +388,7 @@ class SMTPSession(asynchat.async_chat):
         RSET, or QUIT. It indicates that server policy requires
         authentication in order to perform the requested action."""
         self.push('530 Error: Authentication required')
-        
+
     def auth_notify_fail(self, failcode=0):
         if failcode == 501:
             # base64 decoding failed
@@ -423,7 +423,7 @@ class SMTPSession(asynchat.async_chat):
         else:
             self.auth_notify_fail(verify)
         self.auth_reset_state()
-            
+
     def auth_challenge(self):
         line = EMPTYSTRING.join(self.__line)
         if not self.__auth_resp1:
@@ -804,7 +804,7 @@ def process_message_vdomain(peer, mailfrom, rcpttos, data, auth_username):
         else:
             # The 'prepend' is the system user in charge of this virtual
             # domain.
-            prepend = Util.getvdomainprepend(auth_username, 
+            prepend = Util.getvdomainprepend(auth_username,
                                              opts.vdomainspath)
             if not prepend:
                 err = 'Error: "%s" is not a virtual domain' % (domain,)
@@ -942,11 +942,11 @@ opt_desc = \
 """An authenticated ofmip proxy for TMDA that allows you to 'tag' your
 mail client's outgoing mail through SMTP.  For more information,
 including setup and usage instructions, see
-http://wiki.tmda.net/TmdaOfmipdHowto""" 
+http://wiki.tmda.net/TmdaOfmipdHowto"""
 
 parser = OptionParser(description=opt_desc, version=Version.TMDA)
 
-parser.add_option("-V", 
+parser.add_option("-V",
                   action="store_true", default=False, dest="full_version",
                   help="show full TMDA version information and exit.")
 
@@ -955,7 +955,7 @@ gengroup = OptionGroup(parser, "General")
 congroup = OptionGroup(parser, "Connection")
 authgroup = OptionGroup(parser, "Authentication")
 virtgroup = OptionGroup(parser, "Virtual Domains")
-    
+
 # general
 gengroup.add_option("-d", "--debug",
                     action="store_true", default=False, dest="debug",
@@ -999,7 +999,7 @@ see the --vhome-script option for qmail virtual domain users.""")
 
 # connection
 congroup.add_option("-p", "--proxyport",
-                    default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT", 
+                    default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT",
                     dest="proxyport", help= \
 """The HOST:PORT to listen for incoming connections on.  The default is
 FQDN:8025 (i.e, port 8025 on the fully qualified domain name for the
@@ -1131,7 +1131,7 @@ VMailMgr add-ons to qmail.  See the contrib directory for sample
 scripts.""")
 
 virtgroup.add_option("-v", "--vdomains-path",
-                     default="/var/qmail/control/virtualdomains", 
+                     default="/var/qmail/control/virtualdomains",
                      metavar="/PATH/TO/FILE", dest="vdomainspath",
                      help= \
 """Full pathname to qmail's virtualdomains file.  The default is

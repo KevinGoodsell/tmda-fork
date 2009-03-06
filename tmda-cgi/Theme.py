@@ -64,7 +64,7 @@ def Show():
 
     # Also skip anything that is not a directory
     if not os.path.isdir( os.path.join( ThemesDir, Theme ) ): continue
-    
+
     T["Name"] = Theme
     Selected.Clear()
     if Theme == PVars[("General", "Theme")]:

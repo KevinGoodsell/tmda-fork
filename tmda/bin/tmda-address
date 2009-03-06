@@ -46,29 +46,29 @@ opt_list = [
                 metavar="FILE", dest="config_file",
                 help= \
 """Specify a different configuration file other than ~/.tmda/config"""),
-    
+
     make_option("-n", "--no-newline",
                 action="store_false", default=True, dest="print_newline",
                 help= \
 """Do not print a newline after the address, which is often useful
 when calling tmda-address from another program."""),
-   
+
     make_option("-a", "--address",
                 dest="address",
                 help= \
 """Use this address as the basis for the tagged address, otherwise
 your default email address will be used."""),
-    
+
     make_option("-k", "--keyword",
                 dest="keyword",
                 help="Generate a keyword-style tagged address based on KEYWORD."),
-    
+
     make_option("-s", "--sender",
                 metavar="ADDRESS", dest="sender",
                 help= \
 """Generate a sender-style tagged address.  ADDRESS can either be an
 email address or a domain name."""),
- 
+
     make_option("-d", "--dated",
                 action="store_true", default=False, dest="dated",
                 help= \
@@ -76,7 +76,7 @@ email address or a domain name."""),
 value which comes from the DATED_TIMEOUT variable in your
 configuration (5 days by default).  You can specify a different
 timeout using the '-t/--timeout' option below."""),
-    
+
     make_option("-t", "--timeout",
                 metavar="TIMEOUT", dest="dated_timeout",
                 help= \
@@ -86,12 +86,12 @@ minutes (m), hours (h), days (d), weeks (w), months (M), or years (Y).
 e.g, '5d' for a 5 day timeout, and '24h' for 24 hours.  This option
 assumes '-d/--dated'."""),
 
-    make_option("-V", 
+    make_option("-V",
                 action="store_true", default=False, dest="full_version",
                 help="show full TMDA version information and exit"),
     ]
 
-parser = OptionParser(option_list=opt_list, description=opt_desc, 
+parser = OptionParser(option_list=opt_list, description=opt_desc,
                       version=Version.TMDA)
 (opts, args) = parser.parse_args()
 
@@ -119,7 +119,7 @@ elif opts.dated or opts.dated_timeout:
     tag = Defaults.TAGS_DATED[0].lower()
     if opts.dated_timeout:
         os.environ['TMDA_TIMEOUT'] = opts.dated_timeout
-    
+
 
 from TMDA import Cookie
 from TMDA import Address
@@ -139,7 +139,7 @@ def main():
 
     if opts.print_newline:
         sys.stdout.write("\n")
-    
+
 # This is the end my friend.
 if __name__ == '__main__':
     main()

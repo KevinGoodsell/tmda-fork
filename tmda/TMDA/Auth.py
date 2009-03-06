@@ -115,7 +115,7 @@ class Auth(Util.Debugable):
             except ValueError:
                 self.__authtype = "Undefined"
         else:
-            self.init_auth_method( authtype, autharg ) 
+            self.init_auth_method( authtype, autharg )
 
         # Set up the ipauthmapfile
         if ipauthmapfile is not None:
@@ -149,7 +149,7 @@ class Auth(Util.Debugable):
                   'and instead run' + self.__program + ' under your ' + \
                   'non-privileged TMDA user account.'
             self.warning(msg, exit=0)
-    
+
     # Public Methods
     def init_auth_method(self, type, arg):
         """Initializes the authentication mechanism.
@@ -320,7 +320,7 @@ class Auth(Util.Debugable):
 
     def supports_cram_md5(self):
         """Check if Cram MD5 authentication is supported.
-           Requirements: "hmac" module, File authentication, 
+           Requirements: "hmac" module, File authentication,
                          and file allows cleartext passwords"""
         retval = 0
         try:

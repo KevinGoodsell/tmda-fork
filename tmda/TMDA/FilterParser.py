@@ -99,7 +99,7 @@ class Macro:
 
         If the name is found, return two strings: the text preceding the
         name and the text following the name.
-        
+
         """
         pattern = r'(?:^|[^_\w])(' + self.name + r')(?:[^_\w]|$)'
         re_macro = re.compile(pattern, re.IGNORECASE)
@@ -115,7 +115,7 @@ class Macro:
         Return list of strings and the text following the right paren - ')'.
         If no parens are found, return an empty argument list and the
         original text.
-        
+
         """
         args = []
         tmp_text = text.lstrip()
@@ -236,28 +236,28 @@ class FilterParser:
     (?: ([\'\"]) ( (?: \\\1 | . )+? ) \1
     | ( \S+ ) )
     """, re.VERBOSE)
-        
+
     tag_action = re.compile(r"""
-    ( [A-Za-z][-\w]+ ) 
-    \s+ 
+    ( [A-Za-z][-\w]+ )
+    \s+
     (\w+\s*=\s*)?
-    (?: 
+    (?:
     ([\'\"]) ( (?: \\\3 | . )+? ) \3
-    | ( \S+ ) 
+    | ( \S+ )
     )
     """, re.VERBOSE)
-    
+
     in_action = re.compile(r"""
     ( drop | exit | stop
     | hold
     | (?: confirm | bounce | reject | deliver | ok | accept)(?:\s*=.*$)? )
     """, re.VERBOSE | re.IGNORECASE)
-    
+
     out_action = re.compile(r"""
     ( (?:(?:bare|sender|domain|dated)(?:=\S+)?)
     | (?:(?:exp(?:licit)?|as|ext(?:ension)?|kw|keyword|shell|python)=\S+)
     | default )""", re.VERBOSE | re.IGNORECASE)
-    
+
     arg_option = re.compile(r'(\w+)(=?)')
 
     variable = re.compile(r'\$\{([_\w]+)\}')
@@ -344,7 +344,7 @@ class FilterParser:
             self.__popfile()
         except IOError:
             pass
-            
+
 
     def __parse(self, fp):
         """
@@ -586,7 +586,7 @@ class FilterParser:
         """
         Parse a single rule from a filter file.  If successful, return a tuple
         with five fields.  The five fields are:
-        
+
           source    - string: to*, from*, body*, headers*, size, pipe, pipe-headers
           args      - any arguments that might be specified
           match     - string: the email address to be matched against, a
@@ -686,7 +686,7 @@ class FilterParser:
                     errstr = '"%s": missing or bogus <action> field' % source
                     raise Error, errstr
         return actions
-        
+
 
     def __search_list(self, addrlist, keys, actions, source):
         """Search addrlist for match in field 1, optional action in 2."""

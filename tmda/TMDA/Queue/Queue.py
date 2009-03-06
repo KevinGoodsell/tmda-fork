@@ -75,7 +75,7 @@ class Queue:
         """
         pass
 
-    
+
     def insert_message(self, msg, mailid, recipient):
         """
         Insert the contents of a message into the queue.

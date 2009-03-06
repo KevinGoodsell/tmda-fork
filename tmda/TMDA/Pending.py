@@ -95,13 +95,13 @@ class Queue:
 
         if not self.msgs and not wantedstdin:
             self.msgs = Q.fetch_ids()
-    
+
         self.msgs.sort()
         if self.descending:
             self.msgs.reverse()
 
         return self
-    
+
     def Print(self, *strings):
         """Print one or more strings on self.stdout."""
         for s in strings:
@@ -124,8 +124,8 @@ class Queue:
     def listPendingIds(self):
         """Return the list of still pending messages."""
         return self.listIds()
-                       
-    
+
+
     ## Cache related functions (-C option)
     def _loadCache(self):
         """Load the message cache from disk."""
@@ -194,7 +194,7 @@ class Queue:
         """This is a callback for inherited classes."""
         self.showMessage(M)
         return 1
-            
+
     def showMessage(self, M):
         """Display a message."""
         if self.terse:
@@ -211,12 +211,12 @@ class Queue:
     ## Main loop
     def mainLoop(self):
         """Process all the messages."""
-    
+
         self.total = len(self.msgs)
         self.count = 0
-        
+
         self._loadCache()
-            
+
         for msgid in self.msgs:
             self.count = self.count + 1
             try:
@@ -249,7 +249,7 @@ class Queue:
                 continue
 
             self.endProcessMessage(M)
-            
+
         self._saveCache()
 
 class InteractiveQueue(Queue):
@@ -343,7 +343,7 @@ class InteractiveQueue(Queue):
                 self.count = self.count - 1
                 self.msgs.insert(self.msgs.index(M.msgid), M.msgid)
                 self._delCache(M.msgid)
-    
+
 
 
 
@@ -391,7 +391,7 @@ class Message:
         # browser info of the releaser for easier tracing.
         if os.environ.has_key('REMOTE_ADDR') and \
                 os.environ.has_key('HTTP_USER_AGENT'):
-            cgi_header = "%s (%s)" % (os.environ.get('REMOTE_ADDR'), 
+            cgi_header = "%s (%s)" % (os.environ.get('REMOTE_ADDR'),
                                       os.environ.get('HTTP_USER_AGENT'))
             del self.msgobj['X-TMDA-CGI']
             self.msgobj['X-TMDA-CGI'] = cgi_header
@@ -464,7 +464,7 @@ class Message:
         else:
             # return raw list of headers
             return [Util.decode_header(hdr) for hdr in terse_hdrs]
-        
+
     def getConfirmAddress(self):
         if not self.confirm_accept_address:
             if self.recipient:

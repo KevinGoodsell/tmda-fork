@@ -236,7 +236,7 @@ rights.""")
     start with a leading period."""
     filelist = os.listdir(self.ThemesDir)
     return [x for x in filelist if not (x.startswith('.'))]
- 
+
   def GetTheme(self):
     "Set up current theme."
 

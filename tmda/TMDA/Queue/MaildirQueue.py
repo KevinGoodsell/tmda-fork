@@ -86,7 +86,7 @@ class MaildirQueue(Queue):
     def cleanup(self):
         if not self.exists():
             return
-        
+
         lifetimesecs = Util.seconds(Defaults.PENDING_LIFETIME)
         cwd = os.getcwd()
         os.chdir(os.path.join(Defaults.PENDING_DIR, 'new'))
@@ -131,7 +131,7 @@ class MaildirQueue(Queue):
         new_msgs = glob('1*.[0-9]*.*')
         os.chdir(os.path.join(Defaults.PENDING_DIR, 'cur'))
         cur_msgs = glob('1*.[0-9]*.*')
-        ids = ['.'.join(i.split('.')[:2]) 
+        ids = ['.'.join(i.split('.')[:2])
                for i in new_msgs + cur_msgs]
         os.chdir(cwd)
         return ids
@@ -145,15 +145,15 @@ class MaildirQueue(Queue):
         msg['X-TMDA-Recipient'] = recipient
         # Write message
         time, pid = mailid.split('.')
-        self.__deliver_maildir(Util.msg_as_string(msg), time, pid, 
+        self.__deliver_maildir(Util.msg_as_string(msg), time, pid,
                                Defaults.PENDING_DIR)
         del msg['X-TMDA-Recipient']
 
 
     def fetch_message(self, mailid, fullParse=False):
-        msgs = (glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
+        msgs = (glob(os.path.join(Defaults.PENDING_DIR, 'new/')
                      + '1*.[0-9]*.*')) + \
-                     (glob(os.path.join(Defaults.PENDING_DIR, 'cur/') 
+                     (glob(os.path.join(Defaults.PENDING_DIR, 'cur/')
                            + '1*.[0-9]*.*'))
         for m in msgs:
             if mailid in m:
@@ -165,9 +165,9 @@ class MaildirQueue(Queue):
 
 
     def delete_message(self, mailid):
-        msgs = (glob(os.path.join(Defaults.PENDING_DIR, 'new/') 
+        msgs = (glob(os.path.join(Defaults.PENDING_DIR, 'new/')
                      + '1*.[0-9]*.*')) + \
-                     (glob(os.path.join(Defaults.PENDING_DIR, 'cur/') 
+                     (glob(os.path.join(Defaults.PENDING_DIR, 'cur/')
                            + '1*.[0-9]*.*'))
         for m in msgs:
             if mailid in m:
@@ -220,7 +220,7 @@ class MaildirQueue(Queue):
         dir_tmp = os.path.join(maildir, 'tmp')
         dir_cur = os.path.join(maildir, 'cur')
         dir_new = os.path.join(maildir, 'new')
-        if not (os.path.isdir(dir_tmp) and 
+        if not (os.path.isdir(dir_tmp) and
                 os.path.isdir(dir_cur) and
                 os.path.isdir(dir_new)):
             raise Errors.DeliveryError, 'not a Maildir! (%s)' % maildir

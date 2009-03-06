@@ -89,12 +89,12 @@ parser.trailer = \
 
   (silently and immediately delete all messages older than 30 days)
   $ tmda-pending -q -b -d -O 30d
-    
+
   (mail a summary report of all new pending messages)
   $ tmda-pending -C -b -s | mail -s 'TMDA pending summary' jason
 """
 
-parser.add_option("-V", 
+parser.add_option("-V",
                   action="store_true", default=False, dest="full_version",
                   help="show full TMDA version information and exit.")
 

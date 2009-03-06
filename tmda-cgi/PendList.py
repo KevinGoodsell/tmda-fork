@@ -47,7 +47,7 @@ def Show():
   if Form.has_key("subcmd"):
     # Batch operation
     if Form["subcmd"].value == "batch":
-      ReleaseList = [] 
+      ReleaseList = []
       WhiteList   = []
       BlackList   = []
       DeleteList  = []
@@ -91,7 +91,7 @@ def Show():
                 ReleaseList.append(MsgObj)
               elif Form["Action"].value == "Blacklist":
                 BlackList.append(MsgObj)
-                DeleteList.append(MsgObj)  
+                DeleteList.append(MsgObj)
               elif Form["Action"].value == "Read":
                 ReadList.append(MsgObj)
               elif Form["Action"].value == "Report":
@@ -141,10 +141,10 @@ def Show():
                 ReadList.append( MsgObj )
               elif OtherAction == "Report":
                 SpamList.append( MsgObj )
-              else: 
+              else:
                 OtherList.append( MsgObj )
           except IOError: pass
-      
+
       # Process the messages found:
       # Apply "other" action...
       for MsgObj in OtherList:
@@ -186,11 +186,11 @@ def Show():
   #  If the from has the keys searchPattern and search
   #  we can search.
   #
-  #  - searchPattern: a basic RE pattern which contains exactly one "%s" 
+  #  - searchPattern: a basic RE pattern which contains exactly one "%s"
   #    where the user's search string goes.
   #  - search: The user's search string for incorporation into the searchPattern
   #
-  # For an example, check out the source for the Pending List in the theme 
+  # For an example, check out the source for the Pending List in the theme
   # 'Blue'
   #
   Searching = 0
@@ -262,7 +262,7 @@ def Show():
   if Searching:
     # TODO: If searching, we must either:
     #       - Save the search results from page to page
-    #       - Show all the search results in the one page, disregarding 
+    #       - Show all the search results in the one page, disregarding
     #         pager settings
     T['searchForm']
   else:
@@ -362,7 +362,7 @@ def Show():
   BlShow    = BlAllowed and (PVars[("PendingList", "ShowBlack")] == "Yes")
   ScShow    = ScAllowed and 1
   SsShow    = SsAllowed and (PVars[("PendingList", "ShowSpamScore")] == "Yes")
- 
+
   if not RlAllowed:
     T["RlAction"]
   if not RlShow:
@@ -377,7 +377,7 @@ def Show():
     NumBlankCols -= 1
   if not WhAllowed:
     T["WhAction"]
-  if not WhShow:  
+  if not WhShow:
     T["WhIcon"]
     NumCols -= 1
     NumBlankCols -= 1
@@ -399,9 +399,9 @@ def Show():
     T["SsPr"].Clear()
     NumCols -= 1
     NumMainCols -= 1
-    
+
   if FltAllowed:
-    T["FilterOptions"] = CgiUtil.getFilterOptions() 
+    T["FilterOptions"] = CgiUtil.getFilterOptions()
   else:
     T["FilterOptions"] = ""
 
@@ -418,12 +418,12 @@ def Show():
 
   ReadArray = []
   SpamArray = []
-  
+
   # get Spam related vars
   SpamSearch = re.compile(PVars[("NoOverride", "SpamScoreRegEx")])
   SpamThreshold = PVars[("General", "SpamScoreThreshold")]
   SpamHeader = PVars[("NoOverride", "SpamScoreHeader")]
-  
+
   if not SpamThreshold:
     if T["ShowSelectSpam"]:
       T["ShowSelectSpam"].Clear()
@@ -441,7 +441,7 @@ def Show():
   try:
     RowBgColor   = T["RowBgColor"]
   except:
-    RowBgColor   = None  
+    RowBgColor   = None
   if len(Msgs):
     # Add rows for messages if there are any
     Count = 0
@@ -570,7 +570,7 @@ def Show():
       T["To"] = To
 
       if PVars["InProcess"].has_key(Msg):
-        # Message is "in process"  
+        # Message is "in process"
         if not inProcessLine:
           InProcess.Clear()
           InProcess.Add()
@@ -591,10 +591,10 @@ def Show():
         else:
           T["MsgClass"] = "NewMsg"
           ReadArray.append(0)
-        
+
         # Grab this specific header
         SpamScoreHead = MsgObj.msgobj[SpamHeader]
-        
+
         if not SpamScoreHead:
           SpamArray.append(0)
           Score = "-"
@@ -616,7 +616,7 @@ def Show():
                 SpamArray.append(0)
               else:
                 SpamArray.append(1)
-        
+
         T["Score"] = Score
 
         if RlShow and RlRadio:
@@ -637,7 +637,7 @@ def Show():
 
         Row.Add()
         Count = Count + 1
-    
+
     ReadArrayText = "ReadArray = new Array("
     for SubCount in range( 0, Count ):
       if ReadArray[SubCount]:
@@ -649,7 +649,7 @@ def Show():
       else:
         ReadArrayText += ", "
     T["ReadArray"] = ReadArrayText
-    
+
     SpamArrayText = "SpamArray = new Array("
     for SubCount in range( 0, Count ):
       if SpamArray[SubCount]:
@@ -680,7 +680,7 @@ def Show():
     T["LastButton2Active"]
     if Searching:
       T["Row"] = '<tr><td colspan="%s" align="center" class="InProcess"><i>No messages match the search criteria</i></td></tr>' % NumCols
-    else: 
+    else:
       T["Row"] = '<tr><td colspan="%s" align="center" class="InProcess"><i>No messages in your pending queue</i></td></tr>' % NumCols
       T['searchForm']
 

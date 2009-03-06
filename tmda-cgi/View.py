@@ -51,7 +51,7 @@ ZipType2     = re.compile("^application/zip")
 
 def AddIcon(Part):
   "Add an appropriate attachment."
-  
+
   Filename = Part.get_filename("")
   Icon = "exe"
   if ImageType1.search(Filename): Icon = "image"
@@ -196,7 +196,7 @@ def Show():
 
   # Use Javascript confirmation?
   if PVars[("General", "UseJSConfirm")] == "Yes":
-    T["OnSubmit"]  = "onSubmit=\"return TestConfirm()\""  
+    T["OnSubmit"]  = "onSubmit=\"return TestConfirm()\""
     T["DeleteURL"]    = "javascript:ConfirmDelete()"
     T["BlacklistURL"] = "javascript:ConfirmBlacklist()"
     T["SpamCopURL"]   = "javascript:ConfirmSpamCop()"
@@ -291,13 +291,13 @@ def Show():
   WhShow = WhAllowed and 1
   BlShow = BlAllowed and 1
   ScShow = ScAllowed and 1
-  
+
   if not RlAllowed:
     T["RlAction"]
   if not RlShow:
     NumCols -= 1
     T["RlIcon1"]
-    T["RlIcon2"]  
+    T["RlIcon2"]
   if not DlAllowed:
     T["DlAction"]
   if not DlShow:
@@ -316,7 +316,7 @@ def Show():
     NumCols -= 1
     T["WhIcon1"]
     T["WhIcon2"]
-  if not ScAllowed:  
+  if not ScAllowed:
     T["ScAction"]
   if not ScShow:
     NumCols -= 1
@@ -326,7 +326,7 @@ def Show():
     T["FilterOptions"] = CgiUtil.getFilterOptions()
   else:
     T["FilterOptions"] = ""
-    
+
   T["NumCols"] = NumCols
   if len(Attachment.HTML) == 0:
     T["NoAttachments"]

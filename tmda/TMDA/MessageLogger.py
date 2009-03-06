@@ -33,7 +33,7 @@ class MessageLogger:
     def __init__(self, logfile, msg, **vardict):
         """
         logfile is the full path to the logfile.
-        
+
         msg in an email.message object.
 
         vardict is a dictionary containing an indefinite number of

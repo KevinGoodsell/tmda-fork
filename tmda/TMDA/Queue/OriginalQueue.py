@@ -19,7 +19,7 @@
 # along with TMDA; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-"""Original pending queue format.  
+"""Original pending queue format.
 
 The original style TMDA queue is the only option one had under TMDA
 1.0.x and early 1.1.x releases. It's simply a single directory of
@@ -69,7 +69,7 @@ class OriginalQueue(Queue):
     def cleanup(self):
         if not self.exists():
             return
-        
+
         lifetimesecs = Util.seconds(Defaults.PENDING_LIFETIME)
         cwd = os.getcwd()
         os.chdir(Defaults.PENDING_DIR)

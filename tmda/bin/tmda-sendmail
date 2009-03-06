@@ -50,7 +50,7 @@ def usage(code, msg=''):
     if msg:
         print msg
     sys.exit(code)
-    
+
 try:
     opts, args = getopt.getopt(sys.argv[1:],
                                'Vhvimte:f:p:o:B:F:EJx', ['version',
@@ -68,7 +68,7 @@ for opt, arg in opts:
         print Version.TMDA
         sys.exit()
     elif opt in list('BpvixmeoEJ'):
-        pass 
+        pass
     elif opt == '-t':
         header_recipients = True
     elif opt == '-f':
