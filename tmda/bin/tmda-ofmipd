@@ -704,7 +704,7 @@ class SecureSMTPSession(SMTPSession):
     def valid_command(self, cmd, arg):
         if self._ssl_state == 'required':
             valid_cmds = ['NOOP', 'EHLO', 'STARTTLS', 'QUIT']
-            if not (command in valid_cmds):
+            if not (cmd in valid_cmds):
                 self.push('530 Must issue a STARTTLS command first')
                 return False
 
