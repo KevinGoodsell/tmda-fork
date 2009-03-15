@@ -143,7 +143,20 @@ class ServerResposeTestMixin(object):
         self.checkExtensions(extensions)
         self.checkAuthTypes(authTypes)
 
+    def testStartTls(self):
+        response = self.client.exchange('STARTTLS\r\n')
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == self.expectedStartTlsCode)
+
+    def testAuth(self):
+        response = self.client.exchange('AUTH LOGIN\r\n')
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == self.expectedAuthCode)
+
 class UnencryptedServerResponses(ServerResposeTestMixin, unittest.TestCase):
+    expectedStartTlsCode = 502
+    expectedAuthCode = 334
+
     def checkExtensions(self, extensions):
         self.failUnless(extensions == ['AUTH'])
 
@@ -151,6 +164,9 @@ class UnencryptedServerResponses(ServerResposeTestMixin, unittest.TestCase):
         self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
 class SslServerResponses(ServerResposeTestMixin, unittest.TestCase):
+    expectedStartTlsCode = 503
+    expectedAuthCode = 334
+
     def serverSetUp(self):
         self.server = Server('--ssl')
         self.server.start()
@@ -167,6 +183,9 @@ class SslServerResponses(ServerResposeTestMixin, unittest.TestCase):
         self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
 class PreStartTlsServerResponses(ServerResposeTestMixin, unittest.TestCase):
+    expectedStartTlsCode = 220
+    expectedAuthCode = 530
+
     def serverSetUp(self):
         self.server = Server('--tls=on')
         self.server.start()
@@ -182,6 +201,9 @@ class PreStartTlsServerResponses(ServerResposeTestMixin, unittest.TestCase):
         self.failUnless(len(authTypes) == 0)
 
 class PostStartTlsServerResponses(ServerResposeTestMixin, unittest.TestCase):
+    expectedStartTlsCode = 503
+    expectedAuthCode = 334
+
     def serverSetUp(self):
         self.server = Server('--tls=on')
         self.server.start()
@@ -202,6 +224,9 @@ class PostStartTlsServerResponses(ServerResposeTestMixin, unittest.TestCase):
 
 class OptionalStartTlsServerResponses(ServerResposeTestMixin,
                                       unittest.TestCase):
+    expectedStartTlsCode = 220
+    expectedAuthCode = 334
+
     def serverSetUp(self):
         self.server = Server('--tls=optional')
         self.server.start()
@@ -215,6 +240,7 @@ class OptionalStartTlsServerResponses(ServerResposeTestMixin,
 # XXX Add tests:
 # Send message success and failure
 # Authenticate success and failure for each method
+# Dupes and syntax errors
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner(verbosity=2)
