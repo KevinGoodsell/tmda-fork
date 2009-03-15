@@ -4,6 +4,8 @@ import subprocess
 import signal
 import socket
 import re
+import hmac
+import md5
 
 import OpenSSL.SSL as SSL
 
@@ -237,9 +239,113 @@ class OptionalStartTlsServerResponses(ServerResposeTestMixin,
     def checkAuthTypes(self, authTypes):
         self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
+class AuthenticationTests(unittest.TestCase):
+    def setUp(self):
+        self.server = Server()
+        self.server.start()
+
+        self.client = Client(self.server.port())
+        self.client.connect()
+
+    def tearDown(self):
+        self.server.stop()
+
+    def authPlain(self, username, password, expectedCode):
+        authString = '\x00'.join([username, username, password])
+        authString = authString.encode('base64')[:-1]
+        response = self.client.exchange('AUTH PLAIN %s\r\n' % authString)
+        (code, lines) = self.client.splitResponse(response)
+
+        self.failUnless(code == expectedCode,
+            'username: %r password: %r code: %d' % (username, password, code))
+
+    def authLogin(self, username, password, firstCode, secondCode):
+        userString = username.encode('base64')[:-1]
+        passString = password.encode('base64')[:-1]
+
+        response = self.client.exchange('AUTH LOGIN %s\r\n' % userString)
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == firstCode)
+
+        if firstCode == 334:
+            response = self.client.exchange('%s\r\n' % passString)
+            (code, lines) = self.client.splitResponse(response)
+            self.failUnless(code == secondCode,
+                'username: %r password: %r code: %d' % \
+                (username, password, code))
+
+    def authCramMd5(self, username, password, expectedCode):
+        response = self.client.exchange('AUTH CRAM-MD5\r\n')
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == 334)
+        self.failUnless(len(lines) == 1)
+
+        ticket = lines[0].decode('base64')
+        digest = hmac.new(password, ticket, md5).hexdigest()
+        message = '%s %s' % (username, digest)
+        message = message.encode('base64')[:-1]
+
+        response = self.client.exchange('%s\r\n' % message)
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == expectedCode,
+            'username: %r password: %r code: %d' % (username, password, code))
+
+    def testPlain(self):
+        self.authPlain('testuser', 'testpassword', 235)
+
+    def testLogin(self):
+        self.authLogin('testuser', 'testpassword', 334, 235)
+
+    def testCramMd5(self):
+        self.authCramMd5('testuser', 'testpassword', 235)
+
+    _badUsernames = [
+        'testuserr',
+        'testuse',
+        'testus',
+        'testu',
+        '\x00',
+        '\x00testuser',
+    ]
+    _badPasswords = [
+        'testpasswordd',
+        'testpasswor',
+        'testpasswo',
+        'testpassw',
+        'testpass',
+        '',
+        ' ',
+        '\x00',
+    ]
+
+    def testPlainFailure(self):
+        for password in self._badPasswords:
+            self.authPlain('testuser', password, 535)
+
+        for username in self._badUsernames:
+            self.authPlain(username, 'testpassword', 535)
+
+    def testLoginFailure(self):
+        for password in self._badPasswords:
+            # For LOGIN, an empty password is ignored. I don't know if this
+            # is a bug or not, but it's probably how tmda-ofmipd has always
+            # worked.
+            if password == '':
+                continue
+            self.authLogin('testuser', password, 334, 535)
+
+        for username in self._badUsernames:
+            self.authLogin(username, 'testpassword', 334, 535)
+
+    def testCramMd5Failure(self):
+        for password in self._badPasswords:
+            self.authCramMd5('testuser', password, 535)
+
+        for username in self._badUsernames:
+            self.authCramMd5(username, 'testpassword', 535)
+
 # XXX Add tests:
 # Send message success and failure
-# Authenticate success and failure for each method
 # Dupes and syntax errors
 
 if __name__ == '__main__':
