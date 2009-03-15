@@ -580,11 +580,6 @@ class SSLSocket(object):
             self._ssl_conn = SSL.Connection(self._ssl_context, self._sock)
             self._ssl_conn.set_accept_state()
 
-        try:
-            self._ssl_conn.do_handshake()
-        except (SSL.WantReadError, SSL.WantWriteError):
-            raise SSLError()
-
     def want_read(self):
         if self._ssl_conn is not None:
             return self._ssl_conn.want_read()
@@ -607,7 +602,7 @@ class SSLSocket(object):
 
         try:
             return getattr(obj, name)(*args, **kwargs)
-        except (SSL.WantReadError, SSL.WantWriteError):
+        except SSL.Error:
             raise SSLError()
 
     def recv(self, *args, **kwargs):

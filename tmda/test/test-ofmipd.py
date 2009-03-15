@@ -32,20 +32,15 @@ class Server(object):
 
         self._serverProc = subprocess.Popen(serverArgs, env=newEnv)
 
-        import time
-        time.sleep(1)
-        # XXX Another way to wait for server availability. This stopped
-        # working when SSL was added in, which might indicate a server-breaking
-        # problem when a client spontaneously disconnects.
-        #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #while True:
-        #    try:
-        #        s.connect(('127.0.0.1', self.port()))
-        #    except socket.error:
-        #        pass
-        #    else:
-        #        s.close()
-        #        break
+        # Wait for server availability
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        while True:
+            try:
+                s.connect(('127.0.0.1', self.port()))
+                s.close()
+                break
+            except socket.error:
+                pass
 
     def stop(self):
         os.kill(self._serverProc.pid, signal.SIGTERM)
