@@ -132,19 +132,15 @@ class ServerResposeTestMixin(object):
     def testExtensions(self):
         self.failUnless(self.ehloCode == 250)
         extensions = []
-        for line in self.ehloLines[1:]:
-            parts = line.split(' ', 1)
-            extensions.append(parts[0])
-
-        self.checkExtensions(extensions)
-
-    def testAuthTypes(self):
-        self.failUnless(self.ehloCode == 250)
         authTypes = []
         for line in self.ehloLines[1:]:
             if line.startswith('AUTH '):
                 authTypes.extend(line.split()[1:])
 
+            parts = line.split(' ', 1)
+            extensions.append(parts[0])
+
+        self.checkExtensions(extensions)
         self.checkAuthTypes(authTypes)
 
 class UnencryptedServerResponses(ServerResposeTestMixin, unittest.TestCase):
