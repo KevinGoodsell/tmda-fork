@@ -9,12 +9,16 @@ import md5
 
 import OpenSSL.SSL as SSL
 
+rootDir = '..'
+binDir = os.path.join(rootDir, 'bin')
+libDir = rootDir
+
 class Server(object):
     _port = 8025
 
-    _executable = '../bin/tmda-ofmipd'
+    _executable = os.path.join(binDir, 'tmda-ofmipd')
     _commonServerArgs = ['-d', '-f', '-p', '127.0.0.1:%d' % _port, '-a',
-                         'test-ofmipd.auth']
+                         'test-ofmipd.auth', '--configdir=.']
     _certKeyServerArgs = ['--ssl-cert=test-ofmipd.cert',
                           '--ssl-key=test-ofmipd.key']
 
@@ -30,7 +34,7 @@ class Server(object):
             serverArgs.extend(self._certKeyServerArgs)
 
         newEnv = dict(os.environ)
-        newEnv['PYTHONPATH'] = '..'
+        newEnv['PYTHONPATH'] = libDir
 
         self._serverProc = subprocess.Popen(serverArgs, env=newEnv)
 
@@ -104,15 +108,10 @@ class SslClient(Client):
 
         self._sock = self._sslSock
 
-class ServerResposeTestMixin(object):
+class ServerClientMixin(object):
     def setUp(self):
         self.serverSetUp()
         self.clientSetUp()
-
-        response = self.client.exchange('EHLO test.com\r\n')
-        (code, lines) = self.client.splitResponse(response)
-        self.ehloCode = code
-        self.ehloLines = lines
 
     def tearDown(self):
         self.server.stop()
@@ -124,6 +123,15 @@ class ServerResposeTestMixin(object):
     def clientSetUp(self):
         self.client = Client(self.server.port())
         self.client.connect()
+
+class ServerResposeTestMixin(ServerClientMixin):
+    def setUp(self):
+        ServerClientMixin.setUp(self)
+
+        response = self.client.exchange('EHLO test.com\r\n')
+        (code, lines) = self.client.splitResponse(response)
+        self.ehloCode = code
+        self.ehloLines = lines
 
     def checkExtensions(self, extensions):
         raise NotImplementedError()
