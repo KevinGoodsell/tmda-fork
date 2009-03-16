@@ -83,11 +83,11 @@ class Client(object):
     def exchange(self, msg):
         self.send(msg)
         response = self.receiveUntil(self._completeResponse)
-        return response
+        return self._splitResponse(response)
 
     _responseLineMatcher = re.compile(r'^(?P<code>\d{3})[- ](?P<line>.*)\r\n',
                                       re.MULTILINE)
-    def splitResponse(self, response):
+    def _splitResponse(self, response):
         'return (code, [lines])'
         lines = []
         code = None
@@ -114,8 +114,7 @@ class SslClient(Client):
         self._sock = self._sslSock
 
     def startTls(self):
-        response = self.exchange('STARTTLS\r\n')
-        (code, lines) = self.splitResponse(response)
+        (code, lines) = self.exchange('STARTTLS\r\n')
         assert(code == 220)
         self.startSsl()
 
@@ -139,8 +138,7 @@ class ServerResponseTestMixin(ServerClientMixin):
     def setUp(self):
         ServerClientMixin.setUp(self)
 
-        response = self.client.exchange('EHLO test.com\r\n')
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('EHLO test.com\r\n')
         self.ehloCode = code
         self.ehloLines = lines
 
@@ -165,13 +163,11 @@ class ServerResponseTestMixin(ServerClientMixin):
         self.checkAuthTypes(authTypes)
 
     def testStartTls(self):
-        response = self.client.exchange('STARTTLS\r\n')
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('STARTTLS\r\n')
         self.failUnless(code == self.expectedStartTlsCode)
 
     def testAuth(self):
-        response = self.client.exchange('AUTH LOGIN\r\n')
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('AUTH LOGIN\r\n')
         self.failUnless(code == self.expectedAuthCode)
 
 class UnencryptedServerResponses(ServerResponseTestMixin, unittest.TestCase):
@@ -269,8 +265,7 @@ class AuthenticationTests(unittest.TestCase):
     def authPlain(self, username, password, expectedCode):
         authString = '\x00'.join([username, username, password])
         authString = authString.encode('base64')[:-1]
-        response = self.client.exchange('AUTH PLAIN %s\r\n' % authString)
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('AUTH PLAIN %s\r\n' % authString)
 
         self.failUnless(code == expectedCode,
             'username: %r password: %r code: %d' % (username, password, code))
@@ -279,20 +274,17 @@ class AuthenticationTests(unittest.TestCase):
         userString = username.encode('base64')[:-1]
         passString = password.encode('base64')[:-1]
 
-        response = self.client.exchange('AUTH LOGIN %s\r\n' % userString)
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('AUTH LOGIN %s\r\n' % userString)
         self.failUnless(code == firstCode)
 
         if firstCode == 334:
-            response = self.client.exchange('%s\r\n' % passString)
-            (code, lines) = self.client.splitResponse(response)
+            (code, lines) = self.client.exchange('%s\r\n' % passString)
             self.failUnless(code == secondCode,
                 'username: %r password: %r code: %d' % \
                 (username, password, code))
 
     def authCramMd5(self, username, password, expectedCode):
-        response = self.client.exchange('AUTH CRAM-MD5\r\n')
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('AUTH CRAM-MD5\r\n')
         self.failUnless(code == 334)
         self.failUnless(len(lines) == 1)
 
@@ -301,8 +293,7 @@ class AuthenticationTests(unittest.TestCase):
         message = '%s %s' % (username, digest)
         message = message.encode('base64')[:-1]
 
-        response = self.client.exchange('%s\r\n' % message)
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('%s\r\n' % message)
         self.failUnless(code == expectedCode,
             'username: %r password: %r code: %d' % (username, password, code))
 
@@ -364,29 +355,25 @@ class SendTestMixin(ServerClientMixin):
     def signOn(self):
         authString = '\x00'.join(['testuser', 'testuser', 'testpassword'])
         authString = authString.encode('base64')[:-1]
-        response = self.client.exchange('AUTH PLAIN %s\r\n' % authString)
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('AUTH PLAIN %s\r\n' % authString)
         assert(code == 235)
 
     def beginSend(self):
-        response = self.client.exchange('MAIL FROM: testuser@nowhere.com\r\n')
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('MAIL FROM: testuser@nowhere.com'
+                                             '\r\n')
         self.failUnless(code == 250)
 
-        response = self.client.exchange('RCPT TO: fakeuser@fake.com\r\n')
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('RCPT TO: fakeuser@fake.com\r\n')
         self.failUnless(code == 250)
 
-        response = self.client.exchange('DATA \r\n')
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('DATA \r\n')
         self.failUnless(code == 354)
 
     def sendLine(self, line):
         self.client.send('%s\r\n' % line)
 
     def finishSend(self):
-        response = self.client.exchange('.\r\n')
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('.\r\n')
         self.failUnless(code == 250)
 
     def testSend(self):
@@ -398,8 +385,8 @@ class SendTestMixin(ServerClientMixin):
         self.finishSend()
 
     def testSendFailure(self):
-        response = self.client.exchange('MAIL TO: testuser@nowhere.com\r\n')
-        (code, lines) = self.client.splitResponse(response)
+        (code, lines) = self.client.exchange('MAIL TO: testuser@nowhere.com'
+                                             '\r\n')
         self.failUnless(code == 530)
 
 class UnencryptedSendTest(SendTestMixin, unittest.TestCase):
@@ -426,7 +413,6 @@ class TlsSendTest(SendTestMixin, unittest.TestCase):
         self.client.startTls()
 
 # XXX Add tests:
-# Send message success and failure
 # Dupes and syntax errors
 
 if __name__ == '__main__':
