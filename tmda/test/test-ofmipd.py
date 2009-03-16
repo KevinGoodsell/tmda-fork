@@ -355,6 +355,66 @@ class AuthenticationTests(unittest.TestCase):
         for username in self._badUsernames:
             self.authCramMd5(username, 'testpassword', 535)
 
+class SendTestMixin(ServerClientMixin):
+    def clientSetUp(self):
+        ServerClientMixin.clientSetUp(self)
+        self.signOn()
+
+    def signOn(self):
+        authString = '\x00'.join(['testuser', 'testuser', 'testpassword'])
+        authString = authString.encode('base64')[:-1]
+        response = self.client.exchange('AUTH PLAIN %s\r\n' % authString)
+        (code, lines) = self.client.splitResponse(response)
+        assert(code == 235)
+
+    def beginSend(self):
+        response = self.client.exchange('MAIL FROM: testuser@nowhere.com\r\n')
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == 250)
+
+        response = self.client.exchange('RCPT TO: fakeuser@fake.com\r\n')
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == 250)
+
+        response = self.client.exchange('DATA \r\n')
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == 354)
+
+    def sendLine(self, line):
+        self.client.send('%s\r\n' % line)
+
+    def finishSend(self):
+        response = self.client.exchange('.\r\n')
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == 250)
+
+    def testSend(self):
+        self.beginSend()
+        self.sendLine('X-nothing: nothing')
+        self.sendLine('')
+        self.sendLine('Shut up.')
+        self.finishSend()
+
+'''
+These tests don't currently work because certain components insist on using
+global information such as the passwd file and the current user's home
+directory.
+
+class UnencryptedSendTest(SendTestMixin, unittest.TestCase):
+    pass
+
+class SslSendTest(SendTestMixin, unittest.TestCase):
+    def serverSetUp(self):
+        self.server = Server('--ssl')
+        self.server.start()
+
+    def clientSetUp(self):
+        self.client = SslClient(self.server.port())
+        self.client.startSsl()
+        self.client.connect()
+        self.signOn()
+'''
+
 # XXX Add tests:
 # Send message success and failure
 # Dupes and syntax errors
