@@ -75,8 +75,11 @@ class Client(object):
     def _completeResponse(self, data):
         return self._responseMatcher.search(data) is not None
 
+    def send(self, data):
+        self._sock.send(data)
+
     def exchange(self, msg):
-        self._sock.send(msg)
+        self.send(msg)
         response = self.receiveUntil(self._completeResponse)
         return response
 
@@ -124,7 +127,7 @@ class ServerClientMixin(object):
         self.client = Client(self.server.port())
         self.client.connect()
 
-class ServerResposeTestMixin(ServerClientMixin):
+class ServerResponseTestMixin(ServerClientMixin):
     def setUp(self):
         ServerClientMixin.setUp(self)
 
@@ -163,7 +166,7 @@ class ServerResposeTestMixin(ServerClientMixin):
         (code, lines) = self.client.splitResponse(response)
         self.failUnless(code == self.expectedAuthCode)
 
-class UnencryptedServerResponses(ServerResposeTestMixin, unittest.TestCase):
+class UnencryptedServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 502
     expectedAuthCode = 334
 
@@ -173,7 +176,7 @@ class UnencryptedServerResponses(ServerResposeTestMixin, unittest.TestCase):
     def checkAuthTypes(self, authTypes):
         self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
-class SslServerResponses(ServerResposeTestMixin, unittest.TestCase):
+class SslServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 503
     expectedAuthCode = 334
 
@@ -192,7 +195,7 @@ class SslServerResponses(ServerResposeTestMixin, unittest.TestCase):
     def checkAuthTypes(self, authTypes):
         self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
-class PreStartTlsServerResponses(ServerResposeTestMixin, unittest.TestCase):
+class PreStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 220
     expectedAuthCode = 530
 
@@ -210,7 +213,7 @@ class PreStartTlsServerResponses(ServerResposeTestMixin, unittest.TestCase):
     def checkAuthTypes(self, authTypes):
         self.failUnless(len(authTypes) == 0)
 
-class PostStartTlsServerResponses(ServerResposeTestMixin, unittest.TestCase):
+class PostStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 503
     expectedAuthCode = 334
 
@@ -232,7 +235,7 @@ class PostStartTlsServerResponses(ServerResposeTestMixin, unittest.TestCase):
     def checkAuthTypes(self, authTypes):
         self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
-class OptionalStartTlsServerResponses(ServerResposeTestMixin,
+class OptionalStartTlsServerResponses(ServerResponseTestMixin,
                                       unittest.TestCase):
     expectedStartTlsCode = 220
     expectedAuthCode = 334
