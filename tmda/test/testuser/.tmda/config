@@ -1,0 +1,4 @@
+MAIL_TRANSPORT = 'sendmail'
+SENDMAIL_PROGRAM = './fakemail.py'
+
+# vim: ft=python

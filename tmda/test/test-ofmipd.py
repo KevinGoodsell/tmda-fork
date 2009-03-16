@@ -12,6 +12,7 @@ import OpenSSL.SSL as SSL
 rootDir = '..'
 binDir = os.path.join(rootDir, 'bin')
 libDir = rootDir
+homeDir = 'testuser'
 
 class Server(object):
     _port = 8025
@@ -35,6 +36,7 @@ class Server(object):
 
         newEnv = dict(os.environ)
         newEnv['PYTHONPATH'] = libDir
+        newEnv['TMDA_TEST_HOME'] = homeDir
 
         self._serverProc = subprocess.Popen(serverArgs, env=newEnv)
 
@@ -395,11 +397,6 @@ class SendTestMixin(ServerClientMixin):
         self.sendLine('Shut up.')
         self.finishSend()
 
-'''
-These tests don't currently work because certain components insist on using
-global information such as the passwd file and the current user's home
-directory.
-
 class UnencryptedSendTest(SendTestMixin, unittest.TestCase):
     pass
 
@@ -413,12 +410,14 @@ class SslSendTest(SendTestMixin, unittest.TestCase):
         self.client.startSsl()
         self.client.connect()
         self.signOn()
-'''
 
 # XXX Add tests:
 # Send message success and failure
 # Dupes and syntax errors
 
 if __name__ == '__main__':
+    os.chmod('testuser/.tmda/crypt_key', 0600)
+    os.chmod('test-ofmipd.auth', 0600)
+
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)
