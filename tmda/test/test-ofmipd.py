@@ -113,6 +113,12 @@ class SslClient(Client):
 
         self._sock = self._sslSock
 
+    def startTls(self):
+        response = self.exchange('STARTTLS\r\n')
+        (code, lines) = self.splitResponse(response)
+        assert(code == 220)
+        self.startSsl()
+
 class ServerClientMixin(object):
     def setUp(self):
         self.serverSetUp()
@@ -226,10 +232,7 @@ class PostStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
     def clientSetUp(self):
         self.client = SslClient(self.server.port())
         self.client.connect()
-        response = self.client.exchange('STARTTLS\r\n')
-        (code, lines) = self.client.splitResponse(response)
-        assert(code == 220)
-        self.client.startSsl()
+        self.client.startTls()
 
     def checkExtensions(self, extensions):
         self.failUnless(extensions == ['AUTH'])
@@ -358,10 +361,6 @@ class AuthenticationTests(unittest.TestCase):
             self.authCramMd5(username, 'testpassword', 535)
 
 class SendTestMixin(ServerClientMixin):
-    def clientSetUp(self):
-        ServerClientMixin.clientSetUp(self)
-        self.signOn()
-
     def signOn(self):
         authString = '\x00'.join(['testuser', 'testuser', 'testpassword'])
         authString = authString.encode('base64')[:-1]
@@ -391,11 +390,17 @@ class SendTestMixin(ServerClientMixin):
         self.failUnless(code == 250)
 
     def testSend(self):
+        self.signOn()
         self.beginSend()
         self.sendLine('X-nothing: nothing')
         self.sendLine('')
         self.sendLine('Shut up.')
         self.finishSend()
+
+    def testSendFailure(self):
+        response = self.client.exchange('MAIL TO: testuser@nowhere.com\r\n')
+        (code, lines) = self.client.splitResponse(response)
+        self.failUnless(code == 530)
 
 class UnencryptedSendTest(SendTestMixin, unittest.TestCase):
     pass
@@ -409,7 +414,16 @@ class SslSendTest(SendTestMixin, unittest.TestCase):
         self.client = SslClient(self.server.port())
         self.client.startSsl()
         self.client.connect()
-        self.signOn()
+
+class TlsSendTest(SendTestMixin, unittest.TestCase):
+    def serverSetUp(self):
+        self.server = Server('--tls=on')
+        self.server.start()
+
+    def clientSetUp(self):
+        self.client = SslClient(self.server.port())
+        self.client.connect()
+        self.client.startTls()
 
 # XXX Add tests:
 # Send message success and failure
