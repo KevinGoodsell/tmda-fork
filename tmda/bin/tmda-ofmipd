@@ -554,11 +554,11 @@ class SMTPSession(asynchat.async_chat):
         self.__state = self.AUTH
         self.auth_challenge()
 
-########################
-# New SSL stuff
+
+# SSL Support
 
 # socket.error-based replacement for SSL's WantRead and WantWrite errors.
-# Basing this on socket.errror allows it to work properly with code that
+# Basing this on socket.error allows it to work properly with code that
 # expects socket.error for non-blocking calls.
 class SSLError(socket.error):
     def __init__(self):
