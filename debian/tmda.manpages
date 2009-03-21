@@ -1,0 +1,9 @@
+tmda/contrib/manpages/tmda-address.1
+tmda/contrib/manpages/tmda-check-address.1
+tmda/contrib/manpages/tmda-filter.1
+tmda/contrib/manpages/tmda-inject.1
+tmda/contrib/manpages/tmda-keygen.1
+tmda/contrib/manpages/tmda-pending.1
+tmda/contrib/manpages/tmda-sendmail.1
+tmda/contrib/manpages/tmda-filter-format.5
+tmda-config.5

@@ -1,0 +1,30 @@
+tmda (1.1.12-kg2-1) unstable; urgency=low
+
+  * New "upstream" version (in the same repository, but logically upstream).
+
+ -- Kevin Goodsell <kevin-opensource@omegacrash.net>  Sat, 06 Feb 2010 11:39:13 -0800
+
+tmda (1.1.12-kg1-3) jaunty; urgency=low
+
+  * Changelog only. Needed an Ubuntu distro name, not "unstable".
+
+ -- Kevin Goodsell <kevin-opensource@omegacrash.net>  Tue, 26 May 2009 19:55:59 -0700
+
+tmda (1.1.12-kg1-2) unstable; urgency=low
+
+  * Reverting changes that make tmda-ofmipd run as non-root. Unfortunately
+    this doesn't work.
+
+  * Changing default SSL mode to tls=localoptional.
+
+  * Using STARTTIME in the init.d script to fix incorrect server failure
+    messages on startup.
+
+ -- Kevin Goodsell <kevin-opensource@omegacrash.net>  Tue, 26 May 2009 14:52:55 -0700
+
+tmda (1.1.12-kg1-1) unstable; urgency=low
+
+  * Initial release
+
+ -- Kevin Goodsell <kevin-opensource@omegacrash.net>  Fri, 20 Mar 2009 10:22:57 -0700
+

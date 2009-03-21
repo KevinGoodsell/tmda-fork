@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Run tmda-ofmipd in the foreground with debug output, using options
+# from /etc/default/tmda-ofmipd.
+
+DAEMONUSER=tofmipd
+
+. /etc/default/tmda-ofmipd
+
+tmda-ofmipd -f -d -u $DAEMONUSER $DAEMON_OPTS

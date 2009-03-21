@@ -1,0 +1,3 @@
+tmda/bin/tmda-ofmipd usr/bin
+debian/tmda-ofmipd.auth etc
+debian/run-tmda-ofmipd usr/share/tmda-smtp
