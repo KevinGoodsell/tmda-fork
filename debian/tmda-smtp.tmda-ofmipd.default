@@ -1,0 +1,24 @@
+# Defaults for tmda-ofmipd initscript
+# sourced by /etc/init.d/tmda-ofmipd
+# installed at /etc/default/tmda-ofmipd by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+SSL_CERT=/etc/ssl/certs/ssl-cert-snakeoil.pem
+SSL_KEY=/etc/ssl/private/ssl-cert-snakeoil.key
+
+# For STARTTLS mode (but allowing unencrypted sessions for local connections):
+SSL_OPTS="--tls=localoptional --ssl-cert=$SSL_CERT --ssl-key=$SSL_KEY"
+# ...or, for SSL on connect:
+#SSL_OPTS="--ssl --ssl-cert=$SSL_CERT --ssl-key=$SSL_KEY"
+
+AUTH_OPTS="--pamauth=login"
+# ...or, if you want to use a username:password file:
+#AUTH_OPTS="--authfile=/etc/tmda-ofmipd.auth"
+# Many other authentication modes are possible, and you can combine them
+# as you see fit.
+
+# Additional options that are passed to the Daemon.
+DAEMON_OPTS="-p 0.0.0.0:8025 $SSL_OPTS $AUTH_OPTS"
