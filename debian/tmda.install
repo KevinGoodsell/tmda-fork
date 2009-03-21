@@ -1,4 +1,5 @@
 tmda/TMDA usr/share/python-support
+
 tmda/bin/tmda-address usr/bin
 tmda/bin/tmda-check-address usr/bin
 tmda/bin/tmda-filter usr/bin
@@ -7,3 +8,18 @@ tmda/bin/tmda-keygen usr/bin
 tmda/bin/tmda-pending usr/bin
 tmda/bin/tmda-rfilter usr/bin
 tmda/bin/tmda-sendmail usr/bin
+
+tmda/contrib/collectaddys usr/share/tmda/scripts
+tmda/contrib/printcdb usr/share/tmda/scripts
+tmda/contrib/printdbm usr/share/tmda/scripts
+tmda/contrib/smtp-check-sender usr/share/tmda/scripts
+tmda/contrib/update-internaldomains usr/share/tmda/scripts
+tmda/contrib/vadduser-tmda usr/share/tmda/scripts
+tmda/contrib/vmailmgr-vdir.sh usr/share/tmda/scripts
+tmda/contrib/vpopmail-vdir.sh usr/share/tmda/scripts
+tmda/contrib/vtmdarc usr/share/tmda/scripts
+
+tmda/contrib/dot-tmda usr/share/tmda
+tmda/contrib/tmda.el usr/share/tmda
+
+tmda/templates/* etc/tmda
