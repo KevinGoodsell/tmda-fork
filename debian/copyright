@@ -1,0 +1,14 @@
+This package was debianized by Kevin Goodsell <kevin-opensource@omegacrash.net> on
+Fri, 20 Mar 2009 10:22:57 -0700.
+
+This fork of TMDA can be found at http://github.com/KevinGoodsell/tmda-fork.
+The original TMDA is located at http://tmda.net/.
+
+Original copyrights, author notes, etc. can be found in the doc directory for
+the tmda package.
+
+TMDA is copyright (C) 2001-2007 Jason R. Mastaler <jason@mastaler.com> and is
+licensed under the GPL version 2, see `/usr/share/common-licenses/GPL-2'.
+
+The Debian packaging is (C) 2009, Kevin Goodsell <kevin-opensource@omegacrash.net> and
+is licensed under the GPL version 2 or later, see `/usr/share/common-licenses/GPL'.

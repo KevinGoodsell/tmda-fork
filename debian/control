@@ -1,0 +1,34 @@
+Source: tmda
+Section: contrib/mail
+Priority: extra
+Maintainer: Kevin Goodsell <kevin-opensource@omegacrash.net>
+Build-Depends: debhelper (>= 7), python-support
+Standards-Version: 3.8.0
+Homepage: http://github.com/KevinGoodsell/tmda-fork
+
+Package: tmda
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, python (>= 2.4)
+Description: Spam control using challenge-response and more
+ Tagged Message Delivery Agent is a spam prevention tool supporting white
+ lists, black lists, challenge-response, and tagged addresses which accept
+ mail only from authorized senders or which expire after a fixed amount of
+ time.
+ .
+ The original version of TMDA can be found at http://tmda.net/.
+
+Package: tmda-smtp
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, tmda, ssl-cert, python (>= 2.4)
+Description: SMTP proxy server for tagging outgoing messages with TMDA
+ Tagged Message Delivery Agent is a spam prevention tool supporting white
+ lists, black lists, challenge-response, and tagged addresses which accept
+ mail only from authorized senders or which expire after a fixed amount of
+ time.
+ .
+ This package includes tmda-ofmipd (Old-Fashioned Mail Injection Protocol
+ Daemon), as SMTP server for tagging outgoing email. This is necessary for
+ integrating TMDA with mail clients (such as Thunderbird) that do not support 
+ delivery to a sendmail program.
+ .
+ The original version of TMDA can be found at http://tmda.net/.
