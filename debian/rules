@@ -59,7 +59,11 @@ binary-indep: build install
 	dh_installchangelogs 
 	dh_installdocs
 #	dh_installexamples
-	dh_install
+
+	# TMDA has ChangeLog files scattered all through the source tree.
+	# Also has standard python libraries installed in pythonlib.
+	dh_install --exclude=ChangeLog --exclude=TMDA/pythonlib
+
 #	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
