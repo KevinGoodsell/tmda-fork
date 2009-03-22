@@ -19,7 +19,7 @@ Description: Spam control using challenge-response and more
 
 Package: tmda-smtp
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, tmda, ssl-cert, python (>= 2.4)
+Depends: ${shlibs:Depends}, ${misc:Depends}, tmda, ssl-cert, python (>= 2.4), adduser
 Description: SMTP proxy server for tagging outgoing messages with TMDA
  Tagged Message Delivery Agent is a spam prevention tool supporting white
  lists, black lists, challenge-response, and tagged addresses which accept

@@ -17,9 +17,13 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+USERNAME=tofmipd
 
 case "$1" in
     configure)
+        # Add a user, based on recommendations from:
+        # http://wiki.debian.org/AccountHandlingInMaintainerScripts
+        adduser --system --gecos "TMDA mail proxy server" $USERNAME
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
