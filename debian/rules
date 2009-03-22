@@ -30,6 +30,8 @@ build-stamp: configure-stamp
 	#$(MAKE)
 	#docbook-to-man debian/tmda.sgml > tmda.1
 
+	./tmda/contrib/def2html tmda/TMDA/Defaults.py > config_variables.html
+
 	touch $@
 
 clean: 
@@ -39,6 +41,8 @@ clean:
 
 	# Add here commands to clean up after the build process.
 	#$(MAKE) clean
+
+	rm -f config_variables.html
 
 	dh_clean 
 
