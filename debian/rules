@@ -31,6 +31,7 @@ build-stamp: configure-stamp
 	#docbook-to-man debian/tmda.sgml > tmda.1
 
 	./tmda/contrib/def2html tmda/TMDA/Defaults.py > config_variables.html
+	touch tmda-ofmipd.auth
 
 	touch $@
 
@@ -42,7 +43,7 @@ clean:
 	# Add here commands to clean up after the build process.
 	#$(MAKE) clean
 
-	rm -f config_variables.html
+	rm -f config_variables.html tmda-ofmipd.auth
 
 	dh_clean 
 
