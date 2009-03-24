@@ -23,7 +23,8 @@ case "$1" in
     configure)
         # Add a user, based on recommendations from:
         # http://wiki.debian.org/AccountHandlingInMaintainerScripts
-        adduser --system --gecos "TMDA mail proxy server" $USERNAME
+        adduser --no-create-home --system --gecos "TMDA mail proxy server" \
+                $USERNAME
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
