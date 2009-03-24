@@ -1,1 +1,2 @@
 tmda/bin/tmda-ofmipd usr/bin
+tmda-ofmipd.auth etc

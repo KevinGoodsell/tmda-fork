@@ -18,6 +18,7 @@ set -e
 # the debian-policy package
 
 USERNAME=tofmipd
+AUTHFILE=/etc/tmda-ofmipd.auth
 
 case "$1" in
     configure)
@@ -25,6 +26,8 @@ case "$1" in
         # http://wiki.debian.org/AccountHandlingInMaintainerScripts
         adduser --no-create-home --system --gecos "TMDA mail proxy server" \
                 $USERNAME
+        chown $USERNAME $AUTHFILE
+        chmod 600 $AUTHFILE
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
