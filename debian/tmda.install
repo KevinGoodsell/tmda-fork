@@ -1,13 +1,6 @@
+tmda/bin/* usr/bin
 tmda/TMDA usr/share/python-support/tmda
-
-tmda/bin/tmda-address usr/bin
-tmda/bin/tmda-check-address usr/bin
-tmda/bin/tmda-filter usr/bin
-tmda/bin/tmda-inject usr/bin
-tmda/bin/tmda-keygen usr/bin
-tmda/bin/tmda-pending usr/bin
-tmda/bin/tmda-rfilter usr/bin
-tmda/bin/tmda-sendmail usr/bin
+tmda/templates/* etc/tmda
 
 tmda/contrib/collectaddys usr/share/tmda/scripts
 tmda/contrib/printcdb usr/share/tmda/scripts
@@ -21,5 +14,3 @@ tmda/contrib/vtmdarc usr/share/tmda/scripts
 tmda/contrib/tmda.el usr/share/tmda/scripts
 
 tmda/contrib/dot-tmda usr/share/tmda
-
-tmda/templates/* etc/tmda
