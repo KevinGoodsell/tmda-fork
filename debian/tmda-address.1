@@ -1,0 +1,92 @@
+.\" Hey, EMACS: -*- nroff -*-
+.\" Include www macros (see groff_www(7))
+.mso www.tmac
+.
+.TH TMDA-ADDRESS 1 "2009-03-25" TMDA "TMDA Programs"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.\" **********************************************************************
+.SH NAME
+tmda-address \- generate a tagged e-mail address
+.\" **********************************************************************
+.SH SYNOPSIS
+.B tmda-address
+.RI [ options ]
+.\" **********************************************************************
+.SH DESCRIPTION
+.B tmda-address
+generates a tagged e-mail address and prints it to stdout.
+If no options are specified, a dated-style address is generated.
+.\" **********************************************************************
+.SH OPTIONS
+.TP
+.BI -c\  file ,\ --config-file= file
+Specify a configuration file other than
+.IR ~/.tmda/config .
+.TP
+.B -n, --no-newline
+Do not print a newline after the address.
+This is often useful when calling
+.B tmda-address
+from another program.
+.TP
+.BI -a\  address ,\ --address= address
+Use this address as the basis for the tagged address, otherwise your
+default email address will be used.
+.TP
+.BI -k\  keyword ,\ --keyword= keyword
+Generate a keyword-style tagged address based on
+.RI ` keyword '.
+.TP
+.BI -s\  address ,\ --sender= address
+Generate a sender-style tagged address.
+.RI ` address '
+can either be an email address or a domain name.
+.TP
+.B -d, --dated
+Generate a dated-style tagged address using your default timeout value
+which comes from the DATED_TIMEOUT variable in your configuration (5 days
+by default).
+You can specify a different timeout using the
+.RB ` -t/--timeout '
+option below.
+.TP
+.BI -t\  timeout ,\ --timeout= timeout
+Generate a dated-style tagged address using the timeout value
+.RI ` timeout ',
+which is a number followed by a unit of time -- seconds (s), minutes (m),
+hours (h), days (d), weeks (w), months (M), or years (Y).
+E.g, `5d' for a 5 day timeout, and `24h' for 24 hours.
+This option assumes
+.RB ` -d/--dated '.
+.TP
+.B -V
+Show full TMDA version information and exit.
+.TP
+.B --version
+Show program's version number and exit.
+.TP
+.B -h, --help
+Show this help message and exit.
+.\" **********************************************************************
+.\".SH SEE ALSO
+.\" **********************************************************************
+.SH AUTHOR
+TMDA was written by
+.MTO jason@mastaler.com "Jason R. Mastaler" .
+.PP
+This manual page was adapted from the program
+.B --help
+output by
+.MTO kevin-opensource@omegacrash.net "Kevin Goodsell" ,
+for the Debian project (but may be used by others).

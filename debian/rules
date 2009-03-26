@@ -82,7 +82,7 @@ binary-indep: build install
 	dh_installinit -p tmda-smtp --name=tmda-ofmipd
 #	dh_installcron
 #	dh_installinfo
-#	dh_installman
+	dh_installman
 #	dh_link
 #	dh_strip
 	dh_compress
