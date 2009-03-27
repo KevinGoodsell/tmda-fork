@@ -1241,9 +1241,9 @@ the following: 'imap' (IMAP4 server), 'imaps' (IMAP4 server over SSL),
 'ldap' (LDAP server).  Optional :PORT defaults to the standard port for
 the specified protocol (143 for imap, 993 for imaps, 110 for
 pop3/apop, and 389 for ldap).  /DN is mandatory for ldap and should
-contain a '%%s' identifying the username. Examples: '-R
+contain a '%s' identifying the username. Examples: '-R
 imaps://myimapserver.net', '-R pop3://mypopserver.net:2110', '-R
-ldap://example.com/cn=%%s,dc=host,dc=com'""")
+ldap://example.com/cn=%s,dc=host,dc=com'""")
 
 authgroup.add_option("-A", "--authprog",
                      metavar="PROGRAM", dest="authprog",
@@ -1325,7 +1325,7 @@ if opts.remoteauth:
         authproto, autharg = autharg.split('://', 1)
     except ValueError:
         authproto, autharg = autharg, None
-    if authproto not in defaultauthports.keys():
+    if authproto not in defaultauthports:
         raise ValueError, 'Protocol not supported: ' + authproto + \
             '\nPlease pick one of ' + repr(defaultauthports.keys())
     remoteauth['proto'] = authproto
