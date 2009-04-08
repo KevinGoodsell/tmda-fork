@@ -6,3 +6,4 @@ debian/tmda-keygen.1
 debian/tmda-pending.1
 debian/tmda-rfilter.1
 debian/tmda-sendmail.1
+tmda-config.5
