@@ -72,6 +72,10 @@ class TextFragment(object):
     def __init__(self, text):
         self._text = text
 
+    # Unformatted text should be exactly like the input text, e.g., no
+    # whitespace stripped or anything like that. Piecing together the
+    # unformatted text from all the fragments should produce the original
+    # text.
     def unformatted(self):
         return self._text
 
@@ -550,6 +554,56 @@ class ManFormatter(Formatter):
             for frag in text_fragments(var.text):
                 self._write_fragment(frag)
 
+class MoinMoinFormatter(Formatter):
+    def _write(self, text, *args):
+        if args:
+            text = text % args
+        print >> self.out, text
+
+    _line_sep = re.compile(r'\s*\n\s*', re.MULTILINE)
+    def _join_lines(self, text):
+        return self._line_sep.sub(' ', text)
+
+    # This only does very basic de-wikifying.
+    _dewikify = Replacer(r"``?|''",
+                         { '``' : '"',
+                           "''" : '"',
+                           '`'  : "'" })
+
+    def _write_fragment(self, frag):
+        if isinstance(frag, PreFormatted):
+            self._write('{{{\n%s\n}}}\n', frag.formatted())
+
+        elif isinstance(frag, DefinitionList):
+            for (name, defn) in frag.items():
+                text = self._join_lines(defn)
+                self._write(' %s:: %s', name, self._dewikify(text))
+            self._write('')
+
+        elif isinstance(frag, List):
+            for item in frag.items():
+                text = self._join_lines(item)
+                self._write(' * %s', self._dewikify(text))
+            self._write('')
+
+        elif isinstance(frag, Paragraph):
+            self._write('%s\n', self._dewikify(frag.formatted()))
+
+        else:
+            self._write('## Unhandled TextFragment type: %s',
+                        frag.__class__.__name__)
+            self._write('%s\n', self._dewikify(frag.unformatted()))
+
+    def write(self):
+        self._write('## %s', self._comment)
+        self._write('= %s =', self._title)
+        self._write('<<TableOfContents>>')
+
+        for var in self.variables:
+            self._write('== %s ==', var.name)
+            for frag in text_fragments(var.text):
+                self._write_fragment(frag)
+
 ##################################
 # Main Function and Option Parsing
 ##################################
@@ -578,6 +632,9 @@ def make_optparser():
                             help='Output plain text with original formatting '
                             'and tags identifying how each text fragment was '
                             'parsed. For debugging only.')
+    format_group.add_option('--moinmoin', action='append_const',
+                            const='moinmoin', dest='format',
+                            help='Output MoinMoin Wiki text.')
 
     parser.add_option_group(format_group)
 
@@ -618,6 +675,8 @@ def main(args=None):
         formatter = HtmlFormatter(config)
     elif format == 'man':
         formatter = ManFormatter(config)
+    elif format == 'moinmoin':
+        formatter = MoinMoinFormatter(config)
 
     formatter.write()
 
