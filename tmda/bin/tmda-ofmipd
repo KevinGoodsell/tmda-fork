@@ -221,7 +221,7 @@ class CheckpwAuthenticator(Authenticator):
     def plain_check(self, username, password, localip):
         print >> DEBUGSTREAM, "Trying authprog method"
         cmd = "/bin/sh -c 'exec %s 3<&0'" % self._cmd
-        result = pipecmd(cmd, '%s\0%s\0' % (username, password))
+        result = Util.pipecmd(cmd, '%s\0%s\0' % (username, password))
         if result == 0:
             return True
         else:
@@ -1065,28 +1065,6 @@ def warning(msg='', exit=1):
         print >> sys.stderr, '\n', delimiter, '\n', msg, '\n', delimiter, '\n'
     if exit:
         sys.exit()
-
-
-# XXX try to replace this with Util version
-def pipecmd(command, *strings):
-    import popen2
-    popen2._cleanup()
-    cmd = popen2.Popen3(command, 1, bufsize=-1)
-    cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
-    if strings:
-        # Write to the tochild file object.
-        for s in strings:
-            cmdin.write(s)
-        cmdin.flush()
-        cmdin.close()
-    # Read from the childerr object; command will block until exit.
-    err = cmderr.read().strip()
-    cmderr.close()
-    # Read from the fromchild object.
-    out = cmdout.read().strip()
-    cmdout.close()
-    # Get exit status from the wait() member function.
-    return cmd.wait()
 
 
 def ipauthmap2dict(ipauthmapfile):
