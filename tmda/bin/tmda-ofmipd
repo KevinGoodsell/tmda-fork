@@ -1488,6 +1488,8 @@ else:
     DEBUGSTREAM = Devnull()
 
 _authenticator = auth_options.authenticator()
+if _authenticator is None:
+    parser.error('missing authentication option(s)')
 
 if running_as_root:
     if not opts.username:
