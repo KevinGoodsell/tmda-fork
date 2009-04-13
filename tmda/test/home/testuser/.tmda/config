@@ -1,8 +1,8 @@
+# vim: ft=python
+
 MAIL_TRANSPORT = 'sendmail'
-SENDMAIL_PROGRAM = './fakemail.py'
+SENDMAIL_PROGRAM = './bin/fakemail.py'
 
 FULLNAME = 'Test User'
 USERNAME = 'testuser'
 HOSTNAME = 'nowhere.com'
-
-# vim: ft=python

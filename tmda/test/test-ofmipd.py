@@ -12,16 +12,21 @@ import OpenSSL.SSL as SSL
 rootDir = '..'
 binDir = os.path.join(rootDir, 'bin')
 libDir = rootDir
-homeDir = 'testuser'
+
+homeDir = 'home'
+userDir = os.path.join(homeDir, 'testuser')
+authFile = 'files/test-ofmipd.auth'
+certFile = 'files/test-ofmipd.cert'
+keyFile = 'files/test-ofmipd.key'
 
 class Server(object):
     _port = 8025
 
     _executable = os.path.join(binDir, 'tmda-ofmipd')
     _commonServerArgs = ['-d', '-f', '-p', '127.0.0.1:%d' % _port, '-a',
-                         'test-ofmipd.auth', '--configdir=.']
-    _certKeyServerArgs = ['--ssl-cert=test-ofmipd.cert',
-                          '--ssl-key=test-ofmipd.key']
+                         authFile, '--configdir=%s' % homeDir]
+    _certKeyServerArgs = ['--ssl-cert=%s' % certFile,
+                          '--ssl-key=%s' % keyFile]
 
     def __init__(self, sslArg=None):
         self._sslArg = sslArg
@@ -36,7 +41,7 @@ class Server(object):
 
         newEnv = dict(os.environ)
         newEnv['PYTHONPATH'] = libDir
-        newEnv['TMDA_TEST_HOME'] = homeDir
+        newEnv['TMDA_TEST_HOME'] = userDir
 
         self._serverProc = subprocess.Popen(serverArgs, env=newEnv)
 
@@ -416,8 +421,8 @@ class TlsSendTest(SendTestMixin, unittest.TestCase):
 # Dupes and syntax errors
 
 if __name__ == '__main__':
-    os.chmod('testuser/.tmda/crypt_key', 0600)
-    os.chmod('test-ofmipd.auth', 0600)
+    os.chmod(os.path.join(userDir, '.tmda/crypt_key'), 0600)
+    os.chmod(authFile, 0600)
 
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)
