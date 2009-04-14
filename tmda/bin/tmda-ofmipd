@@ -272,7 +272,7 @@ class Pop3Authenticator(RemoteAuthenticator):
     def plain_check(self, username, password, localip):
         import poplib
 
-        (host, port) = sef.remote_address(localip)
+        (host, port) = self.remote_address(localip)
         pop = poplib.POP3(host, port)
         try:
             if self._use_apop:
