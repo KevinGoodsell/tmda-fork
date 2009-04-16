@@ -1273,13 +1273,10 @@ parser.add_option("-V",
                   action="store_true", default=False, dest="full_version",
                   help="show full TMDA version information and exit.")
 
-# option groups
-gengroup = OptionGroup(parser, "General")
-congroup = OptionGroup(parser, "Connection")
-authgroup = OptionGroup(parser, "Authentication")
-virtgroup = OptionGroup(parser, "Virtual Domains")
 
 # general
+gengroup = OptionGroup(parser, "General")
+
 gengroup.add_option("-d", "--debug",
                     action="store_true", default=False, dest="debug",
                     help="Turn on debugging prints.")
@@ -1321,6 +1318,8 @@ If this option is not used, `~user/.tmda/config' will be assumed, but
 see the --vhome-script option for qmail virtual domain users.""")
 
 # connection
+congroup = OptionGroup(parser, "Connection")
+
 congroup.add_option("-p", "--proxyport",
                     default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT",
                     dest="proxyport", help= \
@@ -1395,7 +1394,9 @@ congroup.add_option("--ssl-key",
 """Location of the SSL/TLS private key file.""")
 
 # authentication
-
+authgroup = OptionGroup(parser, "Authentication",
+"""Any number of authentication options can be supplied, and they will be
+attempted in the order given.""")
 auth_options = AuthOptions()
 
 authgroup.add_option("-R", "--remoteauth",
@@ -1448,6 +1449,8 @@ the Python PAM module. The argument is the name of a PAM service, commonly
 "login".""")
 
 # virtual domains
+virtgroup = OptionGroup(parser, "Virtual Domains")
+
 virtgroup.add_option("-S", "--vhome-script",
                      metavar="/PATH/TO/SCRIPT", dest="vhomescript",
                      help= \
