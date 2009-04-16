@@ -236,10 +236,39 @@ class RemoteAuthenticator(Authenticator):
         self._port = port
 
     def remote_address(self, localip):
-        if self._host == '0.0.0.0':
-            raise Exception('XXX Do something here')
-        else:
-            return (self._host, self._port)
+        (address, port) = (self._host, self._port)
+
+        if address == '0.0.0.0':
+            # This is a feature that seems to be undocumented. It allows
+            # remote authentication address:port to be based on the address
+            # for the interface that receives the connection.
+            addrdict = self._addrdict()
+            replacement = addrdict.get(localip, '127.0.0.1').split(':')
+            address = replacement[0]
+            if len(replacement) > 1:
+                port = replacement[1]
+
+        return (address, port)
+
+    def _addrdict(self):
+        """Iterate 'ipauthmapfile' (IP1:IP2:port) and return a dict of
+        {'addr1' : 'adder2[:port]'}. Note the values may or may not have a
+        port."""
+
+        ipauthmap = {}
+        try:
+            fp = file(ipauthmapfile, 'r')
+            for line in fp:
+                line = line.strip()
+                if line == '' or line.startswith('#'):
+                    continue
+                (k, v) = line.split(':', 1)
+                ipauthmap[k.strip()] = v.strip()
+            fp.close()
+        except IOError:
+            pass
+
+        return ipauthmap
 
 class ImapAuthenticator(RemoteAuthenticator):
     def __init__(self, host, port, secure):
@@ -1065,24 +1094,6 @@ def warning(msg='', exit=1):
         print >> sys.stderr, '\n', delimiter, '\n', msg, '\n', delimiter, '\n'
     if exit:
         sys.exit()
-
-
-def ipauthmap2dict(ipauthmapfile):
-    """Iterate 'ipauthmapfile' (IP1:IP2:port) and return a dictionary
-    containing IP1 -> IP2:port hashes."""
-    ipauthmap = {}
-    try:
-        fp = file(ipauthmapfile, 'r')
-        for line in fp:
-            line = line.strip()
-            if line == '':
-                continue
-            ipdata = line.split(':', 1)
-            ipauthmap[ipdata[0].strip()] = ipdata[1].strip()
-        fp.close()
-    except IOError:
-        pass
-    return ipauthmap
 
 
 def b64_encode(s):
