@@ -13,7 +13,11 @@ SSL_OPTS="--ssl --ssl-cert=$SSL_CERT --ssl-key=$SSL_KEY"
 # ...or, if you want to use STARTTLS:
 #SSL_OPTS="--tls=localoptional --ssl-cert=$SSL_CERT --ssl-key=$SSL_KEY"
 
-AUTH_OPTS="--authfile=/etc/tmda-ofmipd.auth"
+AUTH_OPTS="--pamauth=login"
+# ...or, if you want to use a username:password file:
+#AUTH_OPTS="--authfile=/etc/tmda-ofmipd.auth"
+# Many other authentication modes are possible, and you can combine them
+# as you see fit.
 
 # Additional options that are passed to the Daemon.
 DAEMON_OPTS="-p 0.0.0.0:8025 $SSL_OPTS $AUTH_OPTS"

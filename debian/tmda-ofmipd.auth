@@ -1,0 +1,5 @@
+# Authentication file for tmda-ofmipd. For use with the -a/--authfile option.
+# Each line should contain a username:password pair. Empty lines are fine.
+# Lines that start with # are comments. Example:
+
+#ltorvalds:secretpassword
