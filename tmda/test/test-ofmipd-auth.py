@@ -18,6 +18,10 @@ class AuthTestMixin(object):
     username = 'testuser'
     password = 'testpassword'
 
+    badUsers = ['ttestuser', 'teestuser', 'testuserr', 'tsstuser', 'testuse']
+    badPasswords = ['', 'ttestpassword', 'testpasswordd', 'tsstpassword',
+                    'testpasswor']
+
     def setUp(self):
         self.serverSetUp()
         self.clientSetUp()
@@ -43,6 +47,15 @@ class AuthTestMixin(object):
             self.client.signOn(self.username, self.password)
         except StandardError, e:
             self.fail(str(e))
+
+    def testAuthenticationFailure(self):
+        for username in self.badUsers:
+            self.assertRaises(AssertionError, self.client.signOn,
+                              username, self.password)
+
+        for password in self.badPasswords:
+            self.assertRaises(AssertionError, self.client.signOn,
+                              self.username, password)
 
 # This is the one test that should run with no problems.
 class AuthFileTest(AuthTestMixin, unittest.TestCase):
@@ -122,8 +135,6 @@ class AuthChainTest(RemoteAuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addFileAuth()
         RemoteAuthTestMixin.addAuth(self)
-
-# XXX This whole thing is missing authentication failures
 
 if __name__ == '__main__':
     lib.util.fixupFiles()
