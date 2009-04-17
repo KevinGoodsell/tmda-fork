@@ -108,7 +108,7 @@ directory on standard output.  tmda-filter will read that path and set
 $HOME to that path so that '~' expansion works properly for virtual
 users.  The script takes two arguments, the user name and the domain,
 on its command line.  This option is for use only with the VPopMail
-and VMailMgr add-ons to qmail.  See the contrib/ directory for
+and VMailMgr add-ons to qmail.  See /usr/share/tmda/scripts/ for
 sample scripts."""),
 
     make_option("-M", "--filter-match",
