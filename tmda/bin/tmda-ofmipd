@@ -1586,7 +1586,7 @@ directory on standard output.  tmda-ofmipd will read that and use it
 to build the path to the user's config file instead of '~user/.tmda'.
 The script must take two arguments, the user name and the domain, on
 its command line.  This option is for use only with the VPopMail and
-VMailMgr add-ons to qmail.  See the contrib directory for sample
+VMailMgr add-ons to qmail.  See /usr/share/tmda/scripts/ for sample
 scripts.""")
 
 virtgroup.add_option("-v", "--vdomains-path",
