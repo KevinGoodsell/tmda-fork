@@ -1,3 +1,4 @@
+'\" t
 .\" Hey, EMACS: -*- nroff -*-
 .\" Include www macros (see groff_www(7))
 .mso www.tmac
@@ -164,6 +165,8 @@ Location of the SSL/TLS certificate key file.
 .BI --ssl-key= /path/to/file
 Location of the SSL/TLS private key file.
 .SS Authentication
+Any number of authentication options can be supplied, and they will be
+attempted in the order given.
 .TP
 .BI -R\  proto :// host [: port ][/ dn ],\ --remoteauth= proto :// host \
 [: port ][/ dn ]
@@ -236,23 +239,10 @@ if running as root/tofmipd, otherwise
 .IR ~user/.tmda/tofmipd .
 Use this option to override these defaults.
 .TP
-.B -F, --fallback
-When used with
-.B -R
-or
-.BR -A ,
-fallback to authenticate against the authfile if remote authentication
-fails.
-Note: this flag has no effect on
-.B -R
-to
-.B -A
-fallback.
-If you specify both
-.B -R
-and
-.B -A
-methods, then authprog will be tried after remoteauth has failed.
+.BI -m\  service ,\ --pamauth= service
+Authenticate using system username/password via PAM.
+Requires the Python PAM module.
+The argument is the name of a PAM service, commonly `login'.
 .SS Virtual Domains
 .TP
 .BI -S\  /path/to/script ,\ --vhome-script= /path/to/script
