@@ -8,7 +8,7 @@ Homepage: http://github.com/KevinGoodsell/tmda-fork
 
 Package: tmda
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, python (>= 2.4)
+Depends: ${shlibs:Depends}, ${misc:Depends}, python (>= 2.4), python-support
 Description: Spam control using challenge-response and more
  Tagged Message Delivery Agent is a spam prevention tool supporting white
  lists, black lists, challenge-response, and tagged addresses which accept
@@ -19,7 +19,10 @@ Description: Spam control using challenge-response and more
 
 Package: tmda-smtp
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, tmda, ssl-cert, python (>= 2.4), adduser
+Depends: ${shlibs:Depends}, ${misc:Depends}, tmda, ssl-cert, python (>= 2.4),
+ python-openssl, python-pam
+Pre-Depends: adduser
+Suggests: python-ldap
 Description: SMTP proxy server for tagging outgoing messages with TMDA
  Tagged Message Delivery Agent is a spam prevention tool supporting white
  lists, black lists, challenge-response, and tagged addresses which accept
