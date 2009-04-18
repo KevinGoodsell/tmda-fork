@@ -1563,11 +1563,10 @@ else:
 
 # provide disclaimer if running as root
 if running_as_root:
-    logger.warning('WARNING: The security implications and risks of running '
-                   '%s in "seteuid" mode have not been fully evaluated.',
-                   program)
-    logger.warning('If you are uncomfortable with this, quit now and instead '
-                   'run %s under your non-privileged TMDA user account.',
+    logger.warning('WARNING: The security implications and risks of running\n'
+                   '%s in "seteuid" mode have not been fully evaluated.\n'
+                   'If you are uncomfortable with this, quit now and instead\n'
+                   'run it under your non-privileged TMDA user account.',
                    program)
 
 if opts.ssl or opts.tls:
