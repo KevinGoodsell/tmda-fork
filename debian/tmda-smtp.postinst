@@ -26,6 +26,11 @@ case "$1" in
         # http://wiki.debian.org/AccountHandlingInMaintainerScripts
         adduser --no-create-home --system --gecos "TMDA mail proxy server" \
                 $USERNAME
+        # Put the user in ssl-cert group so the SSL key file will be readable,
+        # and in the shadow group so authentication can work.
+        adduser $USERNAME ssl-cert
+        adduser $USERNAME shadow
+
         chown $USERNAME $AUTHFILE
         chmod 600 $AUTHFILE
     ;;
