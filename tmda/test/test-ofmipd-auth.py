@@ -98,8 +98,8 @@ class RemoteAuthTestMixin(AuthTestMixin):
                                   (self.protocol, portStr, self.path))
 
 # For AuthImapTest, AuthImapsTest, and AuthPop3Test, dovecot worked perfectly
-# as an authentication server. Under Debian, with the dovecot-imap and
-# dovecot-pop3 packages, the configuration was quite easy. Just make sure
+# as an authentication server. Under Debian, with the dovecot-imapd and
+# dovecot-pop3d packages, the configuration was quite easy. Just make sure
 # the 'protocols' setting is 'imap imaps pop3', ssl is enabled (with cert and
 # key files), and the user and password databases are set to something sane
 # (but consider using passwd-file, see the notes for AuthApopTest).
