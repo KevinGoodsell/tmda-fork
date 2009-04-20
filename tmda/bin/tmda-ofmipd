@@ -271,14 +271,12 @@ class CheckpwAuthenticator(Authenticator):
 
     def _plain_check(self, username, password, localip):
         cmd = "/bin/sh -c 'exec %s 3<&0'" % self._cmd
-        # XXX I looks like this might raise, not return
-        # XXX Fix this error handling
-        result = Util.pipecmd(cmd, '%s\0%s\0' % (username, password))
-        if result == 0:
+        try:
+            Util.pipecmd(cmd, '%s\0%s\0' % (username, password))
             return True
-        else:
-            logger.info('authprog %r for user %s failed with code %d',
-                        self._cmd, username, result)
+        except:
+            logger.info('authprog %r for user %s failed:', self._cmd, username,
+                        exc_info=True)
             return False
 
     def __repr__(self):
