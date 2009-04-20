@@ -63,12 +63,8 @@ class AuthFileTest(AuthTestMixin, unittest.TestCase):
         self.server.addFileAuth()
 
 # (These notes may be Linux-specific)
-# This only works if the test is run as the user being authenticated (or as
-# root). This is basically because the common authentication setup is
-# to use the pam_unix module. This module authenticates based on passwd and
-# shadow, so would only work for root. To get around this, the module also
-# uses a separate suid program, unix_chkpwd, which is very basic and only
-# authenticates the current user.
+# This only works if the test is run as the user being authenticated, root,
+# or (if supported) a member of the shadow group.
 #
 # A custom PAM service could possibly work around this, but the way I did it
 # is to run the test as testuser, after creating that user in a chroot jail.
@@ -76,8 +72,9 @@ class AuthPamTest(AuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addPamAuth('login')
 
-# This test has never been successfully run because I can't find a
-# checkpassword program that works.
+# The checkpassword program from fgetty worked for this test, but required
+# running the test as root (and with '-u root' added to the server args to
+# prevent it from doing seteuid to tofmipd).
 class AuthProgTest(AuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addProgAuth('/bin/checkpassword /bin/true')
