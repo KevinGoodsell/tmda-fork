@@ -26,10 +26,19 @@ import platform
 
 
 # TMDA version
-TMDA = '1.1.12+'
+TMDA = '1.1.12-kg1'
 
 # TMDA version codename
-CODENAME = 'Nikka'
+# Original TMDA uses brands of Scotch for codenames. This fork uses
+# astronomical bodies, starting with dwarf planets.
+CODENAME = 'Ceres'
+
+COMMENT = \
+'''Ceres, discovered in 1801 by Italian astronomer Giuseppe Piazzi, is both
+the smallest and the nearest to Earth of the five currently designated dwarf
+planets. It is the largest object in the asteroid belt, at about 2% the size
+of the moon (by volume). Ceres has previously been classified as both a planet
+and an asteroid.'''
 
 # Python version
 PYTHON = platform.python_version()
