@@ -121,9 +121,29 @@ class AuthPop3Test(RemoteAuthTestMixin, unittest.TestCase):
 class AuthApopTest(RemoteAuthTestMixin, unittest.TestCase):
     protocol = 'apop'
 
-# OpenLDAP works for this... sort of. I haven't figured out how to make the
-# configuration easy yet. Maybe I'll stick a ldif file here that contains
-# the right directory info, and instructions for installing it.
+# OpenLDAP works for this... sort of. Configuring is problematic, and needs
+# more documentation here.
+#
+# Here are basic instructions for adding the LDAP user. Stick this in
+# test.ldif:
+#
+# dn: ou=people,dc=nodomain
+# objectclass: organizationalUnit
+# ou: people
+#
+# dn: uid=testuser,ou=people,dc=nodomain
+# sn: User
+# cn: Test User
+# objectclass: top
+# objectclass: person
+# objectclass: organizationalPerson
+# objectclass: inetOrgPerson
+# ou: People
+# uid: testuser
+# userpassword: testpassword
+#
+# And install it with this:
+# ldapadd -x -h localhost -D cn=admin,dc=nodomain -w password -f test.ldif
 class AuthLdapTest(RemoteAuthTestMixin, unittest.TestCase):
     protocol = 'ldap'
     path = 'uid=%s,ou=people,dc=nodomain'
