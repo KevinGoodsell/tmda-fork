@@ -239,8 +239,8 @@ class PamAuthenticator(Authenticator):
         try:
             auth.authenticate()
             auth.acct_mgmt()
-        except PAM.error, e:
-            logger.info('PAM error: %s', e)
+        except PAM.error:
+            logger.info('PAM error:', exc_info=True)
             return False
 
         return True
@@ -270,14 +270,13 @@ class CheckpwAuthenticator(Authenticator):
         self._cmd = cmd
 
     def _plain_check(self, username, password, localip):
-        logger.info("Trying authprog method")
         cmd = "/bin/sh -c 'exec %s 3<&0'" % self._cmd
-        result = Util.pipecmd(cmd, '%s\0%s\0' % (username, password))
-        if result == 0:
+        try:
+            Util.pipecmd(cmd, '%s\0%s\0' % (username, password))
             return True
-        else:
-            logger.info('authprog %r for user %s failed with code %d',
-                        self._cmd, username, result)
+        except:
+            logger.info('authprog %r for user %s failed:', self._cmd, username,
+                        exc_info=True)
             return False
 
     def __repr__(self):
@@ -342,9 +341,9 @@ class ImapAuthenticator(RemoteAuthenticator):
             imap.login(username, password)
             imap.logout()
             return True
-        except imap.error, e:
-            logger.info('imap(s) authentication failed for %s@%s (%s)',
-                        username, host, e)
+        except imap.error:
+            logger.debug('imap(s) authentication failure details:',
+                         exc_info=True)
         return False
 
     def __repr__(self):
@@ -369,9 +368,9 @@ class Pop3Authenticator(RemoteAuthenticator):
                 pop.pass_(password)
             pop.quit()
             return True
-        except poplib.error_proto, e:
-            logger.info('pop3 authentication failed for %s@%s (%s)',
-                        username, host, e)
+        except poplib.error_proto:
+            logger.debug('pop3 authentication failure details:', exc_info=True)
+
         return False
 
     def __repr__(self):
@@ -398,9 +397,9 @@ class LdapAuthenticator(RemoteAuthenticator):
             ldap_obj.simple_bind_s(self._dn % username, password)
             ldap_obj.unbind_s()
             return True
-        except ldap.LDAPError, e:
-            logger.info('ldap authentication for %s@%s failed (%s)',
-                        username, host, e)
+        except ldap.LDAPError:
+            logger.debug('ldap authentication failure details:', exc_info=True)
+
         return False
 
     def __repr__(self):
@@ -1563,11 +1562,10 @@ else:
 
 # provide disclaimer if running as root
 if running_as_root:
-    logger.warning('WARNING: The security implications and risks of running '
-                   '%s in "seteuid" mode have not been fully evaluated.',
-                   program)
-    logger.warning('If you are uncomfortable with this, quit now and instead '
-                   'run %s under your non-privileged TMDA user account.',
+    logger.warning('WARNING: The security implications and risks of running\n'
+                   '%s in "seteuid" mode have not been fully evaluated.\n'
+                   'If you are uncomfortable with this, quit now and instead\n'
+                   'run it under your non-privileged TMDA user account.',
                    program)
 
 if opts.ssl or opts.tls:

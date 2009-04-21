@@ -334,13 +334,11 @@ def file_to_list(file):
 
 
 def pipecmd(command, *strings):
-    """Run a child process, returning opened pipes for communication.
+    """Run a child process. Raises IOError for any non-zero result.
 
     command is the program to execute as a sub-process.
 
     *strings are optional pieces of data to write to command.
-
-    return_status will just return the exit status of the command..
 
     Based on code from getmail
     <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>

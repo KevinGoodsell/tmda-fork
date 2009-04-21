@@ -18,6 +18,10 @@ class AuthTestMixin(object):
     username = 'testuser'
     password = 'testpassword'
 
+    badUsers = ['ttestuser', 'teestuser', 'testuserr', 'tsstuser', 'testuse']
+    badPasswords = ['', 'ttestpassword', 'testpasswordd', 'tsstpassword',
+                    'testpasswor']
+
     def setUp(self):
         self.serverSetUp()
         self.clientSetUp()
@@ -44,18 +48,23 @@ class AuthTestMixin(object):
         except StandardError, e:
             self.fail(str(e))
 
+    def testAuthenticationFailure(self):
+        for username in self.badUsers:
+            self.assertRaises(AssertionError, self.client.signOn,
+                              username, self.password)
+
+        for password in self.badPasswords:
+            self.assertRaises(AssertionError, self.client.signOn,
+                              self.username, password)
+
 # This is the one test that should run with no problems.
 class AuthFileTest(AuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addFileAuth()
 
 # (These notes may be Linux-specific)
-# This only works if the test is run as the user being authenticated (or as
-# root). This is basically because the common authentication setup is
-# to use the pam_unix module. This module authenticates based on passwd and
-# shadow, so would only work for root. To get around this, the module also
-# uses a separate suid program, unix_chkpwd, which is very basic and only
-# authenticates the current user.
+# This only works if the test is run as the user being authenticated, root,
+# or (if supported) a member of the shadow group.
 #
 # A custom PAM service could possibly work around this, but the way I did it
 # is to run the test as testuser, after creating that user in a chroot jail.
@@ -63,8 +72,9 @@ class AuthPamTest(AuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addPamAuth('login')
 
-# This test has never been successfully run because I can't find a
-# checkpassword program that works.
+# The checkpassword program from fgetty worked for this test, but required
+# running the test as root (and with '-u root' added to the server args to
+# prevent it from doing seteuid to tofmipd).
 class AuthProgTest(AuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addProgAuth('/bin/checkpassword /bin/true')
@@ -85,8 +95,8 @@ class RemoteAuthTestMixin(AuthTestMixin):
                                   (self.protocol, portStr, self.path))
 
 # For AuthImapTest, AuthImapsTest, and AuthPop3Test, dovecot worked perfectly
-# as an authentication server. Under Debian, with the dovecot-imap and
-# dovecot-pop3 packages, the configuration was quite easy. Just make sure
+# as an authentication server. Under Debian, with the dovecot-imapd and
+# dovecot-pop3d packages, the configuration was quite easy. Just make sure
 # the 'protocols' setting is 'imap imaps pop3', ssl is enabled (with cert and
 # key files), and the user and password databases are set to something sane
 # (but consider using passwd-file, see the notes for AuthApopTest).
@@ -108,9 +118,29 @@ class AuthPop3Test(RemoteAuthTestMixin, unittest.TestCase):
 class AuthApopTest(RemoteAuthTestMixin, unittest.TestCase):
     protocol = 'apop'
 
-# OpenLDAP works for this... sort of. I haven't figured out how to make the
-# configuration easy yet. Maybe I'll stick a ldif file here that contains
-# the right directory info, and instructions for installing it.
+# OpenLDAP works for this... sort of. Configuring is problematic, and needs
+# more documentation here.
+#
+# Here are basic instructions for adding the LDAP user. Stick this in
+# test.ldif:
+#
+# dn: ou=people,dc=nodomain
+# objectclass: organizationalUnit
+# ou: people
+#
+# dn: uid=testuser,ou=people,dc=nodomain
+# sn: User
+# cn: Test User
+# objectclass: top
+# objectclass: person
+# objectclass: organizationalPerson
+# objectclass: inetOrgPerson
+# ou: People
+# uid: testuser
+# userpassword: testpassword
+#
+# And install it with this:
+# ldapadd -x -h localhost -D cn=admin,dc=nodomain -w password -f test.ldif
 class AuthLdapTest(RemoteAuthTestMixin, unittest.TestCase):
     protocol = 'ldap'
     path = 'uid=%s,ou=people,dc=nodomain'
@@ -122,8 +152,6 @@ class AuthChainTest(RemoteAuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addFileAuth()
         RemoteAuthTestMixin.addAuth(self)
-
-# XXX This whole thing is missing authentication failures
 
 if __name__ == '__main__':
     lib.util.fixupFiles()
