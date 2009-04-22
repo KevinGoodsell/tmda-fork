@@ -1,3 +1,10 @@
+tmda (1.1.12-kg1-2) unstable; urgency=low
+
+  * Reverting changes that make tmda-ofmipd run as non-root. Unfortunately
+    this doesn't work.
+
+ -- Kevin Goodsell <kevin-opensource@omegacrash.net>  Wed, 22 Apr 2009 10:53:44 -0700
+
 tmda (1.1.12-kg1-1) unstable; urgency=low
 
   * Initial release
