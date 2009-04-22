@@ -7,5 +7,4 @@ DAEMONUSER=tofmipd
 
 . /etc/default/tmda-ofmipd
 
-start-stop-daemon --start --exec /usr/bin/tmda-ofmipd --chuid $DAEMONUSER \
-    -- -f -d $DAEMON_OPTS
+tmda-ofmipd -f -d -u $DAEMONUSER $DAEMON_OPTS
