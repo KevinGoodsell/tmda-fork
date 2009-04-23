@@ -133,8 +133,7 @@ start_server() {
     # would change the pid and invalidate the pidfile, thus the -f option
     # to the daemon and the --background option to start-stop-daemon.
     # Furthermore, the deamon has to do its own user id changing, because
-    # it may need to be root to read the private key file, and will drop
-    # root privilages afterward.
+    # it needs to regain root privilages for certain tasks.
     start-stop-daemon --start --quiet --oknodo --make-pidfile --background \
                       --exec $DAEMON --pidfile $PIDFILE \
                       -- -f -u $DAEMONUSER $DAEMON_OPTS
