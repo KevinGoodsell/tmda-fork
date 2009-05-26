@@ -9,7 +9,7 @@
 SSL_CERT=/etc/ssl/certs/ssl-cert-snakeoil.pem
 SSL_KEY=/etc/ssl/private/ssl-cert-snakeoil.key
 
-# For STARTTLS mode (but allowing unencrypted sessions for local connections:
+# For STARTTLS mode (but allowing unencrypted sessions for local connections):
 SSL_OPTS="--tls=localoptional --ssl-cert=$SSL_CERT --ssl-key=$SSL_KEY"
 # ...or, for SSL on connect:
 #SSL_OPTS="--ssl --ssl-cert=$SSL_CERT --ssl-key=$SSL_KEY"
