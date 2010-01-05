@@ -167,7 +167,7 @@ class Deliver:
 
     def __deliver_program(self, message, program):
         """Deliver message to /bin/sh -c program."""
-        Util.pipecmd(program, message)
+        Util.runcmd_checked(program, message)
 
     def __deliver_forward(self, message, address):
         """Forward message to address, preserving the existing Return-Path."""
