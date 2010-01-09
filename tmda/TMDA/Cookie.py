@@ -90,7 +90,7 @@ def make_dated_cookie(time, timeout = None):
 def make_dated_address(address, addrtime=None):
     """Return a full dated-style e-mail address."""
     if addrtime is None:
-        addrtime = str(time.time())
+        addrtime = time.time()
     dated_cookie = make_dated_cookie(addrtime)
     username, hostname = address.split('@')
     dated_address = '%s%s%s%s%s@%s' %(username,

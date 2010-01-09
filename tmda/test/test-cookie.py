@@ -56,6 +56,13 @@ class Cookies(unittest.TestCase):
         self.assertEqual(calculated,
             'testuser-dated-1263369386.df2137@testsite.com')
 
+        # "Now" address. Can't predict exactly how it will come out,
+        # but make sure it at least succeeds.
+        import re
+        pattern = re.compile(r'testuser-dated-\d{10}\.[0-9a-f]{6}@testsite\.com')
+        calculated = Cookie.make_dated_address(self.user_address)
+        self.failUnless(pattern.match(calculated))
+
     def testSenderCookie(self):
         calculated = Cookie.make_sender_cookie(self.sender_address.lower())
         self.assertEqual(calculated, '23834d')
