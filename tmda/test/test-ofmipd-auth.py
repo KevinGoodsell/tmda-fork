@@ -1,6 +1,7 @@
 import unittest
 
 import lib.util
+lib.util.testPrep()
 from lib.ofmipd import TestOfmipdServer
 
 # These tests are hugely problematic because they depend heavily on the
@@ -153,7 +154,5 @@ class AuthChainTest(RemoteAuthTestMixin, unittest.TestCase):
         RemoteAuthTestMixin.addAuth(self)
 
 if __name__ == '__main__':
-    lib.util.fixupFiles()
-
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)
