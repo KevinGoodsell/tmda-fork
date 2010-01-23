@@ -1,7 +1,4 @@
 .\" Hey, EMACS: -*- nroff -*-
-.\" Include www macros (see groff_www(7))
-.mso www.tmac
-.
 .TH TMDA-CHECK-ADDRESS 1 "2009-03-26" TMDA "TMDA Programs"
 .\" Please adjust this date whenever revising the manpage.
 .\"
@@ -17,48 +14,61 @@
 .\" for manpage-specific macros, see man(7)
 .\" **********************************************************************
 .SH NAME
-tmda-check-address \- validate a tagged e-mail address
+tmda\-check\-address \- validate a tagged e-mail address
 .\" **********************************************************************
 .SH SYNOPSIS
-.B tmda-check-address
-.RI [ options ]\  address \ [ sender ]
+.SY tmda\-check\-address
+.RI [ options ]
+.I address
+.RI [ sender ]
+.YS
 .\" **********************************************************************
 .SH DESCRIPTION
-.B tmda-check-address
+.B \%tmda\-check\-address
 checks a tagged (dated, keyword, or sender style only) e-mail address.
 The required
-.RI ` address '
+.I address
 argument is the address you want to check.
 The optional
-.RI ` sender '
+.I sender
 is the sender address to verify if checking a sender-style address.
 .\" **********************************************************************
 .SH OPTIONS
 .TP
-.BI -c\  file ,\ --config-file= file
+.BI "\-c " file
+.TQ
+.BI \-\-config\-file= file
 Specify a configuration file other than
-.IR ~/.tmda/config .
+.IR \(ti/.tmda/config .
 .TP
-.B -l, --localtime
+.B \-l
+.TQ
+.B \-\-localtime
 Display dates in the local time zone instead of UTC.
 .TP
-.B -V
+.B \-V
 Show full TMDA version information and exit.
 .TP
-.B --version
+.B \-\-version
 Show program's version number and exit.
 .TP
-.B -h, --help
+.B \-h
+.TQ
+.B \-\-help
 Show this help message and exit.
 .\" **********************************************************************
 .\".SH SEE ALSO
 .\" **********************************************************************
 .SH AUTHOR
 TMDA was written by
-.MTO jason@mastaler.com "Jason R. Mastaler" .
+.MT jason@mastaler.com
+Jason R. Mastaler
+.ME .
 .PP
 This manual page was adapted from the program
-.B --help
+.B \%\-\-help
 output by
-.MTO kevin-opensource@omegacrash.net "Kevin Goodsell" ,
+.MT kevin\-opensource@omegacrash.net
+Kevin Goodsell
+.ME ,
 for the Debian project (but may be used by others).

@@ -1,7 +1,4 @@
 .\" Hey, EMACS: -*- nroff -*-
-.\" Include www macros (see groff_www(7))
-.mso www.tmac
-.
 .TH TMDA-KEYGEN 1 "2009-03-26" TMDA "TMDA Programs"
 .\" Please adjust this date whenever revising the manpage.
 .\"
@@ -17,45 +14,56 @@
 .\" for manpage-specific macros, see man(7)
 .\" **********************************************************************
 .SH NAME
-tmda-keygen \- generate a unique 160-bit hex key
+tmda\-keygen \- generate a unique 160-bit hex key
 .\" **********************************************************************
 .SH SYNOPSIS
-.B tmda-keygen
+.SY tmda\-keygen
 .RI [ options ]
+.YS
 .\" **********************************************************************
 .SH DESCRIPTION
-.B tmda-keygen
+.B \%tmda\-keygen
 generates the unique key for the
-.I ~/.tmda/crypt_key
+.I \(ti/.tmda/crypt_key
 file.
 A new TMDA user needs to do this once.
 .\" **********************************************************************
 .SH OPTIONS
 .TP
-.BI -d\  device ,\ --device= device
+.BI "\-d " device
+.TQ
+.BI \-\-device= device
 Draw random numbers from a random data source device other than
-.IR /dev/urandom .
+.BR \%/dev/urandom .
 .TP
-.B -b, --batch
+.B \-b
+.TQ
+.B \-\-batch
 Output only the CRYPT_KEY.
 .TP
-.B -V
+.B \-V
 Show full TMDA version information and exit.
 .TP
-.B --version
+.B \-\-version
 Show program's version number and exit.
 .TP
-.B -h, --help
+.B \-h
+.TQ
+.B \-\-help
 Show this help message and exit.
 .\" **********************************************************************
 .\".SH SEE ALSO
 .\" **********************************************************************
 .SH AUTHOR
 TMDA was written by
-.MTO jason@mastaler.com "Jason R. Mastaler" .
+.MT jason@mastaler.com
+Jason R. Mastaler
+.ME .
 .PP
 This manual page was adapted from the program
-.B --help
+.B \%\-\-help
 output by
-.MTO kevin-opensource@omegacrash.net "Kevin Goodsell" ,
+.MT kevin\-opensource@omegacrash.net
+Kevin Goodsell
+.ME ,
 for the Debian project (but may be used by others).

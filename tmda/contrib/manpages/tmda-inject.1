@@ -1,7 +1,4 @@
 .\" Hey, EMACS: -*- nroff -*-
-.\" Include www macros (see groff_www(7))
-.mso www.tmac
-.
 .TH TMDA-INJECT 1 "2009-03-26" TMDA "TMDA Programs"
 .\" Please adjust this date whenever revising the manpage.
 .\"
@@ -17,60 +14,77 @@
 .\" for manpage-specific macros, see man(7)
 .\" **********************************************************************
 .SH NAME
-tmda-inject \- tag and send outgoing messages
+tmda\-inject \- tag and send outgoing messages
 .\" **********************************************************************
 .SH SYNOPSIS
-.B tmda-inject
-.RI [ options ]\ [ recip \ .\|.\|.]
+.SY tmda\-inject
+.RI [ options ]
+.RI [ "recip .\|.\|." ]
+.YS
 .\" **********************************************************************
 .SH DESCRIPTION
 Tag and send outgoing messages from a MUA.
 If one or more recipients are provided, send the message to all
-.RI ` recip '
+.I recip
 arguments.
 If none are provided, send the message to all header recipient addresses.
 .\" **********************************************************************
 .SH OPTIONS
 .TP
-.BI -c\  file ,\ --config-file= file
+.BI "\-c " file
+.TQ
+.BI \-\-config\-file= file
 Specify a configuration file other than
-.IR ~/.tmda/config .
+.IR \(ti/.tmda/config .
 .TP
-.BI -O\  file ,\ --filter-outgoing-file= file
+.BI "\-O " file
+.TQ
+.BI \-\-filter\-outgoing\-file= file
 Full pathname to your outgoing filter file.
 Overrides FILTER_OUTGOING in
-.IR ~/.tmda/config .
+.IR \(ti/.tmda/config .
 .TP
-.BI -f\  sender
+.BI "\-f " sender
 This option is silently ignored currently.
 .TP
-.B -q, --qfilter
-Return 99 to qfilter so it will not run qmail-queue itself.
+.B \-q
+.TQ
+.B \-\-qfilter
+Return 99 to qfilter so it will not run qmail\-queue itself.
 A qmail only option.
 .TP
-.BI -M\  recip\ sender ,\ --filter-match= recip\ sender
+.BI \-M " recip sender"
+.TQ
+.BI \-\-filter\-match= "recip sender"
 Check whether the given e-mail address matches a line in your outgoing
 filter and then exit.
 The first address given should be the message recipient, and the second
 is the sender (you).
 This option will also check for parsing errors in the filter file.
-.B -V
+.TP
+.B \-V
 Show full TMDA version information and exit.
 .TP
-.B --version
+.B \-\-version
 Show program's version number and exit.
 .TP
-.B -h, --help
+.B \-h
+.TQ
+.B \-\-help
 Show this help message and exit.
 .\" **********************************************************************
 .\".SH SEE ALSO
 .\" **********************************************************************
 .SH AUTHOR
 TMDA was written by
-.MTO jason@mastaler.com "Jason R. Mastaler" .
+.MT jason@mastaler.com
+Jason R. Mastaler
+.ME .
 .PP
 This manual page was adapted from the program
-.B --help
+.B \%\-\-help
 output by
-.MTO kevin-opensource@omegacrash.net "Kevin Goodsell" ,
+.MT kevin\-opensource@omegacrash.net
+Kevin Goodsell
+.ME ,
 for the Debian project (but may be used by others).
