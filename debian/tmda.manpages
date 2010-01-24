@@ -1,9 +1,9 @@
-debian/tmda-address.1
-debian/tmda-check-address.1
-debian/tmda-filter.1
-debian/tmda-inject.1
-debian/tmda-keygen.1
-debian/tmda-pending.1
-debian/tmda-rfilter.1
-debian/tmda-sendmail.1
+tmda/contrib/manpages/tmda-address.1
+tmda/contrib/manpages/tmda-check-address.1
+tmda/contrib/manpages/tmda-filter.1
+tmda/contrib/manpages/tmda-inject.1
+tmda/contrib/manpages/tmda-keygen.1
+tmda/contrib/manpages/tmda-pending.1
+tmda/contrib/manpages/tmda-sendmail.1
+tmda/contrib/manpages/tmda-filter-format.5
 tmda-config.5

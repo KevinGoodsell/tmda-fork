@@ -23,7 +23,7 @@ configure-stamp:
 
 build: build-stamp
 
-build-stamp: configure-stamp  
+build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
@@ -34,7 +34,7 @@ build-stamp: configure-stamp
 
 	touch $@
 
-clean: 
+clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
@@ -44,7 +44,7 @@ clean:
 
 	rm -f tmda-config.5
 
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
@@ -60,18 +60,17 @@ install: build
 binary-indep: build install
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs 
+	dh_installchangelogs
 	dh_installdocs
 #	dh_installexamples
 
 	# TMDA has ChangeLog files scattered all through the source tree.
-	# Also has standard python libraries installed in pythonlib.
-	dh_install -p tmda --exclude=ChangeLog --exclude=TMDA/pythonlib \
-	           --exclude=tmda-ofmipd --exclude bin/paths.py
-	dh_install -p tmda-smtp 
+	dh_install -p tmda --exclude=ChangeLog --exclude=tmda-ofmipd \
+	           --exclude bin/paths.py
+	dh_install -p tmda-smtp
 
 #	dh_installmenu
-#	dh_installdebconf	
+#	dh_installdebconf
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
@@ -82,7 +81,8 @@ binary-indep: build install
 #	dh_installcron
 #	dh_installinfo
 	dh_installman
-#	dh_link
+	dh_link -p tmda usr/share/man/man1/tmda-filter.1 \
+	                usr/share/man/man1/tmda-rfilter.1
 #	dh_strip
 	dh_compress
 	dh_fixperms
