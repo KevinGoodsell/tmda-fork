@@ -806,7 +806,6 @@ if not vars().has_key('ACTION_OUTGOING'):
     ACTION_OUTGOING = "dated"
 
 # FINGERPRINT
-#
 # A list containing one or more message headers whose values should be
 # used to create a "fingerprint" for the message.  If the header value
 # is 'body' (all-lowercase), the message body content is used instead
