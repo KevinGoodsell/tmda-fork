@@ -1,6 +1,6 @@
 '\" t
 .\" Hey, EMACS: -*- nroff -*-
-.TH TMDA-OFMIPD 1 "2010-01-24" TMDA "TMDA Programs"
+.TH TMDA-OFMIPD 1 "2010-01-25" TMDA "TMDA Programs"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -182,9 +182,15 @@ The different options have the following effect:
 allbox, tab(;);
 l l l
 lB l l.
-;AUTH allowed before STARTTLS?;AUTH after STARTTLS?
+;T{
+AUTH allowed before \%STARTTLS?
+T};T{
+AUTH after \%STARTTLS?
+T}
 optional;yes;yes
-localoptional;connections from localhost only;yes
+localoptional;T{
+connections from localhost only
+T};yes
 on;no;yes
 .TE
 .TP

@@ -3,7 +3,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH TMDA-FILTER-FORMAT 5 "2010-01-24" TMDA "TMDA Documentation"
+.TH TMDA-FILTER-FORMAT 5 "2010-01-25" TMDA "TMDA Documentation"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -151,6 +151,10 @@ and
 .B from
 filter types, the addresses matched are different for incomming and
 outgoing filters:
+.\" This table produces adjusting warnings because of the long,
+.\" non-breakable words. As a work-around, disable adjusting just
+.\" until the end of the table.
+.na
 .TS
 allbox, tab(;);
 l l l
@@ -174,6 +178,7 @@ command line or the
 header
 T}
 .TE
+.ad
 .IP
 Wildcard matching is also allowed in
 .B from
