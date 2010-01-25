@@ -416,9 +416,12 @@ class HtmlFormatter(Formatter):
         indent = '  ' * level
         print >> self.out, add_prefix(indent, text)
 
-    _escape = Replacer(r'[<>&]', { '&' : '&amp;',
-                                   '<' : '&lt;',
-                                   '>' : '&gt;' })
+    _escape = Replacer(r'[<>&]',
+        {
+            '&' : '&amp;',
+            '<' : '&lt;',
+            '>' : '&gt;',
+        })
 
     def _write_toc(self, level):
         self._write(level, '<ul>')
@@ -496,15 +499,22 @@ class ManFormatter(Formatter):
         import time
         return time.strftime('%Y-%m-%d')
 
-    # All escapes for normal text. Currently only . and ' at the start
-    # of a line.
-    _escape_text = Replacer(re.compile(r"^[.']", re.MULTILINE),
-                            { '.' : r'\&.',
-                              "'" : r"\&'" })
+    # Replacer for standard text
+    _escape_text = Replacer(re.compile(r"^[.']|~", re.MULTILINE),
+        {
+            '.' : r'\&.',
+            "'" : r"\&'",
+            '~' : r'\(ti',
+        })
 
-    _escape_preformatted = Replacer(r"['`]",
-                                    { "'" : r'\(aq',
-                                      '`' : r'\(ga' })
+    # Replacer for literal text
+    _escape_preformatted = Replacer(r"[-~'`]",
+        {
+            '-' : r'\-',
+            '~' : r'\(ti',
+            "'" : r'\(aq',
+            '`' : r'\(ga',
+        })
 
     def _write_fragment(self, frag):
         if isinstance(frag, PreFormatted):
@@ -519,8 +529,7 @@ class ManFormatter(Formatter):
         elif isinstance(frag, DefinitionList):
             for (name, defn) in frag.items():
                 self._write('.TP')
-                # XXX This probably needs to be escaped somehow
-                self._write('.B %s', name)
+                self._write(r'.B %s', self._escape_preformatted(name))
                 self._write(self._escape_text(defn))
 
         elif isinstance(frag, List):
@@ -566,9 +575,11 @@ class MoinMoinFormatter(Formatter):
 
     # This only does very basic de-wikifying.
     _dewikify = Replacer(r"``?|''",
-                         { '``' : '"',
-                           "''" : '"',
-                           '`'  : "'" })
+        {
+            '``' : '"',
+            "''" : '"',
+            '`'  : "'",
+        })
 
     def _write_fragment(self, frag):
         if isinstance(frag, PreFormatted):
