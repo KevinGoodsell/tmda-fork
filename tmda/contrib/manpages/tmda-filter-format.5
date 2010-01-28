@@ -3,7 +3,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH TMDA-FILTER-FORMAT 5 "2010-01-25" TMDA "TMDA Documentation"
+.TH TMDA-FILTER-FORMAT 5 "2010-01-28" TMDA "TMDA Documentation"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -153,26 +153,27 @@ filter types, the addresses matched are different for incomming and
 outgoing filters:
 .\" This table produces adjusting warnings because of the long,
 .\" non-breakable words. As a work-around, disable adjusting just
-.\" until the end of the table.
+.\" until the end of the table, and allow plenty of opportunity to
+.\" break long words.
 .na
 .TS
 allbox, tab(;);
 l l l
-lB lx lx.
+lB l l.
 ;Incoming Filter;Outgoing Filter
 from*;T{
 Envelope sender or one of the headers
 .BR From ,
-.BR \%Reply\-To ,
+.BR Reply-To ,
 or
-.B \%X\-Primary\-Address
+.B X-Primary-Address
 (depending on the
-.B \%PRIMARY_ADDRESS_MATCH
+.B PRI\%MARY_AD\%DRESS_MATCH
 setting)
 T};From header
 to*;Envelope recipient;T{
 Recipient on
-.BR \%tmda\-sendmail 's
+.BR tmda-sendmail 's
 command line or the
 .B To
 header
