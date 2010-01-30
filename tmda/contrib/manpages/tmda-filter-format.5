@@ -3,7 +3,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH TMDA-FILTER-FORMAT 5 "2010-01-28" TMDA "TMDA Documentation"
+.TH TMDA-FILTER-FORMAT 5 "2010-01-30" TMDA "TMDA Documentation"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -142,8 +142,6 @@ type that they expect.
 .BI "to " address
 The filter matches the given
 .IR address .
-.I address
-may also be a domain name which matches all addresses in that domain.
 .IP
 For all
 .B to
@@ -220,8 +218,8 @@ Like
 .B from
 and
 .BR to ,
-but using addresses from the indicated file rather than a single
-address.
+but using addresses or domains from the indicated file rather than a
+single address.
 The
 .B \%\-autocdb
 and
@@ -234,7 +232,8 @@ If the
 flag is given, then the file not existing is not an error.
 .IP
 .I file
-is a simple text file containing one address or domain per line.
+is a simple text file containing one address or domain (possibly with
+wildcards) per line.
 Each address or domain may optionally be followed by an
 .IR action ,
 which overrides the
@@ -252,10 +251,11 @@ which begin with # and continue to the end of the line.
 .TQ
 .BR to\-dbm " [" \-optional "] \fIdatabase"
 Like
-.B from
+.B from-file
 and
-.BR to ,
-but using addresses from the given database rather than a single address.
+.BR to-file ,
+but using addresses and domains from the given database rather than from
+a file.
 .B \%\-optional
 has the same meaning as in
 .B \%from\-file
