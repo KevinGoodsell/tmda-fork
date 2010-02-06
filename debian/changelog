@@ -2,7 +2,7 @@ tmda (1.1.12-kg2-1) unstable; urgency=low
 
   * New "upstream" version (in the same repository, but logically upstream).
 
- -- Kevin Goodsell <kevin-opensource@omegacrash.net>  Sun, 24 Jan 2010 10:44:27 -0800
+ -- Kevin Goodsell <kevin-opensource@omegacrash.net>  Sat, 06 Feb 2010 11:39:13 -0800
 
 tmda (1.1.12-kg1-3) jaunty; urgency=low
 
