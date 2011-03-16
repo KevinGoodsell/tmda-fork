@@ -1,0 +1,686 @@
+#!/usr/bin/env python
+#
+# Copyright (C) 2009 Kevin Goodsell <kevin-opensource@omegacrash.net>
+#
+# This file is part of TMDA.
+#
+# TMDA is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.  A copy of this license should
+# be included in the file COPYING.
+#
+# TMDA is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with TMDA; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+'''
+Parse Defaults.py to produce documentation.
+'''
+
+import re
+import sys
+import optparse
+
+###############
+# Basic Parsing
+###############
+
+class ConfigVariable(object):
+    def __init__(self, name, text):
+        self.name = name
+        self.text = text
+
+class ParseError(StandardError):
+    pass
+
+def variables(text):
+    var_text_matcher = re.compile(r'.*^'
+        r'############################\n'
+        r'# User configurable settings\n'
+        r'############################\n'
+        r'(?P<var_text>.*)^'
+        r'###################################\n'
+        r'# END of user configurable settings\n'
+        r'###################################\n',
+        re.MULTILINE | re.DOTALL)
+    m = var_text_matcher.match(text)
+    if m is None:
+        raise ParseError("Didn't find config variables")
+    text = m.group('var_text')
+
+    var_matcher = re.compile(r'^'
+        r'# (?P<name>[A-Z]\w*)[ \t]*\n'
+        r'(?P<text>(#.*\n)+)', re.MULTILINE)
+    comment_stripper = re.compile(r'^# ?', re.MULTILINE)
+
+    for m in var_matcher.finditer(text):
+        name = m.group('name')
+        text = comment_stripper.sub('', m.group('text'))
+        yield ConfigVariable(name, text)
+
+################
+# Text Fragments
+################
+
+class TextFragment(object):
+    def __init__(self, text):
+        self._text = text
+
+    # Unformatted text should be exactly like the input text, e.g., no
+    # whitespace stripped or anything like that. Piecing together the
+    # unformatted text from all the fragments should produce the original
+    # text.
+    def unformatted(self):
+        return self._text
+
+    _line_stripper = re.compile(r'^\s+|\s+$', re.MULTILINE)
+    @classmethod
+    def strip_lines(cls, text):
+        return cls._line_stripper.sub('', text)
+
+    def __len__(self):
+        return len(self._text)
+
+    # This is intended for debugging
+    def __str__(self):
+        return '== %s ==\n%s' % (self.__class__.__name__, self.unformatted())
+
+    @classmethod
+    def from_text(cls, text, index):
+        raise NotImplementedError()
+
+class RegexFragment(TextFragment):
+    @classmethod
+    def from_text(cls, text, index):
+        match = cls._matcher.match(text, index)
+        if match is None:
+            return None
+
+        return cls(match.group())
+
+# Line is a generic catch-all fragment
+class Line(RegexFragment):
+    _matcher = re.compile(r'.*\n?')
+
+class Paragraph(RegexFragment):
+    def __init__(self, text):
+        RegexFragment.__init__(self, text)
+        self._formatted = self.strip_lines(text)
+
+    def formatted(self):
+        return self._formatted
+
+    # At least one line starting with non-space, optional empty/space lines.
+    _matcher = re.compile(r'(\S.*\n)+(\s*\n)*')
+
+class ExampleText(Paragraph):
+    # Example(s): followed by optional space, optional empty/space lines
+    _matcher = re.compile(r'Examples?:[ \t]*\n(\s*\n)*')
+
+class NoteText(Paragraph):
+    # Line beginning with Note(s):, extra lines beginning with non-space,
+    # optional empty/space lines.
+    _matcher = re.compile(r'Notes?:[ \t].*\n(\S.*\n)*(\s*\n)*', re.IGNORECASE)
+
+class List(TextFragment):
+    def __init__(self, text, items):
+        TextFragment.__init__(self, text)
+        self._items = items
+
+    def items(self):
+        return iter(self._items)
+
+class DefinitionList(List):
+    pass
+
+class QuotedDefinitionList(DefinitionList):
+    # Match lists of this form:
+    # "name"
+    #     definition line 1
+    #     definition line 2
+    # (optional empty lines)
+    _matcher = re.compile(r'''
+        ^"(?P<name>[^\n"]+)" # Quoted name
+        [ \t]*\n             # Optional trailing space, EOL
+        (?P<defn>([ \t]+     # Leading space
+        \S.*\n)+)            # At least some non-space, rest of line
+        (\s*\n)*             # Optional empty/space-only lines
+        ''', re.MULTILINE | re.VERBOSE)
+
+    @classmethod
+    def from_text(cls, text, index):
+        text_bits = []
+        items = []
+        while index < len(text):
+            m = cls._matcher.match(text, index)
+            if m is None:
+                break
+
+            t = m.group()
+            index += len(t)
+            text_bits.append(t)
+
+            name = m.group('name')
+            defn = cls.strip_lines(m.group('defn'))
+            items.append((name, defn))
+
+        if len(items) > 1:
+            return cls(''.join(text_bits), items)
+        else:
+            return None
+
+class DashedDefinitionList(DefinitionList):
+    # Match lists of this form:
+    # name - definition line 1
+    # (optional space)definition line 2
+    # (optional empty lines)
+    _name_line = re.compile(r'''
+        (?P<name>\S+)     # Space-less name
+        [ \t]+-[ \t]+     # Space-surrounded dash
+        (?P<defn>\S.*\n)  # Some non-space, rest of line
+        ''', re.VERBOSE)
+
+    _extra_line = re.compile(r'[ \t]*\S.*\n')
+    _empty_line = re.compile(r'[ \t]*\n')
+
+    # State machine
+    #
+    # _need_name_state:
+    #   _name_line matches: _maybe_name_state
+    #   else: end of match
+    #
+    # _maybe_name_state:
+    #   _name_line matches: _maybe_name_state
+    #   else: _maybe_extra_state
+    #
+    # _maybe_extra_state:
+    #   _extra_line matches: _maybe_name_state
+    #   else: _maybe_blank_state
+    #
+    # _maybe_blank_state:
+    #   _empty_line matches: _maybe_blank_state
+    #   else: _need_name_state
+
+    @staticmethod
+    def _match(regex, text, index, unformatted):
+        m = regex.match(text, index)
+        if m:
+            match_text = m.group()
+            index += len(match_text)
+            unformatted.append(match_text)
+        return (m, index)
+
+    @classmethod
+    def _need_name_state(cls, text, index, unformatted, items):
+        (match, new_index) = cls._match(cls._name_line, text, index,
+                                        unformatted)
+        if match:
+            lines = [match.group('defn').strip()]
+            items.append((match.group('name'), lines))
+            return (cls._maybe_name_state, new_index)
+        else:
+            return (None, 0)
+
+    @classmethod
+    def _maybe_name_state(cls, text, index, unformatted, items):
+        (match, new_index) = cls._match(cls._name_line, text, index,
+                                        unformatted)
+        if match:
+            lines = [match.group('defn').strip()]
+            items.append((match.group('name'), lines))
+            return (cls._maybe_name_state, new_index)
+        else:
+            return (cls._maybe_extra_state, index)
+
+    @classmethod
+    def _maybe_extra_state(cls, text, index, unformatted, items):
+        (match, new_index) = cls._match(cls._extra_line, text, index,
+                                        unformatted)
+        if match:
+            match_text = match.group()
+            items[-1][1].append(match_text.strip())
+            return (cls._maybe_name_state, new_index)
+        else:
+            return (cls._maybe_blank_state, index)
+
+    @classmethod
+    def _maybe_blank_state(cls, text, index, unformatted, items):
+        (match, new_index) = cls._match(cls._empty_line, text, index,
+                                        unformatted)
+        if match:
+            return (cls._maybe_blank_state, new_index)
+        else:
+            return (cls._need_name_state, index)
+
+    @classmethod
+    def from_text(cls, text, index):
+        unformatted = []
+        items = []
+
+        state = cls._need_name_state
+        while state:
+            (state, index) = state(text, index, unformatted, items)
+
+        if len(items) > 1:
+            items = [(name, '\n'.join(lines)) for (name, lines) in items]
+            return cls(''.join(unformatted), items)
+        else:
+            return None
+
+class BasicList(List):
+    # Derive from this, providing _matcher with a 'item' group.
+
+    @classmethod
+    def from_text(cls, text, index):
+        unformatted = []
+        items = []
+
+        while True:
+            match = cls._matcher.match(text, index)
+            if match is None:
+                break
+
+            match_text = match.group()
+            unformatted.append(match_text)
+            index += len(match_text)
+            items.append(cls.strip_lines(match.group('item')))
+
+        if len(items) > 1:
+            return cls(''.join(unformatted), items)
+        else:
+            return None
+
+class BulletList(BasicList):
+    _matcher = re.compile(r'''
+        \*[ \t]+       # Star followed by whitespace.
+        (?P<item>      # Start of group.
+        .*\n           # Rest of the initial line.
+        ([^*\n].*\n)*  # Additional non-empty lines that start with non-star.
+        (\s*\n)*       # Blank lines.
+        )              # End of group.''', re.VERBOSE)
+
+class IndentList(BasicList):
+    _matcher = re.compile(r'''
+        [ \t]+     # Required indent.
+        (?P<item>  # Start of group.
+        \S.*       # At least some non-space, rest of first line.
+        )\n        # End of group, end of first line.
+        [ \t]*\n   # Required blank line. ''', re.VERBOSE)
+
+class PreFormatted(RegexFragment):
+    def __init__(self, text):
+        RegexFragment.__init__(self, text)
+        self._formatted = text.strip()
+
+    def formatted(self):
+        return self._formatted
+
+class CodeSnippet(PreFormatted):
+    _matcher = re.compile(r'''
+        (
+            ([a-zA-Z_]\w+[ \t]*=.*\n   # Variable assignments
+            |                          #  or
+            import[ \t]\w+(\.\w+)*\n)  # Import statements
+            (.*\S.*\n)*                # Optional non-empty lines
+            (\s*\n)+                   # At least one empty line
+        )+
+        ''', re.VERBOSE | re.MULTILINE)
+
+class MailHeader(PreFormatted):
+    _matcher = re.compile(r'''
+        (
+        [A-Z][-A-Za-z]*:  # Header and colon.
+        [ \t]+.*\n        # Space and the rest of the line
+        )+                # Repeat header line match.
+        (\s*\n)+          # Required blank line(s) ''', re.VERBOSE)
+
+def text_fragments(text):
+    fragment_types = (DashedDefinitionList, QuotedDefinitionList, ExampleText,
+                      NoteText, MailHeader, BulletList, IndentList,
+                      CodeSnippet, Paragraph, Line)
+    index = 0
+
+    while index < len(text):
+        for frag_type in fragment_types:
+            frag = frag_type.from_text(text, index)
+            if frag is not None:
+                index += len(frag)
+                yield frag
+                break
+        else:
+            raise ParseError('match failed at %d' % index)
+
+###############
+# Miscellaneous
+###############
+
+_line_start = re.compile(r'^', re.MULTILINE)
+def add_prefix(prefix, text):
+    return _line_start.sub(prefix, text)
+
+class Replacer(object):
+    def __init__(self, regex, replacements, default=''):
+        if isinstance(regex, basestring):
+            self._regex = re.compile(regex)
+        else:
+            self._regex = regex
+        self._replace = replacements
+        self._default = default
+
+    def _sub(self, match):
+        groups = match.groupdict()
+        if 'repl' in groups:
+            match_text = groups['repl']
+        else:
+            match_text = match.group()
+        return self._replace.get(match_text, self._default)
+
+    def __call__(self, text):
+        return self._regex.sub(self._sub, text)
+
+############
+# Formatters
+############
+
+class Formatter(object):
+    _title = 'TMDA Configuration Variables'
+    _comment = 'This file was automatically generated and should not be ' \
+               'edited manually.'
+
+    def __init__(self, variables, f=sys.stdout):
+        self.variables = variables
+        self.out = f
+
+    def write(self):
+        raise NotImplementedError()
+
+class DebugTextFormatter(Formatter):
+    def write(self):
+        for var in self.variables:
+            print >> self.out, '== Header =='
+            print >> self.out, var.name
+
+            for frag in text_fragments(var.text):
+                print >> self.out, '%s' % frag,
+
+class HtmlFormatter(Formatter):
+    def _write(self, level, text, *args):
+        if args:
+            text = text % args
+        indent = '  ' * level
+        print >> self.out, add_prefix(indent, text)
+
+    _escape = Replacer(r'[<>&]', { '&' : '&amp;',
+                                   '<' : '&lt;',
+                                   '>' : '&gt;' })
+
+    def _write_toc(self, level):
+        self._write(level, '<ul>')
+
+        for var in self.variables:
+            self._write(level+1, '<li>')
+            self._write(level+2, '<a href="#%s">%s</a>', var.name, var.name)
+            self._write(level+1, '</li>')
+
+        self._write(level, '</ul>')
+
+    def _write_fragment(self, level, frag):
+        if isinstance(frag, PreFormatted):
+            self._write(0, '<pre>%s</pre>', self._escape(frag.formatted()))
+
+        elif isinstance(frag, DefinitionList):
+            self._write(level, '<dl>')
+            for (name, defn) in frag.items():
+                self._write(level+1, '<dt>%s</dt>', self._escape(name))
+                self._write(level+1, '<dd>')
+                self._write(level+2, self._escape(defn))
+                self._write(level+1, '</dd>')
+            self._write(level, '</dl>')
+
+        elif isinstance(frag, List):
+            self._write(level, '<ul>')
+            for item in frag.items():
+                self._write(level+1, '<li>')
+                self._write(level+2, self._escape(item))
+                self._write(level+1, '</li>')
+            self._write(level, '</ul>')
+
+        elif isinstance(frag, Paragraph):
+            self._write(level, '<p>')
+            self._write(level+1, self._escape(frag.formatted()))
+            self._write(level, '</p>')
+
+        else:
+            self._write(level, '<!-- Unhandled TextFragment type: %s -->',
+                        frag.__class__.__name__)
+            self._write(level, '<p>')
+            self._write(0, self._escape(frag.unformatted()))
+            self._write(level, '</p>')
+
+    def write(self):
+        self._write(0, '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" '
+                       '"http://www.w3.org/TR/html4/strict.dtd">')
+        self._write(0, '<!--%s-->', self._comment)
+        self._write(0, '<html>')
+        self._write(1, '<head>')
+        self._write(2, '<title>%s</title>', self._title)
+        self._write(2, '<meta http-equiv="Content-type" '
+                       'content="text/html;charset=UTF-8">')
+        self._write(1, '</head>')
+        self._write(1, '<body>')
+        self._write(2, '<h1>%s</h1>', self._title)
+
+        self._write_toc(2)
+
+        for var in self.variables:
+            self._write(2, '<h2><a name="%s">%s</a></h2>', var.name, var.name)
+            for frag in text_fragments(var.text):
+                self._write_fragment(2, frag)
+
+        self._write(1, '</body>')
+        self._write(0, '</html>')
+
+class ManFormatter(Formatter):
+    def _write(self, text, *args):
+        if args:
+            text = text % args
+        print >> self.out, text
+
+    def _date(self):
+        import time
+        return time.strftime('%Y-%m-%d')
+
+    # All escapes for normal text. Currently only . and ' at the start
+    # of a line.
+    _escape_text = Replacer(re.compile(r"^[.']", re.MULTILINE),
+                            { '.' : r'\&.',
+                              "'" : r"\&'" })
+
+    _escape_preformatted = Replacer(r"['`]",
+                                    { "'" : r'\(aq',
+                                      '`' : r'\(ga' })
+
+    def _write_fragment(self, frag):
+        if isinstance(frag, PreFormatted):
+            self._write('.PP')
+            self._write('.ft CR')
+            self._write('.nf')
+            text = add_prefix('  ', frag.formatted())
+            self._write(self._escape_preformatted(text))
+            self._write('.fi')
+            self._write('.ft')
+
+        elif isinstance(frag, DefinitionList):
+            for (name, defn) in frag.items():
+                self._write('.TP')
+                # XXX This probably needs to be escaped somehow
+                self._write('.B %s', name)
+                self._write(self._escape_text(defn))
+
+        elif isinstance(frag, List):
+            for item in frag.items():
+                self._write(r'.IP \(bu')
+                self._write(self._escape_text(item))
+
+        elif isinstance(frag, Paragraph):
+            self._write('.PP')
+            self._write(self._escape_text(frag.formatted()))
+
+        else:
+            self._write(r'.\" Unhandled TextFragment type: %s',
+                        frag.__class__.__name__)
+            self._write('.PP')
+            self._write(self._escape_text(frag.unformatted()))
+
+    def write(self):
+        self._write(r'.\" Emacs hint: -*- nroff -*-')
+        self._write(r'.\" %s', self._comment)
+        self._write('.TH TMDA-CONFIG 5 %s TMDA "TMDA Documentation"',
+                    self._date())
+
+        self._write('.SH NAME')
+        self._write(r'tmda-config \- %s', self._title)
+
+        self._write('.SH VARIABLES')
+
+        for var in self.variables:
+            self._write('.SS %s', var.name)
+            for frag in text_fragments(var.text):
+                self._write_fragment(frag)
+
+class MoinMoinFormatter(Formatter):
+    def _write(self, text, *args):
+        if args:
+            text = text % args
+        print >> self.out, text
+
+    _line_sep = re.compile(r'\s*\n\s*', re.MULTILINE)
+    def _join_lines(self, text):
+        return self._line_sep.sub(' ', text)
+
+    # This only does very basic de-wikifying.
+    _dewikify = Replacer(r"``?|''",
+                         { '``' : '"',
+                           "''" : '"',
+                           '`'  : "'" })
+
+    def _write_fragment(self, frag):
+        if isinstance(frag, PreFormatted):
+            self._write('{{{\n%s\n}}}\n', frag.formatted())
+
+        elif isinstance(frag, DefinitionList):
+            for (name, defn) in frag.items():
+                text = self._join_lines(defn)
+                self._write(' %s:: %s', name, self._dewikify(text))
+            self._write('')
+
+        elif isinstance(frag, List):
+            for item in frag.items():
+                text = self._join_lines(item)
+                self._write(' * %s', self._dewikify(text))
+            self._write('')
+
+        elif isinstance(frag, Paragraph):
+            self._write('%s\n', self._dewikify(frag.formatted()))
+
+        else:
+            self._write('## Unhandled TextFragment type: %s',
+                        frag.__class__.__name__)
+            self._write('%s\n', self._dewikify(frag.unformatted()))
+
+    def write(self):
+        self._write('## %s', self._comment)
+        self._write('= %s =', self._title)
+        self._write('<<TableOfContents>>')
+
+        for var in self.variables:
+            self._write('== %s ==', var.name)
+            for frag in text_fragments(var.text):
+                self._write_fragment(frag)
+
+##################################
+# Main Function and Option Parsing
+##################################
+
+def make_optparser():
+    usage = '%prog [options] <path/to/Defaults.py>'
+    description = 'Parse Defaults.py to create documentation for ' \
+                  'user-configurable options.'
+    parser = optparse.OptionParser(usage=usage, description=description)
+    parser.add_option('--unsorted', action='store_false', dest='sort',
+                      default=True, help="Don't sort by variable name. "
+                                         "Maintain the input order.")
+
+    format_group = optparse.OptionGroup(parser, 'Output format options',
+                                        'These options are used for '
+                                        'determining the output format. '
+                                        'At most one may be given. If no '
+                                        'format is given, HTML is used by '
+                                        'default.')
+    format_group.add_option('--html', action='append_const', const='html',
+                            dest='format', help='Output HTML.')
+    format_group.add_option('--man', action='append_const', const='man',
+                            dest='format', help='Output a UNIX manpage.')
+    format_group.add_option('--debug-text', action='append_const',
+                            const='debug_text', dest='format',
+                            help='Output plain text with original formatting '
+                            'and tags identifying how each text fragment was '
+                            'parsed. For debugging only.')
+    format_group.add_option('--moinmoin', action='append_const',
+                            const='moinmoin', dest='format',
+                            help='Output MoinMoin Wiki text.')
+
+    parser.add_option_group(format_group)
+
+    return parser
+
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
+
+    opt_parser = make_optparser()
+    (opts, arguments) = opt_parser.parse_args(args)
+
+    # Check input file argument
+    if len(arguments) == 0:
+        opt_parser.error('No input file given')
+    elif len(arguments) > 1:
+        opt_parser.error('Too many input files')
+    filename = arguments[0]
+
+    # Check output format argument
+    if opts.format:
+        if len(opts.format) > 1:
+            opt_parser.error('Too many output formats')
+        else:
+            format = opts.format[0]
+    else:
+        format = 'html'
+
+    config = list(variables(open(filename).read()))
+    if opts.sort:
+        config = [(var.name, var) for var in config]
+        config.sort()
+        config = [var for (name, var) in config]
+
+    if format == 'debug_text':
+        formatter = DebugTextFormatter(config)
+    elif format == 'html':
+        formatter = HtmlFormatter(config)
+    elif format == 'man':
+        formatter = ManFormatter(config)
+    elif format == 'moinmoin':
+        formatter = MoinMoinFormatter(config)
+
+    formatter.write()
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())

@@ -806,7 +806,6 @@ if not vars().has_key('ACTION_OUTGOING'):
     ACTION_OUTGOING = "dated"
 
 # FINGERPRINT
-#
 # A list containing one or more message headers whose values should be
 # used to create a "fingerprint" for the message.  If the header value
 # is 'body' (all-lowercase), the message body content is used instead
@@ -844,6 +843,7 @@ if not vars().has_key('ACTION_OUTGOING'):
 # values only (right hand side of Header:).
 #
 # The following header would then be added to the outgoing message:
+#
 # X-TMDA-Fingerprint: vDBoOHtIUE6VniJguxJ+w2fR5bU
 #
 # No default
@@ -1557,6 +1557,7 @@ if not vars().has_key('TIMEOUT_UNITS'):
 # Subject: X-TMDA   sender      Re: You're fired!
 #
 # In all cases, the resulting subject will simply be:
+#
 # Subject: Re: You're fired!
 #
 # Default is False (turned off)

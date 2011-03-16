@@ -1,3 +1,8 @@
+2011-03-15  Kevin Goodsell  <kevin-opensource@omegacrash.net>
+
+	* Add parse_def, a more flexible parser and help generator for
+	Defaults.py to replace def2html.
+
 2008-02-21  Bob Rogers  <rogers@rgrjr.dyndns.org>
 
 	* Updated tmda.el to work with the current tmda-pending output.
