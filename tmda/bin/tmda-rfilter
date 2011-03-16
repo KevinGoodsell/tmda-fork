@@ -294,7 +294,7 @@ if (Defaults.MAIL_TRANSFER_AGENT == 'qmail' and
                 vdomain_match = 1
             # .domain:prepend (wildcard)
             elif not vdomain.split('.', 1)[0]:
-                if odomain.lower().find(vdomain) <> -1:
+                if odomain.lower().find(vdomain) != -1:
                     vdomain_match = 1
             # user@domain:prepend
             else:
@@ -441,7 +441,7 @@ def send_bounce(bounce_message, type):
         ar.create()
         ar.send()
         # Optionally, record this auto-response.
-        if Defaults.MAX_AUTORESPONSES_PER_DAY <> 0:
+        if Defaults.MAX_AUTORESPONSES_PER_DAY != 0:
             ar.record()
 
 
@@ -533,7 +533,7 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                           confirmed_mailid + ' has no Return-Path header!'
                 if Defaults.CONFIRM_APPEND:
                     if Util.append_to_file(confirm_append_addr,
-                                           Defaults.CONFIRM_APPEND) <> 0:
+                                           Defaults.CONFIRM_APPEND) != 0:
                         logit('CONFIRM_APPEND', Defaults.CONFIRM_APPEND)
                 if Defaults.DB_CONFIRM_APPEND and Defaults.DB_CONNECTION:
                     _username = Defaults.USERNAME.lower()
@@ -589,7 +589,7 @@ def dispose_expired_dated(cookie_date):
     # go through all of the times, and convert them into seconds
     # default becomes "0", saving the symbolic name logging
     for k,v in Defaults.ACTION_EXPIRED_DATED.iteritems():
-        if k <> 'default':
+        if k != 'default':
             templist.append((Util.seconds(k),v,k))
         else:
             # Default is False.  The number represents the number of
@@ -626,7 +626,7 @@ def verify_dated_cookie(dated_cookie):
                           'bounce_fail_dated.txt')
     # Accept the message only if the address has not expired, and the
     # HMAC is valid.
-    if datemac <> Cookie.datemac(cookie_date):
+    if datemac != Cookie.datemac(cookie_date):
         do_default_action(Defaults.ACTION_FAIL_DATED.lower(),
                           'action_fail_dated',
                           'bounce_fail_dated.txt')
@@ -772,7 +772,7 @@ def bouncegen(mode, template=None):
 
 def main():
     # cleanup the pending queue
-    if Defaults.PENDING_CLEANUP_ODDS <> 0:
+    if Defaults.PENDING_CLEANUP_ODDS != 0:
         from random import random
         if random() < float(Defaults.PENDING_CLEANUP_ODDS):
             Q.cleanup()
@@ -794,7 +794,7 @@ def main():
     sender_dict = { envelope_sender: None }
     confirm_append_address = Util.confirm_append_address(x_primary_address,
                                                          envelope_sender)
-    if confirm_append_address and confirm_append_address <> envelope_sender:
+    if confirm_append_address and confirm_append_address != envelope_sender:
         sender_dict[confirm_append_address] = None
     from_list = getaddresses(msgin.get_all('from', []))
     replyto_list = getaddresses(msgin.get_all('reply-to', []))

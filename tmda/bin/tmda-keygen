@@ -99,7 +99,7 @@ def main():
         print "exiting!"
         sys.exit()
 
-    if len(key) <> 40:
+    if len(key) != 40:
         print "Oops, generated key is not 40-characters long, exiting!"
         sys.exit()
 

@@ -427,7 +427,7 @@ def pager(str):
         # try to locate less or more if $PAGER is not set
         for prog in ('less', 'more'):
             path = os.popen('which ' + prog).read()
-            if path <> '':
+            if path != '':
                 pager = path
                 break
     try:

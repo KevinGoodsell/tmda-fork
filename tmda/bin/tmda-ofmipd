@@ -275,7 +275,7 @@ class SMTPSession(asynchat.async_chat):
             address = arg[keylen:].strip()
             if not address:
                 pass
-            elif address[0] == '<' and address[-1] == '>' and address <> '<>':
+            elif address[0] == '<' and address[-1] == '>' and address != '<>':
                 # Addresses can be in the form <person@dom.com> but watch out
                 # for null address, e.g. <>
                 address = address[1:-1]
@@ -306,7 +306,7 @@ class SMTPSession(asynchat.async_chat):
         if (not opts.fallback) and (remoteauth['enable'] or opts.authprog):
             return 0
         authdict = authfile2dict(opts.authfile)
-        if authdict.get(username.lower(), 0) <> password:
+        if authdict.get(username.lower(), 0) != password:
             return 0
         else:
             return 1
@@ -335,7 +335,7 @@ class SMTPSession(asynchat.async_chat):
         if (not opts.fallback) and (remoteauth['enable'] or opts.authprog):
             return 0
         authdict = authfile2dict(opts.authfile)
-        if authdict.get(username.lower(), 0) <> password:
+        if authdict.get(username.lower(), 0) != password:
             return 0
         else:
             return 1
@@ -357,7 +357,7 @@ class SMTPSession(asynchat.async_chat):
         if password == 0:
             return 0
         newhexdigest = hmac.HMAC(password, ticket, digestmod=md5).hexdigest()
-        if newhexdigest <> hexdigest:
+        if newhexdigest != hexdigest:
             return 0
         else:
             return 1
@@ -457,8 +457,8 @@ class SMTPSession(asynchat.async_chat):
         # to add later.
         rh = []
         rh.append('from %s' % (arg))
-        if ((arg.lower() <> self.__peername.lower()) and
-            (self.__peername.lower() <> self.__peerip)):
+        if ((arg.lower() != self.__peername.lower()) and
+            (self.__peername.lower() != self.__peerip)):
             rh.append('(%s [%s])' % (self.__peername, self.__peerip))
         else:
             rh.append('(%s)' % (self.__peerip))
@@ -950,10 +950,10 @@ def process_message_vdomain(peer, mailfrom, rcpttos, data, auth_username):
     # user.
     if running_as_root:
         pid = os.fork()
-        if pid <> 0:
+        if pid != 0:
             rpid, status = os.wait()
             # Did tmda-inject succeed?
-            if status <> 0:
+            if status != 0:
                 raise IOError, 'tmda-inject failed!'
             return
         else:
@@ -1040,7 +1040,7 @@ def process_message_sysuser(peer, mailfrom, rcpttos, data, auth_username):
         else:
             rpid, status = os.wait()
             # Did tmda-inject succeed?
-            if status <> 0:
+            if status != 0:
                 raise IOError, 'tmda-inject failed!'
     else:
         # no need to fork
@@ -1444,7 +1444,7 @@ def main():
         # check ownership of authfile if using only remote
         # authentication.
         if not (remoteauth['enable'] or opts.authprog) or opts.fallback:
-            if Util.getfileuid(opts.authfile) <> pw_uid:
+            if Util.getfileuid(opts.authfile) != pw_uid:
                 raise IOError, \
                     opts.authfile + ' must be owned by UID ' + str(pw_uid)
         # Set group ID
@@ -1456,13 +1456,13 @@ def main():
 
     # Daemonize the process if required
     if not (opts.foreground or opts.one_session):
-        if os.fork() <> 0:
+        if os.fork() != 0:
             sys.exit()
 
         if True:
             os.setsid()
 
-            if os.fork() <> 0:
+            if os.fork() != 0:
                 sys.exit()
 
             os.setpgrp()
