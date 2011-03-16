@@ -64,20 +64,45 @@ class Authenticator(object):
        provide the _get_password method (and make _has_passwords return True).
        This allows both plain_check and cram_md5_check.
     2. Otherwise, the authenticator provides its own implementation of
-       plain_check, and cram_md5_check is not usable.
+       _plain_check, and cram_md5_check is not usable.
+
+    Don't override plain_check, only _plain_check. plain_check is a simple
+    wrapper with logging.
 
     plain_check requires the local address for use in remote authenticators
     where this can be used to determine the remote auth host. Many
     authenticators can ignore this."""
 
+    # Public interface
+
     # All derived classes should be able to do this.
     def plain_check(self, username, password, localip):
+        self._log_attempt(username)
+        success = self._plain_check(username, password, localip)
+        self._log_result(username, success)
+        return success
+
+    def cram_md5_check(self, username, ticket, response):
+        self._log_attempt(username)
+        success = self._cram_md5_check(username, ticket, response)
+        self._log_result(username, success)
+        return success
+
+    def has_cram_md5(self):
+        return self._has_passwords()
+
+    def __repr__(self):
+        return '%s()' % self.__class__.__name__
+
+    # Things that might be overriden in derived classes
+
+    def _plain_check(self, username, password, localip):
         correct_pass = self._get_password(username)
         if correct_pass is None:
             return False
         return password == correct_pass
 
-    def cram_md5_check(self, username, ticket, response):
+    def _cram_md5_check(self, username, ticket, response):
         import hmac
 
         pw = self._get_password(username)
@@ -85,9 +110,6 @@ class Authenticator(object):
             return False
         digest = hmac.new(pw, ticket).hexdigest()
         return digest == response
-
-    def has_cram_md5(self):
-        return self._has_passwords()
 
     # Override _has_passwords and _get_password in Authenticators that have
     # access to plain-text passwords in order to support CRAM-MD5.
@@ -97,10 +119,30 @@ class Authenticator(object):
     def _has_passwords(self):
         return False
 
+    # Logging methods are private, and probably don't need to be bothered
+    # with in derived classes.
+
+    def _log_attempt(self, username):
+        logger.info('Authentication attempt for user %r using %r', username,
+                    self)
+
+    def _log_result(self, username, success):
+        if success:
+            result = 'succeeded'
+        else:
+            result = 'failed'
+        logger.info('Authentication %s for user %r using %r', result, username,
+                    self)
+
 class ChainAuthenticator(Authenticator):
     """A special-case authenticator that allows multiple authenticators to be
     chained together. Each is checked in turn, and if any one succeeds in
-    authenticating the user then the attempt is successful."""
+    authenticating the user then the attempt is successful.
+
+    This breaks the rules by overriding plain_check and cram_md5_check. This
+    produces the correct behavior by letting the individual authenticators
+    do their own logging.
+    """
 
     def __init__(self, auths=None):
         if auths is None:
@@ -134,6 +176,9 @@ class ChainAuthenticator(Authenticator):
         else:
             return True
 
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__, self._auths)
+
 class FileAuthenticator(Authenticator):
     def __init__(self, filename):
         Authenticator.__init__(self)
@@ -165,6 +210,9 @@ class FileAuthenticator(Authenticator):
         fp.close()
         return authdict
 
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__, self._filename)
+
 class PamAuthenticator(Authenticator):
     # XXX There's a significant problem here if the PAM service imposes a
     # delay on failure. This would block all connected clients. Linux-PAM
@@ -181,7 +229,7 @@ class PamAuthenticator(Authenticator):
         Authenticator.__init__(self)
         self._service = service
 
-    def plain_check(self, username, password, localip):
+    def _plain_check(self, username, password, localip):
         import PAM
 
         auth = PAM.pam()
@@ -191,8 +239,8 @@ class PamAuthenticator(Authenticator):
         try:
             auth.authenticate()
             auth.acct_mgmt()
-        except PAM.error, e:
-            logger.info('PAM error: %s', e)
+        except PAM.error:
+            logger.info('PAM error:', exc_info=True)
             return False
 
         return True
@@ -211,6 +259,9 @@ class PamAuthenticator(Authenticator):
                 result.append(('', 0))
         return result
 
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__, self._service)
+
 class CheckpwAuthenticator(Authenticator):
     """authprog should return 0 for auth ok, and a positive integer in
     case of a problem."""
@@ -218,9 +269,10 @@ class CheckpwAuthenticator(Authenticator):
         Authenticator.__init__(self)
         self._cmd = cmd
 
-    def plain_check(self, username, password, localip):
-        logger.info("Trying authprog method")
+    def _plain_check(self, username, password, localip):
         cmd = "/bin/sh -c 'exec %s 3<&0'" % self._cmd
+        # XXX I looks like this might raise, not return
+        # XXX Fix this error handling
         result = Util.pipecmd(cmd, '%s\0%s\0' % (username, password))
         if result == 0:
             return True
@@ -228,6 +280,9 @@ class CheckpwAuthenticator(Authenticator):
             logger.info('authprog %r for user %s failed with code %d',
                         self._cmd, username, result)
             return False
+
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__, self._cmd)
 
 class RemoteAuthenticator(Authenticator):
     def __init__(self, host, port):
@@ -275,7 +330,7 @@ class ImapAuthenticator(RemoteAuthenticator):
         RemoteAuthenticator.__init__(self, host, port)
         self._secure = secure
 
-    def plain_check(self, username, password, localip):
+    def _plain_check(self, username, password, localip):
         import imaplib
 
         if self._secure:
@@ -288,17 +343,21 @@ class ImapAuthenticator(RemoteAuthenticator):
             imap.login(username, password)
             imap.logout()
             return True
-        except imap.error, e:
-            logger.info('imap(s) authentication failed for %s@%s (%s)',
-                        username, host, e)
+        except imap.error:
+            logger.debug('imap(s) authentication failure details:',
+                         exc_info=True)
         return False
+
+    def __repr__(self):
+        return '%s(%r, %r, %r)' % (self.__class__.__name__, self._host,
+               self._port, self._secure)
 
 class Pop3Authenticator(RemoteAuthenticator):
     def __init__(self, host, port, use_apop):
         RemoteAuthenticator.__init__(self, host, port)
         self._use_apop = use_apop
 
-    def plain_check(self, username, password, localip):
+    def _plain_check(self, username, password, localip):
         import poplib
 
         (host, port) = self.remote_address(localip)
@@ -311,10 +370,14 @@ class Pop3Authenticator(RemoteAuthenticator):
                 pop.pass_(password)
             pop.quit()
             return True
-        except poplib.error_proto, e:
-            logger.info('pop3 authentication failed for %s@%s (%s)',
-                        username, host, e)
+        except poplib.error_proto:
+            logger.debug('pop3 authentication failure details:', exc_info=True)
+
         return False
+
+    def __repr__(self):
+        return '%s(%r, %r, %r)' % (self.__class__.__name__, self._host,
+               self._port, self._use_apop)
 
 class LdapAuthenticator(RemoteAuthenticator):
     def __init__(self, host, port, dn):
@@ -327,7 +390,7 @@ class LdapAuthenticator(RemoteAuthenticator):
         RemoteAuthenticator.__init__(self, host, port)
         self._dn = dn
 
-    def plain_check(self, username, password, localip):
+    def _plain_check(self, username, password, localip):
         import ldap
 
         (host, port) = self.remote_address(localip)
@@ -336,10 +399,14 @@ class LdapAuthenticator(RemoteAuthenticator):
             ldap_obj.simple_bind_s(self._dn % username, password)
             ldap_obj.unbind_s()
             return True
-        except ldap.LDAPError, e:
-            logger.info('ldap authentication for %s@%s failed (%s)',
-                        username, host, e)
+        except ldap.LDAPError:
+            logger.debug('ldap authentication failure details:', exc_info=True)
+
         return False
+
+    def __repr__(self):
+        return '%s(%r, %r, %r)' % (self.__class__.__name__, self._host,
+               self._port, self._dn)
 
 class AuthOptions(object):
     _opt_map = {
@@ -695,12 +762,10 @@ class SMTPSession(asynchat.async_chat):
             self.push('501 malformed AUTH input')
         else:
             self.push('535 AUTH failed')
-        logger.info("Auth failed for user '%s'", self.__auth_username)
         self.__smtpauth = 0
 
     def auth_notify_succeed(self):
         self.push('235 AUTH successful')
-        logger.info("Auth succeeded for user '%s'", self.__auth_username)
         os.environ['LOGIN'] = self.__auth_username
         self.__smtpauth = 1
 
