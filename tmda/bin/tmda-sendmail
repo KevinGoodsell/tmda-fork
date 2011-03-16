@@ -61,18 +61,14 @@ except getopt.error, msg:
 for opt, arg in opts:
     if opt in ('-h', '--help'):
         usage(0)
-    if opt == '-V':
+    elif opt == '-V':
         print Version.ALL
         sys.exit()
-    if opt == '--version':
+    elif opt == '--version':
         print Version.TMDA
         sys.exit()
-    elif opt in list('BpvixmeoEJ'):
-        pass
     elif opt == '-t':
         header_recipients = True
-    elif opt == '-f':
-        pass
     elif opt == '-F':
         os.environ['NAME'] = arg
 
