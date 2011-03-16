@@ -4,6 +4,8 @@
 	and replaces it with runcmd and runcmd_checked.
 	* Deliver.py, FilterParser.py: Use new runcmd functions instead of
 	pipecmd and popen2.
+	* Cookie.py: Fix regex in make_keyword_cookie. This will make keywords
+	with commas or dots work as expected.
 
 2007-04-26  Jason R. Mastaler  <jason@mastaler.com>
 
