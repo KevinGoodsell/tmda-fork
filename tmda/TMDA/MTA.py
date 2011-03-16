@@ -39,7 +39,7 @@ class MTA:
         self.EX_STOP = None             # Non-qmail MTAs don't have such an exit code
         self.EX_TEMPFAIL = 75           # temporary failure; defer delivery
         self.default_delivery = default_delivery
-        
+
     # Define the four states of a message.
     def bounce(self):
         sys.exit(self.EX_HARD)

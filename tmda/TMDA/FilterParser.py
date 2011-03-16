@@ -99,7 +99,7 @@ class Macro:
 
         If the name is found, return two strings: the text preceding the
         name and the text following the name.
-        
+
         """
         pattern = r'(?:^|[^_\w])(' + self.name + r')(?:[^_\w]|$)'
         re_macro = re.compile(pattern, re.IGNORECASE)
@@ -115,7 +115,7 @@ class Macro:
         Return list of strings and the text following the right paren - ')'.
         If no parens are found, return an empty argument list and the
         original text.
-        
+
         """
         args = []
         tmp_text = text.lstrip()
@@ -236,28 +236,28 @@ class FilterParser:
     (?: ([\'\"]) ( (?: \\\1 | . )+? ) \1
     | ( \S+ ) )
     """, re.VERBOSE)
-        
+
     tag_action = re.compile(r"""
-    ( [A-Za-z][-\w]+ ) 
-    \s+ 
+    ( [A-Za-z][-\w]+ )
+    \s+
     (\w+\s*=\s*)?
-    (?: 
+    (?:
     ([\'\"]) ( (?: \\\3 | . )+? ) \3
-    | ( \S+ ) 
+    | ( \S+ )
     )
     """, re.VERBOSE)
-    
+
     in_action = re.compile(r"""
     ( drop | exit | stop
     | hold
     | (?: confirm | bounce | reject | deliver | ok | accept)(?:\s*=.*$)? )
     """, re.VERBOSE | re.IGNORECASE)
-    
+
     out_action = re.compile(r"""
     ( (?:(?:bare|sender|domain|dated)(?:=\S+)?)
     | (?:(?:exp(?:licit)?|as|ext(?:ension)?|kw|keyword|shell|python)=\S+)
     | default )""", re.VERBOSE | re.IGNORECASE)
-    
+
     arg_option = re.compile(r'(\w+)(=?)')
 
     variable = re.compile(r'\$\{([_\w]+)\}')
@@ -344,7 +344,7 @@ class FilterParser:
             self.__popfile()
         except IOError:
             pass
-            
+
 
     def __parse(self, fp):
         """
@@ -354,13 +354,13 @@ class FilterParser:
         Client code then calls firstmatch, which is where the actual
         matching will take place.
 
-	A ParsingError exception is built up, with detailed error
-	messages and, after parsing is completed, the exception is
-	raised.
+        A ParsingError exception is built up, with detailed error
+        messages and, after parsing is completed, the exception is
+        raised.
         """
         file = self.__file()
 
-	while 1:
+        while 1:
             try:
                 rule_line = self.__readrule(fp)
                 macro = self.__parsemacro(rule_line)
@@ -394,49 +394,49 @@ class FilterParser:
         file = self.__file()
 
         while 1:
-	    if file.pushback:
-		rule = file.pushback
-		file.pushback = None
-		file.rule_lineno = file.lineno
+            if file.pushback:
+                rule = file.pushback
+                file.pushback = None
+                file.rule_lineno = file.lineno
 
-	    original_line = fp.readline()
-	    if not original_line:            # exit loop if out of lines
+            original_line = fp.readline()
+            if not original_line:            # exit loop if out of lines
                 if rule:
                     break
-	        raise EOFError
-	    file.lineno += 1
+                raise EOFError
+            file.lineno += 1
             # comment at beginning of line, with or without leading whitespace
             if self.bol_comment.match(original_line):
                 continue
-	    # substitute space characters for tab characters
-	    line = string.replace(original_line, '\t', ' ')
+            # substitute space characters for tab characters
+            line = string.replace(original_line, '\t', ' ')
             # lose end-of-line comments and trailing whitespace
             line = string.split(line, ' #')[0]
             line = string.rstrip(line)
             # empty line may signify end of current rule
             if line == '':
                 if rule:
-		    break
+                    break
                 continue
             # may be a line with leading whitespace - a rule continuation
             elif line[0] == ' ':
-		if rule:
-		    rule = rule + line
-		else:
-		    # line begins with whitespace, meaning a rule continuation,
+                if rule:
+                    rule = rule + line
+                else:
+                    # line begins with whitespace, meaning a rule continuation,
                     # but we're not in the middle of a rule.
                     file.rule_lineno = file.lineno
                     raise Error, 'line is improperly indented'
             # line without leading whitespace signifies beginning of new rule
-	    #  (and maybe the end of the current rule)
+            #  (and maybe the end of the current rule)
             else:
-		if rule:
-		    file.pushback = line
-		    break
-		else:
-		    rule = line
-		    file.rule_lineno = file.lineno
-	return rule
+                if rule:
+                    file.pushback = line
+                    break
+                else:
+                    rule = line
+                    file.rule_lineno = file.lineno
+        return rule
 
 
     def __parsemacro(self, rule_line):
@@ -583,16 +583,16 @@ class FilterParser:
 
 
     def __parserule(self, rule_line):
-	"""
-	Parse a single rule from a filter file.  If successful, return a tuple
-	with five fields.  The five fields are:
-	
-	  source    - string: to*, from*, body*, headers*, size, pipe, pipe-headers
+        """
+        Parse a single rule from a filter file.  If successful, return a tuple
+        with five fields.  The five fields are:
+
+          source    - string: to*, from*, body*, headers*, size, pipe, pipe-headers
           args      - any arguments that might be specified
-	  match     - string: the email address to be matched against, a
+          match     - string: the email address to be matched against, a
                       filename or a regular expression enclosed within
                       parentheses
-	  actions   - dictionary: a dictionary with a key of 'action' and
+          actions   - dictionary: a dictionary with a key of 'action' and
                       a value that is a tuple.
 
                       Incoming actions have key 'incoming' and the tuple
@@ -612,16 +612,16 @@ class FilterParser:
                       usable, but unfortunate consequence of providing a useful
                       data structure for tmda-inject.
           lineno    - integer: The line number the rule began on.
-	"""
-	rule = None
-	# first, get the source and the match
-	mo = self.most_sources.match(rule_line)
+        """
+        rule = None
+        # first, get the source and the match
+        mo = self.most_sources.match(rule_line)
         if not mo:
             mo = self.hdrbody_sources.match(rule_line)
-	if not mo:
-	    raise Error, '"%s": unrecognized filter rule' % rule_line.split()[0]
-	else:
-	    source = mo.group(1)
+        if not mo:
+            raise Error, '"%s": unrecognized filter rule' % rule_line.split()[0]
+        else:
+            source = mo.group(1)
             match_line = string.lstrip(rule_line[mo.end():])
             args, match_line = self.__parseargs(self.arguments[source.lower()],
                                                 match_line)
@@ -634,19 +634,19 @@ class FilterParser:
                 action_line = string.lstrip(match_line[mo.end():])
                 actions = self.__buildactions(action_line, source)
                 rule = (source, args, match, actions, self.__file().rule_lineno)
-	return rule
+        return rule
 
 
     def __buildactions(self, action_line, source):
-	"""
-	Build and return a dictionary of actions. The dictionary structure is
+        """
+        Build and return a dictionary of actions. The dictionary structure is
         described in the documentation for the __parserule function.
-	"""
-	actions = None
-	if action_line[:len('tag ')] == 'tag ':
-	    action_line = string.lstrip(action_line[len('tag '):])
-	    while len(action_line) > 0:
-		mo = self.tag_action.match(action_line)
+        """
+        actions = None
+        if action_line[:len('tag ')] == 'tag ':
+            action_line = string.lstrip(action_line[len('tag '):])
+            while len(action_line) > 0:
+                mo = self.tag_action.match(action_line)
                 if not mo:
                     # must not be two fields
                     errstr = '"%s": ' % source
@@ -661,32 +661,32 @@ class FilterParser:
                         actions[header] = splitaction(action)
                     else:
                         actions[header] = (None, action)
-		else:
-		    # don't know how we could get here
-		    raise Error, 'unexpected error'
-		action_line = string.lstrip(action_line[mo.end()+1:])
-	else:
-	    mo = self.in_action.match(action_line)
-	    if mo:
-		if len(action_line) == len(mo.group(1)):
+                else:
+                    # don't know how we could get here
+                    raise Error, 'unexpected error'
+                action_line = string.lstrip(action_line[mo.end()+1:])
+        else:
+            mo = self.in_action.match(action_line)
+            if mo:
+                if len(action_line) == len(mo.group(1)):
                     actions = { 'incoming' : splitaction(action_line) }
-		else:
-		    # invalid incoming action (extra stuff on line)
-		    raise Error, '"%s": garbage at end of line' % source
-	    else:
-		mo = self.out_action.match(action_line)
-		if mo:
-		    if len(action_line) == len(mo.group(1)):
+                else:
+                    # invalid incoming action (extra stuff on line)
+                    raise Error, '"%s": garbage at end of line' % source
+            else:
+                mo = self.out_action.match(action_line)
+                if mo:
+                    if len(action_line) == len(mo.group(1)):
                         actions = { 'from' : splitaction(action_line) }
-		    else:
-			# invalid outgoing action (extra stuff on line)
+                    else:
+                        # invalid outgoing action (extra stuff on line)
                         raise Error, '"%s": garbage at end of line' % source
                 else:
                     # missing action!
                     errstr = '"%s": missing or bogus <action> field' % source
                     raise Error, errstr
-	return actions
-	
+        return actions
+
 
     def __search_list(self, addrlist, keys, actions, source):
         """Search addrlist for match in field 1, optional action in 2."""
@@ -883,7 +883,7 @@ class FilterParser:
         action dictionary and matching line.
         """
         line = None
-	found_match = None
+        found_match = None
         for (source, args, match, actions, lineno) in self.filterlist:
             source = string.lower(source)
             # set up the keys for searching
@@ -896,8 +896,8 @@ class FilterParser:
             # regular 'from' or 'to' addresses
             if source in ('from', 'to'):
                 found_match = Util.findmatch([string.lower(match)], keys)
-		if found_match:
-		    break
+                if found_match:
+                    break
             # 'from-file' or 'to-file', including autocdb functionality
             if source in ('from-file', 'to-file'):
                 dbname = os.path.expanduser(match)
@@ -938,7 +938,7 @@ class FilterParser:
                     if not args.has_key('optional'):
                         raise MatchError(lineno, str(e))
                 if found_match:
-		    break
+                    break
             # DJB's constant databases; see <http://cr.yp.to/cdb.html>.
             if source in ('from-cdb', 'to-cdb'):
                 import cdb
@@ -1012,7 +1012,7 @@ class FilterParser:
                             found_match = 1
                             break
                 if found_match:
-		    break
+                    break
             # Generic SQL.  Expects a SELECT statement as the 'match' field.
             # There are two "modes", depending on the presence of TMDA-style
             # wildcards in the database.  See the filter source documentation
@@ -1096,7 +1096,7 @@ class FilterParser:
                 if not args.has_key('case'):
                     re_flags = re_flags | re.IGNORECASE
                 if content and re.search(match,content,re_flags):
-		    found_match = 1
+                    found_match = 1
                     break
             if source in ('body-file','headers-file'):
                 match = os.path.expanduser(match)
@@ -1123,7 +1123,7 @@ class FilterParser:
                                 found_match = 1
                                 break
                 if found_match:
-		    break
+                    break
             if source == 'size' and msg_size:
                 match_list = list(match)
                 operator = match_list[0] # first character should be < or >
@@ -1135,11 +1135,11 @@ class FilterParser:
                     found_match = int(msg_size) > int(bytes)
                 if found_match:
                     break
-	if found_match:
-	    line = _rulestr(source, args, match, actions)
-	else:
-	    actions = {}
-	return actions, line
+        if found_match:
+            line = _rulestr(source, args, match, actions)
+        else:
+            actions = {}
+        return actions, line
 
 
 def _rulestr(source, args, match, actions):
@@ -1169,18 +1169,18 @@ def _actionstr(actions):
     """
     line = ''
     if actions:
-	for header, (action, option) in actions.items():
+        for header, (action, option) in actions.items():
             mo = FilterParser.in_action.match(action or '')
-	    if mo:
-		line = line + action
-	    else:
+            if mo:
+                line = line + action
+            else:
                 if len(line) == 0:
                     line = line + 'tag'
-		line = line + ' ' + header
+                line = line + ' ' + header
                 if action:
                     line = line + ' ' + _cookiestr((action, option))
-		else:
-		    line = line + ' "' + str(option) + '"'
+                else:
+                    line = line + ' "' + str(option) + '"'
     return line
 
 
@@ -1190,7 +1190,7 @@ def _cookiestr(action):
     if argvalue:
         if ' ' in argvalue:
             argvalue = '"%s"' % argvalue
-	argstr += '=' + str(argvalue)
+        argstr += '=' + str(argvalue)
     return argstr
 
 

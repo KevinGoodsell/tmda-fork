@@ -41,7 +41,7 @@ from TMDA import Version
 # virtual user's home directory and set $HOME to that, so that '~' refers to
 # the virtual user's home directory and not the domain directory.
 def setvuserhomedir(vhomescript):
-    """Set $HOME to the recipient's (virtual user) home directory.""" 
+    """Set $HOME to the recipient's (virtual user) home directory."""
     host = os.environ['HOST']
     parts = os.environ['EXT'].split('-confirm-', 1)[0].split('-')
     cmd = vhomescript + ' "%s"' + ' "%s"' % (host,)
@@ -127,7 +127,7 @@ will also check for parsing errors in the filter file."""),
                 help="show full TMDA version information and exit"),
     ]
 
-parser = OptionParser(option_list=opt_list, description=opt_desc, 
+parser = OptionParser(option_list=opt_list, description=opt_desc,
                       version=Version.TMDA)
 (opts, args) = parser.parse_args()
 
@@ -185,7 +185,7 @@ import time
 # matches, and then exit.
 if opts.filter_match:
     sender = opts.filter_match[-1]
-    recip = opts.filter_match[-2] 
+    recip = opts.filter_match[-2]
     Util.filter_match(Defaults.FILTER_INCOMING, recip, sender)
     sys.exit()
 
@@ -346,7 +346,7 @@ def logit(action, msg):
         logger.write()
     if Defaults.ACTION_HEADER_INCOMING and recipient_address:
         del msgin['X-TMDA-Action']
-	msgin['X-TMDA-Action'] = action_msg
+        msgin['X-TMDA-Action'] = action_msg
 
 
 def autorespond_to_sender(sender):
@@ -522,7 +522,7 @@ def verify_confirm_cookie(confirm_cookie, confirm_action):
                               'bounce_missing_pending.txt')
         else:
             msg = Q.fetch_message(confirmed_mailid)
-	    logit("CONFIRM", "accept " + confirmed_mailid)
+            logit("CONFIRM", "accept " + confirmed_mailid)
             # Optionally append the sender's address to a file and/or DB.
             if Defaults.CONFIRM_APPEND or Defaults.DB_CONFIRM_APPEND:
                 confirm_append_addr = Util.confirm_append_address(
@@ -590,17 +590,17 @@ def dispose_expired_dated(cookie_date):
     # default becomes "0", saving the symbolic name logging
     for k,v in Defaults.ACTION_EXPIRED_DATED.iteritems():
         if k <> 'default':
-	    templist.append((Util.seconds(k),v,k))
+            templist.append((Util.seconds(k),v,k))
         else:
-	    # Default is False.  The number represents the number of
-	    # seconds that the address has been expired.  A negative
-	    # number would imply a non-expired address, so zero will
-	    # suffice as a default.
-	    templist.append((0,v,k))
-	    havedefault = True
+            # Default is False.  The number represents the number of
+            # seconds that the address has been expired.  A negative
+            # number would imply a non-expired address, so zero will
+            # suffice as a default.
+            templist.append((0,v,k))
+            havedefault = True
     # If no default specfied, assume "confirm"
     if havedefault is False:
-	templist.append((0,'confirm','default'))
+        templist.append((0,'confirm','default'))
     templist.sort()
     templist.reverse()
     # calculate how long ago the address expired
@@ -609,10 +609,10 @@ def dispose_expired_dated(cookie_date):
     # sorted, the first time that overdue is > then the time in the list
     # means that we've found the action to use
     for i in templist:
-	if overdue > i[0]:
-	    logmsg = "ACTION_EXPIRED_DATED/%s (%s)" % \
-		(i[2], Util.make_date(int(cookie_date)))
-	    do_default_action(i[1].lower(), logmsg, 'bounce_expired_dated.txt')
+        if overdue > i[0]:
+            logmsg = "ACTION_EXPIRED_DATED/%s (%s)" % \
+                (i[2], Util.make_date(int(cookie_date)))
+            do_default_action(i[1].lower(), logmsg, 'bounce_expired_dated.txt')
 
 
 def verify_dated_cookie(dated_cookie):
@@ -626,7 +626,7 @@ def verify_dated_cookie(dated_cookie):
                           'bounce_fail_dated.txt')
     # Accept the message only if the address has not expired, and the
     # HMAC is valid.
-    if datemac <> Cookie.datemac(cookie_date): 
+    if datemac <> Cookie.datemac(cookie_date):
         do_default_action(Defaults.ACTION_FAIL_DATED.lower(),
                           'action_fail_dated',
                           'bounce_fail_dated.txt')
@@ -637,17 +637,17 @@ def verify_dated_cookie(dated_cookie):
             mta.deliver(msgin)
         else:
             logmsg = "ACTION_EXPIRED_DATED (%s)" % \
-		Util.make_date(int(cookie_date))
-	    if type(Defaults.ACTION_EXPIRED_DATED) is str:
+                Util.make_date(int(cookie_date))
+            if type(Defaults.ACTION_EXPIRED_DATED) is str:
                 do_default_action(Defaults.ACTION_EXPIRED_DATED.lower(),
-				  logmsg, 'bounce_expired_dated.txt')
-	    elif type(Defaults.ACTION_EXPIRED_DATED) is not dict:
-		errmsg = 'ACTION_EXPIRED_DATED is wrong type (%s). ' % \
-		    type(Defaults.ACTION_EXPIRED_DATED)
-	        raise TypeError, errmsg + \
-		    'Must be string or dictionary'
-	    else:
-		dispose_expired_dated(cookie_date)
+                                  logmsg, 'bounce_expired_dated.txt')
+            elif type(Defaults.ACTION_EXPIRED_DATED) is not dict:
+                errmsg = 'ACTION_EXPIRED_DATED is wrong type (%s). ' % \
+                    type(Defaults.ACTION_EXPIRED_DATED)
+                raise TypeError, errmsg + \
+                    'Must be string or dictionary'
+            else:
+                dispose_expired_dated(cookie_date)
 
 
 def verify_sender_cookie(sender_address,sender_cookie):
@@ -743,7 +743,7 @@ def bouncegen(mode, template=None):
                                                   Cookie.make_confirm_cookie(TIMESTAMP,
                                                                              Defaults.PID,
                                                                              'accept'))
-	Q.insert_message(msgin, MAILID, recipient_address)
+        Q.insert_message(msgin, MAILID, recipient_address)
     elif mode == 'hold':
         Q.insert_message(msgin, MAILID, recipient_address)
         # Don't send anything for silently held messages
@@ -763,7 +763,7 @@ def bouncegen(mode, template=None):
             send_cc(Defaults.CONFIRM_CC)
         logit("CONFIRM", "pending " + MAILID)
         send_bounce(bounce_message, mode)
-        mta.stop()     
+        mta.stop()
 
 
 ######
@@ -773,9 +773,9 @@ def bouncegen(mode, template=None):
 def main():
     # cleanup the pending queue
     if Defaults.PENDING_CLEANUP_ODDS <> 0:
-	from random import random
-	if random() < float(Defaults.PENDING_CLEANUP_ODDS):
-	    Q.cleanup()
+        from random import random
+        if random() < float(Defaults.PENDING_CLEANUP_ODDS):
+            Q.cleanup()
     # Get the cookie type and value by parsing the extension address.
     ext = address_extension
     cookie_type = cookie_value = None

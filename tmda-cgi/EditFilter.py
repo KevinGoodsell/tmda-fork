@@ -50,7 +50,7 @@ def Show():
       T["FileContents"] = ""
   else:
     T["FileContents"] = "(File is not accessible.)"
-  
+
   # Are we allowed to save?
   if PVars[("NoOverride", "MayEditFilters")][0].lower() == "n":
     T["SaveButton"]

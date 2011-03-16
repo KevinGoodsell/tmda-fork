@@ -89,14 +89,14 @@ parser.trailer = \
 
   (silently and immediately delete all messages older than 30 days)
   $ tmda-pending -q -b -d -O 30d
-    
+
   (mail a summary report of all new pending messages)
   $ tmda-pending -C -b -s | mail -s 'TMDA pending summary' jason
 """
 
-parser.add_option("-V", 
-		  action="store_true", default=False, dest="full_version",
-		  help="show full TMDA version information and exit.")
+parser.add_option("-V",
+                  action="store_true", default=False, dest="full_version",
+                  help="show full TMDA version information and exit.")
 
 # option groups
 gengroup = OptionGroup(parser, "General")
@@ -105,8 +105,8 @@ msggroup = OptionGroup(parser, "Messages")
 
 # general
 gengroup.add_option("--vhome-script",
-	             metavar="SCRIPT", dest="vhomescript",
-        	     help= \
+                     metavar="SCRIPT", dest="vhomescript",
+                     help= \
 """Full pathname of SCRIPT that prints a virtual email user's home
 directory on standard output.  tmda-pending will read that path and
 set $HOME to that path so that '~' expansion works properly for
@@ -120,14 +120,14 @@ obtained by the '--vhome-domain' option, if defined, and if not,
 an attempt to figure it out automatically.""")
 
 gengroup.add_option("--vhome-user",
-	             metavar="USER", dest="vhomeuser",
-        	     help= \
+                     metavar="USER", dest="vhomeuser",
+                     help= \
 """The user name to optionally pass to the program specified
 in the '--vhome-script' option, above.""")
 
 gengroup.add_option("--vhome-domain",
-	             metavar="DOMAIN", dest="vhomedomain",
-        	     help= \
+                     metavar="DOMAIN", dest="vhomedomain",
+                     help= \
 """The domain name to optionally pass to the program specified
 in the '--vhome-script' option, above.""")
 
@@ -264,9 +264,9 @@ if opts.vhomescript:
     """Set $HOME to the recipient's (virtual user) home directory."""
     user = None
     if opts.vhomeuser:
-	user = opts.vhomeuser
+        user = opts.vhomeuser
     else:
-	try:
+        try:
             user = os.environ['USER']
         except:
             try:

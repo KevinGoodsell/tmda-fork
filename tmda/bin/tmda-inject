@@ -76,12 +76,12 @@ outgoing filter and then exit.  The first address given should be the
 message recipient, and the second is the sender (you).  This option
 will also check for parsing errors in the filter file."""),
 
-    make_option("-V", 
+    make_option("-V",
                 action="store_true", default=False, dest="full_version",
                 help="show full TMDA version information and exit"),
     ]
 
-parser = OptionParser(option_list=opt_list, description=opt_desc, 
+parser = OptionParser(option_list=opt_list, description=opt_desc,
                       usage=opt_usage, version=Version.TMDA)
 (opts, args) = parser.parse_args()
 
@@ -129,12 +129,12 @@ def make_field(cookie_type, cookie_option, from_address, to_address):
     Create an email address based on a cookie type and one or more addresses.
     """
     if cookie_type == 'default':
-	cookie_type = Defaults.ACTION_OUTGOING
+        cookie_type = Defaults.ACTION_OUTGOING
 
     if cookie_type == 'bare':
-	# Use an untagged address.
-	field = from_address
-	# Optionally append the recipient address to a file.
+        # Use an untagged address.
+        field = from_address
+        # Optionally append the recipient address to a file.
         if cookie_option and cookie_option.lower() == 'append':
             if Defaults.BARE_APPEND:
                 Util.append_to_file(to_address, Defaults.BARE_APPEND)
@@ -150,32 +150,32 @@ def make_field(cookie_type, cookie_option, from_address, to_address):
                                Defaults.DB_BARE_APPEND,
                                params)
     elif cookie_type == 'dated':
-	# Send a message with a tagged (dated) address.
-	if cookie_option:               # check for timeout override
-	    os.environ['TMDA_TIMEOUT'] = cookie_option
+        # Send a message with a tagged (dated) address.
+        if cookie_option:               # check for timeout override
+            os.environ['TMDA_TIMEOUT'] = cookie_option
         else:
             os.environ['TMDA_TIMEOUT'] = ''
-	field = Cookie.make_dated_address(from_address)
+        field = Cookie.make_dated_address(from_address)
     elif cookie_type == 'sender':
-	# Send a message with a tagged (sender) address
-	sender_cookie_address = cookie_option or to_address
-	field = Cookie.make_sender_address (from_address, sender_cookie_address)
+        # Send a message with a tagged (sender) address
+        sender_cookie_address = cookie_option or to_address
+        field = Cookie.make_sender_address (from_address, sender_cookie_address)
     elif cookie_type == 'domain':
-	# Send a message with a tagged (sender) address using only the
-	# domain portion of the address
-	domain_cookie_address = (cookie_option or to_address).split('@')[-1]
-	field = Cookie.make_sender_address (from_address, domain_cookie_address)
+        # Send a message with a tagged (sender) address using only the
+        # domain portion of the address
+        domain_cookie_address = (cookie_option or to_address).split('@')[-1]
+        field = Cookie.make_sender_address (from_address, domain_cookie_address)
     elif cookie_type in ('as','exp','explicit') and cookie_option:
-	# Send a message with an explicitly defined address.
-	field = cookie_option
+        # Send a message with an explicitly defined address.
+        field = cookie_option
     elif cookie_type in ('ext','extension') and cookie_option:
-	# Send a message with a tagged (extension added) address.
-	(username, hostname) = string.split(from_address,'@')
-	field = username + Defaults.RECIPIENT_DELIMITER + \
+        # Send a message with a tagged (extension added) address.
+        (username, hostname) = string.split(from_address,'@')
+        field = username + Defaults.RECIPIENT_DELIMITER + \
                 cookie_option + '@' + hostname
     elif cookie_type in ('kw','keyword') and cookie_option:
-	# Send a message with a tagged (keyword) address.
-	field = Cookie.make_keyword_address(from_address, cookie_option)
+        # Send a message with a tagged (keyword) address.
+        field = Cookie.make_keyword_address(from_address, cookie_option)
     elif cookie_type == 'python':
         # this is currently broken, and needs more work
         field = str(eval(cookie_option))
@@ -190,15 +190,15 @@ def make_field(cookie_type, cookie_option, from_address, to_address):
         # cookie_type == None means field is a text string
         field = cookie_option
     else:
-	# If cookie_type is invalid, punt and use an untagged address.
-	field = from_address
+        # If cookie_type is invalid, punt and use an untagged address.
+        field = from_address
     return field
 
 
 def inject_message(resending,
                    to_address,
                    from_address,
-		   full_name,
+                   full_name,
                    msg,
                    orig_msgout_body_as_raw_string,
                    actions,
@@ -212,48 +212,48 @@ def inject_message(resending,
     # Update envelope_sender with user-specified header
     (cookie_type, cookie_option) = actions.get('envelope', (None, None))
     if cookie_type:
-	envelope_sender = make_field(cookie_type, cookie_option,
+        envelope_sender = make_field(cookie_type, cookie_option,
                                      from_address, to_address)
     # Update resent_from with user-specified header
     (cookie_type, cookie_option) = actions.get('resent-from', (None, None))
     if cookie_type:
-	resent_from = make_field(cookie_type, cookie_option,
+        resent_from = make_field(cookie_type, cookie_option,
                                  from_address, to_address)
     # Set From: or Resent-From: to match the envelope sender address.
     if resending:
         del msg['Resent-From']
-	msg['Resent-From'] = message_format(resent_from, full_name,
+        msg['Resent-From'] = message_format(resent_from, full_name,
                                             Defaults.MESSAGE_FROM_STYLE)
     else:
         del msg['From']
-	msg['From'] = message_format(magic_from, full_name,
+        msg['From'] = message_format(magic_from, full_name,
                                      Defaults.MESSAGE_FROM_STYLE)
     # If the Mail-Followup-To header contains an untagged address, we
     # need to tag that as well.
     if msg.has_key('mail-followup-to'):
-	mft_list = getaddresses(msg.get_all('mail-followup-to'))
-	new_mft_list = []
-	for a in mft_list:
-	    emaddy = a[1]
-	    if emaddy == from_address:
-		new_mft_list.append(magic_from)
-	    else:
-		new_mft_list.append(emaddy)
+        mft_list = getaddresses(msg.get_all('mail-followup-to'))
+        new_mft_list = []
+        for a in mft_list:
+            emaddy = a[1]
+            if emaddy == from_address:
+                new_mft_list.append(magic_from)
+            else:
+                new_mft_list.append(emaddy)
         del msg['Mail-Followup-To']
-	msg['Mail-Followup-To'] = ', '.join(new_mft_list)
+        msg['Mail-Followup-To'] = ', '.join(new_mft_list)
     # Optionally, add an `X-TMDA-Fingerprint' header.
     if Defaults.FINGERPRINT:
-	hdrlist = []
-	for hdr in Defaults.FINGERPRINT:
+        hdrlist = []
+        for hdr in Defaults.FINGERPRINT:
             if hdr == 'body':
                 hdrval = orig_msgout_body_as_raw_string
             else:
                 hdrval = msg.get(hdr)
-	    if hdrval:
-		hdrlist.append(hdrval)
-	if hdrlist:
+            if hdrval:
+                hdrlist.append(hdrval)
+        if hdrlist:
             del msg['X-TMDA-Fingerprint']
-	    msg['X-TMDA-Fingerprint'] = (Cookie.make_fingerprint(hdrlist))
+            msg['X-TMDA-Fingerprint'] = (Cookie.make_fingerprint(hdrlist))
     # Optionally, add some headers.
     Util.add_headers(msg, Defaults.ADDED_HEADERS_CLIENT)
     # Optionally, remove some headers.
@@ -298,7 +298,7 @@ def main():
     x_tmda_over = None
     actions = None
     log_msg = None
-    
+
     if msgout.has_key('resent-from'):
         # We must be resending (bouncing) the message.
         fullname, from_address = parseaddr(msgout.get
@@ -312,7 +312,7 @@ def main():
         fullname = Defaults.FULLNAME
     if not from_address or len(string.split(from_address,'@')) != 2:
         from_address = Defaults.USERNAME + '@' + Defaults.HOSTNAME
-        
+
     # If recipients were provided as arguments, use them.
     if args:
         address_list = args
@@ -351,7 +351,7 @@ def main():
         log_msg = '%s: %s' % ('X-TMDA', x_tmda)
         # X-TMDA should only have one field.
         if len(string.split(x_tmda)) == 1:
-	    actions = { 'from' : FilterParser.splitaction(x_tmda) }
+            actions = { 'from' : FilterParser.splitaction(x_tmda) }
         # Delete `X-TMDA' before sending.
         del msgout['x-tmda']
     # Optionally, parse subject for `X-TMDA'.
@@ -388,12 +388,12 @@ def main():
     if ((Defaults.TMDAINJECT and 'd' in list(Defaults.TMDAINJECT))
         or not msgout.has_key('date')):
         del msgout['Date']
-	msgout['Date'] = Util.make_date()
+        msgout['Date'] = Util.make_date()
     # Possibly add a `Message-ID' field.
     if ((Defaults.TMDAINJECT and 'i' in list(Defaults.TMDAINJECT))
         or not msgout.has_key('message-id')):
         del msgout['Message-ID']
-	msgout['Message-ID'] = Util.make_msgid()
+        msgout['Message-ID'] = Util.make_msgid()
     # Add an `X-Delivery-Agent' header.
     del msgout['X-Delivery-Agent']
     msgout['X-Delivery-Agent'] = 'TMDA/%s (%s)' % (Version.TMDA, Version.CODENAME)
@@ -426,7 +426,7 @@ def main():
         os.environ['TMDA_VRECIPIENT'] = address.replace('@', '=')
         # If `X-TMDA' is present we are done here.
         if x_tmda_over:
-            pass                        
+            pass
         else:
             # Without `X-TMDA', we need to parse the outgoing filter file.
             outfilter = FilterParser.FilterParser(Defaults.DB_CONNECTION)
@@ -435,7 +435,7 @@ def main():
                                                             [from_address])
             log_msg = matching_line
         if not actions:
-	    actions = {
+            actions = {
                 'from' : FilterParser.splitaction(Defaults.ACTION_OUTGOING) }
             log_msg = '%s (%s)' % ('action_outgoing', Defaults.ACTION_OUTGOING)
         # The message is sent to each recipient separately so that
@@ -445,7 +445,7 @@ def main():
         inject_message(resending,
                        address,
                        from_address,
-		       fullname,
+                       fullname,
                        msgout,
                        orig_msgout_body_as_raw_string,
                        actions,

@@ -431,9 +431,9 @@ def pager(str):
                 pager = path
                 break
     try:
-	os.popen(pager, 'w').write(str)
+        os.popen(pager, 'w').write(str)
     except IOError:
-	return
+        return
 
 
 def normalize_sender(sender):
@@ -508,18 +508,18 @@ def confirm_append_address(xp, rp):
 def msg_from_file(fp, fullParse=False):
     """Read a file and parse its contents into a Message object model.
     Replacement for email.message_from_file().
-    
+
     We use the HeaderParser subclass instead of Parser to avoid trying
     to parse the message body, instead setting the payload to the raw
     body as a string.  This is faster, and also helps us avoid
     problems trying to parse spam with broken MIME bodies."""
     from email.message import Message
     if fullParse:
-	from email.parser import Parser
-	msg = Parser(Message).parse(fp)
+        from email.parser import Parser
+        msg = Parser(Message).parse(fp)
     else:
-	from email.parser import HeaderParser
-	msg = HeaderParser(Message).parse(fp)
+        from email.parser import HeaderParser
+        msg = HeaderParser(Message).parse(fp)
     #msg.header_parsed = True
     return msg
 
@@ -534,7 +534,7 @@ def msg_as_string(msg, maxheaderlen=False, mangle_from_=False, unixfrom=False):
 
     maxheaderlen specifies the longest length for a non-continued
     header.  Disabled by default.  RFC 2822 recommends 78.
-    
+
     mangle_from_ escapes any line in the body that begins with "From"
     with ">".  Useful when writing to Unix mbox files.  Default is
     False.

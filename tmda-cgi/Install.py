@@ -276,8 +276,8 @@ def GetAnomalies(Dir):
 
 def ReimportDefaults(Files, Backup):
   """During an install/restore, we need to reload Defaults.  This is easy to do
-under Python 2.2, but for some reason Python 2.1 will return a generic 
-Exception. To circumvent this problem, we use execfile and let Defaults be a 
+under Python 2.2, but for some reason Python 2.1 will return a generic
+Exception. To circumvent this problem, we use execfile and let Defaults be a
 dictionary instead of a module to access the contents.  Ugly, but effective."""
   try:
     CWD = os.getcwd()

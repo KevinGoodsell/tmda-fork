@@ -51,17 +51,17 @@ address."""
 opt_list = [
     make_option("-c", "--config-file",
                 metavar="FILE", dest="config_file",
-                help=("""Specify a different configuration file other than 
+                help=("""Specify a different configuration file other than
                          ~/.tmda/config""")),
     make_option("-l", "--localtime",
                 action="store_true", default=False, dest="localtime",
                 help="Display dates in the local time zone instead of UTC"),
-    make_option("-V", 
+    make_option("-V",
                 action="store_true", default=False, dest="full_version",
                 help="show full TMDA version information and exit"),
     ]
 
-parser = OptionParser(option_list=opt_list, version=Version.TMDA, 
+parser = OptionParser(option_list=opt_list, version=Version.TMDA,
                       usage=opt_usage, description=opt_desc)
 (opts, args) = parser.parse_args()
 

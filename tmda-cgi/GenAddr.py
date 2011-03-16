@@ -46,7 +46,7 @@ def Show():
   T["DatedAddr"]   = ""
   T["Sender"]      = PVars[("GenAddr", "Sender")]
   T["SenderAddr"]  = ""
-  
+
   #
   # What shall we create?
   #
@@ -101,9 +101,9 @@ def Show():
       if PVars.has_key(("TestAddr", "From")):
         del PVars[("TestAddr", "From")]
       PVars.Save()
-    
+
     else:
-    
+
       # Make a "dated" address
       PVars[("GenAddr", "ExpireUnit")] = Form["exp_units"].value
       if Form.has_key("exp_amt"):
@@ -135,7 +135,7 @@ def Show():
       local = Base[:at].lower()
       domain = Base[at+1:].lower()
     except ValueError:
-      CgiUtil.TermError("Value Error", 
+      CgiUtil.TermError("Value Error",
         "'%s' is not a valid email address" % Base,
         "generate address", "",
         "Try again with a valid email address in the <i>Use Address</i> blank."

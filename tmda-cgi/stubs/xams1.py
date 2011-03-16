@@ -43,11 +43,11 @@ def getuserparams(List):
   Match = re.search(UserFormat, User)
   if Match:
     User, Domain = Match.group(1), Match.group(2)
-  
+
   # Connect to MySQL database
   DB = MySQLdb.connect(user = DBLogin, passwd = DBPassword, db = DBName)
 
-  # Query  
+  # Query
   Cursor = DB.cursor()
   Cursor.execute \
   ("""

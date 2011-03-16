@@ -44,17 +44,17 @@ opt_desc = "Generate a unique 160-bit hex key."
 opt_list = [
     make_option("-d", "--device",
                 default="/dev/urandom", dest="device",
-                help=("""Draw random numbers from a random data source 
+                help=("""Draw random numbers from a random data source
                          device other than /dev/urandom""")),
     make_option("-b", "--batch",
                 action="store_true", default=False, dest="batch",
                 help="Output only the CRYPT_KEY"),
-    make_option("-V", 
+    make_option("-V",
                 action="store_true", default=False, dest="full_version",
                 help="show full TMDA version information and exit"),
     ]
 
-parser = OptionParser(option_list=opt_list, description=opt_desc, 
+parser = OptionParser(option_list=opt_list, description=opt_desc,
                       version=Version.TMDA)
 (opts, args) = parser.parse_args()
 
@@ -76,9 +76,9 @@ def keygen():
         # can't utilize it.
     else:
         return None
-    
+
 def main():
-    
+
     if not opts.batch:
         print "Generating a unique, 160-bit private key, please wait a moment.."
         print
@@ -98,13 +98,13 @@ def main():
         print '*' * len(warning)
         print "exiting!"
         sys.exit()
-        
+
     if len(key) <> 40:
         print "Oops, generated key is not 40-characters long, exiting!"
         sys.exit()
 
     print key
-    
+
     if not opts.batch:
         print
         print "Now paste the above key into ~/.tmda/crypt_key"

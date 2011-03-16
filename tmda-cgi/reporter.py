@@ -1,6 +1,6 @@
 #!/usr/bin/env python -O
 
-"""SpamCop Reporting Program. 
+"""SpamCop Reporting Program.
 
 Copyright (c) 2001,2002, Alan Eldridge.
 All rights reserved.
@@ -66,7 +66,7 @@ BSD license with my copyright.
 # 2004/04/07 - Jared Wangen
 #   Modified code to send multiple spams in one e-mail for processing instead
 #   of one e-mail for every spam. There is enough clog on the net as it is! :)
-# 
+#
 
 import getopt
 import os
@@ -109,7 +109,7 @@ Notes:
 4. The environment var SPAMCOP_SENDMAIL is equivalent to '-s' option.
 """
     sys.exit(ec)
-   
+
 def sendspam(spams, conf):
     if conf.mailto:
         mailto = conf.mailto
@@ -128,7 +128,7 @@ This is a multi-part message in MIME format.
 
 """ % (mailto, subjstr, conf.MIME_delim))
 
-    for spam in spams: 
+    for spam in spams:
         outfile.write("""--%s
 Content-Type: message/rfc822
 Content-Disposition: attachment""" % (conf.MIME_delim))

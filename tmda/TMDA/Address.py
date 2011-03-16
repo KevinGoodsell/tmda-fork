@@ -54,7 +54,7 @@ class Address:
 
     def base(self):
         return Defaults.USERNAME + '@' + Defaults.HOSTNAME
-                        
+
     def create(self, base, dummy=None):
         self.address = base or self.base()
         return self
@@ -232,7 +232,7 @@ def Factory(address = None, tag = None):
     elif address:
         address = email.utils.parseaddr(address)[1]
         (local_parts, dummy, dummy) = _split(address)
-    else:    
+    else:
         return Address(address)
     try:
         cookie_type = tag or local_parts[-2]

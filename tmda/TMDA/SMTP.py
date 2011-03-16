@@ -53,7 +53,7 @@ class Connection:
         if Defaults.SMTPAUTH_USERNAME and Defaults.SMTPAUTH_PASSWORD:
             self.__conn.login(Defaults.SMTPAUTH_USERNAME,
                               Defaults.SMTPAUTH_PASSWORD)
-            
+
     def sendmail(self, envsender, recips, msgtext):
         if self.__conn is None:
             self.__connect()

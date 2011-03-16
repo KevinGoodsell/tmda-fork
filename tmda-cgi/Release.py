@@ -116,8 +116,8 @@ of this error, or try confirming your message using an alternate method.""")
     else:
       Home, UID, GID = Util.getuserparams(pwd.getpwuid(UID)[0])
   except KeyError:
-    CgiUtil.TermError("No such user", "User %s not found" % User, 
-      "find user %s" % User, "", 
+    CgiUtil.TermError("No such user", "User %s not found" % User,
+      "find user %s" % User, "",
       """Contact this message's sender by an alternate means and inform them
 of this error, or try confirming your message using an alternate method.""")
   if UID < 2:

@@ -63,7 +63,7 @@ class MessageError(QueueError):
     pass
 
 class AuthError(TMDAError):
-    """Authentication Errors""" 
+    """Authentication Errors"""
     def __init__(self, errmsg='Authentication Error', helpmsg=''):
         TMDAError.__init__(self, errmsg)
         self.msg = errmsg

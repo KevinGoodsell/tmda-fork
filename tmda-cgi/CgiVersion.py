@@ -44,18 +44,18 @@ All = 'tmda-cgi/%s "%s" (Python/%s on %s)' % \
   (tmda_cgi, Codename, Python, Platform)
 
 def parseVersion(versionString):
-	"""Returns a list of all the integers in the version string:
-		"1.1.3" will return [1,1,3,0]
-		"1.1.0+" will return [1,1,0,1]"""
-	if versionString.endswith("+"):
-		string = versionString[:-1]
-		dev = 1
-	else:
-		dev = 0
-		string = versionString
-	tuple = [ int(x) for x in string.split(".") ]
-	tuple.append(dev)
-	return tuple
+  """Returns a list of all the integers in the version string:
+    "1.1.3" will return [1,1,3,0]
+    "1.1.0+" will return [1,1,0,1]"""
+  if versionString.endswith("+"):
+    string = versionString[:-1]
+    dev = 1
+  else:
+    dev = 0
+    string = versionString
+  tuple = [ int(x) for x in string.split(".") ]
+  tuple.append(dev)
+  return tuple
 
 def Test():
   "Validate TMDAReqVer."
