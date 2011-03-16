@@ -1,6 +1,9 @@
 2011-03-15  Kevin Goodsell  <kevin-opensource@omegacrash.net>
 
 	* tmda-ofmipd: Replace tlslite with OpenSSL.
+	* tmda-ofmipd: New authentication system with support for PAM and
+	arbitrary chaining of authentication methods. -F/--fallback removed;
+	just supply multiple authentication options instead.
 	* tmda-ofmipd: Remove extra % in help output.
 	* tmda-address: Fix a typo in help output.
 

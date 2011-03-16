@@ -32,14 +32,9 @@ import sys
 import asynchat
 import asyncore
 import base64
-import hmac
-import imaplib
-import md5
-import popen2
-import poplib
 import random
 import time
-import errno
+import re
 
 try:
     import paths
@@ -55,10 +50,359 @@ from TMDA import Version
 
 # Classes
 
-class Devnull:
+class Devnull(object):
     def write(self, msg): pass
     def flush(self): pass
 
+class Authenticator(object):
+    """Base class for authenticators, which determine the validity of an
+    authentication attempt based on the authentication data (often a username
+    and password). There are two common ways to derive from this:
+
+    1. If the authenticator has access to the plain-text passwords, it can
+       provide the _get_password method (and make _has_passwords return True).
+       This allows both plain_check and cram_md5_check.
+    2. Otherwise, the authenticator provides its own implementation of
+       plain_check, and cram_md5_check is not usable.
+
+    plain_check requires the local address for use in remote authenticators
+    where this can be used to determine the remote auth host. Many
+    authenticators can ignore this."""
+
+    # All derived classes should be able to do this.
+    def plain_check(self, username, password, localip):
+        correct_pass = self._get_password(username)
+        if correct_pass is None:
+            return False
+        return password == correct_pass
+
+    def cram_md5_check(self, username, ticket, response):
+        import hmac
+
+        pw = self._get_password(username)
+        if pw is None:
+            return False
+        digest = hmac.new(pw, ticket).hexdigest()
+        return digest == response
+
+    def has_cram_md5(self):
+        return self._has_passwords()
+
+    # Override _has_passwords and _get_password in Authenticators that have
+    # access to plain-text passwords in order to support CRAM-MD5.
+    def _get_password(self, username):
+        return None
+
+    def _has_passwords(self):
+        return False
+
+class ChainAuthenticator(Authenticator):
+    """A special-case authenticator that allows multiple authenticators to be
+    chained together. Each is checked in turn, and if any one succeeds in
+    authenticating the user then the attempt is successful."""
+
+    def __init__(self, auths=None):
+        if auths is None:
+            auths = []
+        Authenticator.__init__(self)
+
+        self._auths = list(auths)
+
+    def plain_check(self, username, password, localip):
+        return self.any('plain_check', username, password, localip)
+
+    def cram_md5_check(self, username, ticket, response):
+        return self.any('cram_md5_check', username, ticket, response)
+
+    def _has_passwords(self):
+        return self.all('_has_passwords')
+
+    def any(self, meth_name, *args, **kwargs):
+        for auth in self._auths:
+            method = getattr(auth, meth_name)
+            if method(*args, **kwargs):
+                return True
+        else:
+            return False
+
+    def all(self, meth_name, *args, **kwargs):
+        for auth in self._auths:
+            method = getattr(auth, meth_name)
+            if not method(*args, **kwargs):
+                return False
+        else:
+            return True
+
+class FileAuthenticator(Authenticator):
+    def __init__(self, filename):
+        Authenticator.__init__(self)
+
+        mode = Util.getfilemode(filename)
+        if mode not in (400, 600):
+            raise IOError('authfile "%s" must be chmod 400 or 600!', filename)
+
+        self._filename = filename
+
+    def _get_password(self, username):
+        return self._authdict().get(username.lower())
+
+    def _has_passwords(self):
+        return True
+
+    def _authdict(self):
+        """Iterate over a tmda-ofmipd authentication file, and return a
+        dictionary containing username:password pairs.  Username is
+        returned in lowercase."""
+        authdict = {}
+        fp = file(self._filename, 'r')
+        for line in fp:
+            line = line.strip()
+            if line == '' or line.startswith('#'):
+                continue
+            (username, password) = line.split(':', 1)
+            authdict[username.lower().strip()] = password.strip()
+        fp.close()
+        return authdict
+
+class PamAuthenticator(Authenticator):
+    # XXX There's a significant problem here if the PAM service imposes a
+    # delay on failure. This would block all connected clients. Linux-PAM
+    # has a way to control this, but it's not in Python PAM.
+    # A work-around would be to use a PAM service that does not impose a
+    # failure delay (e.g., uses pam_unix with the nodelay option).
+    def __init__(self, service='login'):
+        try:
+            import PAM
+        except ImportError:
+            raise ImportError('Python PAM '
+                '(http://www.pangalactic.org/PyPAM/) required.')
+
+        Authenticator.__init__(self)
+        self._service = service
+
+    def plain_check(self, username, password, localip):
+        import PAM
+
+        auth = PAM.pam()
+        conv = lambda auth, msg, appdata: \
+                      self._conv(msg, password)
+        auth.start(self._service, username, conv)
+        try:
+            auth.authenticate()
+            auth.acct_mgmt()
+        except PAM.error, e:
+            print >> DEBUGSTREAM, 'PAM error: %s' % e
+            return False
+
+        return True
+
+    def _conv(self, msgs, password):
+        import PAM
+
+        result = []
+        for (msg, style) in msgs:
+            if style == PAM.PAM_PROMPT_ECHO_OFF:
+                print >> DEBUGSTREAM, \
+                    'PAM password prompt (hopefully): %r' % msg
+                result.append((password, 0))
+            else:
+                print >> DEBUGSTREAM, 'Unhandled PAM message, style = %d, ' \
+                    'msg = %s' % (style, msg)
+                result.append(('', 0))
+        return result
+
+class CheckpwAuthenticator(Authenticator):
+    """authprog should return 0 for auth ok, and a positive integer in
+    case of a problem."""
+    def __init__(self, cmd):
+        Authenticator.__init__(self)
+        self._cmd = cmd
+
+    def plain_check(self, username, password, localip):
+        print >> DEBUGSTREAM, "Trying authprog method"
+        cmd = "/bin/sh -c 'exec %s 3<&0'" % self._cmd
+        result = Util.pipecmd(cmd, '%s\0%s\0' % (username, password))
+        if result == 0:
+            return True
+        else:
+            print >> DEBUGSTREAM, 'authprog %s for user %s failed ' \
+                'with code %d' % (self._cmd, username, result)
+            return False
+
+class RemoteAuthenticator(Authenticator):
+    def __init__(self, host, port):
+        Authenticator.__init__(self)
+        self._host = host
+        self._port = port
+
+    def remote_address(self, localip):
+        (address, port) = (self._host, self._port)
+
+        if address == '0.0.0.0':
+            # This is a feature that seems to be undocumented. It allows
+            # remote authentication address:port to be based on the address
+            # for the interface that receives the connection.
+            addrdict = self._addrdict()
+            replacement = addrdict.get(localip, '127.0.0.1').split(':')
+            address = replacement[0]
+            if len(replacement) > 1:
+                port = replacement[1]
+
+        return (address, port)
+
+    def _addrdict(self):
+        """Iterate 'ipauthmapfile' (IP1:IP2:port) and return a dict of
+        {'addr1' : 'adder2[:port]'}. Note the values may or may not have a
+        port."""
+
+        ipauthmap = {}
+        try:
+            fp = file(ipauthmapfile, 'r')
+            for line in fp:
+                line = line.strip()
+                if line == '' or line.startswith('#'):
+                    continue
+                (k, v) = line.split(':', 1)
+                ipauthmap[k.strip()] = v.strip()
+            fp.close()
+        except IOError:
+            pass
+
+        return ipauthmap
+
+class ImapAuthenticator(RemoteAuthenticator):
+    def __init__(self, host, port, secure):
+        RemoteAuthenticator.__init__(self, host, port)
+        self._secure = secure
+
+    def plain_check(self, username, password, localip):
+        import imaplib
+
+        if self._secure:
+            IMAP = imaplib.IMAP4_SSL
+        else:
+            IMAP = imaplib.IMAP4
+        (host, port) = self.remote_address(localip)
+        imap = IMAP(host, port)
+        try:
+            imap.login(username, password)
+            imap.logout()
+            return True
+        except imap.error, e:
+            print >> DEBUGSTREAM, 'imap(s) authentication failed for ' \
+                     '%s@%s (%s)' % (username, host, e)
+        return False
+
+class Pop3Authenticator(RemoteAuthenticator):
+    def __init__(self, host, port, use_apop):
+        RemoteAuthenticator.__init__(self, host, port)
+        self._use_apop = use_apop
+
+    def plain_check(self, username, password, localip):
+        import poplib
+
+        (host, port) = self.remote_address(localip)
+        pop = poplib.POP3(host, port)
+        try:
+            if self._use_apop:
+                pop.apop(username, password)
+            else:
+                pop.user(username)
+                pop.pass_(password)
+            pop.quit()
+            return True
+        except poplib.error_proto, e:
+            print >> DEBUGSTREAM, 'pop3 authentication failed for %s@%s ' \
+                     '(%s)' % (username, host, e)
+        return False
+
+class LdapAuthenticator(RemoteAuthenticator):
+    def __init__(self, host, port, dn):
+        try:
+            import ldap
+        except ImportError:
+            raise ImportError('python-ldap ' \
+                '(http://www.python-ldap.org/) required.')
+
+        RemoteAuthenticator.__init__(self, host, port)
+        self._dn = dn
+
+    def plain_check(self, username, password, localip):
+        import ldap
+
+        (host, port) = self.remote_address(localip)
+        try:
+            ldap_obj = ldap.initialize('ldap://%s:%s' % (host, port))
+            ldap_obj.simple_bind_s(self._dn % username, password)
+            ldap_obj.unbind_s()
+            return True
+        except ldap.LDAPError, e:
+            print >> DEBUGSTREAM, 'ldap authentication for %s@%s failed ' \
+                     '(%s)' % (username, host, e)
+        return False
+
+class AuthOptions(object):
+    _opt_map = {
+        '-A'         : CheckpwAuthenticator,
+        '--authprog' : CheckpwAuthenticator,
+        '-a'         : FileAuthenticator,
+        '--authfile' : FileAuthenticator,
+        '-m'         : PamAuthenticator,
+        '--pamauth'  : PamAuthenticator,
+    }
+    def __init__(self):
+        self._auths = []
+
+    # add_auth and add_remote_auth are designed as optparse callbacks.
+    def add_auth(self, option, opt_str, value, parser):
+        auth_class = self._opt_map.get(opt_str)
+        if auth_class is None:
+            raise StandardError('Unhandled option: %s' % opt_str)
+        self._auths.append(auth_class(value))
+
+    def add_remote_auth(self, option, opt_str, value, parser):
+        (proto, host, port, path) = self.split_url(value)
+
+        if port is None:
+            port = defaultauthports.get(proto)
+
+        if proto == 'imap':
+            auth = ImapAuthenticator(host, port, secure=False)
+        elif proto == 'imaps':
+            auth = ImapAuthenticator(host, port, secure=True)
+        elif proto == 'pop3':
+            auth = Pop3Authenticator(host, port, use_apop=False)
+        elif proto == 'apop':
+            auth = Pop3Authenticator(host, port, use_apop=True)
+        elif proto == 'ldap':
+            auth = LdapAuthenticator(host, port, path)
+        else:
+            raise ValueError('Unsupported URL scheme: %s' % proto)
+
+        self._auths.append(auth)
+
+    _url_splitter = re.compile(r'''(?P<proto>[^:]+?)://
+                                   (?P<host>[^/:]+)
+                                   (:(?P<port>\d+))?/
+                                   (?P<path>.*)''', re.VERBOSE)
+    @classmethod
+    def split_url(cls, url):
+        '''return ('proto', 'host', port, 'path')'''
+        m = cls._url_splitter.match(url)
+        if m is None:
+            raise ValueError('Bad url: %s' % url)
+        port = m.group('port')
+        if port is not None:
+            port = int(port)
+        return (m.group('proto'), m.group('host'), port, m.group('path'))
+
+    def authenticator(self):
+        if len(self._auths) == 0:
+            return None
+        elif len(self._auths) == 1:
+            return self._auths[0]
+        else:
+            return ChainAuthenticator(self._auths)
 
 class SMTPSession(asynchat.async_chat):
     COMMAND = 0
@@ -144,13 +488,13 @@ class SMTPSession(asynchat.async_chat):
         self.__auth_resp1 = None
         self.__auth_resp2 = None
         self.__auth_username = None
-        self.__auth_password = None
         self.__auth_sasl = None
-        self.__sasl_types = ['login', 'cram-md5', 'plain']
-        # Remove CRAM-MD5 from the published SASL types if using the
-        # `--authprog' or `--remoteauth' options. See FAQ 5.8.
-        if remoteauth['enable'] or opts.authprog:
-            self.__sasl_types.remove('cram-md5')
+        self.__sasl_types = ['login', 'plain']
+        # Only some authenticators support cram-md5, because it requires
+        # that the authenticator has access to the plain-text password.
+        # See FAQ 5.8.
+        if _authenticator.has_cram_md5():
+            self.__sasl_types.append('cram-md5')
         self.__auth_cram_md5_ticket = '<%s.%s@%s>' % (random.randrange(10000),
                                                       int(time.time()), FQDN)
         self.__line = []
@@ -293,23 +637,11 @@ class SMTPSession(asynchat.async_chat):
         except:
             return 501
         self.__auth_username = username.lower()
-        self.__auth_password = password
-        if remoteauth['enable']:
-            # Try first with the remote auth
-            if run_remoteauth(username, password, self._localip):
-                return 1
-        if opts.authprog:
-            # Then with the authprog
-            if run_authprog(username, password) == 0:
-                return 1
-        # Now can we fall back on the authfile
-        if (not opts.fallback) and (remoteauth['enable'] or opts.authprog):
-            return 0
-        authdict = authfile2dict(opts.authfile)
-        if authdict.get(username.lower(), 0) != password:
-            return 0
-        else:
+        if _authenticator.plain_check(self.__auth_username, password,
+                                      self._localip):
             return 1
+        else:
+            return 0
 
     def verify_plain(self, response):
         """PLAIN is described in RFC 2595."""
@@ -322,23 +654,11 @@ class SMTPSession(asynchat.async_chat):
         except ValueError:
             return 0
         self.__auth_username = username.lower()
-        self.__auth_password = password
-        if remoteauth['enable']:
-            # Try first with the remote auth
-            if run_remoteauth(username, password, self._localip):
-                return 1
-        if opts.authprog:
-            # Then with the authprog
-            if run_authprog(username, password) == 0:
-                return 1
-        # Now can we fall back on the authfile
-        if (not opts.fallback) and (remoteauth['enable'] or opts.authprog):
-            return 0
-        authdict = authfile2dict(opts.authfile)
-        if authdict.get(username.lower(), 0) != password:
-            return 0
-        else:
+        if _authenticator.plain_check(self.__auth_username, password,
+                                      self._localip):
             return 1
+        else:
+            return 0
 
     def verify_cram_md5(self, response, ticket):
         """CRAM-MD5 is described in RFC 2195."""
@@ -350,17 +670,12 @@ class SMTPSession(asynchat.async_chat):
             username, hexdigest = response.split()
         except ValueError:
             return 0
-        authdict = authfile2dict(opts.authfile)
-        password = authdict.get(username.lower(), 0)
         self.__auth_username = username.lower()
-        self.__auth_password = password
-        if password == 0:
-            return 0
-        newhexdigest = hmac.HMAC(password, ticket, digestmod=md5).hexdigest()
-        if newhexdigest != hexdigest:
-            return 0
-        else:
+        if _authenticator.cram_md5_check(self.__auth_username, ticket,
+                                         hexdigest):
             return 1
+        else:
+            return 0
 
     def auth_reset_state(self):
         """As per RFC 2554, the SMTP state is reset if the AUTH fails,
@@ -562,6 +877,7 @@ class SMTPSession(asynchat.async_chat):
 # expects socket.error for non-blocking calls.
 class SSLError(socket.error):
     def __init__(self):
+        import errno
         err = errno.EWOULDBLOCK
         socket.error.__init__(self, err, os.strerror(err))
 
@@ -780,141 +1096,6 @@ def warning(msg='', exit=1):
         sys.exit()
 
 
-def pipecmd(command, *strings):
-    popen2._cleanup()
-    cmd = popen2.Popen3(command, 1, bufsize=-1)
-    cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
-    if strings:
-        # Write to the tochild file object.
-        for s in strings:
-            cmdin.write(s)
-        cmdin.flush()
-        cmdin.close()
-    # Read from the childerr object; command will block until exit.
-    err = cmderr.read().strip()
-    cmderr.close()
-    # Read from the fromchild object.
-    out = cmdout.read().strip()
-    cmdout.close()
-    # Get exit status from the wait() member function.
-    return cmd.wait()
-
-
-def run_authprog(username, password):
-    """authprog should return 0 for auth ok, and a positive integer in
-    case of a problem."""
-    print >> DEBUGSTREAM, "Trying authprog method"
-    cmd = "/bin/sh -c 'exec %s 3<&0'" % (opts.authprog,)
-    return pipecmd(cmd, '%s\0%s\0' % (username, password))
-
-
-def run_remoteauth(username, password, localip):
-    """Authenticate username/password combination against a remote
-    resource.  Return 1 upon successful authentication, and 0
-    otherwise."""
-    authhost = remoteauth['host']
-    authport = remoteauth['port']
-    if authhost == '0.0.0.0':
-        ipauthmap = ipauthmap2dict(ipauthmapfile)
-        if len(ipauthmap) == 0:
-            authhost = localip
-        else:
-            authdata = ipauthmap.get(localip, '127.0.0.1').split(':')
-            authhost = authdata[0]
-            if len(authdata) > 1:
-                authport = authdata[1]
-            else:
-                authport = remoteauth['port']
-    print >> DEBUGSTREAM, "trying %s authentication for %s@%s:%s" % \
-          (remoteauth['proto'], username, authhost, authport)
-    if remoteauth['proto'] == 'imap':
-        M = imaplib.IMAP4(authhost, int(authport))
-        try:
-            M.login(username, password)
-            M.logout()
-            return 1
-        except:
-            print >> DEBUGSTREAM, "imap authentication for %s@%s failed" % \
-                  (username, authhost)
-            return 0
-    elif remoteauth['proto'] == 'imaps':
-        M = imaplib.IMAP4_SSL(authhost, int(authport))
-        try:
-            M.login(username, password)
-            M.logout()
-            return 1
-        except:
-            print >> DEBUGSTREAM, "imaps authentication for %s@%s failed" % \
-                  (username, authhost)
-            return 0
-    elif remoteauth['proto'] in ('pop3', 'apop'):
-        M = poplib.POP3(authhost, int(authport))
-        try:
-            if remoteauth['proto'] == 'pop3':
-                M.user(username)
-                M.pass_(password)
-                M.quit()
-                return 1
-            else:
-                M.apop(username, password)
-                M.quit()
-                return 1
-        except:
-            print >> DEBUGSTREAM, "%s authentication for %s@%s failed" % \
-                  (remoteauth['proto'], username, authhost)
-            return 0
-    elif remoteauth['proto'] == 'ldap':
-        import ldap
-        try:
-            M = ldap.initialize("ldap://%s:%s" % (authhost, authport))
-            M.simple_bind_s(remoteauth['dn'] % username, password)
-            M.unbind_s()
-            return 1
-        except:
-            print >> DEBUGSTREAM, "ldap authentication for %s@%s failed" % \
-                  (username, authhost)
-            return 0
-    # proto not implemented
-    print >> DEBUGSTREAM, "Error: protocol %s not implemented" % \
-            remoteauth['proto']
-    return 0
-
-
-def authfile2dict(authfile):
-    """Iterate over a tmda-ofmipd authentication file, and return a
-    dictionary containing username:password pairs.  Username is
-    returned in lowercase."""
-    authdict = {}
-    fp = file(authfile, 'r')
-    for line in fp:
-        line = line.strip()
-        if line == '':
-            continue
-        else:
-            fields = line.split(':', 1)
-            authdict[fields[0].lower().strip()] = fields[1].strip()
-    fp.close()
-    return authdict
-
-
-def ipauthmap2dict(ipauthmapfile):
-    """Iterate 'ipauthmapfile' (IP1:IP2:port) and return a dictionary
-    containing IP1 -> IP2:port hashes."""
-    ipauthmap = {}
-    try:
-        fp = file(ipauthmapfile, 'r')
-        for line in fp:
-            line = line.strip()
-            if line == '':
-                continue
-            ipdata = line.split(':', 1)
-            ipauthmap[ipdata[0].strip()] = ipdata[1].strip()
-        fp.close()
-    except IOError:
-        pass
-    return ipauthmap
-
-
 def b64_encode(s):
     """base64 encoding without the trailing newline."""
     return base64.encodestring(s)[:-1]
@@ -1061,13 +1242,6 @@ def sig_handler(sig_num, frame):
 
 
 # Constants
-
-remoteauth = { 'proto': None,
-               'host': 'localhost',
-               'port': None,
-               'dn': '',
-               'enable': 0,
-               }
 defaultauthports = { 'imap': 143,
                      'imaps': 993,
                      'apop': 110,
@@ -1110,13 +1284,10 @@ parser.add_option("-V",
                   action="store_true", default=False, dest="full_version",
                   help="show full TMDA version information and exit.")
 
-# option groups
-gengroup = OptionGroup(parser, "General")
-congroup = OptionGroup(parser, "Connection")
-authgroup = OptionGroup(parser, "Authentication")
-virtgroup = OptionGroup(parser, "Virtual Domains")
 
 # general
+gengroup = OptionGroup(parser, "General")
+
 gengroup.add_option("-d", "--debug",
                     action="store_true", default=False, dest="debug",
                     help="Turn on debugging prints.")
@@ -1158,6 +1329,8 @@ If this option is not used, `~user/.tmda/config' will be assumed, but
 see the --vhome-script option for qmail virtual domain users.""")
 
 # connection
+congroup = OptionGroup(parser, "Connection")
+
 congroup.add_option("-p", "--proxyport",
                     default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT",
                     dest="proxyport", help= \
@@ -1198,7 +1371,7 @@ sends.  The script is passed a login name whenever a user tries to
 send mail.  If the script returns a 0, the message is allowed.  For
 any other value, the message is rejected.""")
 
-congroup.add_option("", "--ssl",
+congroup.add_option("--ssl",
                     action="store_true", default=False, dest="ssl",
                     help= \
 """Enable SSL encryption. This mode immediately initiates the SSL/TLS
@@ -1206,7 +1379,7 @@ protocol as soon as a connection is made. This mode is not support
 for the STARTTLS command. This configuration is typically run on
 port 465 (smtps).""")
 
-congroup.add_option("", "--tls",
+congroup.add_option("--tls",
                     type="choice", default=None, dest="tls",
                     choices=['optional', 'localoptional', 'on'],
                     help= \
@@ -1221,19 +1394,25 @@ optional       yes                                yes
 localoptional  connections from localhost only    yes
 on             no                                 yes""")
 
-congroup.add_option("", "--ssl-cert",
+congroup.add_option("--ssl-cert",
                     metavar="/PATH/TO/FILE", default=None, dest="ssl_cert",
                     help= \
 """Location of the SSL/TLS certificate key file.""")
 
-congroup.add_option("", "--ssl-key",
+congroup.add_option("--ssl-key",
                     metavar="/PATH/TO/FILE", default=None, dest="ssl_key",
                     help= \
 """Location of the SSL/TLS private key file.""")
 
 # authentication
+authgroup = OptionGroup(parser, "Authentication",
+"""Any number of authentication options can be supplied, and they will be
+attempted in the order given.""")
+auth_options = AuthOptions()
+
 authgroup.add_option("-R", "--remoteauth",
-                     metavar="PROTO://HOST[:PORT][/DN]", dest="remoteauth",
+                     metavar="PROTO://HOST[:PORT][/DN]", action="callback",
+                     callback=auth_options.add_remote_auth, type="string",
                      help= \
 """Protocol and host to check username and password. PROTO can be one of
 the following: 'imap' (IMAP4 server), 'imaps' (IMAP4 server over SSL),
@@ -1246,7 +1425,8 @@ imaps://myimapserver.net', '-R pop3://mypopserver.net:2110', '-R
 ldap://example.com/cn=%s,dc=host,dc=com'""")
 
 authgroup.add_option("-A", "--authprog",
-                     metavar="PROGRAM", dest="authprog",
+                     metavar="PROGRAM", action="callback",
+                     callback=auth_options.add_auth, type="string",
                      help= \
 """A checkpassword compatible command used to check username/password.
 Examples: '-A "/usr/sbin/checkpassword-pam -s id -- /bin/true"',
@@ -1264,21 +1444,24 @@ Note the position of the quotes in the Examples, which cause the the
 whole string following the -A to be passed as a single argument.""")
 
 authgroup.add_option("-a", "--authfile",
-                     metavar="FILE", dest="authfile",
+                     metavar="FILE", action="callback",
+                     callback=auth_options.add_auth, type="string",
                      help= \
 """Path to the file holding authentication information for this proxy.
 Default location is /etc/tofmipd if running as root/tofmipd, otherwise
 ~user/.tmda/tofmipd.  Use this option to override these defaults.""")
 
-authgroup.add_option("-F", "--fallback",
-                     action="store_true", default=False, dest="fallback",
+authgroup.add_option("-m", "--pamauth",
+                     metavar="SERVICE", action="callback",
+                     callback=auth_options.add_auth, type="string",
                      help= \
-"""When used with -R or -A, fallback to authenticate against the authfile
-if remote authentication fails.  Note: this flag has no effect on -R
-to -A fallback. If you specify both -R and -A methods, then authprog
-will be tried after remoteauth has failed.""")
+"""Authenticate using system username/password via PAM. Requires
+the Python PAM module. The argument is the name of a PAM service, commonly
+"login".""")
 
 # virtual domains
+virtgroup = OptionGroup(parser, "Virtual Domains")
+
 virtgroup.add_option("-S", "--vhome-script",
                      metavar="/PATH/TO/SCRIPT", dest="vhomescript",
                      help= \
@@ -1318,49 +1501,17 @@ if opts.debug or opts.log:
 else:
     DEBUGSTREAM = Devnull()
 
-if opts.remoteauth:
-    # arg is like: imap://host:port
-    autharg = opts.remoteauth
-    try:
-        authproto, autharg = autharg.split('://', 1)
-    except ValueError:
-        authproto, autharg = autharg, None
-    if authproto not in defaultauthports:
-        raise ValueError, 'Protocol not supported: ' + authproto + \
-            '\nPlease pick one of ' + repr(defaultauthports.keys())
-    remoteauth['proto'] = authproto
-    remoteauth['port'] = defaultauthports[authproto]
-    if autharg:
-        try:
-            autharg, dn = autharg.split('/', 1)
-            remoteauth['dn'] = dn
-        except ValueError:
-            dn = ''
-        try:
-            authhost, authport = autharg.split(':', 1)
-        except ValueError:
-            authhost = autharg
-            authport = defaultauthports[authproto]
-        if authhost:
-            remoteauth['host'] = authhost
-        if authport:
-            remoteauth['port'] = authport
-    print >> DEBUGSTREAM, "auth method: %s://%s:%s/%s" % \
-        (remoteauth['proto'], remoteauth['host'],
-         remoteauth['port'], remoteauth['dn'])
-    remoteauth['enable'] = 1
+_authenticator = auth_options.authenticator()
+if _authenticator is None:
+    parser.error('missing authentication option(s)')
 
 if running_as_root:
     if not opts.username:
         opts.username = 'tofmipd'
-    if not opts.authfile:
-        opts.authfile = '/etc/tofmipd'
     ipauthmapfile = '/etc/ipauthmap'
 else:
     tmda_path = os.path.join(os.path.expanduser('~'), '.tmda')
     ipauthmapfile = os.path.join(tmda_path, 'ipauthmap')
-    if not opts.authfile:
-        opts.authfile = os.path.join(tmda_path, 'tofmipd')
 
 # provide disclaimer if running as root
 if running_as_root:
@@ -1369,21 +1520,6 @@ if running_as_root:
           'If you are uncomfortable with this, quit now and instead run ' + \
           program + ' under your non-privileged TMDA user account.'
     warning(msg, exit=0)
-
-if remoteauth['proto'] == 'ldap':
-    try:
-        import ldap
-    except ImportError:
-        raise ImportError, \
-              'python-ldap (http://python-ldap.sf.net/) required.'
-    if remoteauth['dn'] == '':
-        print >> DEBUGSTREAM, "Error: Missing ldap dn\n"
-        raise ValueError
-    try:
-        remoteauth['dn'].index('%s')
-    except:
-        print >> DEBUGSTREAM, "Error: Invalid ldap dn\n"
-        raise ValueError
 
 if opts.ssl or opts.tls:
     if opts.ssl and opts.tls:
@@ -1418,14 +1554,6 @@ def make_session_factory(process_msg_func):
     return lambda conn: SMTPSession(conn, process_msg_func)
 
 def main():
-    # check permissions of authfile if using only remote
-    # authentication.
-    if not (remoteauth['enable'] or opts.authprog) or opts.fallback:
-        authfile_mode = Util.getfilemode(opts.authfile)
-        if authfile_mode not in (400, 600):
-            raise IOError, \
-                opts.authfile + ' must be chmod 400 or 600!'
-
     if opts.vhomescript:
         session_factory = make_session_factory(process_message_vdomain)
     else:
@@ -1440,19 +1568,12 @@ def main():
 
     # Switch user/group ID, etc.
     if running_as_root:
-        pw_uid = Util.getuid(opts.username)
-        # check ownership of authfile if using only remote
-        # authentication.
-        if not (remoteauth['enable'] or opts.authprog) or opts.fallback:
-            if Util.getfileuid(opts.authfile) != pw_uid:
-                raise IOError, \
-                    opts.authfile + ' must be owned by UID ' + str(pw_uid)
         # Set group ID
         os.setegid(Util.getgid(opts.username))
         # Set supplemental group ids
         os.setgroups(Util.getgrouplist(opts.username))
         # Set user ID
-        os.seteuid(pw_uid)
+        os.seteuid(Util.getuid(opts.username))
 
     # Daemonize the process if required
     if not (opts.foreground or opts.one_session):
