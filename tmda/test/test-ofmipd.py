@@ -6,6 +6,7 @@ except ImportError:
     import md5
 
 import lib.util
+lib.util.testPrep()
 from lib.ofmipd import TestOfmipdServer
 
 class FileAuthServer(TestOfmipdServer):
@@ -296,7 +297,5 @@ class TlsSendTest(SendTestMixin, unittest.TestCase):
 # Dupes and syntax errors
 
 if __name__ == '__main__':
-    lib.util.fixupFiles()
-
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)

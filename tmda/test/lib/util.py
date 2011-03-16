@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 rootDir = '..'
 userDir = os.path.join('home', 'testuser')
@@ -18,3 +19,14 @@ def fixupFiles():
     # <configdir>/<user>/config.
 
     shutil.copy(os.path.join(userDir, '.tmda', 'config'), userDir)
+
+def fixupPythonPath():
+    sys.path.append(rootDir)
+
+def fixupHome():
+    os.environ['HOME'] = userDir
+
+def testPrep():
+    fixupFiles()
+    fixupHome()
+    fixupPythonPath()

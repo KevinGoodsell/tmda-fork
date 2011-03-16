@@ -87,10 +87,11 @@ def make_dated_cookie(time, timeout = None):
     return expire_time + '.' + datedmac
 
 
-def make_dated_address(address):
+def make_dated_address(address, addrtime=None):
     """Return a full dated-style e-mail address."""
-    now = '%d' % time.time()
-    dated_cookie = make_dated_cookie(now)
+    if addrtime is None:
+        addrtime = time.time()
+    dated_cookie = make_dated_cookie(addrtime)
     username, hostname = address.split('@')
     dated_address = '%s%s%s%s%s@%s' %(username,
                                       Defaults.RECIPIENT_DELIMITER,
