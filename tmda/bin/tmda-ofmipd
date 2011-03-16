@@ -271,14 +271,12 @@ class CheckpwAuthenticator(Authenticator):
 
     def _plain_check(self, username, password, localip):
         cmd = "/bin/sh -c 'exec %s 3<&0'" % self._cmd
-        # XXX I looks like this might raise, not return
-        # XXX Fix this error handling
-        result = Util.pipecmd(cmd, '%s\0%s\0' % (username, password))
-        if result == 0:
+        try:
+            Util.runcmd_checked(cmd, '%s\0%s\0' % (username, password))
             return True
-        else:
-            logger.info('authprog %r for user %s failed with code %d',
-                        self._cmd, username, result)
+        except:
+            logger.info('authprog %r for user %s failed:', self._cmd, username,
+                        exc_info=True)
             return False
 
     def __repr__(self):
@@ -1216,7 +1214,7 @@ def process_message_vdomain(peer, mailfrom, rcpttos, data, auth_username):
                            or '/usr/sbin/sendmail'
         inject_cmd = [sendmail_program, '-f', mailfrom, '-i', '--'] + rcpttos
     try:
-        Util.pipecmd(inject_cmd, data)
+        Util.runcmd_checked(inject_cmd, data)
     except Exception, err:
         logger.exception('Error running injection command')
         if running_as_root:
@@ -1262,7 +1260,7 @@ def process_message_sysuser(peer, mailfrom, rcpttos, data, auth_username):
             os.setgroups(Util.getgrouplist(auth_username))
             os.setuid(Util.getuid(auth_username))
             try:
-                Util.pipecmd(inject_cmd, data)
+                Util.runcmd_checked(inject_cmd, data)
             except Exception, err:
                 logger.exception('Error running injection command')
                 os._exit(-1)
@@ -1274,7 +1272,7 @@ def process_message_sysuser(peer, mailfrom, rcpttos, data, auth_username):
                 raise IOError, 'tmda-inject failed!'
     else:
         # no need to fork
-        Util.pipecmd(inject_cmd, data)
+        Util.runcmd_checked(inject_cmd, data)
 
 
 def create_smtp_session_from_stdin(session_factory):

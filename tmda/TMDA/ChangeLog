@@ -1,3 +1,10 @@
+2011-03-15  Kevin Goodsell  <kevin-opensource@omegacrash.net>
+
+	* Util.py: Replace deprecated popen2 with subprocess. Removes pipecmd
+	and replaces it with runcmd and runcmd_checked.
+	* Deliver.py, FilterParser.py: Use new runcmd functions instead of
+	pipecmd and popen2.
+
 2007-04-26  Jason R. Mastaler  <jason@mastaler.com>
 
 	* pythonlib/email: Sync up with email 4.0.2.

@@ -29,7 +29,8 @@ import email.utils
 import fileinput
 import fnmatch
 import os
-import popen2
+import subprocess
+from subprocess import PIPE, STDOUT # Make these available in Util
 import re
 import socket
 import stat
@@ -333,62 +334,34 @@ def file_to_list(file):
     return list
 
 
-def pipecmd(command, *strings):
-    """Run a child process, returning opened pipes for communication.
-
-    command is the program to execute as a sub-process.
-
-    *strings are optional pieces of data to write to command.
-
-    return_status will just return the exit status of the command..
-
-    Based on code from getmail
-    <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
-    Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
-    General Public License version 2.
+def runcmd(cmd, instr=None, stdout=None, stderr=None):
+    """Run a command, wait for it to complete, and return a tuple of
+    (return value, stdout text, stderr text). instr is a string to
+    pass as input. stdout and stderr can take the same forms as their
+    subprocess.Popen equivalents.
     """
-    try:
-        popen2._cleanup()
-        cmd = popen2.Popen3(command, 1, bufsize=-1)
-        cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
-        if strings:
-            # Write to the tochild file object.
-            for s in strings:
-                cmdin.write(s)
-            cmdin.flush()
-            cmdin.close()
-        # Read from the childerr object; command will block until exit.
-        err = cmderr.read().strip()
-        cmderr.close()
-        # Read from the fromchild object.
-        out = cmdout.read().strip()
-        cmdout.close()
-        # Get exit status from the wait() member function.
-        r = cmd.wait()
-        # If exit status is non-zero, raise an exception with data
-        # from childerr.
-        if r:
-            if os.WIFEXITED(r):
-                exitcode = 'exited %i' % os.WEXITSTATUS(r)
-                exitsignal = ''
-            elif os.WIFSIGNALED(r):
-                exitcode = 'abnormal exit'
-                exitsignal = 'signal %i' % os.WTERMSIG(r)
-            else:
-                # Stopped, etc.
-                exitcode = 'no exit?'
-                exitsignal = ''
-            raise IOError, 'command "%s" %s %s (%s)' \
-                  % (command, exitcode, exitsignal, err or '')
-        elif err:
-            # command wrote something to stderr.
-            print err
-        if out:
-            # command wrote something to stdout.
-            print out
-    except Exception, txt:
-        raise IOError, \
-              'failure delivering message to command "%s" (%s)' % (command, txt)
+    use_shell = False
+    if isinstance(cmd, basestring):
+        use_shell = True
+
+    process = subprocess.Popen(cmd, stdin=PIPE, stdout=stdout, stderr=stderr,
+                               shell=use_shell)
+    (stdoutdata, stderrdata) = process.communicate(instr)
+
+    return (process.returncode, stdoutdata, stderrdata)
+
+
+def runcmd_checked(cmd, instr=None, stdout=None, stderr=None):
+    """Version of runcmd that doesn't return the exit code or
+    signal, but raises an exception for errors and signals.
+    """
+    (r, stdoutdata, stderrdata) = runcmd(cmd, instr, stdout, stderr)
+    if r > 0:
+        raise StandardError('command %r exited with error %d' % (cmd, r))
+    elif r < 0:
+        raise StandardError('command %r exited with signal %d' % (cmd, -r))
+
+    return (stdoutdata, stderrdata)
 
 
 def writefile(contents, fullpathname):
@@ -587,11 +560,11 @@ def sendmail(msgstr, envrecip, envsender):
     if Defaults.MAIL_TRANSPORT == 'sendmail':
         # You can avoid the shell by passing a tuple of arguments as
         # the command instead of a string.  This will cause the
-        # popen2.Popen3() code to execvp() "/usr/bin/sendmail" with
+        # subprocess.Popen() code to execvp() "/usr/bin/sendmail" with
         # these arguments exactly, with no trip through any shell.
         cmd = (Defaults.SENDMAIL_PROGRAM, '-i',
                '-f', envsender, '--', envrecip)
-        pipecmd(cmd, msgstr)
+        runcmd_checked(cmd, msgstr)
     elif Defaults.MAIL_TRANSPORT == 'smtp':
         import SMTP
         server = SMTP.Connection()

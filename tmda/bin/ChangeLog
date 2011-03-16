@@ -6,6 +6,7 @@
 	just supply multiple authentication options instead.
 	* tmda-ofmipd: Use Python logging module instead of prints.
 	* tmda-ofmipd: Remove extra % in help output.
+	* tmda-ofmipd: Use new runcmd instead of pipecmd.
 	* tmda-address: Fix a typo in help output.
 
 2007-11-20  Stephen Warren  <swarren@wwwdotorg.org>
