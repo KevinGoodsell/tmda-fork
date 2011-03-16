@@ -1,122 +1,15 @@
 import unittest
-import os
-import subprocess
-import signal
-import socket
-import re
 import hmac
 import md5
 
-import OpenSSL.SSL as SSL
+import lib.util
+from lib.ofmipd import TestOfmipdServer
 
-rootDir = '..'
-binDir = os.path.join(rootDir, 'bin')
-libDir = rootDir
-homeDir = 'testuser'
-
-class Server(object):
-    _port = 8025
-
-    _executable = os.path.join(binDir, 'tmda-ofmipd')
-    _commonServerArgs = ['-d', '-f', '-p', '127.0.0.1:%d' % _port, '-a',
-                         'test-ofmipd.auth', '--configdir=.']
-    _certKeyServerArgs = ['--ssl-cert=test-ofmipd.cert',
-                          '--ssl-key=test-ofmipd.key']
-
-    def __init__(self, sslArg=None):
-        self._sslArg = sslArg
-        self._serverProc = None
-
-    def start(self):
-        serverArgs = [self._executable]
-        serverArgs.extend(self._commonServerArgs)
-        if self._sslArg:
-            serverArgs.append(self._sslArg)
-            serverArgs.extend(self._certKeyServerArgs)
-
-        newEnv = dict(os.environ)
-        newEnv['PYTHONPATH'] = libDir
-        newEnv['TMDA_TEST_HOME'] = homeDir
-
-        self._serverProc = subprocess.Popen(serverArgs, env=newEnv)
-
-        # Wait for server availability
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        while True:
-            try:
-                s.connect(('127.0.0.1', self.port()))
-                s.close()
-                break
-            except socket.error:
-                pass
-
-    def stop(self):
-        os.kill(self._serverProc.pid, signal.SIGTERM)
-        self._serverProc.wait()
-
-    def port(self):
-        return self._port
-
-class Client(object):
-    def __init__(self, port):
-        self._port = port
-        self._address = ('127.0.0.1', port)
-        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    def connect(self):
-        self._sock.connect(self._address)
-        self._sock.recv(200)
-
-    def receiveUntil(self, finished):
-        data = ''
-        while not finished(data):
-            data += self._sock.recv(200)
-        return data
-
-    _responseMatcher = re.compile(r'^\d{3} .*\r\n', re.MULTILINE)
-    def _completeResponse(self, data):
-        return self._responseMatcher.search(data) is not None
-
-    def send(self, data):
-        self._sock.send(data)
-
-    def exchange(self, msg):
-        self.send(msg)
-        response = self.receiveUntil(self._completeResponse)
-        return self._splitResponse(response)
-
-    _responseLineMatcher = re.compile(r'^(?P<code>\d{3})[- ](?P<line>.*)\r\n',
-                                      re.MULTILINE)
-    def _splitResponse(self, response):
-        'return (code, [lines])'
-        lines = []
-        code = None
-        for m in self._responseLineMatcher.finditer(response):
-            newCode = int(m.group('code'))
-            if code is not None and code != newCode:
-                raise ValueError('mismatched result codes in response')
-            code = newCode
-            lines.append(m.group('line'))
-
-        return (code, lines)
-
-class SslClient(Client):
-    def __init__(self, port):
-        Client.__init__(self, port)
-        self._sslSock = None
-        self._normalSock = self._sock
-
-    def startSsl(self):
-        context = SSL.Context(SSL.SSLv23_METHOD)
-        self._sslSock = SSL.Connection(context, self._normalSock)
-        self._sslSock.set_connect_state()
-
-        self._sock = self._sslSock
-
-    def startTls(self):
-        (code, lines) = self.exchange('STARTTLS\r\n')
-        assert(code == 220)
-        self.startSsl()
+class FileAuthServer(TestOfmipdServer):
+    def __init__(self):
+        TestOfmipdServer.__init__(self)
+        self.addFileAuth()
+        #self.debug()
 
 class ServerClientMixin(object):
     def setUp(self):
@@ -127,12 +20,12 @@ class ServerClientMixin(object):
         self.server.stop()
 
     def serverSetUp(self):
-        self.server = Server()
+        self.server = FileAuthServer()
         self.server.start()
 
     def clientSetUp(self):
-        self.client = Client(self.server.port())
-        self.client.connect()
+        self.client = self.server.makeClient()
+        self.client.connect(start_tls=True)
 
 class ServerResponseTestMixin(ServerClientMixin):
     def setUp(self):
@@ -185,13 +78,9 @@ class SslServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedAuthCode = 334
 
     def serverSetUp(self):
-        self.server = Server('--ssl')
+        self.server = FileAuthServer()
+        self.server.ssl()
         self.server.start()
-
-    def clientSetUp(self):
-        self.client = SslClient(self.server.port())
-        self.client.startSsl()
-        self.client.connect()
 
     def checkExtensions(self, extensions):
         self.failUnless(extensions == ['AUTH'])
@@ -204,12 +93,13 @@ class PreStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedAuthCode = 530
 
     def serverSetUp(self):
-        self.server = Server('--tls=on')
+        self.server = FileAuthServer()
+        self.server.tls('on')
         self.server.start()
 
     def clientSetUp(self):
-        self.client = SslClient(self.server.port())
-        self.client.connect()
+        self.client = self.server.makeClient()
+        self.client.connect(start_tls=False)
 
     def checkExtensions(self, extensions):
         self.failUnless(extensions == ['STARTTLS'])
@@ -222,13 +112,9 @@ class PostStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedAuthCode = 334
 
     def serverSetUp(self):
-        self.server = Server('--tls=on')
+        self.server = FileAuthServer()
+        self.server.tls('on')
         self.server.start()
-
-    def clientSetUp(self):
-        self.client = SslClient(self.server.port())
-        self.client.connect()
-        self.client.startTls()
 
     def checkExtensions(self, extensions):
         self.failUnless(extensions == ['AUTH'])
@@ -242,8 +128,13 @@ class OptionalStartTlsServerResponses(ServerResponseTestMixin,
     expectedAuthCode = 334
 
     def serverSetUp(self):
-        self.server = Server('--tls=optional')
+        self.server = FileAuthServer()
+        self.server.tls('optional')
         self.server.start()
+
+    def clientSetUp(self):
+        self.client = self.server.makeClient()
+        self.client.connect(start_tls=False)
 
     def checkExtensions(self, extensions):
         self.failUnless(set(extensions) == set(['STARTTLS', 'AUTH']))
@@ -253,10 +144,10 @@ class OptionalStartTlsServerResponses(ServerResponseTestMixin,
 
 class AuthenticationTests(unittest.TestCase):
     def setUp(self):
-        self.server = Server()
+        self.server = FileAuthServer()
         self.server.start()
 
-        self.client = Client(self.server.port())
+        self.client = self.server.makeClient()
         self.client.connect()
 
     def tearDown(self):
@@ -352,12 +243,6 @@ class AuthenticationTests(unittest.TestCase):
             self.authCramMd5(username, 'testpassword', 535)
 
 class SendTestMixin(ServerClientMixin):
-    def signOn(self):
-        authString = '\x00'.join(['testuser', 'testuser', 'testpassword'])
-        authString = authString.encode('base64')[:-1]
-        (code, lines) = self.client.exchange('AUTH PLAIN %s\r\n' % authString)
-        assert(code == 235)
-
     def beginSend(self):
         (code, lines) = self.client.exchange('MAIL FROM: testuser@nowhere.com'
                                              '\r\n')
@@ -377,7 +262,7 @@ class SendTestMixin(ServerClientMixin):
         self.failUnless(code == 250)
 
     def testSend(self):
-        self.signOn()
+        self.client.signOn()
         self.beginSend()
         self.sendLine('X-nothing: nothing')
         self.sendLine('')
@@ -394,30 +279,21 @@ class UnencryptedSendTest(SendTestMixin, unittest.TestCase):
 
 class SslSendTest(SendTestMixin, unittest.TestCase):
     def serverSetUp(self):
-        self.server = Server('--ssl')
+        self.server = FileAuthServer()
+        self.server.ssl()
         self.server.start()
-
-    def clientSetUp(self):
-        self.client = SslClient(self.server.port())
-        self.client.startSsl()
-        self.client.connect()
 
 class TlsSendTest(SendTestMixin, unittest.TestCase):
     def serverSetUp(self):
-        self.server = Server('--tls=on')
+        self.server = FileAuthServer()
+        self.server.tls('on')
         self.server.start()
-
-    def clientSetUp(self):
-        self.client = SslClient(self.server.port())
-        self.client.connect()
-        self.client.startTls()
 
 # XXX Add tests:
 # Dupes and syntax errors
 
 if __name__ == '__main__':
-    os.chmod('testuser/.tmda/crypt_key', 0600)
-    os.chmod('test-ofmipd.auth', 0600)
+    lib.util.fixupFiles()
 
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)
