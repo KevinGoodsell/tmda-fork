@@ -35,6 +35,11 @@ import base64
 import random
 import time
 import re
+import logging
+
+logger = logging.getLogger('tmda.ofmipd')
+logger.setLevel(logging.WARNING)
+logger.addHandler(logging.StreamHandler())
 
 try:
     import paths
@@ -49,10 +54,6 @@ from TMDA import Util
 from TMDA import Version
 
 # Classes
-
-class Devnull(object):
-    def write(self, msg): pass
-    def flush(self): pass
 
 class Authenticator(object):
     """Base class for authenticators, which determine the validity of an
@@ -191,7 +192,7 @@ class PamAuthenticator(Authenticator):
             auth.authenticate()
             auth.acct_mgmt()
         except PAM.error, e:
-            print >> DEBUGSTREAM, 'PAM error: %s' % e
+            logger.info('PAM error: %s', e)
             return False
 
         return True
@@ -202,12 +203,11 @@ class PamAuthenticator(Authenticator):
         result = []
         for (msg, style) in msgs:
             if style == PAM.PAM_PROMPT_ECHO_OFF:
-                print >> DEBUGSTREAM, \
-                    'PAM password prompt (hopefully): %r' % msg
+                logger.debug('PAM password prompt (hopefully): %r', msg)
                 result.append((password, 0))
             else:
-                print >> DEBUGSTREAM, 'Unhandled PAM message, style = %d, ' \
-                    'msg = %s' % (style, msg)
+                logger.warning('Unhandled PAM message, style = %d, msg = %s',
+                               style, msg)
                 result.append(('', 0))
         return result
 
@@ -219,14 +219,14 @@ class CheckpwAuthenticator(Authenticator):
         self._cmd = cmd
 
     def plain_check(self, username, password, localip):
-        print >> DEBUGSTREAM, "Trying authprog method"
+        logger.info("Trying authprog method")
         cmd = "/bin/sh -c 'exec %s 3<&0'" % self._cmd
         result = Util.pipecmd(cmd, '%s\0%s\0' % (username, password))
         if result == 0:
             return True
         else:
-            print >> DEBUGSTREAM, 'authprog %s for user %s failed ' \
-                'with code %d' % (self._cmd, username, result)
+            logger.info('authprog %r for user %s failed with code %d',
+                        self._cmd, username, result)
             return False
 
 class RemoteAuthenticator(Authenticator):
@@ -289,8 +289,8 @@ class ImapAuthenticator(RemoteAuthenticator):
             imap.logout()
             return True
         except imap.error, e:
-            print >> DEBUGSTREAM, 'imap(s) authentication failed for ' \
-                     '%s@%s (%s)' % (username, host, e)
+            logger.info('imap(s) authentication failed for %s@%s (%s)',
+                        username, host, e)
         return False
 
 class Pop3Authenticator(RemoteAuthenticator):
@@ -312,8 +312,8 @@ class Pop3Authenticator(RemoteAuthenticator):
             pop.quit()
             return True
         except poplib.error_proto, e:
-            print >> DEBUGSTREAM, 'pop3 authentication failed for %s@%s ' \
-                     '(%s)' % (username, host, e)
+            logger.info('pop3 authentication failed for %s@%s (%s)',
+                        username, host, e)
         return False
 
 class LdapAuthenticator(RemoteAuthenticator):
@@ -337,8 +337,8 @@ class LdapAuthenticator(RemoteAuthenticator):
             ldap_obj.unbind_s()
             return True
         except ldap.LDAPError, e:
-            print >> DEBUGSTREAM, 'ldap authentication for %s@%s failed ' \
-                     '(%s)' % (username, host, e)
+            logger.info('ldap authentication for %s@%s failed (%s)',
+                        username, host, e)
         return False
 
 class AuthOptions(object):
@@ -429,8 +429,8 @@ class SMTPSession(asynchat.async_chat):
 
         # Debug tracing
 
-        print >> DEBUGSTREAM, 'Incoming connection from:', repr(self.__peer)
-        print >> DEBUGSTREAM, 'Incoming connection to:', repr(self._local)
+        logger.info('Incoming connection from: %r', self.__peer)
+        logger.info('Incoming connection to: %r', self._local)
 
     def init_static_state(self):
         """Initialize 'static state' - that state which is associated
@@ -538,8 +538,7 @@ class SMTPSession(asynchat.async_chat):
     # Implementation of base class abstract method
     def found_terminator(self):
         line = EMPTYSTRING.join(self.__line)
-        if opts.debug:
-            print >> DEBUGSTREAM, 'Data:', repr(line)
+        logger.debug('Data: %r', line)
         self.__line = []
         if self.__state == self.COMMAND:
             if not line:
@@ -581,9 +580,7 @@ class SMTPSession(asynchat.async_chat):
                                                      self.__data,
                                                      self.__auth_username)
                 except:
-                    print >>DEBUGSTREAM, "process_message raised an exception:"
-                    import traceback
-                    traceback.print_exc(DEBUGSTREAM)
+                    logger.exception("process_message raised an exception")
                     raise
             else:
                 status = self.push('450 Outgoing mail quota exceeded')
@@ -698,14 +695,12 @@ class SMTPSession(asynchat.async_chat):
             self.push('501 malformed AUTH input')
         else:
             self.push('535 AUTH failed')
-        print >> DEBUGSTREAM, 'Auth: ', 'failed for user', \
-              "'%s'" % self.__auth_username
+        logger.info("Auth failed for user '%s'", self.__auth_username)
         self.__smtpauth = 0
 
     def auth_notify_succeed(self):
         self.push('235 AUTH successful')
-        print >> DEBUGSTREAM, 'Auth: ', 'succeeded for user', \
-              "'%s'" % self.__auth_username
+        logger.info("Auth succeeded for user '%s'", self.__auth_username)
         os.environ['LOGIN'] = self.__auth_username
         self.__smtpauth = 1
 
@@ -800,7 +795,7 @@ class SMTPSession(asynchat.async_chat):
         if not self.__smtpauth:
             self.auth_notify_required()
             return
-        print >> DEBUGSTREAM, '===> MAIL', arg
+        logger.info('===> MAIL %s', arg)
         address = self.__getaddr('FROM:', arg)
         if not address:
             self.push('501 Syntax: MAIL FROM:<address>')
@@ -809,11 +804,11 @@ class SMTPSession(asynchat.async_chat):
             self.push('503 Error: nested MAIL command')
             return
         self.__mailfrom = address
-        print >> DEBUGSTREAM, 'sender:', self.__mailfrom
+        logger.info('sender: %s', self.__mailfrom)
         self.push('250 Ok')
 
     def smtp_RCPT(self, arg):
-        print >> DEBUGSTREAM, '===> RCPT', arg
+        logger.info('===> RCPT %s', arg)
         if not self.__mailfrom:
             self.push('503 Error: need MAIL command')
             return
@@ -822,7 +817,7 @@ class SMTPSession(asynchat.async_chat):
             self.push('501 Syntax: RCPT TO: <address>')
             return
         self.__rcpttos.append(address)
-        print >> DEBUGSTREAM, 'recips:', self.__rcpttos
+        logger.info('recips: %s', self.__rcpttos)
         self.push('250 Ok')
 
     def smtp_RSET(self, arg):
@@ -1068,9 +1063,8 @@ class SMTPServer(asyncore.dispatcher):
         self.set_reuse_addr()
         self.bind(localaddr)
         self.listen(5)
-        print >> DEBUGSTREAM, \
-              'tmda-ofmipd started at %s\n\tListening on %s:%d' % \
-              (Util.make_date(), localaddr[0], localaddr[1])
+        logger.info('tmda-ofmipd started at %s\n\tListening on %s:%d',
+                    Util.make_date(), localaddr[0], localaddr[1])
 
     def readable(self):
         if len(asyncore.socket_map) > opts.connections:
@@ -1086,15 +1080,6 @@ class SMTPServer(asyncore.dispatcher):
 
 
 # Utility functions
-
-def warning(msg='', exit=1):
-    delimiter = '*' * 70
-    if msg:
-        msg = Util.wraptext(msg)
-        print >> sys.stderr, '\n', delimiter, '\n', msg, '\n', delimiter, '\n'
-    if exit:
-        sys.exit()
-
 
 def b64_encode(s):
     """base64 encoding without the trailing newline."""
@@ -1143,8 +1128,7 @@ def process_message_vdomain(peer, mailfrom, rcpttos, data, auth_username):
             prepend = Util.getvdomainprepend(auth_username,
                                              opts.vdomainspath)
             if not prepend:
-                err = 'Error: "%s" is not a virtual domain' % (domain,)
-                print >> DEBUGSTREAM, err
+                logger.error('Error: "%s" is not a virtual domain', domain)
                 os._exit(-1)
             os.seteuid(0)
             os.setgid(Util.getgid(prepend))
@@ -1155,7 +1139,7 @@ def process_message_vdomain(peer, mailfrom, rcpttos, data, auth_username):
     # From here on, we're either in the child (pid == 0) or we're not
     # running as root, so we haven't forked.
     vhomedir = Util.getvuserhomedir(user, domain, opts.vhomescript)
-    print >> DEBUGSTREAM, 'vuser homedir: "%s"' % (vhomedir,)
+    logger.info('vuser homedir: "%s"', vhomedir)
     # This is so "~" will work in the .tmda/* files.
     os.environ['HOME'] = vhomedir
     # change inject_cmd to pass the message through if
@@ -1169,7 +1153,7 @@ def process_message_vdomain(peer, mailfrom, rcpttos, data, auth_username):
     try:
         Util.pipecmd(inject_cmd, data)
     except Exception, err:
-        print >> DEBUGSTREAM, 'Error:', err
+        logger.exception('Error running injection command')
         if running_as_root:
             os._exit(-1)
     if running_as_root:
@@ -1215,7 +1199,7 @@ def process_message_sysuser(peer, mailfrom, rcpttos, data, auth_username):
             try:
                 Util.pipecmd(inject_cmd, data)
             except Exception, err:
-                print >> DEBUGSTREAM, 'Error:', err
+                logger.exception('Error running injection command')
                 os._exit(-1)
             os._exit(0)
         else:
@@ -1496,10 +1480,10 @@ if opts.full_version:
     sys.exit()
 if opts.vhomescript and opts.configdir:
     parser.error("options '--vhome-script' and '--configdir' are incompatible!")
-if opts.debug or opts.log:
-    DEBUGSTREAM = sys.stderr
-else:
-    DEBUGSTREAM = Devnull()
+if opts.log:
+    logger.setLevel(logging.INFO)
+if opts.debug:
+    logger.setLevel(logging.DEBUG)
 
 _authenticator = auth_options.authenticator()
 if _authenticator is None:
@@ -1515,11 +1499,11 @@ else:
 
 # provide disclaimer if running as root
 if running_as_root:
-    msg = 'WARNING: The security implications and risks of running ' + \
-          program + ' in "seteuid" mode have not been fully evaluated.  ' + \
-          'If you are uncomfortable with this, quit now and instead run ' + \
-          program + ' under your non-privileged TMDA user account.'
-    warning(msg, exit=0)
+    logger.warning('WARNING: The security implications and risks of running\n'
+                   '%s in "seteuid" mode have not been fully evaluated.\n'
+                   'If you are uncomfortable with this, quit now and instead\n'
+                   'run it under your non-privileged TMDA user account.',
+                   program)
 
 if opts.ssl or opts.tls:
     if opts.ssl and opts.tls:

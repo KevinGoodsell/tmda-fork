@@ -4,6 +4,7 @@
 	* tmda-ofmipd: New authentication system with support for PAM and
 	arbitrary chaining of authentication methods. -F/--fallback removed;
 	just supply multiple authentication options instead.
+	* tmda-ofmipd: Use Python logging module instead of prints.
 	* tmda-ofmipd: Remove extra % in help output.
 	* tmda-address: Fix a typo in help output.
 
