@@ -2,6 +2,7 @@
 
 	* Add parse_def, a more flexible parser and help generator for
 	Defaults.py to replace def2html.
+	* Add man pages in manpages dir.
 
 2008-02-21  Bob Rogers  <rogers@rgrjr.dyndns.org>
 

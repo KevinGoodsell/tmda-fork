@@ -1,0 +1,591 @@
+.\" t
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH TMDA-FILTER-FORMAT 5 "2010-01-30" TMDA "TMDA Documentation"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.
+.\" **********************************************************************
+.SH NAME
+tmda\-filter\-format \- Format for TMDA message filters
+.
+.\" **********************************************************************
+.SH DESCRIPTION
+.
+TMDA filter files contain filters to apply to incoming or outgoing
+mail messages.
+A filter must begin in the first column of a line, and may span multiple
+lines.
+To continue a filter onto a new line, indent lines after the first at
+least one space or tab.
+Blank lines (empty or whitespace-only) may not appear between lines of a
+filter.
+.PP
+Filter files may be annotated with comments.
+A comment begins with a hash character (#) and continues to the end of the
+line.
+.PP
+The general form of a filter is
+.PP
+.I source match action
+.PP
+The available sources and actions are described in detail in the
+.B SOURCES
+and
+.B ACTIONS
+sections below.
+The interpretation of
+.I match
+for each source is also described in the
+.B SOURCES
+section.
+.PP
+Additionally, filter files support a few special constructs: macros,
+included files, and variable interpolation.
+.
+.SS Macros
+.
+Macros perform simple text replacement.
+Given a macro definition of the form:
+.IP
+.EX
+.BI macro " name replacement\-text"
+.EE
+.PP
+Every subsequent reference to
+.I name
+will be replaced with
+.IR replacement\-text .
+.PP
+Macros may also take arguments.
+For example:
+.IP
+.EX
+macro WHITELIST(filename) from\-file \(ti/.tmda/lists/filename ok
+.EE
+.PP
+Will cause
+.IP
+.EX
+WHITELIST(friends)
+.EE
+.PP
+to be replaced with
+.IP
+.EX
+from\-file \(ti/.tmda/lists/friends ok
+.EE
+.
+.SS Included Files
+.
+The
+.B include
+directive can be used to insert the content of one filter file into
+another.
+The syntax is:
+.IP
+.EX
+.BR include " [" \-optional "] \fIincluded\-file\-path"
+.EE
+.PP
+This works as if the content of the included file were inserted into the
+filter file at the point where the
+.B include
+directive appears.
+.PP
+With
+.B \-optional
+no error is raised when the file does not exist.
+.
+.SS Variable Interpolation
+.
+Variable interpolation allows variables to be expanded in filter files.
+Variables are prefixed with $ and enclosed in curly braces, e.g.
+.BR ${VARIABLE_NAME} .
+Variables are search for in two locations.
+First, the user configuration is searched.
+This includes all standard configuration variables (see
+.BR tmda\-config (5))
+as well as any extra variables set in the user's configuration file.
+Second, environment variables are searched.
+If a variable is not found in either location, an error is generated and
+the message is deferred.
+.
+.\" **********************************************************************
+.SH SOURCES
+.
+The
+.I source
+for a filter determines what aspect of the message the filter is based on
+and the interpretation of the
+.I match
+portion of the filter.
+Possible sources are shown here along with their possible options and the
+.I match
+type that they expect.
+.
+.TP
+.BI "from " address
+.TQ
+.BI "to " address
+The filter matches the given
+.IR address .
+.IP
+For all
+.B to
+and
+.B from
+filter types, the addresses matched are different for incomming and
+outgoing filters:
+.\" This table produces adjusting warnings because of the long,
+.\" non-breakable words. As a work-around, disable adjusting just
+.\" until the end of the table, and allow plenty of opportunity to
+.\" break long words.
+.na
+.TS
+allbox, tab(;);
+l l l
+lB l l.
+;Incoming Filter;Outgoing Filter
+from*;T{
+Envelope sender or one of the headers
+.BR From ,
+.BR Reply-To ,
+or
+.B X-Primary-Address
+(depending on the
+.B PRI\%MARY_AD\%DRESS_MATCH
+setting)
+T};From header
+to*;Envelope recipient;T{
+Recipient on
+.BR tmda-sendmail 's
+command line or the
+.B To
+header
+T}
+.TE
+.ad
+.IP
+Wildcard matching is also allowed in
+.B from
+and
+.BR to ,
+.B \%from\-file
+and
+.B \%to\-file
+(when used without
+.B \%\-autocdb
+or
+.BR \%\-autodbm ),
+and
+.B \%from\-sql
+and
+.B \%to\-sql
+(when used with
+.BR \%\-wildcards ).
+.IP
+The accepted wildcards are:
+.TS
+allbox, tab(;);
+lB lB
+lB l.
+Wildcard;Matches
+*;anything
+?;any single character
+[\fIchars\fP];a single character from \fIchars
+[!\fIchars\fP];a single character that is not in \fIchars
+@=;\fB@\fP or \fB@*.\fP, for matching optional subdomains
+.TE
+.
+.TP
+.BR from\-file " [" \-autocdb | \-autodbm "] [" \-optional "] \fIfile"
+.TQ
+.BR to\-file " [" \-autocdb | \-autodbm "] [" \-optional "] \fIfile"
+Like
+.B from
+and
+.BR to ,
+but using addresses or domains from the indicated file rather than a
+single address.
+The
+.B \%\-autocdb
+and
+.B \%\-autodbm
+flags can be used to automatically build a database from
+.IR file ,
+allowing faster lookups.
+If the
+.B \%\-optional
+flag is given, then the file not existing is not an error.
+.IP
+.I file
+is a simple text file containing one address or domain (possibly with
+wildcards) per line.
+Each address or domain may optionally be followed by an
+.IR action ,
+which overrides the
+.I action
+in the filter file.
+The file may also include blank or whitespace-only lines, and comments
+which begin with # and continue to the end of the line.
+.
+.TP
+.BR from\-cdb " [" \-optional "] \fIdatabase"
+.TQ
+.BR to\-cdb " [" \-optional "] \fIdatabase"
+.TQ
+.BR from\-dbm " [" \-optional "] \fIdatabase"
+.TQ
+.BR to\-dbm " [" \-optional "] \fIdatabase"
+Like
+.B from-file
+and
+.BR to-file ,
+but using addresses and domains from the given database rather than from
+a file.
+.B \%\-optional
+has the same meaning as in
+.B \%from\-file
+and
+.BR \%to\-file .
+.IP
+The
+.I database
+should contain addresses or domain names for the keys, and the values may
+be empty or may contain an
+.I action
+which overrides the
+.I action
+given in the filter file.
+.
+.TP
+.BR from\-ezmlm " [" \-optional "] \fIezmlm\-directory"
+.TQ
+.BR to\-ezmlm " [" \-optional "] \fIezmlm\-directory"
+.TQ
+.BR "from\-mailman \-attr=\fIattribute\fP " [ \-optional "] \
+\fImailman\-directory"
+.TQ
+.BR "to\-mailman \-attr=\fIattribute\fP " [ \-optional "] \
+\fImailman\-directory"
+Like
+.B from
+and
+.BR to ,
+but using addresses from an ezmlm mailing list subscriber list or a
+mailman configuration database.
+.IP
+.I ezmlm\-directory
+must be the ezmlm mailing list directory, which is expected to contain a
+.B \%subscribers
+directory.
+It must not refer to the
+.B \%subscribers
+directory itself.
+.IP
+The mailman variants require an
+.IR attribute ,
+which specifies an attribute in the configuration database.
+Possible attributes include
+.BR \%members ,
+.BR \%digest_members ,
+and
+.BR \%owner .
+.IP
+.B \%\-optional
+has the same meaning as in
+.B \%from\-file
+and
+.BR \%to\-file .
+.
+.TP
+.BI "from\-sql \-wildcards\fR|\fP\-addr_column=" column\-name " \fR[\fP\
+\-action_column=" "column\-name\fR]\fP SQL\-query"
+.TQ
+.BI "to\-sql \-wildcards\fR|\fP\-addr_column=" column\-name " \fR[\fP\
+\-action_column=" "column\-name\fR]\fP SQL\-query"
+These sources use a SQL database query to look up addresses.
+.IP
+These sources require the
+.B \%DB_CONNECTION
+variable to be set in your TMDA configuration.
+.IP
+Sorry, this section is not yet complete.
+.
+.TP
+.BR body " [" \-case "] \fIregular\-expression"
+.TQ
+.BR headers " [" \-case "] \fIregular\-expression"
+.TQ
+.BR body\-file " [" \-case "] [" \-optional "] \
+\fIregular\-expression\-file"
+.TQ
+.BR headers\-file " [" \-case "] [" \-optional "] \
+\fIregular\-expression\-file"
+For incomming filters only.
+.IP
+Uses a regular expression (or a file containing regular expressions) to
+match against either the message body or headers.
+.B \%\-optional
+has the same meaning as in
+.B \%from\-file
+and
+.BR \%to\-file .
+.B \%\-case
+indicates that matching should be case-sensitive.
+.IP
+Regular expression files should contain one expression per line.
+If a regular expression contains whitespace, it must be quoted.
+Single quotes (') and double quotes (") are allowed.
+The file may also include blank or whitespace-only lines, and comments
+which begin with # and continue to the end of the line.
+.IP
+The regular expression format is that used by Python's
+.B re
+module.
+Documentation may be found by using the command:
+.IP
+.EX
+pydoc re
+.EE
+.IP
+Or on the
+.UR http://docs.python.org/library/re.html
+Python web site
+.UE .
+.
+.TP
+.BI "size <" bytes
+.TQ
+.BI "size >" bytes
+For incomming filters only.
+.IP
+Matches messages based on their size.
+No space is permitted between the operator and
+.IR bytes .
+.
+.TP
+.BI "pipe " command\-string
+.TQ
+.BI "pipe\-headers " command\-string
+For incomming filters only.
+.IP
+These sources pipe the contents of the message (or just the message
+headers) to the indicated command.
+The match succeeds if the command returns 0 and fails otherwise.
+.
+.\" **********************************************************************
+.SH ACTIONS
+.
+Most actions are either a single word, or a word followed by an equal
+sign (=) and a parameter.
+The
+.B tag
+action is an exception to this rule and takes a variable number of
+arguments.
+.PP
+Many actions also have aliases.
+The action and its aliases have exactly the same meaning, and the choice
+of which to use is arbitrary.
+.
+.SS Incoming Filter Actions
+.
+.TP
+.BR bounce [ =\fItemplate\fP ]
+.TQ
+.BR reject [ =\fItemplate\fP ]
+Send back a delivery failure notification, optionally specifying the
+message template to use.
+.I template
+may be an absolute path or a relative path.
+If it begins with `\(ti', it will be expanded to the user's home
+directory.
+A relative path is relative to
+.BR TEMPLATE_DIR .
+.
+.TP
+.B drop
+.TQ
+.B exit
+.TQ
+.B stop
+Silently discard the message.
+.
+.TP
+.BR ok [ =\fIinstruction\fP ]
+.TQ
+.BR accept [ =\fIinstruction\fP ]
+.TQ
+.BR deliver [ =\fIinstruction\fP ]
+Deliver the message, optionally specifying the delivery instruction.
+.I instruction
+can have several forms:
+.TS
+allbox, tab(;);
+l l.
+T{
+.BI deliver=| "program \fR[\fPargument .\|.\|.\fR]"
+T};Pipe message to a program.
+T{
+.BI deliver=& address
+T};T{
+Forward message.
+The `&' is optional if the address begins with a letter or a number.
+T}
+T{
+.BI deliver=: path
+T};Deliver to mmdf mailbox.
+T{
+.BI deliver= path
+T};T{
+Deliver to mbox mailbox.
+Must begin with `\(ti' or `/' and must not end with `/'.
+T}
+T{
+.BI deliver= path /
+T};T{
+Deliver to maildir mailbox.
+Must begin with `\(ti' or `/' and must end with `/'.
+T}
+.TE
+.IP
+TMDA will not create mailboxes if they don't exist, and will not deliver
+to a symlinked mailbox.
+Please note that delivering to mmdf and mbox mailboxes on an NFS
+filesystem is not safe.
+.
+.TP
+.BR confirm [ =\fItemplate\fP ]
+Send a confirmation request, optionally specifying the template to use.
+.
+.TP
+.B hold
+Save the message in the pending queue.
+.
+.SS Outgoing Filter Actions
+.
+.TP
+.BR bare [ =append ]
+Don't tag the outgoing message.
+If
+.B =append
+is included, append the recipient to the file specified by
+.B BARE_APPEND
+or executed the SQL statement in
+.B DB_BARE_APPEND
+to add the recipient to the database.
+.
+.TP
+.BR sender [ =\fIaddress\fP ]
+Tag the message with a sender address.
+The address to use can be given explicitly.
+The recipient's address is used by default.
+.
+.TP
+.BR domain [ =\fIaddress\fP ]
+Like
+.BR sender ,
+but only use the domain part of the address.
+.
+.TP
+.BR dated [ =\fItimeout\fP ]
+Tag the message with a dated address.
+You may optionally specify a timeout to use instead of the default.
+The format for timeout is a number followed by a single letter that
+provides the time unit.
+Valid time units are:
+.TS
+tab(;);
+lB l.
+Y;years
+M;months
+w;weeks
+d;days
+h;hours
+m;minutes
+s;seconds
+.TE
+.
+.TP
+.BI exp= full\-address
+.TQ
+.BI explicit= full\-address
+.TQ
+.BI as= full\-adress
+Use a specific sender address.
+.
+.TP
+.BI ext= address\-extension
+.TQ
+.BI extension= address\-extension
+Use a specific sender address extension.
+.
+.TP
+.BI kw= keyword
+.TQ
+.BI keyword= keyword
+Tag the message with a keyword address.
+.
+.TP
+.B default
+Use the action given by the
+.B ACTION_OUTGOING
+option.
+.
+.TP
+.BI tag " header action \fR[\fPheader action .\|.\|.\fR]"
+Allows you to specify a sequence of
+.I header action
+pairs to apply actions to specific headers.
+.I header
+is the name of the header you want to apply the action to, usually
+.B From
+or
+.B Reply\-To
+(leave off the `:').
+It may also be
+.B envelope
+to apply the action to the envelope sender.
+.IP
+.I action
+can be any of the actions from
+.B Outgoing Filter Actions
+(except
+.BR tag ).
+.
+.\" **********************************************************************
+.SH SEE ALSO
+.
+.BR tmda\-filter (1),
+.BR tmda\-config (5),
+.UR http://tmda.sourceforge.net/cgi\-bin/moin.cgi/FilterSpecification
+The TMDA wiki
+.UE .
+.
+.\" **********************************************************************
+.SH AUTHOR
+.
+TMDA was written by
+.MT jason@mastaler.com
+Jason R. Mastaler
+.ME .
+.PP
+This manual page is based on documentation from the TMDA wiki and was
+written by
+.MT kevin\-opensource@omegacrash.net
+Kevin Goodsell
+.ME ,
+for the Debian project (and may be used by others).

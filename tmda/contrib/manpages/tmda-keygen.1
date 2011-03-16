@@ -1,0 +1,69 @@
+.\" Hey, EMACS: -*- nroff -*-
+.TH TMDA-KEYGEN 1 "2010-01-24" TMDA "TMDA Programs"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.\" **********************************************************************
+.SH NAME
+tmda\-keygen \- generate a unique 160-bit hex key
+.\" **********************************************************************
+.SH SYNOPSIS
+.SY tmda\-keygen
+.RI [ options ]
+.YS
+.\" **********************************************************************
+.SH DESCRIPTION
+.B \%tmda\-keygen
+generates the unique key for the
+.B \(ti/.tmda/crypt_key
+file.
+A new TMDA user needs to do this once.
+.\" **********************************************************************
+.SH OPTIONS
+.TP
+.BI "\-d " device
+.TQ
+.BI \-\-device= device
+Draw random numbers from a random data source device other than
+.BR \%/dev/urandom .
+.TP
+.B \-b
+.TQ
+.B \-\-batch
+Output only the CRYPT_KEY.
+.TP
+.B \-V
+Show full TMDA version information and exit.
+.TP
+.B \-\-version
+Show program's version number and exit.
+.TP
+.B \-h
+.TQ
+.B \-\-help
+Show this help message and exit.
+.\" **********************************************************************
+.\".SH SEE ALSO
+.\" **********************************************************************
+.SH AUTHOR
+TMDA was written by
+.MT jason@mastaler.com
+Jason R. Mastaler
+.ME .
+.PP
+This manual page was adapted from the program
+.B \%\-\-help
+output by
+.MT kevin\-opensource@omegacrash.net
+Kevin Goodsell
+.ME ,
+for the Debian project (but may be used by others).

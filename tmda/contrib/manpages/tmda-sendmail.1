@@ -1,0 +1,73 @@
+.\" Hey, EMACS: -*- nroff -*-
+.TH TMDA-SENDMAIL 1 "2010-01-24" TMDA "TMDA Programs"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.\" **********************************************************************
+.SH NAME
+tmda\-sendmail \- sendmail compatibility wrapper
+.\" **********************************************************************
+.SH SYNOPSIS
+.SY tmda\-sendmail
+.OP \-hV
+.OP \-\-help
+.OP \-\-version
+.I sendmail\-options
+.YS
+.\" **********************************************************************
+.SH DESCRIPTION
+.B \%tmda\-sendmail
+is a wrapper for
+.B \%tmda\-inject
+that accepts
+.B \%sendmail
+arguments, most of which it ignores.
+This is for compatibility with mail transfer agents that support sending
+via a
+.B \%sendmail
+program.
+.\" **********************************************************************
+.SH OPTIONS
+.TP
+.B \-B, \-E, \-e, \-f, \-i, \-J, \-m, \-o, \-p, \-v, \-x
+These options are silently ignored.
+.TP
+.B \-t
+Get recipients from the message headers rather than command line arguments.
+.TP
+.BI "\-F " name
+Set the sender name.
+.TP
+.B \-V
+Show full TMDA version information and exit.
+.TP
+.B \-\-version
+Show program's version number and exit.
+.TP
+.B \-h
+.TQ
+.B \-\-help
+Show help message and exit.
+.\" **********************************************************************
+.\".SH SEE ALSO
+.\" **********************************************************************
+.SH AUTHOR
+TMDA was written by
+.MT jason@mastaler.com
+Jason R. Mastaler
+.ME .
+.PP
+This manual page was written by
+.MT kevin\-opensource@omegacrash.net
+Kevin Goodsell
+.ME ,
+for the Debian project (but may be used by others).

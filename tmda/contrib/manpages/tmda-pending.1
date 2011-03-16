@@ -1,0 +1,231 @@
+.\" Hey, EMACS: -*- nroff -*-
+.TH TMDA-PENDING 1 "2010-01-24" TMDA "TMDA Programs"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.\" **********************************************************************
+.SH NAME
+tmda\-pending \- pending queue manipulation tool
+.\" **********************************************************************
+.SH SYNOPSIS
+.SY tmda\-pending
+.RI [ options ]
+.RI [ "messages .\|.\|." " | \fB\-\fP]"
+.YS
+.\" **********************************************************************
+.SH DESCRIPTION
+.B tmda\-pending
+is a tool for manipulating TMDA's pending messages queue.
+If one or more
+.I messages
+are provided as arguments, operate just on them.
+If `\-' is specified, operate on a list of messages provided by standard
+input.
+Otherwise, operate on all messages in the pending queue.
+.\" **********************************************************************
+.SH OPTIONS
+.TP
+.B \-\-version
+Show program's version number and exit.
+.TP
+.B \-h
+.TQ
+.B \-\-help
+Show this help message and exit.
+.TP
+.B \-V
+Show full TMDA version information and exit.
+.SS General
+.TP
+.BI \-\-vhome\-script= script
+Full pathname of SCRIPT that prints a virtual email user's home directory
+on standard output.
+.B \%tmda\-pending
+will read that path and set $HOME to that path so that `\(ti' expansion
+works properly for virtual users.
+The script takes two arguments, the user name and the domain, on its
+command line.
+This option is for use with the VPopMail and VMailMgr add-ons to qmail
+and with other systems that manage virtual email addresses.
+The user name is obtained from the USER and LOGNAME environment
+variables, in that order, or by the value of the
+.B \%\-\-vhome\-user
+option, if defined.
+The domain name is obtained by the
+.B \%\-\-vhome\-domain
+option, if defined, and if not, an attempt to figure it out automatically.
+.TP
+.BI \-\-vhome\-user= user
+The user name to optionally pass to the program specified in the
+.B \%\-\-vhome\-script
+option, above.
+.TP
+.BI \-\-vhome\-domain= domain
+The domain name to optionally pass to the program specified in the
+.B \%\-\-vhome\-script
+option, above.
+.TP
+.BI "\-c " file
+.TQ
+.BI \-\-config\-file= file
+Specify a configuration file other than
+.BR \(ti/.tmda/config .
+.TP
+.B \-v
+.TQ
+.B \-\-verbose
+Display output (default).
+.TP
+.B \-q
+.TQ
+.B \-\-quiet
+Suppress output.
+Not compatible with
+.BR \%\-\-interactive .
+.TP
+.B \-p
+.TQ
+.B \-\-pretend
+Don't actually operate on messages, just show what would have happened.
+Implies
+.BR \%\-\-verbose .
+.TP
+.B \-i
+.TQ
+.B \-\-interactive
+Display a summary of each pending message and prompt for disposal (pass,
+show, release, delete, quit).
+Implies
+.BR \%\-\-verbose .
+(default)
+.TP
+.B \-b
+.TQ
+.B \-\-batch
+Operate non-interactively in batch mode.
+Use with caution.
+.TP
+.B \-C
+.TQ
+.B \-\-cache
+Operate only on messages which aren't stored in
+.B \(ti/.tmda/.pendingcache
+(i.e, haven't yet been read).
+After operation,  store the message in the cache file.
+Useful primarily in conjunction  with the
+.B \%\-\-summary
+option.
+.SS Actions
+.TP
+.B \-r
+.TQ
+.B \-\-release
+Release messages.
+.TP
+.BI "\-R " address
+.TQ
+.BI \-\-recipient= address
+Override the email address used to create the magic release address by
+specifying
+.IR address .
+Normally, this is determined by parsing the
+.B \%X\-TMDA\-Recipient
+header which every pending message contains.
+.TP
+.B \-d
+.TQ
+.B \-\-delete
+Delete messages.
+.TP
+.B \-B
+.TQ
+.B \-\-blacklist
+Append the sender of the message to the
+.B \%PENDING_BLACKLIST_APPEND
+file.
+.TP
+.B \-W
+.TQ
+.B \-\-whitelist
+Append the sender of the message to the
+.B \%PENDING_WHITELIST_APPEND
+file.
+.TP
+.B \-S
+.TQ
+.B \-\-show
+Display the full contents of the given message with
+.B \%$PAGER
+(usually the
+.B \%more
+or
+.B \%less
+program).
+.TP
+.B \-s
+.TQ
+.B \-\-summary
+Print a summary of pending messages along with a release address link.
+Implies
+.BR \%\-\-verbose .
+.TP
+.B \-T
+.TQ
+.B \-\-terse\-summary
+Print a terse (one-line per message) summary of pending messages.
+Customize the display with
+.BR \%TERSE_SUMMARY_HEADERS .
+Implies
+.BR \-\-verbose .
+.SS Messages
+.TP
+.B \-A
+.TQ
+.B \-\-ascending
+Operate on messages in ascending order (default).
+.TP
+.B \-D
+.TQ
+.B \-\-descending
+Operate on messages in descending order.
+.TP
+.BI "\-Y " interval
+.TQ
+.BI \-\-younger= interval
+Operate only on messages younger than the time
+.I interval
+given in seconds (s), minutes (m), hours (h), days (d), weeks (w), months
+(M), or years (Y).
+.TP
+.BI "\-O " interval
+.TQ
+.BI \-\-older= interval
+Operate only on messages older than the time
+.I interval
+given in seconds (s), minutes (m), hours (h), days (d), weeks (w), months
+(M), or years (Y).
+.\" **********************************************************************
+.\".SH SEE ALSO
+.\" **********************************************************************
+.SH AUTHOR
+TMDA was written by
+.MT jason@mastaler.com
+Jason R. Mastaler
+.ME .
+.PP
+This manual page was adapted from the program
+.B \%\-\-help
+output by
+.MT kevin\-opensource@omegacrash.net
+Kevin Goodsell
+.ME ,
+for the Debian project (but may be used by others).

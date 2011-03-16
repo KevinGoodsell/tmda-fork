@@ -1,0 +1,345 @@
+'\" t
+.\" Hey, EMACS: -*- nroff -*-
+.TH TMDA-OFMIPD 1 "2010-01-25" TMDA "TMDA Programs"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.\" **********************************************************************
+.SH NAME
+tmda\-ofmipd \- proxy to tag outgoing SMTP email
+.\" **********************************************************************
+.SH SYNOPSIS
+.SY tmda\-ofmipd
+.RI [ options ]
+.YS
+.\" **********************************************************************
+.SH DESCRIPTION
+.B \%tmda\-ofmipd
+is an authenticated ofmip proxy for TMDA that allows you to `tag' your
+mail client's outgoing mail through SMTP.  For more information,
+including setup and usage instructions, see
+.UR http://wiki.tmda.net/TmdaOfmipdHowto
+the TMDA wiki
+.UE .
+.\" **********************************************************************
+.SH OPTIONS
+.TP
+.B \-V
+Show full TMDA version information and exit.
+.TP
+.B \-\-version
+Show program's version number and exit.
+.TP
+.B \-h
+.TQ
+.B \-\-help
+Show this help message and exit.
+.SS General
+.TP
+.B \-d
+.TQ
+.B \-\-debug
+Turn on debugging prints.
+.TP
+.B \-L
+.TQ
+.B \-\-log
+Turn on logging prints.
+This option logs everything that
+.B \-d
+logs, except for the raw SMTP protocol data.
+Hence, it is useful if you want to leave logging enabled permanently, but
+don't want your logs bloated with AUTH data and/or the content of large
+attachments.
+.TP
+.B \-b
+.TQ
+.B \-\-background
+Detach and run in the background (default).
+.TP
+.B \-f
+.TQ
+.B \-\-foreground
+Don't detach; run in the foreground.
+.TP
+.BI "\-u " username
+.TQ
+.BI \-\-username= username
+The username that this program should run under.
+The default is to run as the user who starts the program unless that is
+root, in which case an attempt to seteuid to user
+.B \%tofmipd
+will be made.
+Use this option to override these defaults.
+.TP
+.BI \-c " dir
+.TQ
+.BI \-\-configdir= dir
+.I dir
+is the base directory to search for the authenticated user's TMDA
+configuration file in.
+This might be useful if you wish to maintain TMDA files outside the
+user's home directory.
+.IB username /config
+will be appended to form the path; e.g,
+.B \-c /var/tmda
+will have
+.B tmda\-ofmipd
+search for
+.BR /var/tmda/bobby/config .
+If this option is not used,
+.BI \(ti user /.tmda/config
+will be assumed, but see the
+.B \%\-\-vhome\-script
+option for qmail virtual domain users.
+.SS Connection
+.TP
+.BI "\-p " host : port
+.TQ
+.BI \-\-proxyport= host : port
+The
+.IR host : port
+to listen for incoming connections on.
+The default is FQDN:8025 (i.e, port 8025 on the fully qualified domain
+name for the local host).
+Use
+.BI 0.0.0.0: port
+to listen on all available interfaces.
+.TP
+.BI "\-C " num
+.TQ
+.BI \-\-connections= num
+Do not handle more than
+.I num
+simultaneous connections.
+If there are
+.I num
+active connections, defer acceptance of new connections until one
+finishes.
+.I num
+must be a positive integer.
+The default is 20.
+.TP
+.B \-1
+.TQ
+.B \-\-one\-session
+Don't bind to a port and accept new connections.
+Process a single SMTP session on stdin (used both for input & output).
+This is useful when started from tcpserver or stunnel.
+.TP
+.B \-P
+.TQ
+.B \-\-pure\-proxy
+Proxy the message straight through to the mail transport system unaltered
+if the user's TMDA config file is missing.
+The
+.B /usr/sbin/sendmail
+program on the system is used to inject the message.
+You can override this by setting
+.B \%$TMDA_SENDMAIL_PROGRAM
+in the environment.
+This option might be useful when serving a mixed environment of TMDA and
+non-TMDA users.
+.TP
+.BI "\-t " /path/to/script
+.TQ
+.BI \-\-throttle\-script= /path/to/script
+Full pathname of a script which can meter how much mail any user sends.
+The script is passed a login name whenever a user tries to send mail.
+If the script returns a 0, the message is allowed.
+For any other value, the message is rejected.
+.TP
+.B \-\-ssl
+Enable SSL encryption.
+This mode immediately initiates the SSL/TLS protocol as soon as a
+connection is made.
+This mode is not support for the STARTTLS command.
+This configuration is typically run on port 465 (smtps).
+.TP
+.BI \-\-tls= mode
+Enable TLS mode.
+Valid modes are
+.BR \%optional ,
+.B \%localoptional
+and
+.BR on .
+With this option enabled, the STARTTLS SMTP command may be used to
+upgrade the plain-text connection to SSL/TLS.
+This protects the safety of plain-text authentication methods, and
+message content.
+This is typically run on port 587 (submission).
+The different options have the following effect:
+.TS
+allbox, tab(;);
+l l l
+lB l l.
+;T{
+AUTH allowed before \%STARTTLS?
+T};T{
+AUTH after \%STARTTLS?
+T}
+optional;yes;yes
+localoptional;T{
+connections from localhost only
+T};yes
+on;no;yes
+.TE
+.TP
+.BI \-\-ssl\-cert= /path/to/file
+Location of the SSL/TLS certificate key file.
+.TP
+.BI \-\-ssl\-key= /path/to/file
+Location of the SSL/TLS private key file.
+.SS Authentication
+Any number of authentication options can be supplied, and they will be
+attempted in the order given.
+.TP
+.BI "\-R " proto :// host\fR[\fP : port\fR][\fP / dn\fR]
+.TQ
+.BI \-\-remoteauth= proto :// host\fR[\fP : port\fR][\fP / dn\fR]
+Protocol and host to check username and password.
+.I proto
+can be one of the following:
+.B \%imap
+(IMAP4 server),
+.B \%imaps
+(IMAP4 server over SSL),
+.B \%pop3
+(POP3 server),
+.B \%apop
+(POP3 server with APOP authentication),
+.B \%ldap
+(LDAP server).
+Optional
+.BI : port
+defaults to the standard port for the specified protocol (143 for imap,
+993 for imaps, 110 for pop3/apop, and 389 for ldap).
+.BI / dn
+is mandatory for ldap and should contain a '%s' identifying the
+username.
+.IP
+Examples:
+.RS 1.5i
+.EX
+\-R imaps://myimapserver.net
+\-R pop3://mypopserver.net:2110
+\-R ldap://example.com/cn=%s,dc=host,dc=com
+.EE
+.RE
+.TP
+.BI "\-A " program
+.TQ
+.BI \-\-authprog= program
+A checkpassword compatible command used to check username/password.
+.IP
+Examples:
+.RS 1.5i
+.EX
+\-A "/usr/sbin/checkpassword\-pam \-s id \-\- /bin/true"
+\-A "/usr/local/vpopmail/bin/vchkpw /usr/bin/true"
+.EE
+.RE
+.IP
+The program must be able to receive the username/password pair on
+descriptor 3 and in the following format: `username\\0password\\0'.
+Any program claiming to be checkpassword-compatible should be able to do
+this.
+If you can tell the program to accept input on another descriptor, such
+as stdin, don't.
+It won't work, because TMDA follows
+.UR http://cr.yp.to/checkpwd/interface.html
+the standard
+.UE
+exactly.
+Also, checkpassword-type programs expect to find the name of another
+program to run on their command line.
+For
+.BR \%tmda\-ofmipd 's
+purpose,
+.B /bin/true
+is perfectly fine.
+Note the position of the quotes in the Examples, which cause the the
+whole string following the
+.B \-A
+to be passed as a single argument.
+.TP
+.BI "\-a " file
+.TQ
+.BI \-\-authfile= file
+Path to the file holding authentication information for this proxy.
+Default location is
+.B /etc/tofmipd
+if running as root/tofmipd, otherwise
+.BI \(ti user /.tmda/tofmipd\fR.
+Use this option to override these defaults.
+.TP
+.BI "\-m " service
+.TQ
+.BI \-\-pamauth= service
+Authenticate using system username/password via PAM.
+Requires the Python PAM module.
+The argument is the name of a PAM service, commonly
+.BR \%login .
+.SS Virtual Domains
+.TP
+.BI "\-S " /path/to/script
+.TQ
+.BI \-\-vhome\-script= /path/to/script
+Full pathname of a script that prints a virtual email user's home
+directory on standard output.
+.B \%tmda\-ofmipd
+will read that and use it to build the path to the user's config file
+instead of
+.BI \(ti user /.tmda\fR.
+The script must take two arguments, the user name and the domain, on its
+command line.
+This option is for use only with the VPopMail and VMailMgr add-ons to
+qmail.
+See the
+.B contrib/
+directory for sample scripts.
+.TP
+.BI "\-v " /path/to/file
+.TQ
+.BI \-\-vdomains\-path= /path/to/file
+Full pathname to qmail's virtualdomains file.
+The default is
+.BR /var/qmail/control/virtualdomains .
+This is also
+.BR \%tmda\-ofmipd 's
+default, so you normally won't need to set this parameter.
+If you have installed qmail somewhere other than
+.BR /var/qmail ,
+you will need to set this so
+.B \%tmda\-ofmipd
+can find the virtualdomains file.
+NOTE: This is only used when you have a qmail installation with virtual
+domains using the VMailMgr add-on.
+It implies that you will also set the
+.B \%\-\-vhome\-script
+option above.
+.\" **********************************************************************
+.\".SH SEE ALSO
+.\" **********************************************************************
+.SH AUTHOR
+TMDA was written by
+.MT jason@mastaler.com
+Jason R. Mastaler
+.ME .
+.PP
+This manual page was adapted from the program
+.B \%\-\-help
+output by
+.MT kevin\-opensource@omegacrash.net
+Kevin Goodsell
+.ME ,
+for the Debian project (but may be used by others).

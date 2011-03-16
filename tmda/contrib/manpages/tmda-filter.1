@@ -1,0 +1,135 @@
+.\" Hey, EMACS: -*- nroff -*-
+.TH TMDA-FILTER 1 "2010-01-24" TMDA "TMDA Programs"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.\" **********************************************************************
+.SH NAME
+tmda\-filter \- filter incoming message
+.\" **********************************************************************
+.SH SYNOPSIS
+.SY tmda\-filter
+.RI [ options ]
+.YS
+.SY tmda\-rfilter
+.RI [ options ]
+.YS
+.\" **********************************************************************
+.SH DESCRIPTION
+.B \%tmda\-rfilter
+filters an incoming message on standard input.
+.B \%tmda\-filter
+is a wrapper for
+.B \%tmda\-rfilter
+that catches and logs errors, and defers delivery in the event of an
+abnormal exit.
+.\" **********************************************************************
+.SH OPTIONS
+.TP
+.BI "\-c " file
+.TQ
+.BI \-\-config\-file= file
+Specify a configuration file other than
+.BR \(ti/.tmda/config .
+.TP
+.BI "\-t " dir
+.TQ
+.BI \-\-template\-dir= dir
+Full pathname to a directory containing custom TMDA templates.
+.TP
+.BI "\-I " file
+.TQ
+.BI \-\-filter\-incoming\-file= file
+Full pathname to your incoming filter file.
+Overrides FILTER_INCOMING in
+.BR \(ti/.tmda/config .
+.TP
+.BI "\-e " var = val
+.TQ
+.BI \-\-environ= var = val
+Add an environment variable on the command line.
+.I var
+is the name of the variable, and
+.IR val ,
+separated by an `=', is its value.
+There should be no whitespace before or after the `='.
+.TP
+.B \-d
+.TQ
+.B \-\-discard
+Discard message if address is invalid instead of bouncing it.
+.TP
+.B \-p
+.TQ
+.B \-\-print
+Print the message to stdout.
+This option is useful when TMDA is run as a filter in maildrop or procmail.
+It overrides all other delivery options, even if a specific delivery is
+given in a matching rule.
+If the message is delivered, TMDA's exit code is 0.
+If the message is dropped, bounced or a confirmation request is sent, the
+exit code will be 99.
+You can use the exit code in maildrop/procmail to decide if you want to
+perform further processing.
+.TP
+.BI "\-S " script
+.TQ
+.BI \-\-vhome\-script= script
+Full pathname of
+.I script
+that prints a virtual email user's home directory on standard output.
+.B \%tmda\-filter
+will read that path and set $HOME to that path so that `\(ti' expansion
+works properly for virtual users.
+The script takes two arguments, the user name and the domain, on its
+command line.
+This option is for use only with the VPopMail and VMailMgr add-ons to
+qmail.
+See the
+.B contrib/
+directory for sample scripts.
+.TP
+.BI \-M " recip sender"
+.TQ
+.BI \-\-filter\-match= "recip sender"
+Check whether the given e-mail addresses matches a line in your incoming
+filter and then exit.
+The first address given should be the message recipient (you), and the
+second is the sender.
+This option will also check for parsing errors in the filter file.
+.TP
+.B \-V
+Show full TMDA version information and exit.
+.TP
+.B \-\-version
+Show program's version number and exit.
+.TP
+.B \-h
+.TQ
+.B \-\-help
+Show this help message and exit.
+.\" **********************************************************************
+.\".SH SEE ALSO
+.\" **********************************************************************
+.SH AUTHOR
+TMDA was written by
+.MT jason@mastaler.com
+Jason R. Mastaler
+.ME .
+.PP
+This manual page was adapted from the program
+.B \%\-\-help
+output by
+.MT kevin\-opensource@omegacrash.net
+Kevin Goodsell
+.ME ,
+for the Debian project (but may be used by others).
