@@ -1,6 +1,8 @@
 2011-03-15  Kevin Goodsell  <kevin-opensource@omegacrash.net>
 
 	* tmda-ofmipd: Replace tlslite with OpenSSL.
+	* tmda-ofmipd: Remove extra % in help output.
+	* tmda-address: Fix a typo in help output.
 
 2007-11-20  Stephen Warren  <swarren@wwwdotorg.org>
 

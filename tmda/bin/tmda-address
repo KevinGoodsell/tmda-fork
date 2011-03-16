@@ -80,7 +80,7 @@ timeout using the '-t/--timeout' option below."""),
     make_option("-t", "--timeout",
                 metavar="TIMEOUT", dest="dated_timeout",
                 help= \
-"""Generate a dated-style taggedd address using the timeout value
+"""Generate a dated-style tagged address using the timeout value
 TIMEOUT, which is a number followed by a unit of time -- seconds (s),
 minutes (m), hours (h), days (d), weeks (w), months (M), or years (Y).
 e.g, '5d' for a 5 day timeout, and '24h' for 24 hours.  This option
