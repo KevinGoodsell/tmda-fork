@@ -57,10 +57,16 @@ class AuthTestMixin(object):
             self.assertRaises(AssertionError, self.client.signOn,
                               self.username, password)
 
-# This is the one test that should run with no problems.
+# AuthFileTest and AuthProgTest should run with no problems. Unlike the
+# rest of the tests, everything they need is provided right in the test
+# directory.
 class AuthFileTest(AuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addFileAuth()
+
+class AuthProgTest(AuthTestMixin, unittest.TestCase):
+    def addAuth(self):
+        self.server.addProgAuth('bin/checkpassword.py')
 
 # (These notes may be Linux-specific)
 # This only works if the test is run as the user being authenticated, root,
@@ -71,13 +77,6 @@ class AuthFileTest(AuthTestMixin, unittest.TestCase):
 class AuthPamTest(AuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addPamAuth('login')
-
-# The checkpassword program from fgetty worked for this test, but required
-# running the test as root (and with '-u root' added to the server args to
-# prevent it from doing seteuid to tofmipd).
-class AuthProgTest(AuthTestMixin, unittest.TestCase):
-    def addAuth(self):
-        self.server.addProgAuth('/bin/checkpassword /bin/true')
 
 class RemoteAuthTestMixin(AuthTestMixin):
     # Derived classes must provide 'protocol', and may provide an alternate
