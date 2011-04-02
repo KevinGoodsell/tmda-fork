@@ -21,24 +21,6 @@
 
 "Web interface to TMDA tools."
 
-# Python2.3 seems to have a problem when Defaults.py imports various packages
-# from its directory.  This nasty hack intercepts those imports and adds a
-# "from TMDA" to them.
-OldImport = __builtins__.__import__
-def NewImport(name, globals=None, locals=None, fromlist=None):
-  if fromlist == None:
-    if name == "Errors":
-      from TMDA import Errors
-      return Errors
-    if name == "Util":
-      from TMDA import Util
-      return Util
-    if name == "Version":
-      from TMDA import Version
-      return Version
-  return OldImport(name, globals, locals, fromlist)
-__builtins__.__import__ = NewImport
-
 # Prepare the traceback in case of uncaught exception
 import os
 import sys
