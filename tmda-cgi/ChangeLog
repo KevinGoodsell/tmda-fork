@@ -6,6 +6,8 @@
 
 	* Mostly new configure script
 
+	* Add simple-server, a web server for testing
+
 2007-03-02  Jim Ramsay      <i.am@jimramsay.com>
 
 	* Version 0.16.1 is released

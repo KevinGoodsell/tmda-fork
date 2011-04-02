@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+# This is basically a Python version of tmda-cgi.c.
+
+import sys
+import os.path
+import ConfigParser
+
+def tmda_cgi_dir():
+    (directory, script) = os.path.split(sys.argv[0])
+    return os.path.abspath(os.path.join(directory, '..', '..', '..'))
+
+def add_environment_vars(config):
+    for (name, value) in config.items('environment-variables'):
+        os.environ[name] = value
+
+def main():
+    os.chdir(tmda_cgi_dir())
+
+    config = ConfigParser.SafeConfigParser()
+    # Don't lower-case variable names:
+    config.optionxform = str
+    if not config.read('configure.ini'):
+        print >> sys.stderr, 'Failed to read configure.ini'
+        return 1
+
+    add_environment_vars(config)
+
+    # This is in tmda-cgi.c, and the commit log says it is to make sure fd 3
+    # is available. This isn't really clear to me.
+    fd = os.open('/dev/null', os.O_RDONLY)
+
+    python = config.get('configure-parameters', 'python_interpreter')
+    os.execl(python, python, 'tmda-cgi.py')
+
+if __name__ == '__main__':
+    sys.exit(main())
