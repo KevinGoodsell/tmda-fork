@@ -28,21 +28,21 @@ along with TMDA; if not, write to the Free Software Foundation, Inc.,
 int main(int argc, char *argv[])
 {
   int fd;
-  putenv(TMDARC);
+  putenv("TMDARC=" TMDARC);
 #ifdef AUTH_ARG
-  putenv(AUTH_TYPE);
-  putenv(AUTH_ARG);
+  putenv("TMDA_AUTH_TYPE=" AUTH_TYPE);
+  putenv("TMDA_AUTH_ARG=" AUTH_ARG);
 #endif
-  putenv(MODE);
-  putenv(DISP_DIR);
-  putenv(BASE_DIR);
+  putenv("TMDA_CGI_MODE=" MODE);
+  putenv("TMDA_CGI_DISP_DIR=" DISP_DIR);
+  putenv("TMDA_BASE_DIR=" BASE_DIR);
 #ifdef VLOOKUP
-  putenv(VUSER);
-  putenv(VLOOKUP);
+  putenv("TMDA_VUSER=" VUSER);
+  putenv("TMDA_VLOOKUP=" VLOOKUP);
 #endif
-  putenv(SESS_PRE);
-  putenv(SESS_EXP);
-  putenv(SESS_ODDS);
+  putenv("TMDA_SESSION_PREFIX=" SESS_PRE);
+  putenv("TMDA_SESSION_EXP=" SESS_EXP);
+  putenv("TMDA_SESSION_ODDS=" SESS_ODDS);
 
   fd = open("/dev/null", O_RDONLY);
 

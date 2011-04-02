@@ -4,6 +4,8 @@
 
 	* Remove NewImport which does not work with modern Python versions
 
+	* Mostly new configure script
+
 2007-03-02  Jim Ramsay      <i.am@jimramsay.com>
 
 	* Version 0.16.1 is released
