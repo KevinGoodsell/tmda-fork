@@ -47,6 +47,8 @@ def parseVersion(versionString):
   """Returns a list of all the integers in the version string:
     "1.1.3" will return [1,1,3,0]
     "1.1.0+" will return [1,1,0,1]"""
+  # Ignore a Debian-style dash suffix
+  versionString = versionString.split('-')[0]
   if versionString.endswith("+"):
     string = versionString[:-1]
     dev = 1
