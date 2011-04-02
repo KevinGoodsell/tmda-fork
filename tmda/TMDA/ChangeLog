@@ -1,3 +1,7 @@
+2011-04-02  Kevin Goodsell  <kevin-opensource@omegacrash.net>
+
+	* Remove pythonlib because it is obsolete.
+
 2011-03-15  Kevin Goodsell  <kevin-opensource@omegacrash.net>
 
 	* Util.py: Replace deprecated popen2 with subprocess. Removes pipecmd

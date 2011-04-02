@@ -30,10 +30,7 @@ import time
 try:
     import paths
 except ImportError:
-    # Prepend /usr/lib/python2.x/site-packages/TMDA/pythonlib
-    sitedir = os.path.join(sys.prefix, 'lib', 'python'+sys.version[:3],
-                           'site-packages', 'TMDA', 'pythonlib')
-    sys.path.insert(0, sitedir)
+    pass
 
 from TMDA import Version
 

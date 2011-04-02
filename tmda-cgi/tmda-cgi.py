@@ -65,12 +65,8 @@ Template.Template.BaseDir = "%s/display/themes/%s/template" % \
 
 import cgi
 
-# Pick up the TMDA and TMDA/pythonlib directories to get any overrides of
-# standard modules and packages.  Note that these must go at the very front of
-# the path for this reason.
+# Pick up the TMDA directory.
 sys.path.insert(0, os.environ["TMDA_BASE_DIR"])
-sys.path.insert(0, os.path.join(os.environ["TMDA_BASE_DIR"], "TMDA",
-  "pythonlib"))
 from TMDA import Errors
 
 import CgiUtil

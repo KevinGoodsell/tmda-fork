@@ -38,8 +38,3 @@ if os.path.islink(progpath):
 # Hack the path to include the parent directory ('../')
 prefix = os.path.split(os.path.dirname(progpath))[0]
 sys.path.insert(0, prefix)
-
-# We also need the TMDA/pythonlib directory on the path to pick up any
-# overrides of standard modules and packages.  Note that these must go
-# at the very front of the path for this reason.
-sys.path.insert(0, os.path.join(prefix, 'TMDA', 'pythonlib'))

@@ -43,14 +43,12 @@ done
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/tmda
 mkdir -p %{buildroot}%{_datadir}/emacs/site-lisp
-mkdir -p %{buildroot}%{pylibdir}/TMDA/{Queue,pythonlib/email/mime}
+mkdir -p %{buildroot}%{pylibdir}/TMDA/Queue
 mkdir -p %{buildroot}%{_sysconfdir}/{rc.d/init.d,sysconfig}
 install bin/tmda-* %{buildroot}%{_bindir}
 install templates/*.txt %{buildroot}%{_datadir}/tmda
 install TMDA/*.{py,pyc} %{buildroot}%{pylibdir}/TMDA
 install TMDA/Queue/*.{py,pyc} %{buildroot}%{pylibdir}/TMDA/Queue
-install TMDA/pythonlib/email/*.{py,pyc} %{buildroot}%{pylibdir}/TMDA/pythonlib/email
-install TMDA/pythonlib/email/mime/*.{py,pyc} %{buildroot}%{pylibdir}/TMDA/pythonlib/email/mime
 install contrib/print{cdb,dbm} %{buildroot}%{_bindir}
 install contrib/collectaddys %{buildroot}%{_bindir}
 install contrib/tmda.el %{buildroot}%{_datadir}/emacs/site-lisp
@@ -65,12 +63,8 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_bindir}/*
 %{pylibdir}/TMDA/*.py
 %{pylibdir}/TMDA/Queue/*.py
-%{pylibdir}/TMDA/pythonlib/email/*.py
-%{pylibdir}/TMDA/pythonlib/email/mime/*.py
 %verify(not size md5 mtime) %{pylibdir}/TMDA/*.pyc
 %verify(not size md5 mtime) %{pylibdir}/TMDA/Queue/*.pyc
-%verify(not size md5 mtime) %{pylibdir}/TMDA/pythonlib/email/*.pyc
-%verify(not size md5 mtime) %{pylibdir}/TMDA/pythonlib/email/mime/*.pyc
 %{_datadir}/tmda/*
 
 %doc --parents ChangeLog CODENAMES COPYING CRYPTO INSTALL NEWS README THANKS UPGRADE contrib/ doc/
