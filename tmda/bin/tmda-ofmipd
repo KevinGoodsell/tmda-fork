@@ -491,8 +491,20 @@ class SMTPSession(asynchat.async_chat):
 
         # Debug tracing
 
-        logger.info('Incoming connection from: %r', self.__peer)
-        logger.info('Incoming connection to: %r', self._local)
+        logger.info('New session %r for %r connected to %r', self, self.__peer,
+                    self._local)
+
+    def handle_close(self, error=None):
+        if error is None:
+            err_info = ('', '')
+        else:
+            err_info = (' with error ', repr(error))
+        logger.debug('Closing session %r%s%s.', self, *err_info)
+
+        asynchat.async_chat.handle_close(self)
+
+        logger.debug('Socket map following session close: %r',
+                     asyncore.socket_map)
 
     def init_static_state(self):
         """Initialize 'static state' - that state which is associated
@@ -927,15 +939,6 @@ class SMTPSession(asynchat.async_chat):
 
 # SSL Support
 
-# socket.error-based replacement for SSL's WantRead and WantWrite errors.
-# Basing this on socket.error allows it to work properly with code that
-# expects socket.error for non-blocking calls.
-class SSLError(socket.error):
-    def __init__(self):
-        import errno
-        err = errno.EWOULDBLOCK
-        socket.error.__init__(self, err, os.strerror(err))
-
 # SSL-capable socket wrapper class. The more similar this is to Python 2.6
 # SSLSockets, the better.
 class SSLSocket(object):
@@ -951,51 +954,12 @@ class SSLSocket(object):
             self._ssl_conn = SSL.Connection(self._ssl_context, self._sock)
             self._ssl_conn.set_accept_state()
 
-    def want_read(self):
-        if self._ssl_conn is not None:
-            return self._ssl_conn.want_read()
-        return False
-
     def want_write(self):
         if self._ssl_conn is not None:
             return self._ssl_conn.want_write()
         return False
 
     # Socket methods
-
-    def _method_wrap(self, name, *args, **kwargs):
-        import OpenSSL.SSL as SSL
-
-        if self._ssl_conn is None:
-            obj = self._sock
-        else:
-            obj = self._ssl_conn
-
-        try:
-            return getattr(obj, name)(*args, **kwargs)
-        except SSL.Error:
-            raise SSLError()
-
-    def recv(self, *args, **kwargs):
-        return self._method_wrap('recv', *args, **kwargs)
-
-    def recvfrom(self, *args, **kwargs):
-        return self._method_wrap('recvfrom', *args, **kwargs)
-
-    def recvfrom_into(self, *args, **kwargs):
-        return self._method_wrap('recvfrom_into', *args, **kwargs)
-
-    def recv_into(self, *args, **kwargs):
-        return self._method_wrap('recv_into', *args, **kwargs)
-
-    def send(self, *args, **kwargs):
-        return self._method_wrap('send', *args, **kwargs)
-
-    def sendall(self, *args, **kwargs):
-        return self._method_wrap('sendall', *args, **kwargs)
-
-    def sendto(self, *args, **kwargs):
-        return self._method_wrap('sendto', *args, **kwargs)
 
     def __getattr__(self, name):
         if self._ssl_conn is not None:
@@ -1039,11 +1003,7 @@ class SecureSMTPSession(SMTPSession):
                 self._ssl_state = 'required'
 
     def start_ssl(self):
-        # Expect this to raise an exception for non-blocking sockets.
-        try:
-            self._ssl_sock.do_handshake()
-        except socket.error:
-            self.handle_error()
+        self._ssl_sock.do_handshake()
 
     # Overrides from SMTPSession
 
@@ -1079,16 +1039,25 @@ class SecureSMTPSession(SMTPSession):
     # Overrides from asyncore.dispatcher
 
     def readable(self):
-        return self._ssl_sock.want_read() or SMTPSession.readable(self)
+        # Reading could be necessary at any time, for SSL protocol negotiation.
+        return True
 
     def writable(self):
         return self._ssl_sock.want_write() or SMTPSession.writable(self)
 
     def handle_error(self):
-        exc_type = sys.exc_info()[0]
+        import OpenSSL.SSL as SSL
 
-        # Drop SSLErrors, handle others as usual
-        if not issubclass(exc_type, SSLError):
+        e = sys.exc_info()[1]
+        if isinstance(e, (SSL.WantReadError, SSL.WantWriteError)):
+            # These non-errors happen frequently, just indicating that the
+            # underlying SSL layer needs to do reading or writing on the socket
+            # for protocol purposes, blocking general communication in the
+            # interim.
+            pass
+        elif isinstance(e, SSL.Error):
+            self.handle_close(e)
+        else:
             SMTPSession.handle_error(self)
 
     # SMTP commands
@@ -1136,7 +1105,15 @@ class SMTPServer(asyncore.dispatcher):
     def handle_accept(self):
         conn = self.accept()[0]
         sess = self._session_factory(conn)
-        sess.start()
+        # Make sure the session handles its own errors.
+        try:
+            sess.start()
+        except:
+            sess.handle_error()
+
+    def handle_error(self):
+        # Default handle_error terminates the server. Let's not do that.
+        logger.warning('Error in SMTPServer:', exc_info=True)
 
 
 # Utility functions
