@@ -1,6 +1,6 @@
 '\" t
 .\" Hey, EMACS: -*- nroff -*-
-.TH TMDA-OFMIPD 1 "2010-01-25" TMDA "TMDA Programs"
+.TH TMDA-OFMIPD 1 "2011-04-04" TMDA "TMDA Programs"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -199,6 +199,12 @@ Location of the SSL/TLS certificate key file.
 .TP
 .BI \-\-ssl\-key= /path/to/file
 Location of the SSL/TLS private key file.
+.TP
+.BI \-\-ciphers= ciphers
+Set of ciphers to use for secure connections.
+The format and available names are given in the OpenSSL manual page ciphers(1).
+Using !SSLv2 somewhere in the string is recommended to disable SSL2, which is a
+deprecated and insecure protocol.
 .SS Authentication
 Any number of authentication options can be supplied, and they will be
 attempted in the order given.

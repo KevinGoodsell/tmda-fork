@@ -1425,6 +1425,20 @@ congroup.add_option("--ssl-key",
                     help= \
 """Location of the SSL/TLS private key file.""")
 
+# Rationale for the default cipher list: Initially, we want to eliminate SSL2
+# because it is insecure. 'DEFAULT:!SSLv2' would do this, but also includes weak
+# 56- and 40-bit ciphers. That may be fine, but we can be more secure by default
+# without sacrificing functionality (because users can restore any ciphers they
+# need) if we limit it to HIGH and MEDIUM ciphersuites. However, each of these
+# sets includes some ciphersuites without authentication, so we additionally
+# exclude them with !aNULL.
+congroup.add_option("--ciphers",
+                    default="HIGH:MEDIUM:!aNULL:!SSLv2", help=\
+"""Set of ciphers to use for secure connections. The format and available names
+are given in the OpenSSL manual page ciphers(1). The default is %default. Using
+!SSLv2 somewhere in the string is recommended to disable SSL2, which is a
+deprecated and insecure protocol.""")
+
 # authentication
 authgroup = OptionGroup(parser, "Authentication",
 """Any number of authentication options can be supplied, and they will be
@@ -1557,6 +1571,7 @@ if opts.ssl or opts.tls:
             '--ssl-cert and --ssl-key are required when using --ssl or --tls'
 
     ssl_context = SSL.Context(SSL.SSLv23_METHOD)
+    ssl_context.set_cipher_list(opts.ciphers)
     ssl_context.use_certificate_file(os.path.expanduser(opts.ssl_cert))
     ssl_context.use_privatekey_file(os.path.expanduser(opts.ssl_key))
 
