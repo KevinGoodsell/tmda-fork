@@ -49,7 +49,7 @@ class ServerResponseTestMixin(ServerClientMixin):
         raise NotImplementedError()
 
     def testExtensions(self):
-        self.failUnless(self.ehloCode == 250)
+        self.assertEqual(self.ehloCode, 250)
         extensions = []
         authTypes = []
         for line in self.ehloLines[1:]:
@@ -64,21 +64,21 @@ class ServerResponseTestMixin(ServerClientMixin):
 
     def testStartTls(self):
         (code, lines) = self.client.exchange('STARTTLS\r\n')
-        self.failUnless(code == self.expectedStartTlsCode)
+        self.assertEqual(code, self.expectedStartTlsCode)
 
     def testAuth(self):
         (code, lines) = self.client.exchange('AUTH LOGIN\r\n')
-        self.failUnless(code == self.expectedAuthCode)
+        self.assertEqual(code, self.expectedAuthCode)
 
 class UnencryptedServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 502
     expectedAuthCode = 334
 
     def checkExtensions(self, extensions):
-        self.failUnless(extensions == ['AUTH'])
+        self.assertEqual(extensions, ['AUTH'])
 
     def checkAuthTypes(self, authTypes):
-        self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
+        self.assertEqual(set(authTypes), set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
 class SslServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 503
@@ -90,10 +90,10 @@ class SslServerResponses(ServerResponseTestMixin, unittest.TestCase):
         self.server.start()
 
     def checkExtensions(self, extensions):
-        self.failUnless(extensions == ['AUTH'])
+        self.assertEqual(extensions, ['AUTH'])
 
     def checkAuthTypes(self, authTypes):
-        self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
+        self.assertEqual(set(authTypes), set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
 class PreStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 220
@@ -109,10 +109,10 @@ class PreStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
         self.client.connect(start_tls=False)
 
     def checkExtensions(self, extensions):
-        self.failUnless(extensions == ['STARTTLS'])
+        self.assertEqual(extensions, ['STARTTLS'])
 
     def checkAuthTypes(self, authTypes):
-        self.failUnless(len(authTypes) == 0)
+        self.assertEqual(len(authTypes), 0)
 
 class PostStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 503
@@ -124,10 +124,10 @@ class PostStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
         self.server.start()
 
     def checkExtensions(self, extensions):
-        self.failUnless(extensions == ['AUTH'])
+        self.assertEqual(extensions, ['AUTH'])
 
     def checkAuthTypes(self, authTypes):
-        self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
+        self.assertEqual(set(authTypes), set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
 class OptionalStartTlsServerResponses(ServerResponseTestMixin,
                                       unittest.TestCase):
@@ -144,10 +144,10 @@ class OptionalStartTlsServerResponses(ServerResponseTestMixin,
         self.client.connect(start_tls=False)
 
     def checkExtensions(self, extensions):
-        self.failUnless(set(extensions) == set(['STARTTLS', 'AUTH']))
+        self.assertEqual(set(extensions), set(['STARTTLS', 'AUTH']))
 
     def checkAuthTypes(self, authTypes):
-        self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
+        self.assertEqual(set(authTypes), set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
 # These authentication tests differ from the tests in test-ofmipd-auth.py file
 # in that these test authentication between an SMTP client and the tmda-ofmipd
@@ -169,7 +169,7 @@ class AuthenticationTests(unittest.TestCase):
         authString = authString.encode('base64')[:-1]
         (code, lines) = self.client.exchange('AUTH PLAIN %s\r\n' % authString)
 
-        self.failUnless(code == expectedCode,
+        self.assertEqual(code, expectedCode,
             'username: %r password: %r code: %d' % (username, password, code))
 
     def authLogin(self, username, password, firstCode, secondCode):
@@ -196,8 +196,8 @@ class AuthenticationTests(unittest.TestCase):
 
     def authCramMd5(self, username, password, expectedCode):
         (code, lines) = self.client.exchange('AUTH CRAM-MD5\r\n')
-        self.failUnless(code == 334)
-        self.failUnless(len(lines) == 1)
+        self.assertEqual(code, 334)
+        self.assertEqual(len(lines), 1)
 
         ticket = lines[0].decode('base64')
         digest = hmac.new(password, ticket, md5).hexdigest()
@@ -205,7 +205,7 @@ class AuthenticationTests(unittest.TestCase):
         message = message.encode('base64')[:-1]
 
         (code, lines) = self.client.exchange('%s\r\n' % message)
-        self.failUnless(code == expectedCode,
+        self.assertEqual(code, expectedCode,
             'username: %r password: %r code: %d' % (username, password, code))
 
     def testPlain(self):
@@ -236,20 +236,20 @@ class SendTestMixin(ServerClientMixin):
     def beginSend(self):
         (code, lines) = self.client.exchange('MAIL FROM: testuser@nowhere.com'
                                              '\r\n')
-        self.failUnless(code == 250)
+        self.assertEqual(code, 250)
 
         (code, lines) = self.client.exchange('RCPT TO: fakeuser@fake.com\r\n')
-        self.failUnless(code == 250)
+        self.assertEqual(code, 250)
 
         (code, lines) = self.client.exchange('DATA \r\n')
-        self.failUnless(code == 354)
+        self.assertEqual(code, 354)
 
     def sendLine(self, line):
         self.client.send('%s\r\n' % line)
 
     def finishSend(self):
         (code, lines) = self.client.exchange('.\r\n')
-        self.failUnless(code == 250)
+        self.assertEqual(code, 250)
 
     def testSend(self):
         self.client.signOn()
@@ -262,7 +262,7 @@ class SendTestMixin(ServerClientMixin):
     def testSendFailure(self):
         (code, lines) = self.client.exchange('MAIL TO: testuser@nowhere.com'
                                              '\r\n')
-        self.failUnless(code == 530)
+        self.assertEqual(code, 530)
 
 class UnencryptedSendTest(SendTestMixin, unittest.TestCase):
     pass

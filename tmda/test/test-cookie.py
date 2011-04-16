@@ -61,7 +61,7 @@ class Cookies(unittest.TestCase):
         import re
         pattern = re.compile(r'testuser-dated-\d{10}\.[0-9a-f]{6}@testsite\.com')
         calculated = Cookie.make_dated_address(self.user_address)
-        self.failUnless(pattern.match(calculated))
+        self.assertTrue(pattern.match(calculated))
 
     def testSenderCookie(self):
         calculated = Cookie.make_sender_cookie(self.sender_address.lower())
