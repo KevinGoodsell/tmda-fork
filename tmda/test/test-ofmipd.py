@@ -232,7 +232,8 @@ class AuthenticationTests(unittest.TestCase):
                                                                'testpassword'):
             self.authCramMd5(username, password, 535)
 
-class SendTestMixin(ServerClientMixin):
+# Provides functions for sending mail
+class SendMailMixin(ServerClientMixin):
     def beginSend(self):
         (code, lines) = self.client.exchange('MAIL FROM: testuser@nowhere.com'
                                              '\r\n')
@@ -247,10 +248,11 @@ class SendTestMixin(ServerClientMixin):
     def sendLine(self, line):
         self.client.send('%s\r\n' % line)
 
-    def finishSend(self):
+    def finishSend(self, expectedCode=250):
         (code, lines) = self.client.exchange('.\r\n')
-        self.assertEqual(code, 250)
+        self.assertEqual(code, expectedCode)
 
+class SendTestMixin(SendMailMixin):
     def testSend(self):
         self.client.signOn()
         self.beginSend()
@@ -278,6 +280,30 @@ class TlsSendTest(SendTestMixin, unittest.TestCase):
         self.server = FileAuthServer()
         self.server.tls('on')
         self.server.start()
+
+class QuotaTest(SendMailMixin, unittest.TestCase):
+    def serverSetUp(self):
+        self.server = FileAuthServer()
+        self.server.addOptions(['--throttle-script', 'bin/throttle'])
+        self.server.start()
+
+    def sendMessage(self, username, password, expectedCode):
+        self.client.signOn(username, password)
+        self.beginSend()
+        self.sendLine('X-Test: Quota')
+        self.sendLine('')
+        self.sendLine('Short message.')
+        self.finishSend(expectedCode)
+
+        # Bug: Server sends 250 immediately after 450 (over quota)
+        (code, lines) = self.client.exchange('Nonsense\r\n')
+        self.assertEqual(code, 502)
+
+    def testUnderQuota(self):
+        self.sendMessage('testuser', 'testpassword', 250)
+
+    def testOverQuota(self):
+        self.sendMessage('overquota', 'quotapassword', 450)
 
 # XXX Add tests:
 # Dupes and syntax errors

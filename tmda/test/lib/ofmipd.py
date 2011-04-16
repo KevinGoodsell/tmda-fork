@@ -25,6 +25,7 @@ class TestOfmipdServer(object):
         self._ground = '-f'
         self._ssl = ''
         self._authOpts = []
+        self._extraOpts = []
 
         self._serverProc = None
         self._addr = '127.0.0.1'
@@ -51,7 +52,10 @@ class TestOfmipdServer(object):
         # XXX Figure out how to detect in-use ports and try a different one
         bindOpts = ['-p', '%s:%d' % (self._addr, self._port)]
 
-        self._serverProc = subprocess.Popen(serverOpts + bindOpts, env=newEnv)
+        serverOpts.extend(bindOpts)
+        serverOpts.extend(self._extraOpts)
+
+        self._serverProc = subprocess.Popen(serverOpts, env=newEnv)
 
         # Wait for server availability
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -92,6 +96,12 @@ class TestOfmipdServer(object):
 
     def tls(self, option='on'):
         self._ssl = '--tls=%s' % option
+
+    def addOptions(self, opts):
+        if isinstance(opts, basestring):
+            opts = [opts]
+
+        self._extraOpts.extend(opts)
 
     # Various authentication types
     def addFileAuth(self, filename=authFile):

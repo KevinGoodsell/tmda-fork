@@ -645,28 +645,30 @@ class SMTPSession(asynchat.async_chat):
                     data.append(text)
             self.__data = NEWLINE.join(data)
 
-            if not opts.throttlescript or not os.system("%s %s" % (opts.throttlescript,
-                self.__auth_username)):
+            overquota = False
+            if opts.throttlescript:
+                (overquota, out, err) = Util.runcmd(
+                    '%s %s' % (opts.throttlescript, self.__auth_username))
+
+            if overquota:
+                status = '450 Outgoing mail quota exceeded'
+            else:
                 try:
-                    status = self.__process_msg_func(self.__peer,
-                                                     self.__mailfrom,
-                                                     self.__rcpttos,
-                                                     self.__data,
-                                                     self.__auth_username)
+                    self.__process_msg_func(self.__peer,
+                                            self.__mailfrom,
+                                            self.__rcpttos,
+                                            self.__data,
+                                            self.__auth_username)
+                    status = '250 Ok'
                 except:
                     logger.exception("process_message raised an exception")
                     raise
-            else:
-                status = self.push('450 Outgoing mail quota exceeded')
 
             self.__rcpttos = []
             self.__mailfrom = None
             self.__state = self.COMMAND
             self.set_terminator('\r\n')
-            if not status:
-                self.push('250 Ok')
-            else:
-                self.push(status)
+            self.push(status)
         elif self.__state == self.AUTH:
             if line == '*':
                 # client canceled the authentication attempt
