@@ -5,6 +5,7 @@
 import sys
 import os.path
 import re
+from BaseHTTPServer import HTTPServer
 import CGIHTTPServer
 from CGIHTTPServer import CGIHTTPRequestHandler
 
@@ -30,4 +31,28 @@ class RequestHandler(CGIHTTPRequestHandler):
 
 os.chdir(os.path.join(tmda_cgi_dir, 'simple-server', 'www'))
 
-CGIHTTPServer.test(HandlerClass=RequestHandler)
+# This is mostly copied from BaseHTTPServer, modified to allow the bind address
+# to be specified, and default to 127.0.0.1.
+def test(HandlerClass = RequestHandler,
+         ServerClass = HTTPServer, protocol="HTTP/1.0"):
+
+    if sys.argv[1:]:
+        port = int(sys.argv[1])
+    else:
+        port = 8000
+
+    if sys.argv[2:]:
+        bindaddr = sys.argv[2]
+    else:
+        bindaddr = '127.0.0.1'
+
+    server_address = (bindaddr, port)
+
+    HandlerClass.protocol_version = protocol
+    httpd = ServerClass(server_address, HandlerClass)
+
+    sa = httpd.socket.getsockname()
+    print "Serving HTTP on", sa[0], "port", sa[1], "..."
+    httpd.serve_forever()
+
+test()
