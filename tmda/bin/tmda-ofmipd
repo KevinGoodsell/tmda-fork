@@ -1420,7 +1420,8 @@ on             no                                 yes""")
 congroup.add_option("--ssl-cert",
                     metavar="/PATH/TO/FILE", default=None, dest="ssl_cert",
                     help= \
-"""Location of the SSL/TLS certificate key file.""")
+"""Location of the SSL/TLS certificate file. This file may include a chain of
+certificates to send, and must be PEM-encoded.""")
 
 congroup.add_option("--ssl-key",
                     metavar="/PATH/TO/FILE", default=None, dest="ssl_key",
@@ -1574,7 +1575,7 @@ if opts.ssl or opts.tls:
 
     ssl_context = SSL.Context(SSL.SSLv23_METHOD)
     ssl_context.set_cipher_list(opts.ciphers)
-    ssl_context.use_certificate_file(os.path.expanduser(opts.ssl_cert))
+    ssl_context.use_certificate_chain_file(os.path.expanduser(opts.ssl_cert))
     ssl_context.use_privatekey_file(os.path.expanduser(opts.ssl_key))
 
 def make_session_factory(process_msg_func):
