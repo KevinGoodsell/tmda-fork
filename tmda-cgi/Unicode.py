@@ -30,25 +30,35 @@ import Template
 AltChar  = re.compile("[\x80-\xFF]")
 UTF8     = codecs.lookup("utf-8")[0]
 
+# This craziness appears to be translating certain characters from Windows 1252
+# to an approximation of their Unicode counterparts. The range 0x80-0x9F is
+# assigned control codes in Unicode and in ISO-8859, but in Windows code pages
+# printable characters are assigned in this range. This appears to be a rather
+# inefficient approach.
+#
+# The mapping of a few characters is wrong according to Wikipedia. E.g. \x83
+# should be "Latin Small Letter F with hook", but is mapped to \u2061, "Function
+# Application", which is invisible.
+#   https://secure.wikimedia.org/wikipedia/en/wiki/Windows-1252
 def Xlate(Chr):
   if ord(Chr) >= 160: return unichr(ord(Chr))
   if Chr == "\x80": return u"\u20AC"
-  if Chr == "‚": return u"\u201A"
-  if Chr == "ƒ": return u"\u2061"
-  if Chr == "„": return u"\u201E"
-  if Chr == "…": return u"\u2026"
-  if Chr == "†": return u"\u2020"
-  if Chr == "‡": return u"\u2021"
-  if Chr == "‰": return u"\u2030"
-  if Chr == "‹": return u"\u2039"
-  if Chr == "‘": return u"\u2018"
-  if Chr == "’": return u"\u2019"
-  if Chr == "“": return u"\u201C"
-  if Chr == "”": return u"\u201D"
-  if Chr == "•": return u"\u2022"
-  if Chr == "–": return u"\u2014"
-  if Chr == "—": return u"\u2015"
-  if Chr == "™": return u"\u2122"
+  if Chr == "\x82": return u"\u201A"
+  if Chr == "\x83": return u"\u2061"
+  if Chr == "\x84": return u"\u201E"
+  if Chr == "\x85": return u"\u2026"
+  if Chr == "\x86": return u"\u2020"
+  if Chr == "\x87": return u"\u2021"
+  if Chr == "\x89": return u"\u2030"
+  if Chr == "\x8b": return u"\u2039"
+  if Chr == "\x91": return u"\u2018"
+  if Chr == "\x92": return u"\u2019"
+  if Chr == "\x93": return u"\u201C"
+  if Chr == "\x94": return u"\u201D"
+  if Chr == "\x95": return u"\u2022"
+  if Chr == "\x96": return u"\u2014"
+  if Chr == "\x97": return u"\u2015"
+  if Chr == "\x99": return u"\u2122"
   return u"\u007F"
 
 def Iso8859(Str):
