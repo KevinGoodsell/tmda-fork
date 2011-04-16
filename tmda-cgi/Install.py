@@ -44,7 +44,7 @@ def KeyGen():
   else:
     # Otherwise generate some pseudo-random data from the system
     # and use the SHA of resulting key as the key.
-    import sha
+    from hashlib import sha1
     import commands
     Unpredictable = ( "date", "fstat", "iostat", "vmstat", "finger", "ps -la",
       "netstat", "uname -a", "cat /etc/passwd", "cat /etc/aliases",
@@ -53,7 +53,7 @@ def KeyGen():
     for i in Unpredictable:
       if commands.getstatusoutput(i)[0] == 0:
         KeyData += os.popen(i).read()
-    Key = sha.new(KeyData + "key").digest()
+    Key = sha1(KeyData + "key").digest()
   return binascii.hexlify(Key)
 
 def FindFiles(Path, AbsPath):

@@ -1,10 +1,7 @@
 import unittest
 import hmac
 import sys
-try:
-    from hashlib import md5
-except ImportError:
-    import md5
+from hashlib import md5
 
 import lib.util
 lib.util.testPrep()

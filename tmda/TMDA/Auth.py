@@ -25,9 +25,8 @@
 import base64
 import hmac
 import imaplib
-import md5
+from hashlib import md5
 import os
-import popen2
 import poplib
 import socket
 import sys
@@ -394,8 +393,9 @@ class Auth(Util.Debugable):
             self.debug( "pipefd3 failed (%s: %s).\n" % (err.__class__, err) + \
                    "Falling back to /bin/sh redirection" )
             cmd = "/bin/sh -c 'exec %s 3<&0'" % self.__authprog
-            authResult = not self.__pipecmd( cmd, \
-                                             '%s\0%s\0' % (username, password) )
+            (result, cmdout, cmderr) = \
+                    Util.runcmd(cmd, '%s\0%s\0' % (username, password))
+            authResult = not result
         return authResult
 
     def authenticate_plain_remote(self, username, password):
@@ -529,27 +529,6 @@ class Auth(Util.Debugable):
         self.debug( "PID = %d, status = %d" % (pid, status))
         # Return the errorcode
         return status
-
-    def __pipecmd(self, command, *strings):
-        """Execs a command and pipes strings into stdin
-        Returns the errorcode"""
-        popen2._cleanup()
-        cmd = popen2.Popen3(command, 1, bufsize=-1)
-        cmdout, cmdin, cmderr = cmd.fromchild, cmd.tochild, cmd.childerr
-        if strings:
-            # Write to the tochild file object.
-            for s in strings:
-                cmdin.write(s)
-            cmdin.flush()
-            cmdin.close()
-        # Read from the childerr object; command will block until exit.
-        self.__lastcmderr = cmderr.read().strip()
-        cmderr.close()
-        # Read from the fromchild object.
-        self.__lastcmdout = cmdout.read().strip()
-        cmdout.close()
-        # Get exit status from the wait() member function.
-        return cmd.wait()
 
     def __authfile2dict(self, authfile):
         """Iterate over a tmdauth authentication file, and return a

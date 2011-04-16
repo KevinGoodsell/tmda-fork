@@ -27,10 +27,7 @@ import os
 import re
 import time
 import hmac
-try:
-    from hashlib import sha1
-except ImportError:
-    import sha as sha1
+from hashlib import sha1
 
 import Defaults
 import Util
