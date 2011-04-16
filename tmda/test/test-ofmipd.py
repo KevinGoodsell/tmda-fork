@@ -1,5 +1,6 @@
 import unittest
 import hmac
+import sys
 try:
     from hashlib import md5
 except ImportError:
@@ -9,11 +10,13 @@ import lib.util
 lib.util.testPrep()
 from lib.ofmipd import TestOfmipdServer
 
+verbose = False
+
 class FileAuthServer(TestOfmipdServer):
     def __init__(self):
         TestOfmipdServer.__init__(self)
         self.addFileAuth()
-        #self.debug()
+        self.debug(verbose)
 
 class ServerClientMixin(object):
     def setUp(self):
@@ -146,6 +149,10 @@ class OptionalStartTlsServerResponses(ServerResponseTestMixin,
     def checkAuthTypes(self, authTypes):
         self.failUnless(set(authTypes) == set(['LOGIN', 'PLAIN', 'CRAM-MD5']))
 
+# These authentication tests differ from the tests in test-ofmipd-auth.py file
+# in that these test authentication between an SMTP client and the tmda-ofmipd
+# server. test-ofmipd-auth.py tests tmda-ofmipd's backend authentication
+# methods, such as authenticating against a password file or a different server.
 class AuthenticationTests(unittest.TestCase):
     def setUp(self):
         self.server = FileAuthServer()
@@ -201,50 +208,20 @@ class AuthenticationTests(unittest.TestCase):
     def testCramMd5(self):
         self.authCramMd5('testuser', 'testpassword', 235)
 
-    _badUsernames = [
-        'testuserr',
-        'testuse',
-        'testus',
-        'testu',
-        '\x00',
-        '\x00testuser',
-    ]
-    _badPasswords = [
-        'testpasswordd',
-        'testpasswor',
-        'testpasswo',
-        'testpassw',
-        'testpass',
-        '',
-        ' ',
-        '\x00',
-    ]
-
     def testPlainFailure(self):
-        for password in self._badPasswords:
-            self.authPlain('testuser', password, 535)
-
-        for username in self._badUsernames:
-            self.authPlain(username, 'testpassword', 535)
+        for (username, password) in lib.util.badUsersPasswords('testuser',
+                                                               'testpassword'):
+            self.authPlain(username, password, 535)
 
     def testLoginFailure(self):
-        for password in self._badPasswords:
-            # For LOGIN, an empty password is ignored. I don't know if this
-            # is a bug or not, but it's probably how tmda-ofmipd has always
-            # worked.
-            if password == '':
-                continue
-            self.authLogin('testuser', password, 334, 535)
-
-        for username in self._badUsernames:
-            self.authLogin(username, 'testpassword', 334, 535)
+        for (username, password) in lib.util.badUsersPasswords('testuser',
+                                                               'testpassword'):
+            self.authLogin(username, password, 334, 535)
 
     def testCramMd5Failure(self):
-        for password in self._badPasswords:
-            self.authCramMd5('testuser', password, 535)
-
-        for username in self._badUsernames:
-            self.authCramMd5(username, 'testpassword', 535)
+        for (username, password) in lib.util.badUsersPasswords('testuser',
+                                                               'testpassword'):
+            self.authCramMd5(username, password, 535)
 
 class SendTestMixin(ServerClientMixin):
     def beginSend(self):
@@ -297,5 +274,7 @@ class TlsSendTest(SendTestMixin, unittest.TestCase):
 # Dupes and syntax errors
 
 if __name__ == '__main__':
+    if '-v' in sys.argv:
+        verbose = True
     runner = unittest.TextTestRunner(verbosity=2)
     unittest.main(testRunner=runner)

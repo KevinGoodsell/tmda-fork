@@ -1,3 +1,4 @@
+import sys
 import os
 import socket
 import subprocess
@@ -13,7 +14,7 @@ certFile = os.path.join(filesDir, 'test-ofmipd.cert')
 keyFile = os.path.join(filesDir, 'test-ofmipd.key')
 
 class TestOfmipdServer(object):
-    _executable = os.path.join(rootDir, 'bin', 'tmda-ofmipd')
+    _script = os.path.join(rootDir, 'bin', 'tmda-ofmipd')
     _commonServerOpts = ['--configdir=%s' % homeDir]
     _sslServerOpts = ['--ssl-cert=%s' % certFile,
                       '--ssl-key=%s' % keyFile]
@@ -30,7 +31,9 @@ class TestOfmipdServer(object):
         self._port = 8025
 
     def start(self):
-        serverOpts = [self._executable]
+        # With sys.executable, we make sure the server runs under the same
+        # Python version.
+        serverOpts = [sys.executable, self._script]
         serverOpts.extend(self._commonServerOpts)
         serverOpts.extend(self._authOpts)
 

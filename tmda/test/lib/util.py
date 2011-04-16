@@ -30,3 +30,46 @@ def testPrep():
     fixupFiles()
     fixupHome()
     fixupPythonPath()
+
+# Used to generate "bad" usernames and passwords.
+def wordVariants(word):
+    variants = []
+
+    variants.append(word[1:])                     # estuser
+    variants.append(word[:-1])                    # testuse
+    variants.append(word[0] + word)               # ttestuser
+    variants.append(word + word[-1])              # testuserr
+    variants.append(word[0] + word[1] + word[1:]) # teestuser
+    variants.append(word[0] + word[2] + word[2:]) # tsstuser
+    variants.append(word[1] + word[0] + word[2:]) # etstuser
+
+    # Some unexpected prefixes
+    variants.append(' ' + word)
+    variants.append('\x00' + word)
+
+    # Possible problem strings
+    variants.append('')
+    variants.append(' ')
+    variants.append('\x00')
+
+    return variants
+
+def badUsersPasswords(username, password):
+    '''Generate incorrect (username, password) pairs based on username and
+    password'''
+    pairs = []
+
+    for badPass in wordVariants(password):
+        pairs.append((username, badPass))
+
+    for badUser in wordVariants(username):
+        pairs.append((badUser.strip(), password))
+
+    result = []
+    for pair in pairs:
+        if pair == (username, password) or pair in result:
+            continue
+
+        result.append(pair)
+
+    return result

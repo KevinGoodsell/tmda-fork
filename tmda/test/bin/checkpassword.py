@@ -15,7 +15,7 @@ if m is None:
     sys.exit(111)
 
 username, password = m.group('username', 'password')
-if username == 'testuser' and password == 'testpassword':
+if username == 'authproguser' and password == 'abracadabra':
     sys.exit(0)
 else:
     sys.exit(1)
