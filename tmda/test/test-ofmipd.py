@@ -176,12 +176,21 @@ class AuthenticationTests(unittest.TestCase):
         userString = username.encode('base64')[:-1]
         passString = password.encode('base64')[:-1]
 
-        (code, lines) = self.client.exchange('AUTH LOGIN %s\r\n' % userString)
-        self.failUnless(code == firstCode)
+        userPrompt = 'Username:'.encode('base64')[:-1]
+        passPrompt = 'Password:'.encode('base64')[:-1]
+
+        (code, lines) = self.client.exchange('AUTH LOGIN\r\n')
+        self.assertEqual(code, 334)
+        self.assertEqual(lines[0], userPrompt)
+
+        (code, lines) = self.client.exchange(userString + '\r\n')
+        self.assertEqual(code, firstCode)
 
         if firstCode == 334:
-            (code, lines) = self.client.exchange('%s\r\n' % passString)
-            self.failUnless(code == secondCode,
+            self.assertEqual(lines[0], passPrompt)
+
+            (code, lines) = self.client.exchange(passString + '\r\n')
+            self.assertEqual(code, secondCode,
                 'username: %r password: %r code: %d' % \
                 (username, password, code))
 

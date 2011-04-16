@@ -673,7 +673,7 @@ class SMTPSession(asynchat.async_chat):
                 self.push('501 AUTH exchange cancelled')
                 self.auth_reset_state()
                 return
-            if not self.__auth_resp1:
+            if self.__auth_resp1 is None:
                 self.__auth_resp1 = line
             else:
                 self.__auth_resp2 = line
@@ -796,7 +796,7 @@ class SMTPSession(asynchat.async_chat):
 
     def auth_challenge(self):
         line = EMPTYSTRING.join(self.__line)
-        if not self.__auth_resp1:
+        if self.__auth_resp1 is None:
             # No initial response, issue first server challenge
             if self.__auth_sasl == 'plain':
                 self.push('334 ')
@@ -805,7 +805,7 @@ class SMTPSession(asynchat.async_chat):
             elif self.__auth_sasl == 'login':
                 self.push('334 VXNlcm5hbWU6')
             return
-        if self.__auth_resp1 and not self.__auth_resp2:
+        if self.__auth_resp1 is not None and self.__auth_resp2 is None:
             # Client sent an initial response
             if self.__auth_sasl == 'plain':
                 # Perform authentication
@@ -817,7 +817,7 @@ class SMTPSession(asynchat.async_chat):
                 # Issue second server challenge
                 self.push('334 UGFzc3dvcmQ6')
             return
-        if self.__auth_resp1 and self.__auth_resp2:
+        if self.__auth_resp1 is not None and self.__auth_resp2 is not None:
             # Client sent a second response (only if AUTH=LOGIN),
             # perform authentication
             self.auth_verify()
