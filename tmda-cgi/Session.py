@@ -164,15 +164,9 @@ we save Vars or PVars."""
 
     CWD = os.getcwd()
     if self.RealUser:
-      # Not sure why I have to refer to Defaults via globals(), but it works
-      if globals().has_key("Defaults") and \
-        (type(globals()["Defaults"]) == DictType):
-        os.chdir(os.path.split(globals()["Defaults"]["TMDARC"])[0])
-        Filename = globals()["Defaults"]["CGI_SETTINGS"]
-      else:
-        from TMDA import Defaults
-        os.chdir(os.path.split(Defaults.TMDARC)[0])
-        Filename = Defaults.CGI_SETTINGS
+      from TMDA import Defaults
+      os.chdir(os.path.split(Defaults.TMDARC)[0])
+      Filename = Defaults.CGI_SETTINGS
       Data = self.PVars
     else:
       self.__suid__("web")
@@ -307,8 +301,6 @@ rights.""")
 
   def __init__(self, Form):
     "Reload an existing SID or create a new one."
-
-    global Defaults
 
     # Existing, valid looking session?
     if Form.has_key("SID") and \

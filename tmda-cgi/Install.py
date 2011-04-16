@@ -275,26 +275,17 @@ def GetAnomalies(Dir):
   return RetVal
 
 def ReimportDefaults(Files, Backup):
-  """During an install/restore, we need to reload Defaults.  This is easy to do
-under Python 2.2, but for some reason Python 2.1 will return a generic
-Exception. To circumvent this problem, we use execfile and let Defaults be a
-dictionary instead of a module to access the contents.  Ugly, but effective."""
+  """During an install/restore, we need to reload Defaults.
+  This previously contained some strange and problematic hacks which have
+  been replaced with a standard reload() call, but some of the strangeness
+  (returning a dict) has been retained to avoid breaking anything."""
   try:
-    CWD = os.getcwd()
-    os.chdir(os.path.join(os.environ["TMDA_BASE_DIR"], "TMDA"))
-    Defaults = {}
-    execfile("Defaults.py", Defaults)
-    os.chdir(CWD)
-
-    # Provide access to Defaults so Session.Save() will work
-    import Session
-    Session.Defaults = Defaults
-
+    from TMDA import Defaults
+    reload(Defaults)
   except Errors.ConfigError, ErrStr:
-    os.chdir(CWD)
     Revert(Files, Backup, "Re-importing Defaults<br>%s" % ErrStr)
 
-  return Defaults
+  return Defaults.__dict__
 
 def IgnoreFiles(Anomalies):
   "Generate a list of files we should ignore during file installation."
