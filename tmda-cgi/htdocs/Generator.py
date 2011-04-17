@@ -49,6 +49,11 @@ from Banner import Banner
 from HTParser import HTParser
 from LinkFixer import LinkFixer
 
+def run(cmd):
+  result = os.system(cmd)
+  if result != 0:
+    sys.exit(1)
+
 class Generator(Skeleton, Sidebar, Banner):
   def __init__(self, file, rootdir, relthis):
     root, ext = os.path.splitext(file)
@@ -112,15 +117,14 @@ name="%s"''' % (alt, height, name)
       if self.buttons == pickle.load(open('buttons.p')): return
     except IOError:
       pass
-    pickle.dump(self.buttons, open('buttons.p', 'w'))
     button = 1
     y = 21
     for name in self.buttons['topics']:
-      os.system('../button_maker/compose.pl '
+      run('../button_maker/compose.pl '
         '../display/themes/Blue/button_templates/layout1_r%d_c1.gif 7 %d 18 '
         '"%s" display/dyn_buttons/layout1_r%d_c1.png' %
         (button, y, name, button))
-      os.system('../button_maker/compose.pl '
+      run('../button_maker/compose.pl '
         '../display/themes/Blue/button_templates/layout1_r%d_c1.gif 7 %d 18H '
         '"%s" display/dyn_buttons/layout1_r%d_c1_h.png' %
         (button, y, name, button))
@@ -128,11 +132,13 @@ name="%s"''' % (alt, height, name)
       y = 6
     button = 1
     for name in self.buttons['subtopics']:
-      os.system('../button_maker/compose.pl -w 194 -i 20 display/left_bg.gif '
+      run('../button_maker/compose.pl -w 194 -i 20 display/left_bg.gif '
         '7 0 14 "%s" display/dyn_buttons/subtopic%d.png' % (name, button))
-      os.system('../button_maker/compose.pl -w 194 -i 20 display/left_bg.gif '
+      run('../button_maker/compose.pl -w 194 -i 20 display/left_bg.gif '
         '7 0 14H "%s" display/dyn_buttons/h-subtopic%d.png' % (name, button))
       button += 1
+
+    pickle.dump(self.buttons, open('buttons.p', 'w'))
 
   def make_assoc(self, sidebar):
     self.assoc = {}

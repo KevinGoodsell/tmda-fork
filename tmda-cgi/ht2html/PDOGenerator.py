@@ -3,7 +3,7 @@
 
 import os
 import posixpath
-import whrandom
+import random
 
 from Skeleton import Skeleton
 from Sidebar import Sidebar, BLANKCELL
@@ -58,7 +58,7 @@ class PDOGenerator(Skeleton, Sidebar, Banner):
         # calculate the random corner
         # XXX Should really do a list of the pics directory...
         NBANNERS = 64
-        i = whrandom.randint(0, NBANNERS-1)
+        i = random.randint(0, NBANNERS-1)
         s = "PyBanner%03d.gif" % i
         self.__d['banner'] = s
         self.__whichbanner = i
