@@ -108,7 +108,6 @@ try:
 except CgiUtil.JustLoggedIn, (ErrStr, PVars):
   PVars["Pager"]       = 0
   PVars["InProcess"]   = {}
-  PVars["LocalConfig"] = "Form"
   PVars.Save()
 
 # Share "globals"
