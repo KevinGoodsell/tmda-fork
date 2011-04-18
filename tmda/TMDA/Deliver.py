@@ -234,7 +234,7 @@ class Deliver:
         See <URL:http://www.qmail.org/man/man5/mbox.html>
 
         Based on code from getmail
-        <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
+        <URL:http://pyropus.ca/software/getmail/>
         Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
         General Public License version 2.
         """
@@ -292,7 +292,7 @@ class Deliver:
             <URL:http://www.qmail.org/man/man5/maildir.html>
 
         Uses code from getmail
-        <URL:http://www.qcc.sk.ca/~charlesc/software/getmail-2.0/>
+        <URL:http://pyropus.ca/software/getmail/>
         Copyright (C) 2001 Charles Cazabon, and licensed under the GNU
         General Public License version 2.
         """

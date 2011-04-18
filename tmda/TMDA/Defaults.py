@@ -376,7 +376,7 @@ if not vars().has_key('CGI_URL'):
 
 # CGI_VIRTUALUSER
 # Set this variable to True if you wish to enable tmda-cgi's "virtual
-# user" support (http://tmda.net/tmda-cgi/virtual.html).
+# user" support (http://tmda.sourceforge.net/tmda-cgi/virtual.html).
 #
 # Default is False (disabled)
 if not vars().has_key('CGI_VIRTUALUSER'):

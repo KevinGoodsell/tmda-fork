@@ -22,7 +22,7 @@ Title: Virtual Users
   either need to write a stub (they're pretty darn simple) or work with one of
   the developers to get one written. Either way, you'll want to contact the
   developers on the
-  <a href="http://tmda.net/lists/listinfo/tmda-workers">tmda-workers mailing
+  <a href="https://lists.sourceforge.net/lists/listinfo/tmda-workers">tmda-workers mailing
   list</a> so that your new stub can be included in future releases.</p>
 <p>If you have a listed virtual mail system, but the version you are using is
   different, try picking the stub with the closest version number.  We don't
@@ -31,7 +31,7 @@ Title: Virtual Users
   can't find a stub that works, you will either need to write one or work with
   one of the developers to get one written. Either way, you'll want to contact
   the developers on the
-  <a href="http://tmda.net/lists/listinfo/tmda-workers">tmda-workers mailing
+  <a href="https://lists.sourceforge.net/lists/listinfo/tmda-workers">tmda-workers mailing
   list</a> so that your new stub can be included in future releases.</p>
 <p>If you wish to write your own stub, see <tt>tmda-cgi/stubs/vpopmail1.py</tt>
   as an example of what data will be provided and what data should be

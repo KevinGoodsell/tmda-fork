@@ -148,9 +148,10 @@ Title: Compiling tmda-cgi
   list:</p>
 
 <blockquote>
-  <a href="http://sourceforge.net/cvs/?group_id=22022">Chinese</a>
+  <a href="http://sourceforge.net/cvs/?group_id=22022">Chinese</a> (link broken,
+  new location unknown)
   <a href="http://www.asahi-net.or.jp/~rd6t-kjym/python/">Japanese</a>
-  <a href="http://sourceforge.net/cvs/?group_id=46747">Korean</a>
+  <a href="http://sourceforge.net/projects/koco/">Korean</a>
 </blockquote>
 
 <p>If tmda-cgi does not correctly support a character set you need, please

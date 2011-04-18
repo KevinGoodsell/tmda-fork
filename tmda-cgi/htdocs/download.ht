@@ -4,7 +4,7 @@ Title: Downloads
 
 <a href="#Releases">Released Versions</a><br>
 <a href="#Patches">Patches</a><br>
-<a href="#CVS">CVS</a><p>
+<a href="#Subversion">Subversion</a><p>
 
 <h3><a name="Releases"></a>Released Versions</h3>
 
@@ -53,12 +53,8 @@ tmda-cgi release.</i></b></p>
     $ patch < patch-X.XX-YYYYMMDD</code>
 </blockquote>
 
-<h3><a name="CVS"></a>CVS</h3>
+<h3><a name="Subversion"></a>Subversion</h3>
 
-<p>If you like bleeding edge software, you can pull down the CVS copies either 
-  from <a href="http://sourceforge.net/cvs/?group_id=24680">the SourceForge 
-  Repository</a> or <a href="snapshots/">the nightly snapshots</a>.</p>
-
-<p>If you are using non-released code, you should be reading the
-  <a href="http://tmda.net/lists/listinfo/tmda-cvs">tmda-cvs mailing list</a>
-  to stay abreast of changes.</p>
+<p>If you like bleeding edge software, you can pull down the Subversion copies
+  from <a href="http://sourceforge.net/scm/?type=svn&group_id=24680">the SourceForge
+  Repository</a>.</p>

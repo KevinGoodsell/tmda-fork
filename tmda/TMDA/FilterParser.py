@@ -722,7 +722,7 @@ class FilterParser:
 
     def __search_cdb(self, pathname, keys, actions, source):
         """
-        Search DJB's constant databases; see <http:/cr.yp.to/cdb.html>.
+        Search DJB's constant databases; see <http://cr.yp.to/cdb.html>.
         """
         import cdb
         cdb = cdb.init(pathname)

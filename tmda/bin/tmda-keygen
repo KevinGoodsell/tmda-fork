@@ -66,11 +66,10 @@ def keygen():
         key = open(opts.device,'rb').read(20)
         return binascii.hexlify(key)
     #elif sys.platform == 'win32':
-        # The Windows equivalent of polling /dev/urandom is to call
-        # the Windows Crypto/API function "CryptGenRandom"
-        # (http://tinyurl.com/4z0q).  At present there is no wrapper
-        # for this in the Python standard library on Windows so we
-        # can't utilize it.
+        # The Windows equivalent of polling /dev/urandom is to call the Windows
+        # Crypto/API function "CryptGenRandom". At present there is no wrapper
+        # for this in the Python standard library on Windows so we can't
+        # utilize it.
     else:
         return None
 
@@ -90,8 +89,7 @@ def main():
         print '*' * len(warning)
         print warning
         print
-        print "specify a different random number device with the '-d' option,"
-        print "or use http://tmda.net/cgi-bin/tmda-keygen if your system lacks one."
+        print "specify a different random number device with the '-d' option."
         print '*' * len(warning)
         print "exiting!"
         sys.exit()

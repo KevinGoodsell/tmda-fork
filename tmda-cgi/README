@@ -12,12 +12,12 @@ protected e-mail account.  It is not web-mail.
 
 For more information, visit the tmda-cgi homepage:
 
-    <URL:http://tmda.net/tmda-cgi/>
+    <URL:http://tmda.sourceforge.net/tmda-cgi/>
 
 Information on the TMDA mailing lists can be found at:
 
-    <URL:http://tmda.net/lists/listinfo/>
-		
+    <URL:http://tmda.sourceforge.net/cgi-bin/moin.cgi/MailingLists>
+
 Installation instructions can be found on the tmda-cgi homepage.
 
 ChangeLog tracks what major things were added, when, and by whom.

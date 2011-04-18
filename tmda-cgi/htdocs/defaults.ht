@@ -420,7 +420,7 @@ Title: Default Settings
 <h4><a name="PendingListDateFormat"></a>PendingList:DateFormat</h4>
 <blockquote>
   <p>Format string for <a
-    href="http://python.org/doc/current/lib/module-time.html#l2h-1386">time.strftime()</a>,
+    href="http://docs.python.org/library/time.html#time.strftime">time.strftime()</a>,
     used when displaying message dates in pending list view.</p>
   <p>time.strftime() pads numeric fields with zeros to make them fixed-width 
     fields. To suppress the zero-padding behavior, prefix any of the listed 
