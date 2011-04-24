@@ -15,6 +15,8 @@ class Cookies(unittest.TestCase):
     keyword_cookies = [
         ('keywordtest', 'keywordtest.243548'),
         ('keyword-test', 'keyword?test.0de87a'),
+        # This test doesn't work because make_keyword_address lower-cases the
+        # keyword.
         #('KeyWordTest0123', 'KeyWordTest0123.51993d'),
         # All non-alphanumeric characters that should not be replaced
         # with ?
