@@ -1155,6 +1155,36 @@ if not vars().has_key('PENDING_CACHE_LEN'):
 if not vars().has_key('PENDING_BLACKLIST_APPEND'):
     PENDING_BLACKLIST_APPEND = None
 
+# DB_PENDING_BLACKLIST_APPEND
+# SQL INSERT statement to be used to insert blacklisted sender addresses
+# into a SQL database. The Python DB API will take care of properly
+# quoting parameters that are strings.
+#
+# Requires a valid DB_CONNECTION object.
+#
+# Available substitution parameters are:
+#
+# %(recipient)s  - USERNAME@HOSTNAME
+# %(username)s   - USERNAME
+# %(hostname)s   - HOSTNAME
+# %(sender)s     - sender's address (envelope sender or X-Primary-Address)
+#
+# Examples:
+#
+# DB_PENDING_BLACKLIST_APPEND = """
+#  INSERT INTO blacklist (user_email, address)
+#       VALUES (%(recipient)s, %(sender)s)"""
+#
+# DB_PENDING_BLACKLIST_APPEND = """
+#  INSERT INTO wildcard_list (uid, address, action)
+#       SELECT uid, %(sender)s, 'drop'
+#         FROM users
+#        WHERE users.email = %(recipient)s"""
+#
+# Default is None
+if not vars().has_key('DB_PENDING_BLACKLIST_APPEND'):
+    DB_PENDING_BLACKLIST_APPEND = None
+
 # PENDING_DELETE_APPEND
 # Filename to which a sender's e-mail address should be automatically
 # appended when a message is "deleted" by tmda-pending.  tmda-filter's
@@ -1170,6 +1200,36 @@ if not vars().has_key('PENDING_BLACKLIST_APPEND'):
 if not vars().has_key('PENDING_DELETE_APPEND'):
     PENDING_DELETE_APPEND = None
 
+# DB_PENDING_DELETE_APPEND
+# SQL INSERT statement to be used to insert deleted sender addresses
+# into a SQL database. The Python DB API will take care of properly
+# quoting parameters that are strings.
+#
+# Requires a valid DB_CONNECTION object.
+#
+# Available substitution parameters are:
+#
+# %(recipient)s  - USERNAME@HOSTNAME
+# %(username)s   - USERNAME
+# %(hostname)s   - HOSTNAME
+# %(sender)s     - sender's address (envelope sender or X-Primary-Address)
+#
+# Examples:
+#
+# DB_PENDING_DELETE_APPEND = """
+#  INSERT INTO blacklist (user_email, address)
+#       VALUES (%(recipient)s, %(sender)s)"""
+#
+# DB_PENDING_DELETE_APPEND = """
+#  INSERT INTO wildcard_list (uid, address, action)
+#       SELECT uid, %(sender)s, 'confirm'
+#         FROM users
+#        WHERE users.email = %(recipient)s"""
+#
+# Default is None
+if not vars().has_key('DB_PENDING_DELETE_APPEND'):
+    DB_PENDING_DELETE_APPEND = None
+
 # PENDING_RELEASE_APPEND
 # Filename to which a sender's e-mail address should be automatically
 # appended when a message is "released" by tmda-pending.
@@ -1183,6 +1243,36 @@ if not vars().has_key('PENDING_DELETE_APPEND'):
 if not vars().has_key('PENDING_RELEASE_APPEND'):
     PENDING_RELEASE_APPEND = None
 
+# DB_PENDING_RELEASE_APPEND
+# SQL INSERT statement to be used to insert released sender addresses
+# into a SQL database. The Python DB API will take care of properly
+# quoting parameters that are strings.
+#
+# Requires a valid DB_CONNECTION object.
+#
+# Available substitution parameters are:
+#
+# %(recipient)s  - USERNAME@HOSTNAME
+# %(username)s   - USERNAME
+# %(hostname)s   - HOSTNAME
+# %(sender)s     - sender's address (envelope sender or X-Primary-Address)
+#
+# Examples:
+#
+# DB_PENDING_RELEASE_APPEND = """
+#  INSERT INTO whitelist (user_email, address)
+#       VALUES (%(recipient)s, %(sender)s)"""
+#
+# DB_PENDING_RELEASE_APPEND = """
+#  INSERT INTO wildcard_list (uid, address, action)
+#       SELECT uid, %(sender)s, 'accept'
+#         FROM users
+#        WHERE users.email = %(recipient)s"""
+#
+# Default is None
+if not vars().has_key('DB_PENDING_RELEASE_APPEND'):
+    DB_PENDING_RELEASE_APPEND = None
+
 # PENDING_WHITELIST_APPEND
 # Filename to which a sender's e-mail address should be appended
 # when a message is "whitelisted" by tmda-pending.
@@ -1195,6 +1285,36 @@ if not vars().has_key('PENDING_RELEASE_APPEND'):
 # No default
 if not vars().has_key('PENDING_WHITELIST_APPEND'):
     PENDING_WHITELIST_APPEND = None
+
+# DB_PENDING_WHITELIST_APPEND
+# SQL INSERT statement to be used to insert whitelisted sender addresses
+# into a SQL database. The Python DB API will take care of properly
+# quoting parameters that are strings.
+#
+# Requires a valid DB_CONNECTION object.
+#
+# Available substitution parameters are:
+#
+# %(recipient)s  - USERNAME@HOSTNAME
+# %(username)s   - USERNAME
+# %(hostname)s   - HOSTNAME
+# %(sender)s     - sender's address (envelope sender or X-Primary-Address)
+#
+# Examples:
+#
+# DB_PENDING_WHITELIST_APPEND = """
+#  INSERT INTO whitelist (user_email, address)
+#       VALUES (%(recipient)s, %(sender)s)"""
+#
+# DB_PENDING_WHITELIST_APPEND = """
+#  INSERT INTO wildcard_list (uid, address, action)
+#       SELECT uid, %(sender)s, 'accept'
+#         FROM users
+#        WHERE users.email = %(recipient)s"""
+#
+# Default is None
+if not vars().has_key('DB_PENDING_WHITELIST_APPEND'):
+    DB_PENDING_WHITELIST_APPEND = None
 
 # PENDING_WHITELIST_RELEASE
 # An option detailing the action taken when 'Whitelist' is the

@@ -32,6 +32,7 @@ import time
 
 import Defaults
 import Errors
+import FilterParser
 import Util
 from TMDA.Queue.Queue import Queue
 
@@ -306,9 +307,11 @@ class InteractiveQueue(Queue):
         """Get the user input."""
         try:
             message = '([p]ass / [s]how / [r]el / [d]el'
-            if Defaults.PENDING_WHITELIST_APPEND:
+            if Defaults.PENDING_WHITELIST_APPEND or \
+               (Defaults.DB_PENDING_WHITELIST_APPEND and Defaults.DB_CONNECTION):
                 message = message + ' / [w]hite'
-            if Defaults.PENDING_BLACKLIST_APPEND:
+            if Defaults.PENDING_BLACKLIST_APPEND or \
+               (Defaults.DB_PENDING_BLACKLIST_APPEND and Defaults.DB_CONNECTION):
                 message = message + ' / [b]lack'
             message = message + ' / [q]uit) [%s]: '
             inp = raw_input(message % self.dispose_def)
@@ -371,6 +374,16 @@ class Message:
         if Defaults.PENDING_RELEASE_APPEND:
             Util.append_to_file(self.append_address,
                                 Defaults.PENDING_RELEASE_APPEND)
+        if Defaults.DB_PENDING_RELEASE_APPEND and Defaults.DB_CONNECTION:
+            _username = Defaults.USERNAME.lower()
+            _hostname = Defaults.HOSTNAME.lower()
+            _recipient = _username + '@' + _hostname
+            params = FilterParser.create_sql_params(
+                recipient=_recipient, username=_username,
+                hostname=_hostname, sender=self.append_address)
+            Util.db_insert(Defaults.DB_CONNECTION,
+                           Defaults.DB_PENDING_RELEASE_APPEND,
+                           params)
         timestamp, pid = self.msgid.split('.')
         # Remove Return-Path: to avoid duplicates.
         del self.msgobj['return-path']
@@ -403,27 +416,61 @@ class Message:
         if Defaults.PENDING_DELETE_APPEND:
             Util.append_to_file(self.append_address,
                                 Defaults.PENDING_DELETE_APPEND)
+        if Defaults.DB_PENDING_DELETE_APPEND and Defaults.DB_CONNECTION:
+            _username = Defaults.USERNAME.lower()
+            _hostname = Defaults.HOSTNAME.lower()
+            _recipient = _username + '@' + _hostname
+            params = FilterParser.create_sql_params(
+                recipient=_recipient, username=_username,
+                hostname=_hostname, sender=self.append_address)
+            Util.db_insert(Defaults.DB_CONNECTION,
+                           Defaults.DB_PENDING_DELETE_APPEND,
+                           params)
         Q.delete_message(self.msgid)
 
     def whitelist(self):
         """Whitelist the message sender."""
-        if Defaults.PENDING_WHITELIST_APPEND:
-            Util.append_to_file(self.append_address,
+        if Defaults.PENDING_WHITELIST_APPEND or \
+           (Defaults.DB_PENDING_WHITELIST_APPEND and Defaults.DB_CONNECTION):
+            if Defaults.PENDING_WHITELIST_APPEND:
+                Util.append_to_file(self.append_address,
                                 Defaults.PENDING_WHITELIST_APPEND)
+            if Defaults.DB_PENDING_WHITELIST_APPEND and Defaults.DB_CONNECTION:
+                _username = Defaults.USERNAME.lower()
+                _hostname = Defaults.HOSTNAME.lower()
+                _recipient = _username + '@' + _hostname
+                params = FilterParser.create_sql_params(
+                    recipient=_recipient, username=_username,
+                    hostname=_hostname, sender=self.append_address)
+                Util.db_insert(Defaults.DB_CONNECTION,
+                               Defaults.DB_PENDING_WHITELIST_APPEND,
+                               params)
             if Defaults.PENDING_WHITELIST_RELEASE == 1:
                 self.release()
         else:
             raise Errors.ConfigError, \
-                  'PENDING_WHITELIST_APPEND not defined!'
+                  '[DB_]PENDING_WHITELIST_APPEND not defined!'
 
     def blacklist(self):
         """Blacklist the message sender."""
-        if Defaults.PENDING_BLACKLIST_APPEND:
-            Util.append_to_file(self.append_address,
+        if Defaults.PENDING_BLACKLIST_APPEND or \
+           (Defaults.DB_PENDING_BLACKLIST_APPEND and Defaults.DB_CONNECTION):
+            if Defaults.PENDING_BLACKLIST_APPEND:
+                Util.append_to_file(self.append_address,
                                 Defaults.PENDING_BLACKLIST_APPEND)
+            if Defaults.DB_PENDING_BLACKLIST_APPEND and Defaults.DB_CONNECTION:
+                _username = Defaults.USERNAME.lower()
+                _hostname = Defaults.HOSTNAME.lower()
+                _recipient = _username + '@' + _hostname
+                params = FilterParser.create_sql_params(
+                    recipient=_recipient, username=_username,
+                    hostname=_hostname, sender=self.append_address)
+                Util.db_insert(Defaults.DB_CONNECTION,
+                               Defaults.DB_PENDING_BLACKLIST_APPEND,
+                               params)
         else:
             raise Errors.ConfigError, \
-                  'PENDING_BLACKLIST_APPEND not defined!'
+                  '[DB_]PENDING_BLACKLIST_APPEND not defined!'
 
     def pager(self):
         Util.pager(self.show())

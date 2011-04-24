@@ -1,3 +1,16 @@
+2011-04-19  David Grimberg  <d.grimberg@computer.org>
+
+	* Patch originally from 2005-10-07 by David Grimberg. Applied by Kevin
+	Goodsell, with updates for comment formatting (for parse_def
+	parsability) and spelling.
+
+	* Defaults.py (DB_PENDING_BLACKLIST_APPEND): New Variable.
+	(DB_PENDING_DELETE_APPEND): Ditto.
+	(DB_PENDING_RELEASE_APPEND): Ditto.
+	(DB_PENDING_WHITELIST_APPEND): Ditto.
+
+	* Pending.py: Modified to use new DB_PENDING_* variables.
+
 2011-04-02  Kevin Goodsell  <kevin-opensource@omegacrash.net>
 
 	* Remove pythonlib because it is obsolete.
