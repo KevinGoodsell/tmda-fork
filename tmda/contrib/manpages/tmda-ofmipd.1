@@ -1,6 +1,6 @@
 '\" t
 .\" Hey, EMACS: -*- nroff -*-
-.TH TMDA-OFMIPD 1 "2011-04-04" TMDA "TMDA Programs"
+.TH TMDA-OFMIPD 1 "2011-05-20" TMDA "TMDA Programs"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -112,8 +112,15 @@ to listen for incoming connections on.
 The default is FQDN:8025 (i.e, port 8025 on the fully qualified domain
 name for the local host).
 Use
-.BI 0.0.0.0: port
+.BI : port
 to listen on all available interfaces.
+.TP
+.BI "\-6 " host : port
+.TQ
+.BI \-\-ipv6proxyport= host : port
+Same as
+.BR \%\-\-proxyport ,
+but using IPv6.
 .TP
 .BI "\-C " num
 .TQ
