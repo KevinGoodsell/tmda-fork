@@ -6,38 +6,17 @@ import os
 
 import lib.util
 lib.util.testPrep()
-from lib.ofmipd import TestOfmipdServer
+from lib.ofmipd import TestOfmipdServer, ServerClientMixin
 
 verbose = False
 
-class FileAuthServer(TestOfmipdServer):
-    def __init__(self):
-        TestOfmipdServer.__init__(self)
-        self.addFileAuth()
-        self.debug(verbose)
+class FileAuthServerClientMixin(ServerClientMixin):
+    def serverAddOptions(self):
+        self.server.addFileAuth()
+        self.server.debug(verbose)
 
-class ServerClientMixin(object):
-    use_ipv4 = False
-
-    def setUp(self):
-        self.serverSetUp()
-        self.clientSetUp()
-
-    def tearDown(self):
-        self.server.stop()
-
-    def serverSetUp(self):
-        self.server = FileAuthServer()
-        self.server.start()
-
-    def clientSetUp(self):
-        self.client = self.server.makeClient(self.use_ipv4)
-        self.client.connect(start_tls=True)
-
-class ServerResponseTestMixin(ServerClientMixin):
-    def setUp(self):
-        ServerClientMixin.setUp(self)
-
+class ServerResponseTestMixin(FileAuthServerClientMixin):
+    def clientBeginCommunication(self):
         (code, lines) = self.client.exchange('EHLO test.com\r\n')
         self.ehloCode = code
         self.ehloLines = lines
@@ -84,10 +63,9 @@ class SslServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 503
     expectedAuthCode = 334
 
-    def serverSetUp(self):
-        self.server = FileAuthServer()
+    def serverAddOptions(self):
+        ServerResponseTestMixin.serverAddOptions(self)
         self.server.ssl()
-        self.server.start()
 
     def checkExtensions(self, extensions):
         self.assertEqual(extensions, ['AUTH'])
@@ -98,15 +76,11 @@ class SslServerResponses(ServerResponseTestMixin, unittest.TestCase):
 class PreStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 220
     expectedAuthCode = 530
+    client_starttls_on_connect = False
 
-    def serverSetUp(self):
-        self.server = FileAuthServer()
+    def serverAddOptions(self):
+        ServerResponseTestMixin.serverAddOptions(self)
         self.server.tls('on')
-        self.server.start()
-
-    def clientSetUp(self):
-        self.client = self.server.makeClient()
-        self.client.connect(start_tls=False)
 
     def checkExtensions(self, extensions):
         self.assertEqual(extensions, ['STARTTLS'])
@@ -118,10 +92,9 @@ class PostStartTlsServerResponses(ServerResponseTestMixin, unittest.TestCase):
     expectedStartTlsCode = 503
     expectedAuthCode = 334
 
-    def serverSetUp(self):
-        self.server = FileAuthServer()
+    def serverAddOptions(self):
+        ServerResponseTestMixin.serverAddOptions(self)
         self.server.tls('on')
-        self.server.start()
 
     def checkExtensions(self, extensions):
         self.assertEqual(extensions, ['AUTH'])
@@ -133,15 +106,11 @@ class OptionalStartTlsServerResponses(ServerResponseTestMixin,
                                       unittest.TestCase):
     expectedStartTlsCode = 220
     expectedAuthCode = 334
+    client_starttls_on_connect = False
 
-    def serverSetUp(self):
-        self.server = FileAuthServer()
+    def serverAddOptions(self):
+        ServerResponseTestMixin.serverAddOptions(self)
         self.server.tls('optional')
-        self.server.start()
-
-    def clientSetUp(self):
-        self.client = self.server.makeClient()
-        self.client.connect(start_tls=False)
 
     def checkExtensions(self, extensions):
         self.assertEqual(set(extensions), set(['STARTTLS', 'AUTH']))
@@ -153,17 +122,7 @@ class OptionalStartTlsServerResponses(ServerResponseTestMixin,
 # in that these test authentication between an SMTP client and the tmda-ofmipd
 # server. test-ofmipd-auth.py tests tmda-ofmipd's backend authentication
 # methods, such as authenticating against a password file or a different server.
-class AuthenticationTests(unittest.TestCase):
-    def setUp(self):
-        self.server = FileAuthServer()
-        self.server.start()
-
-        self.client = self.server.makeClient()
-        self.client.connect()
-
-    def tearDown(self):
-        self.server.stop()
-
+class AuthenticationTests(FileAuthServerClientMixin, unittest.TestCase):
     def authPlain(self, username, password, expectedCode):
         authString = '\x00'.join([username, username, password])
         authString = authString.encode('base64')[:-1]
@@ -233,7 +192,7 @@ class AuthenticationTests(unittest.TestCase):
             self.authCramMd5(username, password, 535)
 
 # Provides functions for sending mail
-class SendMailMixin(ServerClientMixin):
+class SendMailMixin(FileAuthServerClientMixin):
     def beginSend(self):
         (code, lines) = self.client.exchange('MAIL FROM: testuser@nowhere.com'
                                              '\r\n')
@@ -269,16 +228,14 @@ class SendTestMixin(SendMailMixin):
         self.assertEqual(code, 530)
 
 class SslSendTestMixin(SendTestMixin):
-    def serverSetUp(self):
-        self.server = FileAuthServer()
+    def serverAddOptions(self):
+        SendTestMixin.serverAddOptions(self)
         self.server.ssl()
-        self.server.start()
 
 class TlsSendTestMixin(SendTestMixin):
-    def serverSetUp(self):
-        self.server = FileAuthServer()
+    def serverAddOptions(self):
+        SendTestMixin.serverAddOptions(self)
         self.server.tls('on')
-        self.server.start()
 
 # End of mixins, start actual tests constructed from mixins. Starting with
 # default IPv6 tests, followed by IPv4 variants:
@@ -295,20 +252,19 @@ class TlsSendTest(TlsSendTestMixin, unittest.TestCase):
 # IPv4 variants:
 
 class UnencryptedSendV4Test(SendTestMixin, unittest.TestCase):
-    use_ipv4 = True
+    client_ipv4 = True
 
 class SslSendV4Test(SslSendTestMixin, unittest.TestCase):
-    use_ipv4 = True
+    client_ipv4 = True
 
 class TlsSendV4Test(TlsSendTestMixin, unittest.TestCase):
-    use_ipv4 = True
+    client_ipv4 = True
 
 
 class QuotaTest(SendMailMixin, unittest.TestCase):
-    def serverSetUp(self):
-        self.server = FileAuthServer()
+    def serverAddOptions(self):
+        SendMailMixin.serverAddOptions(self)
         self.server.addOptions(['--throttle-script', 'bin/throttle'])
-        self.server.start()
 
     def sendMessage(self, username, password, expectedCode):
         self.client.signOn(username, password)

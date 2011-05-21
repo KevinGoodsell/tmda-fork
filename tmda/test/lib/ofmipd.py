@@ -227,3 +227,54 @@ class TestOfmipdClient(object):
 
     def _needsTls(self):
         return self._ssl == 'tls' and self._sslSock is None
+
+# This is a mixin for unittest.TestCases that need to create a server and poke
+# at it. It spawns a server and acts as a client for that server. It has a lot
+# of methods to allow derived classes to override behavior.
+class ServerClientMixin(object):
+    def setUp(self):
+        self.serverSetUp()
+        self.clientSetUp()
+
+    def tearDown(self):
+        self.server.stop()
+
+    # Server parts
+    def serverSetUp(self):
+        self.server = self.serverCreate()
+        self.serverAddOptions()
+        self.serverStart()
+
+    # Override serverCreate to add server options.
+    def serverCreate(self):
+        return TestOfmipdServer()
+
+    def serverAddOptions(self):
+        pass
+
+    def serverStart(self):
+        self.server.start()
+
+    # Client parts
+    client_ipv4 = False
+    client_starttls_on_connect = True
+
+    def clientSetUp(self):
+        self.client = self.clientCreate()
+        self.clientAddOptions()
+        self.clientConnect()
+        self.clientBeginCommunication()
+
+    def clientCreate(self):
+        return self.server.makeClient(self.client_ipv4)
+
+    def clientAddOptions(self):
+        pass
+
+    def clientConnect(self):
+        # start_tls=True only has an effect if the server is actually in
+        # starttls mode.
+        self.client.connect(self.client_starttls_on_connect)
+
+    def clientBeginCommunication(self):
+        pass
