@@ -325,7 +325,10 @@ class RemoteAuthenticator(Authenticator):
         ipauthmap = {}
         try:
             fp = file(filename, 'r')
+            line_num = 0
             for line in fp:
+                line_num += 1
+
                 # Remove trailing comment
                 line = comment_matcher.sub('', line)
                 line = line.strip()
@@ -337,10 +340,22 @@ class RemoteAuthenticator(Authenticator):
                     # Old-style ip:ip[:port] line
                     pieces = line.split(':')
 
+                if len(pieces) not in (2, 3):
+                    logger.error('Format error in ipauthmap file, line %d',
+                                 line_num)
+                    continue
+
                 (key, val_ip) = pieces[:2]
                 # port may be specified or unspecified.
                 if len(pieces) > 2:
-                    val_port = int(pieces[2])
+                    try:
+                        val_port = int(pieces[2])
+                        if not (0 <= val_port <= 0xFFFF):
+                            raise ValueError('Not a valid port number')
+                    except ValueError, e:
+                        logger.error('Invalid port in ipauthmap file, line %d',
+                                     line_num)
+                        continue
                 else:
                     val_port = None
                 ipauthmap[key] = (val_ip, val_port)
