@@ -429,6 +429,11 @@ class LdapAuthenticator(RemoteAuthenticator):
             raise ImportError('python-ldap ' \
                 '(http://www.python-ldap.org/) required.')
 
+        try:
+            dn % ''
+        except TypeError:
+            raise ValueError("LDAP URL must conain a '%s' placeholder")
+
         RemoteAuthenticator.__init__(self, host, port)
         self._dn = dn
 
