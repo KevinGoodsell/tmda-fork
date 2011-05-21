@@ -16,6 +16,8 @@ class FileAuthServer(TestOfmipdServer):
         self.debug(verbose)
 
 class ServerClientMixin(object):
+    use_ipv4 = False
+
     def setUp(self):
         self.serverSetUp()
         self.clientSetUp()
@@ -28,7 +30,7 @@ class ServerClientMixin(object):
         self.server.start()
 
     def clientSetUp(self):
-        self.client = self.server.makeClient()
+        self.client = self.server.makeClient(self.use_ipv4)
         self.client.connect(start_tls=True)
 
 class ServerResponseTestMixin(ServerClientMixin):
@@ -249,6 +251,8 @@ class SendMailMixin(ServerClientMixin):
         (code, lines) = self.client.exchange('.\r\n')
         self.assertEqual(code, expectedCode)
 
+# Tests for sending mail
+
 class SendTestMixin(SendMailMixin):
     def testSend(self):
         self.client.signOn()
@@ -263,20 +267,41 @@ class SendTestMixin(SendMailMixin):
                                              '\r\n')
         self.assertEqual(code, 530)
 
-class UnencryptedSendTest(SendTestMixin, unittest.TestCase):
-    pass
-
-class SslSendTest(SendTestMixin, unittest.TestCase):
+class SslSendTestMixin(SendTestMixin):
     def serverSetUp(self):
         self.server = FileAuthServer()
         self.server.ssl()
         self.server.start()
 
-class TlsSendTest(SendTestMixin, unittest.TestCase):
+class TlsSendTestMixin(SendTestMixin):
     def serverSetUp(self):
         self.server = FileAuthServer()
         self.server.tls('on')
         self.server.start()
+
+# End of mixins, start actual tests constructed from mixins. Starting with
+# default IPv6 tests, followed by IPv4 variants:
+
+class UnencryptedSendTest(SendTestMixin, unittest.TestCase):
+    pass
+
+class SslSendTest(SslSendTestMixin, unittest.TestCase):
+    pass
+
+class TlsSendTest(TlsSendTestMixin, unittest.TestCase):
+    pass
+
+# IPv4 variants:
+
+class UnencryptedSendV4Test(SendTestMixin, unittest.TestCase):
+    use_ipv4 = True
+
+class SslSendV4Test(SslSendTestMixin, unittest.TestCase):
+    use_ipv4 = True
+
+class TlsSendV4Test(TlsSendTestMixin, unittest.TestCase):
+    use_ipv4 = True
+
 
 class QuotaTest(SendMailMixin, unittest.TestCase):
     def serverSetUp(self):

@@ -28,8 +28,8 @@ class TestOfmipdServer(object):
         self._extraOpts = []
 
         self._serverProc = None
-        self._addr = '127.0.0.1'
-        self._port = 8025
+        self._v4addr = ('127.0.0.1', 8025)
+        self._v6addr = ('::1', 8025)
 
     def start(self):
         # With sys.executable, we make sure the server runs under the same
@@ -50,7 +50,7 @@ class TestOfmipdServer(object):
         newEnv['TMDA_TEST_HOME'] = userDir
 
         # XXX Figure out how to detect in-use ports and try a different one
-        bindOpts = ['-p', '%s:%d' % (self._addr, self._port)]
+        bindOpts = ['-p', '%s:%d' % self._v4addr, '-6', '%s:%d' % self._v6addr]
 
         serverOpts.extend(bindOpts)
         serverOpts.extend(self._extraOpts)
@@ -58,10 +58,10 @@ class TestOfmipdServer(object):
         self._serverProc = subprocess.Popen(serverOpts, env=newEnv)
 
         # Wait for server availability
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         while True:
             try:
-                s.connect(('127.0.0.1', self.port()))
+                s.connect(self._v6addr)
                 s.close()
                 break
             except socket.error:
@@ -84,9 +84,6 @@ class TestOfmipdServer(object):
 
     def background(self):
         self._ground = '-b'
-
-    def bind(self, addr):
-        self._addr = addr
 
     def ssl(self, useSsl=True):
         if useSsl:
@@ -116,12 +113,13 @@ class TestOfmipdServer(object):
     def addRemoteAuth(self, url):
         self._authOpts.append('--remoteauth=%s' % url)
 
-    def port(self):
-        return self._port
+    def makeClient(self, v4=False):
+        if v4:
+            addr = self._v4addr
+        else:
+            addr = self._v6addr
 
-    def makeClient(self):
-        addr = (self._addr, self.port())
-        client = TestOfmipdClient(addr)
+        client = TestOfmipdClient(addr, v4)
 
         if self._ssl == '--ssl':
             client.ssl()
@@ -131,9 +129,13 @@ class TestOfmipdServer(object):
         return client
 
 class TestOfmipdClient(object):
-    def __init__(self, address):
+    def __init__(self, address, v4=False):
         self._address = address
-        self._normalSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if v4:
+            family = socket.AF_INET
+        else:
+            family = socket.AF_INET6
+        self._normalSock = socket.socket(family, socket.SOCK_STREAM)
         self._sslSock = None
         self._sock = self._normalSock
         self._ssl = 'off' # or 'ssl', or 'tls'
