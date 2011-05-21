@@ -1577,29 +1577,56 @@ for g in (gengroup, congroup, authgroup, virtgroup):
 
 parser.set_defaults(proxyport=[], ipv6proxyport=[])
 
-(opts, args) = parser.parse_args()
+def handle_opts():
+    # The content of this function used to all be at the script scope, so a lot
+    # of what it uses are globals.
+    global opts
+    global _authenticator
+    global ipauthmapfile
+    global ssl_context
 
-if opts.full_version:
-    print Version.ALL
-    sys.exit()
-if opts.vhomescript and opts.configdir:
-    parser.error("options '--vhome-script' and '--configdir' are incompatible!")
-if opts.log:
-    logger.setLevel(logging.INFO)
-if opts.debug:
-    logger.setLevel(logging.DEBUG)
+    (opts, args) = parser.parse_args()
 
-_authenticator = auth_options.authenticator()
-if _authenticator is None:
-    parser.error('missing authentication option(s)')
+    if opts.full_version:
+        print Version.ALL
+        sys.exit()
+    if opts.vhomescript and opts.configdir:
+        parser.error("options '--vhome-script' and '--configdir' are incompatible!")
+    if opts.log:
+        logger.setLevel(logging.INFO)
+    if opts.debug:
+        logger.setLevel(logging.DEBUG)
 
-if running_as_root:
-    if not opts.username:
-        opts.username = 'tofmipd'
-    ipauthmapfile = '/etc/ipauthmap'
-else:
-    tmda_path = os.path.join(os.path.expanduser('~'), '.tmda')
-    ipauthmapfile = os.path.join(tmda_path, 'ipauthmap')
+    _authenticator = auth_options.authenticator()
+    if _authenticator is None:
+        parser.error('missing authentication option(s)')
+
+    if running_as_root:
+        if not opts.username:
+            opts.username = 'tofmipd'
+        ipauthmapfile = '/etc/ipauthmap'
+    else:
+        tmda_path = os.path.join(os.path.expanduser('~'), '.tmda')
+        ipauthmapfile = os.path.join(tmda_path, 'ipauthmap')
+
+    if opts.ssl or opts.tls:
+        if opts.ssl and opts.tls:
+            raise ValueError("Can't do SSL and TLS at the same time")
+
+        try:
+            import OpenSSL.SSL as SSL
+        except ImportError:
+            raise ImportError('Python OpenSSL '
+                '(http://pyopenssl.sourceforge.net/) required.')
+
+        if (not opts.ssl_cert) or (not opts.ssl_key):
+            raise ValueError, \
+                '--ssl-cert and --ssl-key are required when using --ssl or --tls'
+
+        ssl_context = SSL.Context(SSL.SSLv23_METHOD)
+        ssl_context.set_cipher_list(opts.ciphers)
+        ssl_context.use_certificate_chain_file(os.path.expanduser(opts.ssl_cert))
+        ssl_context.use_privatekey_file(os.path.expanduser(opts.ssl_key))
 
 # provide disclaimer if running as root
 if running_as_root:
@@ -1608,25 +1635,6 @@ if running_as_root:
                    'If you are uncomfortable with this, quit now and instead\n'
                    'run it under your non-privileged TMDA user account.',
                    program)
-
-if opts.ssl or opts.tls:
-    if opts.ssl and opts.tls:
-        raise ValueError("Can't do SSL and TLS at the same time")
-
-    try:
-        import OpenSSL.SSL as SSL
-    except ImportError:
-        raise ImportError('Python OpenSSL '
-            '(http://pyopenssl.sourceforge.net/) required.')
-
-    if (not opts.ssl_cert) or (not opts.ssl_key):
-        raise ValueError, \
-            '--ssl-cert and --ssl-key are required when using --ssl or --tls'
-
-    ssl_context = SSL.Context(SSL.SSLv23_METHOD)
-    ssl_context.set_cipher_list(opts.ciphers)
-    ssl_context.use_certificate_chain_file(os.path.expanduser(opts.ssl_cert))
-    ssl_context.use_privatekey_file(os.path.expanduser(opts.ssl_key))
 
 def make_session_factory(process_msg_func):
     if opts.ssl or opts.tls:
@@ -1643,6 +1651,8 @@ def make_session_factory(process_msg_func):
     return lambda conn: SMTPSession(conn, process_msg_func)
 
 def main():
+    handle_opts()
+
     if opts.vhomescript:
         session_factory = make_session_factory(process_message_vdomain)
     else:

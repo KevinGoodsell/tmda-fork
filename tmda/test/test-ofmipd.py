@@ -2,6 +2,7 @@ import unittest
 import hmac
 import sys
 from hashlib import md5
+import os
 
 import lib.util
 lib.util.testPrep()
@@ -326,6 +327,154 @@ class QuotaTest(SendMailMixin, unittest.TestCase):
 
     def testOverQuota(self):
         self.sendMessage('overquota', 'quotapassword', 450)
+
+# Test for the undocumented ipauthmap file.
+class IpAuthMapTest(unittest.TestCase):
+    def setUp(self):
+        self.importOfmipd()
+
+    def importOfmipd(self):
+        # Cheap way of "importing" a script.
+        self.module = {}
+        ofmipd = os.path.join(lib.util.rootDir, 'bin', 'tmda-ofmipd')
+        execfile(ofmipd, self.module)
+
+    def testAuthMapRead(self):
+        RemoteAuthenticator = self.module['RemoteAuthenticator']
+        test_file = os.path.join('files', 'test-ipauthmap')
+        mapping = RemoteAuthenticator._addrdict(test_file)
+
+        # Most of the tests are handled in checkMapping, and include a variant
+        # with port and without.
+        self.checkMapping(mapping, with_port=True)
+        self.checkMapping(mapping, with_port=False)
+
+        # These tests have spacing variations in the test file.
+        self.assertEqual(mapping['127.2.1.1'], ('192.168.1.1', 1001))
+        self.assertEqual(mapping['127.2.1.2'], ('192.168.1.2', 1002))
+        self.assertEqual(mapping['127.2.1.3'], ('192.168.1.3', 1003))
+        self.assertEqual(mapping['127.2.1.4'], ('192.168.1.4', 1004))
+
+    def checkMapping(self, mapping, with_port):
+        if with_port:
+            ip4pre = '127.0.'
+            ip6pre = '7F00:'
+            port = lambda p: p
+        else:
+            ip4pre = '127.1.'
+            ip6pre = '7F01:'
+            port = lambda p: None
+
+        # These follow the layout of the test file.
+        val = mapping[ip4pre + '0.1']
+        self.assertEqual(val, ('192.168.0.1', port(1001)))
+        val = mapping[ip4pre + '0.2']
+        self.assertEqual(val, ('192.168.0.2', port(1002)))
+
+        val = mapping[ip4pre + '1.1']
+        self.assertEqual(val, ('192.168.1.1', port(1001)))
+        val = mapping[ip4pre + '1.2']
+        self.assertEqual(val, ('192.168.1.2', port(1002)))
+
+        val = mapping[ip4pre + '2.1']
+        self.assertEqual(val, ('::ffff:192.168.2.1', port(1001)))
+        val = mapping[ip4pre + '2.2']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:ffff:192.168.2.2',
+                               port(1002)))
+        val = mapping[ip4pre + '2.3']
+        self.assertEqual(val, ('0:0:0:0:0:ffff:192.168.2.3', port(1003)))
+
+        val = mapping[ip4pre + '3.1']
+        self.assertEqual(val, ('::1', port(1001)))
+        val = mapping[ip4pre + '3.2']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:0000:0000:0002',
+                               port(1002)))
+        val = mapping[ip4pre + '3.3']
+        self.assertEqual(val, ('0:0:0:0:0:0:0:3', port(1003)))
+
+        pre = '0000:0000:0000:0000:0000:FFFF:' + ip6pre
+
+        val = mapping[pre + '0401']
+        self.assertEqual(val, ('192.168.4.1', port(1001)))
+
+        val = mapping[pre + '0501']
+        self.assertEqual(val, ('::ffff:192.168.5.1', port(1001)))
+        val = mapping[pre + '0502']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:ffff:192.168.5.2',
+                               port(1002)))
+        val = mapping[pre + '0503']
+        self.assertEqual(val, ('0:0:0:0:0:ffff:192.168.5.3', port(1003)))
+
+        val = mapping[pre + '0601']
+        self.assertEqual(val, ('::1', port(1001)))
+        val = mapping[pre + '0602']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:0000:0000:0002',
+                               port(1002)))
+        val = mapping[pre + '0603']
+        self.assertEqual(val, ('0:0:0:0:0:0:0:3', port(1003)))
+
+        pre = '0:0:0:0:0:FFFF:' + ip6pre
+
+        val = mapping[pre + '0701']
+        self.assertEqual(val, ('192.168.7.1', port(1001)))
+
+        val = mapping[pre + '0801']
+        self.assertEqual(val, ('::ffff:192.168.8.1', port(1001)))
+        val = mapping[pre + '0802']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:ffff:192.168.8.2',
+                               port(1002)))
+        val = mapping[pre + '0803']
+        self.assertEqual(val, ('0:0:0:0:0:ffff:192.168.8.3', port(1003)))
+
+        val = mapping[pre + '0901']
+        self.assertEqual(val, ('::1', port(1001)))
+        val = mapping[pre + '0902']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:0000:0000:0002',
+                               port(1002)))
+        val = mapping[pre + '0903']
+        self.assertEqual(val, ('0:0:0:0:0:0:0:3', port(1003)))
+
+        pre = '::FFFF:' + ip6pre
+
+        val = mapping[pre + '0a01']
+        self.assertEqual(val, ('192.168.10.1', port(1001)))
+
+        val = mapping[pre + '0b01']
+        self.assertEqual(val, ('::ffff:192.168.11.1', port(1001)))
+        val = mapping[pre + '0b02']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:ffff:192.168.11.2',
+                               port(1002)))
+        val = mapping[pre + '0b03']
+        self.assertEqual(val, ('0:0:0:0:0:ffff:192.168.11.3', port(1003)))
+
+        val = mapping[pre + '0c01']
+        self.assertEqual(val, ('::1', port(1001)))
+        val = mapping[pre + '0c02']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:0000:0000:0002',
+                               port(1002)))
+        val = mapping[pre + '0c03']
+        self.assertEqual(val, ('0:0:0:0:0:0:0:3', port(1003)))
+
+        pre = '::FFFF:' + ip4pre
+
+        val = mapping[pre + '13.1']
+        self.assertEqual(val, ('192.168.13.1', port(1001)))
+
+        val = mapping[pre + '14.1']
+        self.assertEqual(val, ('::ffff:192.168.14.1', port(1001)))
+        val = mapping[pre + '14.2']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:ffff:192.168.14.2',
+                               port(1002)))
+        val = mapping[pre + '14.3']
+        self.assertEqual(val, ('0:0:0:0:0:ffff:192.168.14.3', port(1003)))
+
+        val = mapping[pre + '15.1']
+        self.assertEqual(val, ('::1', port(1001)))
+        val = mapping[pre + '15.2']
+        self.assertEqual(val, ('0000:0000:0000:0000:0000:0000:0000:0002',
+                               port(1002)))
+        val = mapping[pre + '15.3']
+        self.assertEqual(val, ('0:0:0:0:0:0:0:3', port(1003)))
 
 # XXX Add tests:
 # Dupes and syntax errors
