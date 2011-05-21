@@ -58,6 +58,49 @@ def gethostname():
     return hostname
 
 
+def urlsplit(urlstring, scheme='', allow_fragments=True):
+    '''Modified urlparse.urlsplit that handles IPv6 addresses.'''
+    import urlparse
+
+    result = urlparse.urlsplit(urlstring, scheme, allow_fragments)
+    if '[' in result.netloc:
+        return IP6SplitResult(result)
+    return result
+
+class IP6SplitResult(object):
+    '''Result type for urlsplit when the URL uses an IPv6 address. This is
+    intended to be compatible with the regular urlsplit result, but beware of
+    subtle differences. For example, this is not derived from tuple. Indexing
+    and unpacking are supported, however.'''
+    # Host matcher matches IP-literal in RFC3986, but it's not very strict and
+    # doesn't match IPvFuture addresses. It does match addresses that use the
+    # IPv4 dotted-quad format for the last 32 bits.
+    _host_matcher = re.compile(r'\[([\da-fA-F:.]+)\]')
+
+    def __init__(self, result):
+        self._result = result
+
+        # urlsplit gets hostname and port wrong. Replace them. Everything else
+        # is looked up in self._result.
+        self.hostname = self._host_matcher.search(result.netloc).group(1)
+
+        if ']:' in result.netloc:
+            self.port = int(result.netloc.split(']:', 1)[1])
+        else:
+            self.port = None
+
+    def __getattr__(self, name):
+        return getattr(self._result, name)
+
+    # Special method lookup doesn't go through __getattr__ (or
+    # through __getattribute__).
+    def __getitem__(self, key):
+        return self._result[key]
+
+    def __repr__(self):
+        return repr(self._result)
+
+
 def getfullname():
     """The user's personal name.  Default is an empty value."""
     fullname = os.environ.get('TMDANAME') or \
