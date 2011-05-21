@@ -5,6 +5,7 @@
 import sys
 import os.path
 import re
+import socket
 from BaseHTTPServer import HTTPServer
 import CGIHTTPServer
 from CGIHTTPServer import CGIHTTPRequestHandler
@@ -31,10 +32,12 @@ class RequestHandler(CGIHTTPRequestHandler):
 
 os.chdir(os.path.join(tmda_cgi_dir, 'simple-server', 'www'))
 
+class HTTPServerIPv6(HTTPServer):
+    address_family = socket.AF_INET6
+
 # This is mostly copied from BaseHTTPServer, modified to allow the bind address
-# to be specified, and default to 127.0.0.1.
-def test(HandlerClass = RequestHandler,
-         ServerClass = HTTPServer, protocol="HTTP/1.0"):
+# to be specified, to support IPv6, and to default to 127.0.0.1.
+def test(HandlerClass = RequestHandler, protocol="HTTP/1.0"):
 
     if sys.argv[1:]:
         port = int(sys.argv[1])
@@ -47,6 +50,11 @@ def test(HandlerClass = RequestHandler,
         bindaddr = '127.0.0.1'
 
     server_address = (bindaddr, port)
+
+    if ':' in bindaddr:
+        ServerClass = HTTPServerIPv6
+    else:
+        ServerClass = HTTPServer
 
     HandlerClass.protocol_version = protocol
     httpd = ServerClass(server_address, HandlerClass)
