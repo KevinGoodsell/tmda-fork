@@ -1140,8 +1140,7 @@ class SMTPServer(asyncore.dispatcher):
         self.set_reuse_addr()
         self.bind(localaddr)
         self.listen(5)
-        logger.info('tmda-ofmipd started at %s\n\tListening on %s:%d',
-                    Util.make_date(), localaddr[0], localaddr[1])
+        logger.info('Listening on %s:%d', *localaddr)
 
     def readable(self):
         if len(asyncore.socket_map) > opts.connections:
@@ -1664,6 +1663,8 @@ def main():
         # Add a default address if none were given.
         if opts.proxyport == opts.ipv6proxyport == []:
             opts.proxyport = ["%s:8025" % FQDN]
+
+        logger.info('tmda-ofmipd started at %s', Util.make_date())
 
         # Try binding to the specified addresses.
         for addr in opts.proxyport:
