@@ -286,34 +286,64 @@ class RemoteAuthenticator(Authenticator):
         self._port = port
 
     def remote_address(self, localip):
-        (address, port) = (self._host, self._port)
+        address = self._host
+        port = None
 
         if address == '0.0.0.0':
             # This is a feature that seems to be undocumented. It allows
             # remote authentication address:port to be based on the address
             # for the interface that receives the connection.
-            addrdict = self._addrdict()
-            replacement = addrdict.get(localip, '127.0.0.1').split(':')
-            address = replacement[0]
-            if len(replacement) > 1:
-                port = replacement[1]
+            addrdict = self._addrdict(ipauthmapfile)
+            (address, port) = addrdict.get(localip, ('127.0.0.1', None))
+
+        if port is None:
+            port = self._port
 
         return (address, port)
 
-    def _addrdict(self):
-        """Iterate 'ipauthmapfile' (IP1:IP2:port) and return a dict of
-        {'addr1' : 'adder2[:port]'}. Note the values may or may not have a
-        port."""
+    @staticmethod
+    def _addrdict(filename):
+        '''Read IP address mappings from a file. Each line defines a mapping
+        from an IP address to an IP address with an optional port. Empty lines
+        are ignored, and #-prefixed line comments are discarded. Each mapping
+        has the form:
 
+          ADDRESS1 <space> ADDRESS2 [ <space> PORT ]
+
+        <space> is any sequence of whitespace characters (except newlines).
+        Alternatively, if both addresses are IPv4, an older form is supported:
+
+          IPV4ADDRESS1 : IPV4ADDRESS2 [ : PORT ]
+
+        The first form works for both IPv4 and IPv6, and is preferred.
+
+        Returns a dict mapping ADDRESS1 to (ADDRESS2, PORT) tuples, where PORT
+        may be an integer or None.'''
+
+        comment_matcher = re.compile(r'#.*$')
+        space_matcher = re.compile(r'\s+')
         ipauthmap = {}
         try:
-            fp = file(ipauthmapfile, 'r')
+            fp = file(filename, 'r')
             for line in fp:
+                # Remove trailing comment
+                line = comment_matcher.sub('', line)
                 line = line.strip()
-                if line == '' or line.startswith('#'):
+                if line == '':
                     continue
-                (k, v) = line.split(':', 1)
-                ipauthmap[k.strip()] = v.strip()
+
+                pieces = space_matcher.split(line)
+                if len(pieces) == 1:
+                    # Old-style ip:ip[:port] line
+                    pieces = line.split(':')
+
+                (key, val_ip) = pieces[:2]
+                # port may be specified or unspecified.
+                if len(pieces) > 2:
+                    val_port = int(pieces[2])
+                else:
+                    val_port = None
+                ipauthmap[key] = (val_ip, val_port)
             fp.close()
         except IOError:
             pass
@@ -443,20 +473,22 @@ class AuthOptions(object):
 
         self._auths.append(auth)
 
-    _url_splitter = re.compile(r'''(?P<proto>[^:]+?)://
-                                   (?P<host>[^/:]+)
-                                   (:(?P<port>\d+))?/
-                                   (?P<path>.*)''', re.VERBOSE)
     @classmethod
     def split_url(cls, url):
         '''return ('proto', 'host', port, 'path')'''
-        m = cls._url_splitter.match(url)
-        if m is None:
-            raise ValueError('Bad url: %s' % url)
-        port = m.group('port')
-        if port is not None:
-            port = int(port)
-        return (m.group('proto'), m.group('host'), port, m.group('path'))
+        result = Util.urlsplit(url, allow_fragments=False)
+        # Originally this method included everything following the path as part
+        # of the "path" result, and excluded the leading slash. Mimic that
+        # behavior.
+        if result.query:
+            path = '%s?%s' % (result.path, result.query)
+        else:
+            path = result.path
+
+        if path.startswith('/'):
+            path = path[1:]
+
+        return (result.scheme, result.hostname, result.port, path)
 
     def authenticator(self):
         if len(self._auths) == 0:
@@ -576,6 +608,20 @@ class SMTPSession(asynchat.async_chat):
         self.__mailfrom = None
         self.__rcpttos = []
         self.__data = ''
+
+    def _is_loopback(self, addr):
+        '''Return True if addr is a loopback address.'''
+        if self.__conn.family == socket.AF_INET6:
+            # IPv6. According to RFC 5156, only ::1 (though this can be written
+            # in many ways).
+            return (socket.inet_pton(socket.AF_INET6, addr) ==
+                    socket.inet_pton(socket.AF_INET6, '::1'))
+        elif self.__conn.family == socket.AF_INET:
+            # IPv4. RFC 5735 says the entire 127.0.0.0/8 block is for the local
+            # host.
+            return addr.startswith('127.')
+
+        return False
 
     def start(self):
         self.push('220 %s ESMTP tmda-ofmipd' % FQDN)
@@ -999,7 +1045,7 @@ class SecureSMTPSession(SMTPSession):
         if self._ssl_state == 'immediate':
             self.start_ssl()
         elif self._ssl_state == 'localoptional':
-            if self._localip == '127.0.0.1':
+            if self._is_loopback(self._localip):
                 self._ssl_state = 'optional'
             else:
                 self._ssl_state = 'required'
