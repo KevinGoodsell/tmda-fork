@@ -1085,11 +1085,11 @@ class SecureSMTPSession(SMTPSession):
 class SMTPServer(asyncore.dispatcher):
     """Run an SMTP server daemon - accept new socket connections and
     process SMTP sessions on each connection."""
-    def __init__(self, localaddr, session_factory):
+    def __init__(self, localaddr, session_factory, family=socket.AF_INET):
         self._localaddr = localaddr
         self._session_factory = session_factory
         asyncore.dispatcher.__init__(self)
-        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.create_socket(family, socket.SOCK_STREAM)
         # try to re-use a server port if possible
         self.set_reuse_addr()
         self.bind(localaddr)
@@ -1354,13 +1354,15 @@ see the --vhome-script option for qmail virtual domain users.""")
 # connection
 congroup = OptionGroup(parser, "Connection")
 
-congroup.add_option("-p", "--proxyport",
-                    default="%s:%s" % (FQDN, 8025), metavar="HOST:PORT",
-                    dest="proxyport", help= \
+congroup.add_option("-p", "--proxyport", action="append",
+                    metavar="HOST:PORT", help=
 """The HOST:PORT to listen for incoming connections on.  The default is
 FQDN:8025 (i.e, port 8025 on the fully qualified domain name for the
-local host).  Use '0.0.0.0:PORT' to listen on all available
-interfaces.""")
+local host).  Use ':PORT' to listen on all available interfaces.""")
+
+congroup.add_option("-6", "--ipv6proxyport", action="append",
+                    metavar="HOST:PORT",
+                    help="Same as --proxyport, but using IPv6.")
 
 congroup.add_option("-C", "--connections",
                     type="int", default="20", metavar="NUM", dest="connections",
@@ -1527,6 +1529,8 @@ using the VMailMgr add-on.  It implies that you will also set the
 for g in (gengroup, congroup, authgroup, virtgroup):
     parser.add_option_group(g)
 
+parser.set_defaults(proxyport=[], ipv6proxyport=[])
+
 (opts, args) = parser.parse_args()
 
 if opts.full_version:
@@ -1601,9 +1605,17 @@ def main():
     if opts.one_session:
         create_smtp_session_from_stdin(session_factory)
     else:
-        # try binding to the specified host:port
-        host, port = opts.proxyport.split(':', 1)
-        server = SMTPServer((host, int(port)), session_factory)
+        # Add a default address if none were given.
+        if opts.proxyport == opts.ipv6proxyport == []:
+            opts.proxyport = ["%s:8025" % FQDN]
+
+        # Try binding to the specified addresses.
+        for addr in opts.proxyport:
+            host, port = addr.rsplit(':', 1)
+            SMTPServer((host, int(port)), session_factory, socket.AF_INET)
+        for addr in opts.ipv6proxyport:
+            host, port = addr.rsplit(':', 1)
+            SMTPServer((host, int(port)), session_factory, socket.AF_INET6)
 
     # Switch user/group ID, etc.
     if running_as_root:
