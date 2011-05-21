@@ -115,10 +115,11 @@ class RemoteAuthTestMixin(AuthTestMixin):
         self.server.addRemoteAuth('%s://localhost%s/%s' %
                                   (self.protocol, portStr, self.path))
 
-# For AuthImapTest, AuthImapsTest, AuthPop3Test, and AuthApopTest, dovecot may
+# For AuthImapTest, AuthImapsTest, AuthPop3Test, and AuthApopTest, Dovecot may
 # be used as an authentication server. Under Debian, with the dovecot-imapd and
-# dovecot-pop3d packages, try the following configuration changes in
-# /etc/dovecot/dovecot.conf:
+# dovecot-pop3d packages, try the following configuration changes.
+#
+# For Dovecot 1.2:
 #
 # protocols = imap imaps pop3
 # listen = 127.0.0.1
@@ -139,10 +140,32 @@ class RemoteAuthTestMixin(AuthTestMixin):
 #   userdb passwd {
 #   }
 #
+# For Dovecot 2:
+#
+# # dovecot.conf:
+# listen = 127.0.0.1
+# # For getting around failure delays:
+# login_trusted_networks = 127.0.0.0/24
+#
+# # conf.d/10-auth.conf:
+# auth_failure_delay = 0 secs
+# auth_mechanisms = plain apop
+# # Remove any !include auth-* lines and use this instead:
+# userdb {
+#   driver = passwd
+# }
+# passdb {
+#   driver = passwd-file
+#   args = /etc/dovecot/passwd
+# }
+#
+# # conf.d/10-mail.conf:
+# mail_location = maildir:~/Maildir
+#
 # For apop the server needs to have the plain-text password, so create
 # /etc/dovecot/passwd with this content:
 #
-# testuser:{PLAIN}testpassword
+# testuser:{PLAIN}testpassword::::::nodelay=y
 class AuthImapTest(RemoteAuthTestMixin, unittest.TestCase):
     protocol = 'imap'
 
