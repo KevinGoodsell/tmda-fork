@@ -363,12 +363,12 @@ class ImapAuthenticator(RemoteAuthenticator):
         else:
             IMAP = imaplib.IMAP4
         (host, port) = self.remote_address(localip)
-        imap = IMAP(host, port)
         try:
+            imap = IMAP(host, port)
             imap.login(username, password)
             imap.logout()
             return True
-        except imap.error:
+        except (IMAP.error, socket.error):
             logger.debug('imap(s) authentication failure details:',
                          exc_info=True)
         return False
@@ -386,8 +386,8 @@ class Pop3Authenticator(RemoteAuthenticator):
         import poplib
 
         (host, port) = self.remote_address(localip)
-        pop = poplib.POP3(host, port)
         try:
+            pop = poplib.POP3(host, port)
             if self._use_apop:
                 pop.apop(username, password)
             else:
@@ -395,7 +395,7 @@ class Pop3Authenticator(RemoteAuthenticator):
                 pop.pass_(password)
             pop.quit()
             return True
-        except poplib.error_proto:
+        except (poplib.error_proto, socket.error):
             logger.debug('pop3 authentication failure details:', exc_info=True)
 
         return False

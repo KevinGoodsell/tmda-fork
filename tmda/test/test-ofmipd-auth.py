@@ -202,6 +202,37 @@ class AuthChainAltTest(AuthChainTest):
     username = 'authproguser'
     password = 'abracadabra'
 
+# Tests for failed connections to remote authenticators
+
+class RemoteAuthMissingMixin(RemoteAuthMixin):
+    # No authenticators should be listening on this address
+    host = '127.0.0.2'
+
+    def testFailedConnection(self):
+        try:
+            self.client.signOn(self.username, self.password)
+            self.fail('Logging in succeeded with an invalid authenticator')
+        except StandardError, e:
+            pass
+
+class RemoteAuthMissingImapTest(RemoteAuthMissingMixin, unittest.TestCase):
+    protocol = 'imap'
+
+class RemoteAuthMissingImapsTest(RemoteAuthMissingMixin, unittest.TestCase):
+    protocol = 'imaps'
+
+class RemoteAuthMissingPop3Test(RemoteAuthMissingMixin, unittest.TestCase):
+    protocol = 'pop3'
+
+class RemoteAuthMissingApopTest(RemoteAuthMissingMixin, unittest.TestCase):
+    protocol = 'apop'
+
+class RemoteAuthMissingLdapTest(RemoteAuthMissingMixin, unittest.TestCase):
+    protocol = 'ldap'
+    path = 'uid=%s,ou=people,dc=nodomain'
+
+# Tests for ipauthmap file
+
 class AuthMapMixin(RemoteAuthMixin):
     protocol = 'imap'
     host = '0.0.0.0'
