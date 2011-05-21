@@ -284,6 +284,7 @@ class RemoteAuthenticator(Authenticator):
         Authenticator.__init__(self)
         self._host = host
         self._port = port
+        self._authmap = None
 
     def remote_address(self, localip):
         address = self._host
@@ -293,7 +294,8 @@ class RemoteAuthenticator(Authenticator):
             # This is a feature that seems to be undocumented. It allows
             # remote authentication address:port to be based on the address
             # for the interface that receives the connection.
-            addrdict = self._addrdict(ipauthmapfile)
+            if self._authmap is None:
+                addrdict = self._addrdict(ipauthmapfile)
             (address, port) = addrdict.get(localip, ('127.0.0.1', None))
 
         if port is None:
