@@ -3,7 +3,7 @@ import sys
 
 import lib.util
 lib.util.testPrep()
-from lib.ofmipd import TestOfmipdServer
+from lib.ofmipd import TestOfmipdServer, ServerClientMixin
 
 verbose = False
 
@@ -20,7 +20,7 @@ verbose = False
 # Note that you can run this with a -v argument to get all the debug output from
 # tmda-ofmipd.
 
-class AuthTestMixin(object):
+class AuthMixin(ServerClientMixin):
     # Replace these in test classes if necessary.
     username = 'testuser'
     password = 'testpassword'
@@ -31,26 +31,30 @@ class AuthTestMixin(object):
         if not verbose:
             print msg % args
 
-    def setUp(self):
-        self.serverSetUp()
-        self.clientSetUp()
-
-    def tearDown(self):
-        self.server.stop()
-
-    def serverSetUp(self):
-        self.server = TestOfmipdServer()
+    def serverAddOptions(self):
         self.addAuth()
         self.server.debug(verbose)
-        self.server.start()
 
     def addAuth(self):
         raise NotImplementedError()
 
-    def clientSetUp(self):
-        self.client = self.server.makeClient()
-        self.client.connect(start_tls=True)
+class RemoteAuthMixin(AuthMixin):
+    # Derived classes must provide 'protocol', and may provide an alternate
+    # port and/or path.
+    protocol = None
+    port = None
+    path = ''
+    host = 'localhost'
 
+    def addAuth(self):
+        portStr = ''
+        if self.port is not None:
+            portStr = ':%d' % self.port
+
+        self.server.addRemoteAuth('%s://%s%s/%s' % (self.protocol, self.host,
+                                                    portStr, self.path))
+
+class AuthTestMixin(object):
     def testAuthentication(self):
         try:
             self.client.signOn(self.username, self.password)
@@ -69,14 +73,21 @@ class AuthTestMixin(object):
             self.assertRaises(AssertionError, self.client.signOn,
                               username, password)
 
+# For convenience, local and remote auth test mixins
+class LocalAuthTestMixin(AuthMixin, AuthTestMixin):
+    pass
+
+class RemoteAuthTestMixin(RemoteAuthMixin, AuthTestMixin):
+    pass
+
 # AuthFileTest and AuthProgTest should run with no problems. Unlike the
 # rest of the tests, everything they need is provided right in the test
 # directory.
-class AuthFileTest(AuthTestMixin, unittest.TestCase):
+class AuthFileTest(LocalAuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addFileAuth()
 
-class AuthProgTest(AuthTestMixin, unittest.TestCase):
+class AuthProgTest(LocalAuthTestMixin, unittest.TestCase):
     username = 'authproguser'
     password = 'abracadabra'
 
@@ -96,56 +107,18 @@ class AuthProgTest(AuthTestMixin, unittest.TestCase):
 # Another approach is to "unshadow" the passwords. The command 'pwunconv' can be
 # used to remove the shadow file and put the hashes in the /etc/passwd file,
 # which is readable by all users.
-class AuthPamTest(AuthTestMixin, unittest.TestCase):
+class AuthPamTest(LocalAuthTestMixin, unittest.TestCase):
     def addAuth(self):
         self.server.addPamAuth('login')
-
-class RemoteAuthTestMixin(AuthTestMixin):
-    # Derived classes must provide 'protocol', and may provide an alternate
-    # port and/or path.
-    protocol = None
-    port = None
-    path = ''
-
-    def addAuth(self):
-        portStr = ''
-        if self.port is not None:
-            portStr = ':%d' % self.port
-
-        self.server.addRemoteAuth('%s://localhost%s/%s' %
-                                  (self.protocol, portStr, self.path))
 
 # For AuthImapTest, AuthImapsTest, AuthPop3Test, and AuthApopTest, Dovecot may
 # be used as an authentication server. Under Debian, with the dovecot-imapd and
 # dovecot-pop3d packages, try the following configuration changes.
 #
-# For Dovecot 1.2:
-#
-# protocols = imap imaps pop3
-# listen = 127.0.0.1
-# ssl = yes
-# ssl_cert_file = ... (default cert and key are built by postinst script)
-# ssl_key_file = ...
-# mail_location = maildir:~/Maildir
-# auth_failure_delay = 0
-#
-# Then, in the "auth default" section:
-#
-#   mechanisms = plain apop
-#
-#   passdb passwd-file {
-#     args = /etc/dovecot/passwd
-#   }
-#
-#   userdb passwd {
-#   }
-#
-# For Dovecot 2:
-#
 # # dovecot.conf:
-# listen = 127.0.0.1
+# listen = 127.0.0.1, ::1
 # # For getting around failure delays:
-# login_trusted_networks = 127.0.0.0/24
+# login_trusted_networks = 127.0.0.0/24, ::1/128
 #
 # # conf.d/10-auth.conf:
 # auth_failure_delay = 0 secs
@@ -168,6 +141,11 @@ class RemoteAuthTestMixin(AuthTestMixin):
 # testuser:{PLAIN}testpassword::::::nodelay=y
 class AuthImapTest(RemoteAuthTestMixin, unittest.TestCase):
     protocol = 'imap'
+
+# Repeat of the last test with IPv6
+class AuthImapV6Test(RemoteAuthTestMixin, unittest.TestCase):
+    protocol = 'imap'
+    host = '[::1]'
 
 class AuthImapsTest(RemoteAuthTestMixin, unittest.TestCase):
     protocol = 'imaps'
@@ -223,6 +201,47 @@ class AuthChainTest(RemoteAuthTestMixin, unittest.TestCase):
 class AuthChainAltTest(AuthChainTest):
     username = 'authproguser'
     password = 'abracadabra'
+
+class AuthMapMixin(RemoteAuthMixin):
+    protocol = 'imap'
+    host = '0.0.0.0'
+
+    def serverCreate(self):
+        # Need to listen on many address to test connecting on different
+        # addresses that may map to other addresses.
+        return TestOfmipdServer(['::1', '127.0.0.2', '127.0.0.3', '127.0.0.4',
+                                 '127.0.0.5'])
+
+    def testMappingAuth(self):
+        try:
+            self.client.signOn(self.username, self.password)
+        except StandardError, e:
+            self.fail(str(e))
+
+class AuthMapV4ToV4Test(AuthMapMixin, unittest.TestCase):
+    client_addr = ('127.0.0.2', 8025)
+
+class AuthMapV4ToV6Test(AuthMapMixin, unittest.TestCase):
+    client_addr = ('127.0.0.3', 8025)
+
+class AuthMapV6ToV4Test(AuthMapMixin, unittest.TestCase):
+    client_addr = ('::1', 8025)
+
+class AuthMapFallbackTest(AuthMapMixin, unittest.TestCase):
+    # Address that isn't in the ipauthmapfile
+    client_addr = ('127.0.0.5', 8025)
+
+class AuthMapFailureTest(AuthMapMixin, unittest.TestCase):
+    # Address that maps to an address that nothing is listening on
+    client_addr = ('127.0.0.4', 8025)
+
+    def testMappingAuth(self):
+        try:
+            self.client.signOn(self.username, self.password)
+            self.fail('Logging in succeeded with an invalid authenticator '
+                      'mapping')
+        except StandardError, e:
+            pass
 
 if __name__ == '__main__':
     if '-v' in sys.argv:

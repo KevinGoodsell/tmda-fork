@@ -19,7 +19,10 @@ class TestOfmipdServer(object):
     _sslServerOpts = ['--ssl-cert=%s' % certFile,
                       '--ssl-key=%s' % keyFile]
 
-    def __init__(self):
+    def __init__(self, addrs=None):
+        if addrs is None:
+            addrs = ['127.0.0.1', '::1']
+
         # options
         self._debug = ''
         self._ground = '-f'
@@ -28,8 +31,13 @@ class TestOfmipdServer(object):
         self._extraOpts = []
 
         self._serverProc = None
-        self._v4addr = ('127.0.0.1', 8025)
-        self._v6addr = ('::1', 8025)
+        self._v4addrs = []
+        self._v6addrs = []
+        for addr in list(addrs):
+            if ':' in addr:
+                self._v6addrs.append((addr, 8025))
+            else:
+                self._v4addrs.append((addr, 8025))
 
     def start(self):
         # With sys.executable, we make sure the server runs under the same
@@ -50,7 +58,13 @@ class TestOfmipdServer(object):
         newEnv['TMDA_TEST_HOME'] = userDir
 
         # XXX Figure out how to detect in-use ports and try a different one
-        bindOpts = ['-p', '%s:%d' % self._v4addr, '-6', '%s:%d' % self._v6addr]
+        bindOpts = []
+        for addr in self._v4addrs:
+            bindOpts.append('-p')
+            bindOpts.append('%s:%d' % addr)
+        for addr in self._v6addrs:
+            bindOpts.append('-6')
+            bindOpts.append('%s:%d' % addr)
 
         serverOpts.extend(bindOpts)
         serverOpts.extend(self._extraOpts)
@@ -58,10 +72,12 @@ class TestOfmipdServer(object):
         self._serverProc = subprocess.Popen(serverOpts, env=newEnv)
 
         # Wait for server availability
-        s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+        addr = (self._v6addrs + self._v4addrs)[0]
+        family = socket.AF_INET6 if ':' in addr[0] else socket.AF_INET
+        s = socket.socket(family, socket.SOCK_STREAM)
         while True:
             try:
-                s.connect(self._v6addr)
+                s.connect(addr)
                 s.close()
                 break
             except socket.error:
@@ -113,13 +129,15 @@ class TestOfmipdServer(object):
     def addRemoteAuth(self, url):
         self._authOpts.append('--remoteauth=%s' % url)
 
-    def makeClient(self, v4=False):
-        if v4:
-            addr = self._v4addr
-        else:
-            addr = self._v6addr
+    def makeClient(self, addr=None):
+        if addr is None:
+            addr = (self._v6addrs + self._v4addrs)[0]
+        elif addr == 'v6':
+            addr = self._v6addrs[0]
+        elif addr == 'v4':
+            addr = self._v4addrs[0]
 
-        client = TestOfmipdClient(addr, v4)
+        client = TestOfmipdClient(addr)
 
         if self._ssl == '--ssl':
             client.ssl()
@@ -129,12 +147,14 @@ class TestOfmipdServer(object):
         return client
 
 class TestOfmipdClient(object):
-    def __init__(self, address, v4=False):
+    def __init__(self, address, family=None):
+        if family is None:
+            if ':' in address[0]:
+                family = socket.AF_INET6
+            else:
+                family = socket.AF_INET
+
         self._address = address
-        if v4:
-            family = socket.AF_INET
-        else:
-            family = socket.AF_INET6
         self._normalSock = socket.socket(family, socket.SOCK_STREAM)
         self._sslSock = None
         self._sock = self._normalSock
@@ -256,7 +276,7 @@ class ServerClientMixin(object):
         self.server.start()
 
     # Client parts
-    client_ipv4 = False
+    client_addr = 'v6'
     client_starttls_on_connect = True
 
     def clientSetUp(self):
@@ -266,7 +286,7 @@ class ServerClientMixin(object):
         self.clientBeginCommunication()
 
     def clientCreate(self):
-        return self.server.makeClient(self.client_ipv4)
+        return self.server.makeClient(self.client_addr)
 
     def clientAddOptions(self):
         pass

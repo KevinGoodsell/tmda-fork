@@ -252,13 +252,13 @@ class TlsSendTest(TlsSendTestMixin, unittest.TestCase):
 # IPv4 variants:
 
 class UnencryptedSendV4Test(SendTestMixin, unittest.TestCase):
-    client_ipv4 = True
+    client_addr = 'v4' # Any available IPv4 address
 
 class SslSendV4Test(SslSendTestMixin, unittest.TestCase):
-    client_ipv4 = True
+    client_addr = 'v4'
 
 class TlsSendV4Test(TlsSendTestMixin, unittest.TestCase):
-    client_ipv4 = True
+    client_addr = 'v4'
 
 
 class QuotaTest(SendMailMixin, unittest.TestCase):
