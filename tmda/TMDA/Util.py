@@ -38,6 +38,7 @@ import sys
 import tempfile
 import textwrap
 import time
+import optparse
 
 import Errors
 
@@ -1062,3 +1063,86 @@ class Debugable:
     def set_nodebug():
         self.level = 0
 
+
+class HelpFormatter(optparse.IndentedHelpFormatter):
+    '''
+    The available formatters in optparse cannot preserve formatting. This makes
+    tables (for example) impossible to format properly.
+
+    This class is a help formatter that preserves empty lines and lines that
+    begin with whitespace. Other lines are re-wrapped as usual.
+    '''
+    _dont_wrap = re.compile(r'^(\s|$)')
+
+    @classmethod
+    def _wrap(cls, text, width):
+        def do_wrappable():
+            if wrappable:
+                result.extend(textwrap.wrap('\n'.join(wrappable), width))
+                wrappable[:] = []
+
+        lines = text.split('\n')
+        wrappable = []
+        result = []
+        for line in lines:
+            if cls._dont_wrap.match(line):
+                do_wrappable()
+                result.append(line)
+            else:
+                wrappable.append(line)
+
+        do_wrappable()
+        return result
+
+    # format_option is taken (slightly modified) from optparse.py in Python 2.6
+    # under the following license.
+    #
+    # Copyright (c) 2001-2006 Gregory P. Ward.  All rights reserved.
+    # Copyright (c) 2002-2006 Python Software Foundation.  All rights reserved.
+    #
+    # Redistribution and use in source and binary forms, with or without
+    # modification, are permitted provided that the following conditions are
+    # met:
+    #
+    #   * Redistributions of source code must retain the above copyright
+    #     notice, this list of conditions and the following disclaimer.
+    #
+    #   * Redistributions in binary form must reproduce the above copyright
+    #     notice, this list of conditions and the following disclaimer in the
+    #     documentation and/or other materials provided with the distribution.
+    #
+    #   * Neither the name of the author nor the names of its
+    #     contributors may be used to endorse or promote products derived from
+    #     this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+    # IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+    # TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+    # PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR
+    # CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+    # EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+    # PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+    # PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+    # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    def format_option(self, option):
+        result = []
+        opts = self.option_strings[option]
+        opt_width = self.help_position - self.current_indent - 2
+        if len(opts) > opt_width:
+            opts = "%*s%s\n" % (self.current_indent, "", opts)
+            indent_first = self.help_position
+        else:                       # start help on same line as opts
+            opts = "%*s%-*s  " % (self.current_indent, "", opt_width, opts)
+            indent_first = 0
+        result.append(opts)
+        if option.help:
+            help_text = self.expand_default(option)
+            help_lines = self._wrap(help_text, self.help_width)
+            result.append("%*s%s\n" % (indent_first, "", help_lines[0]))
+            result.extend(["%*s%s\n" % (self.help_position, "", line)
+                           for line in help_lines[1:]])
+        elif opts[-1] != "\n":
+            result.append("\n")
+        return "".join(result)

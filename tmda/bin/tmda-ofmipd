@@ -1368,7 +1368,8 @@ mail client's outgoing mail through SMTP.  For more information,
 including setup and usage instructions, see
 http://wiki.tmda.net/TmdaOfmipdHowto"""
 
-parser = OptionParser(description=opt_desc, version=Version.TMDA)
+parser = OptionParser(description=opt_desc, version=Version.TMDA,
+                      formatter=Util.HelpFormatter())
 
 parser.add_option("-V",
                   action="store_true", default=False, dest="full_version",
@@ -1481,10 +1482,18 @@ the plain-text connection to SSL/TLS. This protects the safety of plain-text
 authentication methods, and message content. This is typically run on port
 587 (submission). The different options have the following effect:
 
-               AUTH allowed before STARTTLS?      AUTH after STARTTLS?
-optional       yes                                yes
-localoptional  connections from localhost only    yes
-on             no                                 yes""")
+  +---------------+------------------+------------+
+  |               | AUTH allowed     | AUTH after |
+  |               | before STARTTLS? | STARTTLS?  |
+  +---------------+------------------+------------+
+  | optional      | yes              | yes        |
+  +---------------+------------------+------------+
+  | localoptional | connections from | yes        |
+  |               | localhost only   |            |
+  +---------------+------------------+------------+
+  | on            | no               | yes        |
+  +---------------+------------------+------------+
+""")
 
 congroup.add_option("--ssl-cert",
                     metavar="/PATH/TO/FILE", default=None, dest="ssl_cert",
